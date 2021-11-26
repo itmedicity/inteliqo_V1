@@ -78,6 +78,7 @@ const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecor
 const VaccinationInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/VaccinationInformation'))
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
 const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
+const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 
 
 const routes = [
@@ -163,6 +164,7 @@ const routes = [
   { path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
   { path: '/Home/FineorDeduction/:id', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
   { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
+  { path: '/Home/EmployeeRecordEdit/:id', exact: true, name: 'End of service', component: EmployeeRecordEdit },
 ]
 
 

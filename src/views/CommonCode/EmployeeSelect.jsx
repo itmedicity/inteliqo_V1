@@ -10,7 +10,7 @@ const EmployeeSelect = () => {
     useEffect(() => {
         const fetchEmployeeName = async () => {
             const result = await axioslogin.get('/empmast/select')
-            const { success, data } = result.data;
+            const { data } = result.data;
             setEmpname(data)
         }
         fetchEmployeeName()
