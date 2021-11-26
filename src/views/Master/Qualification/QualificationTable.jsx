@@ -4,12 +4,16 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const QualificationTable = ({ update }) => {
     const [data, setTableData] = useState([]);
+    const history = useHistory();
+
     const title = [
         {
-            title: '#', field: 'qual_slno'
+            title: 'Sl No', field: 'qual_slno'
         },
         {
             title: 'Qualification', field: 'qual_name'
@@ -25,10 +29,18 @@ const QualificationTable = ({ update }) => {
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data);
+            } else {
+                warningNofity(" Error occured contact EDP")
             }
         }
         getQualificationDetl();
     }, [update]);
+
+    //for edit
+    const getDataTable = (data) => {
+        const { qual_slno } = data
+        history.push(`/Home/QualificationMastTableEdit/${qual_slno}`)
+    }
 
     return (
         <Fragment>
@@ -41,7 +53,7 @@ const QualificationTable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{

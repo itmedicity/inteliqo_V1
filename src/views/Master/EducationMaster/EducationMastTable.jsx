@@ -13,13 +13,13 @@ const EducationMastTable = ({ update }) => {
     //Table
     const title = [
         {
-            title: "SlNo", field: "edu_slno"
+            title: "SlNo", field: "edu_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Education", field: "edu_desc"
+            title: "Education", field: "edu_desc", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
         {
-            title: "Status", field: "edu_status"
+            title: "Status", field: "edu_status", cellStyle: { minWidth: 210, maxWidth: 250 }
         },
         {
             title: "User ID", field: "edu_create"
