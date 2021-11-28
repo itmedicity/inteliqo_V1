@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState, Fragment } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const BloodGroupSelect = () => {
+const BloodGroupSelect = (props) => {
     // intializing Bloodgroup
     const [bloodgroupData, setbllodgroup] = useState([]);
     // // useContext
@@ -39,6 +39,7 @@ const BloodGroupSelect = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Blood Group

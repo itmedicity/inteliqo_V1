@@ -1,9 +1,9 @@
-import { CSpinner } from '@coreui/react'
-import { LinearProgress } from '@mui/material'
-import { Box } from '@mui/system'
+// import { CSpinner } from '@coreui/react'
+// import { LinearProgress } from '@mui/material'
+// import { Box } from '@mui/system'
 import React from 'react'
 import './Loader.css'
-import Spinner from '../assets/brand/BlueSpinner.gif'
+import Spinner from '../assets/brand/Eclipse.gif'
 
 const FullPageloader = () => {
     return (

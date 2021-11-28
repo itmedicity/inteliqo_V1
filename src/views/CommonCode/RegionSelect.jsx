@@ -3,7 +3,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const RegionSelect = () => {
+const RegionSelect = (props) => {
     // intializing use state
     const [regiondata, setregion] = useState([]);
 
@@ -43,6 +43,8 @@ const RegionSelect = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
+                // SelectDisplayProps={{ style: { paddingTop: 4, paddingBottom: 4 } }}
                 >
                     <MenuItem value='0' disabled>
                         Region

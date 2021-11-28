@@ -146,7 +146,7 @@ const EmployeeProfile = () => {
                                                                 <AppRegistrationIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Application Form" />
+                                                        <ListItemText primary="My Profile" />
                                                     </ListItem>
                                                     <ListItem style={{ cursor: "pointer" }} onClick={personalInformation}  >
                                                         <ListItemAvatar>
