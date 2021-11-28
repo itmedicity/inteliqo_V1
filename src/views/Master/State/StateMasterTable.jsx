@@ -13,13 +13,13 @@ const StateMasterTable = ({ update }) => {
     //Table
     const title = [
         {
-            title: "SlNo", field: "state_slno"
+            title: "SlNo", field: "state_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "State Name", field: "state_name"
+            title: "State Name", field: "state_name", cellStyle: { minWidth: 200, maxWidth: 300 }
         },
         {
-            title: "Nation sl_no", field: "state_nat_slno"
+            title: "Nation ", field: "nat_name", cellStyle: { minWidth: 200, maxWidth: 300 }
         },
         {
             title: "Status", field: "state_status"
@@ -64,7 +64,7 @@ const StateMasterTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
             />
         </Fragment>

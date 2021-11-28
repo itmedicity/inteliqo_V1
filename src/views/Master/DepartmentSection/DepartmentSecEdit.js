@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 import SessionCheck from 'src/views/Axios/SessionCheck';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
 
@@ -59,7 +59,23 @@ const DepartmentSecEdit = () => {
             sect_id: id
         }
 
-        await axioslogin.patch('/section', updateData);
+        await axioslogin.patch('/section', updateData)
+            .then((response) => {
+                const { success, message } = response.data;
+                if (success === 0) {
+                    errorNofity(message)
+                } else if (success === 1) {
+                    infoNofity(message)
+                } else if (success === 3) {
+                    infoNofity(message)
+                } else if (success === 2) {
+                    succesNofity(message, redTosection())
+                }
+            })
+            .catch((response) => {
+                const { message } = response.data;
+                errorNofity(message);
+            })
     }
 
     // redirect to the department section page

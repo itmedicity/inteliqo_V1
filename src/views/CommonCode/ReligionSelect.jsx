@@ -23,7 +23,7 @@ const ReligionSelect = (props) => {
         return (
             udatereligion(0)
         )
-    }, []);
+    }, [udatereligion]);
 
     return (
         <Fragment>

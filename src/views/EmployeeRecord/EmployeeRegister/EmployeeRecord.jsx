@@ -93,18 +93,28 @@ const EmployeeRecord = () => {
     const { selectedDept, updateSelected,
         udateGrade,
         setEarnTypecontext,
-        getregion, udateregion, udatereligion,
-        getemployeecategory, udateemployeecategory,
+        getregion,
+        udateregion,
+        udatereligion,
+        getemployeecategory,
+        udateemployeecategory,
         updatebloodgroup,
-        getDoctype, updatedoctortype, selectDesignation, updateDesignation,
-        updateDesignationType, selectSalutation, updateSalutSelected,
-        selectBranchMast, updateBranchSelected, selectDeptSection,
-        selectInstiType, updateInstituteSeleted
+        getDoctype,
+        updatedoctortype,
+        selectDesignation,
+        updateDesignation,
+        updateDesignationType,
+        selectSalutation,
+        updateSalutSelected,
+        selectBranchMast,
+        updateBranchSelected,
+        selectDeptSection,
+        selectInstiType,
+        updateInstituteSeleted
     } = useContext(PayrolMasterContext);
 
     // destructuring employeerecord
-    const { empID, empName, empNo, addressPermnt, perPincode, mobileNo, landPhone,
-        email, addressPresent, dateofbirth, dateofjoining, Selectgender, empstatus } = employeerecord
+    const { empID, empName, empNo, addressPermnt, perPincode, mobileNo, landPhone, email, addressPresent, dateofbirth, dateofjoining, Selectgender, empstatus } = employeerecord
 
     // employee category on change
     useEffect(() => {
@@ -257,6 +267,12 @@ const EmployeeRecord = () => {
         e.preventDefault();
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getFormdata({ ...employeerecord, [e.target.name]: value })
+    }
+
+
+    // for edit page
+    const editDetails = () => {
+        history.push(`/Home/EmployeeRecordEdit/${1}`)
     }
 
     return (
@@ -596,6 +612,18 @@ const EmployeeRecord = () => {
                                             onClick={toSettings}
                                         >
                                             Close
+                                        </Button>
+                                    </div>
+                                    <div className="col-md-2 col-sm-12 col-xs-12">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            fullWidth
+                                            className="ml-2"
+                                            onClick={editDetails}
+                                        >
+                                            View
                                         </Button>
                                     </div>
                                 </div>
