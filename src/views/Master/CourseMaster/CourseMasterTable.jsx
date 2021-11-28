@@ -25,7 +25,7 @@ const CourseMasterTable = ({ update }) => {
             }
         },
         {
-            title: "Education", field: 'edu_slno', cellStyle: {
+            title: "Education", field: 'edu_desc', cellStyle: {
                 minWidth: 1,
                 maxWidth: 3
             }
