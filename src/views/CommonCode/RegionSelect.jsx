@@ -25,7 +25,7 @@ const RegionSelect = () => {
         )
 
 
-    }, []);
+    }, [udateregion]);
     return (
         <Fragment>
             <FormControl

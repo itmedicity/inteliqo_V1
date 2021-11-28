@@ -255,8 +255,6 @@ const EmploymentTypeMast = () => {
 
     // for submission
     const submitEmploymentForm = async (e) => {
-
-        console.log(postFormdata)
         e.preventDefault();
 
         if (cont_renw === true && contract_perd === 0) {
@@ -274,6 +272,8 @@ const EmploymentTypeMast = () => {
                 updateEmployeetype(0)
                 updateDesignationType(0)
                 setdata('')
+                setcont_period(0);
+                setcont_grace(0);
             } else if (success === 0) {
                 errorNofity(message)
             } else if (success === 2) {
@@ -328,17 +328,17 @@ const EmploymentTypeMast = () => {
                                         <TextField
                                             name="cont_period"
                                             value={cont_period}
-                                            hidden
+                                        // hidden
                                         />
                                         <TextField
                                             name="cont_grace"
                                             value={cont_grace}
-                                            hidden
+                                        // hidden
                                         />
                                         <TextField
                                             name="desiggperiod"
                                             value={desiggperiod}
-                                            hidden
+                                        // hidden
                                         />
 
                                     </div>

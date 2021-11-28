@@ -260,8 +260,8 @@ const EmploymentTypeEdit = () => {
 
     // for submission
     const submitEmploymentForm = async (e) => {
+
         e.preventDefault();
-        console.log(postFormdata)
         if (cont_renw === true && contract_perd === 0) {
             infoNofity("Select contract Period")
 
@@ -331,18 +331,20 @@ const EmploymentTypeEdit = () => {
                                         />
                                         <TextField
                                             name="cont_period"
+                                            fullWidth
                                             value={cont_period}
-                                            hidden
+                                        // hidden
                                         />
                                         <TextField
                                             name="cont_grace"
+                                            fullWidth
                                             value={cont_grace}
-                                            hidden
+                                        // hidden
                                         />
                                         <TextField
                                             name="desiggperiod"
                                             value={desiggperiod}
-                                            hidden
+                                        // hidden
                                         />
                                     </div>
 

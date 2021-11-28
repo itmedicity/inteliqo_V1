@@ -21,9 +21,9 @@ const ReligionSelect = () => {
         }
         getemptypedata()
         return (
-            udatereligion('')
+            udatereligion(0)
         )
-    }, []);
+    }, [udatereligion]);
 
     return (
         <Fragment>
