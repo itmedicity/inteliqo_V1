@@ -1,57 +1,78 @@
 import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { Fragment, memo, useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import QualificationTable from './QualificationTable'
 
-const QualificationMast = () => {
-    const classes = useStyles();
-    const [count, setCount] = useState(0);
-    const history = useHistory();
+const QualificationMastTableEdit = () => {
+    const classes = useStyles()
+    const history = useHistory()
+    const { id } = useParams()
+
+    //Initializing
     const [qualification, setQualification] = useState({
         qual_name: '',
         qual_status: false
     });
 
-    const updateQaulstatus = (e) => {
+    //Destructuring
+    const { qual_name, qual_status } = qualification;
+    const updateQualification = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })
     }
 
-    const { qual_name, qual_status } = qualification;
+    //Getdata
+    useEffect(() => {
+        const getQualification = async () => {
+            const result = await axioslogin.get(`/qal/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { qual_name, qual_status } = data[0]
+                const frmdata = {
+                    qual_name: qual_name,
+                    qual_status: qual_status === 1 ? true : false
+                }
+                setQualification(frmdata)
+            }
+        }
+        getQualification()
+    }, [id])
 
     const postData = {
         qual_name,
-        qual_status: qual_status === true ? 1 : 0
+        qual_status: qual_status === true ? 1 : 0,
+        qual_slno: id
     }
 
     // reset form
     const resetForm = {
-        qual_name,
+        qual_name: '',
         qual_status: false
     }
 
+    //Update 
     const submitQualification = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/qal', postData);
+        const result = await axioslogin.patch('/qal', postData);
         const { success, message } = result.data;
-
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
+        if (success === 2) {
             setQualification(resetForm);
+            history.push('/Home/Qualification');
+            succesNofity(message);
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
-            errorNofity(message);
+            infoNofity(message)
         }
     }
 
-    // reset to deault
+
+    //Back to home
     const toSettings = () => {
         history.push('/Home/Settings');
     }
@@ -79,7 +100,7 @@ const QualificationMast = () => {
                                             required
                                             name="qual_name"
                                             value={qual_name}
-                                            onChange={(e) => updateQaulstatus(e)}
+                                            onChange={(e) => updateQualification(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -92,7 +113,7 @@ const QualificationMast = () => {
                                                     value={qual_status}
                                                     checked={qual_status}
                                                     className="ml-2 "
-                                                    onChange={(e) => updateQaulstatus(e)}
+                                                    onChange={(e) => updateQualification(e)}
                                                 />
                                             }
                                             label="Status"
@@ -128,7 +149,7 @@ const QualificationMast = () => {
                             </form>
                         </div>
                         <div className="col-md-8">
-                            <QualificationTable update={count} />
+                            <QualificationTable />
                         </div>
                     </div>
                 </div>
@@ -137,4 +158,4 @@ const QualificationMast = () => {
     )
 }
 
-export default (QualificationMast)
+export default memo(QualificationMastTableEdit)

@@ -13,13 +13,13 @@ const DistrictMastTable = ({ update }) => {
     //table
     const title = [
         {
-            title: "SlNo", field: "dist_slno"
+            title: "SlNo", field: "dist_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "District Name", field: "dist_name"
+            title: "District Name", field: "dist_name", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
         {
-            title: "State sl_no", field: "dist_state_slno"
+            title: "State Name", field: "state_name", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
         {
             title: "Status", field: "dist_status"
@@ -64,7 +64,7 @@ const DistrictMastTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
             />
         </Fragment>
