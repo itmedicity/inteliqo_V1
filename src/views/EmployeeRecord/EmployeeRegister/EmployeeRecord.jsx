@@ -270,10 +270,7 @@ const EmployeeRecord = () => {
     }
 
 
-    // for edit page
-    const editDetails = () => {
-        history.push(`/Home/EmployeeRecordEdit/${1}`)
-    }
+
 
     return (
         <Fragment>
@@ -614,18 +611,7 @@ const EmployeeRecord = () => {
                                             Close
                                         </Button>
                                     </div>
-                                    <div className="col-md-2 col-sm-12 col-xs-12">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            fullWidth
-                                            className="ml-2"
-                                            onClick={editDetails}
-                                        >
-                                            View
-                                        </Button>
-                                    </div>
+
                                 </div>
                             </form>
                         </div>
