@@ -8,6 +8,7 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import FooterSaveEditClosebtn from '../../CommonCode/FooterSaveEditClosebtn'
 
 const StatutoryInformation = () => {
 
@@ -109,6 +110,7 @@ const StatutoryInformation = () => {
     //saving form data
     const submitFormData = async (e) => {
         e.preventDefault()
+        console.log('hrm')
         if (value === 0) {
             const result = await axioslogin.post('/empesipf', postData)
             const { success, message } = result.data
@@ -222,7 +224,7 @@ const StatutoryInformation = () => {
                             <div className="col-md-3 pl-0">
                                 <GradeSelect />
                             </div>
-                            <div className="row col-md-12">
+                            {/* <div className="row col-md-12">
                                 <div className="col-md-2 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
                                     <Button
                                         variant="contained"
@@ -259,6 +261,14 @@ const StatutoryInformation = () => {
                                         Close
                                     </Button>
                                 </div>
+                            </div> */}
+                            <div className="card-footer text-muted">
+                                <FooterSaveEditClosebtn
+                                    edit={reset}
+                                    redirect={RedirectToProfilePage}
+                                    value={value}
+
+                                />
                             </div>
                         </div>
 
