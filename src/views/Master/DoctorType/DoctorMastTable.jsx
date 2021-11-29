@@ -13,10 +13,10 @@ const DoctorMastTable = ({ update }) => {
     //Table
     const title = [
         {
-            title: "SlNo", field: "doctype_slno"
+            title: "SlNo", field: "doctype_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Doctor Type", field: "doctype_desc"
+            title: "Doctor Type", field: "doctype_desc", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
         {
             title: "Status", field: "doctype_status"
@@ -61,7 +61,7 @@ const DoctorMastTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
             />
         </Fragment>

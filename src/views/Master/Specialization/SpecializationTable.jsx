@@ -19,7 +19,7 @@ const SpecializationTable = ({ update }) => {
             title: "Specialization", field: "spec_desc"
         },
         {
-            title: "Course slno", field: 'cour_slno'
+            title: "Course ", field: 'cour_desc'
         },
         {
             title: "Status", field: "spec_status"

@@ -110,7 +110,6 @@ const Departmentmaster = () => {
                         <div className="col-md-4">
                             <form onSubmit={submitDeptForm} className={classes.root} >
                                 <div className="row" >
-
                                     <div className="col-md-12">
                                         <TextField
                                             label="Department Name"

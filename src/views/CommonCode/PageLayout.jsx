@@ -8,8 +8,8 @@ const PageLayout = (props) => {
             <SessionCheck />
             <ToastContainer />
             <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white ">
-                    <h5>{props.heading}</h5>
+                <div className="card-header bg-dark pb-0 border border-dark text-white lead">
+                    <h6>{props.heading}</h6>
                 </div>
                 <div className="card-body">
                     <div className="row">

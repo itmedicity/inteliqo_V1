@@ -3,7 +3,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const ReligionSelect = () => {
+const ReligionSelect = (props) => {
     // intializing use state
     const [ReligionData, setReliogion] = useState([]);
 
@@ -33,8 +33,8 @@ const ReligionSelect = () => {
                 className="mt-1"
             >
                 <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId="demo-simple-select-labels"
+                    id="demo-simple-selects"
                     name="getreligion"
                     value={getreligion}
                     onChange={(e) => udatereligion(e.target.value)}
@@ -42,8 +42,9 @@ const ReligionSelect = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
                 >
-                    <MenuItem value='0' disabled>
+                    <MenuItem value={0} disabled>
                         Religion
                     </MenuItem>
                     {

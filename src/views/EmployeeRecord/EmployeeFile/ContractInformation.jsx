@@ -1,25 +1,26 @@
-import { TextField, Button, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import moment from 'moment';
-import { Card, CardActionArea, CardContent, CardMedia } from '@material-ui/core'
+import { Card, CardActionArea, CardContent, CardMedia, TextField, Button } from '@material-ui/core'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { addDays } from 'date-fns'
-import { getSerialnumberempnumber } from 'src/views/Constant/Constant'
+//import { getSerialnumberempnumber } from 'src/views/Constant/Constant'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 
 
 const ContractInformation = () => {
 
     const classes = useStyles()
-    const { id } = useParams()
+    const history = useHistory()
+    const { id, no } = useParams()
     const [enablefiled, Setenablefield] = useState(true)
     const [enable, Setenable] = useState(true)
-    const [newempno, Setnewempno] = useState(0)//new employee no
+    // const [newempno, Setnewempno] = useState(0)//new employee no
     const [enableclose, Setenableclose] = useState(false)
     const [contractstartDate, setcontstrtDate] = useState(new Date())
     const [contractendDate, setconendDate] = useState(new Date())
@@ -64,7 +65,6 @@ const ContractInformation = () => {
                     endate: contendatee
                 }
                 setformData(frmData)
-                console.log(em_cont_end > new Date())
                 if (c <= 0) {
                     Setenable(false)
                 }
@@ -115,11 +115,11 @@ const ContractInformation = () => {
         setconendDate(endDate)
 
     }
-    getSerialnumberempnumber().then((val) => {
-        const newemno = val
-        Setnewempno(newemno)
-    })
-    getSerialnumberempnumber()
+    // getSerialnumberempnumber().then((val) => {
+    //     const newemno = val
+    //     Setnewempno(newemno)
+    // })
+    // getSerialnumberempnumber()
 
 
     //contract renew
@@ -157,6 +157,10 @@ const ContractInformation = () => {
     //         succesNofity(message)
     //     }
     // }
+    //redirecting to home page
+    const RedirectToProfilePage = () => {
+        history.push(`/Home/Profile/${id}/${no}`)
+    }
 
     return (
         <Fragment>
@@ -226,7 +230,7 @@ const ContractInformation = () => {
                             </div>
                         </div>
                         <div className="row col-md-12 pt-2">
-                            <div className="col-md-4 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
+                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -239,7 +243,7 @@ const ContractInformation = () => {
                                     Contract Renew
                                 </Button>
                             </div>
-                            <div className="col-md-4 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
+                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -252,7 +256,7 @@ const ContractInformation = () => {
                                     Contract Close
                                 </Button>
                             </div>
-                            <div className="col-md-4 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
+                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -264,6 +268,19 @@ const ContractInformation = () => {
 
                                 >
                                     Save
+                                </Button>
+                            </div>
+                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    fullWidth
+                                    type="Submit"
+                                    onClick={RedirectToProfilePage}
+
+                                >
+                                    Close
                                 </Button>
                             </div>
                         </div>

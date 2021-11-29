@@ -16,17 +16,17 @@ const StatutoryInformation = () => {
     const { id, no } = useParams()
     //setting initial state
     const [formData, SetformData] = useState({
-        pf: "",
+        pf: false,
         pfno: "",
-        esi: "",
+        esi: false,
         esino: "",
         uanno: "",
     })
     //defaultstate
     const defaultstate = {
-        pf: "",
+        pf: false,
         pfno: "",
-        esi: "",
+        esi: false,
         esino: "",
         uanno: "",
     }
