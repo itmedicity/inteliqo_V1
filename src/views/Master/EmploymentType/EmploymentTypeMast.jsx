@@ -328,17 +328,17 @@ const EmploymentTypeMast = () => {
                                         <TextField
                                             name="cont_period"
                                             value={cont_period}
-                                        // hidden
+                                            hidden
                                         />
                                         <TextField
                                             name="cont_grace"
                                             value={cont_grace}
-                                        // hidden
+                                            hidden
                                         />
                                         <TextField
                                             name="desiggperiod"
                                             value={desiggperiod}
-                                        // hidden
+                                            hidden
                                         />
 
                                     </div>
