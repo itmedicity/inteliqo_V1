@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core'
+import { FormControl, IconButton, MenuItem, Select } from '@material-ui/core'
 import { CheckBox, Label } from '@material-ui/icons'
 import React, { Fragment } from 'react'
 import BloodGroupSelect from 'src/views/CommonCode/BloodGroupSelect'
@@ -11,6 +11,7 @@ import './EmpStyle.css'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import { useHistory } from 'react-router'
 import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
+import { MdOutlineAddCircleOutline } from 'react-icons/md'
 
 const PersonalInformation = () => {
     const history = useHistory()
@@ -269,8 +270,10 @@ const PersonalInformation = () => {
                                                             Placeholder="Hospital MRD No"
                                                         />
                                                     </div>
-                                                    <div className="col-md-1">
-                                                        <PageviewOutlinedIcon className="text-info" size={22} />
+                                                    <div className="col-md-1 text-center" >
+                                                        <IconButton aria-label="add" style={{ padding: "0rem" }} >
+                                                            <MdOutlineAddCircleOutline className="text-info" size={30} />
+                                                        </IconButton>
                                                     </div>
                                                 </div>
                                                 <div className="row g-1 familydetl table-wrapper-scroll-y my-custom-scrollbar mt-2">
