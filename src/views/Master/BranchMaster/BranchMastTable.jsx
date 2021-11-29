@@ -1,17 +1,17 @@
 import MaterialTable from 'material-table'
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, memo, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useHistory } from 'react-router';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 
 const BranchMastTable = ({ update }) => {
     const [tableData, setTableData] = useState([]);
+    const history = useHistory();
     const title = [
         {
-            title: '#', field: 'branch_slno'
+            title: 'Sl No', field: 'branch_slno'
         },
         {
             title: 'Branch Name', field: 'branch_name'
@@ -33,6 +33,13 @@ const BranchMastTable = ({ update }) => {
         }
         gettablelist();
     }, [update]);
+
+    //for edit
+    const getDataTable = (data) => {
+        const { branch_slno } = data
+        history.push(`/Home/BranchMastTableEdit/${branch_slno}`)
+    }
+
     return (
         <Fragment>
             <MaterialTable
@@ -44,14 +51,14 @@ const BranchMastTable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />
@@ -59,4 +66,4 @@ const BranchMastTable = ({ update }) => {
     )
 }
 
-export default BranchMastTable
+export default memo(BranchMastTable)

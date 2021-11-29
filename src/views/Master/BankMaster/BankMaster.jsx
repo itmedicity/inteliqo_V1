@@ -110,7 +110,7 @@ const BankMaster = () => {
                                             control={
                                                 <Checkbox
                                                     name="bank_status"
-                                                    color="secondary"
+                                                    color="primary"
                                                     value={bank_status}
                                                     checked={bank_status}
                                                     className="ml-2"
