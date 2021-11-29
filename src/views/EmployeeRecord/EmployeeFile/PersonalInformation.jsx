@@ -10,6 +10,7 @@ import Spinner from '../../../assets/brand/Eclipse.gif'
 import './EmpStyle.css'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import { useHistory } from 'react-router'
+import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
 
 const PersonalInformation = () => {
     const history = useHistory()
@@ -227,7 +228,7 @@ const PersonalInformation = () => {
                                             </div>
                                             <div className="card-body pb-1 pt-2">
                                                 <div className="row g-1">
-                                                    <div className="col-md-4">
+                                                    <div className="col-md-3">
                                                         <FormControl
                                                             fullWidth
                                                             margin="dense"
@@ -244,7 +245,7 @@ const PersonalInformation = () => {
                                                                 style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
 
                                                             >
-                                                                <MenuItem value='0' disabled>Relationship</MenuItem>
+                                                                <MenuItem value='0' disabled>Relation</MenuItem>
                                                                 <MenuItem value='1'>Father</MenuItem>
                                                                 <MenuItem value='2'>Mother</MenuItem>
                                                                 <MenuItem value='2'>Brother</MenuItem>
@@ -267,6 +268,9 @@ const PersonalInformation = () => {
                                                             classname="form-control form-control-sm"
                                                             Placeholder="Hospital MRD No"
                                                         />
+                                                    </div>
+                                                    <div className="col-md-1">
+                                                        <PageviewOutlinedIcon className="text-info" size={22} />
                                                     </div>
                                                 </div>
                                                 <div className="row g-1 familydetl table-wrapper-scroll-y my-custom-scrollbar mt-2">

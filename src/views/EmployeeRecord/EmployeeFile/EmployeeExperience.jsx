@@ -14,6 +14,7 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import EmployeeExperienceTable from './EmployeeFileTable/EmployeeExperienceTable'
+import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 
 const EmployeeExperience = () => {
 
@@ -201,7 +202,7 @@ const EmployeeExperience = () => {
                                     onChange={(e) => updateEmployeeExpFormData(e)}
                                 />
                             </div>
-                            <div className="row col-md-12">
+                            {/* <div className="row col-md-12">
                                 <div className="col-md-6 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
                                     <Button
                                         variant="contained"
@@ -225,6 +226,11 @@ const EmployeeExperience = () => {
                                         Close
                                     </Button>
                                 </div>
+                            </div> */}
+                            <div className="card-footer text-muted">
+                                <FooterSaveClosebtn
+                                    redirect={RedirectToProfilePage}
+                                />
                             </div>
                         </div>
                     </form>

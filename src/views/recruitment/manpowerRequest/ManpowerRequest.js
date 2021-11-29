@@ -8,27 +8,27 @@ function ManpowerRequest() {
 
     const [textval, setTextVal] = useState("true")
 
-    // const changeTextVal = (e) => {
-    //     // console.log(e.target.value);
-    //     setTextVal(e.target.value)
-    // }
+    const submitFormData = () => {
+
+    }
 
     return (
         <div>
             <SessionCheck />
-
-            <div className="row">
-                <div className="col-md-4">
-                    <TextInput
-                        type="text"
-                        classname="form-control form-control-sm"
-                        Placeholder="Test text Feild"
-                        changeTextValue={(e) => setTextVal(e.target.value)}
-                        value={textval}
-                    />
+            <form onSubmit={submitFormData} id="subform" >
+                <div className="row">
+                    <div className="col-md-4">
+                        <TextInput
+                            type="text"
+                            classname="form-control form-control-sm"
+                            Placeholder="Test text Feild"
+                            changeTextValue={(e) => setTextVal(e.target.value)}
+                            value={textval}
+                        />
+                    </div>
+                    <FooterClosebtn />
                 </div>
-                <FooterClosebtn />
-            </div>
+            </form>
         </div>
     )
 }
