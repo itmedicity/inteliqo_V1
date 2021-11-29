@@ -34,7 +34,7 @@ const DistrictSelection = () => {
                     onChange={(e) => updateDisSelected(e.target.value)}
                     fullWidth
                     variant="outlined"
-                    className="ml-1"
+                    className="ml-2"
                     defaultValue={0}
                 >
                     <MenuItem value='0' disabled>

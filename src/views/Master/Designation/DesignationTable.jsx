@@ -1,16 +1,18 @@
 import MaterialTable from 'material-table';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, memo, useState } from 'react';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { memo } from 'react';
+import { useHistory } from 'react-router';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const DesignationTable = ({ update }) => {
 
     const [data, setTableData] = useState();
+    const history = useHistory();
     const title = [
         {
-            title: "#", field: "desg_slno"
+            title: "Sl No", field: "desg_slno"
         },
         {
             title: "Designation", field: "desg_name"
@@ -23,13 +25,22 @@ const DesignationTable = ({ update }) => {
     useEffect(() => {
         const getDesigList = async () => {
             const result = await axioslogin.get('/designation')
-            const { data } = result.data;
-            setTableData(data);
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                warningNofity(" Error occured contact EDP")
+            }
         }
         getDesigList();
 
     }, [update]);
 
+    //For Editing
+    const getDataTable = (data) => {
+        const { desg_slno } = data
+        history.push(`/Home/DesignationMastTableEdit/${desg_slno}`)
+    }
 
     return (
         <Fragment>
@@ -42,14 +53,14 @@ const DesignationTable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />

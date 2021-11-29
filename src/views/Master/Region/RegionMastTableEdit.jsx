@@ -1,7 +1,6 @@
 import { Button, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
-import React, { Fragment, useContext } from 'react'
-import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { Fragment, useContext, useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -9,56 +8,75 @@ import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import RegionMastTable from './RegionMastTable';
 
-const RegionMast = () => {
+
+const RegionMastTableEdit = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [count, setCount] = useState(0);
+    const { id } = useParams()
     const { selectDistrict, updateDisSelected } = useContext(PayrolMasterContext);
 
     //Initializing
     const [disData, getDisdata] = useState({
         reg_name: '',
         reg_pincode: '',
-        reg_dist_slno: '',
-        reg_status: false
+        reg_status: false,
+        reg_dist_slno: ''
     });
 
-    //Destructuring
+    //Destucturing
     const { reg_name, reg_pincode, reg_status } = disData;
     const updateFormData = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getDisdata({ ...disData, [e.target.name]: value })
     }
 
-    //Insert
-    const postFormData = {
+    //Get data by ID
+    useEffect(() => {
+        const getRegion = async () => {
+            const result = await axioslogin.get(`/region/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { reg_name, reg_pincode, reg_status, reg_dist_slno } = data[0]
+                const frmdata = {
+                    reg_name: reg_name,
+                    reg_pincode: reg_pincode,
+                    reg_dist_slno: updateDisSelected(reg_dist_slno),
+                    reg_status: reg_status === 1 ? true : false
+                }
+                getDisdata(frmdata)
+            }
+        }
+        getRegion()
+    }, [id, updateDisSelected])
+
+    const postRegionData = {
         reg_name,
+        reg_dist_slno: selectDistrict,
         reg_pincode,
         reg_status: reg_status === true ? 1 : 0,
-        reg_dist_slno: selectDistrict
+        reg_slno: id
     }
-
-    //Form resting
     const resetForm = {
         reg_name: '',
-        reg_pincode: '',
         reg_dist_slno: '',
-        reg_status: false
+        reg_pincode,
+        reg_status: false,
     }
     const reset = () => {
         updateDisSelected(0)
     }
 
-    //Form Submitting
-    const SubmitRegionForm = async (e) => {
+    //update
+
+    const SubmitRegion = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/region', postFormData);
-        const { success, message } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
+        const result = await axioslogin.patch('/region', postRegionData)
+        const { message, success } = result.data;
+        if (success === 2) {
             getDisdata(resetForm);
             reset();
+            history.push('/Home/Region');
+            succesNofity(message);
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
@@ -66,11 +84,12 @@ const RegionMast = () => {
         }
     }
 
-    //Back to home
+
+    //Back to Home
     const toSettings = () => {
         history.push('/Home/Settings');
+        updateDisSelected(0);
     }
-
     return (
         <Fragment>
             <div className="card">
@@ -80,7 +99,7 @@ const RegionMast = () => {
                 <div className="card-body">
                     <div className="row">
                         <div className="col-md-4">
-                            <form className={classes.root} onSubmit={SubmitRegionForm} >
+                            <form className={classes.root} onSubmit={SubmitRegion} >
                                 <div className="row">
                                     <div className="col-md-12">
                                         <TextField
@@ -159,7 +178,7 @@ const RegionMast = () => {
                             </form>
                         </div>
                         <div className="col-md-8">
-                            <RegionMastTable update={count} />
+                            <RegionMastTable />
                         </div>
                     </div>
                 </div>
@@ -168,4 +187,4 @@ const RegionMast = () => {
     )
 }
 
-export default RegionMast
+export default RegionMastTableEdit

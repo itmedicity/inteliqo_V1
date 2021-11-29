@@ -21,18 +21,21 @@ const QualificationTableEdit = () => {
     const history = useHistory()
     const classes = useStyles()
     const { id, no } = useParams()
-    const { selectEducation, updateEducation } = useContext(PayrolMasterContext)
-    const { selectCourse, updateCourse } = useContext(PayrolMasterContext)
-    const { selectSpec, updateSpec } = useContext(PayrolMasterContext)
-    const { selectUniversity, updateUniversity } = useContext(PayrolMasterContext)
-    const { selectreg, updatereg } = useContext(PayrolMasterContext)
+    const { selectEducation, updateEducation,
+        selectCourse, updateCourse,
+        selectSpec, updateSpec,
+        selectUniversity, updateUniversity,
+        selectreg, updatereg
+    } = useContext(PayrolMasterContext)
+
+
     const [year, setYear] = useState(new Date());
 
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
-        em_course: '',
-        em_specialization: '',
+        // em_course: '',
+        // em_specialization: '',
         em_univ_institute: '',
         em_year: '',
         em_mark_grade: '',
@@ -61,13 +64,13 @@ const QualificationTableEdit = () => {
                     em_reg_no: em_reg_no
                 }
                 updateEducation(em_education)
-                updateCourse(em_course)
-                updateSpec(em_specialization)
                 updateUniversity(em_univ_institute)
                 updatereg(em_reg_type)
                 setQualification(frmdata)
                 const year = new Date(em_year, 6, 2)
                 setYear(year)
+                updateCourse(em_course)
+                updateSpec(em_specialization)
             }
         }
         getUniversity()
@@ -97,8 +100,8 @@ const QualificationTableEdit = () => {
     //Form reset
     const resetForm = {
         em_education: '',
-        em_course: '',
-        em_specialization: '',
+        // em_course: '',
+        // em_specialization: '',
         em_univ_institute: '',
         em_year: '',
         em_mark_grade: '',

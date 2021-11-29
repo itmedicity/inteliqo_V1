@@ -1,21 +1,23 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import MaterialTable from 'material-table';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useHistory } from 'react-router';
 
 const BankMastTable = ({ update }) => {
-    const [tbleData, settableData] = useState([]);
+    const [data, settableData] = useState([]);
+    const history = useHistory()
     const title = [
         {
-            title: '#', field: 'bank_slno'
+            title: 'Sl No', field: 'bank_slno'
         },
         {
             title: 'Bank Name', field: 'bank_name'
         },
         {
-            title: 'Ifsc', field: 'bank_ifsc'
+            title: 'IFSC', field: 'bank_ifsc'
         },
         {
             title: 'Status', field: 'status'
@@ -29,32 +31,38 @@ const BankMastTable = ({ update }) => {
             if (success === 1) {
                 settableData(data);
             } else {
-                infoNofity(message);
+                warningNofity("Error Occured Contact EDP");
             }
 
         }
         getTableData();
     }, [update]);
 
+    //For Edit
+    const getDataTable = (data) => {
+        const { bank_slno } = data
+        history.push(`/Home/BankMastTableEdit/${bank_slno}`)
+    }
+
     return (
         <Fragment>
             <MaterialTable
-                title="Designation Type"
-                data={tbleData}
+                title="Bank "
+                data={data}
                 columns={title}
                 icons={tableIcons}
                 actions={[
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />
@@ -62,4 +70,4 @@ const BankMastTable = ({ update }) => {
     )
 }
 
-export default BankMastTable
+export default memo(BankMastTable)

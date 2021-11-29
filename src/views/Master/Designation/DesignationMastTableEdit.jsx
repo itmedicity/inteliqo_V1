@@ -1,66 +1,66 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import SessionCheck from 'src/views/Axios/SessionCheck'
-import { useHistory } from 'react-router'
-import EducationSelection from 'src/views/CommonCode/EducationSelection'
-import PageLayout from 'src/views/CommonCode/PageLayout'
-import CourseMasterTable from './CourseMasterTable'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
+import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import DesignationTable from './DesignationTable'
 
-const CourseMaster = () => {
-    const classes = useStyles();
-    const history = useHistory();
-    const [count, setCount] = useState(0);
-    const { selectEducation, updateEducation } = useContext(PayrolMasterContext);
+const DesignationMastTableEdit = () => {
+    const classes = useStyles()
+    const history = useHistory()
+    const { id } = useParams()
 
-    //Initializing
-    const [type, setType] = useState({
-        cour_desc: '',
-        edu_slno: '',
-        cour_status: false,
-        cour_created: ''
-    })
+    const [designation, setDesignation] = useState({
+        desg_name: '',
+        desg_status: false
+    });
 
-    //Destructuring
-    const { cour_desc, cour_status } = type;
-    const updateType = (e) => {
+    const { desg_name, desg_status } = designation;
+    const updateDesignation = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setType({ ...type, [e.target.name]: value })
+        setDesignation({ ...designation, [e.target.name]: value })
     }
 
-    //Insert
-    const postCourseData = {
-        cour_desc,
-        edu_slno: selectEducation,
-        cour_status: cour_status === true ? 1 : 0,
-        cour_created: employeeNumber()
+    //Get data
+    useEffect(() => {
+        const getDesignation = async () => {
+            const result = await axioslogin.get(`/designation/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { desg_name, desg_status } = data[0]
+                const frmdata = {
+                    desg_name: desg_name,
+                    desg_status: desg_status === 1 ? true : false
+                }
+                setDesignation(frmdata)
+            }
+        }
+        getDesignation()
+    }, [id])
+
+    const postDesignationData = {
+        desg_name,
+        desg_status: desg_status === true ? 1 : 0,
+        desg_slno: id
     }
 
-    //Form resting
     const resetForm = {
-        cour_desc: '',
-        edu_slno: '',
-        cour_status: false
-    }
-    const reset = () => {
-        updateEducation(0)
+        desg_name: '',
+        desg_status: false
     }
 
-    //Form Submitting
+    //Update
     const submitType = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/course', postCourseData)
+        const result = await axioslogin.patch('/designation', postDesignationData)
         const { message, success } = result.data;
-        if (success === 1) {
+        if (success === 2) {
+            setDesignation(resetForm);
+            history.push('/Home/Designation');
             succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-            reset();
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
@@ -68,7 +68,6 @@ const CourseMaster = () => {
         }
     }
 
-    //Back to home page
     const toSettings = () => {
         history.push('/Home/Settings');
     }
@@ -77,39 +76,39 @@ const CourseMaster = () => {
         <Fragment>
             <SessionCheck />
             <ToastContainer />
-            <PageLayout heading="Course">
+            <div className="card">
+                <div className="card-header bg-dark pb-0 border border-dark text-white">
+                    <h5>Designation</h5>
+                </div>
                 <div className="card-body">
                     <div className="row">
                         <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType}>
+                            <form className={classes.root} onSubmit={submitType} >
                                 <div className="row">
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Course"
+                                            label="Designation Name"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="cour_desc"
-                                            value={cour_desc}
-                                            onChange={(e) => updateType(e)}
+                                            name="desg_name"
+                                            value={desg_name}
+                                            onChange={(e) => updateDesignation(e)}
                                         />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <EducationSelection />
                                     </div>
                                     <div className="col-md-12">
                                         <FormControlLabel
                                             className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
-                                                    name="cour_status"
+                                                    name="desg_status"
                                                     color="primary"
-                                                    value={cour_status}
-                                                    checked={cour_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
+                                                    value={desg_status}
+                                                    checked={desg_status}
+                                                    className="ml-2 "
+                                                    onChange={(e) => updateDesignation(e)}
                                                 />
                                             }
                                             label="Status"
@@ -145,13 +144,13 @@ const CourseMaster = () => {
                             </form>
                         </div>
                         <div className="col-md-8">
-                            <CourseMasterTable update={count} />
+                            <DesignationTable />
                         </div>
                     </div>
                 </div>
-            </PageLayout>
+            </div>
         </Fragment>
     )
 }
 
-export default memo(CourseMaster)
+export default memo(DesignationMastTableEdit)
