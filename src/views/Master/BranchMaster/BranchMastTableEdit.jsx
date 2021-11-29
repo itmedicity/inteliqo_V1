@@ -1,74 +1,81 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState, memo, useEffect } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import BankMastTable from './BankMastTable'
+import BranchMastTable from './BranchMastTable'
 
-const BankMastTableEdit = () => {
+const BranchMastTableEdit = () => {
     const classes = useStyles();
-    const { id } = useParams();
     const history = useHistory();
+    const { id } = useParams();
 
-    //Initialization
-    const [bankData, setFormdata] = useState({
-        bank_name: '',
-        bank_ifsc: '',
-        bank_address: '',
-        bank_status: false
+    //Initializing
+    const [branchData, setBranchData] = useState({
+        branch_name: '',
+        branchAddress: '',
+        emailAddress: '',
+        esiNumber: '',
+        pfNumber: '',
+        branch_status: false
     });
 
     //Destructuring
-    const { bank_name, bank_ifsc, bank_address, bank_status } = bankData;
-    const getBankFormData = (e) => {
+    const { branch_name, branchAddress, emailAddress, esiNumber, pfNumber, branch_status } = branchData;
+    const updateBranchForm = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setFormdata({ ...bankData, [e.target.name]: value });
+        setBranchData({ ...branchData, [e.target.name]: value })
     }
-    //get data
+
+    //Get data by ID
     useEffect(() => {
-        const getBank = async () => {
-            const result = await axioslogin.get(`/bank/${id}`)
+        const getBranch = async () => {
+            const result = await axioslogin.get(`/branch/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { bank_name, bank_ifsc, bank_address, bank_status } = data[0]
+                const { branch_name, branchAddress, emailAddress, esiNumber, pfNumber, branch_status } = data[0]
                 const frmdata = {
-                    bank_name: bank_name,
-                    bank_ifsc: bank_ifsc,
-                    bank_address: bank_address,
-                    bank_status: bank_status === 1 ? true : false
+                    branch_name: branch_name,
+                    branchAddress: branchAddress,
+                    emailAddress: emailAddress,
+                    esiNumber: esiNumber,
+                    pfNumber: pfNumber,
+                    branch_status: branch_status === 1 ? true : false
                 }
-                setFormdata(frmdata)
+                setBranchData(frmdata)
             }
         }
-        getBank()
+        getBranch()
     }, [id])
 
-
-    const postBank = {
-        bank_name,
-        bank_ifsc,
-        bank_address,
-        bank_status: bank_status === true ? 1 : 0,
-        bank_slno: id
+    const postData = {
+        branch_name,
+        branchAddress,
+        emailAddress,
+        esiNumber,
+        pfNumber,
+        branch_status: branch_status === true ? 1 : 0,
+        branch_slno: id
     }
     const resetForm = {
-        bank_name: '',
-        bank_ifsc: '',
-        bank_address: '',
-        bank_status: false
+        branch_name: '',
+        branchAddress: '',
+        emailAddress: '',
+        esiNumber: '',
+        pfNumber: '',
+        branch_status: false
     }
 
-    //update
-    const submitFormUpdate = async (e) => {
+    const submitBranchForm = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.patch('/bank', postBank)
+        const result = await axioslogin.patch('/branch', postData);
         const { message, success } = result.data;
         if (success === 2) {
-            setFormdata(resetForm);
-            history.push('/Home/Bank');
+            setBranchData(resetForm);
+            history.push('/Home/BranchMaster');
             succesNofity(message);
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
@@ -76,65 +83,84 @@ const BankMastTableEdit = () => {
             infoNofity(message)
         }
     }
-
-
-    //Back to Home
     const toSettings = () => {
         history.push('/Home/Settings');
     }
-
-
-
     return (
         <Fragment>
             <SessionCheck />
             <ToastContainer />
             <div className="card">
                 <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Bank Master</h5>
+                    <h5>Branch Master</h5>
                 </div>
                 <div className="card-body">
                     <div className="row">
                         <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitFormUpdate}  >
+                            <form className={classes.root} onSubmit={submitBranchForm} >
                                 <div className="row">
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Bank Name"
+                                            label="Branch Name"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="bank_name"
-                                            value={bank_name}
-                                            onChange={(e) => getBankFormData(e)}
+                                            name="branch_name"
+                                            value={branch_name}
+                                            onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Bank IFSC Code"
+                                            label="Branch Address"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="bank_ifsc"
-                                            value={bank_ifsc}
-                                            onChange={(e) => getBankFormData(e)}
+                                            name="branchAddress"
+                                            value={branchAddress}
+                                            onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Address"
+                                            label="Email Address"
+                                            fullWidth
+                                            size="small"
+                                            autoComplete="off"
+                                            variant="outlined"
+                                            name="emailAddress"
+                                            value={emailAddress}
+                                            onChange={(e) => updateBranchForm(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TextField
+                                            label="ESI Number"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="bank_address"
-                                            value={bank_address}
-                                            onChange={(e) => getBankFormData(e)}
+                                            name="esiNumber"
+                                            value={esiNumber}
+                                            onChange={(e) => updateBranchForm(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TextField
+                                            label="PF Number"
+                                            fullWidth
+                                            size="small"
+                                            autoComplete="off"
+                                            variant="outlined"
+                                            required
+                                            name="pfNumber"
+                                            value={pfNumber}
+                                            onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
                                     <div className="col-md-12 pb-0 mb-0">
@@ -142,12 +168,12 @@ const BankMastTableEdit = () => {
                                             className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
-                                                    name="bank_status"
-                                                    color="primary"
-                                                    value={bank_status}
-                                                    checked={bank_status}
+                                                    name="branch_status"
+                                                    color="secondary"
+                                                    value={branch_status}
+                                                    checked={branch_status}
                                                     className="ml-2"
-                                                    onChange={(e) => getBankFormData(e)}
+                                                    onChange={(e) => updateBranchForm(e)}
                                                 />
                                             }
                                             label="Status"
@@ -183,7 +209,7 @@ const BankMastTableEdit = () => {
                             </form>
                         </div>
                         <div className="col-md-8">
-                            <BankMastTable />
+                            <BranchMastTable />
                         </div>
                     </div>
                 </div>
@@ -192,4 +218,4 @@ const BankMastTableEdit = () => {
     )
 }
 
-export default memo(BankMastTableEdit)
+export default memo(BranchMastTableEdit)
