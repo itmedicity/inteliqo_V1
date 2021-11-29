@@ -8,10 +8,9 @@ function ManpowerRequest() {
 
     const [textval, setTextVal] = useState("true")
 
-    const submitFormData = (e) => {
-        console.log(e);
-    }
+    const submitFormData = () => {
 
+    }
 
     return (
         <div>
@@ -30,7 +29,6 @@ function ManpowerRequest() {
                     <FooterClosebtn />
                 </div>
             </form>
-
         </div>
     )
 }
