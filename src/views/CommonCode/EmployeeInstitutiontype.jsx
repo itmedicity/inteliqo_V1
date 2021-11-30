@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const EmployeeInstitutiontype = () => {
+const EmployeeInstitutiontype = (props) => {
     const [institutionType, setInstitutionType] = useState([]);
     const { selectInstiType, updateInstituteSeleted } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -37,6 +37,7 @@ const EmployeeInstitutiontype = () => {
                     variant="outlined"
                     className="ml-2"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Employee Institution Type
