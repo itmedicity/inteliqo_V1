@@ -3,11 +3,10 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import RegionMastTable from './RegionMastTable';
-
 
 const RegionMastTableEdit = () => {
     const classes = useStyles();
@@ -69,6 +68,7 @@ const RegionMastTableEdit = () => {
     //update
 
     const SubmitRegion = async (e) => {
+
         e.preventDefault();
         const result = await axioslogin.patch('/region', postRegionData)
         const { message, success } = result.data;
@@ -80,7 +80,8 @@ const RegionMastTableEdit = () => {
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
-            infoNofity(message)
+            console.log('ashdj')
+            infoNofity('ahdjahs');
         }
     }
 
@@ -88,8 +89,8 @@ const RegionMastTableEdit = () => {
     //Back to Home
     const toSettings = () => {
         history.push('/Home/Settings');
-        updateDisSelected(0);
     }
+
     return (
         <Fragment>
             <div className="card">

@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const EmployeType = () => {
+const EmployeType = (props) => {
     const [employeType, setEmployeType] = useState([]);
 
     const { selectEmployeeType,
@@ -52,6 +52,7 @@ const EmployeType = () => {
                     variant="outlined"
                     className="ml-1"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Employee Type

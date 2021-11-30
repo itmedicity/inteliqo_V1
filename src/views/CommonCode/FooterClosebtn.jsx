@@ -17,24 +17,32 @@ const FooterClosebtn = (props) => {
                 /> */}
                 <Chip
                     icon={
-                        <IconButton type="submit" >
+                        <IconButton type="submit" className="p-1" >
                             <MdOutlineAddTask className="text-info p-0" size={22} />
                         </IconButton>
                     }
                     label="Save"
+                    style={{ cursor: "pointer" }}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
                 <Chip
-                    icon={<PageviewOutlinedIcon className="text-info" size={22} />}
+                    icon={
+                        <IconButton className="p-1" >
+                            <PageviewOutlinedIcon className="text-info" size={22} />
+                        </IconButton>
+                    }
                     label="View"
                     style={{ cursor: "pointer" }}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
                 <Chip
-                    icon={<WrongLocationOutlinedIcon
-                        className="text-info" size={22} />}
+                    icon={
+                        <IconButton className="p-1" >
+                            <WrongLocationOutlinedIcon className="text-info" size={22} />
+                        </IconButton>
+                    }
                     label="Close"
                     style={{ cursor: "pointer" }}
                     onClick={props.redirect}

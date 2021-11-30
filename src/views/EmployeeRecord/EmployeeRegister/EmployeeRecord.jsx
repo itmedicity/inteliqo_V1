@@ -564,7 +564,6 @@ const EmployeeRecord = () => {
                                                     hidden
                                                 />
                                             </div>
-
                                             <div className="row">
                                                 <div className="col-md-12">
                                                     <FormControlLabel
@@ -586,7 +585,6 @@ const EmployeeRecord = () => {
                                     </div>
                                 </div>
                                 <div className="row col-md-12">
-
                                     <div className="col-md-2 col-sm-12 col-xs-12">
                                         <Button
                                             variant="contained"
@@ -611,7 +609,6 @@ const EmployeeRecord = () => {
                                             Close
                                         </Button>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
