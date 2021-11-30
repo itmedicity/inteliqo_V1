@@ -22,6 +22,7 @@ import ReligionSelect from 'src/views/CommonCode/ReligionSelect'
 import Salutation from 'src/views/CommonCode/Salutation'
 import { employeeNumber, getSerialnumberempid } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import TextInput from 'src/views/Component/TextInput'
 
 const EmployeeRecord = () => {
 
@@ -287,104 +288,85 @@ const EmployeeRecord = () => {
                                 <div className="col-md-12">
                                     <div className="row">
                                         <div className="col-md-2">
-                                            <Salutation />
+                                            <Salutation style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                disabled
-                                                label="Employee ID"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="empID"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Employee ID"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={empID}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="empID"
+                                                disabled="disabled"
                                             />
                                         </div>
                                         <div className="col-md-6">
-                                            <TextField
-                                                label="Employee Name"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="empName"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Employee Name"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={empName}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="empName"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Employee No"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="empNo"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Employee No"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={empNo}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="empNo"
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12 p-1">
                                     <div className="row">
                                         <div className="col-md-10">
-                                            <TextField
-                                                label="Permanent Address"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="addressPermnt"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Permanent Address"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={addressPermnt}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="addressPermnt"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Pincode"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="perPincode"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Pincode"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={perPincode}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="perPincode"
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12 p-1">
                                     <div className="row">
                                         <div className="col-md-10">
-                                            <TextField
-                                                label="Present Address"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                name="addressPresent"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Present Address"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={addressPresent}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="addressPresent"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Pincode"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                name="prePincode"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Pincode"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={perPincode}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="prePincode"
                                             />
                                         </div>
                                     </div>
@@ -404,6 +386,7 @@ const EmployeeRecord = () => {
                                                     fullWidth
                                                     variant="outlined"
                                                     className="ml-1"
+                                                    style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
 
                                                 >
                                                     <MenuItem value='0' disabled>Gender</MenuItem>
@@ -414,45 +397,41 @@ const EmployeeRecord = () => {
                                         </div>
 
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Mobile No"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                required
-                                                name="mobileNo"
+
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Mobile No"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={mobileNo}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="mobileNo"
                                             />
+
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Land Phone"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                name="landPhone"
+
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Land Phone"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={landPhone}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="landPhone"
                                             />
                                         </div>
                                         <div className="col-md-4">
-                                            <TextField
-                                                label="Email Address"
-                                                fullWidth
-                                                size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                                name="email"
-                                                required
+
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Email Address"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={email}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="email"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <RegionSelect />
+                                            <RegionSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
 
                                         </div>
                                     </div>
@@ -460,61 +439,51 @@ const EmployeeRecord = () => {
                                 <div className="col-md-12">
                                     <div className="row">
                                         <div className="col-md-2">
-                                            <ReligionSelect />
+                                            <ReligionSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
                                         <div className="col-md-1">
-                                            <BloodGroupSelect />
+                                            <BloodGroupSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Date Of Birth"
-                                                variant="outlined"
+
+                                            <TextInput
                                                 type="date"
-                                                fullWidth
-                                                name="dateofbirth"
-                                                value={dateofbirth}
-                                                onChange={(e) => {
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Date Of Birth"
+                                                changeTextValue={(e) => {
                                                     updateFormData(e)
                                                     getage(e)
                                                 }
                                                 }
-                                                size="small"
-                                                sx={{ width: 220 }}
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
+                                                value={dateofbirth}
+                                                name="dateofbirth"
                                             />
                                         </div>
                                         <div className="col-md-1">
-                                            <TextField
-                                                label="Age"
-                                                variant="outlined"
-                                                size="small"
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Age"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={agestate}
-                                                onChange={(e) => updateFormData(e)}
+                                                name="agestate"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <TextField
-                                                label="Date Of Joining"
-                                                variant="outlined"
+                                            <TextInput
                                                 type="date"
-                                                fullWidth
-                                                name="dateofjoining"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Date Of Joining"
+                                                changeTextValue={(e) => updateFormData(e)}
                                                 value={dateofjoining}
-                                                size="small"
-                                                onChange={(e) => updateFormData(e)}
-                                                sx={{ width: 220 }}
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
+                                                name="dateofjoining"
                                             />
                                         </div>
                                         <div className="col-md-2">
-                                            <GradeeSelect />
+                                            <GradeeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
                                         <div className="col-md-2">
-                                            <DoctorType />
+                                            <DoctorType style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
                                     </div>
                                 </div>
@@ -524,24 +493,24 @@ const EmployeeRecord = () => {
                                         <div className="col-md-12">
                                             <div className="row">
                                                 <div className="col-md-4">
-                                                    <BrnachMastSelection />
+                                                    <BrnachMastSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                                 <div className="col-md-4">
-                                                    <DepartmentSelect />
+                                                    <DepartmentSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                                 <div className="col-md-4">
-                                                    <DepartmentSectionSelect />
+                                                    <DepartmentSectionSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                             </div>
                                             <div className="row">
                                                 <div className="col-md-4 pl-3 ">
-                                                    <EmployeeInstitutiontype />
+                                                    <EmployeeInstitutiontype style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                                 <div className="col-md-4 pl-4 pr-2">
-                                                    <DesignationMast />
+                                                    <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                                 <div className="col-md-4">
-                                                    <EmployeeCategory />
+                                                    <EmployeeCategory style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
                                                 <TextField
                                                     name="cont_period"

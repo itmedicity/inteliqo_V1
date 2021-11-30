@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const BrnachMastSelection = () => {
+const BrnachMastSelection = (props) => {
     const [branchMast, setBranchMast] = useState([]);
     const { selectBranchMast, updateBranchSelected } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -37,6 +37,7 @@ const BrnachMastSelection = () => {
                     variant="outlined"
                     className="ml-2"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Branch Master
