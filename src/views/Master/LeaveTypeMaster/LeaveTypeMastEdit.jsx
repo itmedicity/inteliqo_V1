@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import LeaveTypeMastTable from './LeaveTypeMastTable'
 
@@ -124,6 +124,9 @@ const LeaveTypeMastEdit = () => {
         if (success === 2) {
             succesNofity(message)
             setFormData(defaultState)
+        }
+        else {
+            errorNofity("Error Occured!!!!Please Contact EDP")
         }
     }
 

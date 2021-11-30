@@ -3,7 +3,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const EmployeeCategory = () => {
+const EmployeeCategory = (props) => {
     // intializing use sate
     const [EmployeeCategorydata, getemployeeCategory] = useState([]);
     // useContext
@@ -41,6 +41,7 @@ const EmployeeCategory = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Employee Category

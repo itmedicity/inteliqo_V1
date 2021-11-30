@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
+import { Checkbox, FormControlLabel } from '@material-ui/core'
 import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
@@ -7,6 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import PageLayout from 'src/views/CommonCode/PageLayout'
+import TextInput from 'src/views/Component/TextInput'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import FooterSaveEditClosebtn from '../../CommonCode/FooterSaveEditClosebtn'
 
@@ -167,16 +168,14 @@ const StatutoryInformation = () => {
 
                             </div>
                             <div className="col-md-2 pl-0">
-                                <TextField
-                                    disabled={enable}
-                                    label="PF Number"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    name="pfno"
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="PF Number"
+                                    changeTextValue={(e) => updateStatutoryInformation(e)}
                                     value={pfno}
-                                    onChange={(e) => updateStatutoryInformation(e)}
+                                    disabled={enable}
+                                    name="pfno"
                                 />
                             </div>
                             <div className="col-md-1 pl-0">
@@ -196,78 +195,35 @@ const StatutoryInformation = () => {
                                 />
                             </div>
                             <div className="col-md-2 pl-0">
-                                <TextField
-                                    disabled={enable}
-                                    label="ESI Number"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    name="esino"
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="ESI Number"
+                                    changeTextValue={(e) => updateStatutoryInformation(e)}
                                     value={esino}
-                                    onChange={(e) => updateStatutoryInformation(e)}
-                                />
-                            </div>
-                            <div className="col-md-3 pl-0">
-                                <TextField
                                     disabled={enable}
-                                    label="UAN Number"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    name="uanno"
-                                    value={uanno}
-                                    onChange={(e) => updateStatutoryInformation(e)}
+                                    name="esino"
                                 />
                             </div>
                             <div className="col-md-3 pl-0">
-                                <GradeSelect />
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="UAN Number"
+                                    changeTextValue={(e) => updateStatutoryInformation(e)}
+                                    value={uanno}
+                                    disabled={enable}
+                                    name="uanno"
+                                />
                             </div>
-                            {/* <div className="row col-md-12">
-                                <div className="col-md-2 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                                <div className="col-md-2 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Button"
-                                        value={value}
-                                        onClick={reset}
-                                    >
-                                        Edit
-                                    </Button>
-                                </div>
-                                <div className="col-md-2 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                        onClick={RedirectToProfilePage}
-                                    >
-                                        Close
-                                    </Button>
-                                </div>
-                            </div> */}
+                            <div className="col-md-3 pl-0 pt-1">
+                                <GradeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                            </div>
                             <div className="card-footer text-muted">
                                 <FooterSaveEditClosebtn
                                     edit={reset}
                                     redirect={RedirectToProfilePage}
                                     value={value}
-
                                 />
                             </div>
                         </div>

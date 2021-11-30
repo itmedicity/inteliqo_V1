@@ -58,8 +58,6 @@ const MasterContext = ({ children }) => {
     const [getDoctype, updatedoctortype] = useState(0)
     // for get contract period
     const [getcontract, updatecontract] = useState(0)
-    //context for employee number
-    const [getemployeenumber, updateemployeenumber] = useState(0)
     //context for grade
     const [selectGrade, UpdateGrade] = useState(0)
     //Education Selection
@@ -128,8 +126,6 @@ const MasterContext = ({ children }) => {
         updatedoctortype,
         getcontract,
         updatecontract,
-        getemployeenumber,
-        updateemployeenumber,
         selectGrade,
         UpdateGrade,
         selectEducation,

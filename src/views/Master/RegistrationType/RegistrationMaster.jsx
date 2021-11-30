@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import PageLayout from 'src/views/CommonCode/PageLayout'
@@ -134,4 +134,4 @@ const RegistrationMaster = () => {
     )
 }
 
-export default memo(RegistrationMaster)
+export default RegistrationMaster

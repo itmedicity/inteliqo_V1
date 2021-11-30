@@ -5,7 +5,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 import { infoNofity } from './Commonfunc';
 
-const Salutation = () => {
+const Salutation = (props) => {
     const [saltation, setSalutation] = useState([]);
     const { selectSalutation, updateSalutSelected } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -40,6 +40,7 @@ const Salutation = () => {
                     variant="outlined"
                     className="ml-1"
                     defaultValue={0}
+                    style={props.style}
                 // style={{ height: '2rem' }}
                 // style={{ margin: 0.1, }}
                 >

@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
@@ -151,4 +151,4 @@ const SpecializationMaster = () => {
     )
 }
 
-export default memo(SpecializationMaster)
+export default SpecializationMaster

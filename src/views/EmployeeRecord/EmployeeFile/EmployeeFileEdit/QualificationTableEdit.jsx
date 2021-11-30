@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import React, { memo, Fragment, useState, useContext, useEffect } from 'react'
@@ -16,6 +16,8 @@ import { UniversitySelection } from 'src/views/CommonCode/UniversitySelection'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import moment from 'moment';
 import QualificationTable from '../EmployeeFileTable/QualificationTable'
+import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
+import TextInput from 'src/views/Component/TextInput'
 
 const QualificationTableEdit = () => {
     const history = useHistory()
@@ -27,8 +29,6 @@ const QualificationTableEdit = () => {
         selectUniversity, updateUniversity,
         selectreg, updatereg
     } = useContext(PayrolMasterContext)
-
-
     const [year, setYear] = useState(new Date());
 
     //Initializing
@@ -124,9 +124,9 @@ const QualificationTableEdit = () => {
         const { message, success } = result.data;
         if (success === 2) {
             setQualification(resetForm);
-            reset();
-            history.push(`/Home/EmployeeQualification/${id}`);
+            history.push(`/Home/EmployeeQualification/${id}/${no}`);
             succesNofity(message);
+            reset();
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
@@ -146,20 +146,20 @@ const QualificationTableEdit = () => {
             <PageLayout heading="Qualification">
                 <div className="card-body">
                     <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                             <form className={classes.root} onSubmit={submitQualification} >
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <EducationSelection />
+                                        <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12">
-                                        <CourseSelection />
+                                        <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12">
-                                        <SpecializationSelection />
+                                        <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12">
-                                        <UniversitySelection />
+                                        <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-7 pt-1">
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -180,66 +180,37 @@ const QualificationTableEdit = () => {
                                         </LocalizationProvider>
                                     </div>
                                     <div className="col-md-5 pt-1">
-                                        <TextField
-                                            label="Mark/Grade"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="em_mark_grade"
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Mark/Grade"
+                                            changeTextValue={(e) => updateQualification(e)}
                                             value={em_mark_grade}
-                                            onChange={(e) => { updateQualification(e) }}
-                                        >
-                                        </TextField>
+                                            name="em_mark_grade"
+                                        />
                                     </div>
                                     <div className="col-md-12">
-                                        <RegistrationTypeSelection />
+                                        <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12">
-                                        <TextField
-                                            label="Registration Number"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="em_reg_no"
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Registration No"
+                                            changeTextValue={(e) => updateQualification(e)}
                                             value={em_reg_no}
-                                            onChange={(e) => { updateQualification(e) }}
-                                        >
-                                        </TextField>
+                                            name="em_reg_no"
+                                        />
                                     </div>
-                                    <div className="row col-md-12 pt-2">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
+                                    <div className="card-footer text-muted">
+                                        <FooterSaveClosebtn
+                                            redirect={toSettings}
+                                        />
                                     </div>
                                 </div>
                             </form>
                         </div>
-                        <div className="col-md-9">
+                        <div className="col-md-8">
                             <QualificationTable />
                         </div>
                     </div>

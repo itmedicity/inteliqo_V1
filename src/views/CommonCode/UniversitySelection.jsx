@@ -3,7 +3,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-export const UniversitySelection = () => {
+export const UniversitySelection = (props) => {
 
     const [university, setUniversity] = useState([]);
     const { selectUniversity, updateUniversity } = useContext(PayrolMasterContext);
@@ -36,6 +36,7 @@ export const UniversitySelection = () => {
                     value={selectUniversity}
                     onChange={(e) => updateUniversity(e.target.value)}
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select University

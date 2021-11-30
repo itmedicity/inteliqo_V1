@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useContext, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const DesignationMast = () => {
+const DesignationMast = (props) => {
     const [designation, setDesignation] = useState([]);
     const { selectDesignation, updateDesignation } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -33,11 +33,9 @@ const DesignationMast = () => {
                     value={selectDesignation}
                     onChange={(e) => updateDesignation(e.target.value)}
                     fullWidth
-                    size="small"
-                    margin="dense"
                     variant="outlined"
                     defaultValue={0}
-                // className="ml-2"
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Designation

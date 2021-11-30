@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -51,7 +51,6 @@ const UniversityMastEdit = () => {
         unver_alias,
         unver_slno: id
     }
-
     const resetForm = {
         unver_name: '',
         unver_status: false,
@@ -78,7 +77,6 @@ const UniversityMastEdit = () => {
     const toSettings = () => {
         history.push('/Home/Settings');
     }
-
 
     return (
         <Fragment>
@@ -171,4 +169,4 @@ const UniversityMastEdit = () => {
     )
 }
 
-export default memo(UniversityMastEdit)
+export default UniversityMastEdit

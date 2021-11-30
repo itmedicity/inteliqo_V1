@@ -23,7 +23,6 @@ const QualificationMast = () => {
     }
 
     const { qual_name, qual_status } = qualification;
-
     const postData = {
         qual_name,
         qual_status: qual_status === true ? 1 : 0
@@ -39,7 +38,6 @@ const QualificationMast = () => {
         e.preventDefault();
         const result = await axioslogin.post('/qal', postData);
         const { success, message } = result.data;
-
         if (success === 1) {
             succesNofity(message);
             setCount(count + 1);
@@ -137,4 +135,4 @@ const QualificationMast = () => {
     )
 }
 
-export default (QualificationMast)
+export default QualificationMast

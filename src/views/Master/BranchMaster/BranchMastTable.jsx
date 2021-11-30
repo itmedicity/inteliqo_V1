@@ -60,7 +60,6 @@ const BranchMastTable = ({ update }) => {
                     padding: "dense",
                     actionsColumnIndex: 0
                 }}
-
             />
         </Fragment>
     )

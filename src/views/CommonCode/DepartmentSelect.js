@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect, useState, useContext } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const DepartmentSelect = () => {
+const DepartmentSelect = (props) => {
     const [deptData, setdeptData] = useState([]);
     const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -42,6 +42,7 @@ const DepartmentSelect = () => {
                     variant="outlined"
                     className="ml-3"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Department

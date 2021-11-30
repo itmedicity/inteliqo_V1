@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useState, useEffect, useContext } from 'react'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -65,7 +65,6 @@ const CourseMastTableEdit = () => {
     }
 
     //update
-
     const submitType = async (e) => {
         e.preventDefault();
         const result = await axioslogin.patch('/course', postCourseData)
@@ -168,4 +167,4 @@ const CourseMastTableEdit = () => {
     )
 }
 
-export default memo(CourseMastTableEdit)
+export default CourseMastTableEdit
