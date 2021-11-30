@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState, Fragment } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const DoctorType = () => {
+const DoctorType = (props) => {
     // intializing use state
     const [doctortype, setDoctortype] = useState([]);
 
@@ -42,6 +42,7 @@ const DoctorType = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Doctor Type

@@ -5,7 +5,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 import { infoNofity } from './Commonfunc';
 
-const DepartmentSectionSelect = () => {
+const DepartmentSectionSelect = (props) => {
     const [departmentSection, setDepartmentSection] = useState([]);
     const { selectDeptSection, updateDepartmentSection, selectedDept } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -46,6 +46,7 @@ const DepartmentSectionSelect = () => {
                     variant="outlined"
                     className="ml-1"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Department Section
