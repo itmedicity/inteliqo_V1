@@ -19,7 +19,7 @@ const EmployeeExperienceEdit = () => {
 
     const history = useHistory()
     const classes = useStyles()
-    const { id, no } = useParams()
+    const { slno, id, no } = useParams()
     //use States for date
     const [workstartdate, setWorkdate] = useState(new Date())
     const [workenddate, setWorkEnddate] = useState(new Date())
@@ -58,7 +58,7 @@ const EmployeeExperienceEdit = () => {
     //getting data to be edited
     useEffect(() => {
         const getemployeexperience = async () => {
-            const result = await axioslogin.get(`/experience/${id}`)
+            const result = await axioslogin.get(`/experience/${slno}`)
             const { success, data } = result.data
             if (success === 1) {
                 const { em_institution, em_designation,
@@ -76,7 +76,7 @@ const EmployeeExperienceEdit = () => {
             }
         }
         getemployeexperience()
-    }, [id, updateDesignation])
+    }, [slno, updateDesignation])
 
     //for calculating total year
     const changeyear = () => {
@@ -98,7 +98,7 @@ const EmployeeExperienceEdit = () => {
     }
     //postData
     const postData = {
-        emexp_slno: id,
+        emexp_slno: slno,
         em_institution: institution_name,
         em_designation: selectDesignation,
         em_from: moment(workstartdate).format('YYYY-MM-DD'),
@@ -108,8 +108,6 @@ const EmployeeExperienceEdit = () => {
         create_user: employeeNumber()
     }
 
-    const { getemployeenumber,
-        updateemployeenumber } = useContext(PayrolMasterContext)
     //saving formdata
     const submitFormData = async (e) => {
         e.preventDefault()
@@ -120,9 +118,8 @@ const EmployeeExperienceEdit = () => {
             setFormData(defaultState)
             setWorkdate(null)
             setWorkEnddate(null)
-            history.push(`/Home/EmployeeExperience/${getemployeenumber}/${no}`)
+            history.push(`/Home/EmployeeExperience/${id}/${no}`)
             succesNofity(message)
-            updateemployeenumber(0)
             reset()
 
         }
@@ -132,11 +129,9 @@ const EmployeeExperienceEdit = () => {
 
     }
 
-
-
     //redirecting to home page
     const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${getemployeenumber}/${no}`)
+        history.push(`/Home/Profile/${id}/${no}`)
     }
     return (
         <Fragment>

@@ -1,7 +1,7 @@
 // import { CardContent, CardMedia } from '@material-ui/core'
 // import { Card, Button, CardActionArea, CardActions, Stack } from '@mui/material'
 // import Typography from '@mui/material/Typography';
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import Avatar from '@mui/material/Avatar';
@@ -34,18 +34,10 @@ import HttpsIcon from '@mui/icons-material/Https';
 // import { deepOrange, green } from '@mui/material/colors';
 import { useHistory, useParams } from 'react-router';
 // import EmployeeTraining from './EmployeeTraining';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 
 const EmployeeProfile = () => {
     const history = useHistory()
     const { id, no } = useParams()
-    //useContext for Getting employee Number 
-    const {
-        // getemployeenumber,
-        updateemployeenumber,
-
-    } = useContext(PayrolMasterContext)
-
     // Application Form Route
     const appplicationform = () => {
         history.push(`/Home/ApplicationForm/${4516}`)
@@ -61,7 +53,6 @@ const EmployeeProfile = () => {
     //Employee Experience
     const Employeexperience = () => {
         history.push(`/Home/EmployeeExperience/${id}/${no}`)
-        updateemployeenumber(id)
     }
     //Statutory Informnation
     const StatutoryInformation = () => {

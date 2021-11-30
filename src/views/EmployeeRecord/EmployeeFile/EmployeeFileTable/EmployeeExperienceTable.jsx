@@ -1,16 +1,14 @@
 import EditOutlined from '@material-ui/icons/EditOutlined'
 import MaterialTable from 'material-table'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity } from 'src/views/CommonCode/Commonfunc'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const EmployeeExperienceTable = ({ update }) => {
     const history = useHistory()
-    const { no } = useParams()
-    const { getemployeenumber } = useContext(PayrolMasterContext)
+    const { id, no } = useParams()
     const [data, setData] = useState([])
     const title = [
         {
@@ -27,8 +25,8 @@ const EmployeeExperienceTable = ({ update }) => {
         },
         {
             title: 'Institution', field: 'em_institution', cellStyle: {
-                minWidth: 200,
-                maxWidth: 300
+                minWidth: 300,
+                maxWidth: 400
             }
         },
         {
@@ -66,7 +64,7 @@ const EmployeeExperienceTable = ({ update }) => {
     useEffect(() => {
         //getdata from data base
         const getTableData = async () => {
-            const results = await axioslogin.get(`/experience/select/${getemployeenumber}`)
+            const results = await axioslogin.get(`/experience/select/${id}`)
             const { success, data } = results.data
             if (success === 1) {
                 setData(data)
@@ -78,11 +76,11 @@ const EmployeeExperienceTable = ({ update }) => {
         }
         getTableData()
 
-    }, [update, getemployeenumber])
+    }, [id, update])
     //getting table data for edit
     const getTableData = (data) => {
         const { emexp_slno } = data
-        history.push(`/Home/EmployeeExperienceEdit/${emexp_slno}/${no}`)
+        history.push(`/Home/EmployeeExperienceEdit/${emexp_slno}/${id}/${no}`)
     }
     return (
         <Fragment>
