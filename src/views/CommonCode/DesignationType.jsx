@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const DesignationType = () => {
+const DesignationType = (props) => {
     const [designationType, setDesignationtype] = useState([]);
     const { selectDesignationType, updateDesignationType, setdesigntypename } = useContext(PayrolMasterContext);
     useEffect(() => {
@@ -48,6 +48,7 @@ const DesignationType = () => {
                     variant="outlined"
                     className="ml-1"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Designation Type

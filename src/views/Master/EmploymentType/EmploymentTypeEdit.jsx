@@ -11,6 +11,7 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { useHistory, useParams } from 'react-router-dom'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { memo } from 'react'
+import Textinput from 'src/views/Component/TextInput'
 
 const EmploymentTypeEdit = () => {
 
@@ -183,11 +184,13 @@ const EmploymentTypeEdit = () => {
 
 
     const getEmploymentFormData = (e) => {
+
         if (selectEmployeeType === 0 && selectDesignationType === 0) {
             infoNofity("Please Select The Designation Type or EmployeeType")
         }
         else {
             const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+            console.log(value);
             setEmploymentData({ ...employmentData, [e.target.name]: value })
         }
     }
@@ -311,40 +314,46 @@ const EmploymentTypeEdit = () => {
 
                                 <div className="col-md-12 row">
                                     <div className="col-md-4">
-                                        <EmployeType />
+                                        <EmployeType style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-4">
-                                        <DesignationType />
+                                        <DesignationType style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-4">
-                                        <TextField
-                                            label="Employment Type Name"
-                                            fullWidth
-                                            disabled
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="emt_name"
+                                        <Textinput
+                                            // label="Employment Type Name"
+                                            // fullWidth
+                                            // disabled
+                                            // size="small"
+                                            // autoComplete="off"
+                                            // variant="outlined"
+                                            // required
+                                            // name="emt_name"
+                                            // value={data}
+                                            // onChange={(e) => getEmploymentFormData(e)}
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Employment Type Name"
+                                            changeTextValue={(e) => getEmploymentFormData(e)}
                                             value={data}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            name="emt_name"
                                         />
                                         <TextField
                                             name="cont_period"
                                             fullWidth
                                             value={cont_period}
-                                        // hidden
+                                            hidden
                                         />
                                         <TextField
                                             name="cont_grace"
                                             fullWidth
                                             value={cont_grace}
-                                        // hidden
+                                            hidden
                                         />
                                         <TextField
                                             name="desiggperiod"
                                             value={desiggperiod}
-                                        // hidden
+                                            hidden
                                         />
                                     </div>
 
