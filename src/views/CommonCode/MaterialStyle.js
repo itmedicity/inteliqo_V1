@@ -17,5 +17,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     horizondalScroll: {
         overflowX: 'auto'
+    },
+    inputColor: {
+        height: "1.6rem",
     }
 }));
