@@ -30,7 +30,6 @@ const DoctorMaster = () => {
         doctype_desc,
         doctype_status: doctype_status === true ? 1 : 0
     }
-
     const resetForm = {
         doctype_desc: '',
         doctype_status: false
@@ -137,4 +136,4 @@ const DoctorMaster = () => {
     )
 }
 
-export default (DoctorMaster)
+export default DoctorMaster

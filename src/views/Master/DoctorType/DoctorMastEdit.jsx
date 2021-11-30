@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useHistory, useParams } from 'react-router'
@@ -48,7 +48,6 @@ const DoctorMastEdit = () => {
         doctype_status: doctype_status === true ? 1 : 0,
         doctype_slno: id
     }
-
     const resetForm = {
         doctype_desc: '',
         doctype_status: false
@@ -154,4 +153,4 @@ const DoctorMastEdit = () => {
     )
 }
 
-export default memo(DoctorMastEdit)
+export default DoctorMastEdit

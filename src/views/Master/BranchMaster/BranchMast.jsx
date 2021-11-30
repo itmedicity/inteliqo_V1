@@ -14,21 +14,21 @@ const BranchMast = () => {
     const history = useHistory();
     const [branchData, setBranchData] = useState({
         branch_name: '',
-        branchAddress: '',
-        emailAddress: '',
-        esiNumber: '',
-        pfNumber: '',
+        branch_address: '',
+        branch_email: '',
+        branch_esi: '',
+        branch_pf: '',
         branch_status: false
     });
     const resetForm = {
         branch_name: '',
-        branchAddress: '',
-        emailAddress: '',
-        esiNumber: '',
-        pfNumber: '',
+        branch_address: '',
+        branch_email: '',
+        branch_esi: '',
+        branch_pf: '',
         branch_status: false
     }
-    const { branch_name, branchAddress, emailAddress, esiNumber, pfNumber, branch_status } = branchData;
+    const { branch_name, branch_address, branch_email, branch_esi, branch_pf, branch_status } = branchData;
     const updateBranchForm = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setBranchData({ ...branchData, [e.target.name]: value })
@@ -86,8 +86,8 @@ const BranchMast = () => {
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="branchAddress"
-                                            value={branchAddress}
+                                            name="branch_address"
+                                            value={branch_address}
                                             onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
@@ -98,8 +98,8 @@ const BranchMast = () => {
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
-                                            name="emailAddress"
-                                            value={emailAddress}
+                                            name="branch_email"
+                                            value={branch_email}
                                             onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
@@ -111,8 +111,8 @@ const BranchMast = () => {
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="esiNumber"
-                                            value={esiNumber}
+                                            name="branch_esi"
+                                            value={branch_esi}
                                             onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
@@ -124,8 +124,8 @@ const BranchMast = () => {
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="pfNumber"
-                                            value={pfNumber}
+                                            name="branch_pf"
+                                            value={branch_pf}
                                             onChange={(e) => updateBranchForm(e)}
                                         />
                                     </div>
@@ -135,7 +135,7 @@ const BranchMast = () => {
                                             control={
                                                 <Checkbox
                                                     name="branch_status"
-                                                    color="secondary"
+                                                    color="primary"
                                                     value={branch_status}
                                                     checked={branch_status}
                                                     className="ml-2"

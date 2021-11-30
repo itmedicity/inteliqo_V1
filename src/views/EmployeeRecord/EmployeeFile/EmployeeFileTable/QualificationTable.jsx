@@ -25,7 +25,6 @@ const QualificationTable = ({ update }) => {
         {
             title: "Specialization", field: "spec_desc", cellStyle: { minWidth: 250, maxWidth: 400 }
         },
-
     ]
 
     //Get Data

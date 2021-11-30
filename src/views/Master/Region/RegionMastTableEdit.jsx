@@ -68,7 +68,6 @@ const RegionMastTableEdit = () => {
     //update
 
     const SubmitRegion = async (e) => {
-
         e.preventDefault();
         const result = await axioslogin.patch('/region', postRegionData)
         const { message, success } = result.data;
@@ -80,11 +79,9 @@ const RegionMastTableEdit = () => {
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
-            console.log('ashdj')
-            infoNofity('ahdjahs');
+            infoNofity(message);
         }
     }
-
 
     //Back to Home
     const toSettings = () => {

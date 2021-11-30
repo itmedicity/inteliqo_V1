@@ -26,7 +26,6 @@ const BankMaster = () => {
         bank_status: false
     }
     const { bank_name, bank_ifsc, bank_address, bank_status } = bankData;
-
     const updateFormData = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getFormdata({ ...bankData, [e.target.name]: value })

@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -49,7 +49,6 @@ const DesignationMast = () => {
     }
 
     // redirect to setting
-
     const toSettings = () => {
         history.push('/Home/Settings');
     }
@@ -135,4 +134,4 @@ const DesignationMast = () => {
     )
 }
 
-export default memo(DesignationMast)
+export default DesignationMast

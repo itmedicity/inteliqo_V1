@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useContext, memo, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
@@ -10,7 +10,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DistrictMastTable from './DistrictMastTable'
 
-function DistrictMastEdit() {
+const DistrictMastEdit = () => {
     const history = useHistory()
     const classes = useStyles()
     const { id } = useParams()
@@ -166,4 +166,4 @@ function DistrictMastEdit() {
         </Fragment>
     )
 }
-export default memo(DistrictMastEdit)
+export default DistrictMastEdit

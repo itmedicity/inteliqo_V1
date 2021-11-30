@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -46,7 +46,6 @@ const DesignationMastTableEdit = () => {
         desg_status: desg_status === true ? 1 : 0,
         desg_slno: id
     }
-
     const resetForm = {
         desg_name: '',
         desg_status: false
@@ -153,4 +152,4 @@ const DesignationMastTableEdit = () => {
     )
 }
 
-export default memo(DesignationMastTableEdit)
+export default DesignationMastTableEdit

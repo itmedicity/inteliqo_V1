@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState, memo, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -58,7 +58,8 @@ const BankMastTableEdit = () => {
         bank_name: '',
         bank_ifsc: '',
         bank_address: '',
-        bank_status: false
+        bank_status: false,
+
     }
 
     //update
@@ -77,13 +78,10 @@ const BankMastTableEdit = () => {
         }
     }
 
-
     //Back to Home
     const toSettings = () => {
         history.push('/Home/Settings');
     }
-
-
 
     return (
         <Fragment>
@@ -192,4 +190,4 @@ const BankMastTableEdit = () => {
     )
 }
 
-export default memo(BankMastTableEdit)
+export default BankMastTableEdit

@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useEffect, useContext, useState } from 'react'
+import React, { Fragment, useEffect, useContext, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { ToastContainer } from 'react-toastify'
@@ -167,4 +167,4 @@ const SpecializationTableEdit = () => {
     )
 }
 
-export default memo(SpecializationTableEdit)
+export default SpecializationTableEdit
