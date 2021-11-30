@@ -16,7 +16,6 @@ const TextInput = (props) => {
                 onChange={changeTextValue}
                 name={name}
                 disabled={disabled}
-
             />
         </div>
     )

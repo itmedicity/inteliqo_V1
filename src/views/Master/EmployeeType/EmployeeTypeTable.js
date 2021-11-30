@@ -4,8 +4,11 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import MaterialTable from 'material-table';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { useHistory } from 'react-router';
 
 const EmployeeTypeTable = ({ update }) => {
+
+    const history = useHistory()
     const [tbdata, setData] = useState([]);
     // table titile 
     const columstitle = [
@@ -41,6 +44,11 @@ const EmployeeTypeTable = ({ update }) => {
     }, [update]);
 
     const tableData = useMemo(() => tbdata, [tbdata])
+    //getting table data for edit
+    const getTableData = (data) => {
+        const { emptype_slno } = data
+        history.push(`/Home/EmployeeTypeTableEdit/${emptype_slno}`)
+    }
 
     return (
         <Fragment>
@@ -53,7 +61,7 @@ const EmployeeTypeTable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getTableData(data)
                     }
                 ]}
                 options={{

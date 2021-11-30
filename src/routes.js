@@ -83,7 +83,7 @@ const RegionMastTableEdit = React.lazy(() => import('./views/Master/Region/Regio
 const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
 const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
 const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
-
+const EmployeeTypeTableEdit = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeTableEdit'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -96,6 +96,7 @@ const routes = [
   { path: '/Home/DeptSection', exact: true, name: 'Department Section', component: DepartmentSectionMast },
   { path: '/Home/SectionEdit/:id', exact: true, name: 'Department Section Edit', component: DepartmentSectionEdit },
   { path: '/Home/EmployeeType', exact: true, name: 'Employee Type', component: EmployeeTypeMast },
+  { path: '/Home/EmployeeTypeTableEdit/:id', exact: true, name: 'Employee Type Edit', component: EmployeeTypeTableEdit },
   { path: '/Home/DesignationType', exact: true, name: 'Designation Type', component: DesignatoionType },
   { path: '/Home/Designation', exact: true, name: 'Designation', component: Designation },
   { path: '/Home/Qualification', exact: true, name: 'Qualification', component: Qualification },
@@ -141,7 +142,7 @@ const routes = [
   { path: '/Home/ApplicationForm/:id', exact: true, name: 'Application Form', component: ApplicationForm },
   { path: '/Home/PersonalInformation/:id', exact: true, name: 'Personal Information', component: PersonalInformation },
   { path: '/Home/EmployeeExperience/:id/:no', exact: true, name: 'Experience', component: EmployeeExperience },
-  { path: '/Home/EmployeeExperienceEdit/:id/:no', exact: true, name: 'Experience Edit', component: EmployeeExperienceEdit },
+  { path: '/Home/EmployeeExperienceEdit/:slno/:id/:no', exact: true, name: 'Experience Edit', component: EmployeeExperienceEdit },
   { path: '/Home/EarnDectEdit/:id', exact: true, name: 'EarnDectEdit', component: EarnDectEdit },
   { path: '/Home/EducationMaster', exact: true, name: 'Education', component: EducationMaster },
   { path: '/Home/EducationTableEdit/:id', exact: true, name: 'Education Table Edit', component: EducationTableEdit },

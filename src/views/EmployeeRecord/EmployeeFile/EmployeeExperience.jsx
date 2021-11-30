@@ -1,10 +1,9 @@
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { TextField, Button } from '@mui/material'
+import { TextField } from '@mui/material'
 import { getYear } from 'date-fns'
 import React, { Fragment, memo, useContext, useState } from 'react'
 import moment from 'moment';
-import NumberFormat from 'react-number-format'
 import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayout from 'src/views/CommonCode/PageLayout'
@@ -15,6 +14,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import EmployeeExperienceTable from './EmployeeFileTable/EmployeeExperienceTable'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
+import TextInput from 'src/views/Component/TextInput'
 
 const EmployeeExperience = () => {
 
@@ -116,7 +116,7 @@ const EmployeeExperience = () => {
                     <form className={classes.root} onSubmit={submitFormData}>
                         <div className="row">
                             <div className="col-md-12">
-                                <TextField
+                                {/* <TextField
                                     label="Institution Name"
                                     fullWidth
                                     size="small"
@@ -126,15 +126,24 @@ const EmployeeExperience = () => {
                                     name="institution_name"
                                     value={institution_name}
                                     onChange={(e) => updateEmployeeExpFormData(e)}
+                                /> */}
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="Institution Name"
+                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                    value={institution_name}
+                                    name="institution_name"
                                 />
                             </div>
                             <div className="col-md-12 pt-2 pl-3">
-                                <DesignationMast />
+                                <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                             </div>
                             <div className="col-md-12 pt-2">
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
-                                        label="Work Start Date"
+                                        //label="Work Start Date"
+                                        style={{ minHeight: 0, maxHeight: 5, paddingTop: 0, paddingBottom: 0 }}
                                         name="workstartdate"
                                         type="date"
                                         clearable
@@ -145,7 +154,8 @@ const EmployeeExperience = () => {
                                         }}
                                         renderInput={(params) => <TextField {...params}
                                             fullWidth
-                                            size="small"
+                                            //style={{ minHeight: 0, maxHeight: 0, paddingTop: 0, paddingBottom: 0 }}
+                                            //size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                         />}
@@ -172,8 +182,8 @@ const EmployeeExperience = () => {
                                     />
                                 </LocalizationProvider>
                             </div>
-                            <div className="col-md-12 pt-2">
-                                <TextField
+                            <div className="col-md-12 pt-2 pl-0">
+                                {/* <TextField
                                     label="Total Year"
                                     fullWidth
                                     size="small"
@@ -183,10 +193,18 @@ const EmployeeExperience = () => {
                                     name="total_year"
                                     value={total_year}
                                     onChange={(e) => updateEmployeeExpFormData(e)}
+                                /> */}
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="Total Year"
+                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                    value={total_year}
+                                    name="total_year"
                                 />
                             </div>
-                            <div className="col-md-12 pt-2">
-                                <NumberFormat
+                            <div className="col-md-12 pt-2 pb-2">
+                                {/* <NumberFormat
                                     customInput={TextField}
                                     label="Gross Salary"
                                     fullWidth
@@ -200,33 +218,17 @@ const EmployeeExperience = () => {
                                     name="gross_salary"
                                     value={gross_salary}
                                     onChange={(e) => updateEmployeeExpFormData(e)}
+                                /> */}
+                                <TextInput
+                                    type="text"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="Gross Salary"
+                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                    value={gross_salary}
+                                    name="gross_salary"
                                 />
                             </div>
-                            {/* <div className="row col-md-12">
-                                <div className="col-md-6 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                                <div className="col-md-6 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                        onClick={RedirectToProfilePage}
-                                    >
-                                        Close
-                                    </Button>
-                                </div>
-                            </div> */}
+
                             <div className="card-footer text-muted">
                                 <FooterSaveClosebtn
                                     redirect={RedirectToProfilePage}

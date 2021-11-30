@@ -3,7 +3,7 @@ import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const GradeSelect = () => {
+const GradeSelect = (props) => {
     //useState For Setting Grade
     const [grade, setGrade] = useState([]);
     //context For Grade select
@@ -30,6 +30,8 @@ const GradeSelect = () => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
+                    fullWidth
+                    style={props.style}
                     name="selectGrade"
                     value={selectGrade}
                     onChange={(e) => UpdateGrade(e.target.value)}
