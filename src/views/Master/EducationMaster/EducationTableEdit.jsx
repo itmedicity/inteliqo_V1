@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useHistory, useParams } from 'react-router'
@@ -157,4 +157,4 @@ const EducationTableEdit = () => {
     )
 }
 
-export default memo(EducationTableEdit)
+export default EducationTableEdit

@@ -3,7 +3,7 @@ import React, { useContext, memo, useEffect, Fragment, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const CourseSelection = () => {
+const CourseSelection = (props) => {
     const [course, setCourse] = useState([]);
     const { selectCourse, updateCourse, selectEducation } = useContext(PayrolMasterContext)
 
@@ -35,6 +35,7 @@ const CourseSelection = () => {
                     value={selectCourse}
                     onChange={(e) => updateCourse(e.target.value)}
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Course

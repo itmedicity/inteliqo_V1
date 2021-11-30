@@ -10,7 +10,6 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 const QualificationTable = ({ update }) => {
     const [data, setTableData] = useState([]);
     const history = useHistory();
-
     const title = [
         {
             title: 'Sl No', field: 'qual_slno'
@@ -60,7 +59,7 @@ const QualificationTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />

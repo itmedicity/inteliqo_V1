@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -70,7 +70,6 @@ const QualificationMastTableEdit = () => {
             infoNofity(message)
         }
     }
-
 
     //Back to home
     const toSettings = () => {
@@ -158,4 +157,4 @@ const QualificationMastTableEdit = () => {
     )
 }
 
-export default memo(QualificationMastTableEdit)
+export default QualificationMastTableEdit

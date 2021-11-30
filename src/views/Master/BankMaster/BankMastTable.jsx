@@ -27,13 +27,12 @@ const BankMastTable = ({ update }) => {
     useEffect(() => {
         const getTableData = async () => {
             const result = await axioslogin.get('/bank');
-            const { success, data, message } = result.data;
+            const { success, data } = result.data;
             if (success === 1) {
                 settableData(data);
             } else {
                 warningNofity("Error Occured Contact EDP");
             }
-
         }
         getTableData();
     }, [update]);
@@ -64,7 +63,6 @@ const BankMastTable = ({ update }) => {
                     padding: "dense",
                     actionsColumnIndex: 0
                 }}
-
             />
         </Fragment>
     )

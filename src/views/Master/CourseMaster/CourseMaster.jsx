@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useHistory } from 'react-router'
@@ -154,4 +154,4 @@ const CourseMaster = () => {
     )
 }
 
-export default memo(CourseMaster)
+export default CourseMaster

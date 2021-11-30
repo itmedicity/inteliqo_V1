@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import PageLayout from 'src/views/CommonCode/PageLayout'
@@ -49,7 +49,6 @@ const RegistrationTableEdit = () => {
         registration_status: registration_status === true ? 1 : 0,
         reg_id: id
     }
-
     const resetForm = {
         registration_name: '',
         registration_status: false
@@ -153,4 +152,4 @@ const RegistrationTableEdit = () => {
     )
 }
 
-export default memo(RegistrationTableEdit)
+export default RegistrationTableEdit

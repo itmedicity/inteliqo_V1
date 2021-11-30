@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -152,4 +152,4 @@ const DistrictMaster = () => {
     )
 }
 
-export default memo(DistrictMaster)
+export default DistrictMaster

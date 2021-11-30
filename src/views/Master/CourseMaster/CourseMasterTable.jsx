@@ -13,28 +13,16 @@ const CourseMasterTable = ({ update }) => {
     // table
     const title = [
         {
-            title: "SlNo", field: "cour_slno", cellStyle: {
-                minWidth: 1,
-                maxWidth: 2
-            }
+            title: "SlNo", field: "cour_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Course", field: "cour_desc", cellStyle: {
-                minWidth: 198,
-                maxWidth: 250
-            }
+            title: "Course", field: "cour_desc", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
-            title: "Education", field: 'edu_desc', cellStyle: {
-                minWidth: 1,
-                maxWidth: 3
-            }
+            title: "Education", field: 'edu_desc', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Status", field: "cour_status", cellStyle: {
-                minWidth: 1,
-                maxWidth: 2
-            }
+            title: "Status", field: "cour_status", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
             title: "User ID", field: "cour_created"

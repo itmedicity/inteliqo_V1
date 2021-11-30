@@ -3,7 +3,7 @@ import React, { Fragment, memo, useState, useEffect, useContext } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const RegistrationTypeSelection = () => {
+const RegistrationTypeSelection = (props) => {
     const [reg, setreg] = useState([]);
     const { selectreg, updatereg } = useContext(PayrolMasterContext)
 
@@ -35,6 +35,7 @@ const RegistrationTypeSelection = () => {
                     value={selectreg}
                     onChange={(e) => updatereg(e.target.value)}
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Registration Type

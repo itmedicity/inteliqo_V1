@@ -3,7 +3,7 @@ import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const SpecializationSelection = () => {
+const SpecializationSelection = (props) => {
     const [spec, setSpec] = useState([]);
     const { selectSpec, updateSpec, selectCourse } = useContext(PayrolMasterContext)
 
@@ -22,6 +22,7 @@ const SpecializationSelection = () => {
             <FormControl
                 fullWidth
                 margin="dense"
+                className="mt-1"
             >
                 <Select
                     labelId="demo-simple-select-label"
@@ -33,6 +34,7 @@ const SpecializationSelection = () => {
                     value={selectSpec}
                     onChange={(e) => updateSpec(e.target.value)}
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Secialization

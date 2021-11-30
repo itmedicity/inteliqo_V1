@@ -9,25 +9,19 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 const RegistrationMastTable = ({ update }) => {
     const [data, setTableData] = useState();
     const history = useHistory();
-
     //Table
     const title = [
         {
-            title: "Reg Slno", field: "reg_id", cellStyle: {
-                minWidth: 1,
-                maxWidth: 2
-            }
+            title: "Reg Slno", field: "reg_id", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Registration Name", field: "registration_name", cellStyle: {
-                minWidth: 100,
-                maxWidth: 450
-            }
+            title: "Registration Name", field: "registration_name", cellStyle: { minWidth: 100, maxWidth: 450 }
         },
         {
             title: "Status", field: "registration_status"
         },
     ]
+
     //GetData
     useEffect(() => {
         const getRegistration = async () => {

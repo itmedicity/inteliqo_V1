@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
@@ -156,4 +156,4 @@ const StateMaster = () => {
     )
 }
 
-export default memo(StateMaster)
+export default StateMaster
