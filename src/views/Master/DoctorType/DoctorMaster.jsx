@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import DoctorMastTable from './DoctorMastTable'
 
 const DoctorMaster = () => {
@@ -28,7 +29,8 @@ const DoctorMaster = () => {
 
     const postDoctorData = {
         doctype_desc,
-        doctype_status: doctype_status === true ? 1 : 0
+        doctype_status: doctype_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
     const resetForm = {
         doctype_desc: '',

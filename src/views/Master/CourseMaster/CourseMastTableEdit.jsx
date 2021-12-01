@@ -10,6 +10,7 @@ import PageLayout from 'src/views/CommonCode/PageLayout'
 import CourseMasterTable from './CourseMasterTable'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const CourseMastTableEdit = () => {
     const history = useHistory()
@@ -53,6 +54,7 @@ const CourseMastTableEdit = () => {
         cour_desc,
         edu_slno: selectEducation,
         cour_status: cour_status === true ? 1 : 0,
+        cour_edit: employeeNumber(),
         cour_slno: id
     }
     const resetForm = {

@@ -18,7 +18,8 @@ const EducationTableEdit = () => {
     //Initializing
     const [type, setType] = useState({
         edu_desc: '',
-        edu_status: false
+        edu_status: false,
+        edu_edit: ''
     });
 
     //Destructuring
@@ -30,6 +31,7 @@ const EducationTableEdit = () => {
 
     //Get data
     useEffect(() => {
+
         const getEdu = async () => {
             const result = await axioslogin.get(`/edu/${id}`)
             const { success, data } = result.data
@@ -50,7 +52,7 @@ const EducationTableEdit = () => {
         edu_desc,
         edu_status: edu_status === true ? 1 : 0,
         edu_slno: id,
-        edu_create: employeeNumber()
+        edu_edit: employeeNumber()
     }
 
     const resetForm = {
@@ -61,6 +63,8 @@ const EducationTableEdit = () => {
     //Update
     const submitType = async (e) => {
         e.preventDefault();
+
+
         const result = await axioslogin.patch('/edu', postEdu)
         const { message, success } = result.data;
         if (success === 2) {
