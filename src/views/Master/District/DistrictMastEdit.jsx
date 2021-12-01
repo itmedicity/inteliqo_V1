@@ -9,6 +9,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DistrictMastTable from './DistrictMastTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const DistrictMastEdit = () => {
     const history = useHistory()
@@ -52,7 +53,8 @@ const DistrictMastEdit = () => {
         dist_name,
         dist_state_slno: selectState,
         dist_status: dist_status === true ? 1 : 0,
-        dist_slno: id
+        dist_slno: id,
+        edit_user: employeeNumber()
     }
     const resetForm = {
         dist_name: '',

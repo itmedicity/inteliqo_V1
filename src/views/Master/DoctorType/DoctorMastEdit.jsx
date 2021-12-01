@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const DoctorMastEdit = () => {
     const classes = useStyles()
@@ -46,7 +47,8 @@ const DoctorMastEdit = () => {
     const postDoctorData = {
         doctype_desc,
         doctype_status: doctype_status === true ? 1 : 0,
-        doctype_slno: id
+        doctype_slno: id,
+        edit_user: employeeNumber()
     }
     const resetForm = {
         doctype_desc: '',

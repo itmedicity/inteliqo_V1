@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import QualificationTable from './QualificationTable'
 
 const QualificationMastTableEdit = () => {
@@ -46,7 +47,8 @@ const QualificationMastTableEdit = () => {
     const postData = {
         qual_name,
         qual_status: qual_status === true ? 1 : 0,
-        qual_slno: id
+        qual_slno: id,
+        edit_user: employeeNumber()
     }
 
     // reset form

@@ -4,12 +4,14 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 
 const EmpDesignationtable = ({ update }) => {
     const [tbdata, setTableData] = useState([]);
+    const history = useHistory()
     const title = [
         {
-            title: '#', field: 'inst_slno',
+            title: 'Sl No', field: 'inst_slno',
         },
         {
             title: 'Employee Type', field: 'inst_emp_type',
@@ -30,10 +32,16 @@ const EmpDesignationtable = ({ update }) => {
         getemptypedetil();
     }, [update]);
 
+    //For Editing
+    const getDataTable = (data) => {
+        const { inst_slno } = data
+        history.push(`/Home/EmpInstitutionTypeTableEdit/${inst_slno}`)
+    }
+
     return (
         <Fragment>
             <MaterialTable
-                title="Employee Designation Type"
+                title="Employee Institution Type"
                 data={tbdata}
                 columns={title}
                 icons={tableIcons}
@@ -41,14 +49,14 @@ const EmpDesignationtable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />

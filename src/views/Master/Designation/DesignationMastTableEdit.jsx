@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import DesignationTable from './DesignationTable'
 
 const DesignationMastTableEdit = () => {
@@ -44,7 +45,8 @@ const DesignationMastTableEdit = () => {
     const postDesignationData = {
         desg_name,
         desg_status: desg_status === true ? 1 : 0,
-        desg_slno: id
+        desg_slno: id,
+        edit_user: employeeNumber()
     }
     const resetForm = {
         desg_name: '',
