@@ -112,133 +112,112 @@ const EmployeeExperience = () => {
     return (
         <Fragment>
             <PageLayout heading="Employee Experience">
-                <div className="col-md-4">
-                    <form className={classes.root} onSubmit={submitFormData}>
-                        <div className="row">
-                            <div className="col-md-12">
-                                {/* <TextField
-                                    label="Institution Name"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    required
-                                    name="institution_name"
-                                    value={institution_name}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                /> */}
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Institution Name"
-                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                    value={institution_name}
-                                    name="institution_name"
-                                />
-                            </div>
-                            <div className="col-md-12 pt-2 pl-3">
-                                <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        //label="Work Start Date"
-                                        style={{ minHeight: 0, maxHeight: 5, paddingTop: 0, paddingBottom: 0 }}
-                                        name="workstartdate"
-                                        type="date"
-                                        clearable
-                                        value={workstartdate}
-                                        onChange={(e) => {
-                                            setWorkstartdate(e)
-                                            changeyear()
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            //style={{ minHeight: 0, maxHeight: 0, paddingTop: 0, paddingBottom: 0 }}
-                                            //size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-                                    />
-                                </LocalizationProvider>
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        label="Work End Date"
-                                        name="workenddate"
-                                        type="date"
-                                        value={workenddate}
-                                        onChange={(e) => {
-                                            setWorkenddate(e)
-                                            changeyear()
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-                                    />
-                                </LocalizationProvider>
-                            </div>
-                            <div className="col-md-12 pt-2 pl-0">
-                                {/* <TextField
-                                    label="Total Year"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    required
-                                    name="total_year"
-                                    value={total_year}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                /> */}
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Total Year"
-                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                    value={total_year}
-                                    name="total_year"
-                                />
-                            </div>
-                            <div className="col-md-12 pt-2 pb-2">
-                                {/* <NumberFormat
-                                    customInput={TextField}
-                                    label="Gross Salary"
-                                    fullWidth
-                                    format="#########"
-                                    variant="outlined"
-                                    size="small"
-                                    autoComplete="off"
-                                    type="text"
-                                    thousandSeparator={false}
-                                    allowNegative={false}
-                                    name="gross_salary"
-                                    value={gross_salary}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                /> */}
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Gross Salary"
-                                    changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                    value={gross_salary}
-                                    name="gross_salary"
-                                />
+                <div className="card">
+                    <div className="card-body">
+                        <div className="row g-1">
+                            <div className="col-md-4">
+                                <form className={classes.root} onSubmit={submitFormData}>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Institution Name"
+                                                changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                                value={institution_name}
+                                                name="institution_name"
+                                            />
+                                        </div>
+                                        <div className="col-md-12 pt-2 pl-3">
+                                            <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        </div>
+                                        <div className="col-md-12 pt-1" style={{
+                                            paddingLeft: '0.5rem', paddingRight: '-0.1rem'
+
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    //label="Work Start Date"
+                                                    name="workstartdate"
+                                                    type="date"
+                                                    clearable
+                                                    value={workstartdate}
+                                                    onChange={(e) => {
+                                                        setWorkstartdate(e)
+                                                        changeyear()
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12 pt-1" style={{
+                                            paddingLeft: '0.5rem', paddingRight: '-0.1rem'
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    //label="Work End Date"
+                                                    name="workenddate"
+                                                    type="date"
+                                                    value={workenddate}
+                                                    onChange={(e) => {
+                                                        setWorkenddate(e)
+                                                        changeyear()
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12 pt-1 pl-0">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Total Year"
+                                                changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                                value={total_year}
+                                                name="total_year"
+                                            />
+                                        </div>
+                                        <div className="col-md-12 pt-2 pb-4">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Gross Salary"
+                                                changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                                value={gross_salary}
+                                                name="gross_salary"
+                                            />
+                                        </div>
+
+                                        <div className="card-footer text-muted pl-0">
+                                            <FooterSaveClosebtn
+                                                redirect={RedirectToProfilePage}
+                                            />
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div className="card-footer text-muted">
-                                <FooterSaveClosebtn
-                                    redirect={RedirectToProfilePage}
-                                />
+                            <div className="col-md-8">
+                                <EmployeeExperienceTable update={count} />
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div className="col-md-8">
-                    <EmployeeExperienceTable update={count} />
+                    </div>
                 </div>
             </PageLayout>
         </Fragment >

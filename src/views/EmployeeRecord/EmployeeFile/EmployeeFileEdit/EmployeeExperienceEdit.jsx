@@ -14,6 +14,8 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import EmployeeExperienceTable from '../EmployeeFileTable/EmployeeExperienceTable'
+import TextInput from 'src/views/Component/TextInput'
+import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 
 const EmployeeExperienceEdit = () => {
 
@@ -135,127 +137,103 @@ const EmployeeExperienceEdit = () => {
     }
     return (
         <Fragment>
-            <PageLayout>
-                <div className="col-md-4">
-                    <form className={classes.root} onSubmit={submitFormData}>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <TextField
-                                    label="Institution Name"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    required
-                                    name="institution_name"
-                                    value={institution_name}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                />
+            <PageLayout heading="Employee Experience">
+                <div className="card">
+                    <div className="card-body">
+                        <div className="row g-1">
+                            <div className="col-md-4">
+                                <form className={classes.root} onSubmit={submitFormData}>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Institution Name"
+                                                changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                                value={institution_name}
+                                                name="institution_name"
+                                            />
+                                        </div>
+                                        <div className="col-md-12 pt-2 pl-3">
+                                            <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        </div>
+                                        <div className="col-md-12 pt-1" style={{
+                                            paddingLeft: '0.5rem', paddingRight: '-0.1rem'
+
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    //label="Work Start Date"
+                                                    name="workstartdate"
+                                                    type="date"
+                                                    clearable
+                                                    value={workstartdate}
+                                                    onChange={(e) => {
+                                                        setWorkstartdate(e)
+                                                        changeyear()
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12 pt-1" style={{
+                                            paddingLeft: '0.5rem', paddingRight: '-0.1rem'
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    //label="Work End Date"
+                                                    name="workenddate"
+                                                    type="date"
+                                                    value={workenddate}
+                                                    onChange={(e) => {
+                                                        setWorkenddate(e)
+                                                        changeyear()
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12 pt-1 pl-0 pb-2">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Total Year"
+                                                changeTextValue={(e) => updateEmployeeExpFormData(e)}
+                                                value={total_year}
+                                                name="total_year"
+                                            />
+                                        </div>
+
+                                        <div className="card-footer text-muted">
+                                            <FooterSaveClosebtn
+                                                redirect={RedirectToProfilePage}
+                                            />
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div className="col-md-12 pt-2 pl-3">
-                                <DesignationMast />
+                            <div className="col-md-8">
+                                <EmployeeExperienceTable />
                             </div>
-                            <div className="col-md-12 pt-2">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        label="Work Start Date"
-                                        name="workstartdate"
-                                        type="date"
-                                        clearable
-                                        value={workstartdate}
-                                        onChange={(e) => {
-                                            setWorkstartdate(e)
-                                            changeyear()
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-                                    />
-                                </LocalizationProvider>
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        label="Work End Date"
-                                        name="workenddate"
-                                        type="date"
-                                        value={workenddate}
-                                        onChange={(e) => {
-                                            setWorkenddate(e)
-                                            changeyear()
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-                                    />
-                                </LocalizationProvider>
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <TextField
-                                    label="Total Year"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    required
-                                    name="total_year"
-                                    value={total_year}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                />
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <NumberFormat
-                                    customInput={TextField}
-                                    label="Gross Salary"
-                                    fullWidth
-                                    format="#########"
-                                    variant="outlined"
-                                    size="small"
-                                    autoComplete="off"
-                                    type="text"
-                                    thousandSeparator={false}
-                                    allowNegative={false}
-                                    name="gross_salary"
-                                    value={gross_salary}
-                                    onChange={(e) => updateEmployeeExpFormData(e)}
-                                />
-                            </div>
-                            <div className="row col-md-12">
-                                <div className="col-md-6 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                                <div className="col-md-6 col-sm-12 col-xs-12 mb-1 pt-2 pl-2">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                        onClick={RedirectToProfilePage}
-                                    >
-                                        Close
-                                    </Button>
-                                </div>
-                            </div>
+
                         </div>
-                    </form>
-                </div>
-                <div className="col-md-8">
-                    <EmployeeExperienceTable />
+                    </div>
                 </div>
             </PageLayout>
         </Fragment>

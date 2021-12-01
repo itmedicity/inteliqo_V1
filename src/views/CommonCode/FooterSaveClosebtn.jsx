@@ -15,6 +15,7 @@ const FooterSaveClosebtn = (props) => {
                         </IconButton>
                     }
                     label="Save"
+                    disabled={props.disable}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>

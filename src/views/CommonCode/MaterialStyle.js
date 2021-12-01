@@ -25,7 +25,12 @@ export const useStyles = makeStyles((theme) => ({
     inputColor: {
         height: "1.6rem",
     },
+    customInputFeild: {
+        height: '1.6rem',
+        paddingLeft: '0px'
+    },
     cutomSelectFeild: {
         height: "1rem"
     }
+
 }));
