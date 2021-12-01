@@ -23,6 +23,7 @@ import Salutation from 'src/views/CommonCode/Salutation'
 import { employeeNumber, getSerialnumberempid } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import TextInput from 'src/views/Component/TextInput'
+import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 
 const EmployeeRecord = () => {
 
@@ -281,10 +282,11 @@ const EmployeeRecord = () => {
                 <div className="card-header bg-dark pb-0 border border-dark text-white">
                     <h5>Employee Register</h5>
                 </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <form className={classes.empRecordStyle} onSubmit={submitemployeerecord} >
+                <form className={classes.empRecordStyle} onSubmit={submitemployeerecord} >
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-12">
+
                                 <div className="col-md-12">
                                     <div className="row">
                                         <div className="col-md-2">
@@ -554,35 +556,19 @@ const EmployeeRecord = () => {
                                     </div>
                                 </div>
                                 <div className="row col-md-12">
-                                    <div className="col-md-2 col-sm-12 col-xs-12">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            fullWidth
-                                            type="Submit"
-                                            className="ml-1"
-                                        >
-                                            Save
-                                        </Button>
-                                    </div>
-                                    <div className="col-md-2 col-sm-12 col-xs-12">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            fullWidth
-                                            className="ml-2"
-                                            onClick={toSettings}
-                                        >
-                                            Close
-                                        </Button>
-                                    </div>
+
                                 </div>
-                            </form>
+
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div className="card-footer">
+                        <FooterClosebtn
+                            redirect={toSettings}
+                        />
+                    </div>
+                </form>
+
             </div>
         </Fragment>
     )
