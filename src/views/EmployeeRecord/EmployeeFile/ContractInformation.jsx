@@ -9,9 +9,17 @@ import moment from 'moment';
 import { Card, CardActionArea, CardContent, CardMedia, TextField, Button } from '@material-ui/core'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { addDays } from 'date-fns'
-//import { getSerialnumberempnumber } from 'src/views/Constant/Constant'
+import { employeeNumber, getSerialnumberempnumber } from 'src/views/Constant/Constant'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-
+import TextInput from 'src/views/Component/TextInput'
+import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const ContractInformation = () => {
 
@@ -20,7 +28,7 @@ const ContractInformation = () => {
     const { id, no } = useParams()
     const [enablefiled, Setenablefield] = useState(true)
     const [enable, Setenable] = useState(true)
-    // const [newempno, Setnewempno] = useState(0)//new employee no
+    const [newempno, Setnewempno] = useState(0)//new employee no
     const [enableclose, Setenableclose] = useState(false)
     const [contractstartDate, setcontstrtDate] = useState(new Date())
     const [contractendDate, setconendDate] = useState(new Date())
@@ -115,11 +123,11 @@ const ContractInformation = () => {
         setconendDate(endDate)
 
     }
-    // getSerialnumberempnumber().then((val) => {
-    //     const newemno = val
-    //     Setnewempno(newemno)
-    // })
-    // getSerialnumberempnumber()
+    getSerialnumberempnumber().then((val) => {
+        const newemno = val
+        Setnewempno(newemno)
+    })
+    getSerialnumberempnumber()
 
 
     //contract renew
@@ -135,185 +143,192 @@ const ContractInformation = () => {
                 warningNofity('Cannot Renew Contract!!!Grace Period  not Exceeded')
                 Setenablefield(true)
             }
-            // else {
-            //     submitFormData(e)
-            // }
+            else {
+                submitFormData(e)
+            }
 
         }
     }
-    // const RenewData = {
-    //     em_no: newempno,
-    //     em_id: no,
-    //     em_cont_start: moment(contractstartDate).format('YYYY-MM-DD'),
-    //     em_cont_end: moment(contractendDate).format('YYYY-MM-DD'),
-    //     create_user: employeeNumber()
-    // }
-    // console.log(RenewData)
-    // const submitFormData = async (e) => {
-    //     e.preventDefault()
-    //     const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
-    //     const { success, message } = result.data
-    //     if (success === 2) {
-    //         succesNofity(message)
-    //     }
-    // }
+    const RenewData = {
+        em_no: newempno,
+        em_id: no,
+        em_cont_start: moment(contractstartDate).format('YYYY-MM-DD'),
+        em_cont_end: moment(contractendDate).format('YYYY-MM-DD'),
+        create_user: employeeNumber()
+    }
+
+    const submitFormData = async (e) => {
+        e.preventDefault()
+        const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
+        const { success, message } = result.data
+        if (success === 2) {
+            succesNofity(message)
+        }
+    }
     //redirecting to home page
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
-
+    function createData(name, calories) {
+        return { name, calories, };
+    }
+    const rows = [
+        createData('Employee Number', em_no),
+        createData('Contract Start Date', startdate),
+        createData('Contract End Date', endate),
+        createData('Remaining Days', remaining_days),
+        createData('', contractstatus),
+    ];
     return (
         <Fragment>
             <PageLayout heading="Contract Information">
-                <div className="col-md-8">
+                <div className="col-md-12">
                     <form className={classes.root} >
-                        <div className="row">
+
+                        <div className="col-md-12 row">
                             <div className="col-md-4">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
+                                <div className="col-md-12 pl-0" style={{
+                                    paddingLeft: '0.5rem',
+                                    paddingRight: '-0.1rem',
+                                }} >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            disabled={enablefiled}
+                                            name="contractstartDate"
+                                            type="date"
+                                            clearable
+                                            value={contractstartDate}
+                                            onChange={(e) => {
+                                                setContractStartDate(e)
+                                                setContractEndDateforRenew()
+
+                                            }}
+                                            InputProps={{
+                                                className: classes.customInputFeild
+                                            }}
+                                            renderInput={(params) => <TextField {...params}
+                                                fullWidth
+                                                size="small"
+                                                autoComplete="off"
+                                                variant="outlined"
+                                            />}
+
+                                        />
+                                    </LocalizationProvider>
+                                </div>
+                                <div className="col-md-12" style={{
+                                    paddingLeft: '0.5rem', paddingRight: '-0.1rem',
+                                    paddingTop: '0.5rem'
+
+                                }} >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            disabled={enablefiled}
+                                            name="contractendDate"
+                                            type="date"
+                                            clearable
+                                            value={contractendDate}
+                                            onChange={(e) => {
+                                                setContractEndDate(e)
+
+                                            }}
+                                            InputProps={{
+                                                className: classes.customInputFeild
+                                            }}
+                                            renderInput={(params) => <TextField {...params}
+                                                fullWidth
+                                                size="small"
+                                                autoComplete="off"
+                                                variant="outlined"
+                                            />}
+
+                                        />
+                                    </LocalizationProvider>
+                                </div>
+                                <div className="col-md-12 pl-3 " style={{
+                                    paddingLeft: '0.7rem', paddingRight: '-0.1rem',
+                                    paddingTop: '0.5rem'
+                                }}>
+                                    <TextInput
                                         disabled={enablefiled}
-                                        label="Contract Start Date"
-                                        name="contractstartDate"
-                                        type="date"
-                                        clearable
-                                        value={contractstartDate}
-                                        onChange={(e) => {
-                                            setContractStartDate(e)
-                                            setContractEndDateforRenew()
-
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-
+                                        type="text"
+                                        Placeholder="Remaining Days"
+                                        classname="form-control form-control-sm"
+                                        name="remaining_days"
+                                        value={remaining_days}
                                     />
-                                </LocalizationProvider>
+                                </div>
                             </div>
-                            <div className="col-md-4">
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        disabled={enablefiled}
-                                        label="Contract Start Date"
-                                        name="contractendDate"
-                                        type="date"
-                                        clearable
-                                        value={contractendDate}
-                                        onChange={(e) => {
-                                            setContractEndDate(e)
 
-                                        }}
-                                        renderInput={(params) => <TextField {...params}
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                        />}
-
-                                    />
-                                </LocalizationProvider>
+                            <div className="col-md-2">
+                                <div className="col-md-12 pt-2 pl-1">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        fullWidth
+                                        type="Button"
+                                        disabled={enable}
+                                        onClick={contractRenew}
+                                    >
+                                        Contract Renew
+                                    </Button>
+                                </div>
+                                <div className="col-md-12 pt-2 pl-1">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        fullWidth
+                                        type="Button"
+                                        disabled={enableclose}
+                                        onClick={contractClose}
+                                    >
+                                        Contract Close
+                                    </Button>
+                                </div>
                             </div>
-                            <div className="col-md-4">
-                                <TextField
-                                    disabled={enablefiled}
-                                    label="Remaining Days"
-                                    fullWidth
-                                    size="small"
-                                    autoComplete="off"
-                                    variant="outlined"
-                                    required
-                                    name="remaining_days"
-                                    value={remaining_days}
-                                />
+                            <div className="col-md-1">
+                            </div>
+                            <div className="col-md-4 pb-2">
+                                <div className="col-md-12">
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 10 }} size="small" aria-label="a dense table">
+                                            {/* <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Employee Details</TableCell>
+                                                    <TableCell align="right"></TableCell>
+
+                                                </TableRow>
+                                            </TableHead> */}
+                                            <TableBody>
+                                                {rows.map((row) => (
+                                                    <TableRow
+                                                        key={row.name}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell component="th" scope="row">
+                                                            {row.name}
+                                                        </TableCell>
+                                                        <TableCell align="right">{row.calories}</TableCell>
+
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
                             </div>
                         </div>
-                        <div className="row col-md-12 pt-2">
-                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    fullWidth
-                                    type="Button"
-                                    disabled={enable}
-                                    onClick={contractRenew}
-                                >
-                                    Contract Renew
-                                </Button>
-                            </div>
-                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    fullWidth
-                                    type="Button"
-                                    disabled={enableclose}
-                                    onClick={contractClose}
-                                >
-                                    Contract Close
-                                </Button>
-                            </div>
-                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    fullWidth
-                                    type="Submit"
-                                    disabled={enablefiled}
-                                // onClick={submitFormData}
-
-                                >
-                                    Save
-                                </Button>
-                            </div>
-                            <div className="col-md-2 col-sm-6 col-xs-12 mb-1 pt-2 pl-2">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    fullWidth
-                                    type="Submit"
-                                    onClick={RedirectToProfilePage}
-
-                                >
-                                    Close
-                                </Button>
-                            </div>
+                        <div className="card-footer text-muted">
+                            <FooterSaveClosebtn
+                                redirect={RedirectToProfilePage}
+                                disable={enablefiled}
+                            />
                         </div>
-
-
                     </form>
-
                 </div>
-                <div className="col-md-4">
-                    <Card sx={{ maxWidth: 350, maxHeight: 800 }}>
-                        <CardActionArea >
-                            <CardMedia>
-                                <Stack
-                                    direction="row"
-                                    spacing={3}
-                                    //justifyContent="center"
-                                    //alignItems="center"
-                                    sx={{
-                                        backgroundColor: "#f8ffd7"
-                                    }} >
-                                    <CardContent>
-                                        <label style={{ fontWeight: 'bold', alignContent: 'left' }}>Employee Number : {em_no}</label><br />
-                                        <label style={{ fontWeight: 'bold', alignContent: 'left' }}>Contract Start Date : {startdate}</label><br />
-                                        <label style={{ fontWeight: 'bold', alignContent: 'left' }}>Contract End Date: {endate}</label><br />
-                                        <label style={{ fontWeight: 'bold', alignContent: 'left' }}>Remaining Days : {remaining_days}</label>
-                                        <label style={{ fontWeight: 'bold', alignContent: 'left' }}>{contractstatus}</label>
-                                    </CardContent>
-                                </Stack>
-                            </CardMedia>
 
-                        </CardActionArea>
-                    </Card >
-                </div>
             </PageLayout >
         </Fragment >
     )

@@ -25,5 +25,4 @@ export const getSerialnumberempnumber = async () => {
     if (success === 1) {
         return serial_current.serial_current
     }
-
 }

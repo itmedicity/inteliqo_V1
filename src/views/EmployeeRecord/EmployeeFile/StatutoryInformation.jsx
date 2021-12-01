@@ -147,88 +147,94 @@ const StatutoryInformation = () => {
     return (
         < Fragment >
             <PageLayout heading="Statutory Information">
-                <div className="col-md-12">
-                    <form className={classes.root} onSubmit={submitFormData}>
-                        <div className="row">
-                            <div className="col-md-1">
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            disabled={enable}
-                                            name="pf"
-                                            color="primary"
-                                            value={pf}
-                                            checked={pf}
-                                            className="ml-1"
-                                            onChange={(e) => updateStatutoryInformation(e)}
-                                        />
-                                    }
-                                    label="PF"
-                                />
+                <div className="card">
+                    <div className="card-body">
+                        <div className="row g-1">
+                            <div className="col-md-12">
+                                <form className={classes.root} onSubmit={submitFormData}>
+                                    <div className="row">
+                                        <div className="col-md-1">
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        disabled={enable}
+                                                        name="pf"
+                                                        color="primary"
+                                                        value={pf}
+                                                        checked={pf}
+                                                        className="ml-1"
+                                                        onChange={(e) => updateStatutoryInformation(e)}
+                                                    />
+                                                }
+                                                label="PF"
+                                            />
 
-                            </div>
-                            <div className="col-md-2 pl-0">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="PF Number"
-                                    changeTextValue={(e) => updateStatutoryInformation(e)}
-                                    value={pfno}
-                                    disabled={enable}
-                                    name="pfno"
-                                />
-                            </div>
-                            <div className="col-md-1 pl-0">
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            disabled={enable}
-                                            name="esi"
-                                            color="primary"
-                                            value={esi}
-                                            checked={esi}
-                                            className="ml-1"
-                                            onChange={(e) => updateStatutoryInformation(e)}
-                                        />
-                                    }
-                                    label="ESI"
-                                />
-                            </div>
-                            <div className="col-md-2 pl-0">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="ESI Number"
-                                    changeTextValue={(e) => updateStatutoryInformation(e)}
-                                    value={esino}
-                                    disabled={enable}
-                                    name="esino"
-                                />
-                            </div>
-                            <div className="col-md-3 pl-0">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="UAN Number"
-                                    changeTextValue={(e) => updateStatutoryInformation(e)}
-                                    value={uanno}
-                                    disabled={enable}
-                                    name="uanno"
-                                />
-                            </div>
-                            <div className="col-md-3 pl-0 pt-1">
-                                <GradeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                            </div>
-                            <div className="card-footer text-muted">
-                                <FooterSaveEditClosebtn
-                                    edit={reset}
-                                    redirect={RedirectToProfilePage}
-                                    value={value}
-                                />
+                                        </div>
+                                        <div className="col-md-2 pl-0">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="PF Number"
+                                                changeTextValue={(e) => updateStatutoryInformation(e)}
+                                                value={pfno}
+                                                disabled={enable}
+                                                name="pfno"
+                                            />
+                                        </div>
+                                        <div className="col-md-1 pl-0">
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        disabled={enable}
+                                                        name="esi"
+                                                        color="primary"
+                                                        value={esi}
+                                                        checked={esi}
+                                                        className="ml-1"
+                                                        onChange={(e) => updateStatutoryInformation(e)}
+                                                    />
+                                                }
+                                                label="ESI"
+                                            />
+                                        </div>
+                                        <div className="col-md-2 pl-0">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="ESI Number"
+                                                changeTextValue={(e) => updateStatutoryInformation(e)}
+                                                value={esino}
+                                                disabled={enable}
+                                                name="esino"
+                                            />
+                                        </div>
+                                        <div className="col-md-3 pl-0">
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="UAN Number"
+                                                changeTextValue={(e) => updateStatutoryInformation(e)}
+                                                value={uanno}
+                                                disabled={enable}
+                                                name="uanno"
+                                            />
+                                        </div>
+                                        <div className="col-md-3 pl-0 pt-1">
+                                            <GradeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        </div>
+                                        <div className="card-footer text-muted">
+                                            <FooterSaveEditClosebtn
+                                                edit={reset}
+                                                redirect={RedirectToProfilePage}
+                                                value={value}
+                                            />
+                                        </div>
+                                    </div>
+
+                                </form>
                             </div>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </PageLayout>
         </Fragment >
