@@ -9,6 +9,7 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import StateSelect from 'src/views/CommonCode/StateSelect'
 import DistrictMastTable from './DistrictMastTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const DistrictMaster = () => {
     const classes = useStyles();
@@ -34,7 +35,8 @@ const DistrictMaster = () => {
     const postDistData = {
         dist_name,
         dist_state_slno: selectState,
-        dist_status: dist_status === true ? 1 : 0
+        dist_status: dist_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     //Form resting

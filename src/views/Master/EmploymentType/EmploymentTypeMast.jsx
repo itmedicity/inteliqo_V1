@@ -11,6 +11,7 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { useHistory } from 'react-router-dom'
 import { memo } from 'react'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeMast = () => {
 
@@ -221,7 +222,8 @@ const EmploymentTypeMast = () => {
         ecat_status: emp_status === true ? 1 : 0,
         empstat_period: cont_period,
         cont_period: cont_grace,
-        cont_grace: desiggperiod
+        cont_grace: desiggperiod,
+        create_users: employeeNumber()
     }
     // for rest
     const resetForm = {

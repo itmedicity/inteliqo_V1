@@ -4,6 +4,7 @@ export const API_URL = 'http://192.168.10.170:5000/api';
 // export const API_URL = 'http://localhost:5000/api';
 
 export const employeeNumber = () => {
+
     const userinfo = sessionStorage.getItem('userDetl');
     const employeNumber = userinfo ? JSON.parse(sessionStorage.getItem('userDetl')).empno : 0;
     return employeNumber;
@@ -25,4 +26,8 @@ export const getSerialnumberempnumber = async () => {
     if (success === 1) {
         return serial_current.serial_current
     }
+}
+
+export const SELECT_CMP_STYLE = {
+    minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4
 }

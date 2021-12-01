@@ -8,6 +8,7 @@ import { useHistory, useParams } from 'react-router'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 import RegistrationMastTable from './RegistrationMastTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const RegistrationTableEdit = () => {
     const classes = useStyles()
@@ -47,7 +48,8 @@ const RegistrationTableEdit = () => {
     const postRegistation = {
         registration_name,
         registration_status: registration_status === true ? 1 : 0,
-        reg_id: id
+        reg_id: id,
+        edit_user: employeeNumber()
     }
     const resetForm = {
         registration_name: '',

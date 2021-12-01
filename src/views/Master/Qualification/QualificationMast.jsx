@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import QualificationTable from './QualificationTable'
 
 const QualificationMast = () => {
@@ -25,7 +26,8 @@ const QualificationMast = () => {
     const { qual_name, qual_status } = qualification;
     const postData = {
         qual_name,
-        qual_status: qual_status === true ? 1 : 0
+        qual_status: qual_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     // reset form

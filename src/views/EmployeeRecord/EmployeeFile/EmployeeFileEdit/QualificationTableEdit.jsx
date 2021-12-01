@@ -1,7 +1,7 @@
 import { TextField } from '@material-ui/core'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import React, { memo, Fragment, useState, useContext, useEffect } from 'react'
+import React, { Fragment, useState, useContext, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -161,14 +161,18 @@ const QualificationTableEdit = () => {
                                     <div className="col-md-12">
                                         <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-7 pt-1">
+                                    <div className="col-md-7 pt-1 " style={{
+                                        paddingLeft: '0.5rem'
+                                    }}>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DatePicker
                                                 views={['year']}
-                                                label="Year"
                                                 name="year"
                                                 value={year}
                                                 onChange={(e) => { updateYear(e) }}
+                                                InputProps={{
+                                                    className: classes.customInputFeild
+                                                }}
                                                 renderInput={(params) => <TextField {...params}
                                                     fullWidth
                                                     size="small"
@@ -202,10 +206,12 @@ const QualificationTableEdit = () => {
                                             name="em_reg_no"
                                         />
                                     </div>
-                                    <div className="card-footer text-muted">
-                                        <FooterSaveClosebtn
-                                            redirect={toSettings}
-                                        />
+                                    <div className="col-md-12 pt-2">
+                                        <div className="card-footer text-muted">
+                                            <FooterSaveClosebtn
+                                                redirect={toSettings}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -220,4 +226,4 @@ const QualificationTableEdit = () => {
     )
 }
 
-export default memo(QualificationTableEdit)
+export default QualificationTableEdit

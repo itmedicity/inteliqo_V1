@@ -19,7 +19,6 @@ import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 import TextInput from 'src/views/Component/TextInput'
 import { TextField } from '@material-ui/core'
 
-
 const EmployeeQualification = () => {
     const classes = useStyles();
     const history = useHistory();
@@ -119,10 +118,11 @@ const EmployeeQualification = () => {
     return (
         <Fragment>
             <PageLayout heading="Qualification">
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitQualification}>
+                <form className={classes.root} onSubmit={submitQualification}>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4">
+
                                 <div className="row">
                                     <div className="col-md-12">
                                         <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -136,14 +136,18 @@ const EmployeeQualification = () => {
                                     <div className="col-md-12">
                                         <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-6 pt-1">
+                                    <div className="col-md-6 col-xs-12 pt-1" style={{
+                                        paddingLeft: '0.5rem', paddingRight: '-0.5rem'
+                                    }} >
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DatePicker
                                                 views={['year']}
-                                                label="Year"
                                                 name="year"
                                                 value={year}
                                                 onChange={(e) => { updateYear(e) }}
+                                                InputProps={{
+                                                    className: classes.customInputFeild
+                                                }}
                                                 renderInput={(params) => <TextField {...params}
                                                     fullWidth
                                                     size="small"
@@ -159,9 +163,9 @@ const EmployeeQualification = () => {
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Mark/Grade"
-                                            changeTextValue={(e) => updateQualification(e)}
                                             value={em_mark_grade}
                                             name="em_mark_grade"
+                                            changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -172,27 +176,31 @@ const EmployeeQualification = () => {
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Registration No"
-                                            changeTextValue={(e) => updateQualification(e)}
                                             value={em_reg_no}
                                             name="em_reg_no"
+                                            changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
-                                    <div className="card-footer text-muted">
-                                        <FooterSaveClosebtn
-                                            redirect={toSettings}
-                                        />
-                                    </div>
+
                                 </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <QualificationTable update={count} />
+
+                            </div>
+                            <div className="col-md-8">
+                                <QualificationTable update={count} />
+                            </div>
+                            <div className="col-md-12 pt-2">
+                                <div className="card-footer  text-muted ">
+                                    <FooterSaveClosebtn
+                                        redirect={toSettings}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </PageLayout>
-        </Fragment>
+                </form>
+            </PageLayout >
+        </Fragment >
     )
 }
 
-export default (EmployeeQualification)
+export default EmployeeQualification
