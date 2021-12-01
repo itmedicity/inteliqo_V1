@@ -210,7 +210,7 @@ const EmployeeProfile = () => {
                                                                 <AlignVerticalCenterIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Allowance/Deduction" />
+                                                        <ListItemText primary="Earnings / Deduction" />
                                                     </ListItem>
                                                     <ListItem style={{ cursor: "pointer" }} onClick={AnnualLeaveSettings}>
                                                         <ListItemAvatar>

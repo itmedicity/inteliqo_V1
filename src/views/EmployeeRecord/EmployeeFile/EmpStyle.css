@@ -51,3 +51,9 @@
 .familydetl::-webkit-scrollbar-thumb:hover {
     background: #303C54; 
 }
+
+.previousAmentWindow {
+    max-height: 32.9rem;
+    min-height: 7rem;
+    overflow:auto;
+}

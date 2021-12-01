@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import FullPageloader from 'src/components/FullPageloader';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import './EmpStyle.css'
 
 const SalaryInformation = () => {
     const history = useHistory()
@@ -63,6 +64,121 @@ const SalaryInformation = () => {
         {
             name: "Over Time",
             amount: "500.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
+            date: "01-12-2021 08:35 AM"
+        },
+        {
+            name: "Others",
+            amount: "1000.00",
             date: "01-12-2021 08:35 AM"
         },
         {
@@ -154,28 +270,31 @@ const SalaryInformation = () => {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card" >
-                            <div className="card-header py-0">
-                                <Typography variant="body1" gutterBottom className="my-0" >
-                                    Previous Amendment Information
-                                </Typography>
-                            </div>
-                            <div className="familydetl table-wrapper-scroll-y my-custom-scrollbar"  >
-                                <ul className="list-group list-group-flush ">
-                                    {
-                                        ament.map((val, index) => {
-                                            return <li className="list-group-item py-0" key={index}>
-                                                <div className="d-flex justify-content-between " >
-                                                    <div className="col-md-6" >{val.name}</div>
-                                                    <div className="col-md-3">{val.date}</div>
-                                                    <div className="col-md-3">{val.amount}</div>
-                                                </div>
-                                            </li>;
-                                        })
-                                    }
-                                </ul>
+                        <div >
+                            <div className="card" >
+                                <div className="card-header py-0">
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        Previous Amendment Information
+                                    </Typography>
+                                </div>
+                                <div className="previousAmentWindow">
+                                    <ul className="list-group list-group-flush ">
+                                        {
+                                            ament.map((val, index) => {
+                                                return <li className="list-group-item py-0" key={index}>
+                                                    <div className="d-md-flex d-sm-flex justify-content-between " >
+                                                        <div className="col-md-6 text-start" >{val.name}</div>
+                                                        <div className="col-md-4 text-center">{val.date}</div>
+                                                        <div className="col-md-2 text-end">{val.amount}</div>
+                                                    </div>
+                                                </li>;
+                                            })
+                                        }
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </PageLayoutSave>
