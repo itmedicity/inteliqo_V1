@@ -40,7 +40,7 @@ const ReligionSelect = (props) => {
                     onChange={(e) => udatereligion(e.target.value)}
                     fullWidth
                     variant="outlined"
-                    className="ml-0"
+                    className="ml-1"
                     defaultValue={0}
                     style={props.style}
                 >
