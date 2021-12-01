@@ -27,3 +27,7 @@ export const getSerialnumberempnumber = async () => {
     }
 
 }
+
+export const SELECT_CMP_STYLE = {
+    minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4
+}
