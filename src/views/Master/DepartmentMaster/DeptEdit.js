@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import SessionCheck from 'src/views/Axios/SessionCheck';
 // import { token } from 'src/views/Constant/Constant';
 import { succesNofity, errorNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { employeeNumber } from 'src/views/Constant/Constant';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -69,6 +70,7 @@ const DeptEdit = () => {
             dept_status,
             dept_name,
             dept_alias,
+            edit_user: employeeNumber(),
             dept_id: id
         }
         dept_status = dept_status === true ? 1 : 0;

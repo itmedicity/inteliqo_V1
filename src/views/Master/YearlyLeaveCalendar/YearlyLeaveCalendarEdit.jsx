@@ -14,6 +14,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import YearlyLeaveCalendarTable from "./YearlyLeaveCalendarTable"
 import { isAfter } from "date-fns"
 import { errorNofity, succesNofity } from "src/views/CommonCode/Commonfunc"
+import { employeeNumber } from "src/views/Constant/Constant"
 
 const YearlyLeaveCalendarEdit = () => {
     const history = useHistory()
@@ -76,6 +77,7 @@ const YearlyLeaveCalendarEdit = () => {
         hld_status: hld_status === true ? 1 : 0,
         hld_date: moment(holidate).format('YYYY-MM-DD'),
         lvetype_slno: selectLeaveType,
+        edit_user: employeeNumber(),
         hld_slno: id
     }
 

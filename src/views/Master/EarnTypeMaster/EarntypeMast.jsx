@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import EarnTypeTable from './EarnTypeTable'
 
 const EarntypeMast = () => {
@@ -42,6 +43,7 @@ const EarntypeMast = () => {
         earn_type: earn_type,
         deduction_status: deduction_status === true ? 1 : 0,
         earntype_status: earntype_status === true ? 1 : 0,
+        create_user: employeeNumber()
 
     }
     // reset data
@@ -76,7 +78,7 @@ const EarntypeMast = () => {
             <ToastContainer />
             <div className="card">
                 <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Branch Master</h5>
+                    <h5>Earn Type</h5>
                 </div>
                 <div className="card-body">
                     <div className="row">

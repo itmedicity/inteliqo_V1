@@ -9,6 +9,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import StateMasterTable from './StateMasterTable'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const StateMaster = () => {
     const classes = useStyles();
@@ -35,7 +36,8 @@ const StateMaster = () => {
     const postStateData = {
         state_name,
         state_nat_slno: selectNation,
-        state_status: state_status === true ? 1 : 0
+        state_status: state_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     //Form Reseting
