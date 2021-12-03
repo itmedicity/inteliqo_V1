@@ -8,6 +8,7 @@ import { useHistory } from 'react-router'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 import RegistrationMastTable from './RegistrationMastTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const RegistrationMaster = () => {
     const classes = useStyles();
@@ -17,7 +18,8 @@ const RegistrationMaster = () => {
     //Intializing
     const [type, setType] = useState({
         registration_name: '',
-        registration_status: false
+        registration_status: false,
+        create_user: ''
     });
 
     //Destructuring
@@ -29,7 +31,8 @@ const RegistrationMaster = () => {
 
     const postRegistationData = {
         registration_name,
-        registration_status: registration_status === true ? 1 : 0
+        registration_status: registration_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
     const resetForm = {
         registration_name: '',

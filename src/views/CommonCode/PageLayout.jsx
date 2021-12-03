@@ -12,9 +12,9 @@ const PageLayout = (props) => {
                     <h6>{props.heading}</h6>
                 </div>
                 <div className="card-body">
-                    <div className="row">
-                        {props.children}
-                    </div>
+                    {/* <div className="row"> */}
+                    {props.children}
+                    {/* </div> */}
                 </div>
             </div>
         </Fragment>

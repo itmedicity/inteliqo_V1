@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import EmpDesignationtable from './EmpDesignationtable'
 
 const EmpDesignationtype = () => {
@@ -24,7 +25,8 @@ const EmpDesignationtype = () => {
 
     const postFormdata = {
         inst_emp_type,
-        inst_emp_status: inst_emp_status === true ? 1 : 0
+        inst_emp_status: inst_emp_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
     const resetForm = {
         inst_emp_type: '',
@@ -53,7 +55,7 @@ const EmpDesignationtype = () => {
             <ToastContainer />
             <div className="card">
                 <div className="card-header">
-                    <h5>Employee Designation Type</h5>
+                    <h5>Employee Institution Type</h5>
                 </div>
                 <div className="card-body">
                     <div className="row">
@@ -62,7 +64,7 @@ const EmpDesignationtype = () => {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Employee Designation Type"
+                                            label="Employee Institution Type"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
@@ -79,14 +81,14 @@ const EmpDesignationtype = () => {
                                             control={
                                                 <Checkbox
                                                     name="inst_emp_status"
-                                                    color="secondary"
+                                                    color="primary"
                                                     value={inst_emp_status}
                                                     checked={inst_emp_status}
                                                     className="ml-2 "
                                                     onChange={(e) => updateFormDatatoState(e)}
                                                 />
                                             }
-                                            label="Earn Leave"
+                                            label="Status"
                                         />
                                     </div>
                                     <div className="row col-md-12">

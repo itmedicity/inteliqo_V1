@@ -1,4 +1,3 @@
-import { TextField } from '@material-ui/core';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import React, { useState } from 'react';
 import SessionCheck from 'src/views/Axios/SessionCheck';
@@ -7,81 +6,78 @@ import TextInput from 'src/views/Component/TextInput';
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
 import { Input } from '@mui/material';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import FullPageloader from 'src/components/FullPageloader';
+import { Spinner } from 'react-bootstrap';
 
 function ManpowerRequest() {
 
-    const [textval, setTextVal] = useState("true")
+    // const [textval, setTextVal] = useState("true")
 
-    const submitFormData = () => {
+    // const submitFormData = () => {
 
-    }
+    // }
 
-    const [workstartdate, setWorkdate] = useState(new Date())
-    const [workenddate, setWorkEnddate] = useState(new Date())
-    //setting work start Date
-    const setWorkstartdate = (val) => {
-        setWorkdate(val)
-    }
-    //setting work End Date
-    const setWorkenddate = (val) => {
-        setWorkEnddate(val)
-    }
+    // const [workstartdate, setWorkdate] = useState(new Date())
+    // const [workenddate, setWorkEnddate] = useState(new Date())
+    // //setting work start Date
+    // const setWorkstartdate = (val) => {
+    //     setWorkdate(val)
+    // }
+    // //setting work End Date
+    // const setWorkenddate = (val) => {
+    //     setWorkEnddate(val)
+    // }
 
     const classes = useStyles()
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div>
             <SessionCheck />
-            <form onSubmit={submitFormData} id="subform" >
-                {/* <div className="row">
-                    <div className="col-md-4">
-                        <TextInput
-                            type="text"
-                            classname="form-control form-control-sm"
-                            Placeholder="Test text Feild"
-                            changeTextValue={(e) => setTextVal(e.target.value)}
-                            value={textval}
+            {/* <FullPageloader/> */}
+            <Spinner />
+            <div>
+                <Button variant="outlined" onClick={handleClickOpen}>
+                    Open form dialog
+                </Button>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Subscribe</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            To subscribe to this website, please enter your email address here. We
+                            will send updates occasionally.
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Email Address"
+                            type="email"
+                            fullWidth
+                            variant="standard"
                         />
-                    </div>
-                    <FooterClosebtn />
-                </div> */}
-                <div className="col-md-3 pt-2">
-                    <LocalizationProvider dateAdapter={AdapterDateFns} >
-                        <DatePicker
-                            // label="Work Start Date"
-                            name="workstartdate"
-                            type="date"
-                            clearable
-                            value={workstartdate}
-                            onChange={(e) => {
-                                setWorkstartdate(e)
-                            }}
-                            InputProps={{
-                                className: classes.inputColor
-                            }}
-                            style={{ height: '1.5rem' }}
-                            renderInput={(params) => <TextField {...params}
-                                fullWidth
-                                size="small"
-                                autoComplete="off"
-                                variant="outlined"
-                            />}
-                        />
-                    </LocalizationProvider>
-                </div>
-                <div className="col-md-3 pt-2">
-                    <TextField
-                        fullWidth
-                        size="small"
-                        autoComplete="off"
-                        variant="outlined"
-                        InputProps={{
-                            className: classes.inputColor
-                        }}
-                    />
-                </div>
-
-
-            </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={handleClose}>Subscribe</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         </div>
     )
 }

@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import GradeMasterTable from './GradeMasterTable'
 
 const GradeMaster = () => {
@@ -37,7 +38,8 @@ const GradeMaster = () => {
     // data to be posted
     const postData = {
         grade_desc: gradename,
-        grade_status: grade_status === true ? 1 : 0
+        grade_status: grade_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     // default state

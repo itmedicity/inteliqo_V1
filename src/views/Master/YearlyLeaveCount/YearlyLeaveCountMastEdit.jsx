@@ -7,6 +7,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { useParams } from 'react-router'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const YearlyLeaveCountMastEdit = () => {
     const classes = useStyles();
@@ -156,7 +157,8 @@ const YearlyLeaveCountMastEdit = () => {
             month_year_maternity: month_year_maternity,
             lvetype_slno_previlage: lvetype_slno_previlage === true ? 10 : 0,
             max_allowed_count_previlage: max_allowed_count_previlage,
-            month_year_previlage: month_year_previlage
+            month_year_previlage: month_year_previlage,
+            edit_user: employeeNumber()
         }
         const result = await axioslogin.patch('/yearlyleaves', updateData)
         const { success, message } = result.data

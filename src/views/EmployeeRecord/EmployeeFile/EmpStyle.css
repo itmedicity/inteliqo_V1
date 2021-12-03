@@ -51,3 +51,14 @@
 .familydetl::-webkit-scrollbar-thumb:hover {
     background: #303C54; 
 }
+
+.previousAmentWindow {
+    max-height: 31.3rem;
+    min-height: 7rem;
+    overflow:auto;
+}
+.card-casual-leave{
+    position: relative;
+    height: 10rem;
+    overflow: auto;
+}

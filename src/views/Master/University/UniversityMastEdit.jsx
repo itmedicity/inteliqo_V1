@@ -7,6 +7,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayout from 'src/views/CommonCode/PageLayout'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import UniVersityTable from './UniVersityTable'
 
 const UniversityMastEdit = () => {
@@ -49,7 +50,8 @@ const UniversityMastEdit = () => {
         unver_name,
         unver_status: unver_status === true ? 1 : 0,
         unver_alias,
-        unver_slno: id
+        unver_slno: id,
+        edit_user: employeeNumber()
     }
     const resetForm = {
         unver_name: '',

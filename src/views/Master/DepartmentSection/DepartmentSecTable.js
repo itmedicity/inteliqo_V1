@@ -63,7 +63,7 @@ const DepartmentSecTable = ({ message }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
             />
         </Fragment>

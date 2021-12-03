@@ -7,6 +7,7 @@ import { axioslogin } from '../Axios/Axios';
 // import { token } from '../Constant/Constant';
 import { ToastContainer } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
+import { employeeNumber } from '../Constant/Constant';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,7 +41,8 @@ const Departmentmaster = () => {
         let formData = {
             dept_name: dept_name,
             dept_alias: dept_alias,
-            dept_status: status
+            dept_status: status,
+            create_user: employeeNumber()
         }
         const result = await axioslogin.post('/department', formData).then((response) => {
             return response;

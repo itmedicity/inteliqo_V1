@@ -4,6 +4,7 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { useHistory } from 'react-router';
 
 const DesignationTypeTable = ({ update }) => {
     const [tableData, settableData] = useState([]);
@@ -42,6 +43,12 @@ const DesignationTypeTable = ({ update }) => {
         }
         getDesigTypeData();
     }, [update])
+    const history = useHistory();
+    const getDataTable = (data) => {
+        const { emstats_slno } = data
+        history.push(`/Home/DesignationTypeedit/${emstats_slno}`)
+
+    }
 
     return (
         <Fragment>
@@ -54,14 +61,14 @@ const DesignationTypeTable = ({ update }) => {
                     {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
-                        onClick: (e, data) => null
+                        onClick: (e, data) => getDataTable(data)
                     }
                 ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />

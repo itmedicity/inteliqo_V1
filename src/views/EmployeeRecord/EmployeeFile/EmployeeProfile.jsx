@@ -210,7 +210,7 @@ const EmployeeProfile = () => {
                                                                 <AlignVerticalCenterIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Allowance/Deduction" />
+                                                        <ListItemText primary="Earnings / Deduction" />
                                                     </ListItem>
                                                     <ListItem style={{ cursor: "pointer" }} onClick={AnnualLeaveSettings}>
                                                         <ListItemAvatar>
@@ -220,13 +220,13 @@ const EmployeeProfile = () => {
                                                         </ListItemAvatar>
                                                         <ListItemText primary="Annual Leave Setting" />
                                                     </ListItem>
-                                                    <ListItem style={{ cursor: "pointer" }} onClick={EmployeeTrainingInformation}>
+                                                    <ListItem style={{ cursor: "pointer" }} onClick={fineorotherdeduction}>
                                                         <ListItemAvatar>
-                                                            <Avatar sx={{ bgcolor: '#81d4fa' }} variant="rounded">
-                                                                <InsertChartIcon />
+                                                            <Avatar sx={{ bgcolor: '#b2ebf2' }} variant="rounded">
+                                                                <AdminPanelSettingsIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Training Information" />
+                                                        <ListItemText primary="Fine / Other Deduction" />
                                                     </ListItem>
                                                     <ListItem style={{ cursor: "pointer" }} onClick={SalaryIncrementSettings}>
                                                         <ListItemAvatar>
@@ -261,13 +261,13 @@ const EmployeeProfile = () => {
                                                         </ListItemAvatar>
                                                         <ListItemText primary="Vaccination Information" />
                                                     </ListItem>
-                                                    <ListItem style={{ cursor: "pointer" }} onClick={fineorotherdeduction}>
+                                                    <ListItem style={{ cursor: "pointer" }} onClick={EmployeeTrainingInformation}>
                                                         <ListItemAvatar>
-                                                            <Avatar sx={{ bgcolor: '#b2ebf2' }} variant="rounded">
-                                                                <AdminPanelSettingsIcon />
+                                                            <Avatar sx={{ bgcolor: '#81d4fa' }} variant="rounded">
+                                                                <InsertChartIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Fine / Other Deduction" />
+                                                        <ListItemText primary="Training Information" />
                                                     </ListItem>
                                                     <ListItem style={{ cursor: "pointer" }} onClick={endofservice} >
                                                         <ListItemAvatar>
