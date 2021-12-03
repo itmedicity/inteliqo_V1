@@ -6,6 +6,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck'
 import GradeMasterTable from './GradeMasterTable'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const GradeMastEdit = () => {
 
@@ -64,7 +65,9 @@ const GradeMastEdit = () => {
     const postData = {
         grade_desc: gradename,
         grade_status: grade_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         grade_slno: id,
+
     }
 
     const postFormData = async (e) => {

@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import EmpDesignationtable from './EmpDesignationtable'
 
 const EmpDesignationtype = () => {
@@ -24,7 +25,8 @@ const EmpDesignationtype = () => {
 
     const postFormdata = {
         inst_emp_type,
-        inst_emp_status: inst_emp_status === true ? 1 : 0
+        inst_emp_status: inst_emp_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
     const resetForm = {
         inst_emp_type: '',

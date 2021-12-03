@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import LeaveTypeMastTable from './LeaveTypeMastTable'
 
 const LeaveTypeMast = () => {
@@ -57,7 +58,8 @@ const LeaveTypeMast = () => {
         is_leave: Leave === false ? 0 : 1,
         leave_credit_policy: select_leave_policy,
         leave_credit_policy_count: leave_policy_count,
-        status: status === false ? 0 : 1
+        status: status === false ? 0 : 1,
+        create_user: employeeNumber()
 
     }
 

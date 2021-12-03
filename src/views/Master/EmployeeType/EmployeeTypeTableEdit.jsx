@@ -7,6 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import SessionCheck from 'src/views/Axios/SessionCheck';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
+import { employeeNumber } from 'src/views/Constant/Constant';
 import EmployeeTypeTable from 'src/views/Master/EmployeeType/EmployeeTypeTable';
 
 const EmployeeTypeTableEdit = () => {
@@ -63,6 +64,7 @@ const EmployeeTypeTableEdit = () => {
             cont_period: empContPrd,
             cont_grace: empRenewPrd,
             el_aplicable: elApplicable === true ? 1 : 0,
+            edit_user: employeeNumber(),
             emptype_slno: id
         }
         const result = await axioslogin.patch('/emptype', updateData)

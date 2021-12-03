@@ -60,7 +60,7 @@ const ReligionMastTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
             />
         </Fragment>

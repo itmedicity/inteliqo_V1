@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import LeaveTypeMastTable from './LeaveTypeMastTable'
 
 const LeaveTypeMastEdit = () => {
@@ -15,7 +16,7 @@ const LeaveTypeMastEdit = () => {
     const classes = useStyles();
     const { id } = useParams();
 
-    const [disable, setDisabled] = useState("")//for setting disabled
+    const [setDisabled] = useState(0)//for setting disabled
     const [formData, setFormData] = useState({
         lvetype_desc: "",
         lvetype_code: "",
@@ -117,6 +118,7 @@ const LeaveTypeMastEdit = () => {
             is_lop: is_lop === true ? 1 : 0,
             is_holiday: is_holiday === true ? 1 : 0,
             is_leave: is_leave === true ? 1 : 0,
+            edit_user: employeeNumber()
         }
 
         const result = await axioslogin.patch('/leaveType', updateData)
@@ -331,7 +333,7 @@ const LeaveTypeMastEdit = () => {
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
-                                            disabled={disable}
+                                            disabled
                                             name="leave_credit_policy_count"
                                             value={leave_credit_policy_count}
                                             onChange={(e) => updateLeaveMastEditFormData(e)}
