@@ -7,6 +7,7 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity } from 'src/views/CommonCode/Commonfunc'
 import ReligionMastTable from './ReligionMastTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const ReligionMast = () => {
     const classes = useStyles()
@@ -29,7 +30,8 @@ const ReligionMast = () => {
     //getting data
     const postData = {
         relg_name: relg_name,
-        relg_status: relg_status === false ? 0 : 1
+        relg_status: relg_status === false ? 0 : 1,
+        create_user: employeeNumber()
     }
 
     //default state

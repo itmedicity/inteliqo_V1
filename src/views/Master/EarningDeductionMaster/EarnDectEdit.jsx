@@ -8,6 +8,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import EarnDectTable from './EarnDectTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EarnDectEdit = () => {
     // getparameter
@@ -94,6 +95,7 @@ const EarnDectEdit = () => {
         include_protax: inclu_protx === true ? 1 : 0,
         erning_type_id: earntypeDatacontext,
         earnded_status: earndec_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         earnded_id: id
 
 

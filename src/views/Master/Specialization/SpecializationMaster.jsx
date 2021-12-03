@@ -10,6 +10,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import SpecializationTable from './SpecializationTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const SpecializationMaster = () => {
     const classes = useStyles();
@@ -36,6 +37,7 @@ const SpecializationMaster = () => {
         spec_desc,
         cour_slno: selectCourse,
         spec_status: spec_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     //Form resting

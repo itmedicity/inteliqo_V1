@@ -7,6 +7,7 @@ import ReligionMastTable from './ReligionMastTable'
 import { succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useParams, useHistory } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios';
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const ReligionMastEdit = () => {
 
@@ -54,6 +55,7 @@ const ReligionMastEdit = () => {
         const updateData = {
             relg_name: relg_name,
             relg_status: relg_status === true ? 1 : 0,
+            edit_user: employeeNumber(),
             relg_slno: id
         }
 

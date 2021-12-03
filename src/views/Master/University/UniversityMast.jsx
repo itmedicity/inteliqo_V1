@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import UniVersityTable from './UniVersityTable'
 
 const UniversityMast = () => {
@@ -30,7 +31,8 @@ const UniversityMast = () => {
     const postFormData = {
         unver_name,
         unver_alias,
-        unver_status: unver_status === true ? 1 : 0
+        unver_status: unver_status === true ? 1 : 0,
+        create_user: employeeNumber()
     }
 
     // reset form

@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import BranchMastTable from './BranchMastTable'
 
 const BranchMastTableEdit = () => {
@@ -58,6 +59,7 @@ const BranchMastTableEdit = () => {
         branch_esi,
         branch_pf,
         branch_status: branch_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         branch_slno: id
     }
     const resetForm = {

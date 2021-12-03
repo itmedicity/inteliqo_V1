@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import EarnDectTable from './EarnDectTable'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 
 
@@ -69,8 +70,8 @@ const EarnDectmast = () => {
         include_pf: inclu_pf === true ? 1 : 0,
         include_protax: inclu_protx === true ? 1 : 0,
         erning_type_id: earntypeDatacontext,
-        earnded_status: earndec_status === true ? 1 : 0
-
+        earnded_status: earndec_status === true ? 1 : 0,
+        create_user: employeeNumber()
 
     }
 

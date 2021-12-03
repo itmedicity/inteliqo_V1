@@ -4,12 +4,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant';
 import DesignationTypeTable from './DesignationTypeTable';
 
 const DesignationTypeTableedit = () => {
-
     const classes = useStyles();
     const [count, setCount] = useState(0);
     const history = useHistory();
@@ -46,13 +46,10 @@ const DesignationTypeTableedit = () => {
         const getDesignation = async () => {
             const result = await axioslogin.get(`/empstat/${id}`)
             const { success, data } = result.data
-            console.log(data)
             if (success === 1) {
                 const { empstat_cl, empstat_el, empstat_esi, empstat_hd, empstat_name, empstat_period,
                     empstat_pf } = data[0]
                 const frmdata = {
-
-
                     empstat_cl: empstat_cl === 1 ? true : false,
                     empstat_el: empstat_el === 1 ? true : false,
                     empstat_esi: empstat_esi === 1 ? true : false,
@@ -66,10 +63,6 @@ const DesignationTypeTableedit = () => {
         }
         getDesignation()
     }, [id])
-
-
-
-
     const postData = {
         empstat_name,
         empstat_el: empstat_el === true ? 1 : 0,
@@ -78,6 +71,7 @@ const DesignationTypeTableedit = () => {
         empstat_esi: empstat_esi === true ? 1 : 0,
         empstat_pf: empstat_pf === true ? 1 : 0,
         empstat_period: empstat_period,
+        update_user: employeeNumber(),
         emstats_slno: id
     }
 
@@ -96,15 +90,9 @@ const DesignationTypeTableedit = () => {
     }
 
     // redirected to setting 
-
     const toSettings = () => {
         history.push('/Home/Settings');
     }
-
-
-
-
-
 
     return (
         <Fragment>
@@ -146,7 +134,6 @@ const DesignationTypeTableedit = () => {
                                                 onChange={(e) => updateDesigType(e)}
                                             />
                                         </div>
-
                                     </div>
                                     <div className="col-md-12 row">
                                         <div className="col-md-12 pb-0 mb-0">
@@ -265,7 +252,6 @@ const DesignationTypeTableedit = () => {
                     </div>
                 </div>
             </div>
-
         </Fragment>
     )
 }

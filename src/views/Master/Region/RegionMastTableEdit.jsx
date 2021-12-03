@@ -6,6 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant';
 import RegionMastTable from './RegionMastTable';
 
 const RegionMastTableEdit = () => {
@@ -53,6 +54,7 @@ const RegionMastTableEdit = () => {
         reg_dist_slno: selectDistrict,
         reg_pincode,
         reg_status: reg_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         reg_slno: id
     }
     const resetForm = {
@@ -77,9 +79,9 @@ const RegionMastTableEdit = () => {
             history.push('/Home/Region');
             succesNofity(message);
         } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+            infoNofity(message.sqlMessage)
         } else {
-            infoNofity(message);
+            infoNofity(message)
         }
     }
 

@@ -7,6 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant';
 import RegionMastTable from './RegionMastTable';
 
 const RegionMast = () => {
@@ -35,6 +36,7 @@ const RegionMast = () => {
         reg_name,
         reg_pincode,
         reg_status: reg_status === true ? 1 : 0,
+        create_user: employeeNumber(),
         reg_dist_slno: selectDistrict
     }
 
@@ -53,7 +55,7 @@ const RegionMast = () => {
     const SubmitRegionForm = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/region', postFormData);
-        const { success, message } = result.data;
+        const { message, success } = result.data;
         if (success === 1) {
             succesNofity(message);
             setCount(count + 1);

@@ -8,6 +8,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import DepartmentSecTable from './DepartmentSecTable'
 
 const DepartmentSectionMast = () => {
@@ -25,7 +26,8 @@ const DepartmentSectionMast = () => {
     const deptSectValus = {
         sect_name: deptSectionName,
         dept_id: selectedDept,
-        sect_status: sectionStatus
+        sect_status: sectionStatus,
+        create_user: employeeNumber()
     }
     // reset from fn
     const resetSectionDept = () => {
