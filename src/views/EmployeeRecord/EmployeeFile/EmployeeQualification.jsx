@@ -124,16 +124,16 @@ const EmployeeQualification = () => {
                             <div className="col-md-4">
 
                                 <div className="row">
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-6 col-xs-12 pt-1" style={{
@@ -168,10 +168,10 @@ const EmployeeQualification = () => {
                                             changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
@@ -188,7 +188,7 @@ const EmployeeQualification = () => {
                             <div className="col-md-8">
                                 <QualificationTable update={count} />
                             </div>
-                            <div className="col-md-12 pt-2">
+                            <div className="col-md-12 pt-1">
                                 <div className="card-footer  text-muted ">
                                     <FooterSaveClosebtn
                                         redirect={toSettings}
