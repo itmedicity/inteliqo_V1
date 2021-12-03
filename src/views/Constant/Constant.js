@@ -31,3 +31,14 @@ export const getSerialnumberempnumber = async () => {
 export const SELECT_CMP_STYLE = {
     minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4
 }
+
+export const CARD_HEADER_COLOR = {
+    backgroundColor: '#757575', color: "white"
+}
+
+export const CARD_SUB_HEADER_COLOR = {
+    backgroundColor: '#a4a4a4'
+}
+
+export const TEXT_MUTED = "#c7c7c7"
+export const TEXT_DARK = "#000000"

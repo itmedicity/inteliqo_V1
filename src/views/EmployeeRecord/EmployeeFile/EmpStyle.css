@@ -53,7 +53,12 @@
 }
 
 .previousAmentWindow {
-    max-height: 32.9rem;
+    max-height: 31.3rem;
     min-height: 7rem;
     overflow:auto;
+}
+.card-casual-leave{
+    position: relative;
+    height: 10rem;
+    overflow: auto;
 }

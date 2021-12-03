@@ -270,12 +270,25 @@ const SalaryInformation = () => {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div >
+                        <div>
                             <div className="card" >
                                 <div className="card-header py-0">
                                     <Typography variant="body1" gutterBottom className="my-0" >
                                         Previous Amendment Information
                                     </Typography>
+                                </div>
+                                <div className="card" >
+                                    <div className="card-header py-0">
+                                        <div className="d-md-flex d-sm-flex justify-content-between"  >
+                                            <div className="col-md-6 text-start">
+                                                <Typography variant="body1" gutterBottom className="my-0" >
+                                                    Description
+                                                </Typography>
+                                            </div>
+                                            <div className="col-md-4 text-start" >Amendment Date</div>
+                                            <div className="col-md-2 text-end" >Changes</div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="previousAmentWindow">
                                     <ul className="list-group list-group-flush ">
@@ -284,7 +297,7 @@ const SalaryInformation = () => {
                                                 return <li className="list-group-item py-0" key={index}>
                                                     <div className="d-md-flex d-sm-flex justify-content-between " >
                                                         <div className="col-md-6 text-start" >{val.name}</div>
-                                                        <div className="col-md-4 text-center">{val.date}</div>
+                                                        <div className="col-md-4 text-start">{val.date}</div>
                                                         <div className="col-md-2 text-end">{val.amount}</div>
                                                     </div>
                                                 </li>;

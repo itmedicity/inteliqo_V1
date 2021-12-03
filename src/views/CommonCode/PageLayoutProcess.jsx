@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from '../Axios/SessionCheck'
-import FooterClosebtn from './FooterClosebtn'
-
-const PageLayoutSave = (props) => {
+import FooterProcessbtn from './FooterProcessbtn'
+const PageLayoutProcess = (props) => {
     return (
         <Fragment>
             <SessionCheck />
@@ -18,7 +17,7 @@ const PageLayoutSave = (props) => {
                             {props.children}
                         </div>
                         <div className="card-footer text-muted">
-                            <FooterClosebtn
+                            <FooterProcessbtn
                                 redirect={props.redirect}
                                 submit={props.submit}
                             />
@@ -30,4 +29,4 @@ const PageLayoutSave = (props) => {
     )
 }
 
-export default PageLayoutSave
+export default PageLayoutProcess
