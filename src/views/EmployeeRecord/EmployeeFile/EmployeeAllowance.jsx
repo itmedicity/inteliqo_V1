@@ -1,5 +1,5 @@
 import Chip from '@mui/material/Chip'
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
@@ -17,7 +17,7 @@ const EmployeeAllowance = () => {
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${4516}/${4516}`)
     }
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);

@@ -1,13 +1,12 @@
-import MaterialTable from 'material-table';
 import React, { Fragment, memo } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import MaterialTable from 'material-table';
 
-const WagesInfoTable = () => {
+const FineAndDeductionTable = () => {
     return (
         <Fragment>
             <MaterialTable
-                title="Wages Information"
+                // title="Fines And Other Deducation Information"
                 icons={tableIcons}
                 // actions={[
                 //     {
@@ -20,11 +19,12 @@ const WagesInfoTable = () => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: 0
+                    actionsColumnIndex: 0,
+                    showTitle: false,
                 }}
             />
         </Fragment>
     )
 }
 
-export default memo(WagesInfoTable)
+export default memo(FineAndDeductionTable)

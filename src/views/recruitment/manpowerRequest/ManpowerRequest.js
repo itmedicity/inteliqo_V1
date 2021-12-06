@@ -16,69 +16,39 @@ import DialogTitle from '@mui/material/DialogTitle';
 import FullPageloader from 'src/components/FullPageloader';
 import { Spinner } from 'react-bootstrap';
 
+
 function ManpowerRequest() {
 
-    // const [textval, setTextVal] = useState("true")
 
-    // const submitFormData = () => {
-
-    // }
-
-    // const [workstartdate, setWorkdate] = useState(new Date())
-    // const [workenddate, setWorkEnddate] = useState(new Date())
-    // //setting work start Date
-    // const setWorkstartdate = (val) => {
-    //     setWorkdate(val)
-    // }
-    // //setting work End Date
-    // const setWorkenddate = (val) => {
-    //     setWorkEnddate(val)
-    // }
-
-    const classes = useStyles()
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     return (
-        <div>
-            <SessionCheck />
-            {/* <FullPageloader/> */}
-            <Spinner />
-            <div>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Open form dialog
-                </Button>
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Subscribe</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We
-                            will send updates occasionally.
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                            variant="standard"
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose}>Subscribe</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        </div>
+        <div></div>
+        // <div className="app-container" >
+        //     <table >
+        //         <thead>
+        //             <tr>
+        //                 <th>Name</th>
+        //                 <th>Address</th>
+        //                 <th>Phone Number</th>
+        //                 <th>Email</th>
+        //             </tr>
+        //         </thead>
+        //         <tbody>
+        //             {
+        //                 contact && contact.map((val, index) => {
+
+        //                     return <tr key={index} >
+        //                         <td>{val.fullName}</td>
+        //                         <td>{val.address}</td>
+        //                         <td>{val.phoneNumber}</td>
+        //                         <td>{val.email}</td>
+        //                     </tr>
+        //                 })
+        //             }
+
+        //         </tbody>
+        //     </table>
+        // </div>
     )
 }
 
