@@ -45,7 +45,7 @@ const Settings = () => {
                                 <Link to="/Home/EmploymentType" className="list-group-item pt-1 pb-1"  >Employee Category</Link>
                                 <Link to="/Home/EarnDeduct" className="list-group-item pt-1 pb-1"  > Earning/Deduction</Link>
                                 <Link to="/Home/EarnType" className="list-group-item pt-1 pb-1"  > Earn Type Master</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Shift Master</Link>
+                                <Link to="/Home/ShiftMaster" className="list-group-item pt-1 pb-1"  > Shift Master</Link>
                                 <Link to="/Home/Grade" className="list-group-item pt-1 pb-1"  > Grade Master</Link>
                                 <Link to="/Home/State" className="list-group-item pt-1 pb-1"  > State</Link>
                                 <Link to="/Home/ReligionMaster" className="list-group-item pt-1 pb-1"  >Religion Master</Link>
