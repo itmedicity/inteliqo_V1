@@ -116,7 +116,7 @@ const EmployeeExperience = () => {
                     <div className="card-body">
                         <div className="row g-1">
                             <div className="col-md-4">
-                                <form className={classes.root} onSubmit={submitFormData}>
+                                <form onSubmit={submitFormData}>
                                     <div className="row">
                                         <div className="col-md-12">
                                             <TextInput
@@ -204,11 +204,7 @@ const EmployeeExperience = () => {
                                             />
                                         </div>
 
-                                        <div className="card-footer text-muted pl-0">
-                                            <FooterSaveClosebtn
-                                                redirect={RedirectToProfilePage}
-                                            />
-                                        </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -217,6 +213,11 @@ const EmployeeExperience = () => {
                                 <EmployeeExperienceTable update={count} />
                             </div>
                         </div>
+                    </div>
+                    <div className="card-footer text-muted pl-0">
+                        <FooterSaveClosebtn
+                            redirect={RedirectToProfilePage}
+                        />
                     </div>
                 </div>
             </PageLayout>
