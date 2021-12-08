@@ -1,4 +1,3 @@
-import { Stack } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import React, { Fragment, memo, useEffect, useState } from 'react'
@@ -98,7 +97,7 @@ const ContractInformation = () => {
             }
         }
         getcontractInformation()
-    }, [id])
+    }, [id, no])
 
     //data to close a request
     const closeData = {

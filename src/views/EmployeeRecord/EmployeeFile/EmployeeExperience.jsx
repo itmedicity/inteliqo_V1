@@ -97,8 +97,8 @@ const EmployeeExperience = () => {
             succesNofity(message)
             setformData(defaultState)
             setCount(count + 1)
-            setWorkdate(null)
-            setWorkEnddate(null)
+            setWorkdate(new Date())
+            setWorkEnddate(new Date())
             reset()
         }
         else {
@@ -139,6 +139,7 @@ const EmployeeExperience = () => {
                                                 <DatePicker
                                                     //label="Work Start Date"
                                                     name="workstartdate"
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     clearable
                                                     value={workstartdate}
@@ -165,6 +166,8 @@ const EmployeeExperience = () => {
                                                 <DatePicker
                                                     //label="Work End Date"
                                                     name="workenddate"
+                                                    minDate={new Date(workstartdate)}
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     value={workenddate}
                                                     onChange={(e) => {

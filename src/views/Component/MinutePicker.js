@@ -1,14 +1,12 @@
 import { LocalizationProvider, TimePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import { useStyles } from '../CommonCode/MaterialStyle'
 
 const MinutePicker = (props) => {
+    const { value, changeMinuteValue } = props;
     const classes = useStyles()
-    const [minutes, setMinutes] = useState(new Date());
-
-
     return (
         < LocalizationProvider dateAdapter={AdapterDateFns} >
 
@@ -17,10 +15,8 @@ const MinutePicker = (props) => {
                 views={['minutes']}
                 inputFormat="mm"
                 mask="__"
-                value={minutes}
-                onChange={(newValue) => {
-                    setMinutes(newValue);
-                }}
+                value={value}
+                onChange={changeMinuteValue}
                 InputProps={{
                     className: classes.customInputFeild
                 }}
