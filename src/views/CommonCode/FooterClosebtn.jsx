@@ -17,12 +17,14 @@ const FooterClosebtn = (props) => {
                 /> */}
                 <Chip
                     icon={
-                        <IconButton type="submit" className="p-1" >
+                        <IconButton type="submit" className="p-1"  >
                             <MdOutlineAddTask className="text-info p-0" size={22} />
                         </IconButton>
                     }
                     label="Save"
-                    style={{ cursor: "pointer" }}
+                    // style={{ cursor: "pointer" }}
+                    clickable={true}
+                    onClick={props.submit}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
@@ -33,7 +35,8 @@ const FooterClosebtn = (props) => {
                         </IconButton>
                     }
                     label="View"
-                    style={{ cursor: "pointer" }}
+                    // style={{ cursor: "pointer" }}
+                    clickable={true}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
@@ -44,8 +47,9 @@ const FooterClosebtn = (props) => {
                         </IconButton>
                     }
                     label="Close"
-                    style={{ cursor: "pointer" }}
+                    // style={{ cursor: "pointer" }}
                     onClick={props.redirect}
+                    clickable={true}
                 />
             </div>
         </div>

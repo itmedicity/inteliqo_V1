@@ -43,7 +43,7 @@ const BranchMastTable = ({ update }) => {
     return (
         <Fragment>
             <MaterialTable
-                title="Designation Type"
+                title="Branch "
                 data={tableData}
                 columns={title}
                 icons={tableIcons}

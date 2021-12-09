@@ -10,6 +10,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CourseSelectionMast from 'src/views/CommonCode/CourseSelectionMast'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const SpecializationTableEdit = () => {
     const classes = useStyles();
@@ -53,6 +54,7 @@ const SpecializationTableEdit = () => {
         spec_desc,
         cour_slno: selectCourse,
         spec_status: spec_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         spec_slno: id
     }
     const resetForm = {

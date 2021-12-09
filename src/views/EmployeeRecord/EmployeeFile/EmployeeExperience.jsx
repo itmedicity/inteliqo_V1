@@ -97,8 +97,8 @@ const EmployeeExperience = () => {
             succesNofity(message)
             setformData(defaultState)
             setCount(count + 1)
-            setWorkdate(null)
-            setWorkEnddate(null)
+            setWorkdate(new Date())
+            setWorkEnddate(new Date())
             reset()
         }
         else {
@@ -116,7 +116,7 @@ const EmployeeExperience = () => {
                     <div className="card-body">
                         <div className="row g-1">
                             <div className="col-md-4">
-                                <form className={classes.root} onSubmit={submitFormData}>
+                                <form onSubmit={submitFormData}>
                                     <div className="row">
                                         <div className="col-md-12">
                                             <TextInput
@@ -139,6 +139,7 @@ const EmployeeExperience = () => {
                                                 <DatePicker
                                                     //label="Work Start Date"
                                                     name="workstartdate"
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     clearable
                                                     value={workstartdate}
@@ -165,6 +166,8 @@ const EmployeeExperience = () => {
                                                 <DatePicker
                                                     //label="Work End Date"
                                                     name="workenddate"
+                                                    minDate={new Date(workstartdate)}
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     value={workenddate}
                                                     onChange={(e) => {
@@ -204,11 +207,7 @@ const EmployeeExperience = () => {
                                             />
                                         </div>
 
-                                        <div className="card-footer text-muted pl-0">
-                                            <FooterSaveClosebtn
-                                                redirect={RedirectToProfilePage}
-                                            />
-                                        </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -217,6 +216,11 @@ const EmployeeExperience = () => {
                                 <EmployeeExperienceTable update={count} />
                             </div>
                         </div>
+                    </div>
+                    <div className="card-footer text-muted pl-0">
+                        <FooterSaveClosebtn
+                            redirect={RedirectToProfilePage}
+                        />
                     </div>
                 </div>
             </PageLayout>

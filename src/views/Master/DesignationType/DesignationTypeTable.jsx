@@ -68,7 +68,7 @@ const DesignationTypeTable = ({ update }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
 
             />

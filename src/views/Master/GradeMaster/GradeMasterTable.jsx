@@ -6,30 +6,14 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory } from 'react-router';
 
-
-
-
-
 const GradeMasterTable = (update) => {
-
     const hsitory = useHistory()
 
     // to get table data
     const getTabledata = async (data) => {
-
         const { grade_slno } = data
-
         hsitory.push(`/Home/GradeTableEdit/${grade_slno}`)
-
-
-
-
-
     }
-
-
-
-
 
     const [tableData, setTabbleData] = useState([])
 
@@ -49,27 +33,15 @@ const GradeMasterTable = (update) => {
     useEffect(() => {
         const getabledata = async () => {
             const result = await axioslogin.get('/grade')
-
-
-
             const { success, data, message } = result.data
-
             if (success === 1) {
                 setTabbleData(data)
-
             } else {
                 infoNofity(message)
-
             }
-
         }
         getabledata();
-
-
     }, [update])
-
-
-
     return (
         <Fragment>
             <MaterialTable
@@ -88,10 +60,8 @@ const GradeMasterTable = (update) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1
+                    actionsColumnIndex: 0
                 }}
-
-
             />
         </Fragment>
     )

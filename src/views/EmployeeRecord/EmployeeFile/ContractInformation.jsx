@@ -1,4 +1,3 @@
-import { Stack } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import React, { Fragment, memo, useEffect, useState } from 'react'
@@ -6,8 +5,8 @@ import PageLayout from 'src/views/CommonCode/PageLayout'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useHistory, useParams } from 'react-router'
 import moment from 'moment';
-import { Card, CardActionArea, CardContent, CardMedia, TextField, Button } from '@material-ui/core'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { TextField, Button } from '@material-ui/core'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { addDays } from 'date-fns'
 import { employeeNumber, getSerialnumberempnumber } from 'src/views/Constant/Constant'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
@@ -17,7 +16,6 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
@@ -54,7 +52,7 @@ const ContractInformation = () => {
     //useEffect for getting employees's Contract Details
     useEffect(() => {
         const getcontractInformation = async () => {
-            const result = await axioslogin.get(`/empcontract/${id}`)
+            const result = await axioslogin.get(`/empcontract/${no}`)
             const { success, data } = result.data
             if (success === 1) {
                 const { em_cont_start, em_cont_end, em_no, em_id, em_cont_close } = data[0]
@@ -91,9 +89,15 @@ const ContractInformation = () => {
                     setformData(frmData)
                 }
             }
+            else if (success === 0) {
+                infoNofity("There Is No Contract Information Against This Employee")
+            }
+            else {
+                errorNofity("Error Occured Please Contact EDP!!!!")
+            }
         }
         getcontractInformation()
-    }, [id])
+    }, [id, no])
 
     //data to close a request
     const closeData = {
@@ -134,7 +138,7 @@ const ContractInformation = () => {
     const contractRenew = async (e) => {
         e.preventDefault();
         Setenablefield(false)
-        const result = await axioslogin.get(`/empcontract/${id}`)
+        const result = await axioslogin.get(`/empcontract/${no}`)
         const { success, data } = result.data
         if (success === 1) {
             const { cont_grace, em_cont_end } = data[0]
@@ -142,9 +146,6 @@ const ContractInformation = () => {
             if ((new Date() < result)) {
                 warningNofity('Cannot Renew Contract!!!Grace Period  not Exceeded')
                 Setenablefield(true)
-            }
-            else {
-                submitFormData(e)
             }
 
         }
@@ -154,12 +155,19 @@ const ContractInformation = () => {
         em_id: no,
         em_cont_start: moment(contractstartDate).format('YYYY-MM-DD'),
         em_cont_end: moment(contractendDate).format('YYYY-MM-DD'),
-        create_user: employeeNumber()
+        create_user: employeeNumber(),
+        em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+        em_cont_close: 'C',
+        em_cont_compl_status: 'C',
+        em_cont_renew: 'R',
+        em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+        edit_user: employeeNumber(),
     }
 
     const submitFormData = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
+        console.log(result)
         const { success, message } = result.data
         if (success === 2) {
             succesNofity(message)
@@ -183,7 +191,7 @@ const ContractInformation = () => {
         <Fragment>
             <PageLayout heading="Contract Information">
                 <div className="col-md-12">
-                    <form className={classes.root} >
+                    <form className={classes.root} onSubmit={submitFormData}>
 
                         <div className="col-md-12 row">
                             <div className="col-md-4">

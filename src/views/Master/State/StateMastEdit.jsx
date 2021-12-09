@@ -9,6 +9,7 @@ import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import NationSlnoSelection from 'src/views/CommonCode/NationSlnoSelection'
 import StateMasterTable from './StateMasterTable'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const StateMastEdit = () => {
     const history = useHistory()
@@ -52,6 +53,7 @@ const StateMastEdit = () => {
         state_name,
         state_nat_slno: selectNation,
         state_status: state_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
         state_slno: id
     }
     const resetForm = {
@@ -156,7 +158,6 @@ const StateMastEdit = () => {
                                             </Button>
                                         </div>
                                     </div>
-
                                 </div>
                             </form>
                         </div>

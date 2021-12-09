@@ -20,6 +20,7 @@ const PageLayoutSave = (props) => {
                         <div className="card-footer text-muted">
                             <FooterClosebtn
                                 redirect={props.redirect}
+                                submit={props.submit}
                             />
                         </div>
                     </div>

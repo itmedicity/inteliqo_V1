@@ -1,0 +1,31 @@
+import React from 'react'
+import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
+import { IconButton } from '@mui/material';
+// import { MdOutlineAddTask } from 'react-icons/md'
+import Chip from '@mui/material/Chip'
+
+const FooterCloseOnly = (props) => {
+    return (
+        <div className="col-md-2 col-lg-1 d-flex flex-row justify-content-md-between">
+            <div style={{ marginRight: "0.5rem" }}>
+                <Chip
+                    icon={
+                        <IconButton className="p-1" >
+                            <WrongLocationOutlinedIcon className="text-info" size={22} />
+                        </IconButton>
+                    }
+                    label="Close"
+                    onClick={props.redirect}
+                    clickable={true}
+                    sx={{
+                        minWidth: '100%',
+                        maxWidth: '105%',
+                        width: '105%'
+                    }}
+                />
+            </div>
+        </div>
+    )
+}
+
+export default FooterCloseOnly
