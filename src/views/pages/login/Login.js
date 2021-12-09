@@ -56,6 +56,7 @@ const Login = () => {
           token: data.token,
           empno: data.emp_no
         }
+        console.log(loggedDetl)
         const loggedCredential = sessionStorage.setItem('userDetl', JSON.stringify(loggedDetl));
         if (loggedCredential !== null) {
           history.push("/home")

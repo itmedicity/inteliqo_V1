@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -37,4 +37,4 @@ const ModalOne = ({ open, handleClose }) => {
     )
 }
 
-export default ModalOne
+export default memo(ModalOne)

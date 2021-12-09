@@ -11,45 +11,45 @@ import { employeeNumber } from 'src/views/Constant/Constant'
 import BankMastTable from './BankMastTable'
 
 const BankMaster = () => {
-    const classes = useStyles();
-    const [count, setCount] = useState(0);
-    const history = useHistory();
-    const [bankData, getFormdata] = useState({
-        bank_name: '',
-        bank_ifsc: '',
-        bank_address: '',
-        bank_status: false
-    });
-    const resetFrom = {
-        bank_name: '',
-        bank_ifsc: '',
-        bank_address: '',
-        bank_status: false
+  const classes = useStyles()
+  const [count, setCount] = useState(0)
+  const history = useHistory()
+  const [bankData, getFormdata] = useState({
+    bank_name: '',
+    bank_ifsc: '',
+    bank_address: '',
+    bank_status: false,
+  })
+  const resetFrom = {
+    bank_name: '',
+    bank_ifsc: '',
+    bank_address: '',
+    bank_status: false,
+  }
+  const { bank_name, bank_ifsc, bank_address, bank_status } = bankData
+  const updateFormData = (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
+    getFormdata({ ...bankData, [e.target.name]: value })
+  }
+  const postData = {
+    ...bankData,
+    bank_status: bank_status === true ? 1 : 0,
+  }
+  const postFormData = async (e) => {
+    e.preventDefault()
+    const result = await axioslogin.post('/bank', postData)
+    const { message, success } = result.data
+    if (success === 1) {
+      succesNofity(message)
+      setCount(count + 1)
+      getFormdata(resetFrom)
+    } else if (success === 0) {
+      infoNofity(message)
+    } else {
+      infoNofity(message)
     }
-    const { bank_name, bank_ifsc, bank_address, bank_status } = bankData;
-    const updateFormData = (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        getFormdata({ ...bankData, [e.target.name]: value })
-    }
-    const postData = {
-        ...bankData,
-        bank_status: bank_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
-    const postFormData = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.post('/bank', postData);
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            getFormdata(resetFrom);
-        } else if (success === 0) {
-            infoNofity(message);
-        } else {
-            infoNofity(message);
-        }
-    }
+  }
+  
     const toSettings = () => {
         history.push('/Home/Settings');
     }
@@ -154,10 +154,18 @@ const BankMaster = () => {
                             <BankMastTable update={count} />
                         </div>
                     </div>
+                  </div>
                 </div>
+              </form>
             </div>
-        </Fragment>
-    )
+            <div className="col-md-8">
+              <BankMastTable update={count} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  )
 }
 
 export default BankMaster

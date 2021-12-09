@@ -3,13 +3,13 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useHistory, useParams } from 'react-router';
 
 const QualificationTable = ({ update }) => {
     const history = useHistory();
     const [data, setTableData] = useState();
-    const { no } = useParams()
+    const { id, no } = useParams()
 
     //Table
     const title = [
@@ -34,10 +34,12 @@ const QualificationTable = ({ update }) => {
     //Get Data
     useEffect(() => {
         const getQualification = async () => {
-            const result = await axioslogin.get('/qualify')
+            const result = await axioslogin.get(`/qualify/${id}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data);
+            } else if (success === 0) {
+                infoNofity("No Qualification is added to this employee")
             } else {
                 warningNofity(" Error occured contact EDP")
             }
@@ -48,7 +50,7 @@ const QualificationTable = ({ update }) => {
     //For Edit
     const getDataTable = (data) => {
         const { emqual_slno } = data
-        history.push(`/Home/QualificationTableEdit/${emqual_slno}/${no}`)
+        history.push(`/Home/QualificationTableEdit/${emqual_slno}/${id}/${no}`)
     }
 
     return (

@@ -3,12 +3,16 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const RegionSelect = (props) => {
+const RegionSelect2 = (props) => {
     // intializing use state
     const [regiondata, setregion] = useState([]);
 
+
+
     // useContext
-    const { getregion, udateregion } = useContext(PayrolMasterContext)
+    const { getregion2, udateregion2 } = useContext(PayrolMasterContext)
+
+
 
     // useeffect 
     useEffect(() => {
@@ -21,11 +25,11 @@ const RegionSelect = (props) => {
         }
         getregiondata()
         return (
-            udateregion(0)
+            udateregion2(0)
         )
 
 
-    }, [udateregion]);
+    }, [udateregion2]);
     return (
         <Fragment>
             <FormControl
@@ -37,8 +41,8 @@ const RegionSelect = (props) => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="selectregiontype"
-                    value={getregion}
-                    onChange={(e) => udateregion(e.target.value)}
+                    value={getregion2}
+                    onChange={(e) => udateregion2(e.target.value)}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
@@ -57,8 +61,9 @@ const RegionSelect = (props) => {
 
                 </Select>
             </FormControl>
+
         </Fragment>
     )
 }
 
-export default RegionSelect
+export default RegionSelect2

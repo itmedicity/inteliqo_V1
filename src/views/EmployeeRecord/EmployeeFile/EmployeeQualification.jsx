@@ -32,6 +32,7 @@ const EmployeeQualification = () => {
     } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
 
+
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
@@ -61,7 +62,8 @@ const EmployeeQualification = () => {
 
     //Post data
     const postData = {
-        em_no: employeeNumber(),
+        em_no: id,
+        em_id: no,
         em_education: selectEducation,
         em_course: selectCourse,
         em_specialization: selectSpec,
@@ -118,82 +120,83 @@ const EmployeeQualification = () => {
     return (
         <Fragment>
             <PageLayout heading="Qualification">
-                <form onSubmit={submitQualification}>
-                    <div className="card">
-                        <div className="card-body">
-                            <div className="row g-3">
-                                <div className="col-md-4">
-                                    <div className="row g-1">
-                                        <div className="col-md-12">
-                                            <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div className="row g-1">
-                                                <div className="col-md-6 col-xs-12" >
-                                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                        <DatePicker
-                                                            views={['year']}
-                                                            name="year"
-                                                            value={year}
-                                                            onChange={(e) => { updateYear(e) }}
-                                                            InputProps={{
-                                                                className: classes.customYearFeild
-                                                            }}
-                                                            renderInput={(params) => <TextField {...params}
-                                                                fullWidth
-                                                                size="small"
-                                                                name="datepick"
-                                                                autoComplete="off"
-                                                                variant="outlined"
-                                                                helperText={null} />}
-                                                        />
-                                                    </LocalizationProvider>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <TextInput
-                                                        type="text"
-                                                        classname="form-control form-control-sm"
-                                                        Placeholder="Mark/Grade"
-                                                        value={em_mark_grade}
-                                                        name="em_mark_grade"
-                                                        changeTextValue={(e) => updateQualification(e)}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <TextInput
-                                                type="text"
-                                                classname="form-control form-control-sm"
-                                                Placeholder="Registration No"
-                                                value={em_reg_no}
-                                                name="em_reg_no"
-                                                changeTextValue={(e) => updateQualification(e)}
-                                            />
-                                        </div>
+                <form className={classes.root} onSubmit={submitQualification}>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4">
+
+                                <div className="row">
+                                    <div className="col-md-12 pt-1">
+                                        <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
+                                    <div className="col-md-12 pt-1">
+                                        <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                    </div>
+                                    <div className="col-md-6 col-xs-12 pt-1" style={{
+                                        paddingLeft: '0.5rem', paddingRight: '-0.5rem'
+                                    }} >
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DatePicker
+                                                views={['year']}
+                                                name="year"
+                                                value={year}
+                                                minDate={new Date('1990')}
+                                                maxDate={new Date('2021')}
+                                                onChange={(e) => { updateYear(e) }}
+                                                InputProps={{
+                                                    className: classes.customInputFeild
+                                                }}
+                                                renderInput={(params) => <TextField {...params}
+                                                    fullWidth
+                                                    size="small"
+                                                    name="datepick"
+                                                    autoComplete="off"
+                                                    variant="outlined"
+                                                    helperText={null} />}
+                                            />
+                                        </LocalizationProvider>
+                                    </div>
+                                    <div className="col-md-6 pt-1">
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Mark/Grade"
+                                            value={em_mark_grade}
+                                            name="em_mark_grade"
+                                            changeTextValue={(e) => updateQualification(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Registration No"
+                                            value={em_reg_no}
+                                            name="em_reg_no"
+                                            changeTextValue={(e) => updateQualification(e)}
+                                        />
+                                    </div>
+
                                 </div>
-                                <div className="col-md-8">
-                                    <QualificationTable update={count} />
-                                </div>
+
                             </div>
-                        </div>
-                        <div className="card-footer  text-muted ">
-                            <FooterSaveClosebtn
-                                redirect={toSettings}
-                            />
+                            <div className="col-md-8">
+                                <QualificationTable update={count} />
+                            </div>
+                            <div className="col-md-12 pt-1">
+                                <div className="card-footer  text-muted ">
+                                    <FooterSaveClosebtn
+                                        redirect={toSettings}
+                                    />
                         </div>
                     </div>
                 </form>
