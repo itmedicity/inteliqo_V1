@@ -3,7 +3,7 @@ import MaterialTable from 'material-table'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const EmployeeExperienceTable = ({ update }) => {
@@ -31,8 +31,8 @@ const EmployeeExperienceTable = ({ update }) => {
         },
         {
             title: 'Designation', field: 'desg_name', cellStyle: {
-                minWidth: 200,
-                maxWidth: 300
+                minWidth: 300,
+                maxWidth: 400
             }
         },
         {
@@ -69,6 +69,9 @@ const EmployeeExperienceTable = ({ update }) => {
             if (success === 1) {
                 setData(data)
 
+            }
+            else if (success === 0) {
+                infoNofity("No Experience Is added to This Employee")
             }
             else {
                 errorNofity("Error Occured,Please Contact EDP")

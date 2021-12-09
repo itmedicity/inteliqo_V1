@@ -16,15 +16,17 @@ const FooterSaveClosebtn = (props) => {
                     }
                     label="Save"
                     disabled={props.disable}
+                    clickable={true}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
                 <Chip
-                    icon={<WrongLocationOutlinedIcon
-                        className="text-info" size={22} />}
+                    icon={<IconButton className="p-1" >
+                        <WrongLocationOutlinedIcon className="text-info" size={22} />
+                    </IconButton>}
                     label="Close"
-                    style={{ cursor: "pointer" }}
                     onClick={props.redirect}
+                    clickable={true}
                 />
             </div>
         </div>

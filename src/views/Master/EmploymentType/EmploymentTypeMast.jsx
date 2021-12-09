@@ -14,11 +14,9 @@ import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Comm
 import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeMast = () => {
-
     const [cont_period, setcont_period] = useState(0)
     const [cont_grace, setcont_grace] = useState(0)
     const [desiggperiod, setdesiggperiod] = useState(0)
-
     const [data, setdata] = useState('')
     const classes = useStyles();
     const {
@@ -41,9 +39,6 @@ const EmploymentTypeMast = () => {
                 const contractdata = result.data.data[0]
                 setcont_period(contractdata.cont_period);
                 setcont_grace(contractdata.cont_grace);
-
-
-
             }
             getcontractdayrenew()
         }
@@ -53,7 +48,6 @@ const EmploymentTypeMast = () => {
                 const result = await axioslogin.get(`/empstat/${selectDesignationType}`)
                 const period = result.data.data[0]
                 setdesiggperiod(period.empstat_period)
-
             }
             getdesignationperiod();
             setdata(earntypename + '+' + designattypename)
@@ -64,7 +58,6 @@ const EmploymentTypeMast = () => {
     useEffect(() => {
 
         const getyearlysettings = async () => {
-
             const result = await axioslogin.get('/yearlyleaves')
             const { data } = result.data;
             const { max_allowed_count_cl,
@@ -98,20 +91,15 @@ const EmploymentTypeMast = () => {
                 emp_status: false,
                 cont_period: 0,
                 cont_grace: 0,
-                desiggperiod: 0
-
+                desiggperiod: 0,
             }
 
             setEmploymentData(frmdata)
-
         }
         getyearlysettings();
     }, [])
 
-
-
     // use history
-
     const history = useHistory();
     const [employmentData, setEmploymentData] = useState({
         emt_name: '',
@@ -143,8 +131,6 @@ const EmploymentTypeMast = () => {
         cont_grace: 0,
         desiggperiod: 0
     })
-
-
     const {
 
         lvetype_slno_cl,
@@ -169,18 +155,11 @@ const EmploymentTypeMast = () => {
         dayoff,
         workoff,
         emp_status } = employmentData;
-
     useEffect(() => {
-
         setEmploymentData(employmentData)
-
     }, [employmentData])
 
-
-
-
     const getEmploymentFormData = (e) => {
-
         if (selectEmployeeType === 0 && selectDesignationType === 0) {
             infoNofity("Please Select The Designation Type or EmployeeType")
         }
@@ -192,7 +171,6 @@ const EmploymentTypeMast = () => {
 
     // for submission data
     const postFormdata = {
-
         ecat_name: data,
         emp_type: selectEmployeeType,
         des_type: selectDesignationType,
@@ -258,13 +236,10 @@ const EmploymentTypeMast = () => {
     // for submission
     const submitEmploymentForm = async (e) => {
         e.preventDefault();
-
         if (cont_renw === true && contract_perd === 0) {
             infoNofity("Select contract Period")
-
         } else if (trapro === true && train_perd === 0) {
             infoNofity("Select Training Period")
-
         } else {
             const result = await axioslogin.post('/empcat', postFormdata);
             const { success, message } = result.data;
@@ -282,7 +257,6 @@ const EmploymentTypeMast = () => {
                 infoNofity(message)
             }
         }
-
     }
 
     // for close button 
@@ -293,7 +267,6 @@ const EmploymentTypeMast = () => {
     const employmentTypeTable = () => {
         history.push('/Home/EmploymentTypeList');
     }
-
     return (
         <Fragment>
             <SessionCheck />
