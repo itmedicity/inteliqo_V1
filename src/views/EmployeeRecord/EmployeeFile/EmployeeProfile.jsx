@@ -44,7 +44,7 @@ const EmployeeProfile = () => {
     }
     // Personal Information
     const personalInformation = () => {
-        history.push(`/Home/PersonalInformation/${4516}`)
+        history.push(`/Home/PersonalInformation/${id}/${no}`)
     }
     //Employee Qualification
     const EmpQualification = () => {

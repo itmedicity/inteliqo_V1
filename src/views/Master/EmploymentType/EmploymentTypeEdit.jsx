@@ -12,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { memo } from 'react'
 import Textinput from 'src/views/Component/TextInput'
+import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeEdit = () => {
 
@@ -227,7 +228,8 @@ const EmploymentTypeEdit = () => {
         category_slno: id,
         empstat_period: cont_period,
         cont_period: cont_grace,
-        cont_grace: desiggperiod
+        cont_grace: desiggperiod,
+        edit_user: employeeNumber()
 
     }
 
