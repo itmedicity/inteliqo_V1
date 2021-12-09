@@ -87,6 +87,7 @@ const EmployeeTypeTableEdit = React.lazy(() => import('./views/Master/EmployeeTy
 const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
+const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -180,6 +181,7 @@ const routes = [
   { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
+  { path: '/Home/ShiftMasterEdit/:id', exact: true, name: 'Shift Master Edit', component: ShiftMasterEdit },
 ]
 
 

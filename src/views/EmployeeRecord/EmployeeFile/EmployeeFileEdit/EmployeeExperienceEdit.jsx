@@ -1,10 +1,9 @@
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { TextField, Button } from '@mui/material'
+import { TextField } from '@mui/material'
 import { getYear } from 'date-fns'
 import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import moment from 'moment';
-import NumberFormat from 'react-number-format'
 import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayout from 'src/views/CommonCode/PageLayout'
@@ -118,8 +117,8 @@ const EmployeeExperienceEdit = () => {
         if (success === 2) {
             succesNofity(message)
             setFormData(defaultState)
-            setWorkdate(null)
-            setWorkEnddate(null)
+            setWorkdate(new Date())
+            setWorkEnddate(new Date())
             history.push(`/Home/EmployeeExperience/${id}/${no}`)
             succesNofity(message)
             reset()
@@ -165,6 +164,7 @@ const EmployeeExperienceEdit = () => {
                                                 <DatePicker
                                                     //label="Work Start Date"
                                                     name="workstartdate"
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     clearable
                                                     value={workstartdate}
@@ -191,6 +191,8 @@ const EmployeeExperienceEdit = () => {
                                                 <DatePicker
                                                     //label="Work End Date"
                                                     name="workenddate"
+                                                    minDate={new Date(workstartdate)}
+                                                    maxDate={new Date()}
                                                     type="date"
                                                     value={workenddate}
                                                     onChange={(e) => {
