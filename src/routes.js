@@ -86,6 +86,8 @@ const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster
 const EmployeeTypeTableEdit = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeTableEdit'))
 const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
+const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -154,16 +156,15 @@ const routes = [
   { path: '/Home/Specialization', exact: true, name: "Specialization Master", component: SpecializationMaster },
   { path: '/Home/SpecializationTableEdit/:id', exact: true, name: "Specialization Table Edit", component: SpecializationTableEdit },
   { path: '/Home/RegistrationType', exact: true, name: "Registration Type", component: RegistrationType },
-  { path: '/Home/QualificationTableEdit/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
+  { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
   { path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
   { path: '/Home/EmployeeQualification/:id/:no', exact: true, name: 'Qualification', component: EmployeeQualification },
-  { path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
   { path: '/Home/EmployeeExperience/:id', exact: true, name: 'Experience', component: EmployeeExperience },
   { path: '/Home/StatutoryInformation/:id/:no', exact: true, name: 'Statutory information', component: StatutoryInformation },
   { path: '/Home/ContractInformation/:id/:no', exact: true, name: 'Contract Information', component: ContractInformation },
   { path: '/Home/EmployeeCompany/:id', exact: true, name: 'Employee Company', component: EmployeeCompany },
   { path: '/Home/SalaryInformation/:id', exact: true, name: 'Salary Information', component: SalaryInformation },
-  { path: '/Home/EmployeeAllowance/:id', exact: true, name: 'Employee Allowance', component: EmployeeAllowance },
+  { path: '/Home/EmployeeAllowance/:id/:no', exact: true, name: 'Employee Allowance', component: EmployeeAllowance },
   { path: '/Home/AnnualLeaveSettings/:id', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
   { path: '/Home/EmployeeTraining/:id', exact: true, name: 'Employee Training', component: EmployeeTraining },
   { path: '/Home/SalaryIncrement/:id', exact: true, name: 'Salary Increment', component: SalaryIncrement },
@@ -178,6 +179,7 @@ const routes = [
   { path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
   { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
+  { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit }
 ]
 
 

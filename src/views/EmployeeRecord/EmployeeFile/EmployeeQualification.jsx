@@ -32,6 +32,7 @@ const EmployeeQualification = () => {
     } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
 
+
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
@@ -61,7 +62,8 @@ const EmployeeQualification = () => {
 
     //Post data
     const postData = {
-        em_no: employeeNumber(),
+        em_no: id,
+        em_id: no,
         em_education: selectEducation,
         em_course: selectCourse,
         em_specialization: selectSpec,
@@ -144,6 +146,8 @@ const EmployeeQualification = () => {
                                                 views={['year']}
                                                 name="year"
                                                 value={year}
+                                                minDate={new Date('1990')}
+                                                maxDate={new Date('2021')}
                                                 onChange={(e) => { updateYear(e) }}
                                                 InputProps={{
                                                     className: classes.customInputFeild

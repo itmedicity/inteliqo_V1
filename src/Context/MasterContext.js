@@ -70,6 +70,10 @@ const MasterContext = ({ children }) => {
     const [selectUniversity, updateUniversity] = useState(0)
     //Registration Selection
     const [selectreg, updatereg] = useState(0)
+    //Wage Description Selection
+    const [selectWage, updateWage] = useState(0)
+    //Wage Type selection
+    const [selectWageType, updateWageType] = useState(0)
 
     const value = {
         selectedDept,
@@ -138,6 +142,10 @@ const MasterContext = ({ children }) => {
         updateUniversity,
         selectreg,
         updatereg,
+        selectWage,
+        updateWage,
+        selectWageType,
+        updateWageType,
     }
     return <PayrolMasterContext.Provider value={value} >
         {children}
