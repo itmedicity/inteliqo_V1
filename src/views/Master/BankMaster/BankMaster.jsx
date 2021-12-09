@@ -7,7 +7,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { employeeNumber } from 'src/views/Constant/Constant'
 import BankMastTable from './BankMastTable'
 
 const BankMaster = () => {
