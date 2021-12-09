@@ -197,6 +197,8 @@ const EmployeeQualification = () => {
                                     <FooterSaveClosebtn
                                         redirect={toSettings}
                                     />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
