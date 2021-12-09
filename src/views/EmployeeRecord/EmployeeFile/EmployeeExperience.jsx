@@ -97,8 +97,8 @@ const EmployeeExperience = () => {
             succesNofity(message)
             setformData(defaultState)
             setCount(count + 1)
-            setWorkdate(null)
-            setWorkEnddate(null)
+            setWorkdate(new Date())
+            setWorkEnddate(new Date())
             reset()
         }
         else {
@@ -130,16 +130,15 @@ const EmployeeExperience = () => {
                                                         name="institution_name"
                                                     />
                                                 </div>
-
                                                 <div className="col-md-12">
                                                     <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
-
                                                 <div className="col-md-12" >
                                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                         <DatePicker
                                                             //label="Work Start Date"
                                                             name="workstartdate"
+                                                            maxDate={new Date()}
                                                             type="date"
                                                             clearable
                                                             value={workstartdate}
@@ -159,12 +158,13 @@ const EmployeeExperience = () => {
                                                         />
                                                     </LocalizationProvider>
                                                 </div>
-
                                                 <div className="col-md-12" >
                                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                         <DatePicker
                                                             //label="Work End Date"
                                                             name="workenddate"
+                                                            minDate={new Date(workstartdate)}
+                                                            maxDate={new Date()}
                                                             type="date"
                                                             value={workenddate}
                                                             onChange={(e) => {
@@ -179,7 +179,6 @@ const EmployeeExperience = () => {
                                                                 size="small"
                                                                 autoComplete="off"
                                                                 variant="outlined"
-                                                                className="mt-1"
                                                             />}
                                                         />
                                                     </LocalizationProvider>
@@ -206,25 +205,24 @@ const EmployeeExperience = () => {
                                                         name="gross_salary"
                                                     />
                                                 </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                            </div >
+                                        </div >
+                                    </div >
+                                </div >
                                 <div className="col-md-7">
                                     <EmployeeExperienceTable update={count} />
                                 </div>
-                            </div>
+                            </div >
 
-                        </div>
+                        </div >
                         <div className="card-footer text-muted pl-0">
                             <FooterSaveClosebtn
                                 redirect={RedirectToProfilePage}
                             />
                         </div>
-                    </form>
-                </div>
-            </PageLayout>
+                    </form >
+                </div >
+            </PageLayout >
         </Fragment >
     )
 }
