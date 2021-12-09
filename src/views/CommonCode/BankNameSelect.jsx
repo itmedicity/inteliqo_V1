@@ -4,7 +4,7 @@ import { axioslogin } from '../Axios/Axios'
 import { warningNofity } from './Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 
-const BankNameSelect = () => {
+const BankNameSelect = (props) => {
 
     const [bankname, setBankName] = useState([])
     const { selectBank, updateBankName } = useContext(PayrolMasterContext)
@@ -40,6 +40,7 @@ const BankNameSelect = () => {
                     variant="outlined"
                     className="ml-1"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Select Bank Names
