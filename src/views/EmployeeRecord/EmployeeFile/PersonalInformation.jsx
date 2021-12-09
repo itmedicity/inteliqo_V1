@@ -500,7 +500,7 @@ const PersonalInformation = () => {
                                                             </MenuItem>
                                                             <MenuItem value="1">Married</MenuItem>
                                                             <MenuItem value="2">UnMarried</MenuItem>
-                                                            <MenuItem value="2">Widow</MenuItem>
+                                                            <MenuItem value="3">Widow</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 </div>

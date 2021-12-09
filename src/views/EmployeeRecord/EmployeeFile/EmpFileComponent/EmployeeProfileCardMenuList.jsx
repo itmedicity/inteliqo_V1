@@ -27,7 +27,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     // Personal Information
     const personalInformation = () => {
-        history.push(`/Home/PersonalInformation/${4516}`)
+        history.push(`/Home/PersonalInformation/${id}/${no}`)
     }
     //Employee Qualification
     const EmpQualification = () => {
@@ -55,7 +55,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Allownace Information
     const allowance = () => {
-        history.push(`/Home/EmployeeAllowance/${4516}`)
+        history.push(`/Home/EmployeeAllowance/${id}/${no}`)
     }
     //Annual Leave Settngs
     const AnnualLeaveSettings = () => {

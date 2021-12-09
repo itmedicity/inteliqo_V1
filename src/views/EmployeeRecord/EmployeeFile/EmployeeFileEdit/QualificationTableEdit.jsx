@@ -64,11 +64,11 @@ const QualificationTableEdit = () => {
                     em_reg_no: em_reg_no
                 }
                 updateEducation(em_education)
-                updateUniversity(em_univ_institute)
                 updatereg(em_reg_type)
                 setQualification(frmdata)
                 const year = new Date(em_year, 6, 2)
                 setYear(year)
+                updateUniversity(em_univ_institute)
                 updateCourse(em_course)
                 updateSpec(em_specialization)
             }
