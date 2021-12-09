@@ -193,147 +193,141 @@ const ContractInformation = () => {
             <PageLayout heading="Contract Information">
                 <div className="col-md-12">
                     <form className={classes.root} onSubmit={submitFormData}>
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="col-md-12 row">
+                                    <div className="col-md-4">
+                                        <div className="col-md-12 pl-0" style={{
+                                            paddingLeft: '0.5rem',
+                                            paddingRight: '-0.1rem',
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    disabled={enablefiled}
+                                                    name="contractstartDate"
+                                                    type="date"
+                                                    clearable
+                                                    value={contractstartDate}
+                                                    onChange={(e) => {
+                                                        setContractStartDate(e)
+                                                        setContractEndDateforRenew()
 
-                        <div className="col-md-12 row">
-                            <div className="col-md-4">
-                                <div className="col-md-12 pl-0" style={{
-                                    paddingLeft: '0.5rem',
-                                    paddingRight: '-0.1rem',
-                                }} >
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DatePicker
-                                            disabled={enablefiled}
-                                            name="contractstartDate"
-                                            type="date"
-                                            clearable
-                                            value={contractstartDate}
-                                            onChange={(e) => {
-                                                setContractStartDate(e)
-                                                setContractEndDateforRenew()
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
 
-                                            }}
-                                            InputProps={{
-                                                className: classes.customInputFeild
-                                            }}
-                                            renderInput={(params) => <TextField {...params}
-                                                fullWidth
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12" style={{
+                                            paddingLeft: '0.5rem', paddingRight: '-0.1rem',
+                                            paddingTop: '0.5rem'
+
+                                        }} >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    disabled={enablefiled}
+                                                    name="contractendDate"
+                                                    type="date"
+                                                    clearable
+                                                    value={contractendDate}
+                                                    onChange={(e) => {
+                                                        setContractEndDate(e)
+
+                                                    }}
+                                                    InputProps={{
+                                                        className: classes.customInputFeild
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params}
+                                                        fullWidth
+                                                        size="small"
+                                                        autoComplete="off"
+                                                        variant="outlined"
+                                                    />}
+
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className="col-md-12 pl-3 " style={{
+                                            paddingLeft: '0.7rem', paddingRight: '-0.1rem',
+                                            paddingTop: '0.5rem'
+                                        }}>
+                                            <TextInput
+                                                disabled={enablefiled}
+                                                type="text"
+                                                Placeholder="Remaining Days"
+                                                classname="form-control form-control-sm"
+                                                name="remaining_days"
+                                                value={remaining_days}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-2">
+                                        <div className="col-md-12 pt-2 pl-1">
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
                                                 size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                            />}
-
-                                        />
-                                    </LocalizationProvider>
-                                </div>
-                                <div className="col-md-12" style={{
-                                    paddingLeft: '0.5rem', paddingRight: '-0.1rem',
-                                    paddingTop: '0.5rem'
-
-                                }} >
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DatePicker
-                                            disabled={enablefiled}
-                                            name="contractendDate"
-                                            type="date"
-                                            clearable
-                                            value={contractendDate}
-                                            onChange={(e) => {
-                                                setContractEndDate(e)
-
-                                            }}
-                                            InputProps={{
-                                                className: classes.customInputFeild
-                                            }}
-                                            renderInput={(params) => <TextField {...params}
                                                 fullWidth
+                                                type="Button"
+                                                disabled={enable}
+                                                onClick={contractRenew}
+                                            >
+                                                Contract Renew
+                                            </Button>
+                                        </div>
+                                        <div className="col-md-12 pt-2 pl-1">
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
                                                 size="small"
-                                                autoComplete="off"
-                                                variant="outlined"
-                                            />}
+                                                fullWidth
+                                                type="Button"
+                                                disabled={enableclose}
+                                                onClick={contractClose}
+                                            >
+                                                Contract Close
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 pb-2">
+                                        <div className="col-md-12">
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 10 }} size="small" aria-label="a dense table">
+                                                    <TableBody>
+                                                        {rows.map((row) => (
+                                                            <TableRow
+                                                                key={row.name}
+                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                            >
+                                                                <TableCell component="th" scope="row">
+                                                                    {row.name}
+                                                                </TableCell>
+                                                                <TableCell align="right">{row.calories}</TableCell>
 
-                                        />
-                                    </LocalizationProvider>
-                                </div>
-                                <div className="col-md-12 pl-3 " style={{
-                                    paddingLeft: '0.7rem', paddingRight: '-0.1rem',
-                                    paddingTop: '0.5rem'
-                                }}>
-                                    <TextInput
-                                        disabled={enablefiled}
-                                        type="text"
-                                        Placeholder="Remaining Days"
-                                        classname="form-control form-control-sm"
-                                        name="remaining_days"
-                                        value={remaining_days}
-                                    />
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="col-md-2">
-                                <div className="col-md-12 pt-2 pl-1">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Button"
-                                        disabled={enable}
-                                        onClick={contractRenew}
-                                    >
-                                        Contract Renew
-                                    </Button>
-                                </div>
-                                <div className="col-md-12 pt-2 pl-1">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Button"
-                                        disabled={enableclose}
-                                        onClick={contractClose}
-                                    >
-                                        Contract Close
-                                    </Button>
-                                </div>
+                            <div className="card-footer text-muted">
+                                <FooterSaveClosebtn
+                                    redirect={RedirectToProfilePage}
+                                    disable={enablefiled}
+                                />
                             </div>
-                            <div className="col-md-1">
-                            </div>
-                            <div className="col-md-4 pb-2">
-                                <div className="col-md-12">
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 10 }} size="small" aria-label="a dense table">
-                                            {/* <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Employee Details</TableCell>
-                                                    <TableCell align="right"></TableCell>
-
-                                                </TableRow>
-                                            </TableHead> */}
-                                            <TableBody>
-                                                {rows.map((row) => (
-                                                    <TableRow
-                                                        key={row.name}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row">
-                                                            {row.name}
-                                                        </TableCell>
-                                                        <TableCell align="right">{row.calories}</TableCell>
-
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="card-footer text-muted">
-                            <FooterSaveClosebtn
-                                redirect={RedirectToProfilePage}
-                                disable={enablefiled}
-                            />
                         </div>
                     </form>
                 </div>

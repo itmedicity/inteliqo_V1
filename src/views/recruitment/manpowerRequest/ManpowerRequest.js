@@ -1,54 +1,81 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab';
-import React, { useState } from 'react';
-import SessionCheck from 'src/views/Axios/SessionCheck';
-import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn';
-import TextInput from 'src/views/Component/TextInput';
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle';
-import { Input } from '@mui/material';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import FullPageloader from 'src/components/FullPageloader';
-import { Spinner } from 'react-bootstrap';
+import {
+    CardHeader, Divider
+} from '@mui/material';
+import React, { Fragment } from 'react';
 
+import { useParams } from 'react-router';
+import EmployeeProfileCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCard';
+import EmployeeProfileCardMenuList from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardMenuList';
+import EmployeeProfileCardFooter from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardFooter';
+import EmployeeProfileMessage from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileMessage';
+import EmployeeProfileNotification from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileNotification';
+import EmployeeProfileAlert from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileAlert';
 
 function ManpowerRequest() {
-
-
+    const empCredential = useParams()
 
     return (
-        <div></div>
-        // <div className="app-container" >
-        //     <table >
-        //         <thead>
-        //             <tr>
-        //                 <th>Name</th>
-        //                 <th>Address</th>
-        //                 <th>Phone Number</th>
-        //                 <th>Email</th>
-        //             </tr>
-        //         </thead>
-        //         <tbody>
-        //             {
-        //                 contact && contact.map((val, index) => {
+        <Fragment>
+            <div className="card "
+                style={
+                    {
+                        borderRadius: 20,
+                        top: '10%',
+                        bottom: '10%',
+                    }
+                }>
+                <CardHeader
+                    titleTypographyProps={{
+                        variant: 'button',
+                    }}
+                    title="Employee Personal  Record"
+                    sx={{
+                        textAlign: "left",
+                        paddingY: 1
+                    }}
+                />
+                <Divider variant="middle" />
+                <div className="card-body align-items-center"
+                    style={
+                        {
+                            backgroundColor: '#EEF4F7',
+                            // borderTopLeftRadius: 20,
+                            // borderTopRightRadius: 20,
+                            height: '50%'
+                        }
+                    } >
+                    <div className="row g-2 ">
+                        <div className="col-md-3 col-sm-12 d-flex justify-content-evenly">
+                            <EmployeeProfileCard />
+                        </div>
+                        <div className="col-md-9 d-flex justify-content-evenly">
+                            <div className="col-md-11 col-lg-12">
+                                <EmployeeProfileCardMenuList empid={empCredential} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="card-footer">
+                    <EmployeeProfileCardFooter />
+                </div>
+            </div>
 
-        //                     return <tr key={index} >
-        //                         <td>{val.fullName}</td>
-        //                         <td>{val.address}</td>
-        //                         <td>{val.phoneNumber}</td>
-        //                         <td>{val.email}</td>
-        //                     </tr>
-        //                 })
-        //             }
-
-        //         </tbody>
-        //     </table>
-        // </div>
+            <div className="card mt-2" style={{ borderRadius: 15 }}>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-4">
+                            <EmployeeProfileMessage />
+                        </div>
+                        <div className="col-md-4">
+                            <EmployeeProfileNotification />
+                        </div>
+                        <div className="col-md-4">
+                            <EmployeeProfileAlert />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Fragment >
     )
 }
 

@@ -168,12 +168,11 @@ const StatutoryInformation = () => {
                                                 }
                                                 label="PF"
                                             />
-
                                         </div>
                                         <div className="col-md-2 pl-0">
                                             <TextInput
                                                 type="text"
-                                                classname="form-control form-control-sm"
+                                                classname="form-control form-control-sm mt-1"
                                                 Placeholder="PF Number"
                                                 changeTextValue={(e) => updateStatutoryInformation(e)}
                                                 value={pfno}
@@ -200,7 +199,7 @@ const StatutoryInformation = () => {
                                         <div className="col-md-2 pl-0">
                                             <TextInput
                                                 type="text"
-                                                classname="form-control form-control-sm"
+                                                classname="form-control form-control-sm mt-1"
                                                 Placeholder="ESI Number"
                                                 changeTextValue={(e) => updateStatutoryInformation(e)}
                                                 value={esino}
@@ -211,7 +210,7 @@ const StatutoryInformation = () => {
                                         <div className="col-md-3 pl-0">
                                             <TextInput
                                                 type="text"
-                                                classname="form-control form-control-sm"
+                                                classname="form-control form-control-sm mt-1"
                                                 Placeholder="UAN Number"
                                                 changeTextValue={(e) => updateStatutoryInformation(e)}
                                                 value={uanno}
@@ -219,21 +218,22 @@ const StatutoryInformation = () => {
                                                 name="uanno"
                                             />
                                         </div>
-                                        <div className="col-md-3 pl-0 pt-1">
+                                        <div className="col-md-3 pl-0 pt-2">
                                             <GradeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
-                                        <div className="card-footer text-muted">
-                                            <FooterSaveEditClosebtn
-                                                edit={reset}
-                                                redirect={RedirectToProfilePage}
-                                                value={value}
-                                            />
-                                        </div>
+
                                     </div>
 
                                 </form>
                             </div>
                         </div>
+                    </div>
+                    <div className="card-footer text-muted">
+                        <FooterSaveEditClosebtn
+                            edit={reset}
+                            redirect={RedirectToProfilePage}
+                            value={value}
+                        />
                     </div>
                 </div>
             </PageLayout>
