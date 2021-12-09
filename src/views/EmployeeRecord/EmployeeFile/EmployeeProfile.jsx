@@ -72,7 +72,7 @@ const EmployeeProfile = () => {
     }
     //Allownace Information
     const allowance = () => {
-        history.push(`/Home/EmployeeAllowance/${4516}`)
+        history.push(`/Home/EmployeeAllowance/${id}/${no}`)
     }
     //Annual Leave Settngs
     const AnnualLeaveSettings = () => {
