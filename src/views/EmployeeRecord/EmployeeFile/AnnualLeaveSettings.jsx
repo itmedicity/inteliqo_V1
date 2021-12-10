@@ -6,7 +6,9 @@ import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
 import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant';
 import CalculatedOffDays from './EmpFileComponent/CalculatedOffDays';
 import CardLeaveContainer from './EmpFileComponent/CardLeaveContainer';
+import CardLeaveContainerTwo from './EmpFileComponent/CardLeaveContainerTwo';
 import CarryForwardLeaveList from './EmpFileComponent/CarryForwardLeaveList';
+import FixedOffDaysInformation from './EmpFileComponent/FixedOffDaysInformation';
 import HolidayLeaveList from './EmpFileComponent/HolidayLeaveList';
 import SickLeaveList from './EmpFileComponent/SickLeaveList';
 import './EmpStyle.css'
@@ -69,6 +71,13 @@ const AnnualLeaveSettings = () => {
         headingFour: "Taken"
     }
 
+    const FixedLeaves = {
+        mainHeading: "Fixed Off Days Information",
+        headingOne: "Leaves Name",
+        headingThee: "Allowed",
+        headingFour: "Taken"
+    }
+
     return (
         <Fragment>
             <PageLayoutProcess
@@ -104,7 +113,7 @@ const AnnualLeaveSettings = () => {
                         </CardLeaveContainer>
                     </div>
                 </div>
-                <div className="row g-1">
+                <div className="row g-1 pb-1">
                     <div className="col-md-4">
                         <CardLeaveContainer title={EarnLeave}  >
                             <Suspense fallback={<CircularProgress />} >
@@ -131,6 +140,17 @@ const AnnualLeaveSettings = () => {
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>
+                    </div>
+                </div>
+                <div className="row g-1 d-flex justify-content-center">
+                    <div className="col-md-12 col-lg-12">
+                        <CardLeaveContainerTwo title={FixedLeaves} >
+                            <Suspense fallback={<CircularProgress />} >
+                                <div className="card-casual-leave-fixed">
+                                    <FixedOffDaysInformation />
+                                </div>
+                            </Suspense>
+                        </CardLeaveContainerTwo>
                     </div>
                 </div>
             </PageLayoutProcess>

@@ -9,12 +9,6 @@ const FooterClosebtn = (props) => {
 
         <div className="col-md-2 col-sm-4 d-flex flex-row justify-content-md-between">
             <div style={{ marginRight: "0.5rem" }}>
-                {/* <Chip
-                    icon={<MdOutlineAddTask
-                        className="text-info" size={25} />}
-                    label="Save"
-                    type="submit"
-                /> */}
                 <Chip
                     icon={
                         <IconButton type="submit" className="p-1"  >

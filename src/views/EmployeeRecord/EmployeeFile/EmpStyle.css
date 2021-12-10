@@ -62,3 +62,15 @@
     height: 10rem;
     overflow: auto;
 }
+.card-casual-leave-fixed{
+    position: relative;
+    height: 6.2rem;
+    overflow: auto;
+}
+.custom-datefeild-height{
+    width:8.5rem;
+    min-height: 1.5rem;
+    max-height: 2rem;
+    height: 1.5rem;
+    padding-top: 0.1rem;
+}

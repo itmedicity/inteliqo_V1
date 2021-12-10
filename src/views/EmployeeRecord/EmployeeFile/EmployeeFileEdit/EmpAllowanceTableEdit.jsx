@@ -1,35 +1,34 @@
 import Chip from '@mui/material/Chip'
 import React, { Fragment, useState, useContext, useEffect } from 'react'
-import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
-import WagesInfoTable from './EmployeeFileTable/WagesInfoTable'
+import WagesInfoTable from '../EmployeeFileTable/WagesInfoTable'
 import { IoCheckmarkDoneSharp, IoBan } from "react-icons/io5";
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import ModalOne from 'src/views/CommonCode/ModalOne'
 import WageDescripErnDeductSelect from 'src/views/CommonCode/WageDescripErnDeductSelect'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { TextField } from '@mui/material'
+import { useHistory, useParams } from 'react-router';
+import { axioslogin } from 'src/views/Axios/Axios'
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
 import { employeeNumber } from 'src/views/Constant/Constant'
-import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 
 
-const EmployeeAllowance = () => {
-    const history = useHistory()
+const EmpAllowanceTableEdit = () => {
     const classes = useStyles();
-    const { id, no } = useParams();
+    const { slno, id, no } = useParams();
     const [open, setOpen] = React.useState(false);
+    const history = useHistory();
+    const { updateWageType, selectWage, updateWage } = useContext(PayrolMasterContext)
     const [toggle, settoggle] = useState(true)
     const [toggle_end, settoggle_end] = useState(true)
-    const { updateWageType, selectWage, updateWage } = useContext(PayrolMasterContext)
     const [monthstart, setMonthstart] = useState(new Date());
     const [monthend, setMonthend] = useState(new Date());
-    const [count, setcount] = useState(0);
 
 
     //Initializing
@@ -40,9 +39,12 @@ const EmployeeAllowance = () => {
         include_lwf: 0,
         include_protax: 0,
         em_amount: '',
-        start_month: false,
-        end_month: false
+        start_month: true,
+        end_month: true,
+        monthstart: '',
+        monthend: ''
     });
+
 
     //Destructuring
     const { earning_type_name, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
@@ -50,35 +52,37 @@ const EmployeeAllowance = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setWageType({ ...wageType, [e.target.name]: value })
     }
+
+
     //Get data 
     useEffect(() => {
-        if (selectWage !== 0) {
-            const getWageType = async () => {
-                const result = await axioslogin.get(`/common/getEarnings/${selectWage}`);
-                const { data, success } = await result.data;
-                if (success === 1) {
-                    const { earning_type_name, include_esi, include_pf, include_lwf, include_protax } = data[0]
-                    const formdata = {
-                        earning_type_name: earning_type_name,
-                        include_esi: include_esi,
-                        include_pf: include_pf,
-                        include_lwf: include_lwf,
-                        include_protax: include_protax,
-                        em_amount: '',
-                        start_month: false,
-                        end_month: false
-                    }
-                    setWageType(formdata)
+        const getWageType = async () => {
+            const result = await axioslogin.get(`/empearndeduction/select/${slno}`);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { em_salary_desc, earning_type_name, include_esi, include_pf, include_lwf, include_protax, em_amount, em_start_date, em_end_date } = data[0]
+                const formdata = {
+                    earning_type_name: earning_type_name,
+                    include_esi: include_esi,
+                    include_pf: include_pf,
+                    include_lwf: include_lwf,
+                    include_protax: include_protax,
+                    em_amount: em_amount,
+                    start_month: false,
+                    end_month: false,
                 }
-                else {
-                }
+                updateWage(em_salary_desc)
+                setWageType(formdata)
+                setMonthstart(em_start_date)
+                setMonthend(em_end_date)
             }
-            getWageType()
-            return (
-                updateWageType(0)
-            )
+            else {
+            }
         }
-    }, [updateWageType, selectWage]);
+        getWageType()
+        updateWage(0)
+    }, [slno, updateWage]);
+
 
     //start month update function
     const updateMonthstart = (val) => {
@@ -94,14 +98,13 @@ const EmployeeAllowance = () => {
     const month_end = moment(monthend).format('YYYY-MM-DD')
 
     // post data
-    const postData = {
-        em_no: id,
-        em_id: no,
+    const updateData = {
         em_salary_desc: selectWage,
         em_amount: em_amount,
         em_start_date: month_start,
         em_end_date: month_end,
-        create_user: employeeNumber(),
+        edit_user: employeeNumber(),
+        ernded_slno: slno
     }
 
     //Form reset
@@ -125,26 +128,18 @@ const EmployeeAllowance = () => {
 
     const submitAllowance = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/empearndeduction', postData)
+        const result = await axioslogin.patch('/empearndeduction', updateData)
         const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1)
+        if (success === 2) {
             setWageType(resetForm);
+            history.push(`/Home/EmployeeAllowance/${id}/${no}`)
+            succesNofity(message);
             reset();
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
             infoNofity(message)
         }
-    }
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
     }
 
     const startmonth = async (e) => {
@@ -155,6 +150,14 @@ const EmployeeAllowance = () => {
         e.target.value === 'false' ? settoggle_end(false) : settoggle_end(true)
     }
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+    const RedirectToProfilePage = () => {
+        history.push(`/Home/Profile/${id}/${no}`)
+    }
     return (
         <Fragment>
             <ModalOne open={open} handleClose={handleClose} />
@@ -225,8 +228,8 @@ const EmployeeAllowance = () => {
                                                 <Chip
                                                     size="small"
                                                     icon={include_lwf === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
-                                                    color={include_lwf === 1 ? "success" : "error"}
                                                     label={include_lwf === 1 ? "LWF" : "LWF"}
+                                                    color={include_lwf === 1 ? "success" : "error"}
                                                     variant="outlined"
                                                     clickable={true}
                                                     sx={{
@@ -252,7 +255,7 @@ const EmployeeAllowance = () => {
                                         </div>
                                         {/* 
                                         In Default thiese dates are disabled state. 
-
+                                        
                                     */}
                                         <div className="row g-1 d-flex flex-row justify-content-between align-items-center">
                                             <div className="col-md-5 ">
@@ -326,6 +329,7 @@ const EmployeeAllowance = () => {
                                                             className: classes.customInputFeild
                                                         }}
                                                         renderInput={(params) => <TextField {...params}
+
                                                         />}
                                                     />
                                                 </LocalizationProvider>
@@ -338,7 +342,7 @@ const EmployeeAllowance = () => {
                     </div>
                     <div className="col-md-7">
                         <div className="card">
-                            <WagesInfoTable update={count} />
+                            <WagesInfoTable />
                         </div>
                     </div>
                 </div>
@@ -347,5 +351,4 @@ const EmployeeAllowance = () => {
     )
 }
 
-export default EmployeeAllowance
-
+export default EmpAllowanceTableEdit

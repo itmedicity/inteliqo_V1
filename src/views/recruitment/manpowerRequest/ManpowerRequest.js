@@ -1,84 +1,81 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab';
-import React, { useState } from 'react';
-import SessionCheck from 'src/views/Axios/SessionCheck';
-import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn';
-import TextInput from 'src/views/Component/TextInput';
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle';
-import { Input } from '@mui/material';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import FullPageloader from 'src/components/FullPageloader';
-import { Spinner } from 'react-bootstrap';
+import {
+    CardHeader, Divider
+} from '@mui/material';
+import React, { Fragment } from 'react';
+
+import { useParams } from 'react-router';
+import EmployeeProfileCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCard';
+import EmployeeProfileCardMenuList from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardMenuList';
+import EmployeeProfileCardFooter from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardFooter';
+import EmployeeProfileMessage from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileMessage';
+import EmployeeProfileNotification from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileNotification';
+import EmployeeProfileAlert from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileAlert';
 
 function ManpowerRequest() {
-
-    // const [textval, setTextVal] = useState("true")
-
-    // const submitFormData = () => {
-
-    // }
-
-    // const [workstartdate, setWorkdate] = useState(new Date())
-    // const [workenddate, setWorkEnddate] = useState(new Date())
-    // //setting work start Date
-    // const setWorkstartdate = (val) => {
-    //     setWorkdate(val)
-    // }
-    // //setting work End Date
-    // const setWorkenddate = (val) => {
-    //     setWorkEnddate(val)
-    // }
-
-    const classes = useStyles()
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const empCredential = useParams()
 
     return (
-        <div>
-            <SessionCheck />
-            {/* <FullPageloader/> */}
-            <Spinner />
-            <div>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    Open form dialog
-                </Button>
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Subscribe</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We
-                            will send updates occasionally.
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                            variant="standard"
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose}>Subscribe</Button>
-                    </DialogActions>
-                </Dialog>
+        <Fragment>
+            <div className="card "
+                style={
+                    {
+                        borderRadius: 20,
+                        top: '10%',
+                        bottom: '10%',
+                    }
+                }>
+                <CardHeader
+                    titleTypographyProps={{
+                        variant: 'button',
+                    }}
+                    title="Employee Personal  Record"
+                    sx={{
+                        textAlign: "left",
+                        paddingY: 1
+                    }}
+                />
+                <Divider variant="middle" />
+                <div className="card-body align-items-center"
+                    style={
+                        {
+                            backgroundColor: '#EEF4F7',
+                            // borderTopLeftRadius: 20,
+                            // borderTopRightRadius: 20,
+                            height: '50%'
+                        }
+                    } >
+                    <div className="row g-2 ">
+                        <div className="col-md-3 col-sm-12 d-flex justify-content-evenly">
+                            <EmployeeProfileCard />
+                        </div>
+                        <div className="col-md-9 d-flex justify-content-evenly">
+                            <div className="col-md-11 col-lg-12">
+                                <EmployeeProfileCardMenuList empid={empCredential} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="card-footer">
+                    <EmployeeProfileCardFooter />
+                </div>
             </div>
-        </div>
+
+            <div className="card mt-2" style={{ borderRadius: 15 }}>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-4">
+                            <EmployeeProfileMessage />
+                        </div>
+                        <div className="col-md-4">
+                            <EmployeeProfileNotification />
+                        </div>
+                        <div className="col-md-4">
+                            <EmployeeProfileAlert />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Fragment >
     )
 }
 

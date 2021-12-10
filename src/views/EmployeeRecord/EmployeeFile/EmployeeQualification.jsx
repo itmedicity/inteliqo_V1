@@ -32,6 +32,7 @@ const EmployeeQualification = () => {
     } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
 
+
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
@@ -61,7 +62,8 @@ const EmployeeQualification = () => {
 
     //Post data
     const postData = {
-        em_no: employeeNumber(),
+        em_no: id,
+        em_id: no,
         em_education: selectEducation,
         em_course: selectCourse,
         em_specialization: selectSpec,
@@ -124,16 +126,16 @@ const EmployeeQualification = () => {
                             <div className="col-md-4">
 
                                 <div className="row">
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-6 col-xs-12 pt-1" style={{
@@ -144,6 +146,8 @@ const EmployeeQualification = () => {
                                                 views={['year']}
                                                 name="year"
                                                 value={year}
+                                                minDate={new Date('1990')}
+                                                maxDate={new Date('2021')}
                                                 onChange={(e) => { updateYear(e) }}
                                                 InputProps={{
                                                     className: classes.customInputFeild
@@ -168,10 +172,10 @@ const EmployeeQualification = () => {
                                             changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-12 pt-1">
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
@@ -188,7 +192,7 @@ const EmployeeQualification = () => {
                             <div className="col-md-8">
                                 <QualificationTable update={count} />
                             </div>
-                            <div className="col-md-12 pt-2">
+                            <div className="col-md-12 pt-1">
                                 <div className="card-footer  text-muted ">
                                     <FooterSaveClosebtn
                                         redirect={toSettings}

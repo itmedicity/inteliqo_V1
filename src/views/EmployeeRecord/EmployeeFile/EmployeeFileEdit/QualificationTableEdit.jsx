@@ -22,7 +22,7 @@ import TextInput from 'src/views/Component/TextInput'
 const QualificationTableEdit = () => {
     const history = useHistory()
     const classes = useStyles()
-    const { id, no } = useParams()
+    const { slno, id, no } = useParams()
     const { selectEducation, updateEducation,
         selectCourse, updateCourse,
         selectSpec, updateSpec,
@@ -34,8 +34,8 @@ const QualificationTableEdit = () => {
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
-        // em_course: '',
-        // em_specialization: '',
+        em_course: '',
+        em_specialization: '',
         em_univ_institute: '',
         em_year: '',
         em_mark_grade: '',
@@ -53,7 +53,7 @@ const QualificationTableEdit = () => {
     //Get data by ID
     useEffect(() => {
         const getUniversity = async () => {
-            const result = await axioslogin.get(`/qualify/select/${id}`)
+            const result = await axioslogin.get(`/qualify/select/${slno}`)
             const { success, data } = result.data
             if (success === 1) {
                 const { em_education, em_course, em_specialization, em_univ_institute,
@@ -64,17 +64,19 @@ const QualificationTableEdit = () => {
                     em_reg_no: em_reg_no
                 }
                 updateEducation(em_education)
-                updateUniversity(em_univ_institute)
                 updatereg(em_reg_type)
                 setQualification(frmdata)
                 const year = new Date(em_year, 6, 2)
                 setYear(year)
+                updateUniversity(em_univ_institute)
                 updateCourse(em_course)
                 updateSpec(em_specialization)
             }
+            else {
+            }
         }
         getUniversity()
-    }, [id, updateEducation, updateCourse, updateSpec, updateUniversity, updatereg])
+    }, [slno, updateEducation, updateCourse, updateSpec, updateUniversity, updatereg])
 
     //Year update function
     const updateYear = (val) => {
@@ -95,7 +97,7 @@ const QualificationTableEdit = () => {
         em_reg_type: selectreg,
         em_reg_no,
         edit_user: employeeNumber(),
-        emqual_slno: id
+        emqual_slno: slno
     }
     //Form reset
     const resetForm = {
@@ -138,7 +140,7 @@ const QualificationTableEdit = () => {
     const toSettings = () => {
         updateCourse(0)
         updateSpec(0)
-        history.push(`/Home/Profile/${employeeNumber()}/${no}`);
+        history.push(`/Home/Profile/${id}/${no}`);
     }
 
     return (

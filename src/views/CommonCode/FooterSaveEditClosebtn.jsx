@@ -10,29 +10,36 @@ const FooterSaveEditClosebtn = (props) => {
         <div className="col-md-2 col-sm-4 d-flex flex-row justify-content-md-between">
             <Chip
                 icon={
-                    <IconButton type="submit" >
+                    <IconButton type="submit" className="p-1" >
                         <MdOutlineAddTask className="text-info p-0" size={22} />
                     </IconButton>
                 }
                 label="Save"
+                clickable={true}
             />
-            <div style={{ marginRight: "0.5rem" }}>
+            <div style={{ marginRight: "0.5rem", marginLeft: "0.5rem" }}>
                 <Chip
-                    icon={<ModeEditIcon className="text-info" size={22} />}
+                    icon={
+                        <IconButton className="p-1" >
+                            <ModeEditIcon className="text-info" size={22} />
+                        </IconButton>
+                    }
                     label="Edit"
-                    style={{ cursor: "pointer" }}
-                    type="Button"
                     onClick={edit}
                     value={value}
+                    clickable={true}
                 />
             </div>
             <div style={{ marginRight: "0.5rem" }}>
                 <Chip
-                    icon={<WrongLocationOutlinedIcon
-                        className="text-info" size={22} />}
+                    icon={
+                        <IconButton className="p-1" >
+                            <WrongLocationOutlinedIcon className="text-info" size={22} />
+                        </IconButton>
+                    }
                     label="Close"
-                    style={{ cursor: "pointer" }}
                     onClick={redirect}
+                    clickable={true}
                 />
             </div>
         </div>

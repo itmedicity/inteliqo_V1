@@ -1,27 +1,19 @@
+import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment } from 'react'
-import { CardContent, CardMedia } from '@material-ui/core'
-import { Card, Button, CardActionArea, CardActions, Stack } from '@mui/material'
-import Typography from '@mui/material/Typography';
-import ProfilePic from '../../../assets/images/abhi.JPG'
-import Avatar from '@mui/material/Avatar';
-import { useHistory } from 'react-router';
+import ProfilePic from '../../../../assets/images/abhi.JPG'
 
 const EmployeeProfileCard = () => {
-    const history = useHistory()
-    const toEmplyeeFile = () => {
-        history.push('/Home/EmployeeFile')
-    }
     return (
         <Fragment>
-            <Card sx={{ maxWidth: 345 }}>
-                <CardActionArea >
+            <Card sx={{ maxWidth: 280, borderRadius: 8, boxShadow: 10 }}>
+                <CardActionArea>
                     <CardMedia>
                         <Stack
                             direction="row"
                             spacing={3}
                             justifyContent="center"
                             alignItems="center"
-                            sx={{ paddingTop: 4, backgroundColor: "#2f5c89", paddingBottom: 4 }} >
+                            sx={{ paddingTop: 4, paddingBottom: 4 }} >
                             <Avatar
                                 alt="Remy Sharp"
                                 src={ProfilePic}
@@ -29,8 +21,7 @@ const EmployeeProfileCard = () => {
                             />
                         </Stack>
                     </CardMedia>
-
-                    <CardContent>
+                    <CardContent className="d-flex flex-column justify-content-center  align-items-center" >
                         <Typography gutterBottom variant="h5" component="div">
                             Abhijith A
                         </Typography>
@@ -42,12 +33,8 @@ const EmployeeProfileCard = () => {
                             species, ranging across all continents except Antarctica
                         </Typography>
                     </CardContent>
+
                 </CardActionArea>
-                <CardActions>
-                    <Button size="small" color="primary" onClick={toEmplyeeFile} >
-                        Home
-                    </Button>
-                </CardActions>
             </Card>
         </Fragment>
     )
