@@ -68,7 +68,7 @@ const EmployeeProfile = () => {
     }
     //Salary Information
     const SalaryInformation = () => {
-        history.push(`/Home/SalaryInformation/${4516}`)
+        history.push(`/Home/SalaryInformation/${id}/${no}`)
     }
     //Allownace Information
     const allowance = () => {
