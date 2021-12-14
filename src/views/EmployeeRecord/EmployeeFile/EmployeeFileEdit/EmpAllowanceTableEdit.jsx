@@ -39,6 +39,7 @@ const EmpAllowanceTableEdit = () => {
         include_lwf: 0,
         include_protax: 0,
         em_amount: '',
+        last_amount: '',
         start_month: true,
         end_month: true,
         monthstart: '',
@@ -47,7 +48,7 @@ const EmpAllowanceTableEdit = () => {
 
 
     //Destructuring
-    const { earning_type_name, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
+    const { earning_type_name, last_amount, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
     const updateAllowance = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setWageType({ ...wageType, [e.target.name]: value })
@@ -68,6 +69,7 @@ const EmpAllowanceTableEdit = () => {
                     include_lwf: include_lwf,
                     include_protax: include_protax,
                     em_amount: em_amount,
+                    last_amount: em_amount,
                     start_month: false,
                     end_month: false,
                 }
@@ -97,14 +99,18 @@ const EmpAllowanceTableEdit = () => {
     //moment end month
     const month_end = moment(monthend).format('YYYY-MM-DD')
 
+
     // post data
     const updateData = {
+        em_id: no,
         em_salary_desc: selectWage,
         em_amount: em_amount,
+        last_wage: last_amount,
         em_start_date: month_start,
         em_end_date: month_end,
         edit_user: employeeNumber(),
-        ernded_slno: slno
+        ernded_slno: slno,
+
     }
 
     //Form reset
@@ -123,7 +129,6 @@ const EmpAllowanceTableEdit = () => {
     const reset = () => {
         updateWageType(0);
         updateWage(0);
-
     }
 
     const submitAllowance = async (e) => {
@@ -193,6 +198,14 @@ const EmpAllowanceTableEdit = () => {
                                                 value={em_amount}
                                                 name="em_amount"
                                                 changeTextValue={(e) => updateAllowance(e)}
+                                            />
+                                            <input
+                                                type="text"
+                                                className="hiddenvalue"
+                                                value={last_amount}
+                                                name="last_amount"
+                                                hidden
+                                                onChange={(e) => updateAllowance(e)}
                                             />
                                         </div>
                                         <div className="d-flex align-items-center" >

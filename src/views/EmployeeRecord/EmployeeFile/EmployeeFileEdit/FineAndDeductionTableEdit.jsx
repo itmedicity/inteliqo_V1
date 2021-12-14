@@ -1,28 +1,28 @@
 import { Chip, IconButton, Tooltip } from '@mui/material'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { MdOutlineAddCircleOutline } from 'react-icons/md'
-import { useHistory, useParams } from 'react-router'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import FineTypeSelection from 'src/views/CommonCode/FineTypeSelection'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
-import { employeeNumber, getFineSlno, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import ModelAddFineMaster from './EmpFileComponent/ModelAddFineMaster'
-import FineAndDeductionTable from './EmployeeFileTable/FineAndDeductionTable'
+import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { differenceInMonths, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { useHistory, useParams } from 'react-router'
+import { MdOutlineAddCircleOutline } from 'react-icons/md'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
+import FineAndDeductionTable from '../EmployeeFileTable/FineAndDeductionTable'
+import ModelAddFineMaster from '../EmpFileComponent/ModelAddFineMaster'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 
-const FineorDeduction = () => {
+const FineAndDeductionTableEdit = () => {
     const history = useHistory()
     const [open, setOpen] = useState(false);
-    const { id, no } = useParams();
+    const { slno, id, no } = useParams();
     const { selectFine, updateFine } = useContext(PayrolMasterContext)
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
-    const [count, setcount] = useState()
     const [period, setPeriod] = useState(0)
-    const [serialno, getSerialno] = useState(0)
+
+    //initializing
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
         fine_amount: '',
@@ -35,11 +35,36 @@ const FineorDeduction = () => {
         setFineDed({ ...fineDed, [e.target.name]: value })
     }
 
+    useEffect(() => {
+        const getFineDed = async () => {
+            const result = await axioslogin.get(`/empfinededuction/select/${slno}`);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { fine_type, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark } = data[0]
+                const formdata = {
+                    fine_descp: fine_descp,
+                    fine_amount: fine_amount,
+                    fine_remark: fine_remark
+                }
+                updateFine(fine_type)
+                setMonthstart(format(new Date(fine_start), "yyyy-MM-dd"))
+                setMonthend(format(new Date(fine_end), "yyyy-MM-dd"))
+                setPeriod(fine_period)
+                setFineDed(formdata)
+            }
+            else {
+            }
+        }
+        getFineDed()
+        updateFine(0)
+    }, [slno, updateFine]);
 
     const getstart = (e) => {
         var startfine = e.target.value
         var fine_start = format(new Date(startfine), "yyyy-MM-dd")
         setMonthstart(fine_start)
+        const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
+        setPeriod(fine_period)
         return (fine_start)
     }
 
@@ -47,26 +72,13 @@ const FineorDeduction = () => {
         var endfine = e.target.value
         var fine_end = format(new Date(endfine), "yyyy-MM-dd")
         setMonthend(fine_end)
+        const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
+        setPeriod(fine_period)
         return (fine_end)
     }
 
-    useEffect(() => {
-        const setPerd = () => {
-            const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
-            setPeriod(fine_period)
-        }
-        setPerd()
-    }, [fineend, finestart])
-
-
-    getFineSlno().then((val) => {
-        const fineslno = val;
-        getSerialno(fineslno)
-    })
-    const postData = {
-        fine_emp_no: id,
-        fine_emp_id: no,
-        fine_slno: serialno,
+    //post Data
+    const updateData = {
         fine_type: selectFine,
         fine_descp: fine_descp,
         fine_amount: fine_amount,
@@ -74,8 +86,8 @@ const FineorDeduction = () => {
         fine_end: fineend,
         fine_period: period,
         fine_remark: fine_remark,
-        fine_create_user: employeeNumber(),
-        fine_status: '0'
+        fine_edit_user: employeeNumber(),
+        fine_slno: slno
     }
 
     const resetForm = {
@@ -96,12 +108,12 @@ const FineorDeduction = () => {
 
     const submitFine = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/empfinededuction', postData)
+        const result = await axioslogin.patch('/empfinededuction', updateData)
         const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1)
+        if (success === 2) {
             setFineDed(resetForm);
+            history.push(`/Home/FineorDeduction/${id}/${no}`);
+            succesNofity(message);
             reset()
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
@@ -114,7 +126,6 @@ const FineorDeduction = () => {
         setOpen(true);
         history.push(`/Home/FineorDeduction/${id}/${no}`);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -147,6 +158,7 @@ const FineorDeduction = () => {
                                             <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
                                                 <MdOutlineAddCircleOutline className="text-danger" size={30}
                                                 />
+
                                             </IconButton>
                                         </Tooltip>
                                     </div>
@@ -158,6 +170,7 @@ const FineorDeduction = () => {
                                             value={fine_descp}
                                             name="fine_descp"
                                             changeTextValue={(e) => updateFineDed(e)}
+
                                         />
                                     </div>
                                     <div className="col-md-6">
@@ -250,12 +263,13 @@ const FineorDeduction = () => {
                         </div>
                     </div>
                     <div className="col-md-7">
-                        <FineAndDeductionTable update={count} />
+                        <FineAndDeductionTable />
                     </div>
                 </div>
+
             </PageLayoutSave>
         </Fragment>
     )
 }
 
-export default FineorDeduction
+export default FineAndDeductionTableEdit
