@@ -1,6 +1,6 @@
 import { Switch, Typography, Stack, IconButton } from '@mui/material'
-import React, { Fragment } from 'react'
-import { useHistory } from 'react-router'
+import React, { Fragment, useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import TextInput from 'src/views/Component/TextInput'
 import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant'
@@ -8,51 +8,64 @@ import './EmpStyle.css'
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import SalaryIncrementMainCard from './EmpFileComponent/SalaryIncrementMainCard'
 import FixedWagesSalaryIncre from './EmpFileComponent/FixedWagesSalaryIncre'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 
 const SalaryIncrement = () => {
     const history = useHistory()
-    // const classes = useStyles();
+    const { id, no } = useParams()
     const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${4516}/${4516}`)
+        history.push(`/Home/Profile/${id}/${no}`)
     }
-
-    const list = [
-        {
-            desc: "Basic+Dearness Allowance",
-            amount: 20000.00,
-            lastChange: "01-12-2021 12:32 AM",
-            startFrom: "01-12-2021",
-            increment: true
-        },
-        {
-            desc: "House Rent Allowance",
-            amount: 10000.00,
-            lastChange: "01-12-2021 12:32 AM",
-            startFrom: "01-12-2021",
-            increment: false
-        },
-        {
-            desc: "Travel Allowance",
-            amount: 2000.00,
-            lastChange: "01-12-2021 12:32 AM",
-            startFrom: "01-12-2021",
-            increment: true
-        },
-        {
-            desc: "Refreshment",
-            amount: 2000.00,
-            lastChange: "01-12-2021 12:32 AM",
-            startFrom: "01-12-2021",
-            increment: false
-        },
-        {
-            desc: "Over Time",
-            amount: 200.00,
-            lastChange: "01-12-2021 12:32 AM",
-            startFrom: "01-12-2021",
-            increment: true
+    const [fixedWages, setFixedwages] = useState([])
+    const [Earnings, setEarnings] = useState([])
+    const [Deduction, setDeduction] = useState([])
+    useEffect(() => {
+        const getFixedWages = async () => {
+            const result = await axioslogin.get(`/common/getfixedwagesSalary/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                setFixedwages(data)
+            }
+            else if (success === 0) {
+                infoNofity('No Fixed wages is set to this employee')
+            }
+            else {
+                warningNofity('Error Occured!!!Please Contact EDP')
+            }
         }
-    ]
+        getFixedWages()
+        const getFixedEarnings = async () => {
+            const result = await axioslogin.get(`/common/getfixedearnings/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                setEarnings(data)
+
+            }
+            else if (success === 0) {
+
+            }
+            else {
+                warningNofity('Error Occured!!!Please Contact EDP')
+            }
+        }
+        getFixedEarnings()
+        const getFixeddeduction = async () => {
+            const result = await axioslogin.get(`/common/getfixeddeduction/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                setDeduction(data)
+            }
+            else if (success === 0) {
+
+            }
+            else {
+                warningNofity('Error Occured!!!Please Contact EDP')
+            }
+        }
+        getFixeddeduction()
+    }, [id])
+
 
     return (
         <Fragment>
@@ -64,17 +77,18 @@ const SalaryIncrement = () => {
                     <div className="col-md-12">
                         <SalaryIncrementMainCard wageName="Fixed Wages" >
                             {
-                                list.map((value, index) => {
-                                    return <FixedWagesSalaryIncre value={value} key={index} />
+                                fixedWages.map((value, index) => {
+                                    return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
+
                             }
                         </SalaryIncrementMainCard>
                     </div>
                     <div className="col-md-12">
                         <SalaryIncrementMainCard wageName="Earnings">
                             {
-                                list.map((value, index) => {
-                                    return <FixedWagesSalaryIncre value={value} key={index} />
+                                Earnings.map((value, index) => {
+                                    return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
                             }
                         </SalaryIncrementMainCard>
@@ -82,8 +96,8 @@ const SalaryIncrement = () => {
                     <div className="col-md-12">
                         <SalaryIncrementMainCard wageName="Deducation">
                             {
-                                list.map((value, index) => {
-                                    return <FixedWagesSalaryIncre value={value} key={index} />
+                                Deduction.map((value, index) => {
+                                    return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
                             }
                         </SalaryIncrementMainCard>

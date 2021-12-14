@@ -1,197 +1,45 @@
 import { Typography } from '@material-ui/core';
-import React, { Fragment, Suspense, useEffect } from 'react'
-import { useHistory } from 'react-router';
-import FullPageloader from 'src/components/FullPageloader';
-import { useStyles } from 'src/views/CommonCode/MaterialStyle';
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import React, { Fragment, memo, useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router';
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
+import AmendmentStatus from './EmpFileComponent/AmendmentStatus';
+import DeductedWages from './EmpFileComponent/DeductedWages';
+import DeductionStatus from './EmpFileComponent/DeductionStatus';
+import EarnedWages from './EmpFileComponent/EarnedWages';
+import EarningStatus from './EmpFileComponent/EarningStatus';
+import FixedWageSalary from './EmpFileComponent/FixedWageSalary';
+import PreviousAmendChanges from './EmpFileComponent/PreviousAmendChanges';
+import WageStatus from './EmpFileComponent/WageStatus';
 import './EmpStyle.css'
 
 const SalaryInformation = () => {
     const history = useHistory()
-    const classes = useStyles();
+    const { id, no } = useParams()
     const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${4516}/${4516}`)
+        history.push(`/Home/Profile/${id}/${no}`)
     }
-
-    const fixedWages = [
-        {
-            name: "Basic+Dearness Allowance",
-            amount: "20000.00"
-        },
-        {
-            name: "House Rent Allowance",
-            amount: "1500.00"
-        },
-        {
-            name: "Travel Allowance",
-            amount: "1000.00"
-        },
-        {
-            name: "Refreshment",
-            amount: "2000.00"
-        },
-        {
-            name: "Over Time",
-            amount: "500.00"
-        },
-        {
-            name: "Others",
-            amount: "1000.00"
-        },
-    ]
-
-    const ament = [
-        {
-            name: "Basic+Dearness Allowance",
-            amount: "20000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "House Rent Allowance",
-            amount: "1500.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Travel Allowance",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Refreshment",
-            amount: "2000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Over Time",
-            amount: "500.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-        {
-            name: "Others",
-            amount: "1000.00",
-            date: "01-12-2021 08:35 AM"
-        },
-
-    ]
-
+    //use State For sum of fixe wages
+    const [sumfixedwages, setSumfixedwages] = useState(0)
+    //use State For sum of earning
+    const [sumearning, setSumearning] = useState(0)
+    //use State For sum of deduction
+    const [sumdeduction, sumDeduction] = useState(0)
+    //use State for Gross Salary
+    const [Grosssalary, setGrosssalary] = useState(0)
+    //use State for fixed wage status
+    const [FixedWage, setFixedWageState] = useState(0)
+    const [EarnStatus, setEarnStatus] = useState(0)
+    const [DeductStatus, SetDeductionStatus] = useState(0)
+    const [AmendStatus, SetAmendStatus] = useState(0)
+    useEffect(() => {
+        //calculating gross salary
+        const gross_slary = sumfixedwages + sumearning - sumdeduction
+        setGrosssalary(gross_slary)
+    }, [sumdeduction, sumearning, sumfixedwages])
+    //calculating gross salary
     return (
         <Fragment>
-            <PageLayoutSave
+            <PageLayoutCloseOnly
                 heading="Employee Wages Information"
                 redirect={RedirectToProfilePage}
             >
@@ -199,62 +47,48 @@ const SalaryInformation = () => {
                     <div className="col-md-6">
                         <div className="card" >
                             <div className="card-header py-0">
-                                <Typography variant="body1" gutterBottom className="my-0" >
-                                    Fixed Wages
-                                </Typography>
+                                <div className="d-flex justify-content-between">
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        Fixed Wages
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        {sumfixedwages}
+                                    </Typography>
+                                </div>
                             </div>
-                            <ul className="list-group list-group-flush">
-                                <Suspense fallback={<FullPageloader />} >
-                                    {
-                                        fixedWages.map((val) => {
-                                            return <li className="list-group-item py-0" key={val.name}>
-                                                <div className="d-flex justify-content-between"  >
-                                                    <div>{val.name}</div>
-                                                    <div>{val.amount}</div>
-                                                </div>
-                                            </li>;
-                                        })
-                                    }
-                                </Suspense>
-                            </ul>
+                            <div className="card-salary-information">
+                                {FixedWage == 1 ? <WageStatus /> : <FixedWageSalary emno={id} sumoffixedwage={setSumfixedwages} fixedwagestate={setFixedWageState} />}
+                            </div>
                         </div>
                         <div className="card" >
                             <div className="card-header py-0">
-                                <Typography variant="body1" gutterBottom className="my-0" >
-                                    Earnings
-                                </Typography>
+                                <div className="d-flex justify-content-between">
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        Earnings
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        {sumearning}
+                                    </Typography>
+                                </div>
                             </div>
-                            <ul className="list-group list-group-flush">
-                                {
-                                    fixedWages.map((val) => {
-                                        return <li className="list-group-item py-0" key={val.name}>
-                                            <div className="d-flex justify-content-between"  >
-                                                <div>{val.name}</div>
-                                                <div>{val.amount}</div>
-                                            </div>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
+                            <div className="card-salary-information">
+                                {EarnStatus == 1 ? <EarningStatus /> : <EarnedWages emno={id} sumoferanedwages={setSumearning} earningstatus={setEarnStatus} />}
+                            </div>
                         </div>
                         <div className="card" >
                             <div className="card-header py-0">
-                                <Typography variant="body1" gutterBottom className="my-0" >
-                                    Deduction
-                                </Typography>
+                                <div className="d-flex justify-content-between">
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        Deduction
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom className="my-0" >
+                                        {-sumdeduction}
+                                    </Typography>
+                                </div>
                             </div>
-                            <ul className="list-group list-group-flush">
-                                {
-                                    fixedWages.map((val) => {
-                                        return <li className="list-group-item py-0" key={val.name}>
-                                            <div className="d-flex justify-content-between"  >
-                                                <div>{val.name}</div>
-                                                <div>{val.amount}</div>
-                                            </div>
-                                        </li>;
-                                    })
-                                }
-                            </ul>
+                            <div className="card-salary-information">
+                                {DeductStatus == 1 ? <DeductionStatus /> : <DeductedWages emno={id} sumofdeductsalary={sumDeduction} deductstatus={SetDeductionStatus} />}
+                            </div>
                         </div>
                         <div className="card" >
                             <div className="card-header py-0">
@@ -264,7 +98,7 @@ const SalaryInformation = () => {
                                             Gross Salary
                                         </Typography>
                                     </div>
-                                    <div>250000.00</div>
+                                    <div>{Grosssalary}</div>
                                 </div>
                             </div>
                         </div>
@@ -291,28 +125,16 @@ const SalaryInformation = () => {
                                     </div>
                                 </div>
                                 <div className="previousAmentWindow">
-                                    <ul className="list-group list-group-flush ">
-                                        {
-                                            ament.map((val, index) => {
-                                                return <li className="list-group-item py-0" key={index}>
-                                                    <div className="d-md-flex d-sm-flex justify-content-between " >
-                                                        <div className="col-md-6 text-start" >{val.name}</div>
-                                                        <div className="col-md-4 text-start">{val.date}</div>
-                                                        <div className="col-md-2 text-end">{val.amount}</div>
-                                                    </div>
-                                                </li>;
-                                            })
-                                        }
-                                    </ul>
+                                    {AmendStatus == 1 ? <AmendmentStatus /> : <PreviousAmendChanges emp_id={no} amendStatus={SetAmendStatus} />}
                                 </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-            </PageLayoutSave>
+            </PageLayoutCloseOnly>
         </Fragment>
     )
 }
 
-export default SalaryInformation
+export default memo(SalaryInformation)
