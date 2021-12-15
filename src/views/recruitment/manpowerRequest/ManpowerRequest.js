@@ -1,77 +1,52 @@
-import {
-    CardHeader, Divider
-} from '@mui/material';
 import React, { Fragment } from 'react';
-
-import { useParams } from 'react-router';
-import EmployeeProfileCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCard';
-import EmployeeProfileCardMenuList from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardMenuList';
-import EmployeeProfileCardFooter from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardFooter';
-import EmployeeProfileMessage from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileMessage';
-import EmployeeProfileNotification from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileNotification';
-import EmployeeProfileAlert from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileAlert';
+import { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import { axioslogin } from 'src/views/Axios/Axios';
 
 function ManpowerRequest() {
-    const empCredential = useParams()
+
+    const [name, setName] = useState()
+    const [file, setFile] = useState()
+
+    const uploadFile = async () => {
+        const data = new FormData();
+        data.append("name", name)
+        data.append("file", file)
+        console.log(data)
+
+        const result = await axioslogin.post('/upload/upload', data)
+
+        console.log(result);
+    }
+
+
 
     return (
         <Fragment>
-            <div className="card "
-                style={
-                    {
-                        borderRadius: 20,
-                        top: '10%',
-                        bottom: '10%',
-                    }
-                }>
-                <CardHeader
-                    titleTypographyProps={{
-                        variant: 'button',
-                    }}
-                    title="Employee Personal  Record"
-                    sx={{
-                        textAlign: "left",
-                        paddingY: 1
-                    }}
-                />
-                <Divider variant="middle" />
-                <div className="card-body align-items-center"
-                    style={
-                        {
-                            backgroundColor: '#EEF4F7',
-                            // borderTopLeftRadius: 20,
-                            // borderTopRightRadius: 20,
-                            height: '50%'
-                        }
-                    } >
-                    <div className="row g-2 ">
-                        <div className="col-md-3 col-sm-12 d-flex justify-content-evenly">
-                            <EmployeeProfileCard />
-                        </div>
-                        <div className="col-md-9 d-flex justify-content-evenly">
-                            <div className="col-md-11 col-lg-12">
-                                <EmployeeProfileCardMenuList empid={empCredential} />
+            <div className="container">
+                <div className="card">
+                    <div className="card-body">
+                        <form>
+                            <div className='d-flex justify-content-evenly'>
+                                <div>
+                                    <label htmlFor="name">Name</label>
+                                    <input type="text" id="name" onChange={(e) => setName(e.target.value)} autoComplete='off' />
+                                </div>
+                                <div>
+                                    <label htmlFor="file">File</label>
+                                    <input type="file" id="file" accept='.jpg' onChange={
+                                        (e) => {
+                                            const file = e.target.files[0]
+                                            setFile(file)
+                                        }
+                                    }
+                                    />
+                                </div>
+                                <div>
+                                    <Button onClick={uploadFile}  >Upload</Button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="card-footer">
-                    <EmployeeProfileCardFooter />
-                </div>
-            </div>
-
-            <div className="card mt-2" style={{ borderRadius: 15 }}>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <EmployeeProfileMessage />
-                        </div>
-                        <div className="col-md-4">
-                            <EmployeeProfileNotification />
-                        </div>
-                        <div className="col-md-4">
-                            <EmployeeProfileAlert />
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

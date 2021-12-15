@@ -42,3 +42,5 @@ export const CARD_SUB_HEADER_COLOR = {
 
 export const TEXT_MUTED = "#c7c7c7"
 export const TEXT_DARK = "#000000"
+
+export const PUBLIC_NAS_FOLDER = "http://localhost/NAS/"
