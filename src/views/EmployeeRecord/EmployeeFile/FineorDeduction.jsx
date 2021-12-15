@@ -31,28 +31,28 @@ const FineorDeduction = () => {
         fine_status: ''
     })
 
+    //Destructuring
     const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
     const updateFineDed = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setFineDed({ ...fineDed, [e.target.name]: value })
     }
 
+    //Status setting
     const updateStatusCollect = (e) => {
         setStatus(1)
     }
-
     const updateStatusPending = (e) => {
         setStatus(0)
     }
 
-
+    //month format
     const getstart = (e) => {
         var startfine = e.target.value
         var fine_start = format(new Date(startfine), "yyyy-MM-dd")
         setMonthstart(fine_start)
         return (fine_start)
     }
-
     const getend = (e) => {
         var endfine = e.target.value
         var fine_end = format(new Date(endfine), "yyyy-MM-dd")
@@ -68,10 +68,13 @@ const FineorDeduction = () => {
         setPerd()
     }, [fineend, finestart, fine_status])
 
+
+    //get serial no
     getFineSlno().then((val) => {
         const fineslno = val;
         getSerialno(fineslno)
     })
+
     const postData = {
         fine_emp_no: id,
         fine_emp_id: no,
@@ -103,6 +106,7 @@ const FineorDeduction = () => {
         setMonthend(format(new Date(), "yyyy-MM-dd"));
     }
 
+    //Submit data
     const submitFine = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/empfinededuction', postData)

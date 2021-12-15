@@ -79,7 +79,6 @@ const FineAndDeductionTable = ({ update, collected }) => {
                     showFirstLastPageButtons: false,
                     padding: "dense",
                     actionsColumnIndex: 0
-                    //showTitle: false,
                 }}
             />
         </Fragment>

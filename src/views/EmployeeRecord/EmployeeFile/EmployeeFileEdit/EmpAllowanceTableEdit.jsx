@@ -18,7 +18,6 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
 import { employeeNumber } from 'src/views/Constant/Constant'
 
-
 const EmpAllowanceTableEdit = () => {
     const classes = useStyles();
     const { slno, id, no } = useParams();
@@ -29,7 +28,6 @@ const EmpAllowanceTableEdit = () => {
     const [toggle_end, settoggle_end] = useState(true)
     const [monthstart, setMonthstart] = useState(new Date());
     const [monthend, setMonthend] = useState(new Date());
-
 
     //Initializing
     const [wageType, setWageType] = useState({
@@ -46,14 +44,12 @@ const EmpAllowanceTableEdit = () => {
         monthend: ''
     });
 
-
     //Destructuring
     const { earning_type_name, last_amount, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
     const updateAllowance = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setWageType({ ...wageType, [e.target.name]: value })
     }
-
 
     //Get data 
     useEffect(() => {
@@ -86,11 +82,10 @@ const EmpAllowanceTableEdit = () => {
     }, [slno, updateWage]);
 
 
-    //start month update function
+    // month update function
     const updateMonthstart = (val) => {
         setMonthstart(val)
     }
-    // end month update function
     const updateMonthend = (val) => {
         setMonthend(val)
     }
@@ -98,7 +93,6 @@ const EmpAllowanceTableEdit = () => {
     const month_start = moment(monthstart).format('YYYY-MM-DD')
     //moment end month
     const month_end = moment(monthend).format('YYYY-MM-DD')
-
 
     // post data
     const updateData = {
@@ -126,12 +120,12 @@ const EmpAllowanceTableEdit = () => {
         start_month: false,
         end_month: false
     }
-
     const reset = () => {
         updateWageType(0);
         updateWage(0);
     }
 
+    //Update data
     const submitAllowance = async (e) => {
         e.preventDefault();
         const result = await axioslogin.patch('/empearndeduction', updateData)
@@ -151,19 +145,18 @@ const EmpAllowanceTableEdit = () => {
     const startmonth = async (e) => {
         e.target.value === 'false' ? settoggle(false) : settoggle(true)
     }
-
     const endmonth = async (e) => {
         e.target.value === 'false' ? settoggle_end(false) : settoggle_end(true)
     }
 
+    //Redirect
     const handleClose = () => {
         setOpen(false);
     };
-
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
+
     return (
         <Fragment>
             <ModalOne open={open} handleClose={handleClose} />

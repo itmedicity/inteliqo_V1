@@ -31,21 +31,22 @@ const FineAndDeductionTableEdit = () => {
         fine_status: ''
     })
 
-    const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
+    //Destructuring
+    const { fine_descp, fine_amount, fine_remark } = fineDed
     const updateFineDed = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setFineDed({ ...fineDed, [e.target.name]: value })
     }
 
+    //Set status fot table display
     const updateStatusCollect = (e) => {
         setStatus(1)
     }
-
     const updateStatusPending = (e) => {
         setStatus(0)
     }
 
-
+    //Get data
     useEffect(() => {
         const getFineDed = async () => {
             const result = await axioslogin.get(`/empfinededuction/select/${slno}`);
@@ -71,6 +72,7 @@ const FineAndDeductionTableEdit = () => {
         updateFine(0)
     }, [slno, updateFine]);
 
+    //Month fformtating and period calculation
     const getstart = (e) => {
         var startfine = e.target.value
         var fine_start = format(new Date(startfine), "yyyy-MM-dd")
@@ -79,7 +81,6 @@ const FineAndDeductionTableEdit = () => {
         setPeriod(fine_period)
         return (fine_start)
     }
-
     const getend = (e) => {
         var endfine = e.target.value
         var fine_end = format(new Date(endfine), "yyyy-MM-dd")
@@ -101,7 +102,6 @@ const FineAndDeductionTableEdit = () => {
         fine_edit_user: employeeNumber(),
         fine_slno: slno
     }
-
     const resetForm = {
         fine_descp: '',
         fine_amount: '',
@@ -110,7 +110,6 @@ const FineAndDeductionTableEdit = () => {
         fine_period: '',
         fine_remark: ''
     }
-
     const reset = () => {
         updateFine(0);
         setPeriod(0);
@@ -118,6 +117,7 @@ const FineAndDeductionTableEdit = () => {
         setMonthend(format(new Date(), "yyyy-MM-dd"));
     }
 
+    //Update data
     const submitFine = async (e) => {
         e.preventDefault();
         const result = await axioslogin.patch('/empfinededuction', updateData)
@@ -134,6 +134,7 @@ const FineAndDeductionTableEdit = () => {
         }
     }
 
+    //Redirection
     const handleClickOpen = () => {
         setOpen(true);
         history.push(`/Home/FineorDeduction/${id}/${no}`);
@@ -141,7 +142,6 @@ const FineAndDeductionTableEdit = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
@@ -170,7 +170,6 @@ const FineAndDeductionTableEdit = () => {
                                             <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
                                                 <MdOutlineAddCircleOutline className="text-danger" size={30}
                                                 />
-
                                             </IconButton>
                                         </Tooltip>
                                     </div>
@@ -182,7 +181,6 @@ const FineAndDeductionTableEdit = () => {
                                             value={fine_descp}
                                             name="fine_descp"
                                             changeTextValue={(e) => updateFineDed(e)}
-
                                         />
                                     </div>
                                     <div className="col-md-6">
@@ -280,7 +278,6 @@ const FineAndDeductionTableEdit = () => {
                         <FineAndDeductionTable collected={status} />
                     </div>
                 </div>
-
             </PageLayoutSave>
         </Fragment>
     )

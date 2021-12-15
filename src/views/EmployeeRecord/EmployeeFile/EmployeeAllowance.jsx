@@ -49,6 +49,7 @@ const EmployeeAllowance = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setWageType({ ...wageType, [e.target.name]: value })
     }
+
     //Get data 
     useEffect(() => {
         if (selectWage !== 0) {
@@ -116,12 +117,12 @@ const EmployeeAllowance = () => {
         start_month: false,
         end_month: false
     }
-
     const reset = () => {
         updateWageType(0);
         updateWage(0);
     }
 
+    //Submit data
     const submitAllowance = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/empearndeduction', postData)
@@ -138,18 +139,18 @@ const EmployeeAllowance = () => {
         }
     }
 
+    //Redirection
     const handleClose = () => {
         setOpen(false);
     };
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
 
+    //reset disable in date selection
     const startmonth = async (e) => {
         e.target.value === 'false' ? settoggle(false) : settoggle(true)
     }
-
     const endmonth = async (e) => {
         e.target.value === 'false' ? settoggle_end(false) : settoggle_end(true)
     }
