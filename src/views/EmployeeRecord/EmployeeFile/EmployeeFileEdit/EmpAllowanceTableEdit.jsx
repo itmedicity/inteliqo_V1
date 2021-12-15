@@ -122,6 +122,7 @@ const EmpAllowanceTableEdit = () => {
         include_lwf: 0,
         include_protax: 0,
         em_amount: 0,
+        last_amount: 0,
         start_month: false,
         end_month: false
     }

@@ -22,17 +22,27 @@ const FineorDeduction = () => {
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
     const [period, setPeriod] = useState(0)
+    const [status, setStatus] = useState(0)
     const [serialno, getSerialno] = useState(0)
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
         fine_amount: '',
-        fine_remark: ''
+        fine_remark: '',
+        fine_status: ''
     })
 
-    const { fine_descp, fine_amount, fine_remark } = fineDed
+    const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
     const updateFineDed = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setFineDed({ ...fineDed, [e.target.name]: value })
+    }
+
+    const updateStatusCollect = (e) => {
+        setStatus(1)
+    }
+
+    const updateStatusPending = (e) => {
+        setStatus(0)
     }
 
 
@@ -56,8 +66,7 @@ const FineorDeduction = () => {
             setPeriod(fine_period)
         }
         setPerd()
-    }, [fineend, finestart])
-
+    }, [fineend, finestart, fine_status])
 
     getFineSlno().then((val) => {
         const fineslno = val;
@@ -214,16 +223,25 @@ const FineorDeduction = () => {
                                             name="fine_remark"
                                             changeTextValue={(e) => updateFineDed(e)}
                                         />
+                                        <input
+                                            type="text"
+                                            className="hiddenvalue"
+                                            value={fine_status}
+                                            name="fine_status"
+                                            hidden
+                                            onChange={(e) => updateFineDed(e)}
+                                        />
                                     </div>
                                     <div className="d-flex justify-content-evenly" >
                                         <div className="col-md-4" >
                                             <Chip
                                                 size="small"
-                                                // icon={value === 0 ? <IoCheckmarkDoneSharp /> : <IoBan />}
+                                                // icon={fine_status === 0 ? <IoCheckmarkDoneSharp /> : <IoBan />}
                                                 label="Collected"
                                                 color="secondary"
                                                 variant="outlined"
                                                 clickable={true}
+                                                onClick={(e) => updateStatusCollect(e)}
                                                 sx={{
                                                     minWidth: '90%',
                                                     maxWidth: '90%'
@@ -233,11 +251,12 @@ const FineorDeduction = () => {
                                         <div className="col-md-4" >
                                             <Chip
                                                 size="small"
-                                                // icon={value === 0 ? <IoCheckmarkDoneSharp /> : <IoBan />}
+                                                //icon={fine_status === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
                                                 label="Pending"
                                                 color="secondary"
                                                 variant="outlined"
                                                 clickable={true}
+                                                onClick={(e) => updateStatusPending(e)}
                                                 sx={{
                                                     minWidth: '90%',
                                                     maxWidth: '90%'
@@ -250,7 +269,8 @@ const FineorDeduction = () => {
                         </div>
                     </div>
                     <div className="col-md-7">
-                        <FineAndDeductionTable update={count} />
+                        <FineAndDeductionTable update={count}
+                            collected={status} />
                     </div>
                 </div>
             </PageLayoutSave>

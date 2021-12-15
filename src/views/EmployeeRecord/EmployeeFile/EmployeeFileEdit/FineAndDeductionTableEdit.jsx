@@ -21,30 +21,42 @@ const FineAndDeductionTableEdit = () => {
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
     const [period, setPeriod] = useState(0)
+    const [status, setStatus] = useState(0)
 
     //initializing
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
         fine_amount: '',
-        fine_remark: ''
+        fine_remark: '',
+        fine_status: ''
     })
 
-    const { fine_descp, fine_amount, fine_remark } = fineDed
+    const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
     const updateFineDed = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setFineDed({ ...fineDed, [e.target.name]: value })
     }
+
+    const updateStatusCollect = (e) => {
+        setStatus(1)
+    }
+
+    const updateStatusPending = (e) => {
+        setStatus(0)
+    }
+
 
     useEffect(() => {
         const getFineDed = async () => {
             const result = await axioslogin.get(`/empfinededuction/select/${slno}`);
             const { success, data } = result.data;
             if (success === 1) {
-                const { fine_type, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark } = data[0]
+                const { fine_type, fine_status, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark } = data[0]
                 const formdata = {
                     fine_descp: fine_descp,
                     fine_amount: fine_amount,
-                    fine_remark: fine_remark
+                    fine_remark: fine_remark,
+                    fine_status: fine_status
                 }
                 updateFine(fine_type)
                 setMonthstart(format(new Date(fine_start), "yyyy-MM-dd"))
@@ -237,6 +249,7 @@ const FineAndDeductionTableEdit = () => {
                                                 color="secondary"
                                                 variant="outlined"
                                                 clickable={true}
+                                                onClick={(e) => updateStatusCollect(e)}
                                                 sx={{
                                                     minWidth: '90%',
                                                     maxWidth: '90%'
@@ -251,6 +264,7 @@ const FineAndDeductionTableEdit = () => {
                                                 color="secondary"
                                                 variant="outlined"
                                                 clickable={true}
+                                                onClick={(e) => updateStatusPending(e)}
                                                 sx={{
                                                     minWidth: '90%',
                                                     maxWidth: '90%'
@@ -263,7 +277,7 @@ const FineAndDeductionTableEdit = () => {
                         </div>
                     </div>
                     <div className="col-md-7">
-                        <FineAndDeductionTable />
+                        <FineAndDeductionTable collected={status} />
                     </div>
                 </div>
 
