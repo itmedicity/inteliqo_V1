@@ -51,7 +51,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Salary Information
     const SalaryInformation = () => {
-        history.push(`/Home/SalaryInformation/${4516}`)
+        history.push(`/Home/SalaryInformation/${id}/${no}`)
     }
     //Allownace Information
     const allowance = () => {
@@ -67,7 +67,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Salary Increment Settings
     const SalaryIncrementSettings = () => {
-        history.push(`/Home/SalaryIncrement/${4516}`)
+        history.push(`/Home/SalaryIncrement/${id}/${no}`)
     }
     //Employee document checklist
     const Employeedocumentchecklist = () => {
