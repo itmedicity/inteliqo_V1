@@ -51,3 +51,6 @@ export const getFineSlno = async () => {
         return serial_current.serial_current
     }
 }
+
+export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
+

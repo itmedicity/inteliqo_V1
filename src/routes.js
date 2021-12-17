@@ -165,12 +165,17 @@ const routes = [
   { path: '/Home/EmployeeExperience/:id', exact: true, name: 'Experience', component: EmployeeExperience },
   { path: '/Home/StatutoryInformation/:id/:no', exact: true, name: 'Statutory information', component: StatutoryInformation },
   { path: '/Home/ContractInformation/:id/:no', exact: true, name: 'Contract Information', component: ContractInformation },
+<<<<<<< HEAD
   { path: '/Home/EmployeeCompany/:id/:no', exact: true, name: 'Employee Company', component: EmployeeCompany },
   { path: '/Home/SalaryInformation/:id', exact: true, name: 'Salary Information', component: SalaryInformation },
+=======
+  { path: '/Home/EmployeeCompany/:id', exact: true, name: 'Employee Company', component: EmployeeCompany },
+  { path: '/Home/SalaryInformation/:id/:no', exact: true, name: 'Salary Information', component: SalaryInformation },
+>>>>>>> ebcf69d733063367d2550b9da0a035a9c2c6b7d2
   { path: '/Home/EmployeeAllowance/:id/:no', exact: true, name: 'Employee Allowance', component: EmployeeAllowance },
   { path: '/Home/AnnualLeaveSettings/:id', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
   { path: '/Home/EmployeeTraining/:id', exact: true, name: 'Employee Training', component: EmployeeTraining },
-  { path: '/Home/SalaryIncrement/:id', exact: true, name: 'Salary Increment', component: SalaryIncrement },
+  { path: '/Home/SalaryIncrement/:id/:no', exact: true, name: 'Salary Increment', component: SalaryIncrement },
   { path: '/Home/EmployeeDocumentChecklist/:id', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },
   { path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },

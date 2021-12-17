@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
+import { Card, CardActionArea, Avatar, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { useHistory } from 'react-router'
 import HttpsIcon from '@mui/icons-material/Https';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
@@ -23,7 +23,7 @@ const EmployeeProfileCardMenuList = (props) => {
     const history = useHistory()
 
     const appplicationform = () => {
-        history.push(`/Home/ApplicationForm/${4516}`)
+        // history.push(`/Home/ApplicationForm/${4516}`)
     }
     // Personal Information
     const personalInformation = () => {
@@ -51,7 +51,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Salary Information
     const SalaryInformation = () => {
-        history.push(`/Home/SalaryInformation/${4516}`)
+        history.push(`/Home/SalaryInformation/${id}/${no}`)
     }
     //Allownace Information
     const allowance = () => {
@@ -63,27 +63,27 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee Training
     const EmployeeTrainingInformation = () => {
-        history.push(`/Home/EmployeeTraining/${4516}`)
+        // history.push(`/Home/EmployeeTraining/${4516}`)
     }
     //Salary Increment Settings
     const SalaryIncrementSettings = () => {
-        history.push(`/Home/SalaryIncrement/${4516}`)
+        history.push(`/Home/SalaryIncrement/${id}/${no}`)
     }
     //Employee document checklist
     const Employeedocumentchecklist = () => {
-        history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
+        // history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
     }
     //Vaccination Information
     const Vaccinationinformation = () => {
-        history.push(`/Home/VaccinationInformation/${4516}`)
+        // history.push(`/Home/VaccinationInformation/${4516}`)
     }
     //fine or other deduction
     const fineorotherdeduction = () => {
-        history.push(`/Home/FineorDeduction/${id}/${no}`)
+        // history.push(`/Home/FineorDeduction/${id}/${no}`)
     }
     //employee end of service
     const endofservice = () => {
-        history.push(`/Home/EmployeeEndofService/${4516}`)
+        // history.push(`/Home/EmployeeEndofService/${4516}`)
     }
     return (
         <Fragment>

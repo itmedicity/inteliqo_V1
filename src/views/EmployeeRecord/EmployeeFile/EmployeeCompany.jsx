@@ -8,12 +8,18 @@ import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelec
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
+<<<<<<< HEAD
+=======
+// import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
+import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+>>>>>>> ebcf69d733063367d2550b9da0a035a9c2c6b7d2
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import EmpCompanyTable from './EmployeeFileTable/EmpCompanyTable'
 
 const EmployeeCompany = () => {
     const history = useHistory()
+<<<<<<< HEAD
     const { id, no } = useParams();
     const { selectBranchMast, updateBranchSelected,
         selectedDept, updateSelected,
@@ -81,6 +87,9 @@ const EmployeeCompany = () => {
     }
 
     //Redirect
+=======
+    // const classes = useStyles();
+>>>>>>> ebcf69d733063367d2550b9da0a035a9c2c6b7d2
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }

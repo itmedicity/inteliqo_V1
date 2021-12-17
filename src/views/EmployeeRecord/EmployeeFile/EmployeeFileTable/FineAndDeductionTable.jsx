@@ -50,8 +50,13 @@ const FineAndDeductionTable = ({ update, collected }) => {
                 warningNofity(" Error occured contact EDP")
             }
         }
+<<<<<<< HEAD
         getFineDeduction()
     }, [update, postdata]);
+=======
+        getFineDeduction();
+    }, [id, update, collected, postdata]);
+>>>>>>> ebcf69d733063367d2550b9da0a035a9c2c6b7d2
 
     //For Edit
     const getDataTable = (data) => {
