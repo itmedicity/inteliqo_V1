@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import TokenAuth from './Context/TokenAuth'
 import './scss/style.scss'
 import Protected from './views/Protected/Protected'
+require('dotenv').config()
 
 const loading = (
   <div className="pt-3 text-center">
