@@ -10,7 +10,7 @@ function ManpowerRequest() {
 
     const uploadFile = async () => {
         const data = new FormData();
-        data.append("name", name)
+        data.append("em_id", name)
         data.append("file", file)
         console.log(data)
 
@@ -18,8 +18,6 @@ function ManpowerRequest() {
 
         console.log(result);
     }
-
-
 
     return (
         <Fragment>
@@ -43,7 +41,7 @@ function ManpowerRequest() {
                                     />
                                 </div>
                                 <div>
-                                    <Button onClick={uploadFile}  >Upload</Button>
+                                    <Button onClick={uploadFile} >Upload</Button>
                                 </div>
                             </div>
                         </form>

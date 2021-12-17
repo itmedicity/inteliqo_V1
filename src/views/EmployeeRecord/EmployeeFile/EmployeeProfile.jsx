@@ -60,7 +60,7 @@ const EmployeeProfile = () => {
                     </div>
                 </div>
                 <div className="card-footer">
-                    <EmployeeProfileCardFooter />
+                    <EmployeeProfileCardFooter id={empCredential} />
                 </div>
             </div>
 
