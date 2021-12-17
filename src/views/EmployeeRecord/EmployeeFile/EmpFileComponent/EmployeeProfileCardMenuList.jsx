@@ -23,7 +23,7 @@ const EmployeeProfileCardMenuList = (props) => {
     const history = useHistory()
 
     const appplicationform = () => {
-        history.push(`/Home/ApplicationForm/${4516}`)
+        // history.push(`/Home/ApplicationForm/${4516}`)
     }
     // Personal Information
     const personalInformation = () => {
@@ -63,7 +63,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee Training
     const EmployeeTrainingInformation = () => {
-        history.push(`/Home/EmployeeTraining/${4516}`)
+        // history.push(`/Home/EmployeeTraining/${4516}`)
     }
     //Salary Increment Settings
     const SalaryIncrementSettings = () => {
@@ -71,19 +71,19 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee document checklist
     const Employeedocumentchecklist = () => {
-        history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
+        // history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
     }
     //Vaccination Information
     const Vaccinationinformation = () => {
-        history.push(`/Home/VaccinationInformation/${4516}`)
+        // history.push(`/Home/VaccinationInformation/${4516}`)
     }
     //fine or other deduction
     const fineorotherdeduction = () => {
-        history.push(`/Home/FineorDeduction/${id}/${no}`)
+        // history.push(`/Home/FineorDeduction/${id}/${no}`)
     }
     //employee end of service
     const endofservice = () => {
-        history.push(`/Home/EmployeeEndofService/${4516}`)
+        // history.push(`/Home/EmployeeEndofService/${4516}`)
     }
     return (
         <Fragment>

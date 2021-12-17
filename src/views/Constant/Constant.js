@@ -52,5 +52,5 @@ export const getFineSlno = async () => {
     }
 }
 
-export const PUBLIC_NAS_FOLDER = "http://localhost/NAS/"
+export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
 
