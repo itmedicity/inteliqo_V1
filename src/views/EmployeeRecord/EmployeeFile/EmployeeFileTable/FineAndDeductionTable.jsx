@@ -29,7 +29,6 @@ const FineAndDeductionTable = ({ update, collected }) => {
         {
             title: "Amount", field: "fine_amount", cellStyle: { minWidth: 150, maxWidth: 200 }
         },
-
         {
             title: "Remark", field: "fine_remark", cellStyle: { minWidth: 350, maxWidth: 450 }
         },
@@ -51,8 +50,8 @@ const FineAndDeductionTable = ({ update, collected }) => {
                 warningNofity(" Error occured contact EDP")
             }
         }
-        getFineDeduction();
-    }, [id, update, collected]);
+        getFineDeduction()
+    }, [update, postdata]);
 
     //For Edit
     const getDataTable = (data) => {

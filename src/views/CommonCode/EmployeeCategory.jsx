@@ -1,5 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
@@ -58,4 +58,4 @@ const EmployeeCategory = (props) => {
     )
 }
 
-export default EmployeeCategory
+export default memo(EmployeeCategory)

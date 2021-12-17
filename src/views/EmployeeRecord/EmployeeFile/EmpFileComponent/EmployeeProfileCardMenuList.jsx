@@ -47,7 +47,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee Company
     const EmployeeCompany = () => {
-        history.push(`/Home/EmployeeCompany/${4516}`)
+        history.push(`/Home/EmployeeCompany/${id}/${no}`)
     }
     //Salary Information
     const SalaryInformation = () => {
