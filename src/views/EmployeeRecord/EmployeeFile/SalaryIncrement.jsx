@@ -1,11 +1,7 @@
-import { Switch, Typography, Stack, IconButton } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import TextInput from 'src/views/Component/TextInput'
-import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant'
 import './EmpStyle.css'
-import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import SalaryIncrementMainCard from './EmpFileComponent/SalaryIncrementMainCard'
 import FixedWagesSalaryIncre from './EmpFileComponent/FixedWagesSalaryIncre'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -65,8 +61,10 @@ const SalaryIncrement = () => {
         }
         getFixeddeduction()
     }, [id])
-
-
+    //use Memo
+    const fixedwage = useMemo(() => fixedWages, [fixedWages])
+    const earning = useMemo(() => Earnings, [Earnings])
+    const deducted = useMemo(() => Deduction, [Deduction])
     return (
         <Fragment>
             <PageLayoutCloseOnly
@@ -77,7 +75,7 @@ const SalaryIncrement = () => {
                     <div className="col-md-12">
                         <SalaryIncrementMainCard wageName="Fixed Wages" >
                             {
-                                fixedWages.map((value, index) => {
+                                fixedwage.map((value, index) => {
                                     return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
 
@@ -87,16 +85,16 @@ const SalaryIncrement = () => {
                     <div className="col-md-12">
                         <SalaryIncrementMainCard wageName="Earnings">
                             {
-                                Earnings.map((value, index) => {
+                                earning.map((value, index) => {
                                     return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
                             }
                         </SalaryIncrementMainCard>
                     </div>
                     <div className="col-md-12">
-                        <SalaryIncrementMainCard wageName="Deducation">
+                        <SalaryIncrementMainCard wageName="Deduction">
                             {
-                                Deduction.map((value, index) => {
+                                deducted.map((value, index) => {
                                     return <FixedWagesSalaryIncre value={value} key={index} emno={id} emid={no} />
                                 })
                             }

@@ -22,7 +22,7 @@ const EarnedWages = ({ emno, sumoferanedwages, earningstatus }) => {
             }
         }
         getFixedEarnings()
-    }, [emno, sumoferanedwages])
+    }, [emno, sumoferanedwages, earningstatus])
     //earning 
     const earnsalary = useMemo(() => Earnings, [Earnings]);
     return (

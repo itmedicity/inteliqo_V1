@@ -24,7 +24,7 @@ const FixedWageSalary = ({ emno, sumoffixedwage, fixedwagestate }) => {
             }
         }
         getFixedWages()
-    }, [emno, sumoffixedwage])
+    }, [emno, sumoffixedwage, fixedwagestate])
 
     //use Memofixed Wages
     const fixedwage = useMemo(() => fixedWages, [fixedWages]);
@@ -34,7 +34,7 @@ const FixedWageSalary = ({ emno, sumoffixedwage, fixedwagestate }) => {
             <ul className="list-group list-group-flush">
                 <Suspense fallback={<FullPageloader />} >
                     {
-                        fixedWages && fixedWages.map((val) => {
+                        fixedwage && fixedwage.map((val) => {
                             return <li className="list-group-item py-0" key={val.ernded_slno}>
                                 <div className="d-flex justify-content-between"  >
                                     <div>{val.earnded_name}</div>

@@ -38,11 +38,6 @@ const SalaryIncrementMainCard = ({ children, wageName }) => {
                         </div>
                         <div className="col-md-2">
                             <Typography variant="body2" gutterBottom className="my-0" >
-                                Last Change
-                            </Typography>
-                        </div>
-                        <div className="col-md-2">
-                            <Typography variant="body2" gutterBottom className="my-0" >
                                 Start From
                             </Typography>
                         </div>

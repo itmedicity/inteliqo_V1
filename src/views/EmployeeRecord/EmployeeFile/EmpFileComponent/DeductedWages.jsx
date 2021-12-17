@@ -23,7 +23,7 @@ const DeductedWages = ({ emno, sumofdeductsalary, deductstatus }) => {
             }
         }
         getFixeddeduction()
-    }, [emno, sumofdeductsalary])
+    }, [emno, sumofdeductsalary, deductstatus])
     //Deduction 
     const deductsalary = useMemo(() => Deduction, [Deduction]);
     return (

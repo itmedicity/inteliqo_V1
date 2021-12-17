@@ -57,7 +57,7 @@ const SalaryInformation = () => {
                                 </div>
                             </div>
                             <div className="card-salary-information">
-                                {FixedWage == 1 ? <WageStatus /> : <FixedWageSalary emno={id} sumoffixedwage={setSumfixedwages} fixedwagestate={setFixedWageState} />}
+                                {FixedWage === 1 ? <WageStatus /> : <FixedWageSalary emno={id} sumoffixedwage={setSumfixedwages} fixedwagestate={setFixedWageState} />}
                             </div>
                         </div>
                         <div className="card" >
@@ -72,7 +72,7 @@ const SalaryInformation = () => {
                                 </div>
                             </div>
                             <div className="card-salary-information">
-                                {EarnStatus == 1 ? <EarningStatus /> : <EarnedWages emno={id} sumoferanedwages={setSumearning} earningstatus={setEarnStatus} />}
+                                {EarnStatus === 1 ? <EarningStatus /> : <EarnedWages emno={id} sumoferanedwages={setSumearning} earningstatus={setEarnStatus} />}
                             </div>
                         </div>
                         <div className="card" >
@@ -87,7 +87,7 @@ const SalaryInformation = () => {
                                 </div>
                             </div>
                             <div className="card-salary-information">
-                                {DeductStatus == 1 ? <DeductionStatus /> : <DeductedWages emno={id} sumofdeductsalary={sumDeduction} deductstatus={SetDeductionStatus} />}
+                                {DeductStatus === 1 ? <DeductionStatus /> : <DeductedWages emno={id} sumofdeductsalary={sumDeduction} deductstatus={SetDeductionStatus} />}
                             </div>
                         </div>
                         <div className="card" >
@@ -125,7 +125,7 @@ const SalaryInformation = () => {
                                     </div>
                                 </div>
                                 <div className="previousAmentWindow">
-                                    {AmendStatus == 1 ? <AmendmentStatus /> : <PreviousAmendChanges emp_id={no} amendStatus={SetAmendStatus} />}
+                                    {AmendStatus === 1 ? <AmendmentStatus /> : <PreviousAmendChanges emp_id={no} amendStatus={SetAmendStatus} />}
                                 </div>
                             </div>
                         </div>

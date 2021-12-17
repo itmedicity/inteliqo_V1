@@ -21,7 +21,7 @@ const PreviousAmendChanges = ({ emp_id, amendStatus }) => {
             }
         }
         getLastWages()
-    }, [emp_id])
+    }, [emp_id, amendStatus])
     const lastwagedetl = useMemo(() => lastWage, [lastWage]);
     return (
         <Fragment>
