@@ -79,7 +79,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //fine or other deduction
     const fineorotherdeduction = () => {
-        history.push(`/Home/FineorDeduction/${4516}`)
+        history.push(`/Home/FineorDeduction/${id}/${no}`)
     }
     //employee end of service
     const endofservice = () => {

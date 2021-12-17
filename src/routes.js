@@ -89,6 +89,7 @@ const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationT
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
 const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
+const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 
 
 const routes = [
@@ -172,7 +173,7 @@ const routes = [
   { path: '/Home/SalaryIncrement/:id', exact: true, name: 'Salary Increment', component: SalaryIncrement },
   { path: '/Home/EmployeeDocumentChecklist/:id', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },
   { path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
-  { path: '/Home/FineorDeduction/:id', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
+  { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
   { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
   { path: '/Home/QualificationMastTableEdit/:id', exact: true, name: 'Qualification  Table Edit', component: QualificationMastTableEdit },
   { path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
@@ -184,6 +185,7 @@ const routes = [
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
   { path: '/Home/ShiftMasterEdit/:id', exact: true, name: 'Shift Master Edit', component: ShiftMasterEdit },
+  { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit }
 ]
 
 

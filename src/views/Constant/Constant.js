@@ -43,4 +43,14 @@ export const CARD_SUB_HEADER_COLOR = {
 export const TEXT_MUTED = "#c7c7c7"
 export const TEXT_DARK = "#000000"
 
+export const getFineSlno = async () => {
+    const result = await axioslogin.get('/common/getFineSlno')
+    const { success } = result.data;
+    const [serial_current] = result.data.data
+    if (success === 1) {
+        return serial_current.serial_current
+    }
+}
+
 export const PUBLIC_NAS_FOLDER = "http://localhost/NAS/"
+
