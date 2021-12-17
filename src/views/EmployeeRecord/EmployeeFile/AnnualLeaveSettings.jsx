@@ -1,9 +1,9 @@
-import { CircularProgress, Typography } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import React, { Fragment, Suspense } from 'react'
 import { useHistory } from 'react-router';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
-import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant';
+// import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant';
 import CalculatedOffDays from './EmpFileComponent/CalculatedOffDays';
 import CardLeaveContainer from './EmpFileComponent/CardLeaveContainer';
 import CardLeaveContainerTwo from './EmpFileComponent/CardLeaveContainerTwo';

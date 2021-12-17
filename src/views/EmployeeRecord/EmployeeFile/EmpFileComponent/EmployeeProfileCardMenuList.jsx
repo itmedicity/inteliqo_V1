@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
+import { Card, CardActionArea, Avatar, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { useHistory } from 'react-router'
 import HttpsIcon from '@mui/icons-material/Https';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';

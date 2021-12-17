@@ -10,7 +10,7 @@ const ModuleSelection = () => {
     useEffect(() => {
         const getModuleNamelist = async () => {
             const result = await axioslogin.get('/modulegroup/select')
-            const { success, data } = result.data;
+            const { data } = result.data;
             setModuleGroupName(data)
         }
         getModuleNamelist()

@@ -1,5 +1,5 @@
-import { PhotoCamera } from '@material-ui/icons'
-import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent, IconButton } from '@mui/material'
+// import { PhotoCamera } from '@material-ui/icons'
+import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Constant'
@@ -7,10 +7,9 @@ import ProfilePic from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-var checkImage = require('image-check');
 
 const EmployeeProfileCard = () => {
-    const { id, no } = useParams()
+    const { no } = useParams()
     const [src, setSrc] = useState(ProfilePic)
     // const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
     const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
@@ -23,14 +22,14 @@ const EmployeeProfileCard = () => {
 
         const getProfilePicInform = async () => {
             const result = await axioslogin.post('/upload', empiddata);
-            const { data, success } = result.data;
+            const { data } = result.data;
             var { hrm_profile } = data[0];
             if (hrm_profile === 1) {
                 setSrc(profilePic)
             }
         }
         getProfilePicInform()
-    }, [])
+    }, [empiddata, profilePic])
 
     return (
         <Fragment>

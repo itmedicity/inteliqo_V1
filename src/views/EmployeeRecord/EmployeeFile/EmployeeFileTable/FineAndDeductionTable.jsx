@@ -52,7 +52,7 @@ const FineAndDeductionTable = ({ update, collected }) => {
             }
         }
         getFineDeduction();
-    }, [id, update, collected]);
+    }, [id, update, collected, postdata]);
 
     //For Edit
     const getDataTable = (data) => {
