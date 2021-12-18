@@ -80,6 +80,7 @@ const EmployeeExperience = () => {
     //postData
     const postData = {
         em_no: id,
+        em_id: no,
         em_institution: institution_name,
         em_designation: selectDesignation,
         em_from: moment(workstartdate).format('YYYY-MM-DD'),
