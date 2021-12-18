@@ -90,7 +90,7 @@ const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/Em
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
 const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
-
+const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -185,15 +185,8 @@ const routes = [
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
   { path: '/Home/ShiftMasterEdit/:id', exact: true, name: 'Shift Master Edit', component: ShiftMasterEdit },
-  { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit }
+  { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit },
+  { path: '/Home/AllowanceDeduction', exact: true, name: 'Allowance Deducation', component: AllowanceDeducation },
 ]
-
-
-// const routes = [
-//   { path: '/', exact: true, name: 'Home' },
-//   { path: '/Home/TestOne', name: 'Test Component', component: TestComponent },
-//   { path: '/Home/Test', name: 'Test Component', component: TestTwo },
-//   { path: '/Home/Settings', name: 'Settings', component: Settings },
-// ]
 
 export default routes
