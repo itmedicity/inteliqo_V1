@@ -47,7 +47,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee Company
     const EmployeeCompany = () => {
-        history.push(`/Home/EmployeeCompany/${4516}`)
+        history.push(`/Home/EmployeeCompany/${id}/${no}`)
     }
     //Salary Information
     const SalaryInformation = () => {
@@ -79,7 +79,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //fine or other deduction
     const fineorotherdeduction = () => {
-        //history.push(`/Home/FineorDeduction/${id}/${no}`)
+        history.push(`/Home/FineorDeduction/${id}/${no}`)
     }
     //employee end of service
     const endofservice = () => {

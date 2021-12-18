@@ -14,13 +14,13 @@ const Employeerecord = [
     {
         component: CNavItem,
         name: 'Allowance/Deduction',
-        to: '/homes',
+        to: '/Home/AllowanceDeduction',
     },
-    {
-        component: CNavItem,
-        name: 'Bulk Updation',
-        to: '/homes',
-    },
+    // {
+    //     component: CNavItem,
+    //     name: 'Bulk Updation',
+    //     to: '/homes',
+    // },
 ]
 
 export default Employeerecord;

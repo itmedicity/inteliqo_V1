@@ -1,5 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useState, useContext, useEffect } from 'react'
+import React, { Fragment, useState, useContext, useEffect, memo } from 'react'
 import { ToastContainer } from 'react-toastify';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
@@ -23,11 +23,11 @@ const DepartmentSectionSelect = (props) => {
             }
         }
         getDepartmentSection();
-
         return (
             updateDepartmentSection(0)
         )
     }, [updateDepartmentSection, selectedDept]);
+
     return (
         <Fragment>
             <ToastContainer />
@@ -56,11 +56,10 @@ const DepartmentSectionSelect = (props) => {
                             return <MenuItem key={index} value={val.sect_id}>{val.sect_name}</MenuItem>
                         })
                     }
-
                 </Select>
             </FormControl>
         </Fragment>
     )
 }
 
-export default DepartmentSectionSelect
+export default memo(DepartmentSectionSelect)
