@@ -29,11 +29,12 @@ const FineAndDeductionTable = ({ update, collected }) => {
         {
             title: "Amount", field: "fine_amount", cellStyle: { minWidth: 150, maxWidth: 200 }
         },
+
         {
-            title: "Remark", field: "fine_remark", cellStyle: { minWidth: 350, maxWidth: 450 }
+            title: "Remark", field: "fine_remark", cellStyle: { minWidth: 400, maxWidth: 500 }
         },
         {
-            title: "Status", field: "fine_status", cellStyle: { minWidth: 50, maxWidth: 200 }
+            title: "Status", field: "fine_status", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
     ]
 
@@ -50,13 +51,8 @@ const FineAndDeductionTable = ({ update, collected }) => {
                 warningNofity(" Error occured contact EDP")
             }
         }
-<<<<<<< HEAD
-        getFineDeduction()
-    }, [update, postdata]);
-=======
         getFineDeduction();
-    }, [id, update, collected, postdata]);
->>>>>>> ebcf69d733063367d2550b9da0a035a9c2c6b7d2
+    }, [id, update, collected]);
 
     //For Edit
     const getDataTable = (data) => {
@@ -83,6 +79,7 @@ const FineAndDeductionTable = ({ update, collected }) => {
                     showFirstLastPageButtons: false,
                     padding: "dense",
                     actionsColumnIndex: 0
+                    //showTitle: false,
                 }}
             />
         </Fragment>
