@@ -20,6 +20,7 @@ const BrnachMastSelection = (props) => {
             updateBranchSelected(0)
         )
     }, [updateBranchSelected]);
+
     return (
         <Fragment>
             <FormControl
@@ -47,7 +48,6 @@ const BrnachMastSelection = (props) => {
                             return <MenuItem key={index} value={val.branch_slno}>{val.branch_name}</MenuItem>
                         })
                     }
-
                 </Select>
             </FormControl>
         </Fragment >

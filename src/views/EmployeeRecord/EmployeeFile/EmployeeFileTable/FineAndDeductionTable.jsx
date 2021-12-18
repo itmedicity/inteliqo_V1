@@ -31,10 +31,10 @@ const FineAndDeductionTable = ({ update, collected }) => {
         },
 
         {
-            title: "Remark", field: "fine_remark", cellStyle: { minWidth: 350, maxWidth: 450 }
+            title: "Remark", field: "fine_remark", cellStyle: { minWidth: 400, maxWidth: 500 }
         },
         {
-            title: "Status", field: "fine_status", cellStyle: { minWidth: 50, maxWidth: 200 }
+            title: "Status", field: "fine_status", cellStyle: { minWidth: 100, maxWidth: 200 }
         },
     ]
 
@@ -52,7 +52,7 @@ const FineAndDeductionTable = ({ update, collected }) => {
             }
         }
         getFineDeduction();
-    }, [id, update, collected, postdata]);
+    }, [id, update, collected]);
 
     //For Edit
     const getDataTable = (data) => {
@@ -79,6 +79,7 @@ const FineAndDeductionTable = ({ update, collected }) => {
                     showFirstLastPageButtons: false,
                     padding: "dense",
                     actionsColumnIndex: 0
+                    //showTitle: false,
                 }}
             />
         </Fragment>

@@ -1,6 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useEffect, useContext, useState } from 'react'
-import { memo } from 'react';
+import React, { Fragment, useEffect, memo, useContext, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
