@@ -98,6 +98,8 @@ const EmployeeExperienceEdit = () => {
     }
     //postData
     const postData = {
+        em_no: id,
+        em_id: no,
         emexp_slno: slno,
         em_institution: institution_name,
         em_designation: selectDesignation,
