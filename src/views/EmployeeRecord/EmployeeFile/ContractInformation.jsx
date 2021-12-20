@@ -141,16 +141,21 @@ const ContractInformation = () => {
         const result = await axioslogin.get(`/empcontract/${no}`)
         const { success, data } = result.data
         if (success === 1) {
-            const { cont_grace, em_cont_end } = data[0]
+            const { cont_grace, em_cont_end, fine_status } = data[0]
             const result = addDays(new Date(em_cont_end), cont_grace)
             if ((new Date() < result)) {
                 warningNofity('Cannot Renew Contract!!!Grace Period  not Exceeded')
+                Setenablefield(true)
+            }
+            else if (fine_status === 0) {
+                warningNofity('Cannot Renew Contract!!!There Is Pending Fine Against This Employee')
                 Setenablefield(true)
             }
 
         }
     }
     const RenewData = {
+        old_emno: id,
         em_no: newempno,
         em_id: no,
         em_cont_start: moment(contractstartDate).format('YYYY-MM-DD'),
@@ -161,6 +166,7 @@ const ContractInformation = () => {
         em_cont_compl_status: 'C',
         em_cont_renew: 'R',
         em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+        changed_date: moment(new Date()).format('YYYY-MM-DD'),
         edit_user: employeeNumber(),
     }
 
