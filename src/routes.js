@@ -92,6 +92,17 @@ const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/Shif
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
 const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
+const LeaveRequest = React.lazy(() => import('./views/Attendance/LeaveRequest/LeaveRequest'))
+const ApprovalIncharge = React.lazy(() => import('./views/Attendance/ApprovalIncharge/ApprovalIncharge'))
+const ApprovalHOD = React.lazy(() => import('./views/Attendance/ApprovalHOD/ApprovalHod'))
+const ApprovalHR = React.lazy(() => import('./views/Attendance/ApprovalHR/ApprovalHR'))
+const CancelEmployee = React.lazy(() => import('./views/Attendance/LeaveCancelEmployee/LeaveCancelEmploye'))
+const CancelHR = React.lazy(() => import('./views/Attendance/LeaveCancelHR/LeaveCancelHr'))
+const OTRequest = React.lazy(() => import('./views/Attendance/OverTimeRequest/OTRequest'))
+const OTApprovalIncharge = React.lazy(() => import('./views/Attendance/OTApprovalIncharge/OTApprovalIncharge'))
+const OTApprovalHOD = React.lazy(() => import('./views/Attendance/OTApprovalHOD/OTApprovalHOD'))
+const OTApprovalHR = React.lazy(() => import('./views/Attendance/OTApprovalHR/OTApprovalHR'))
+const OTUpdation = React.lazy(() => import('./views/Attendance/OTUpdation/OTUpdation'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -188,7 +199,18 @@ const routes = [
   { path: '/Home/ShiftMasterEdit/:id', exact: true, name: 'Shift Master Edit', component: ShiftMasterEdit },
   { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit },
   { path: '/Home/AllowanceDeduction', exact: true, name: 'Allowance Deducation', component: AllowanceDeducation },
-  { path: '/Home/Dutyplanning', exact: true, name: 'Duty Planning', component: Dutyplanning }
+  { path: '/Home/Dutyplanning', exact: true, name: 'Duty Planning', component: Dutyplanning },
+  { path: '/Home/LeaveRequest', exact: true, name: 'Leave Request', component: LeaveRequest },
+  { path: '/Home/ApprovalIncharge', exact: true, name: ' Leave Approval Incharge', component: ApprovalIncharge },
+  { path: '/Home/ApprovalHOD', exact: true, name: 'Leave Approval HOD', component: ApprovalHOD },
+  { path: '/Home/ApprovalHR', exact: true, name: 'Leave Approval HR', component: ApprovalHR },
+  { path: '/Home/LeaveCancelEmployee', exact: true, name: 'Leave cancel employee', component: CancelEmployee },
+  { path: '/Home/LeaveCancelHR', exact: true, name: 'Leave cancel HR', component: CancelHR },
+  { path: '/Home/OTRequest', exact: true, name: 'Over Time Request', component: OTRequest },
+  { path: '/Home/OTApprovalIncharge', exact: true, name: 'OT Approval Incharge', component: OTApprovalIncharge },
+  { path: '/Home/OTApprovalHOD', exact: true, name: 'OT Approval HOD', component: OTApprovalHOD },
+  { path: '/Home/OTApprovalHR', exact: true, name: 'OT Approval HR', component: OTApprovalHR },
+  { path: '/Home/OTUpdation', exact: true, name: 'OT Updation', component: OTUpdation },
 ]
 
 export default routes
