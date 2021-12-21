@@ -78,7 +78,7 @@ const DutyPlanning = () => {
               <div className='table-responsive table-responsive-md' >
                 <table className="table" >
                   <thead>
-                    <tr>
+                    <tr className='trHeadColor' >
                       <th>Name</th>
                       {
                         newDateFormat.map((val) => {

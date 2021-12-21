@@ -5,3 +5,6 @@ th:first-child {
   z-index: 1;
   background-color: grey;
 }
+.trHeadColor {
+  /* background-color: grey; */
+}
