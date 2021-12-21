@@ -58,10 +58,12 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
             }
             getSalaryIncrementsetting()
         }
-    }, [open, postData1])
+    }, [])
     //getting data from the model
     const updateSalaryIncrementSettings = async (e) => {
+
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        console.log(value)
         setmodeldata({ ...modeldta, [e.target.name]: value })
     }
     const updateData = {
@@ -102,7 +104,6 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
                     keepMounted
                     aria-describedby="alert-dialog-slide-descriptiona"
                     maxWidth="xl"
-
                 >
                     <DialogTitle>{"Salary Increment Process"}</DialogTitle>
                     <DialogContent sx={{
@@ -124,7 +125,7 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
                                                 name="description"
                                                 alignItems="center"
                                                 value={description}
-                                                changeTextValue={(e) => updateSalaryIncrementSettings(e)}
+                                            //changeTextValue={(e) => updateSalaryIncrementSettings(e)}
                                             />
                                         </div>
                                         <div className="d-md-flex justify-content-between">
@@ -162,7 +163,7 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
                                                 name="last_amount"
                                                 alignItems="center"
                                                 value={last_amount}
-                                                changeTextValue={(e) => updateSalaryIncrementSettings(e)}
+                                            //changeTextValue={(e) => updateSalaryIncrementSettings(e)}
                                             />
                                         </div>
                                         <div className="col-md-12">

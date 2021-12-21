@@ -80,7 +80,8 @@ const MasterContext = ({ children }) => {
     const [selectFine, updateFine] = useState(0)
     //fine description count setting
     const [finecount, updatefinecount] = useState(0)
-
+    //wage Description
+    const [selectWageDescription, updateWageDescription] = useState(0)
 
     const value = {
         selectedDept,
@@ -158,7 +159,9 @@ const MasterContext = ({ children }) => {
         selectFine,
         updateFine,
         finecount,
-        updatefinecount
+        updatefinecount,
+        selectWageDescription,
+        updateWageDescription,
 
     }
     return <PayrolMasterContext.Provider value={value} >
