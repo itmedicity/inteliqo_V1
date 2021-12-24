@@ -3,13 +3,11 @@ import React, { useContext, useEffect, useState, Fragment } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const EarnType = () => {
+const EarnType = (props) => {
     // intializing use state
     const [earntypeData, setEarnType] = useState([]);
-
     // // useContext
     const { earntypeDatacontext, setEarnTypecontext } = useContext(PayrolMasterContext)
-
     // useeffect 
     useEffect(() => {
         const getemptypedata = async () => {
@@ -45,6 +43,7 @@ const EarnType = () => {
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
+                    style={props.style}
                 >
                     <MenuItem value='0' disabled>
                         Earn Type

@@ -3,57 +3,57 @@ const Leavemanagement = [
     {
         component: CNavItem,
         name: 'Leave Request',
-        to: '/homes',
+        to: '/Home/LeaveRequest',
     },
     {
         component: CNavItem,
         name: 'Approval - Incharge',
-        to: '/homes',
+        to: '/Home/ApprovalIncharge',
     },
     {
         component: CNavItem,
         name: 'Approval - HOD',
-        to: '/homes',
+        to: '/Home/ApprovalHOD',
     },
     {
         component: CNavItem,
         name: 'Approval - HR',
-        to: '/homes',
+        to: '/Home/ApprovalHR',
     },
     {
         component: CNavItem,
         name: 'Leave Cancel - Employees',
-        to: '/homes',
+        to: '/Home/LeaveCancelEmployee',
     },
     {
         component: CNavItem,
         name: 'Leave Cancel - HR',
-        to: '/homes',
+        to: '/Home/LeaveCancelHR',
     },
     {
         component: CNavItem,
         name: 'Overtime Request',
-        to: '/homes',
+        to: '/Home/OTRequest',
     },
     {
         component: CNavItem,
         name: 'OT Approval - Incharge',
-        to: '/homes',
+        to: '/Home/OTApprovalIncharge',
     },
     {
         component: CNavItem,
         name: 'OT Approval - HOD',
-        to: '/homes',
+        to: '/Home/OTApprovalHOD',
     },
     {
         component: CNavItem,
         name: 'OT Approval - HR',
-        to: '/homes',
+        to: '/Home/OTApprovalHR',
     },
     {
         component: CNavItem,
         name: 'OT Updation',
-        to: '/homes',
+        to: '/Home/OTUpdation',
     },
 
 ]

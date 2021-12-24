@@ -73,7 +73,6 @@ const FixedWagesSalaryIncre = ({ value, emno, emid }) => {
     return (
         <Fragment>
             {open === true ? <ModelSalaryIncrement open={open} handleClose={handleClose} em_salary_desc={em_salary_desc} emno={emno} /> : null}
-
             <li className="list-group-item py-0">
                 <div className="d-flex justify-content-between" >
                     <div className="col-md-3 text-start">{earnded_name}</div>
