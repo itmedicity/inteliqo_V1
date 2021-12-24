@@ -109,33 +109,45 @@ export const DATA = [
 
 export const empData = [
     {
-        name: 'ajith',
-        emp_id: 100,
-        start_data: '01-12-2021',
-        end_date: '20-12-2021'
+        name: 'ajith Arjua',
+        emp_id: 18,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
     },
     {
         name: 'anju',
-        emp_id: 200,
-        start_data: '01-12-2021',
-        end_date: '20-12-2021'
+        emp_id: 19,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
     },
     {
         name: 'manju',
-        emp_id: 300,
-        start_data: '01-12-2021',
-        end_date: '20-12-2021'
+        emp_id: 20,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
     },
     {
         name: 'lachu',
-        emp_id: 400,
-        start_data: '01-12-2021',
-        end_date: '20-12-2021'
+        emp_id: 21,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
     },
     {
         name: 'nachu',
-        emp_id: 500,
-        start_data: '01-12-2021',
-        end_date: '20-12-2021'
+        emp_id: 22,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
+    },
+    {
+        name: 'machu',
+        emp_id: 24,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
+    },
+    {
+        name: 'kichu',
+        emp_id: 25,
+        start_data: '2021-12-01',
+        end_date: '2021-12-30'
     },
 ]
