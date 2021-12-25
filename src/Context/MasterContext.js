@@ -82,6 +82,10 @@ const MasterContext = ({ children }) => {
     const [finecount, updatefinecount] = useState(0)
     //wage Description
     const [selectWageDescription, updateWageDescription] = useState(0)
+    //Leave Request Type
+    const [selectleaverequest, updateleaverequest] = useState(0)
+    //Department section selection without passing department
+    const [getDeptSection, updateDeptSection] = useState(0)
 
     const value = {
         selectedDept,
@@ -162,6 +166,10 @@ const MasterContext = ({ children }) => {
         updatefinecount,
         selectWageDescription,
         updateWageDescription,
+        selectleaverequest,
+        updateleaverequest,
+        getDeptSection,
+        updateDeptSection
 
     }
     return <PayrolMasterContext.Provider value={value} >

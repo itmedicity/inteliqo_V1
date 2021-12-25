@@ -103,6 +103,8 @@ const OTApprovalIncharge = React.lazy(() => import('./views/Attendance/OTApprova
 const OTApprovalHOD = React.lazy(() => import('./views/Attendance/OTApprovalHOD/OTApprovalHOD'))
 const OTApprovalHR = React.lazy(() => import('./views/Attendance/OTApprovalHR/OTApprovalHR'))
 const OTUpdation = React.lazy(() => import('./views/Attendance/OTUpdation/OTUpdation'))
+const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
+const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -211,6 +213,8 @@ const routes = [
   { path: '/Home/OTApprovalHOD', exact: true, name: 'OT Approval HOD', component: OTApprovalHOD },
   { path: '/Home/OTApprovalHR', exact: true, name: 'OT Approval HR', component: OTApprovalHR },
   { path: '/Home/OTUpdation', exact: true, name: 'OT Updation', component: OTUpdation },
+  { path: '/Home/LeaveRequestType', exact: true, name: 'Leave Request Type', component: LeaveRequestType },
+  { path: '/Home/LeaveRequestTypeEdit/:id', exact: true, name: 'Leave Request Type Edit', component: LeaveRequestTypeEdit }
 ]
 
 export default routes
