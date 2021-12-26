@@ -16,6 +16,8 @@ const Empdesignationtype = React.lazy(() => import('./views/Master/EmpDesignatio
 const BranchMast = React.lazy(() => import('./views/Master/BranchMaster/BranchMast'))
 const BankMaster = React.lazy(() => import('./views/Master/BankMaster/BankMaster'));
 const RegionMaster = React.lazy(() => import('./views/Master/Region/RegionMast'));
+const DepartmentShift = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftMast'));
+const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
 const EmployeeRecrd = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecord'));
 const EmployeeFile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFile'));
 const EmploymentType = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeMast'));
@@ -106,6 +108,7 @@ const OTUpdation = React.lazy(() => import('./views/Attendance/OTUpdation/OTUpda
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
 const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/Home', exact: true, name: 'Home', component: HomePage },
@@ -126,6 +129,8 @@ const routes = [
   { path: '/Home/Branch', exact: true, name: 'Branch Master', component: BranchMast },
   { path: '/Home/Bank', exact: true, name: 'Bank Master', component: BankMaster },
   { path: '/Home/Region', exact: true, name: 'Region Master', component: RegionMaster },
+  { path: '/Home/DepartmentShift', exact: true, name: 'Department Shift Master', component: DepartmentShift },
+  { path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
   { path: '/Home/EmployeeRecord', exact: true, name: 'Employee Records', component: EmployeeRecrd },
   { path: '/Home/EmployeeFile', exact: true, name: 'Employee File', component: EmployeeFile },
   { path: '/Home/EmploymentType', exact: true, name: 'Employment Type', component: EmploymentType },
@@ -215,6 +220,7 @@ const routes = [
   { path: '/Home/OTUpdation', exact: true, name: 'OT Updation', component: OTUpdation },
   { path: '/Home/LeaveRequestType', exact: true, name: 'Leave Request Type', component: LeaveRequestType },
   { path: '/Home/LeaveRequestTypeEdit/:id', exact: true, name: 'Leave Request Type Edit', component: LeaveRequestTypeEdit }
+
 ]
 
 export default routes

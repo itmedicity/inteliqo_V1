@@ -86,7 +86,11 @@ const MasterContext = ({ children }) => {
     const [selectleaverequest, updateleaverequest] = useState(0)
     //Department section selection without passing department
     const [getDeptSection, updateDeptSection] = useState(0)
-
+    //shift
+    const [getshifts, updateShifts] = useState(0)
+    //shiftname select
+    const [shiftnameselect, updateshiftnameselect] = useState('')
+    
     const value = {
         selectedDept,
         updateSelected,
@@ -170,6 +174,10 @@ const MasterContext = ({ children }) => {
         updateleaverequest,
         getDeptSection,
         updateDeptSection
+        getshifts,
+        updateShifts,
+        shiftnameselect,
+        updateshiftnameselect,
 
     }
     return <PayrolMasterContext.Provider value={value} >
