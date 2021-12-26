@@ -3,27 +3,27 @@ import React, { useContext, memo, useEffect, useState, Fragment } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const DoctorType = (props) => {
+const DeptSectionMastSelect = (props) => {
     // intializing use state
-    const [doctortype, setDoctortype] = useState([]);
+    const [dept, setDept] = useState([]);
 
     // // useContext
-    const { getDoctype, updatedoctortype } = useContext(PayrolMasterContext)
+    const { getDeptSection, updateDeptSection } = useContext(PayrolMasterContext)
 
     // useeffect 
     useEffect(() => {
-        const getdoctypedata = async () => {
-            const result = await axioslogin.get('/doctype/select')
+        const getdeptsection = async () => {
+            const result = await axioslogin.get('/section/select/all')
             const { success, data } = result.data;
             if (success === 1) {
-                setDoctortype(data)
+                setDept(data)
             }
         }
-        getdoctypedata()
+        getdeptsection()
         return (
-            updatedoctortype(0)
+            updateDeptSection(0)
         )
-    }, [updatedoctortype]);
+    }, [updateDeptSection]);
 
     return (
         <Fragment>
@@ -35,9 +35,9 @@ const DoctorType = (props) => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    name="selectedDoctortype"
-                    value={getDoctype}
-                    onChange={(e) => updatedoctortype(e.target.value)}
+                    name="selectedDept"
+                    value={getDeptSection}
+                    onChange={(e) => updateDeptSection(e.target.value)}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
@@ -45,19 +45,17 @@ const DoctorType = (props) => {
                     style={props.style}
                 >
                     <MenuItem value='0' disabled>
-                        Doctor Type
+                        Department Section
                     </MenuItem>
                     {
-                        doctortype && doctortype.map((val, index) => {
-                            return <MenuItem key={index} value={val.doctype_slno}>{val.doctype_desc}</MenuItem>
+                        dept && dept.map((val, index) => {
+                            return <MenuItem key={index} value={val.sect_id}>{val.sect_name}</MenuItem>
                         })
                     }
-
                 </Select>
             </FormControl>
-
         </Fragment>
     )
 }
 
-export default memo(DoctorType)
+export default memo(DeptSectionMastSelect)

@@ -1,14 +1,13 @@
 import MaterialTable from 'material-table'
 import React, { Fragment, memo, useEffect, useState } from 'react'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 const EmpCompanyTable = ({ update }) => {
     const [data, setTableData] = useState();
-    const { id, no } = useParams()
+    const { id } = useParams()
 
     //Table
     const title = [
@@ -47,13 +46,6 @@ const EmpCompanyTable = ({ update }) => {
                 data={data}
                 columns={title}
                 icons={tableIcons}
-                // actions={[
-                //     {
-                //         icon: () => <EditOutlinedIcon />,
-                //         tooltip: "Click here to Edit",
-                //         onClick: (e, data) => null
-                //     }
-                // ]}
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
