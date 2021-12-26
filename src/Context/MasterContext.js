@@ -90,7 +90,7 @@ const MasterContext = ({ children }) => {
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
-    
+
     const value = {
         selectedDept,
         updateSelected,
@@ -173,7 +173,7 @@ const MasterContext = ({ children }) => {
         selectleaverequest,
         updateleaverequest,
         getDeptSection,
-        updateDeptSection
+        updateDeptSection,
         getshifts,
         updateShifts,
         shiftnameselect,
