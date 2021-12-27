@@ -17,14 +17,11 @@ const PageLayoutSave = (props) => {
                         <div className="card-body">
                             {props.children}
                         </div>
-                        <div className="card-footer text-black row">
-                            <div className="col-md-5">
-                                <FooterClosebtn
-                                    redirect={props.redirect}
-                                    submit={props.submit}
-                                />
-                            </div>
-                            {props.footer}
+                        <div className="card-footer text-muted">
+                            <FooterClosebtn
+                                redirect={props.redirect}
+                                submit={props.submit}
+                            />
                         </div>
                     </div>
                 </div>
