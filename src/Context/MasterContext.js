@@ -76,7 +76,8 @@ const MasterContext = ({ children }) => {
     const [selectWageType, updateWageType] = useState(0)
     //Region2 select
     const [getregion2, udateregion2] = useState(0)
-
+    // context for count in annual leave setting
+    const [annualleaveupdate, setannualleaveupdate] = useState(0)
 
     const value = {
         selectedDept,
@@ -150,7 +151,9 @@ const MasterContext = ({ children }) => {
         selectWageType,
         updateWageType,
         getregion2,
-        udateregion2
+        udateregion2,
+        annualleaveupdate,
+        setannualleaveupdate
 
     }
     return <PayrolMasterContext.Provider value={value} >
