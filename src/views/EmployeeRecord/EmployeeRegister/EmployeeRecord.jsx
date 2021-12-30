@@ -131,9 +131,6 @@ const EmployeeRecord = () => {
     // destructuring employeerecord
     const { empID, empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
         addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode } = employeerecord
-
-
-
     // data for sumbimssion
     const submitdata = {
         em_no: empNo,
@@ -209,21 +206,6 @@ const EmployeeRecord = () => {
             getFormdata(varid)
         })
 
-        // employee category on change
-        if (getemployeecategory !== 0) {
-            const getcategorydata = async () => {
-                const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
-                const { data } = result.data;
-                var today = new Date();
-                var cont_grace = data[0].cont_grace;
-                var cont_period = data[0].cont_period;
-                var empstat_period = data[0].empstat_period;
-                setcont_perioddate(addDays(today, cont_grace))
-                setcont_gracedate(addDays(today, cont_period))
-                setdesiggperioddate(addDays(today, empstat_period))
-            }
-            getcategorydata();
-        }
         return (
             udateGrade(0),
             setEarnTypecontext(0),
@@ -240,6 +222,50 @@ const EmployeeRecord = () => {
             updateInstituteSeleted(0),
             udateregion2(0)
         )
+
+    }, [setEarnTypecontext, udateGrade,
+        udateregion,
+        udateregion2, udatereligion,
+        updateBranchSelected, updateDesignation,
+        updateDesignationType, updateInstituteSeleted,
+        updateSalutSelected, updateSelected, updatebloodgroup, updatedoctortype])
+
+    useEffect(() => {
+
+        // employee category on change
+        if (getemployeecategory !== 0) {
+            const getcategorydata = async () => {
+                const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
+                const { data } = result.data;
+                var today = new Date();
+                var cont_grace = data[0].cont_grace;
+                var ecat_cont_period = data[0].ecat_cont_period;
+                var ecat_prob_period = data[0].ecat_prob_period;
+                if (ecat_cont_period > 0) {
+                    setcont_perioddate(addDays(today, ecat_cont_period))
+                }
+                else {
+
+                    setcont_perioddate(new Date('0000:00:00'))
+                }
+                if (cont_grace > 0) {
+
+                    setcont_gracedate(addDays(today, cont_grace))
+                } else {
+
+                    setcont_gracedate(new Date('0000:00:00'))
+                }
+                if (ecat_prob_period > 0) {
+                    setdesiggperioddate(addDays(today, ecat_prob_period))
+                }
+                else {
+
+                    setdesiggperioddate(new Date('0000:00:00'))
+                }
+
+            }
+            getcategorydata();
+        }
 
     }, [getemployeecategory])
 

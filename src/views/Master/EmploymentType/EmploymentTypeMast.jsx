@@ -176,10 +176,8 @@ const EmploymentTypeMast = () => {
         des_type: selectDesignationType,
         ecat_cont: cont_renw === true ? 1 : 0,
         ecat_cont_period: contract_perd,
-        ecat_cont_type: 'M',
         ecat_prob: trapro === true ? 1 : 0,
         ecat_prob_period: train_perd,
-        ecat_prob_type: 'M',
         ecat_cl: lvetype_slno_cl === true ? 1 : 0,
         ecat_cl_max: max_allowed_count_cl,
         ecat_el: lvetype_slno_previlage === true ? 1 : 0,
@@ -647,7 +645,7 @@ const EmploymentTypeMast = () => {
                                             label="Contract Renewal Period(Days)"
                                         />
                                     </div>
-                                    <div className="col-md-1 col-sm-4">
+                                    <div className="col-md-1 col-sm-4 ">
                                         <NumberFormat
                                             customInput={TextField}
                                             fullWidth
@@ -662,7 +660,22 @@ const EmploymentTypeMast = () => {
                                             value={contract_perd}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
+                                        <NumberFormat
+                                            customInput={TextField}
+                                            fullWidth
+                                            format="###"
+                                            variant="outlined"
+                                            size="small"
+                                            autoComplete="off"
+                                            type="text"
+                                            thousandSeparator={false}
+                                            allowNegative={false}
+                                            name="contract_perd"
+                                            // value={contract_perd}
+                                            onChange={(e) => getEmploymentFormData(e)}
+                                        />
                                     </div>
+
                                     <div className="col-md-3 ">
                                         <FormControlLabel
                                             className="pb-0 mb-0"

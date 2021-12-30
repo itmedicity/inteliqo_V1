@@ -187,7 +187,7 @@ const routes = [
   { path: '/Home/EmployeeCompany/:id/:no', exact: true, name: 'Employee Company', component: EmployeeCompany },
   { path: '/Home/SalaryInformation/:id/:no', exact: true, name: 'Salary Information', component: SalaryInformation },
   { path: '/Home/EmployeeAllowance/:id/:no', exact: true, name: 'Employee Allowance', component: EmployeeAllowance },
-  { path: '/Home/AnnualLeaveSettings/:id', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
+  { path: '/Home/AnnualLeaveSettings/:id/:no', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
   { path: '/Home/EmployeeTraining/:id', exact: true, name: 'Employee Training', component: EmployeeTraining },
   { path: '/Home/SalaryIncrement/:id/:no', exact: true, name: 'Salary Increment', component: SalaryIncrement },
   { path: '/Home/EmployeeDocumentChecklist/:id', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },

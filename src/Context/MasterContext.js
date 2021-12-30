@@ -76,6 +76,8 @@ const MasterContext = ({ children }) => {
     const [selectWageType, updateWageType] = useState(0)
     //Region2 select
     const [getregion2, udateregion2] = useState(0)
+    // context for count in annual leave setting
+    const [annualleaveupdate, setannualleaveupdate] = useState(0)
     //fine description selection
     const [selectFine, updateFine] = useState(0)
     //fine description count setting
@@ -90,6 +92,7 @@ const MasterContext = ({ children }) => {
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
+
 
     const value = {
         selectedDept,
@@ -164,6 +167,8 @@ const MasterContext = ({ children }) => {
         updateWageType,
         getregion2,
         udateregion2,
+        annualleaveupdate,
+        setannualleaveupdate,
         selectFine,
         updateFine,
         finecount,
@@ -178,7 +183,6 @@ const MasterContext = ({ children }) => {
         updateShifts,
         shiftnameselect,
         updateshiftnameselect,
-
     }
     return <PayrolMasterContext.Provider value={value} >
         {children}
