@@ -1,20 +1,58 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo, useContext, useState } from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-
+import { axioslogin } from 'src/views/Axios/Axios';
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { employeeNumber } from 'src/views/Constant/Constant';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-
-
 const ModelAddFineMaster = ({ open, handleClose }) => {
+    const [count, setcount] = useState(0);
+    const { finecount, updatefinecount } = useContext(PayrolMasterContext)
+    const [desc, setDesc] = useState({
+        fine_desc: ''
+    })
+    const { fine_desc } = desc
+    const updatefine = (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
+        setDesc({ ...desc, [e.target.name]: value })
+    }
+
+    const postData = {
+        fine_desc: fine_desc,
+        create_user: employeeNumber()
+    }
+
+    const resetForm = {
+        fine_desc: ''
+    }
+
+    //Form Submitting
+    const submitQualification = async (e) => {
+        e.preventDefault();
+        const result = await axioslogin.post('/fineded', postData)
+        const { message, success } = result.data;
+        if (success === 1) {
+            succesNofity(message);
+            setcount(count + 1)
+            setDesc(resetForm);
+            updatefinecount(finecount + 1)
+            handleClose()
+        } else if (success === 0) {
+            infoNofity(message.sqlMessage);
+        } else {
+            infoNofity(message)
+        }
+    }
+
     return (
         <Fragment>
             <div>
@@ -24,7 +62,6 @@ const ModelAddFineMaster = ({ open, handleClose }) => {
                     TransitionComponent={Transition}
                     keepMounted
                     aria-describedby="alert-dialog-slide-descriptiona"
-
                 >
                     {/* <DialogTitle>{"Fines || Other Deducation Master"}</DialogTitle> */}
                     <DialogContent sx={{
@@ -37,15 +74,17 @@ const ModelAddFineMaster = ({ open, handleClose }) => {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="name"
                             label="Description"
                             type="text"
                             fullWidth
                             variant="standard"
+                            name="fine_desc"
+                            value={fine_desc}
+                            onChange={(e) => updatefine(e)}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="secondary" >Submit</Button>
+                        <Button onClick={submitQualification} color="secondary" >Submit</Button>
                         <Button onClick={handleClose} color="secondary" >Cancel</Button>
                     </DialogActions>
                 </Dialog>
@@ -54,4 +93,4 @@ const ModelAddFineMaster = ({ open, handleClose }) => {
     )
 }
 
-export default ModelAddFineMaster
+export default memo(ModelAddFineMaster)

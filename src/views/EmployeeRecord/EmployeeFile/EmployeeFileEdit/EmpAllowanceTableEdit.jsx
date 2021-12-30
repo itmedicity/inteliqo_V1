@@ -18,7 +18,6 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
 import { employeeNumber } from 'src/views/Constant/Constant'
 
-
 const EmpAllowanceTableEdit = () => {
     const classes = useStyles();
     const { slno, id, no } = useParams();
@@ -30,7 +29,6 @@ const EmpAllowanceTableEdit = () => {
     const [monthstart, setMonthstart] = useState(new Date());
     const [monthend, setMonthend] = useState(new Date());
 
-
     //Initializing
     const [wageType, setWageType] = useState({
         earning_type_name: '',
@@ -39,20 +37,19 @@ const EmpAllowanceTableEdit = () => {
         include_lwf: 0,
         include_protax: 0,
         em_amount: '',
+        last_amount: '',
         start_month: true,
         end_month: true,
         monthstart: '',
         monthend: ''
     });
 
-
     //Destructuring
-    const { earning_type_name, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
+    const { earning_type_name, last_amount, em_amount, include_esi, include_pf, include_lwf, include_protax, start_month, end_month } = wageType;
     const updateAllowance = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setWageType({ ...wageType, [e.target.name]: value })
     }
-
 
     //Get data 
     useEffect(() => {
@@ -68,6 +65,7 @@ const EmpAllowanceTableEdit = () => {
                     include_lwf: include_lwf,
                     include_protax: include_protax,
                     em_amount: em_amount,
+                    last_amount: em_amount,
                     start_month: false,
                     end_month: false,
                 }
@@ -84,11 +82,10 @@ const EmpAllowanceTableEdit = () => {
     }, [slno, updateWage]);
 
 
-    //start month update function
+    // month update function
     const updateMonthstart = (val) => {
         setMonthstart(val)
     }
-    // end month update function
     const updateMonthend = (val) => {
         setMonthend(val)
     }
@@ -99,12 +96,15 @@ const EmpAllowanceTableEdit = () => {
 
     // post data
     const updateData = {
+        em_id: no,
         em_salary_desc: selectWage,
         em_amount: em_amount,
+        last_wage: last_amount,
         em_start_date: month_start,
         em_end_date: month_end,
         edit_user: employeeNumber(),
-        ernded_slno: slno
+        ernded_slno: slno,
+
     }
 
     //Form reset
@@ -116,16 +116,16 @@ const EmpAllowanceTableEdit = () => {
         include_lwf: 0,
         include_protax: 0,
         em_amount: 0,
+        last_amount: 0,
         start_month: false,
         end_month: false
     }
-
     const reset = () => {
         updateWageType(0);
         updateWage(0);
-
     }
 
+    //Update data
     const submitAllowance = async (e) => {
         e.preventDefault();
         const result = await axioslogin.patch('/empearndeduction', updateData)
@@ -145,19 +145,18 @@ const EmpAllowanceTableEdit = () => {
     const startmonth = async (e) => {
         e.target.value === 'false' ? settoggle(false) : settoggle(true)
     }
-
     const endmonth = async (e) => {
         e.target.value === 'false' ? settoggle_end(false) : settoggle_end(true)
     }
 
+    //Redirect
     const handleClose = () => {
         setOpen(false);
     };
-
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
+
     return (
         <Fragment>
             <ModalOne open={open} handleClose={handleClose} />
@@ -193,6 +192,14 @@ const EmpAllowanceTableEdit = () => {
                                                 value={em_amount}
                                                 name="em_amount"
                                                 changeTextValue={(e) => updateAllowance(e)}
+                                            />
+                                            <input
+                                                type="text"
+                                                className="hiddenvalue"
+                                                value={last_amount}
+                                                name="last_amount"
+                                                hidden
+                                                onChange={(e) => updateAllowance(e)}
                                             />
                                         </div>
                                         <div className="d-flex align-items-center" >

@@ -74,3 +74,8 @@
     height: 1.5rem;
     padding-top: 0.1rem;
 }
+.card-salary-information{
+    position: relative;
+    height: 9rem;
+    overflow: auto;
+}

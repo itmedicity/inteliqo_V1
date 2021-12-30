@@ -14,20 +14,16 @@ const QualificationTable = ({ update }) => {
     //Table
     const title = [
         {
-            title: "SlNo", field: "emqual_slno",
-            cellStyle: { minWidth: 1, maxWidth: 2 }
+            title: "SlNo", field: "emqual_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Education", field: 'edu_desc',
-            cellStyle: { minWidth: 250, maxWidth: 400 }
+            title: "Education", field: 'edu_desc', cellStyle: { minWidth: 250, maxWidth: 400 }
         },
         {
-            title: "Course", field: "em_course",
-            cellStyle: { minWidth: 200, maxWidth: 300 }
+            title: "Course", field: "em_course", cellStyle: { minWidth: 200, maxWidth: 300 }
         },
         {
-            title: "Specialization", field: "spec_desc",
-            cellStyle: { minWidth: 250, maxWidth: 400 }
+            title: "Specialization", field: "spec_desc", cellStyle: { minWidth: 250, maxWidth: 400 }
         },
     ]
 
@@ -45,7 +41,7 @@ const QualificationTable = ({ update }) => {
             }
         }
         getQualification();
-    }, [update]);
+    }, [id, update]);
 
     //For Edit
     const getDataTable = (data) => {
@@ -56,7 +52,7 @@ const QualificationTable = ({ update }) => {
     return (
         <Fragment>
             <MaterialTable
-                title="Course"
+                title="Qualification"
                 data={data}
                 columns={title}
                 icons={tableIcons}

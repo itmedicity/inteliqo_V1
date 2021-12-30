@@ -7,6 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import BankMastTable from './BankMastTable'
 
 const BankMaster = () => {
@@ -33,6 +34,7 @@ const BankMaster = () => {
   const postData = {
     ...bankData,
     bank_status: bank_status === true ? 1 : 0,
+    create_user: employeeNumber()
   }
   const postFormData = async (e) => {
     e.preventDefault()

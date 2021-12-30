@@ -25,6 +25,7 @@ const Settings = () => {
                                 <Link to="/Home/District" className="list-group-item pt-1 pb-1"  > District</Link>
                                 <Link to="/Home/LeaveTypeMaster" className="list-group-item pt-1 pb-1"  > Leave Type</Link>
                                 <Link to="/Home/EducationMaster" className="list-group-item pt-1 pb-1"  > Education Master</Link>
+                                <Link to="/Home/DepartmentShift" className="list-group-item pt-1 pb-1"  > Department Shift Master</Link>
                             </ul>
                         </div>
                         <div className="col-4">
@@ -38,6 +39,7 @@ const Settings = () => {
                                 <Link to="/Home/DoctorType" className="list-group-item pt-1 pb-1"  > Doctor Type</Link>
                                 <Link to="/Home/YearlyLeaveCount" className="list-group-item pt-1 pb-1"  >Yearly Leave Count</Link>
                                 <Link to="/Home/CourseMaster" className="list-group-item pt-1 pb-1"  > Course Master</Link>
+                                <Link to="/Home/LeaveRequestType" className="list-group-item pt-1 pb-1"  > Leave Request Type Master</Link>
                             </ul>
                         </div>
                         <div className="col-4">

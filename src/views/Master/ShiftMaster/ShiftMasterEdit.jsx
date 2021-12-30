@@ -2,17 +2,15 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import TextInput from 'src/views/Component/TextInput';
-//import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave';
 import { useHistory } from 'react-router';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { Checkbox, FormControlLabel } from '@material-ui/core'
-// import moment from 'moment';
-// import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import moment from 'moment';
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
 import Timepicker from 'src/views/Component/Timepicker';
 import MinutePicker from 'src/views/Component/MinutePicker';
-
 
 const ShiftMasterEdit = () => {
     const { id } = useParams()
@@ -28,6 +26,17 @@ const ShiftMasterEdit = () => {
         shift_status: true
     })
     const { shift_name, shift_code, crossday, dutyday, earlyincalculation, earlyoutcalculation, shift_status } = formData
+    //default State
+    const defaultState = {
+        shift_name: "",
+        shift_code: "",
+        crossday: '0',
+        dutyday: '1',
+        earlyincalculation: '1',
+        earlyoutcalculation: '1',
+        shift_status: true
+    }
+
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
     const SetcheckInTime = (val) => {
@@ -116,26 +125,26 @@ const ShiftMasterEdit = () => {
                 const {
                     shft_desc,
                     shft_code,
-                    //shft_chkin_time,
-                    //shft_chkout_time,
+                    shft_chkin_time,
+                    shft_chkout_time,
                     shft_cross_day,
-                    //shft_chkin_start,
-                    //shft_chkin_end,
-                    // shft_chkout_start,
-                    //shft_chkout_end,
+                    shft_chkin_start,
+                    shft_chkin_end,
+                    shft_chkout_start,
+                    shft_chkout_end,
                     shft_duty_day,
-                    //shft_brk_start,
-                    //shft_brk_end,
+                    shft_brk_start,
+                    shft_brk_end,
                     shft_early_in_criteria,
-                    //shft_early_in_mints,
+                    shft_early_in_mints,
                     shft_late_out_criteria,
-                    //shft_late_out_mints,
-                    //shft_latein_allow_time,
-                    // shft_earlyout_allow_time,
-                    //first_half_in,
-                    // first_half_out,
-                    // second_half_in,
-                    //second_half_out,
+                    shft_late_out_mints,
+                    shft_latein_allow_time,
+                    shft_earlyout_allow_time,
+                    first_half_in,
+                    first_half_out,
+                    second_half_in,
+                    second_half_out,
                     shft_status
                 } = data[0]
 
@@ -148,23 +157,22 @@ const ShiftMasterEdit = () => {
                     earlyoutcalculation: shft_late_out_criteria,
                     shift_status: shft_status === 1 ? true : false
                 }
-
-                // setCheckIn(shft_chkin_time)
-                // setCheckOut(shft_chkout_time)
-                // setcheckInStart(shft_chkin_start)
-                // setcheckInEnd(shft_chkin_end)
-                // setcheckOutStart(shft_chkout_start)
-                // setcheckOutEnd(shft_chkout_end)
-                // setBreakStart(shft_brk_start)
-                // setBreakEnd(shft_brk_end)
-                // setEarlyIn(shft_early_in_mints)
-                // setEarlyOut(shft_late_out_mints)
-                // setLateIn(shft_latein_allow_time)
-                // setLateOut(shft_earlyout_allow_time)
-                // setfirsthalfcheckin(first_half_in)
-                // setfirsthalfcheckout(first_half_out)
-                // setSecondhalfcheckin(second_half_in)
-                // SetSecondhalfcheckout(second_half_out)
+                setCheckIn(new Date(shft_chkin_time))
+                setCheckOut(new Date(shft_chkout_time))
+                setcheckInStart(new Date(shft_chkin_start))
+                setcheckInEnd(new Date(shft_chkin_end))
+                setcheckOutStart(new Date(shft_chkout_start))
+                setcheckOutEnd(new Date(shft_chkout_end))
+                setBreakStart(new Date(shft_brk_start))
+                setBreakEnd(new Date(shft_brk_end))
+                setEarlyIn(new Date(shft_early_in_mints))
+                setEarlyOut(new Date(shft_late_out_mints))
+                setLateIn(new Date(shft_latein_allow_time))
+                setLateOut(new Date(shft_earlyout_allow_time))
+                setfirsthalfcheckin(new Date(first_half_in))
+                setfirsthalfcheckout(new Date(first_half_out))
+                setSecondhalfcheckin(new Date(second_half_in))
+                SetSecondhalfcheckout(new Date(second_half_out))
                 setFormData(frmData)
             }
         }
@@ -172,14 +180,68 @@ const ShiftMasterEdit = () => {
         getShiftMasterDetails()
     }, [id])
     const updateShiftmasterData = async (e) => {
-
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value })
+    }
+    //saving Data
+    const postData = {
+        shft_slno: id,
+        shft_desc: shift_name,
+        shft_code: shift_code,
+        shft_chkin_time: moment(checkIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_time: moment(checkOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_cross_day: crossday,
+        shft_chkin_start: moment(checkInStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkin_end: moment(checkInEnd, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_start: moment(checkOutStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_end: moment(checkOutEnd, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_duty_day: dutyday,
+        shft_brk_start: moment(BreakStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_brk_end: moment(Breakend, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_early_in_criteria: earlyincalculation,
+        shft_early_in_mints: moment(EarlyIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_late_out_criteria: earlyoutcalculation,
+        shft_late_out_mints: moment(EarlyOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_latein_allow_time: moment(LateIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_earlyout_allow_time: moment(LateOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        first_half_in: moment(firsthalfcheckin, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        first_half_out: moment(firsthalfcheckout, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        second_half_in: moment(Secondhalfcheckin, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        second_half_out: moment(Secondhalfcheckout, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_status: shift_status === true ? 1 : 0,
     }
     const submitFormData = async (e) => {
         e.preventDefault()
+        const result = await axioslogin.patch('/shift', postData)
+        const { success, message } = result.data
+        if (success === 2) {
+            succesNofity(message)
+            setFormData(defaultState)
+            setCheckIn(new Date())
+            setCheckOut(new Date())
+            setcheckInStart(new Date())
+            setcheckInEnd(new Date())
+            setcheckOutStart(new Date())
+            setcheckOutEnd(new Date())
+            setBreakStart(new Date())
+            setBreakEnd(new Date())
+            setEarlyIn(new Date())
+            setEarlyOut(new Date())
+            setLateIn(new Date())
+            setLateOut(new Date())
+            setfirsthalfcheckin(new Date())
+            setfirsthalfcheckout(new Date())
+            setSecondhalfcheckin(new Date())
+            SetSecondhalfcheckout(new Date())
+        }
+        else {
+            errorNofity('Errror Occured!!!!Please Contact EDP')
+        }
     }
     const toSettings = () => {
         history.push('/Home/Settings')
     }
+
     return (
         <Fragment>
             <PageLayoutSave
@@ -239,8 +301,6 @@ const ShiftMasterEdit = () => {
                                             />
                                         </div>
                                     </div>
-
-
                                     <div className="row g-1">
                                         <div className="col-md-3">
                                             <label className="form-label">
@@ -305,7 +365,7 @@ const ShiftMasterEdit = () => {
                                                 <Select
                                                     name="crossday"
                                                     value={crossday}
-                                                    //onChange={(e) => updateShiftmasterData(e)}
+                                                    onChange={(e) => updateShiftmasterData(e)}
                                                     fullWidth
                                                     variant="outlined"
                                                     className="ml-1"
@@ -332,7 +392,7 @@ const ShiftMasterEdit = () => {
                                                 <Select
                                                     name="dutyday"
                                                     value={dutyday}
-                                                    //onChange={(e) => updateShiftmasterData(e)}
+                                                    onChange={(e) => updateShiftmasterData(e)}
                                                     fullWidth
                                                     variant="outlined"
                                                     className="ml-1"
@@ -440,7 +500,7 @@ const ShiftMasterEdit = () => {
                                                     fullWidth
                                                     variant="outlined"
                                                     style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
-                                                    //onChange={(e) => updateShiftmasterData(e)}
+                                                    onChange={(e) => updateShiftmasterData(e)}
                                                     value={earlyoutcalculation}
                                                 >
 

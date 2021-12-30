@@ -4,7 +4,7 @@ const AttendanceManagement = [
     {
         component: CNavItem,
         name: 'Duty Planning',
-        to: '/Home/dashboard',
+        to: '/Home/Dutyplanning',
     },
     {
         component: CNavItem,

@@ -24,7 +24,6 @@ const EmployeeExperienceEdit = () => {
     //use States for date
     const [workstartdate, setWorkdate] = useState(new Date())
     const [workenddate, setWorkEnddate] = useState(new Date())
-
     const { selectDesignation,
         updateDesignation } = useContext(PayrolMasterContext)
 
@@ -99,6 +98,8 @@ const EmployeeExperienceEdit = () => {
     }
     //postData
     const postData = {
+        em_no: id,
+        em_id: no,
         emexp_slno: slno,
         em_institution: institution_name,
         em_designation: selectDesignation,
@@ -122,12 +123,10 @@ const EmployeeExperienceEdit = () => {
             history.push(`/Home/EmployeeExperience/${id}/${no}`)
             succesNofity(message)
             reset()
-
         }
         else {
             errorNofity('Error Occured!!!Please Contact EDP')
         }
-
     }
 
     //redirecting to home page

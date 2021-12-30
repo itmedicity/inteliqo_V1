@@ -10,7 +10,7 @@ const FullPageloader = () => {
         <div className="loader-container" >
             <div className="loader">
                 {/* <CSpinner color="info" /> */}
-                <img src={Spinner} />
+                <img src={Spinner} alt="spinner" />
             </div>
         </div>
         // <Box sx={{ width: '100%' }}>

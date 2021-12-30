@@ -42,14 +42,13 @@ const WagesInfoTable = ({ update }) => {
             }
         }
         getCourse();
-    }, [update]);
+    }, [id, update]);
 
     //For Edit
     const getDataTable = (data) => {
         const { ernded_slno } = data
         history.push(`/Home/EmpAllowanceTableEdit/${ernded_slno}/${id}/${no}`)
     }
-
 
     return (
         <Fragment>

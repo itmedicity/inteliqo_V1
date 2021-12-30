@@ -15,7 +15,7 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import { IoHome, IoPower, IoSettingsSharp } from 'react-icons/io5'
 
 import { AppHeaderDropdown } from './header/index'
-import { logo } from 'src/assets/brand/logo'
+// import { logo } from 'src/assets/brand/logo'
 import { useHistory } from 'react-router-dom'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 

@@ -1,5 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { useContext, useEffect, useState, Fragment } from 'react'
+import React, { useContext, memo, useEffect, useState, Fragment } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
@@ -35,7 +35,7 @@ const DoctorType = (props) => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    name="selectedEarntype"
+                    name="selectedDoctortype"
                     value={getDoctype}
                     onChange={(e) => updatedoctortype(e.target.value)}
                     fullWidth
@@ -60,4 +60,4 @@ const DoctorType = (props) => {
     )
 }
 
-export default DoctorType
+export default memo(DoctorType)
