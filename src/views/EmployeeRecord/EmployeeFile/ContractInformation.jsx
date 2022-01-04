@@ -173,7 +173,7 @@ const ContractInformation = () => {
     const submitFormData = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
-        console.log(result)
+        // console.log(result)
         const { success, message } = result.data
         if (success === 2) {
             succesNofity(message)

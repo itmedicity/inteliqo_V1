@@ -1,8 +1,8 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment } from 'react'
 
-const TestSelectComponent = ({ name, select, style, onChange }) => {
-    // console.log(props);
+
+const TestCasulLeave = ({ name, select, style, onChange }) => {
     return (
         <Fragment>
             <FormControl
@@ -11,8 +11,8 @@ const TestSelectComponent = ({ name, select, style, onChange }) => {
                 className="mt-1 mb-0"
             >
                 <Select
-                    name={name}
-                    onChange={(e) => onChange(e.target.value)}
+                    name={`cas${name}`}
+                    onChange={onChange}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
@@ -20,15 +20,15 @@ const TestSelectComponent = ({ name, select, style, onChange }) => {
                     style={style}
                 >
                     <MenuItem value={0} disabled selected >{select}</MenuItem>
-                    <MenuItem value='1'>Leave Request</MenuItem>
-                    <MenuItem value='2'>Half Day Leave </MenuItem>
-                    <MenuItem value='3'>No Puch request</MenuItem>
-                    <MenuItem value='4'>Late Coming Request</MenuItem>
-                    <MenuItem value='5'>Early Going Request</MenuItem>
+                    <MenuItem value='1'>JAN - 01</MenuItem>
+                    <MenuItem value='2'>FEB - 02</MenuItem>
+                    <MenuItem value='3'>MAR - 03</MenuItem>
+                    <MenuItem value='4'>APR - 04</MenuItem>
+                    <MenuItem value='5'>MAY - 05</MenuItem>
                 </Select>
             </FormControl>
         </Fragment>
     )
 }
 
-export default TestSelectComponent
+export default TestCasulLeave
