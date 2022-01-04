@@ -1,102 +1,51 @@
 import { Typography } from '@mui/material';
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios';
 import { TEXT_DARK, TEXT_MUTED } from 'src/views/Constant/Constant';
 // import { axioslogin } from 'src/views/Axios/Axios';
 
-const CasualLeaveList = () => {
+const CasualLeaveList = ({ nodataset, no, castable }) => {
 
-    const list = [
-        {
-            name: "January",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "February",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "March",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "April",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "May",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "June",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "July",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "August",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "September",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "October",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "November",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "December",
-            allowed: 1,
-            credit: 1,
-            taken: 1
+    const [listt, setlist] = useState([{
+        name: "",
+        allowed: 0,
+        credit: 0,
+        taken: 0,
+    }])
+
+    useEffect(() => {
+
+        const insrtcasualleave = async () => {
+            const result = await axioslogin.get(`/common/getcasual/${no}`)
+            const { success, data } = result.data
+            if (success === 0) {
+                nodataset(1)
+            }
+            else if (success === 1) {
+                setlist(data)
+            }
         }
+        insrtcasualleave();
 
-    ]
+    }, [castable, no, nodataset])
+
     return (
         <Fragment>
             <ul className="list-group list-group-flush ">
                 {
-                    list.map((val, index) => {
+                    listt.map((val, index) => {
                         return <li className="list-group-item py-0" key={index}>
                             <div className="d-md-flex d-sm-flex justify-content-around"
-                                style={val.taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
+                                style={val.cl_lv_taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
                             >
                                 <div className="col-sm-4 py-0 text-start" >
                                     <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.name}
+                                        {val.cl_lv_mnth}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center">{val.allowed}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.credit}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.taken}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.cl_lv_allowed}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.cl_lv_credit}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.cl_lv_taken}</div>
                             </div>
                         </li>;
                     })

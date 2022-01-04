@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from '../Axios/SessionCheck'
 import FooterClosebtn from './FooterClosebtn'
@@ -30,4 +30,4 @@ const PageLayoutSave = (props) => {
     )
 }
 
-export default PageLayoutSave
+export default memo(PageLayoutSave)

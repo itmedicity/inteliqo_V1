@@ -1,39 +1,145 @@
-import { CircularProgress, IconButton, LinearProgress, Typography } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
-import TestSelectComponent from 'src/views/CommonCode/TestSelectComponent'
+import { IconButton } from '@mui/material'
+import React, { Fragment, useEffect } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import PageLayoutCloseOnly from '../../CommonCode/PageLayoutCloseOnly'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import '../Att_Style.css'
 import Moment from 'moment'
-import { DATA, empData } from './DummyData'
 import { extendMoment } from 'moment-range';
-import { eachDayOfInterval } from 'date-fns'
-import DropDownList from './DropDownList'
-import ViewComfyIcon from '@mui/icons-material/ViewComfy';
-
+import { addDays, eachDayOfInterval, format } from 'date-fns'
+import { useState, useContext } from 'react'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
+import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import DutyPlanningMainCard from './DutyPlanningMainCard'
 const moment = extendMoment(Moment);
 
 const DutyPlanning = () => {
+  const { selectedDept, selectDeptSection } = useContext(PayrolMasterContext)
+  //use state for employee details
+  const [empData, setempData] = useState([])
+  //use State for Date Format
+  const [dateFormat, setdateFormat] = useState([])
+  const [duty, setDuty] = useState(0)
+  const [count, setCount] = useState(0)
+  //use state for initial start date and end date
+  const [formData, setFormData] = useState({
+    startDate: format(new Date(), "yyyy-MM-dd"),
+    endDate: format(new Date(), "yyyy-MM-dd"),
+  })
+  //de structuring
+  const { startDate, endDate } = formData
+  //getting form data
+  const updateDutyPlanning = async (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value })
+  }
+  //date validations
+  const maxdate = addDays(new Date(startDate), 30)
+  const maxdatee = moment(maxdate).format('YYYY-MM-DD')
 
-  // const startDate = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-  // var endDate = moment().add(20, 'days').format("dddd, MMMM Do YYYY, h:mm:ss a");
+  //use effect getting the employee details of the selected department and department section
+  useEffect(() => {
+    //post data for getting employee details
+    const getempdetl = async () => {
+      if (selectedDept !== 0 && selectDeptSection !== 0) {
+        const postData = {
+          em_department: selectedDept,
+          em_dept_section: selectDeptSection
+        }
+        const result = await axioslogin.post("/plan/create", postData);
+        const { success, data } = result.data
+        if (success === 1) {
+          setempData(data)
+        }
+        else {
+          warningNofity("There is No employees In This Department And Department Section")
+          setDuty(0)
+        }
+      }
+    }
+    getempdetl()
+  }, [selectedDept, selectDeptSection])
 
-  const startDate = new Date('2021-12-01');
-  const endDate = new Date('2021-12-30');
 
-  const rage = eachDayOfInterval(
-    // { start: new Date(2014, 0, 10), end: new Date(2014, 0, 20) }
-    { start: startDate, end: endDate }
-  )
+  //insert duty planning
+  const insertDutyPlanning = async (e) => {
+    setCount(count + 1)
+    //finding the dates between start date and end date
+    const rage = eachDayOfInterval(
+      { start: new Date(startDate), end: new Date(endDate) }
+    )
+    //finding the dates between start date and end date
+    const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D-dd'), sunday: moment(val).format('d') } })
+    setdateFormat(newDateFormat)
+    const newDateFormat2 = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } })
+    //checking wheher duty plan is already setted in thse dates
+    const empidata = empData && empData.map((val) => {
+      return val.em_id
+    })
+    const postDate = {
+      start_date: moment(startDate).format('YYYY-MM-DD'),
+      end_date: moment(endDate).format('YYYY-MM-DD'),
+      empData: empidata
+    }
+    const result = await axioslogin.post("/plan/check", postDate)
+    const { success, data } = result.data
+    if (success === 1) {
+      const dutyday = empData.map((val) => {
+        const dutydate = newDateFormat2.map((value) => {
+          return { date: value.date, emp_id: val.em_id }
+        })
+        return dutydate
+      })
+      const dutyplanarray = dutyday.flat(Infinity)
 
-  const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D-dd'), sunday: moment(val).format('d') } })
+      //filtering the data from the data base and inserting dates and finding the new array to insert
+      const newdutyplanarray = dutyplanarray.filter((val) => {
+        return data.filter((data) => {
+          return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
+        }).length === 0
+      })
+      //if new array lenth is zero no need to inset
+      if (newdutyplanarray.length === 0) {
+        setDuty(1)
+      }
 
-  // console.log(rage)
-  // console.log(startDate)
-  // console.log(newDateFormat)
-
+      //if new array length not eqal to zero inserting the new array
+      else {
+        //inserting the duty plan
+        const results = await axioslogin.post("/plan/insert", newdutyplanarray)
+        const { success1 } = results.data
+        if (success1 === 1) {
+          setDuty(1)
+        }
+        else {
+          errorNofity("Error Occured!!Please Contact EDP")
+        }
+      }
+    }
+    //if the no dates are inserted betwen the start date and end date inserting the dates
+    else {
+      const dutyday = empData.map((val) => {
+        const dutydate = newDateFormat2.map((value) => {
+          return { date: value.date, emp_id: val.em_id }
+        })
+        return dutydate
+      })
+      const dutyplanarray = dutyday.flat(Infinity)
+      //inserting the duty plan
+      const results = await axioslogin.post("/plan/insert", dutyplanarray)
+      const { success1 } = results.data
+      if (success1 === 1) {
+        setDuty(1)
+      }
+      else {
+        errorNofity("Error Occured!!Please Contact EDP")
+      }
+    }
+  }
   return (
     <Fragment>
       <PageLayoutCloseOnly heading="Duty Planning" >
@@ -44,8 +150,9 @@ const DutyPlanning = () => {
                 type="date"
                 classname="form-control form-control-sm custom-datefeild-height"
                 Placeholder="Date"
-                name="start_date"
-              // value={start_date}
+                name="startDate"
+                value={startDate}
+                changeTextValue={(e) => updateDutyPlanning(e)}
               />
             </div>
             <div className="col-md-2">
@@ -53,95 +160,47 @@ const DutyPlanning = () => {
                 type="date"
                 classname="form-control form-control-sm custom-datefeild-height"
                 Placeholder="Date"
-                name="start_date"
-              // value={start_date}
+                name="endDate"
+                value={endDate}
+                min={startDate}
+                max={maxdatee}
+                changeTextValue={(e) => updateDutyPlanning(e)}
               />
             </div>
             <div className="col-md-3">
-              <TestSelectComponent select="Department" style={SELECT_CMP_STYLE} />
+              <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
             </div>
             <div className="col-md-3">
-              <TestSelectComponent select="Department Section" style={SELECT_CMP_STYLE} />
+              <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} />
             </div>
             <div className="col-md-1 text-center">
               <IconButton
                 aria-label="add"
                 style={{ padding: '0rem' }}
+                onClick={insertDutyPlanning}
               >
                 <MdOutlineAddCircleOutline className="text-info" size={30} />
               </IconButton>
             </div>
           </div>
         </div>
-
-        <div className="card">
-          <div className="card-body">
-            <div className="row">
-              <div className='table-responsive table-responsive-md' >
-                <table className="table table-sm table-bordered planTable " >
-                  <thead>
-                    <tr>
-                      <th width="100" className='pt-2'  >
-                        <Typography variant="subtitle2" >
-                          Name
-                        </Typography>
-                      </th>
-                      <th width="100" >
-                        <Typography variant="subtitle2" >
-                          Emp ID
-                        </Typography>
-                      </th>
-                      {
-                        newDateFormat.map((val) => {
-                          return <th className='text-center'
-                            key={val.date}
-                            style={val.sunday === '0' ? { color: "#cb5966", backgroundColor: "#a6b2b5" } : null}
-                          >
-                            <Typography variant="subtitle2">
-                              {val.date}
-                            </Typography>
-                          </th>
-                        })
-                      }
-                      <th>
-                        {/* <CircularProgress color="secondary" size={18} /> */}
-                        <ViewComfyIcon size={18} style={{ color: "blue" }} />
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <Suspense fallback={<LinearProgress />} >
-                      {
-                        empData.map((name) => {
-                          // console.log(name)
-                          const data = {
-                            emp_id: name.emp_id,
-                            start: startDate,
-                            end: endDate,
-                          }
-                          return <tr key={name.name} >
-                            <td width="100" className='pt-2' >
-                              <Typography variant="subtitle2">
-                                {name.name}
-                              </Typography>
-                            </td>
-                            <td width="100">{name.emp_id}</td>
-                            <Suspense fallback={<LinearProgress />} >
-                              <DropDownList data={data} />
-                            </Suspense>
-                          </tr>
-                        })
-                      }
-                    </Suspense>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+        <div>{
+          duty === 1 ?
+            <DutyPlanningMainCard
+              dateformat={dateFormat}
+              employeedata={empData}
+              startdate={startDate}
+              enddate={endDate}
+              duty={duty}
+              count={count}
+            /> : null
+        }
         </div>
-      </PageLayoutCloseOnly>
+      </PageLayoutCloseOnly >
     </Fragment>
   )
+
+
 }
 
 export default DutyPlanning

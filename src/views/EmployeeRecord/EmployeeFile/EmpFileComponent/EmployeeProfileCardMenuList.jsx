@@ -59,7 +59,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Annual Leave Settngs
     const AnnualLeaveSettings = () => {
-        history.push(`/Home/AnnualLeaveSettings/${4516}`)
+        history.push(`/Home/AnnualLeaveSettings/${id}/${no}`)
     }
     //Employee Training
     const EmployeeTrainingInformation = () => {

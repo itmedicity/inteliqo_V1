@@ -56,7 +56,6 @@ const PersonalInformation = () => {
         Selectgender: '0',
         age: 0,
         maritalstatus: '0',
-        baknmae: '',
         accountno: '',
         ifc_code: '',
         panmum: '',
@@ -82,7 +81,9 @@ const PersonalInformation = () => {
         maritalstatus,
         accountno,
         ifc_code,
-        panmum, em_id, em_no
+        panmum,
+        em_id,
+        em_no
     } = personaldta
 
     // useState
@@ -133,7 +134,7 @@ const PersonalInformation = () => {
     // usefect to get employeedetails
     useEffect(() => {
         const getemployeedetails = async () => {
-            const result = await axioslogin.get(`/empmast/${id}`)
+            const result = await axioslogin.get(`/common/getpersonalData/${id}`)
             const { success, data } = result.data
             if (success === 1) {
                 const {
@@ -153,7 +154,15 @@ const PersonalInformation = () => {
                     addressPresent2,
                     hrm_pin2,
                     hrm_region2,
-                    blood_slno, hrm_religion,
+                    blood_slno,
+                    hrm_religion,
+                    em_bank,
+                    em_account_no,
+                    em_ifsc,
+                    em_license_no,
+                    em_adhar_no,
+                    em_pan_no,
+                    em_passport_no
                 } = data[0]
 
 
@@ -166,18 +175,17 @@ const PersonalInformation = () => {
                     contactpin1: hrm_pin2,
                     mobile: em_mobile,
                     land_no: em_phone,
-                    passp_no: '',
-                    license: '',
-                    adhar_no: '',
+                    passp_no: em_passport_no,
+                    license: em_license_no,
+                    adhar_no: em_adhar_no,
                     email: em_email,
                     dob: em_dob,
                     age: em_age_year,
                     Selectgender: em_gender,
                     maritalstatus: '0',
-                    baknmae: '',
-                    accountno: '',
-                    ifc_code: '',
-                    panmum: '',
+                    accountno: em_account_no,
+                    ifc_code: em_ifsc,
+                    panmum: em_pan_no,
                     em_id: em_id,
                     em_no: em_no
 
@@ -188,6 +196,7 @@ const PersonalInformation = () => {
                 updatebloodgroup(blood_slno)
                 udateregion(em_region)
                 udateregion2(hrm_region2)
+                updateBankName(em_bank)
             }
         }
         getemployeedetails()
@@ -197,7 +206,7 @@ const PersonalInformation = () => {
             udateregion(0),
             udateregion2(0)
         )
-    }, [udatereligion, updatebloodgroup])
+    }, [udatereligion, updatebloodgroup, udateregion, udateregion2, updateBankName, id])
     const updateFormData = ((e) => {
         e.preventDefault();
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -215,6 +224,7 @@ const PersonalInformation = () => {
             em_per_pincode: pin1,
             em_pmnt_address1: contactaddress1,
             em_pmnt_address2: contactaddress2,
+            em_pmnt_pincode: contactpin1,
             em_passport_no: passp_no,
             em_pan_no: panmum,
             em_adhar_no: adhar_no,
@@ -227,6 +237,11 @@ const PersonalInformation = () => {
             em_bank: selectBank,
             em_account_no: accountno,
             em_ifsc: ifc_code,
+            emp_dob: dob,
+            em_email: email,
+            emp_yeargae: age,
+            em_region: getregion,
+            hrm_region2: getregion2,
             create_user: employeeNumber()
         }
         const resetdata = {
@@ -246,7 +261,6 @@ const PersonalInformation = () => {
             Selectgender: '0',
             age: 0,
             maritalstatus: '0',
-            baknmae: '',
             accountno: '',
             ifc_code: '',
             panmum: '',
@@ -256,13 +270,26 @@ const PersonalInformation = () => {
         const resultemployee = await axioslogin.post('/personaldetl', submitpersonal);
         const { success, message } = resultemployee.data;
         if (success === 1) {
-            setpersonaldata(resetdata)
-            udatereligion(0)
-            updatebloodgroup(0)
-            udateregion(0)
-            udateregion2(0)
-            RedirectToProfilePage();
-            succesNofity(message)
+            // to update empmast 
+            const updateempmast = await axioslogin.patch('/empmast', submitpersonal);
+            const { success, message } = updateempmast.data;
+            if (success === 2) {
+
+                setpersonaldata(resetdata)
+                udatereligion(0)
+                updatebloodgroup(0)
+                udateregion(0)
+                udateregion2(0)
+                RedirectToProfilePage();
+                succesNofity(message)
+
+            } else if (success === 0) {
+                errorNofity(message.sqlMessage)
+            } else {
+                infoNofity(message)
+            }
+
+
         } else if (success === 0) {
             errorNofity(message.sqlMessage)
         } else if (success === 2) {
