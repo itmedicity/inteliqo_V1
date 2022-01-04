@@ -94,17 +94,19 @@ const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/Shif
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
 const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
-const LeaveRequest = React.lazy(() => import('./views/Attendance/LeaveRequest/LeaveRequest'))
-const ApprovalIncharge = React.lazy(() => import('./views/Attendance/ApprovalIncharge/ApprovalIncharge'))
-const ApprovalHOD = React.lazy(() => import('./views/Attendance/ApprovalHOD/ApprovalHod'))
-const ApprovalHR = React.lazy(() => import('./views/Attendance/ApprovalHR/ApprovalHR'))
-const CancelEmployee = React.lazy(() => import('./views/Attendance/LeaveCancelEmployee/LeaveCancelEmploye'))
-const CancelHR = React.lazy(() => import('./views/Attendance/LeaveCancelHR/LeaveCancelHr'))
-const OTRequest = React.lazy(() => import('./views/Attendance/OverTimeRequest/OTRequest'))
-const OTApprovalIncharge = React.lazy(() => import('./views/Attendance/OTApprovalIncharge/OTApprovalIncharge'))
-const OTApprovalHOD = React.lazy(() => import('./views/Attendance/OTApprovalHOD/OTApprovalHOD'))
-const OTApprovalHR = React.lazy(() => import('./views/Attendance/OTApprovalHR/OTApprovalHR'))
-const OTUpdation = React.lazy(() => import('./views/Attendance/OTUpdation/OTUpdation'))
+const LeaveRequest = React.lazy(() => import('./views/LeaveManagement/LeaveRequest/LeaveRequest'))
+const ApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/ApprovalIncharge/ApprovalIncharge'))
+const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/ApprovalHod'))
+const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/ApprovalHR'))
+const CancelEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveCancelEmployee/LeaveCancelEmploye'))
+const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/LeaveCancelHr'))
+const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OTRequest'))
+const OTApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/OTApprovalIncharge/OTApprovalIncharge'))
+const OTApprovalHOD = React.lazy(() => import('./views/LeaveManagement/OTApprovalHOD/OTApprovalHOD'))
+const OTApprovalHR = React.lazy(() => import('./views/LeaveManagement/OTApprovalHR/OTApprovalHR'))
+const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdation'))
+const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
+const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 
 
 const routes = [
@@ -185,7 +187,7 @@ const routes = [
   { path: '/Home/EmployeeCompany/:id/:no', exact: true, name: 'Employee Company', component: EmployeeCompany },
   { path: '/Home/SalaryInformation/:id/:no', exact: true, name: 'Salary Information', component: SalaryInformation },
   { path: '/Home/EmployeeAllowance/:id/:no', exact: true, name: 'Employee Allowance', component: EmployeeAllowance },
-  { path: '/Home/AnnualLeaveSettings/:id', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
+  { path: '/Home/AnnualLeaveSettings/:id/:no', exact: true, name: 'Annual Leave Settings', component: AnnualLeaveSettings },
   { path: '/Home/EmployeeTraining/:id', exact: true, name: 'Employee Training', component: EmployeeTraining },
   { path: '/Home/SalaryIncrement/:id/:no', exact: true, name: 'Salary Increment', component: SalaryIncrement },
   { path: '/Home/EmployeeDocumentChecklist/:id', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },
@@ -216,6 +218,8 @@ const routes = [
   { path: '/Home/OTApprovalHOD', exact: true, name: 'OT Approval HOD', component: OTApprovalHOD },
   { path: '/Home/OTApprovalHR', exact: true, name: 'OT Approval HR', component: OTApprovalHR },
   { path: '/Home/OTUpdation', exact: true, name: 'OT Updation', component: OTUpdation },
+  { path: '/Home/LeaveRequestType', exact: true, name: 'Leave Request Type', component: LeaveRequestType },
+  { path: '/Home/LeaveRequestTypeEdit/:id', exact: true, name: 'Leave Request Type Edit', component: LeaveRequestTypeEdit }
 
 ]
 

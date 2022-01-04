@@ -28,6 +28,15 @@ export const getSerialnumberempnumber = async () => {
     }
 }
 
+export const getProcessserialnum = async () => {
+    const result = await axioslogin.get('/common/getprocess')
+    const { success } = result.data;
+    const [serial_current] = result.data.data
+    if (success === 1) {
+        return serial_current.serial_current
+    }
+}
+
 export const SELECT_CMP_STYLE = {
     minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4
 }

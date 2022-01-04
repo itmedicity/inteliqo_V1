@@ -1,69 +1,50 @@
 import { Typography } from '@mui/material';
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios';
 import { TEXT_DARK, TEXT_MUTED } from 'src/views/Constant/Constant';
 
-const HolidayLeaveList = () => {
-    const list = [
-        {
-            name: "Republic Day",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "Shivarathri",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "Good Friday",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "Vishu",
-            allowed: 1,
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "May Day",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "Ramzan",
-            allowed: 1,
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "Bakrid",
-            allowed: 1,
-            credit: 1,
-            taken: 0
+const HolidayLeaveList = ({ hldnodata, no }) => {
+    const [list, setlist] = useState([{
+        hld_desc: "",
+        hl_lv_allowed: 0,
+        hl_lv_credit: 0,
+        hl_lv_taken: 0
+
+    }])
+    useEffect(() => {
+        const getholidaylleave = async () => {
+
+            const result = await axioslogin.get(`/common/getleaveholiday/${no}`)
+            const { success, data } = result.data
+            if (success === 0) {
+                hldnodata(1)
+            }
+            else {
+                hldnodata(0)
+                setlist(data)
+            }
         }
-    ]
+        getholidaylleave();
+    }, [hldnodata, no])
+
     return (
         <Fragment>
             <ul className="list-group list-group-flush ">
                 {
                     list.map((val, index) => {
+
                         return <li className="list-group-item py-0" key={index}>
                             <div className="d-md-flex d-sm-flex justify-content-around"
                                 style={val.taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
                             >
                                 <div className="col-sm-4 py-0 text-start" >
                                     <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.name}
+                                        {val.hld_desc}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center">{val.allowed}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.credit}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.taken}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_allowed}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_credit}</div>
+                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_taken}</div>
                             </div>
                         </li>;
                     })

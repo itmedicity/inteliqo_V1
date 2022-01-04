@@ -39,6 +39,7 @@ const Settings = () => {
                                 <Link to="/Home/DoctorType" className="list-group-item pt-1 pb-1"  > Doctor Type</Link>
                                 <Link to="/Home/YearlyLeaveCount" className="list-group-item pt-1 pb-1"  >Yearly Leave Count</Link>
                                 <Link to="/Home/CourseMaster" className="list-group-item pt-1 pb-1"  > Course Master</Link>
+                                <Link to="/Home/LeaveRequestType" className="list-group-item pt-1 pb-1"  > Leave Request Type Master</Link>
                             </ul>
                         </div>
                         <div className="col-4">

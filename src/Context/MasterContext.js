@@ -76,18 +76,25 @@ const MasterContext = ({ children }) => {
     const [selectWageType, updateWageType] = useState(0)
     //Region2 select
     const [getregion2, udateregion2] = useState(0)
+    // context for count in annual leave setting
+    const [annualleaveupdate, setannualleaveupdate] = useState(0)
     //fine description selection
     const [selectFine, updateFine] = useState(0)
     //fine description count setting
     const [finecount, updatefinecount] = useState(0)
     //wage Description
     const [selectWageDescription, updateWageDescription] = useState(0)
+    //Leave Request Type
+    const [selectleaverequest, updateleaverequest] = useState(0)
+    //Department section selection without passing department
+    const [getDeptSection, updateDeptSection] = useState(0)
     //shift
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
     //department shift
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
+
     const value = {
         selectedDept,
         updateSelected,
@@ -161,12 +168,18 @@ const MasterContext = ({ children }) => {
         updateWageType,
         getregion2,
         udateregion2,
+        annualleaveupdate,
+        setannualleaveupdate,
         selectFine,
         updateFine,
         finecount,
         updatefinecount,
         selectWageDescription,
         updateWageDescription,
+        selectleaverequest,
+        updateleaverequest,
+        getDeptSection,
+        updateDeptSection,
         getshifts,
         updateShifts,
         shiftnameselect,
