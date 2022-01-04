@@ -1,67 +1,70 @@
-import { Button, IconButton, LinearProgress } from '@mui/material';
+import { IconButton, LinearProgress } from '@mui/material';
 import moment from 'moment';
 import React, { Fragment, memo, Suspense } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
+import DepartmentShiftSelect from 'src/views/Attendance/DutyPlanning/DepartmentShiftSelect';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const DropDownList = ({ data }) => {
+const DropDownList = ({ data, duty, count }) => {
     const { emp_id, start, end } = data;
     const [dutyplan, setDutyplan] = useState();
     const [change, setChange] = useState(0)
-
     const postdata = {
         emp_id: emp_id,
-        start_date: start,
-        end_date: end
+        start_date: moment(start).format('YYYY-MM-DD HH:mm:ss'),
+        end_date: moment(end).format('YYYY-MM-DD HH:mm:ss'),
     }
-    //Get the Duty Plan Details from Database
+    // Get the Duty Plan Details from Database
     useEffect(() => {
-        const getDutyPlan = async () => {
-            const result = await axioslogin.post("/plan", postdata);
-            const { success, data } = result.data;
-            setDutyplan(data)
+        if (duty === 1) {
+            const getDutyPlan = async () => {
+                const result = await axioslogin.post("/plan", postdata);
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setDutyplan(data)
+                }
+                else if (success === 0) {
+                    warningNofity("No Record Found")
+                }
+                else {
+                    errorNofity("Error Occured!!!Please Contact EDP")
+                }
+            }
+            getDutyPlan()
         }
-        getDutyPlan()
-
-    }, [])
-
+        else {
+            errorNofity("Error Occured!!!Please Contact EDP")
+        }
+    }, [duty, count])
+    // shift Array 
     const [empPlan, setEmpPlan] = useState([]);
-    // filter the changed duty plan details to avoid duplication
-    const handleChange = (e, index, slno, plan) => {
-        const plan_date = moment(plan).format('YYYY-MM-DD')
-        const newPlanArray = empPlan.filter((val) => {
-            return val.plan_slno !== slno
-        })
-        setEmpPlan([...newPlanArray, { plan_date: plan_date, plan_slno: slno, shift_slno: e.target.value }]);
-        setChange(1);
-    }
-
     // Submit the Duty Plan to the Database 
-    const handleSubmit = () => {
-        // console.log(emp_id, empPlan)
-        setChange(0)
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const result = await axioslogin.patch("/plan", empPlan)
+        const { success } = result.data
+        if (success === 1) {
+            succesNofity("Duty Plan Updated")
+            setChange(0)
+        }
+        else {
+            errorNofity("Error Occured!!!Please Contact EDP")
+        }
     }
-
     return (
         <Fragment>
             <Suspense fallback={<LinearProgress />} >
                 {
                     dutyplan && dutyplan.map((val, index) => {
+
                         return <td key={val.plan_slno} className='text-center' width={300} >
-                            <select className="custom-select"
-                                onChange={(e) => handleChange(e, index, val.plan_slno, val.duty_day)}
-                            >
-                                <option defaultValue="0">Choose...</option>
-                                <option value="1">M-1</option>
-                                <option value="2">M-2</option>
-                                <option value="3">M-3</option>
-                            </select>
+                            <DepartmentShiftSelect index={index} data={val} setDutyPlan={setEmpPlan}
+                                planArray={empPlan} changeColor={setChange} />
                         </td>
                     })
                 }
-                {/* <td><Button onClick={handleSubmit} >Update</Button></td> */}
                 <td className='text-center' >
                     <IconButton className='p-0' onClick={handleSubmit}  >
                         <ChangeCircleOutlinedIcon style={change === 1 ? { color: 'red' } : { color: 'green' }} />
@@ -71,5 +74,4 @@ const DropDownList = ({ data }) => {
         </Fragment>
     )
 }
-
 export default memo(DropDownList)

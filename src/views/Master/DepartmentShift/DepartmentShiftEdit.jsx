@@ -39,7 +39,7 @@ const DepartmentShiftEdit = () => {
             }
         }
         getdepartmentShiftData()
-    }, [selectedDept])
+    }, [selectedDept, updateDepartmentSection, updateSelected, id])
     const postData = {
         dept_id: selectedDept,
         sect_id: selectDeptSection,

@@ -132,11 +132,11 @@ const StatutoryInformation = () => {
   return (
     <Fragment>
       <PageLayout heading="Statutory Information">
-        <div className="card">
-          <div className="card-body">
-            <div className="row g-1">
-              <div className="col-md-12">
-                <form className={classes.root} onSubmit={submitFormData}>
+        <form className={classes.root} onSubmit={submitFormData}>
+          <div className="card">
+            <div className="card-body">
+              <div className="row g-1">
+                <div className="col-md-12">
                   <div className="row">
                     <div className="col-md-1">
                       <FormControlLabel
@@ -208,19 +208,27 @@ const StatutoryInformation = () => {
                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                       />
                     </div>
-                    <div className="card-footer text-muted">
-                      <FooterSaveEditClosebtn
-                        edit={reset}
-                        redirect={RedirectToProfilePage}
-                        value={value}
-                      />
-                    </div>
+                    {/* <div className="card-footer text-muted">
+                        <FooterSaveEditClosebtn
+                          edit={reset}
+                          redirect={RedirectToProfilePage}
+                          value={value}
+                        />
+                      </div> */}
                   </div>
-                </form>
+
+                </div>
               </div>
             </div>
+            <div className="card-footer text-muted">
+              <FooterSaveEditClosebtn
+                edit={reset}
+                redirect={RedirectToProfilePage}
+                value={value}
+              />
+            </div>
           </div>
-        </div>
+        </form>
       </PageLayout>
     </Fragment>
   )

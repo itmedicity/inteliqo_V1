@@ -26,7 +26,6 @@ const DepartmentShiftMast = () => {
             getshifts, updateShifts, shiftnameselect
 
         } = useContext(PayrolMasterContext)
-
     const postData = {
         dept_id: selectedDept,
         sect_id: selectDeptSection,

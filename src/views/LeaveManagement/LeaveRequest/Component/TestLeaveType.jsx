@@ -1,8 +1,7 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment } from 'react'
 
-const TestSelectComponent = ({ name, select, style, onChange }) => {
-    // console.log(props);
+const TestLeaveType = ({ name, select, style, onChange }) => {
     return (
         <Fragment>
             <FormControl
@@ -12,7 +11,7 @@ const TestSelectComponent = ({ name, select, style, onChange }) => {
             >
                 <Select
                     name={name}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={onChange}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
@@ -31,4 +30,4 @@ const TestSelectComponent = ({ name, select, style, onChange }) => {
     )
 }
 
-export default TestSelectComponent
+export default TestLeaveType
