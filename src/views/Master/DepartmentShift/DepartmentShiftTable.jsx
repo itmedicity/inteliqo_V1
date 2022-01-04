@@ -7,7 +7,7 @@ import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const DepartmentShiftTable = ({ update }) => {
-    const [count, setCount] = useState(0)
+    // const [count, setCount] = useState(0)
     const history = useHistory()
     const [data, setData] = useState([])
     const title = [
