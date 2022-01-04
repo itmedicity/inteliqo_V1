@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from '../Axios/SessionCheck'
 import FooterClosebtn from './FooterClosebtn'
@@ -17,14 +17,11 @@ const PageLayoutSave = (props) => {
                         <div className="card-body">
                             {props.children}
                         </div>
-                        <div className="card-footer text-black row">
-                            <div className="col-md-5">
-                                <FooterClosebtn
-                                    redirect={props.redirect}
-                                    submit={props.submit}
-                                />
-                            </div>
-                            {props.footer}
+                        <div className="card-footer text-muted">
+                            <FooterClosebtn
+                                redirect={props.redirect}
+                                submit={props.submit}
+                            />
                         </div>
                     </div>
                 </div>
@@ -33,4 +30,4 @@ const PageLayoutSave = (props) => {
     )
 }
 
-export default PageLayoutSave
+export default memo(PageLayoutSave)
