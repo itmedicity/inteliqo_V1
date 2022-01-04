@@ -1,11 +1,11 @@
-import MaterialTable from 'material-table';
-import React, { Fragment, memo, useState } from 'react';
+import MaterialTable from 'material-table'
+import React, { Fragment, memo, useState } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { MdCheckCircle } from "react-icons/md"
-import ModelApproveReject from '../LeaveCommonComponent/ModelApproveReject';
+import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
 
+const OTApprovalInchargeTable = () => {
 
-const ApprovalHODTable = () => {
     //Table
     const title = [
         {
@@ -21,6 +21,9 @@ const ApprovalHODTable = () => {
             title: "Department Section", field: "Department_section"
         },
         {
+            title: "Date", field: "date"
+        },
+        {
             title: "Status", field: "Status"
         },
 
@@ -31,10 +34,10 @@ const ApprovalHODTable = () => {
             Emp_no: 18,
             Employee_name: 'Reshma',
             Department_section: 'IT',
+            date: '27/12/2021',
             Status: 'pending'
         },
     ]
-
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -43,12 +46,11 @@ const ApprovalHODTable = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
     return (
         < Fragment >
-            <ModelApproveReject open={open} handleClose={handleClose} />
+            <ModelOTApprove open={open} handleClose={handleClose} />
             <MaterialTable
-                title="Leave Approval HOD"
+                title="OT Approval Incharge"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -65,9 +67,10 @@ const ApprovalHODTable = () => {
                     padding: "dense",
                     actionsColumnIndex: -1
                 }}
+
             />
         </Fragment >
     )
 }
 
-export default memo(ApprovalHODTable)
+export default memo(OTApprovalInchargeTable)
