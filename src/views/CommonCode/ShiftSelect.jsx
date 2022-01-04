@@ -57,7 +57,7 @@ const ShiftSelect = (props) => {
                     </MenuItem>
                     {
                         ShiftData && ShiftData.map((val, index) => {
-                            return <MenuItem key={index} value={val.shft_code}>{val.shft_desc}</MenuItem>
+                            return <MenuItem key={index} value={val.shft_slno}>{val.shft_desc}</MenuItem>
                         })
                     }
                 </Select>

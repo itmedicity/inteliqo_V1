@@ -61,9 +61,7 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
     }, [])
     //getting data from the model
     const updateSalaryIncrementSettings = async (e) => {
-
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        console.log(value)
         setmodeldata({ ...modeldta, [e.target.name]: value })
     }
     const updateData = {
