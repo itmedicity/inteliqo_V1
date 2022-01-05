@@ -3,13 +3,14 @@ import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import TextInput from 'src/views/Component/TextInput'
 import TestSelectComponent from 'src/views/CommonCode/TestSelectComponent'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import LeaveCalender from './LeaveCalender'
 import DirLeaveRequest from './DirLeaveRequest'
 import HalfDayLeaveRequest from './HalfDayLeaveRequest'
 import NoPunchRequest from './NoPunchRequest'
 import LateComming from './LateComming'
 import EarlyGoing from './EarlyGoing'
+import Employeedetails from 'src/views/CommonCode/Employeedetails'
 
 const LeaveRequest = () => {
     const history = useHistory()
@@ -17,7 +18,8 @@ const LeaveRequest = () => {
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-
+    const user = employeeNumber()
+    console.log(user)
     return (
         <Fragment>
             <PageLayoutSave

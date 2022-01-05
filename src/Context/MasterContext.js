@@ -95,6 +95,16 @@ const MasterContext = ({ children }) => {
     //department shift
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
 
+    //employeedetails 
+    const [employeedetails, updateemployeedetails] = useState({
+        em_department: 0,
+        em_dept_section: 0,
+        em_designation: 0,
+        em_id: '',
+        em_name: '',
+        em_no: 0
+    })
+
     const value = {
         selectedDept,
         updateSelected,
@@ -185,7 +195,7 @@ const MasterContext = ({ children }) => {
         shiftnameselect,
         updateshiftnameselect,
         DepartmentShiftselec,
-        updateDepartmentShiftSelect
+        updateDepartmentShiftSelect, employeedetails, updateemployeedetails
 
     }
     return <PayrolMasterContext.Provider value={value} >
