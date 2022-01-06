@@ -2,7 +2,6 @@ import MaterialTable from 'material-table'
 import React, { Fragment, memo } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { MdCheckCircle } from "react-icons/md"
-import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
 const OTUpdationTable = () => {
     //Table
     const title = [
