@@ -2,7 +2,7 @@ import { TableCell, TableRow } from '@mui/material'
 import { isValid } from 'date-fns';
 import moment from 'moment'
 import React, { Fragment } from 'react'
-import { getTotalMinitsWorked, getTotalShiftHours } from 'src/views/CommonCode/Commonfunc';
+import { getHoursWorked, getTotalMinitsWorked, getTotalShiftHours } from 'src/views/CommonCode/Commonfunc';
 
 const ShiftUpdationTblRow = ({ val }) => {
 
@@ -14,18 +14,8 @@ const ShiftUpdationTblRow = ({ val }) => {
 
     const x = moment(val.checkin);
     const y = moment(val.checkout);
-    //Get the Hours Worked 
-    const getHoursWorked = (x, y) => {
-        if (x.isValid() && y.isValid()) {
-            const duration = moment.duration(y.diff(x));
-            const days = duration.days();
-            const hours = duration.hours();
-            const minits = duration.minutes();
-            return days === 0 ? `${hours} h:${minits} m` : `${days} D:${hours} h:${minits} m`;
-        }
-        return 0;
-    }
 
+    //Get the Hours Worked 
     const hoursWorked = getHoursWorked(x, y)
 
     //Get Total minits worked

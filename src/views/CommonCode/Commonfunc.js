@@ -60,12 +60,24 @@ export const getTotalShiftHours = (x, y) => {
     return 0;
 }
 
-//Gte Total Worked Hours In Minits
+//Get Total Worked Hours In Minits
 export const getTotalMinitsWorked = (x, y) => {
     if (x.isValid() && y.isValid()) {
         const duration = moment.duration(y.diff(x));
         const minits = duration.asMinutes()
         return minits;
+    }
+    return 0;
+}
+
+//Get Total Hours Worked Based on Check In and Check out with Specifiv Format (1 D:3 h : 30 m) 
+export const getHoursWorked = (x, y) => {
+    if (x.isValid() && y.isValid()) {
+        const duration = moment.duration(y.diff(x));
+        const days = duration.days();
+        const hours = duration.hours();
+        const minits = duration.minutes();
+        return days === 0 ? `${hours} h:${minits} m` : `${days} D:${hours} h:${minits} m`;
     }
     return 0;
 }
