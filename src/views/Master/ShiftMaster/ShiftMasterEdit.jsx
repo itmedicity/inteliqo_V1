@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import moment from 'moment';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, getTotalShiftHours, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
 import Timepicker from 'src/views/Component/Timepicker';
 import MinutePicker from 'src/views/Component/MinutePicker';
@@ -183,31 +183,48 @@ const ShiftMasterEdit = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
     }
+    //caslculating the shift duration in minutes
+    const x = moment(checkIn).format("YYYY-MM-DD HH:mm:ss")
+    const xx = moment(x)
+    const y = moment(checkOut).format("YYYY-MM-DD HH:mm:ss")
+    const yy = moment(y)
+    const shiftduration = getTotalShiftHours(xx, yy)
+    //converting check in an check in tikme to minutes
+    const z = moment(new Date()).format("YYYY-MM-DD 00:00:00")
+    const zz = moment(z)
+    const checkinminutes = getTotalShiftHours(zz, xx)
+    // console.log(checkinminutes)
+    //calculating checkmout in minutes
+    const checkoutinminutes = getTotalShiftHours(zz, yy)
+    // console.log(checkoutinminutes)
     //saving Data
     const postData = {
         shft_slno: id,
         shft_desc: shift_name,
         shft_code: shift_code,
-        shft_chkin_time: moment(checkIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_time: moment(checkOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkin_time: moment(checkIn).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_time: moment(checkOut).format("YYYY-MM-DD HH:mm:ss"),
         shft_cross_day: crossday,
-        shft_chkin_start: moment(checkInStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkin_end: moment(checkInEnd, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_start: moment(checkOutStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_end: moment(checkOutEnd, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkin_start: moment(checkInStart).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkin_end: moment(checkInEnd).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_start: moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_end: moment(checkOutEnd).format("YYYY-MM-DD HH:mm:ss"),
         shft_duty_day: dutyday,
-        shft_brk_start: moment(BreakStart, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_brk_end: moment(Breakend, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_brk_start: moment(BreakStart).format("YYYY-MM-DD HH:mm:ss"),
+        shft_brk_end: moment(Breakend).format("YYYY-MM-DD HH:mm:ss"),
         shft_early_in_criteria: earlyincalculation,
-        shft_early_in_mints: moment(EarlyIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_early_in_mints: moment(EarlyIn).format("YYYY-MM-DD HH:mm:ss"),
         shft_late_out_criteria: earlyoutcalculation,
-        shft_late_out_mints: moment(EarlyOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_latein_allow_time: moment(LateIn, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        shft_earlyout_allow_time: moment(LateOut, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        first_half_in: moment(firsthalfcheckin, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        first_half_out: moment(firsthalfcheckout, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        second_half_in: moment(Secondhalfcheckin, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
-        second_half_out: moment(Secondhalfcheckout, "YYYY-MM-DD h:mm:ss A").format("YYYY-MM-DD HH:mm:ss"),
+        shft_late_out_mints: moment(EarlyOut).format("YYYY-MM-DD HH:mm:ss"),
+        shft_latein_allow_time: moment(LateIn).format("YYYY-MM-DD HH:mm:ss"),
+        shft_earlyout_allow_time: moment(LateOut).format("YYYY-MM-DD HH:mm:ss"),
+        first_half_in: moment(firsthalfcheckin).format("YYYY-MM-DD HH:mm:ss"),
+        first_half_out: moment(firsthalfcheckout).format("YYYY-MM-DD HH:mm:ss"),
+        second_half_in: moment(Secondhalfcheckin).format("YYYY-MM-DD HH:mm:ss"),
+        second_half_out: moment(Secondhalfcheckout).format("YYYY-MM-DD HH:mm:ss"),
+        shift_duration_in_min: shiftduration,
+        shift_start_in_min: checkinminutes,
+        shift_end_in_min: checkoutinminutes,
         shft_status: shift_status === true ? 1 : 0,
     }
     const submitFormData = async (e) => {

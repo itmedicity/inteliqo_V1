@@ -7,7 +7,7 @@ import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const DepartmentShiftTable = ({ update }) => {
-    // const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0)
     const history = useHistory()
     const [data, setData] = useState([])
     const title = [
@@ -43,6 +43,7 @@ const DepartmentShiftTable = ({ update }) => {
 
 
     const getTableData = (data) => {
+        setCount(count + 1)
         const { dept_shift_Slno } = data
         history.push(`/Home/DepartmentShiftEdit/${dept_shift_Slno}`)
     }
