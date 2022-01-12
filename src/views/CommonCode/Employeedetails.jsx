@@ -8,7 +8,6 @@ import { axioslogin } from '../Axios/Axios'
 import { employeeNumber } from '../Constant/Constant'
 
 const Employeedetails = () => {
-
     const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
     useEffect(() => {
         const getEmpData = async () => {

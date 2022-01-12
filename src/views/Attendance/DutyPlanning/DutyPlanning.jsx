@@ -15,9 +15,11 @@ import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelec
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DutyPlanningMainCard from './DutyPlanningMainCard'
+import { useHistory } from 'react-router'
 const moment = extendMoment(Moment);
 
 const DutyPlanning = () => {
+  const history = useHistory()
   const { selectedDept, selectDeptSection } = useContext(PayrolMasterContext)
   //use state for employee details
   const [empData, setempData] = useState([])
@@ -25,6 +27,7 @@ const DutyPlanning = () => {
   const [dateFormat, setdateFormat] = useState([])
   const [duty, setDuty] = useState(0)
   const [count, setCount] = useState(0)
+  const [disable, setdisable] = useState(true)
   //use state for initial start date and end date
   const [formData, setFormData] = useState({
     startDate: format(new Date(), "yyyy-MM-dd"),
@@ -54,10 +57,12 @@ const DutyPlanning = () => {
         const { success, data } = result.data
         if (success === 1) {
           setempData(data)
+          setdisable(false)
         }
         else {
           warningNofity("There is No employees In This Department And Department Section")
           setDuty(0)
+          setdisable(true)
         }
       }
     }
@@ -140,9 +145,14 @@ const DutyPlanning = () => {
       }
     }
   }
+  const redirecting = () => {
+    history.push('/Home')
+  }
+
   return (
     <Fragment>
-      <PageLayoutCloseOnly heading="Duty Planning" >
+      <PageLayoutCloseOnly heading="Duty Planning"
+        redirect={redirecting}>
         <div className="col-md-12 mb-2">
           <div className="row g-2">
             <div className="col-md-2">
@@ -178,6 +188,7 @@ const DutyPlanning = () => {
                 aria-label="add"
                 style={{ padding: '0rem' }}
                 onClick={insertDutyPlanning}
+                disabled={disable}
               >
                 <MdOutlineAddCircleOutline className="text-info" size={30} />
               </IconButton>

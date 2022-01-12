@@ -37,7 +37,7 @@ const DropDownList = ({ data, duty, count }) => {
         else {
             errorNofity("Error Occured!!!Please Contact EDP")
         }
-    }, [duty, count])
+    }, [duty, count, postdata])
     // shift Array 
     const [empPlan, setEmpPlan] = useState([]);
     // Submit the Duty Plan to the Database 
