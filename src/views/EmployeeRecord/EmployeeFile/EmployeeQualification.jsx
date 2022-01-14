@@ -1,6 +1,6 @@
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import React, { Fragment, useState, useContext } from 'react'
+import React, { Fragment, useState, useContext, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -18,20 +18,25 @@ import QualificationTable from './EmployeeFileTable/QualificationTable'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 import TextInput from 'src/views/Component/TextInput'
 import { TextField } from '@material-ui/core'
+import BoardMastSelection from 'src/views/CommonCode/BoardMastSelection'
 
 const EmployeeQualification = () => {
     const classes = useStyles();
     const history = useHistory();
     const { id, no } = useParams();
+    const [unidisable, setunidisable] = useState(false)
+    const [boarddisable, setBoarddisable] = useState(false)
+    const [coursedisable, setcoursedisable] = useState(false)
+    const [specdisable, setspecdisable] = useState(false)
     const [count, setcount] = useState(0);
     const { selectEducation, updateEducation,
         selectCourse, updateCourse,
         selectSpec, updateSpec,
         selectUniversity, updateUniversity,
+        selectBoard, updateBoard,
         selectreg, updatereg
     } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
-
 
     //Initializing
     const [qualification, setQualification] = useState({
@@ -39,6 +44,7 @@ const EmployeeQualification = () => {
         em_course: '',
         em_specialization: '',
         em_univ_institute: '',
+        em_board: '',
         em_year: '',
         em_mark_grade: '',
         em_reg_type: '',
@@ -60,6 +66,26 @@ const EmployeeQualification = () => {
     //moment passout year
     const qual_year = moment(year).format('YYYY')
 
+    useEffect(() => {
+        if (selectEducation === 4) {
+            setunidisable(true)
+            setBoarddisable(false)
+            setcoursedisable(false)
+            setspecdisable(false)
+        }
+        else if (selectEducation === 5) {
+            setBoarddisable(false)
+            setunidisable(true)
+            setcoursedisable(true)
+            setspecdisable(true)
+        } else {
+            setcoursedisable(false)
+            setspecdisable(false)
+            setunidisable(false)
+            setBoarddisable(true)
+        }
+    }, [selectEducation])
+
     //Post data
     const postData = {
         em_no: id,
@@ -68,6 +94,35 @@ const EmployeeQualification = () => {
         em_course: selectCourse,
         em_specialization: selectSpec,
         em_univ_institute: selectUniversity,
+        em_board: selectBoard != 0 ? selectBoard : null,
+        em_year: qual_year,
+        em_mark_grade,
+        em_reg_type: selectreg,
+        em_reg_no,
+        create_user: employeeNumber(),
+    }
+    const postData5 = {
+        em_no: id,
+        em_id: no,
+        em_education: selectEducation,
+        em_course: selectCourse != 0 ? selectCourse : null,
+        em_specialization: selectSpec != 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_board: selectBoard,
+        em_year: qual_year,
+        em_mark_grade,
+        em_reg_type: selectreg,
+        em_reg_no,
+        create_user: employeeNumber(),
+    }
+    const postData4 = {
+        em_no: id,
+        em_id: no,
+        em_education: selectEducation,
+        em_course: selectCourse != 0 ? selectCourse : null,
+        em_specialization: selectSpec != 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade,
         em_reg_type: selectreg,
@@ -75,40 +130,59 @@ const EmployeeQualification = () => {
         create_user: employeeNumber(),
     }
 
+
     //Form reset
     const resetForm = {
         em_education: '',
         em_course: '',
         em_specialization: '',
         em_univ_institute: '',
+        em_board: '',
         em_year: '',
         em_mark_grade: '',
         em_reg_type: '',
         em_reg_no: ''
     }
-    const reset = () => {
-        updateEducation(0)
-        updateCourse(0)
-        updateSpec(0)
-        updateUniversity(0)
-        updatereg(0)
-        setYear(null)
-    }
 
     //Form Submitting
     const submitQualification = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/qualify', postData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1)
-            setQualification(resetForm);
-            reset();
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+        if (selectEducation === 5) {
+            const result = await axioslogin.post('/qualify', postData5)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setcount(count + 1)
+                setQualification(resetForm);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        } else if (selectEducation === 4) {
+            const result = await axioslogin.post('/qualify', postData4)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setcount(count + 1)
+                setQualification(resetForm);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/qualify', postData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setcount(count + 1)
+                setQualification(resetForm);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         }
     }
 
@@ -130,13 +204,24 @@ const EmployeeQualification = () => {
                                         <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12 pt-1">
-                                        <CourseSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        <CourseSelection
+                                            disable={coursedisable}
+                                            style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12 pt-1">
-                                        <SpecializationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        <SpecializationSelection
+                                            disable={specdisable}
+                                            style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12 pt-1">
-                                        <UniversitySelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        <UniversitySelection
+                                            disable={unidisable}
+                                            style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <BoardMastSelection
+                                            disable={boarddisable}
+                                            style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-6 col-xs-12 pt-1" style={{
                                         paddingLeft: '0.5rem', paddingRight: '-0.5rem'

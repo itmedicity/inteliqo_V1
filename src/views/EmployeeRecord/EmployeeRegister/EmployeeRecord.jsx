@@ -25,6 +25,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import TextInput from 'src/views/Component/TextInput'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
+import ReactTooltip from 'react-tooltip';
 
 const EmployeeRecord = () => {
 
@@ -555,8 +556,8 @@ const EmployeeRecord = () => {
                                         {/* <div className="col-md-1">
                                             <BloodGroupSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div> */}
-                                        <div className="col-md-2">
-
+                                        <div className="col-md-2" data-tip="Date of birth" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="date"
                                                 classname="form-control form-control-sm"
@@ -603,8 +604,8 @@ const EmployeeRecord = () => {
                                                 name="dayge"
                                             />
                                         </div>
-
-                                        <div className="col-md-2">
+                                        <div className="col-md-2" data-tip="Date of Joining" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="date"
                                                 classname="form-control form-control-sm"

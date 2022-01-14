@@ -53,6 +53,7 @@ const Settings = () => {
                                 <Link to="/Home/ReligionMaster" className="list-group-item pt-1 pb-1"  >Religion Master</Link>
                                 <Link to="/Home/YearlyLeaveCalendar" className="list-group-item pt-1 pb-1"  >Yearly Leave Calendar</Link>
                                 <Link to="/Home/RegistrationType" className="list-group-item pt-1 pb-1"  >Registration Type</Link>
+                                <Link to="/Home/BoardEdu" className="list-group-item pt-1 pb-1">Board Master</Link>
                             </ul>
                         </div>
                     </div>

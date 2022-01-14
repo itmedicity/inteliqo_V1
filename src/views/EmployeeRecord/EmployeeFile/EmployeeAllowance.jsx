@@ -326,6 +326,7 @@ const EmployeeAllowance = () => {
                                                 <DatePicker
                                                     type="date"
                                                     value={monthend}
+                                                    minDate={monthstart}
                                                     disabled={toggle_end}
                                                     onChange={(e) => { updateMonthend(e) }}
                                                     InputProps={{

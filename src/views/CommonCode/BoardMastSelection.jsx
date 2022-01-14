@@ -1,26 +1,25 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { useContext, memo, useEffect, Fragment, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-export const UniversitySelection = (props) => {
 
-    const [university, setUniversity] = useState([]);
-    // const [disable, setDisable] = useState(false)
-    const { selectUniversity, updateUniversity, selectEducation } = useContext(PayrolMasterContext);
+const BoardMastSelection = (props) => {
+    const [board, setBoard] = useState([]);
+    const { selectBoard, updateBoard, selectEducation } = useContext(PayrolMasterContext)
 
     useEffect(() => {
-        const getUniversity = async () => {
-            const result = await axioslogin.get('/common/getUniver');
+        const getBoard = async () => {
+            const result = await axioslogin.get(`/common/getBoard/${selectEducation}`);
             const { data } = await result.data;
-            setUniversity(data)
+            setBoard(data)
         }
-        getUniversity()
+        getBoard()
         return (
-            updateUniversity(0)
+            updateBoard(0)
         )
+    }, [updateBoard, selectEducation]);
 
-    }, [updateUniversity, selectEducation]);
 
     return (
         <Fragment>
@@ -31,23 +30,24 @@ export const UniversitySelection = (props) => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    name="selectUniversity"
+                    name="selectboard"
                     fullWidth
                     variant="outlined"
-                    disabled={props.disable}
                     className="ml-1"
-                    value={selectUniversity}
-                    onChange={(e) => updateUniversity(e.target.value)}
+                    value={selectBoard}
+                    onChange={(e) => updateBoard(e.target.value)}
                     defaultValue={0}
                     style={props.style}
+                    disabled={props.disable}
+
 
                 >
                     <MenuItem value='0' disabled>
-                        Select University
+                        Select Board
                     </MenuItem>
                     {
-                        university && university.map((val, index) => {
-                            return <MenuItem key={index} value={val.unver_slno}>{val.unver_name}
+                        board && board.map((val, index) => {
+                            return <MenuItem key={index} value={val.board_slno}>{val.board_name}
                             </MenuItem>
                         })
                     }
@@ -56,3 +56,5 @@ export const UniversitySelection = (props) => {
         </Fragment>
     )
 }
+
+export default memo(BoardMastSelection)
