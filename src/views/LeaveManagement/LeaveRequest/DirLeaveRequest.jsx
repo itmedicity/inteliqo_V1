@@ -8,12 +8,10 @@ import moment from 'moment';
 import { MdOutlineAddCircleOutline } from 'react-icons/md';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const DirLeaveRequest = ({ emid }) => {
+const DirLeaveRequest = ({ emid, leaveDetails, leaveretypeid, leveData, setLeveData }) => {
     const [date, setDate] = useState([]);
-    const [lveData, setLveData] = useState([]);
     const [checkState, setCheckState] = useState(false)
     const [display, setDisplyleave] = useState(0)
-    const [casualLeave, creditcasualLeave] = useState([]);
     const [formData, setFormData] = useState({
         startDate: format(new Date(), "yyyy-MM-dd"),
         endDate: format(new Date(), "yyyy-MM-dd"),
@@ -40,11 +38,13 @@ const DirLeaveRequest = ({ emid }) => {
             const casual = data.filter((val) => {
                 return val.cl_lv_mnth === leaveMonth + 1
             })
-            const { cl_lv_mnth, hrm_cl_slno } = casual[0]
-            const postdata = {
-                hrm_cl_slno: hrm_cl_slno
+            if (casual.length !== 0) {
+                const { cl_lv_mnth, hrm_cl_slno } = casual[0]
+                const postdata = {
+                    hrm_cl_slno: hrm_cl_slno
+                }
+                const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
             }
-            const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
         }
     }
     return (
@@ -103,7 +103,7 @@ const DirLeaveRequest = ({ emid }) => {
                                 />
                             </div>
                             {
-                                checkState === true ? <LeaveSingleSelection setLveState={setLveData} /> : null
+                                checkState === true ? <LeaveSingleSelection setLeveData={setLeveData} /> : null
                             }
                         </div>
                     </div>
@@ -111,7 +111,8 @@ const DirLeaveRequest = ({ emid }) => {
                         checkState === false && display === 1 ?
                             date && date.map((val, index) => {
                                 return <LeaveDateSelection key={index} index={index}
-                                    date={val.date} setLeveData={setLveData} leveData={lveData}
+                                    date={val.date} setLeveData={setLeveData} leveData={leveData}
+                                    leaveDetails={leaveDetails} leaveretypeid={leaveretypeid}
                                 />
                             }) : null
                     }
