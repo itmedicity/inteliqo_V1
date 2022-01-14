@@ -92,8 +92,11 @@ const MasterContext = ({ children }) => {
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
+    //employee category of contract 
+    const [categorycontract, updatecategorycontract] = useState(0)
     //department shift
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
+
 
     //employeedetails 
     const [employeedetails, updateemployeedetails] = useState({
@@ -196,6 +199,8 @@ const MasterContext = ({ children }) => {
         updateShifts,
         shiftnameselect,
         updateshiftnameselect,
+        categorycontract,
+        updatecategorycontract,
         DepartmentShiftselec,
         updateDepartmentShiftSelect, employeedetails, updateemployeedetails,
         selectBoard,
