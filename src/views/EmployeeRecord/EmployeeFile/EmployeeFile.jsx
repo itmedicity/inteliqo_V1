@@ -49,8 +49,8 @@ const EmployeeRecord = () => {
         },
         {
             title: 'Name', field: 'emp_name', cellStyle: {
-                minWidth: 200,
-                maxWidth: 200
+                minWidth: 300,
+                maxWidth: 400
             }
         },
         {
@@ -85,7 +85,12 @@ const EmployeeRecord = () => {
                 maxWidth: 200
             }
         },
-        { title: 'Designation', field: 'desg_name' },
+        {
+            title: 'Designation', field: 'desg_name', cellStyle: {
+                minWidth: 300,
+                maxWidth: 400
+            }
+        },
         { title: 'Status', field: 'emp_status' },
     ]
     // Employee Record List

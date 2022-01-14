@@ -33,10 +33,11 @@ const ShiftUpdationTable = () => {
                             <TableCell align="center" colSpan={2} className="p-0" style={{ width: '8rem', }}>Shift Time</TableCell>
                             <TableCell align="center" colSpan={2} className="p-0" style={{ width: '8rem', }}>Punch Data</TableCell>
                             <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '6rem', }}>Hours Worked</TableCell>
-                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '3rem', }}>Day Status</TableCell>
-                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '3rem', }}>Extra (In min)</TableCell>
-                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '3rem', }}>Late (In min)</TableCell>
-                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '3rem', }}>Early (In min)</TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '4rem', }}>OT (min)</TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '4rem', }}>L-IN(min)</TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '4rem', }}>E-GO(min)</TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
                         </TableRow>
                         <TableRow style={{ backgroundColor: "#a2a3ac", height: '1rem' }} >
                             {/* <TableCell>Date</TableCell> */}
