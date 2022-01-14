@@ -1,7 +1,7 @@
 import { Button, DialogContentText } from '@mui/material'
-import { eachMonthOfInterval, lastDayOfYear, subYears } from 'date-fns'
+import { eachMonthOfInterval, lastDayOfYear, subMonths } from 'date-fns'
 import moment from 'moment'
-import React, { memo, useContext } from 'react'
+import React, { memo } from 'react'
 import { useState } from 'react'
 
 import { axioslogin } from '../Axios/Axios'
@@ -13,13 +13,12 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
     setnodatacl,
     setnodatael,
     setnodatahl,
-    setnodatafixed }) => {
+    setnodatafixed, categorychge }) => {
 
     // destructuring  dataleave
-    const { ecat_cl, ecat_confere, ecat_cont, ecat_doff_allow, ecat_el, ecat_esi_allow,
-        ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl, ecat_woff_allow,
-        em_category, em_conf_end_date, em_contract_end_date, em_prob_end_date,
-        em_retirement_date } = dataleave
+    const { ecat_esi_allow,
+        // ecat_lop, ecat_mate, ecat_sl,
+    } = dataleave
 
     // useState for common leave data
     const [commonleave, setcommonleave] = useState({
@@ -43,19 +42,18 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
         month_year_previlage: 0,
         month_year_sick: 0,
     })
-    const {
-        max_allowed_count_conference,
-        max_allowed_count_lop,
-        max_allowed_count_maternity,
-        max_allowed_count_previlage,
-        max_allowed_count_sick,
-    } = commonleave
+    // const {
+    //     // max_allowed_count_conference,
+    //     // max_allowed_count_lop,
+    //     // max_allowed_count_maternity,
+    //     // max_allowed_count_sick,
+    // } = commonleave
 
 
     const updatecasualleave = () => {
         // function for casual leave
         const setcasleave = async () => {
-            var dateresult = eachMonthOfInterval({ start: new Date(), end: lastDayOfYear(new Date()) })
+            var dateresult = eachMonthOfInterval({ start: subMonths(new Date(), 1), end: lastDayOfYear(new Date()) })
             var datacaual = dateresult.map((val, index) => {
                 const datacasualleave = {
                     em_no: em_no,
@@ -85,10 +83,13 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
                     succesNofity(resultupdatcasualleave.data.message)
 
                 }
-
                 count(countdata + 1)
-                setcastable(1)
-                setnodatacl(0)
+                if (categorychge !== 1) {
+
+                    setcastable(1)
+                    setnodatacl(0)
+
+                }
 
 
             }
@@ -102,7 +103,7 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
         const setholiday = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearleaveprocess/year/holiday')
             const { success, data } = result.data
-            if (success === 0) {
+            if (success === 1) {
                 var holidaydata = data.map((val) => {
                     const datasaveholiday = {
                         em_no: em_no,
@@ -127,8 +128,15 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
                 if (resultinsrtholiday.data.success === 1) {
                     const resultupdateholiday = await axioslogin.patch('/yearleaveprocess/updateholiday', lv_processdta)
                     if (resultinsrtholiday.data.success === 1) {
+
                         succesNofity(resultupdateholiday.data.message)
-                        setnodatahl(0)
+                        if (categorychge !== 1) {
+
+                            setnodatahl(0)
+
+                        }
+
+
                         count(countdata + 1)
                     }
                 }
@@ -144,94 +152,60 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
         // commonleave save
         const getCommonleave = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearlyleaves')
-            const { data } = result.data
-            setcommonleave(data[0])
-            const commondata = [
-                {
-                    em_no: em_no,
-                    llvetype_slno: 13,
-                    cmn_lv_allowedflag: ecat_esi_allow === 1 ? 1 : 0,
-                    cmn_lv_allowed: 360,
-                    cmn_lv_taken: 0,
-                    cmn_lv_balance: 0,
-                    Iv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber(),
-                    em_id: em_id
-                },
-                {
-                    em_no: em_no,
-                    llvetype_slno: 7,
-                    cmn_lv_allowedflag: ecat_sl === 1 ? 1 : 0,
-                    cmn_lv_allowed: max_allowed_count_conference,
-                    cmn_lv_taken: 0,
-                    cmn_lv_balance: 0,
-                    Iv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber(),
-                    em_id: em_id
-                },
-                {
-                    em_no: em_no,
-                    llvetype_slno: 8,
-                    cmn_lv_allowedflag: ecat_lop === 1 ? 1 : 0,
-                    cmn_lv_allowed: max_allowed_count_lop,
-                    cmn_lv_taken: 0,
-                    cmn_lv_balance: 0,
-                    Iv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber(),
-                    em_id: em_id
-                },
+            const { successleave, messageleave } = result.data
 
-                {
-                    em_no: em_no,
-                    llvetype_slno: 9,
-                    cmn_lv_allowedflag: ecat_mate === 1 ? 1 : 0,
-                    cmn_lv_allowed: max_allowed_count_maternity,
-                    cmn_lv_taken: 0,
-                    cmn_lv_balance: 0,
-                    Iv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber(),
-                    em_id: em_id
-                },
-                {
-                    em_no: em_no,
-                    llvetype_slno: 6,
-                    cmn_lv_allowedflag: ecat_sl === 1 ? 1 : 0,
-                    cmn_lv_allowed: max_allowed_count_sick,
-                    cmn_lv_taken: 0,
-                    cmn_lv_balance: 0,
-                    Iv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber(),
-                    em_id: em_id
-                }
-            ]
-            const lv_processdta = {
-                lv_proce: lv_process_slnocurrent
-            }
+            if (successleave === 1) {
+                setcommonleave(messageleave[0])
+                const result = await axioslogin.get('/yearlyleaves/get/getcommonleave')
 
-            // insert common leave
-            const resultcommonleave = await axioslogin.post('/yearleaveprocess/insertCommonleave', commondata)
-            const { success, message } = resultcommonleave.data
-            if (success === 1) {
-                // if updated casula leave table update process table
-                const resultupdatcommonleave = await axioslogin.patch('/yearleaveprocess/updatecommon', lv_processdta)
+                const { successcommonleave, messagecommonleave } = result.data
 
-                if (resultupdatcommonleave.data.success === 2) {
-                    succesNofity(resultupdatcommonleave.data.message)
-                    setnodatafixed(0)
-                    count(countdata + 1)
+                if (successcommonleave === 1) {
+
+                    var commondata = messagecommonleave.map((val) => {
+
+                        const commonleave = {
+                            em_no: em_no,
+                            llvetype_slno: val.lvetype_slno,
+                            cmn_lv_allowedflag: ecat_esi_allow === 1 ? 1 : 0,
+                            cmn_lv_allowed: val.leave_credit_policy_count,
+                            cmn_lv_taken: 0,
+                            cmn_lv_balance: 0,
+                            Iv_process_slno: lv_process_slnocurrent,
+                            update_user: employeeNumber(),
+                            em_id: em_id
+                        }
+                        return commonleave
+                    })
+                    const lv_processdta = {
+                        lv_proce: lv_process_slnocurrent
+                    }
+
+                    // insert common leave
+                    const resultcommonleave = await axioslogin.post('/yearleaveprocess/insertCommonleave', commondata)
+                    const { success, message } = resultcommonleave.data
+                    if (success === 1) {
+                        // if updated casula leave table update process table
+                        const resultupdatcommonleave = await axioslogin.patch('/yearleaveprocess/updatecommon', lv_processdta)
+
+                        if (resultupdatcommonleave.data.success === 2) {
+                            succesNofity(resultupdatcommonleave.data.message)
+                            if (categorychge !== 1) {
+                                setnodatafixed(0)
+                            }
+                            count(countdata + 1)
+                        }
+                    }
+                    else {
+                        infoNofity(message)
+                    }
                 }
             }
-            else {
-
-                infoNofity(message)
-            }
-
         }
-
 
         // earnleave save
         const setearnleave = async (lv_process_slnocurrent) => {
-            var dateresult = eachMonthOfInterval({ start: new Date(), end: lastDayOfYear(new Date()) })
+            var dateresult = eachMonthOfInterval({ start: subMonths(new Date(), 1), end: lastDayOfYear(new Date()) })
             var dataearnlv = dateresult.map((val, index) => {
                 const dataearnleave = {
                     em_no: em_no,
@@ -260,7 +234,12 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
 
                 if (resultupdatcasualleave.data.success === 2) {
                     succesNofity(resultupdatcasualleave.data.message)
-                    setnodatael(0)
+                    if (categorychge !== 1) {
+
+                        setnodatael(0)
+
+                    }
+
                     count(countdata + 1)
                 }
             }

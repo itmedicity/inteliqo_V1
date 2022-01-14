@@ -80,7 +80,7 @@ const AnnualLeaveSettings = () => {
     })
 
     const { ecat_cl, ecat_el, ecat_esi_allow,
-        ecat_lop, ecat_mate, ecat_nh, ecat_sl
+        ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
     } = leavestate
     const CasualLeave = {
         mainHeading: "Casual Leaves",
@@ -146,7 +146,8 @@ const AnnualLeaveSettings = () => {
         }
         )
 
-    }, [no])
+    }, [no, modelvalue])
+
     const postFormdata =
     {
         em_no: no,
@@ -173,9 +174,10 @@ const AnnualLeaveSettings = () => {
                 lv_process_slno: lv_process_slno
             }
 
-            leaveprocessidupdate(dataprvleave)
+
             // if no data available
             if (success === 0) {
+
                 // if no data is present means new employee  set model
                 setmodelvalue(1)
                 setmodelmessage('Leave process is not done for the employee')
@@ -183,14 +185,20 @@ const AnnualLeaveSettings = () => {
                 setOpen(true)
             }
             else if (success === 1) {
+                leaveprocessidupdate(dataprvleave)
                 // if employee process date has over 
                 if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                    setOpen(true)
                     setmodelvalue(1)
                     setmodelmessage('Date Exceeded do you Want To Process')
                 }
-
+                else if (category_slno !== em_category) {
+                    setmodelvalue(1)
+                    setmodelmessage('Category Change Do You Want to  To Process')
+                    setOpen(true)
+                }
                 // if process contain data and pending leave process is present
-                if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
                     setmodellist(true)
                 }
             }
@@ -202,6 +210,7 @@ const AnnualLeaveSettings = () => {
     const handleClose = () => {
         setmodellist(false)
     }
+
     return (
         <Fragment>
             <PageLayoutProcess
@@ -226,6 +235,7 @@ const AnnualLeaveSettings = () => {
                     setnodatael={setnodatael} //dataset render  for rerendering the earnleave
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
+                    setmodelvalue={setmodelvalue}
 
 
                 /> : null}

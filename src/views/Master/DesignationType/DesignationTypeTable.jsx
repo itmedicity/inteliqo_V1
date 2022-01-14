@@ -16,23 +16,9 @@ const DesignationTypeTable = ({ update }) => {
             title: 'Type', field: 'empstat_name'
         },
         {
-            title: 'CL', field: 'empstat_cl', width: '10%'
+            title: 'CL', field: 'status', width: '10%'
         },
-        {
-            title: 'EL', field: 'empstat_el', width: '10%'
-        },
-        {
-            title: 'HD', field: 'empstat_hd', width: '10%'
-        },
-        {
-            title: 'ESI', field: 'empstat_esi', width: '10%'
-        },
-        {
-            title: 'PF', field: 'empstat_pf', width: '10%'
-        },
-        {
-            title: 'Period', field: 'empstat_period', width: '10%'
-        }
+
     ]
 
     useEffect(() => {

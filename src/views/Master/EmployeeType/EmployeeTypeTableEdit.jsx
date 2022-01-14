@@ -1,6 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import React, { Fragment, useEffect, useState } from 'react';
-import NumberFormat from 'react-number-format';
 import { useParams, useHistory } from 'react-router'
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -19,31 +18,28 @@ const EmployeeTypeTableEdit = () => {
     //state declaration
     const [formData, setFormData] = useState({
         empType: "",
-        empContPrd: "",
-        empRenewPrd: "",
+
         elApplicable: false
     })
 
     const defaultState = {
         empType: "",
-        empContPrd: "",
-        empRenewPrd: "",
+
         elApplicable: false
     }
 
-    const { empType, empContPrd, empRenewPrd, elApplicable } = formData
+    const { empType, elApplicable } = formData
 
     useEffect(() => {
         const getEmployeeTypeData = async () => {
             const result = await axioslogin.get(`/emptype/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { emptype_name, cont_period, cont_grace, el_aplicable } = data[0]
+                const { emptype_name, status } = data[0]
                 const frmData = {
                     empType: emptype_name,
-                    empContPrd: cont_period,
-                    empRenewPrd: cont_grace,
-                    elApplicable: el_aplicable === 1 ? true : false
+
+                    elApplicable: status === 1 ? true : false
                 }
                 setFormData(frmData)
             }
@@ -61,8 +57,6 @@ const EmployeeTypeTableEdit = () => {
         e.preventDefault();
         const updateData = {
             emptype_name: empType,
-            cont_period: empContPrd,
-            cont_grace: empRenewPrd,
             el_aplicable: elApplicable === true ? 1 : 0,
             edit_user: employeeNumber(),
             emptype_slno: id
@@ -110,40 +104,7 @@ const EmployeeTypeTableEdit = () => {
                                             onChange={(e) => updateStateFormInput(e)}
                                         />
                                     </div>
-                                    <div className="col-md-12">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            label="Contract Period (days only)"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="empContPrd"
-                                            value={empContPrd}
-                                            onChange={(e) => updateStateFormInput(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            label="Renewal Period (days only)"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="empRenewPrd"
-                                            value={empRenewPrd}
-                                            onChange={(e) => updateStateFormInput(e)}
-                                        />
-                                    </div>
+
                                     <div className="col-md-12">
                                         <FormControlLabel
                                             control={
@@ -156,7 +117,7 @@ const EmployeeTypeTableEdit = () => {
                                                     onChange={(e) => updateStateFormInput(e)}
                                                 />
                                             }
-                                            label="EL Applicable"
+                                            label="STATUS"
                                         />
                                     </div>
                                     <div className="row col-md-12">

@@ -24,12 +24,14 @@ const LeaveTypeMast = () => {
         lop: false,
         holiday: false,
         Leave: false,
+        common: false,
         leave_policy_count: "",
         select_leave_policy: "0",
         status: false,
     })
     const { leave_type, leave_type_code, Leave_Carry_Forwad, Leave_avail_training, Leave_avail_after_training,
-        half_day, lop, holiday, Leave, leave_policy_count, select_leave_policy, status } = formData
+        half_day, lop, holiday, Leave, leave_policy_count, select_leave_policy, status, common } = formData
+
     const updateLeaveMastFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setformData({ ...formData, [e.target.name]: value })
@@ -47,7 +49,9 @@ const LeaveTypeMast = () => {
         leave_credit_policy: select_leave_policy,
         leave_credit_policy_count: leave_policy_count,
         status: status === false ? 0 : 1,
-        create_user: employeeNumber()
+        create_user: employeeNumber(),
+
+
 
     }
     //setting default state
@@ -64,6 +68,7 @@ const LeaveTypeMast = () => {
         leave_policy_count: "",
         select_leave_policy: "",
         status: false,
+        common: false,
     }
     const submitFormDataLeaveType = async (e) => {
         e.preventDefault();
@@ -227,6 +232,22 @@ const LeaveTypeMast = () => {
                                                 />
                                             }
                                             label="Leave"
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
+                                            control={
+                                                <Checkbox
+                                                    name="common"
+                                                    color="secondary"
+                                                    value={common}
+                                                    checked={common}
+                                                    className="ml-2"
+                                                    onChange={(e) => updateLeaveMastFormData(e)}
+                                                />
+                                            }
+                                            label="Common Leave"
                                         />
                                     </div>
                                     <div className="col-md-12 pb-0 mb-0">

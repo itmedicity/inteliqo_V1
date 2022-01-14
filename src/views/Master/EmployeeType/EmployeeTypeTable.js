@@ -19,13 +19,7 @@ const EmployeeTypeTable = ({ update }) => {
             title: 'Type', field: 'emptype_name'
         },
         {
-            title: 'Contract', field: 'cont_period', align: 'center'
-        },
-        {
-            title: 'Renewal', field: 'cont_grace', align: 'center'
-        },
-        {
-            title: 'EL', field: 'status'
+            title: 'Status', field: 'status'
         }
     ]
     // get api call for employee type
