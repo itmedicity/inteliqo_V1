@@ -33,83 +33,9 @@ const EarnLeaveList = ({ hldnodata, no }) => {
         }
         insrtcasualleave();
 
-    }, [])
+    }, [hldnodata, no])
 
-    // const list = [
-    //     {
-    //         name: "January",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     },
-    //     {
-    //         name: "February",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     },
-    //     {
-    //         name: "March",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "April",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "May",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "June",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     },
-    //     {
-    //         name: "July",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     },
-    //     {
-    //         name: "August",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "September",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "October",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 0
-    //     },
-    //     {
-    //         name: "November",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     },
-    //     {
-    //         name: "December",
-    //         allowed: 1,
-    //         credit: 1,
-    //         taken: 1
-    //     }
 
-    // ]
     return (
         <Fragment>
             <ul className="list-group list-group-flush ">

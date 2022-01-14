@@ -13,7 +13,6 @@ const HolidayLeaveList = ({ hldnodata, no }) => {
     }])
     useEffect(() => {
         const getholidaylleave = async () => {
-
             const result = await axioslogin.get(`/common/getleaveholiday/${no}`)
             const { success, data } = result.data
             if (success === 0) {

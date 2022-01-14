@@ -1,8 +1,9 @@
-import { TableCell, TableRow } from '@mui/material'
+import { TableCell, TableRow, Avatar } from '@mui/material'
 import { isValid } from 'date-fns';
 import moment from 'moment'
 import React, { Fragment } from 'react'
 import { getHoursWorked, getTotalMinitsWorked, getTotalShiftHours } from 'src/views/CommonCode/Commonfunc';
+import { deepOrange, deepPurple } from '@mui/material/colors';
 
 const ShiftUpdationTblRow = ({ val }) => {
 
@@ -16,7 +17,7 @@ const ShiftUpdationTblRow = ({ val }) => {
     const y = moment(val.checkout);
 
     //Get the Hours Worked 
-    const hoursWorked = getHoursWorked(x, y)
+    const hoursWorked = getHoursWorked(x, y);
 
     //Get Total minits worked
     const totalMinitsWorked = getTotalMinitsWorked(x, y);
@@ -32,9 +33,36 @@ const ShiftUpdationTblRow = ({ val }) => {
         const totalExtraMint = totalMinitsWorked - totalShiftInMinits
         return totalExtraMint >= 0 && totalExtraMint >= 60 ? totalExtraMint : 0;
     }
-    const extraWorked = getExtraWrkMints(totalShiftInMinits, totalMinitsWorked)
+    const extraWorked = getExtraWrkMints(totalShiftInMinits, totalMinitsWorked);
 
-    // console.log(totalShiftInMinits, totalMinitsWorked)
+    // Get The Late Comming in minits
+    const getLateComing = (shiftInTime, checkInTime) => {
+        //Convert Shift In and Check In time as String First And Pass to this Function For Get the Minits
+        const shiftInMints = moment.duration(shiftInTime).asMinutes();
+        const checkInMints = moment.duration(checkInTime).asMinutes();
+        const diffrence = checkInMints - shiftInMints;
+        if (diffrence >= 0) {
+            return diffrence;
+        }
+        return 0;
+    }
+
+    const lateComeIn = getLateComing(shiftInTime, checkInTime);
+
+    //Get The Early Going in minits
+    const earlyGoing = (shiftOut, checkOut) => {
+        //Convert Shift Out and Check Out time as String First And Pass to this Function For Get the Minits
+        const shiftOutMints = moment.duration(shiftOut).asMinutes();
+        const checkOutMints = moment.duration(checkOut).asMinutes();
+        const diffrence = shiftOutMints - checkOutMints;
+        if (diffrence >= 0) {
+            return diffrence;
+        }
+        return 0;
+    }
+
+    const earlyGo = earlyGoing(shiftOutTime, checkOutTime)
+
 
     return (
         <Fragment>
@@ -48,10 +76,21 @@ const ShiftUpdationTblRow = ({ val }) => {
                 <TableCell align="center">{checkInTime}</TableCell>
                 <TableCell align="center">{checkOutTime}</TableCell>
                 <TableCell align="right">{hoursWorked}</TableCell>
-                <TableCell align="center">{val.status}</TableCell>
                 <TableCell align="center">{extraWorked}</TableCell>
-                <TableCell align="center">{val.lateIn}</TableCell>
-                <TableCell align="center">{val.lateOut}</TableCell>
+                <TableCell align="center">{lateComeIn}</TableCell>
+                <TableCell align="center">{earlyGo}</TableCell>
+                <TableCell align="center">
+                    <Avatar sx={{ bgcolor: deepOrange[500], width: 24, height: 24, fontSize: 10 }}
+                    >
+                        NAA
+                    </Avatar>
+                </TableCell>
+                <TableCell align="center">
+                    <Avatar sx={{ bgcolor: deepOrange[500], width: 24, height: 24, fontSize: 10 }}
+                    >
+                        NAA
+                    </Avatar>
+                </TableCell>
             </TableRow>
         </Fragment>
     )

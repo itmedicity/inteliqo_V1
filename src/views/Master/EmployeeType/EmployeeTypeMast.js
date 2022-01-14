@@ -1,6 +1,5 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import React, { Fragment, useState } from 'react';
-import NumberFormat from 'react-number-format';
 import { useHistory } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -18,15 +17,12 @@ const EmployeeTypeMast = () => {
     // define the form state
     const [empTypedetl, setEmpType] = useState({
         empType: '',
-        empContPrd: '',
-        empRenewPrd: '',
         elApplicable: false
     });
     // reset form
     const resetForm = {
         empType: '',
-        empContPrd: '',
-        empRenewPrd: '',
+
         elApplicable: false
     }
     // update form state
@@ -34,13 +30,11 @@ const EmployeeTypeMast = () => {
         const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
         setEmpType({ ...empTypedetl, [e.target.name]: value })
     }
-    var { empType, empContPrd, empRenewPrd, elApplicable } = empTypedetl;
+    var { empType, elApplicable } = empTypedetl;
     elApplicable = elApplicable === true ? 1 : 0;
     // form state
     const empUpdatedData = {
         emptype_name: empType,
-        cont_period: empContPrd,
-        cont_grace: empRenewPrd,
         el_aplicable: elApplicable,
         create_user: employeeNumber()
     }
@@ -88,40 +82,7 @@ const EmployeeTypeMast = () => {
                                             onChange={(e) => updateStateFormInput(e)}
                                         />
                                     </div>
-                                    <div className="col-md-12">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            label="Contract Period (days only)"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="empContPrd"
-                                            value={empContPrd}
-                                            onChange={(e) => updateStateFormInput(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            label="Renewal Period (days only)"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="empRenewPrd"
-                                            value={empRenewPrd}
-                                            onChange={(e) => updateStateFormInput(e)}
-                                        />
-                                    </div>
+
                                     <div className="col-md-12">
                                         <FormControlLabel
                                             control={
@@ -134,7 +95,7 @@ const EmployeeTypeMast = () => {
                                                     onChange={(e) => updateStateFormInput(e)}
                                                 />
                                             }
-                                            label="EL Applicable"
+                                            label="Status"
                                         />
                                     </div>
                                     <div className="row col-md-12">

@@ -92,10 +92,13 @@ const MasterContext = ({ children }) => {
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
+    //employee category of contract 
+    const [categorycontract, updatecategorycontract] = useState(0)
     //department shift
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
     //leave request type 
     const [getleavereqtype, updateleavereqtype] = useState(0)
+
     //employeedetails 
     const [employeedetails, updateemployeedetails] = useState({
         em_department: 0,
@@ -195,6 +198,8 @@ const MasterContext = ({ children }) => {
         updateShifts,
         shiftnameselect,
         updateshiftnameselect,
+        categorycontract,
+        updatecategorycontract,
         DepartmentShiftselec,
         updateDepartmentShiftSelect,
         employeedetails,

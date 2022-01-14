@@ -1,11 +1,10 @@
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import Slide from '@mui/material/Slide';
 import AnnualProcessComponent from 'src/views/CommonCode/AnnualProcessComponent';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -27,16 +26,13 @@ const ModelAvailLeavelist = ({
     setnodatacl,
     setnodatael,
     setnodatahl,
-    setnodatafixed
+    setnodatafixed, categorychge
 
 }) => {
-
-
     const [processCount, setProcessCount] = useState(0)
-    const { ecat_cl, ecat_confere, ecat_cont,
-        ecat_lop, ecat_doff_allow, ecat_el, ecat_esi_allow,
-        ecat_fh, ecat_mate, ecat_nh, ecat_prob, ecat_sl, ecat_woff_allow, em_category } = dataleave
-
+    const { ecat_cl,
+        ecat_lop, ecat_el, ecat_esi_allow,
+        ecat_fh, ecat_mate, ecat_nh, ecat_sl } = dataleave
     const [leaveproceedaata, setleaveprocedata] = useState({
         category_slno: "",
         em_id: " ",
@@ -54,21 +50,22 @@ const ModelAvailLeavelist = ({
         process_user: " "
     })
     const {
-        category_slno, em_id, em_no, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld, hrm_process_status,
-        lv_process_slno, next_updatedate, process_enddate, process_updatedate, process_user
+        em_id, em_no, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
 
     } = leaveproceedaata
 
-
     useEffect(() => {
         const getleaveprocessdata = async () => {
+
             const result = await axioslogin.get(`/yearleaveprocess/${lv_process_slnocurrent}`)
             const { success, data } = result.data
-            setleaveprocedata(data[0])
+            if (success === 0) {
+
+                setleaveprocedata(data[0])
+            }
         }
         getleaveprocessdata()
-    }, [processCount])
-
+    }, [processCount, lv_process_slnocurrent])
 
     return (
         <Fragment>
@@ -76,7 +73,7 @@ const ModelAvailLeavelist = ({
                 <Dialog
                     open={open}
                     onClose={handleClose}
-                    // TransitionComponent={Transition}
+                    TransitionComponent={Transition}
                     keepMounted
                     aria-describedby="alert-dialog-slide-descriptiona">
                     <DialogContent sx={{
@@ -98,10 +95,11 @@ const ModelAvailLeavelist = ({
                                 setnodatael={setnodatael}
                                 setnodatahl={setnodatahl}
                                 setnodatafixed={setnodatafixed}
+                                categorychge={categorychge}
                             /> : hrm_clv === 1 ? <AnnualLeaveProcessComplete name={'Caual Leave'} /> : null
                         }
                         {
-                            ((ecat_nh === 1 || ecat_fh === 1) && hrm_hld == 0) ? <AnnualProcessComponent
+                            ((ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0) ? <AnnualProcessComponent
                                 name={'Holiday Leave'}
                                 value={'H'}
                                 dataleave={dataleave}
@@ -111,7 +109,8 @@ const ModelAvailLeavelist = ({
                                 count={setProcessCount}
                                 countdata={processCount}
                                 setnodatahl={setnodatahl}
-                            /> : hrm_hld == 1 ? <AnnualLeaveProcessComplete name={'Holiday Leave'} /> : null
+                                categorychge={categorychge}
+                            /> : hrm_hld === 1 ? <AnnualLeaveProcessComplete name={'Holiday Leave'} /> : null
                         }
                         {
                             (ecat_esi_allow === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) && hrm_cmn === 0 ?
@@ -124,7 +123,8 @@ const ModelAvailLeavelist = ({
                                     count={setProcessCount}
                                     countdata={processCount}
                                     setnodatafixed={setnodatafixed}
-                                /> : hrm_cmn == 1 ?
+                                    categorychge={categorychge}
+                                /> : hrm_cmn === 1 ?
                                     <AnnualLeaveProcessComplete name={'Common Leave'} /> : null
                         }
 
@@ -140,6 +140,7 @@ const ModelAvailLeavelist = ({
                                 count={setProcessCount}
                                 setnodatael={setnodatael}
                                 countdata={processCount}
+                                categorychge={categorychge}
                             /> : hrm_ern_lv === 1 ? <AnnualLeaveProcessComplete name={'Earn Leave'} /> : null
                         }
 

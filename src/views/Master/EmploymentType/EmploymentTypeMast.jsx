@@ -10,13 +10,11 @@ import EmployeType from 'src/views/CommonCode/EmployeType'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { useHistory } from 'react-router-dom'
 import { memo } from 'react'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeMast = () => {
     const [cont_period, setcont_period] = useState(0)
-    const [cont_grace, setcont_grace] = useState(0)
-    const [desiggperiod, setdesiggperiod] = useState(0)
     const [data, setdata] = useState('')
     const classes = useStyles();
     const {
@@ -27,29 +25,15 @@ const EmploymentTypeMast = () => {
         earntypename,
         designattypename
     } = useContext(PayrolMasterContext);
-
     // use effect employee cateroy
     useEffect(() => {
         // on employeetype change
         if (selectEmployeeType !== 0) {
             setdata(earntypename + '+' + designattypename)
-            const getcontractdayrenew = async () => {
-                // api for contract
-                const result = await axioslogin.get(`/emptype/${selectEmployeeType}`)
-                const contractdata = result.data.data[0]
-                setcont_period(contractdata.cont_period);
-                setcont_grace(contractdata.cont_grace);
-            }
-            getcontractdayrenew()
         }
         // on Designation change
         if (selectDesignationType !== 0) {
-            const getdesignationperiod = async () => {
-                const result = await axioslogin.get(`/empstat/${selectDesignationType}`)
-                const period = result.data.data[0]
-                setdesiggperiod(period.empstat_period)
-            }
-            getdesignationperiod();
+
             setdata(earntypename + '+' + designattypename)
         }
     }, [selectDesignationType, selectEmployeeType, designattypename, earntypename])
@@ -59,42 +43,53 @@ const EmploymentTypeMast = () => {
 
         const getyearlysettings = async () => {
             const result = await axioslogin.get('/yearlyleaves')
-            const { data } = result.data;
-            const { max_allowed_count_cl,
-                max_allowed_count_conference,
-                max_allowed_count_lop,
-                max_allowed_count_maternity,
-                max_allowed_count_previlage,
-                max_allowed_count_sick } = data[0]
-            const frmdata = {
-                max_allowed_count_cl: max_allowed_count_cl,
-                max_allowed_count_conference: max_allowed_count_conference,
-                max_allowed_count_lop: max_allowed_count_lop,
-                max_allowed_count_maternity: max_allowed_count_maternity,
-                max_allowed_count_previlage: max_allowed_count_previlage,
-                max_allowed_count_sick: max_allowed_count_sick,
-                contract_perd: 0,
-                train_perd: 0,
-                lvetype_slno_cl: false,
-                lvetype_slno_sick: false,
-                lvetype_slno_conference: false,
-                lvetype_slno_lop: false,
-                lvetype_slno_maternity: false,
-                lvetype_slno_previlage: false,
-                cont_renw: false,
-                trapro: false,
-                esi_yes: false,
-                nahl_yes: false,
-                fest_leav: false,
-                dayoff: false,
-                workoff: false,
-                emp_status: false,
-                cont_period: 0,
-                cont_grace: 0,
-                desiggperiod: 0,
-            }
+            const { successleave, messageleave, message } = result.data;
 
-            setEmploymentData(frmdata)
+            if (successleave === 0) {
+                warningNofity(message)
+            }
+            else if (successleave === 2) {
+                errorNofity("Contact EDP")
+
+
+            }
+            else {
+
+                const { max_allowed_count_cl,
+                    max_allowed_count_conference,
+                    max_allowed_count_lop,
+                    max_allowed_count_maternity,
+                    max_allowed_count_previlage,
+                    max_allowed_count_sick } = messageleave[0]
+                const frmdata = {
+                    max_allowed_count_cl: max_allowed_count_cl,
+                    max_allowed_count_conference: max_allowed_count_conference,
+                    max_allowed_count_lop: max_allowed_count_lop,
+                    max_allowed_count_maternity: max_allowed_count_maternity,
+                    max_allowed_count_previlage: max_allowed_count_previlage,
+                    max_allowed_count_sick: max_allowed_count_sick,
+                    contract_perd: 0,
+                    train_perd: 0,
+                    lvetype_slno_cl: false,
+                    lvetype_slno_sick: false,
+                    lvetype_slno_conference: false,
+                    lvetype_slno_lop: false,
+                    lvetype_slno_maternity: false,
+                    lvetype_slno_previlage: false,
+                    cont_renw: false,
+                    trapro: false,
+                    esi_yes: false,
+                    nahl_yes: false,
+                    fest_leav: false,
+                    dayoff: false,
+                    workoff: false,
+                    emp_status: false,
+                    cont_period: 0,
+                    cont_grace: 0,
+                    desiggperiod: 0,
+                }
+                setEmploymentData(frmdata)
+            }
         }
         getyearlysettings();
     }, [])
@@ -127,8 +122,8 @@ const EmploymentTypeMast = () => {
         dayoff: false,
         workoff: false,
         emp_status: false,
-        cont_period: 0,
-        cont_grace: 0,
+        contractgrace_perd: 0,
+        traingrace_perd: 0,
         desiggperiod: 0
     })
     const {
@@ -152,7 +147,7 @@ const EmploymentTypeMast = () => {
         esi_yes,
         nahl_yes,
         fest_leav,
-        dayoff,
+        dayoff, contractgrace_perd, traingrace_perd,
         workoff,
         emp_status } = employmentData;
     useEffect(() => {
@@ -176,8 +171,12 @@ const EmploymentTypeMast = () => {
         des_type: selectDesignationType,
         ecat_cont: cont_renw === true ? 1 : 0,
         ecat_cont_period: contract_perd,
+        cont_grace: contractgrace_perd,
+
         ecat_prob: trapro === true ? 1 : 0,
         ecat_prob_period: train_perd,
+        cont_period: traingrace_perd,
+
         ecat_cl: lvetype_slno_cl === true ? 1 : 0,
         ecat_cl_max: max_allowed_count_cl,
         ecat_el: lvetype_slno_previlage === true ? 1 : 0,
@@ -197,8 +196,7 @@ const EmploymentTypeMast = () => {
         ecat_mate_max: max_allowed_count_maternity,
         ecat_status: emp_status === true ? 1 : 0,
         empstat_period: cont_period,
-        cont_period: cont_grace,
-        cont_grace: desiggperiod,
+
         create_users: employeeNumber()
     }
     // for rest
@@ -228,7 +226,9 @@ const EmploymentTypeMast = () => {
         emp_status: false,
         cont_period: 0,
         cont_grace: 0,
-        desiggperiod: 0
+        desiggperiod: 0,
+        contractgrace_perd: 0,
+        traingrace_perd: 0
     }
 
     // for submission
@@ -248,10 +248,12 @@ const EmploymentTypeMast = () => {
                 updateDesignationType(0)
                 setdata('')
                 setcont_period(0);
-                setcont_grace(0);
+                // setcont_grace(0);
             } else if (success === 0) {
                 errorNofity(message)
             } else if (success === 2) {
+                infoNofity(message)
+            } else if (success === 7) {
                 infoNofity(message)
             }
         }
@@ -298,21 +300,7 @@ const EmploymentTypeMast = () => {
                                             value={data}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
-                                        <TextField
-                                            name="cont_period"
-                                            value={cont_period}
-                                            hidden
-                                        />
-                                        <TextField
-                                            name="cont_grace"
-                                            value={cont_grace}
-                                            hidden
-                                        />
-                                        <TextField
-                                            name="desiggperiod"
-                                            value={desiggperiod}
-                                            hidden
-                                        />
+
 
                                     </div>
 
@@ -660,20 +648,7 @@ const EmploymentTypeMast = () => {
                                             value={contract_perd}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="contract_perd"
-                                            // value={contract_perd}
-                                            onChange={(e) => getEmploymentFormData(e)}
-                                        />
+
                                     </div>
 
                                     <div className="col-md-3 ">
@@ -705,6 +680,64 @@ const EmploymentTypeMast = () => {
                                             allowNegative={false}
                                             name="train_perd"
                                             value={train_perd}
+                                            onChange={(e) => getEmploymentFormData(e)}
+                                        />
+                                    </div>
+
+
+                                </div>
+                                {/* fifth row */}
+                                <div className="col-md-12 row">
+                                    <div className="col-md-3 ">
+
+                                    </div>
+                                    <div className="col-md-1 col-sm-4 ">
+                                        <NumberFormat
+                                            customInput={TextField}
+                                            fullWidth
+                                            format="###"
+                                            variant="outlined"
+                                            size="small"
+                                            autoComplete="off"
+                                            type="text"
+                                            thousandSeparator={false}
+                                            allowNegative={false}
+                                            name="contractgrace_perd"
+                                            value={contractgrace_perd}
+                                            onChange={(e) => getEmploymentFormData(e)}
+                                        />
+
+                                    </div>
+
+                                    <div className="col-md-3 ">
+                                        {/* <FormControlLabel
+                                            className="pb-0 mb-0"
+                                            control={
+                                                <Checkbox
+                                                    name="trapro"
+                                                    color="secondary"
+                                                    value={trapro}
+                                                    checked={trapro}
+                                                    className="ml-2 "
+                                                    onChange={(e) => getEmploymentFormData(e)}
+                                                />
+                                            }
+                                            label="Training /Probation period (Days)"
+                                        /> */}
+                                    </div>
+                                    <div className="col-md-1 col-sm-4">
+                                        <NumberFormat
+                                            customInput={TextField}
+                                            fullWidth
+                                            format="###"
+                                            variant="outlined"
+                                            size="small"
+                                            autoComplete="off"
+                                            type="text"
+                                            thousandSeparator={false}
+                                            allowNegative={false}
+                                            name="traingrace_perd"
+                                            value={traingrace_perd}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
                                     </div>
