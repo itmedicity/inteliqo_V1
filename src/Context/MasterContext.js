@@ -92,6 +92,8 @@ const MasterContext = ({ children }) => {
     const [getshifts, updateShifts] = useState(0)
     //shiftname select
     const [shiftnameselect, updateshiftnameselect] = useState('')
+    //employee category of contract 
+    const [categorycontract, updatecategorycontract] = useState(0)
 
 
     const value = {
@@ -183,6 +185,8 @@ const MasterContext = ({ children }) => {
         updateShifts,
         shiftnameselect,
         updateshiftnameselect,
+        categorycontract,
+        updatecategorycontract
     }
     return <PayrolMasterContext.Provider value={value} >
         {children}

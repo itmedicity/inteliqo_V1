@@ -8,7 +8,7 @@ import moment from 'moment';
 import { TextField, Button } from '@material-ui/core'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { addDays } from 'date-fns'
-import { employeeNumber, getSerialnumberempnumber } from 'src/views/Constant/Constant'
+import { employeeNumber, getProcessserialnum, getSerialnumberempnumber } from 'src/views/Constant/Constant'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import TextInput from 'src/views/Component/TextInput'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
@@ -18,9 +18,59 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import ContractcategoryModel from 'src/views/CommonCode/ContractcategoryModel'
+import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess'
+import compareAsc from 'date-fns/compareAsc'
 
 const ContractInformation = () => {
 
+    const [categorychge, setcategorychange] = useState(1)
+    // use State foe serial number
+    const [processslno, setprocessslno] = useState(0)
+
+    // to model message
+    const [modelmessage, setmodelmessage] = useState('');
+    // usestate for leaveprocess model
+    const [modelvalue, setmodelvalue] = useState(0)
+    // set open model true false for leave setting
+    const [open, setOpen] = useState(false);
+    // usestae to check wheather category is saved 
+    const [categorysave, setcategorysave] = useState(0)
+    // check wheathe old or new
+    const [olddata, setolddat] = useState(0)
+    //  data based on employeee category
+    const [leavestate, setleavestate] = useState({
+        ecat_cl: 0,
+        ecat_confere: 0,
+        ecat_cont: 0,
+        ecat_doff_allow: 0,
+        ecat_el: 0,
+        ecat_esi_allow: 0,
+        ecat_fh: 0,
+        ecat_lop: 0,
+        ecat_mate: 0,
+        ecat_nh: 0,
+        ecat_prob: 0,
+        ecat_woff_allow: 0,
+        ecat_sl: 0,
+        em_category: 0
+    })
+
+
+    // current process details
+    const [leaveprocessid, leaveprocessidupdate] = useState({
+        hrm_calcu: 0,
+        hrm_clv: 0,
+        hrm_cmn: 0,
+        hrm_ern_lv: 0,
+        hrm_hld: 0,
+        lv_process_slno: 0,
+        category_slno: 0
+    });
+
+    // destructuring current process details
+
+    const [modelcateg, setmodelcate] = useState(0)
     const classes = useStyles()
     const history = useHistory()
     const { id, no } = useParams()
@@ -36,10 +86,11 @@ const ContractInformation = () => {
         em_id: "",
         startdate: "",
         endate: "",
-        contractstatus: ""
+        contractstatus: "",
+        em_category: ""
     })
     //destructuring
-    const { remaining_days, em_no, em_id, startdate, endate, contractstatus } = formData
+    const { remaining_days, em_no, em_id, startdate, endate, contractstatus, em_category } = formData
 
     //setting Contract start Date
     const setContractStartDate = (val) => {
@@ -49,55 +100,58 @@ const ContractInformation = () => {
     const setContractEndDate = (val) => {
         setconendDate(val)
     }
-    //useEffect for getting employees's Contract Details
-    useEffect(() => {
-        const getcontractInformation = async () => {
-            const result = await axioslogin.get(`/empcontract/${no}`)
-            const { success, data } = result.data
-            if (success === 1) {
-                const { em_cont_start, em_cont_end, em_no, em_id, em_cont_close } = data[0]
-                setcontstrtDate(em_cont_start)
-                setconendDate(em_cont_end)
-                const a = moment(em_cont_end)
-                const b = moment(new Date())
-                const c = a.diff(b, 'days')
-                const contstartdatee = moment(em_cont_start).format('DD-MM-YYYY')
-                const contendatee = moment(em_cont_end).format('DD-MM-YYYY')
+
+    const getcontractInformation = async () => {
+        const result = await axioslogin.get(`/empcontract/${no}`)
+        const { success, data } = result.data
+        if (success === 1) {
+            const { em_cont_start, em_cont_end, em_no, em_id, em_cont_close, em_category } = data[0]
+            setcontstrtDate(em_cont_start)
+            setconendDate(em_cont_end)
+            const a = moment(em_cont_end)
+            const b = moment(new Date())
+            const c = a.diff(b, 'days')
+            const contstartdatee = moment(em_cont_start).format('DD-MM-YYYY')
+            const contendatee = moment(em_cont_end).format('DD-MM-YYYY')
+            const frmData = {
+                remaining_days: c,
+                em_no: em_no,
+                em_id: em_id,
+                startdate: contstartdatee,
+                endate: contendatee,
+                em_category: em_category
+            }
+            setformData(frmData)
+            if (c <= 0) {
+                Setenable(false)
+            }
+            if (em_cont_close === 'C') {
+                Setenableclose(true)
+                Setenable(true)
+                var contractstatus = 'Contract Closed'
                 const frmData = {
                     remaining_days: c,
                     em_no: em_no,
                     em_id: em_id,
                     startdate: contstartdatee,
-                    endate: contendatee
+                    endate: contendatee,
+                    contractstatus: contractstatus,
+                    em_category: em_category
                 }
                 setformData(frmData)
-                if (c <= 0) {
-                    Setenable(false)
-                }
-                if (em_cont_close === 'C') {
-                    Setenableclose(true)
-                    Setenable(true)
-                    var contractstatus = 'Contract Closed'
-                    const frmData = {
-                        remaining_days: c,
-                        em_no: em_no,
-                        em_id: em_id,
-                        startdate: contstartdatee,
-                        endate: contendatee,
-                        contractstatus: contractstatus
-                    }
-                    setformData(frmData)
-                }
-            }
-            else if (success === 0) {
-                infoNofity("There Is No Contract Information Against This Employee")
-            }
-            else {
-                errorNofity("Error Occured Please Contact EDP!!!!")
             }
         }
+        else if (success === 0) {
+            infoNofity("There Is No Contract Information Against This Employee")
+        }
+        else {
+            errorNofity("Error Occured Please Contact EDP!!!!")
+        }
+    }
+    //useEffect for getting employees's Contract Details
+    useEffect(() => {
         getcontractInformation()
-    }, [id, no])
+    }, [id, no, categorysave, getcontractInformation])
 
     //data to close a request
     const closeData = {
@@ -133,11 +187,10 @@ const ContractInformation = () => {
     })
     getSerialnumberempnumber()
 
-
     //contract renew
     const contractRenew = async (e) => {
         e.preventDefault();
-        Setenablefield(false)
+        setmodelcate(1)
         const result = await axioslogin.get(`/empcontract/${no}`)
         const { success, data } = result.data
         if (success === 1) {
@@ -150,6 +203,13 @@ const ContractInformation = () => {
             else if (fine_status === 0) {
                 warningNofity('Cannot Renew Contract!!!There Is Pending Fine Against This Employee')
                 Setenablefield(true)
+            }
+            else {
+                Setenablefield(false)
+                setmodelcate(1)
+
+
+
             }
 
         }
@@ -169,14 +229,87 @@ const ContractInformation = () => {
         changed_date: moment(new Date()).format('YYYY-MM-DD'),
         edit_user: employeeNumber(),
     }
-
+    const handleClose = () => {
+        // setmodellist(false)
+    }
     const submitFormData = async (e) => {
         e.preventDefault()
+
+
         const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
-        console.log(result)
         const { success, message } = result.data
         if (success === 2) {
             succesNofity(message)
+            Setenablefield(true)
+            if (categorysave === 1) {
+                getProcessserialnum().then((val) => {
+                    setprocessslno(val)
+
+                })
+                // get current data allowed  leave based on category
+                const getcategorydata = async () => {
+                    const result = await axioslogin.get(`/common/getannprocess/${no}`)
+                    const { data } = result.data
+                    setleavestate(data[0])
+                }
+                getcategorydata();
+
+                const postFormdata =
+                {
+                    em_no: no,
+                    em_id: id
+                }
+                const getdata = async () => {
+                    // check the table where data present if present get the details process table
+                    const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+                    const { success, message } = result.data;
+
+                    const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                        lv_process_slno, next_updatedate } = message[0]
+
+                    const dataprvleave = {
+                        hrm_calcu: hrm_calcu,
+                        hrm_clv: hrm_clv,
+                        hrm_cmn: hrm_cmn,
+                        hrm_ern_lv: hrm_ern_lv,
+                        hrm_hld: hrm_hld,
+                        category_slno: category_slno,
+                        lv_process_slno: lv_process_slno
+                    }
+                    // if no data available
+                    if (success === 0) {
+                        setcategorysave(0)
+                        // if no data is present means new employee  set model
+                        setmodelvalue(1)
+                        setmodelmessage('Leave process is not done for the employee')
+                        setolddat(1)
+                        setOpen(true)
+                    }
+                    else if (success === 1) {
+                        setcategorysave(0)
+                        leaveprocessidupdate(dataprvleave)
+                        // if employee process date has over 
+                        if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                            setOpen(true)
+                            setmodelvalue(1)
+                            setmodelmessage('Date Exceeded do you Want To Process')
+                        }
+
+                        else if (category_slno !== em_category) {
+                            setcategorysave(0)
+                            setmodelvalue(1)
+                            setmodelmessage('Category Change Do You Want to  To Process')
+                            setOpen(true)
+                        }
+                        // if process contain data and pending leave process is present
+                        else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                            // setmodellist(true)
+                        }
+                    }
+
+                }
+                getdata()
+            }
         }
     }
     //redirecting to home page
@@ -195,6 +328,29 @@ const ContractInformation = () => {
     ];
     return (
         <Fragment>
+            {modelcateg === 1 ? <ContractcategoryModel em_category={em_category}//old category
+                id={id}//employeenumber
+                setcategorysave={setcategorysave} //setcategory change
+                setmodelcate={setmodelcate}
+            /> : null}
+
+            {modelvalue === 1 ? <ModelLeaveProcess
+                open={open}
+                dataleave={leavestate} // {leaves available based on category}
+                handleClose={handleClose}
+                setOpen={setOpen}  //for open model
+                id={id}//employee id
+                no={no}//employee number
+                valuemessage={modelmessage}//model message
+                leaveprocessid={leaveprocessid} //current proceess details
+                processslno={processslno}//processess serialno
+                olddata={olddata}// check wheather new data
+                setmodelvalue={setmodelvalue}
+                categorychge={categorychge}
+
+
+
+            /> : null}
             <PageLayout heading="Contract Information">
                 <div className="col-md-12">
                     <form className={classes.root} onSubmit={submitFormData}>

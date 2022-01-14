@@ -29,7 +29,8 @@ const LeaveTypeMastEdit = () => {
         status: false,
         is_lop: false,
         is_holiday: false,
-        is_leave: false
+        is_leave: false,
+        common: false
 
     })
 
@@ -45,14 +46,15 @@ const LeaveTypeMastEdit = () => {
         status: false,
         is_lop: false,
         is_holiday: false,
-        is_leave: false
+        is_leave: false,
+        common: false
     }
 
     //de structuring
     const { lvetype_desc, lvetype_code, carryforward,
         avail_on_traing_probation, avail_on_after_confirm, half_day_allowed,
         leave_credit_policy, leave_credit_policy_count, status, is_lop,
-        is_holiday, is_leave } = formData
+        is_holiday, is_leave, common } = formData
 
 
     useEffect(() => {
@@ -63,7 +65,7 @@ const LeaveTypeMastEdit = () => {
                 const { lvetype_desc, lvetype_code, carryforward,
                     avail_on_traing_probation, avail_on_after_confirm, half_day_allowed,
                     leave_credit_policy, leave_credit_policy_count, status, is_lop,
-                    is_holiday, is_leave } = data[0]
+                    is_holiday, is_leave, common } = data[0]
 
                 const formData = {
                     lvetype_slno: id,
@@ -78,7 +80,8 @@ const LeaveTypeMastEdit = () => {
                     status: status === 1 ? true : false,
                     is_lop: is_lop === 1 ? true : false,
                     is_holiday: is_holiday === 1 ? true : false,
-                    is_leave: is_leave === 1 ? true : false
+                    is_leave: is_leave === 1 ? true : false,
+                    common: common === 1 ? true : false,
 
                 }
                 setFormData(formData)
@@ -92,12 +95,7 @@ const LeaveTypeMastEdit = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
 
-        if (e.target.name === 'select_leave_policy' && value === '4') {
-            setDisabled('disabled')
-        }
-        else {
-            setDisabled('')
-        }
+
 
     }
 
@@ -120,7 +118,6 @@ const LeaveTypeMastEdit = () => {
             is_leave: is_leave === true ? 1 : 0,
             edit_user: employeeNumber()
         }
-
         const result = await axioslogin.patch('/leaveType', updateData)
         const { success, message } = result.data
         if (success === 2) {
@@ -290,6 +287,22 @@ const LeaveTypeMastEdit = () => {
                                                 />
                                             }
                                             label="Leave"
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
+                                            control={
+                                                <Checkbox
+                                                    name="common"
+                                                    color="secondary"
+                                                    value={common}
+                                                    checked={common}
+                                                    className="ml-2"
+                                                    onChange={(e) => updateLeaveMastEditFormData(e)}
+                                                />
+                                            }
+                                            label="Common Leave"
                                         />
                                     </div>
                                     <div className="col-md-12 pb-0 mb-0">

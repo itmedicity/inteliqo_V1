@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core'
+import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import { addDays, addYears } from 'date-fns'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-bootstrap'
@@ -51,6 +51,7 @@ const EmployeeRecord = () => {
 
     // usestare
     const [cont_perioddate, setcont_perioddate] = useState(0)
+    const [contractflag, setcontractflag] = useState(0)
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
@@ -168,7 +169,8 @@ const EmployeeRecord = () => {
         blood_slno: getbloodgroup,
         em_age_month: mnthage,
         em_age_day: dayge,
-        hrm_religion: getreligion
+        hrm_religion: getreligion,
+        contractflag: contractflag
 
     }
 
@@ -228,7 +230,7 @@ const EmployeeRecord = () => {
         udateregion2, udatereligion,
         updateBranchSelected, updateDesignation,
         updateDesignationType, updateInstituteSeleted,
-        updateSalutSelected, updateSelected, updatebloodgroup, updatedoctortype])
+        updateSalutSelected, updateSelected, updatebloodgroup, updatedoctortype, udateemployeecategory])
 
     useEffect(() => {
 
@@ -243,6 +245,7 @@ const EmployeeRecord = () => {
                 var ecat_prob_period = data[0].ecat_prob_period;
                 if (ecat_cont_period > 0) {
                     setcont_perioddate(addDays(today, ecat_cont_period))
+                    setcontractflag(1)
                 }
                 else {
 
