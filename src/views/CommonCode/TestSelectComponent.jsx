@@ -1,7 +1,7 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment } from 'react'
 
-const TestSelectComponent = ({ name, select, style }) => {
+const TestSelectComponent = ({ name, select, style, onChange }) => {
     // console.log(props);
     return (
         <Fragment>
@@ -12,17 +12,19 @@ const TestSelectComponent = ({ name, select, style }) => {
             >
                 <Select
                     name={name}
-                    // onChange={(e) => updateSalutSelected(e.target.value)}
+                    onChange={(e) => onChange(e.target.value)}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
                     style={style}
                 >
-                    <MenuItem value='0' disabled selected >{select}</MenuItem>
-                    {/* <MenuItem value='1'>INDIA</MenuItem>
-                    <MenuItem value='2'>UAE</MenuItem>
-                    <MenuItem value='3'>DUBAI</MenuItem> */}
+                    <MenuItem value={0} disabled selected >{select}</MenuItem>
+                    <MenuItem value='1'>Leave Request</MenuItem>
+                    <MenuItem value='2'>Half Day Leave </MenuItem>
+                    <MenuItem value='3'>No Puch request</MenuItem>
+                    <MenuItem value='4'>Late Coming Request</MenuItem>
+                    <MenuItem value='5'>Early Going Request</MenuItem>
                 </Select>
             </FormControl>
         </Fragment>

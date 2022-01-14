@@ -94,7 +94,19 @@ const MasterContext = ({ children }) => {
     const [shiftnameselect, updateshiftnameselect] = useState('')
     //employee category of contract 
     const [categorycontract, updatecategorycontract] = useState(0)
+    //department shift
+    const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
 
+
+    //employeedetails 
+    const [employeedetails, updateemployeedetails] = useState({
+        em_department: 0,
+        em_dept_section: 0,
+        em_designation: 0,
+        em_id: '',
+        em_name: '',
+        em_no: 0
+    })
 
     const value = {
         selectedDept,
@@ -186,7 +198,10 @@ const MasterContext = ({ children }) => {
         shiftnameselect,
         updateshiftnameselect,
         categorycontract,
-        updatecategorycontract
+        updatecategorycontract,
+        DepartmentShiftselec,
+        updateDepartmentShiftSelect, employeedetails, updateemployeedetails
+
     }
     return <PayrolMasterContext.Provider value={value} >
         {children}

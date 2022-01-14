@@ -12,9 +12,6 @@ import LeaveTypeMastTable from './LeaveTypeMastTable'
 const LeaveTypeMast = () => {
     const classes = useStyles()
     const history = useHistory()
-
-
-
     const [count, setCount] = useState(0)
     //setting initial state
     const [formData, setformData] = useState({
@@ -32,21 +29,13 @@ const LeaveTypeMast = () => {
         select_leave_policy: "0",
         status: false,
     })
-
     const { leave_type, leave_type_code, Leave_Carry_Forwad, Leave_avail_training, Leave_avail_after_training,
         half_day, lop, holiday, Leave, leave_policy_count, select_leave_policy, status, common } = formData
-
-
-
 
     const updateLeaveMastFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setformData({ ...formData, [e.target.name]: value })
-
-
-
     }
-
     const postFormdata = {
         lvetype_desc: leave_type,
         lvetype_code: leave_type_code,
@@ -65,7 +54,6 @@ const LeaveTypeMast = () => {
 
 
     }
-
     //setting default state
     const defaultState = {
         leave_type: "",
@@ -82,7 +70,6 @@ const LeaveTypeMast = () => {
         status: false,
         common: false,
     }
-
     const submitFormDataLeaveType = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/leaveType', postFormdata)
@@ -93,13 +80,9 @@ const LeaveTypeMast = () => {
             setformData(defaultState)
         }
     }
-
-
     const toSettings = () => {
         history.push('/Home/Settings')
     }
-
-
     return (
         <Fragment>
             <SessionCheck />
@@ -308,6 +291,7 @@ const LeaveTypeMast = () => {
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
+                                            disabled={select_leave_policy === '4' ? true : false}
                                             name="leave_policy_count"
                                             value={leave_policy_count}
                                             onChange={(e) => updateLeaveMastFormData(e)}

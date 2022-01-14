@@ -43,6 +43,7 @@ const DepartmentShiftTable = ({ update }) => {
 
 
     const getTableData = (data) => {
+        setCount(count + 1)
         const { dept_shift_Slno } = data
         history.push(`/Home/DepartmentShiftEdit/${dept_shift_Slno}`)
     }

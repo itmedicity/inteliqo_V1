@@ -94,9 +94,6 @@ const LeaveTypeMastEdit = () => {
     const updateLeaveMastEditFormData = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
-
-
-
     }
 
 
@@ -346,9 +343,9 @@ const LeaveTypeMastEdit = () => {
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
-                                            disabled
                                             name="leave_credit_policy_count"
                                             value={leave_credit_policy_count}
+                                            disabled={leave_credit_policy === '4' ? true : false}
                                             onChange={(e) => updateLeaveMastEditFormData(e)}
                                         />
                                     </div>

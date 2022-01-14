@@ -8,8 +8,8 @@ const AttendanceManagement = [
     },
     {
         component: CNavItem,
-        name: 'Shift Punch Updation',
-        to: '/Home/theme',
+        name: 'Attendance Updation',
+        to: '/Home/ShiftUpdation',
     },
 ]
 
