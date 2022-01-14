@@ -12,6 +12,7 @@ import FineAndDeductionTable from './EmployeeFileTable/FineAndDeductionTable'
 import { differenceInMonths, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import ReactTooltip from 'react-tooltip';
 
 const FineorDeduction = () => {
     const history = useHistory()
@@ -194,7 +195,8 @@ const FineorDeduction = () => {
                                             changeTextValue={(e) => updateFineDed(e)}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 " data-tip="Fine Start Date" data-for='toolTip1' data-place='top'>
+                                        <ReactTooltip id="toolTip1" />
                                         <TextInput
                                             type="date"
                                             classname="form-control form-control-sm"
@@ -206,12 +208,14 @@ const FineorDeduction = () => {
                                             }}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 " data-tip="Fine End Date" data-for='toolTip2' data-place='top'>
+                                        <ReactTooltip id="toolTip2" />
                                         <TextInput
                                             type="date"
                                             classname="form-control form-control-sm"
                                             Placeholder="End Date"
                                             value={fineend}
+                                            min={finestart}
                                             name="fineend"
                                             changeTextValue={(e) => {
                                                 getend(e)

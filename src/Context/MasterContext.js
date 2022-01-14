@@ -104,6 +104,8 @@ const MasterContext = ({ children }) => {
         em_name: '',
         em_no: 0
     })
+    //Board Selection depands on education
+    const [selectBoard, updateBoard] = useState(0)
 
     const value = {
         selectedDept,
@@ -195,7 +197,9 @@ const MasterContext = ({ children }) => {
         shiftnameselect,
         updateshiftnameselect,
         DepartmentShiftselec,
-        updateDepartmentShiftSelect, employeedetails, updateemployeedetails
+        updateDepartmentShiftSelect, employeedetails, updateemployeedetails,
+        selectBoard,
+        updateBoard,
 
     }
     return <PayrolMasterContext.Provider value={value} >
