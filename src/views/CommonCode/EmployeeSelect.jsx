@@ -43,7 +43,7 @@ const EmployeeSelect = () => {
                     </MenuItem>
                     {
                         empName && empName.map((val, index) => {
-                            return <MenuItem key={index} value={val.em_no}>{val.em_name}</MenuItem>
+                            return <MenuItem key={index} value={val.em_id}>{val.em_name}</MenuItem>
                         })
                     }
                 </Select>

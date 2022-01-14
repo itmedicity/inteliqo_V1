@@ -45,6 +45,7 @@ const LeaveDateSelection = ({ index, date, setLeveData, leveData }) => {
 
     useEffect(() => {
         if (data === '1' || data === '2') {
+            console.log('dfd')
             setPostData(casualLeve)
         } else {
             setPostData(casualLeve2)
@@ -64,7 +65,6 @@ const LeaveDateSelection = ({ index, date, setLeveData, leveData }) => {
         }
     }
 
-
     return (
         <Fragment>
             <ToastContainer />
@@ -79,10 +79,11 @@ const LeaveDateSelection = ({ index, date, setLeveData, leveData }) => {
                         <TestLeaveType style={SELECT_CMP_STYLE} name="type" select="Leave Request Type" onChange={handleLveType} />
                     </div>
                     {
-                        data === '1' ?
+
+                        data === 1 ?
                             <div className="col-md-3">
                                 <TestCasulLeave style={SELECT_CMP_STYLE} className="mb-0" name={index} select="casual Leave" onChange={handleChange} />
-                            </div> : data === '2' ?
+                            </div> : data === 2 ?
                                 <div className="col-md-3" >
                                     <TestHalfday style={SELECT_CMP_STYLE} className="mb-0" name={index} select="Holiday" onChange={handleChange} />
                                 </div> : null
