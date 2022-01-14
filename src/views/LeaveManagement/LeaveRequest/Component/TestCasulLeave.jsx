@@ -1,8 +1,8 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 
 
-const TestCasulLeave = ({ name, select, style, onChange }) => {
+const TestCasulLeave = ({ name, select, style, onChange, CL }) => {
     return (
         <Fragment>
             <FormControl
@@ -20,11 +20,11 @@ const TestCasulLeave = ({ name, select, style, onChange }) => {
                     style={style}
                 >
                     <MenuItem value={0} disabled selected >{select}</MenuItem>
-                    <MenuItem value='1'>JAN - 01</MenuItem>
-                    <MenuItem value='2'>FEB - 02</MenuItem>
-                    <MenuItem value='3'>MAR - 03</MenuItem>
-                    <MenuItem value='4'>APR - 04</MenuItem>
-                    <MenuItem value='5'>MAY - 05</MenuItem>
+                    {
+                        CL && CL.map((val, index) => {
+                            return <MenuItem key={index} value={val.hrm_cl_slno}>{val.cl_lv_mnth}</MenuItem>
+                        })
+                    }
                 </Select>
             </FormControl>
         </Fragment>

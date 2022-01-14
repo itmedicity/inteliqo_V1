@@ -96,7 +96,8 @@ const MasterContext = ({ children }) => {
     const [categorycontract, updatecategorycontract] = useState(0)
     //department shift
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
-
+    //leave request type 
+    const [getleavereqtype, updateleavereqtype] = useState(0)
 
     //employeedetails 
     const [employeedetails, updateemployeedetails] = useState({
@@ -205,6 +206,8 @@ const MasterContext = ({ children }) => {
         updateDepartmentShiftSelect, employeedetails, updateemployeedetails,
         selectBoard,
         updateBoard,
+        getleavereqtype,
+        updateleavereqtype
 
     }
     return <PayrolMasterContext.Provider value={value} >
