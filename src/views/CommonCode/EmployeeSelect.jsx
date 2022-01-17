@@ -18,8 +18,6 @@ const EmployeeSelect = () => {
             updateSelectedEmployee(0)
         )
     }, [updateSelectedEmployee])
-
-    // console.log(empName)
     return (
         <Fragment>
             <FormControl
