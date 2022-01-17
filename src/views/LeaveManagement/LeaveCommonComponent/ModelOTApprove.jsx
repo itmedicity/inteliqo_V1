@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,11 +9,44 @@ import TextInput from 'src/views/Component/TextInput';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const ModelOTApprove = ({ open, handleClose }) => {
+
+    const [modeldata, setModeldata] = useState({
+        ot_days: '',
+        over_time: '',
+        ot_amount: '',
+        ot_reson: ''
+
+    })
+
+    //Get Data
+    useEffect(() => {
+        const getOt = async () => {
+            const result = await axioslogin.get('/overtimerequest/incharge/list')
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { ot_days, over_time, ot_amount, ot_reson } = data[0]
+                const frmdata = {
+                    ot_days: ot_days,
+                    over_time: over_time,
+                    ot_amount: ot_amount,
+                    ot_reson: ot_reson
+                }
+                setModeldata(frmdata);
+            } else {
+                warningNofity(" Error occured contact EDP")
+            }
+        }
+        getOt();
+    }, []);
+
+
     return (
         <Fragment>
             <Dialog
@@ -39,34 +72,28 @@ const ModelOTApprove = ({ open, handleClose }) => {
                                             classname="form-control form-control-sm"
                                             Placeholder="Start Date"
                                             disabled="Disabled"
-                                        //value={finestart}
-                                        //name="finestart"
-                                        // changeTextValue={(e) => {
-                                        //     getstart(e)
-                                        // }}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <TextInput
-                                            type="date"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="End  Date"
-                                            disabled="Disabled"
-                                        // value={finestart}
-                                        // name="finestart"
-                                        // changeTextValue={(e) => {
-                                        //     getstart(e)
-                                        // }}
+                                            value={modeldata.ot_days}
+                                            name="modeldata.ot_days"
                                         />
                                     </div>
                                     <div className="col-md-4 ">
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Total Over Time "
+                                            Placeholder="Over Time in minutes "
                                             disabled="Disabled"
-                                        //value={fine_descp}
-                                        //name="fine_descp"
+                                            value={modeldata.over_time}
+                                            name="modeldata.over_time"
+                                        />
+                                    </div>
+                                    <div className="col-md-4 ">
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="OT Amount "
+                                            disabled="Disabled"
+                                            value={modeldata.ot_amount}
+                                            name="modeldata.ot_amount"
                                         />
                                     </div>
                                 </div>
@@ -77,8 +104,8 @@ const ModelOTApprove = ({ open, handleClose }) => {
                                             classname="form-control form-control-sm"
                                             Placeholder="Over Time Reason"
                                             disabled="Disabled"
-                                        //value={fine_descp}
-                                        //name="fine_descp"
+                                            value={modeldata.ot_reson}
+                                            name="modeldata.ot_reson"
                                         />
                                     </div>
                                 </div>

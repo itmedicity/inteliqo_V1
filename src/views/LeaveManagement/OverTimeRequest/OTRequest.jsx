@@ -20,7 +20,7 @@ const OTRequest = () => {
     const history = useHistory()
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
-    const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
+    const { employeedetails } = useContext(PayrolMasterContext)
     const { em_no, em_name, desg_name } = employeedetails
     const [flag, setflag] = useState(0)
     const [tabledata, setTableData] = useState({

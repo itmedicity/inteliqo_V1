@@ -9,9 +9,8 @@ import { format } from 'date-fns'
 
 const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
     const [data, setData] = useState();
-    const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
+    const { employeedetails } = useContext(PayrolMasterContext)
     const { em_no } = employeedetails
-
 
     // table
     const title = [
@@ -36,7 +35,6 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
         {
             title: "OT Remarks", field: "ot_remarks", cellStyle: { minWidth: 10, maxWidth: 200 }
         },
-
     ]
 
     //Get Data
@@ -51,8 +49,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
             }
         }
         getBoard();
-    }, [update]);
-
+    }, [update, em_no]);
 
     const getData = async (tabledata) => {
         const { ot_slno } = tabledata
@@ -67,8 +64,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
                 shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
                 shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
                 in_time: format(new Date(check_in), "HH:mm:ss"),
-                out_time: format(new Date(check_out), "HH:mm:ss"),
-
+                out_time: format(new Date(check_out), "HH:mm:ss")
             }
             const set = {
                 otDate: '',
@@ -87,10 +83,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
         } else {
             warningNofity(" Error occured contact EDP")
         }
-
     }
-
-
 
     return (
         < Fragment >
@@ -101,11 +94,9 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
                 icons={tableIcons}
                 actions={[
                     {
-
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
                         onClick: (e, data) => getData(data)
-
                     }
                 ]}
                 options={{
