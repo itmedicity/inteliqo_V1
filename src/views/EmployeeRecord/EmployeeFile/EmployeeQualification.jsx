@@ -29,13 +29,8 @@ const EmployeeQualification = () => {
     const [coursedisable, setcoursedisable] = useState(false)
     const [specdisable, setspecdisable] = useState(false)
     const [count, setcount] = useState(0);
-    const { selectEducation, updateEducation,
-        selectCourse, updateCourse,
-        selectSpec, updateSpec,
-        selectUniversity, updateUniversity,
-        selectBoard, updateBoard,
-        selectreg, updatereg
-    } = useContext(PayrolMasterContext)
+    const { selectEducation, selectCourse, selectSpec, selectUniversity,
+        selectBoard, selectreg } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
 
     //Initializing
@@ -94,7 +89,7 @@ const EmployeeQualification = () => {
         em_course: selectCourse,
         em_specialization: selectSpec,
         em_univ_institute: selectUniversity,
-        em_board: selectBoard != 0 ? selectBoard : null,
+        em_board: selectBoard !== 0 ? selectBoard : null,
         em_year: qual_year,
         em_mark_grade,
         em_reg_type: selectreg,
@@ -105,9 +100,9 @@ const EmployeeQualification = () => {
         em_no: id,
         em_id: no,
         em_education: selectEducation,
-        em_course: selectCourse != 0 ? selectCourse : null,
-        em_specialization: selectSpec != 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_course: selectCourse !== 0 ? selectCourse : null,
+        em_specialization: selectSpec !== 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade,
@@ -119,9 +114,9 @@ const EmployeeQualification = () => {
         em_no: id,
         em_id: no,
         em_education: selectEducation,
-        em_course: selectCourse != 0 ? selectCourse : null,
-        em_specialization: selectSpec != 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_course: selectCourse !== 0 ? selectCourse : null,
+        em_specialization: selectSpec !== 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade,
@@ -129,7 +124,6 @@ const EmployeeQualification = () => {
         em_reg_no,
         create_user: employeeNumber(),
     }
-
 
     //Form reset
     const resetForm = {
@@ -270,9 +264,7 @@ const EmployeeQualification = () => {
                                             changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
-
                                 </div>
-
                             </div>
                             <div className="col-md-8">
                                 <QualificationTable update={count} />

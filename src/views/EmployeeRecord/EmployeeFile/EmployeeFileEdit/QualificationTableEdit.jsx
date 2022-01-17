@@ -50,7 +50,6 @@ const QualificationTableEdit = () => {
         em_reg_no: ''
     })
 
-
     //destructuring
     const { em_mark_grade, em_reg_no } = qualification
     const updateQualification = (e) => {
@@ -102,7 +101,6 @@ const QualificationTableEdit = () => {
             setunidisable(false)
             setBoarddisable(true)
         }
-
     }, [slno, updateEducation, updateCourse, updateSpec, updateUniversity, updatereg, updateBoard, selectEducation])
 
     //Year update function
@@ -119,7 +117,7 @@ const QualificationTableEdit = () => {
         em_course: selectCourse,
         em_specialization: selectSpec,
         em_univ_institute: selectUniversity,
-        em_board: selectBoard != 0 ? selectBoard : null,
+        em_board: selectBoard !== 0 ? selectBoard : null,
         em_year: qual_year,
         em_mark_grade,
         em_reg_type: selectreg,
@@ -132,9 +130,9 @@ const QualificationTableEdit = () => {
         em_no: id,
         em_id: no,
         em_education: selectEducation,
-        em_course: selectCourse != 0 ? selectCourse : null,
-        em_specialization: selectSpec != 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_course: selectCourse !== 0 ? selectCourse : null,
+        em_specialization: selectSpec !== 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade,
@@ -147,9 +145,9 @@ const QualificationTableEdit = () => {
         em_no: id,
         em_id: no,
         em_education: selectEducation,
-        em_course: selectCourse != 0 ? selectCourse : null,
-        em_specialization: selectSpec != 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity != 0 ? selectUniversity : null,
+        em_course: selectCourse !== 0 ? selectCourse : null,
+        em_specialization: selectSpec !== 0 ? selectSpec : null,
+        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade,
@@ -159,7 +157,6 @@ const QualificationTableEdit = () => {
         emqual_slno: slno
     }
 
-
     //Form reset
     const resetForm = {
         em_year: '',
@@ -167,12 +164,6 @@ const QualificationTableEdit = () => {
         em_reg_no: ''
     }
     const reset = () => {
-        // updateEducation(0)
-        // updateCourse(0)
-        // updateSpec(0)
-        // updateUniversity(0)
-        // updateBoard(0)
-        // updatereg(0)
         setYear(null)
     }
 
