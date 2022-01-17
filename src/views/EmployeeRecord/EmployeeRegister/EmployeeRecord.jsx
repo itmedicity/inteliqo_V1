@@ -43,6 +43,7 @@ const EmployeeRecord = () => {
         landPhone: '',
         email: '',
         Selectgender: '0',
+        doctortype: false,
         dateofbirth: '',
         dateofjoining: '',
         empstatus: false,
@@ -55,7 +56,7 @@ const EmployeeRecord = () => {
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
-
+    const [enable, setenable] = useState(true)
     // usestate for age
     const [agestate, agesetstate] = useState({
         yearage: 0,
@@ -99,8 +100,6 @@ const EmployeeRecord = () => {
         agesetstate(agefromnaw)
     }
 
-
-
     const classes = useStyles();
     const history = useHistory()
     // Context API
@@ -131,7 +130,7 @@ const EmployeeRecord = () => {
 
     // destructuring employeerecord
     const { empID, empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
-        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode } = employeerecord
+        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
     // data for sumbimssion
     const submitdata = {
         em_no: empNo,
@@ -150,7 +149,7 @@ const EmployeeRecord = () => {
         em_dept_section: selectDeptSection,
         em_institution_type: selectInstiType,
         em_designation: selectDesignation,
-        em_doc_type: getDoctype,
+        em_doc_type: doctortype === true ? getDoctype : null,
         em_category: getemployeecategory,
         em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
         em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
@@ -203,6 +202,7 @@ const EmployeeRecord = () => {
                 dateofbirth: '',
                 dateofjoining: '',
                 empstatus: false,
+                doctortype: false,
                 presPincode: ''
             }
             getFormdata(varid)
@@ -313,6 +313,7 @@ const EmployeeRecord = () => {
                         landPhone: '',
                         email: '',
                         Selectgender: '0',
+                        doctortype: false,
                         dateofbirth: '',
                         dateofjoining: '',
                         empstatus: false,
@@ -346,7 +347,6 @@ const EmployeeRecord = () => {
         updateDesignationType(0)
         updateSalutSelected(0)
     }
-
     // update change
     const updateFormData = (e) => {
         e.preventDefault();
@@ -617,8 +617,21 @@ const EmployeeRecord = () => {
                                         <div className="col-md-1">
                                             <GradeeSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
-                                        <div className="col-md-2">
-                                            <DoctorType style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        <div className="d-flex justify-content-between col-md-2">
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        color="secondary"
+                                                        name="doctortype"
+                                                        value={doctortype}
+                                                        checked={doctortype}
+                                                        className="ml-2 pt-1"
+                                                        onChange={(e) => { updateFormData(e) }}
+                                                    />
+                                                }
+                                            // label="Doctor"
+                                            />
+                                            <DoctorType style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} doctortype={doctortype} />
                                         </div>
                                     </div>
                                 </div>

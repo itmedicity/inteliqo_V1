@@ -4,6 +4,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
 const DoctorType = (props) => {
+    console.log(props)
     // intializing use state
     const [doctortype, setDoctortype] = useState([]);
 
@@ -41,6 +42,7 @@ const DoctorType = (props) => {
                     fullWidth
                     variant="outlined"
                     className="ml-0"
+                    disabled={props.doctortype === false ? true : false}
                     defaultValue={0}
                     style={props.style}
                 >
