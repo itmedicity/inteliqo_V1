@@ -73,7 +73,7 @@ const Settings = () => {
                                 <Link to="/Home/ModuleUserRights" className="list-group-item pt-1 pb-1"  > User Group Rights</Link>
                                 <Link to="/Home/UserGroup" className="list-group-item pt-1 pb-1"  > Group Master</Link>
                                 <Link to="/Home/GroupRights" className="list-group-item pt-1 pb-1"  > Group Rights</Link>
-                                {/* <Link to="/Home/Designation" className="list-group-item pt-1 pb-1"  > User Group Assign</Link> */}
+                                <Link to="/Home/Authorisation" className="list-group-item pt-1 pb-1"  >Assign Authorisation</Link>
                                 {/* <Link to="/Home/Qualification" className="list-group-item pt-1 pb-1"  > Qualification</Link> */}
                             </ul>
                         </div>
