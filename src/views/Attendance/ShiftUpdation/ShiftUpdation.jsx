@@ -4,6 +4,10 @@ import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import TextInput from 'src/views/Component/TextInput'
 import { FcPlus, FcCancel } from "react-icons/fc";
 import ShiftUpdationTable from './ShiftUpdationTable';
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
+import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 const ShiftPunchUpdationTable = React.lazy((() => import('../ShiftUpdation/ShiftUpdationTable')))
 
 const ShiftUpdation = () => {
@@ -28,21 +32,14 @@ const ShiftUpdation = () => {
                                 name="endDate"
                             />
                         </div>
-                        <div className="col-md-3">
-                            <TextInput
-                                type="text"
-                                classname="form-control form-control-sm custom-datefeild-height"
-                                Placeholder="Department Section drop Down box "
-                                name="endDate"
-                            />
+                        <div className="col-md-2">
+                            <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
-                        <div className="col-md-3">
-                            <TextInput
-                                type="text"
-                                classname="form-control form-control-sm custom-datefeild-height"
-                                Placeholder="Employee Name drop Down box"
-                                name="endDate"
-                            />
+                        <div className="col-md-2">
+                            <DepartmentSectionSelect select="Department" style={SELECT_CMP_STYLE} />
+                        </div>
+                        <div className="col-md-2">
+                            <EmployeeNameSelect select="Department Section" style={SELECT_CMP_STYLE} />
                         </div>
                         <div className="col-md-1">
                             <div className='d-flex justify-content-evenly' >
