@@ -17,7 +17,7 @@ const DesignationMast = () => {
         desg_name: '',
         desg_status: false
     });
-    const { desg_name, desg_status } = designation;
+    const { desg_name, desg_notice_prd, desg_status } = designation;
     // update state to feild
     const updateDesignationfld = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -26,12 +26,14 @@ const DesignationMast = () => {
 
     const postDesigData = {
         desg_name,
+        desg_notice_prd,
         desg_status: desg_status === true ? 1 : 0,
         create_user: employeeNumber()
     }
     // reset forn
     const resetForm = {
         desg_name: '',
+        desg_notice_prd: '',
         desg_status: false
     }
     // submit fnc
@@ -78,6 +80,19 @@ const DesignationMast = () => {
                                             required
                                             name="desg_name"
                                             value={desg_name}
+                                            onChange={(e) => updateDesignationfld(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TextField
+                                            label="Notice Period"
+                                            fullWidth
+                                            size="small"
+                                            autoComplete="off"
+                                            variant="outlined"
+                                            required
+                                            name="desg_notice_prd"
+                                            value={desg_notice_prd}
                                             onChange={(e) => updateDesignationfld(e)}
                                         />
                                     </div>

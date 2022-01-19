@@ -16,10 +16,11 @@ const DesignationMastTableEdit = () => {
 
     const [designation, setDesignation] = useState({
         desg_name: '',
+        desg_notice_prd: '',
         desg_status: false
     });
 
-    const { desg_name, desg_status } = designation;
+    const { desg_name, desg_notice_prd, desg_status } = designation;
     const updateDesignation = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setDesignation({ ...designation, [e.target.name]: value })
@@ -31,9 +32,10 @@ const DesignationMastTableEdit = () => {
             const result = await axioslogin.get(`/designation/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { desg_name, desg_status } = data[0]
+                const { desg_name, desg_notice_prd, desg_status } = data[0]
                 const frmdata = {
                     desg_name: desg_name,
+                    desg_notice_prd: desg_notice_prd,
                     desg_status: desg_status === 1 ? true : false
                 }
                 setDesignation(frmdata)
@@ -44,12 +46,14 @@ const DesignationMastTableEdit = () => {
 
     const postDesignationData = {
         desg_name,
+        desg_notice_prd,
         desg_status: desg_status === true ? 1 : 0,
         desg_slno: id,
         edit_user: employeeNumber()
     }
     const resetForm = {
         desg_name: '',
+        desg_notice_prd: '',
         desg_status: false
     }
 
@@ -96,6 +100,19 @@ const DesignationMastTableEdit = () => {
                                             required
                                             name="desg_name"
                                             value={desg_name}
+                                            onChange={(e) => updateDesignation(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TextField
+                                            label="Notice Period"
+                                            fullWidth
+                                            size="small"
+                                            autoComplete="off"
+                                            variant="outlined"
+                                            required
+                                            name="desg_notice_prd"
+                                            value={desg_notice_prd}
                                             onChange={(e) => updateDesignation(e)}
                                         />
                                     </div>

@@ -110,6 +110,10 @@ const MasterContext = ({ children }) => {
     })
     //Board Selection depands on education
     const [selectBoard, updateBoard] = useState(0)
+    //Employee Name based on department section
+    const [selectempName, updateEmpName] = useState(0)
+    //Dept Section selection form authorization of HOD/Incharge
+    const [selectDeptSec, updateDeptSec] = useState(0)
 
     const value = {
         selectedDept,
@@ -207,7 +211,11 @@ const MasterContext = ({ children }) => {
         selectBoard,
         updateBoard,
         getleavereqtype,
-        updateleavereqtype
+        updateleavereqtype,
+        selectempName,
+        updateEmpName,
+        selectDeptSec,
+        updateDeptSec
 
     }
     return <PayrolMasterContext.Provider value={value} >
