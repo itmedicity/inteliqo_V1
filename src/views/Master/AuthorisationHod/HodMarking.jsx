@@ -1,55 +1,105 @@
 import { Checkbox, FormControlLabel, IconButton } from '@mui/material'
-import MaterialTable from 'material-table'
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { useHistory } from 'react-router'
 import { FcPlus } from 'react-icons/fc'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import TestSelectComponent from 'src/views/CommonCode/TestSelectComponent'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { tableIcons } from 'src/views/Constant/MaterialIcon'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
+import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
+import EmpNameSelectDeptSec from 'src/views/CommonCode/EmpNameSelectDeptSec'
+import DeptSecSelectAuth from 'src/views/CommonCode/DeptSecSelectAuth'
+import HodMarkingTable from './HodMarkingTable'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const HodMarking = () => {
-    const title = [
-        {
-            title: '#', field: 'bank_slno'
-        },
-        {
-            title: 'Department Section', field: 'bank_name'
-        },
-        {
-            title: 'HOD', field: 'bank_ifsc'
-        },
-        {
-            title: 'Department', field: 'status'
-        },
-        {
-            title: 'Incharge', field: 'status'
-        },
-    ]
+    const history = useHistory()
+    const [hodcheck, sethod] = useState(false)
+    const [inchargecheck, setincharge] = useState(false)
+    const [authorization, setAuthorization] = useState(0)
+    const [count, setcount] = useState(0)
+    const { getDeptSection, selectempName, selectDeptSec,
+        employeedetails } = useContext(PayrolMasterContext)
+    const { em_no } = employeedetails
+
+    const updateAuthorization = async (e) => {
+        e.target.checked === true ? sethod(true) : setincharge(false)
+        e.target.checked === false ? sethod(false) : setincharge(false)
+        if (hodcheck === false) {
+            setAuthorization(1)
+        }
+        else {
+            setAuthorization(0)
+        }
+    }
+
+    const updateAuthorizationin = async (e) => {
+        e.target.checked === true ? setincharge(true) : sethod(false)
+        e.target.checked === false ? setincharge(false) : sethod(false)
+        if (inchargecheck === false) {
+            setAuthorization(2)
+        }
+        else {
+            setAuthorization(0)
+        }
+    }
+
+    const postData = {
+        dept_section: getDeptSection,
+        auth_post: authorization,
+        dept_section_post: selectDeptSec,
+        emp_id: selectempName,
+        create_user: em_no
+    }
+
+    const submitAuthorization = async (e) => {
+        e.preventDefault();
+        const result = await axioslogin.post('/authorization', postData)
+        const { message, success } = result.data;
+        if (success === 1) {
+            setcount(count + 1)
+            succesNofity(message);
+        } else if (success === 0) {
+            infoNofity(message.sqlMessage);
+        } else {
+            infoNofity(message)
+        }
+    }
+
+    useEffect(() => {
+    }, [])
+    const toSettings = () => {
+        history.push('/Home/Settings');
+    }
 
     return (
         <div>
             <SessionCheck />
             <ToastContainer />
-            <PageLayoutProcess heading="Department HOD and Incharge Assign" >
+            <PageLayoutCloseOnly
+                heading="Department HOD and Incharge Assign"
+                redirect={toSettings}
+            >
                 <div className="col-md-12">
                     <div className="row g-1">
                         <div className="col-md-3">
-                            <TestSelectComponent select="Department Section Name" style={SELECT_CMP_STYLE} />
+                            <DeptSectionMastSelect style={SELECT_CMP_STYLE} />
                         </div>
                         <div className="col-md-1 text-center">
                             <FormControlLabel
                                 className="pb-0 mb-0"
                                 control={
                                     <Checkbox
-                                        name="board_status"
+                                        name="hodcheck"
                                         color="primary"
-                                        // value={board_status}
-                                        checked={true}
+                                        value={hodcheck}
+                                        checked={hodcheck}
                                         className="py-0 px-3"
-                                    // onChange={(e) => updateBoard(e)}
+                                        onChange={(e) => {
+                                            updateAuthorization(e)
+                                        }}
                                     />
                                 }
                                 label="HOD"
@@ -60,55 +110,41 @@ const HodMarking = () => {
                                 className="pb-0 mb-0 noWrap"
                                 control={
                                     <Checkbox
-                                        name="board_status"
+                                        name="incharge"
                                         color="primary"
-                                        // value={board_status}
-                                        checked={true}
+                                        value={inchargecheck}
+                                        checked={inchargecheck}
                                         className="py-0 pl-3 "
-                                    // onChange={(e) => updateBoard(e)}
+                                        onChange={(e) => {
+                                            updateAuthorizationin(e)
+                                        }}
                                     />
                                 }
                                 label="Incharge"
                             />
                         </div>
                         <div className="col-md-3">
-                            <TestSelectComponent select="Department Name" style={SELECT_CMP_STYLE} />
+                            <DeptSecSelectAuth style={SELECT_CMP_STYLE} />
                         </div>
                         <div className="col-md-2">
-                            <TestSelectComponent select="Employee Name" style={SELECT_CMP_STYLE} />
+                            <EmpNameSelectDeptSec style={SELECT_CMP_STYLE} />
                         </div>
                         <div className="col-md-1 text-center">
                             <IconButton
                                 aria-label="add"
                                 style={{ padding: '0rem' }}
+                                onClick={submitAuthorization}
                             >
-                                <FcPlus className="text-info" size={30} />
+                                <FcPlus className="text-info" size={30}
+                                />
                             </IconButton>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-12 mt-3">
-                    <MaterialTable
-                        title="Department Wise HOD and Incharge"
-                        // data={data}
-                        columns={title}
-                        icons={tableIcons}
-                        actions={[
-                            {
-                                icon: () => <EditOutlinedIcon />,
-                                tooltip: "Click here to Edit",
-                                onClick: (e, data) => null
-                            }
-                        ]}
-                        options={{
-                            paginationType: "stepped",
-                            showFirstLastPageButtons: false,
-                            padding: "dense",
-                            actionsColumnIndex: -1
-                        }}
-                    />
+                    <HodMarkingTable update={count} />
                 </div>
-            </PageLayoutProcess>
+            </PageLayoutCloseOnly>
         </div>
     )
 }
