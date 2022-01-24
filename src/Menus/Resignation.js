@@ -3,62 +3,67 @@ const Resignation = [
     {
         component: CNavItem,
         name: 'Resignation Request',
-        to: '/homes',
+        to: '/Home/ResignationRequest',
     },
     {
         component: CNavItem,
-        name: 'Approval - Incharge/HOD',
-        to: '/homes',
+        name: 'Approval - Incharge',
+        to: '/Home/ResignationApprovalIncharge',
+    },
+    {
+        component: CNavItem,
+        name: 'Approval - HOD',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Approval - HR',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Resignation Cancel',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Due Clearance -Department',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Due Clearance -HR',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Due Clearance -Final Approval',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'End of Service Process',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'EOD Finance Approval',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Certificate Process',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Exit Interview - Employee',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
     {
         component: CNavItem,
         name: 'Exit Interview - HR',
-        to: '/homes',
+        to: '/Home/Resignation',
     },
 ]
 

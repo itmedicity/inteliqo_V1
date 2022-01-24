@@ -109,12 +109,21 @@ const MasterContext = ({ children }) => {
         em_name: '',
         em_no: 0
     })
+    //authorization details
+    const [authorization, updateAuthorization] = useState({
+        incharge_level: 0,
+        hod_level: 0,
+        ceo_level: 0,
+        is_incharge: 0,
+        is_hod: 0
+    })
     //Board Selection depands on education
     const [selectBoard, updateBoard] = useState(0)
     //Employee Name based on department section
     const [selectempName, updateEmpName] = useState(0)
     //Dept Section selection form authorization of HOD/Incharge
     const [selectDeptSec, updateDeptSec] = useState(0)
+
 
     const value = {
         selectedDept,
@@ -218,7 +227,10 @@ const MasterContext = ({ children }) => {
         selectDeptSec,
         updateDeptSec,
         selectEmpName,
-        updateSelectEmpName
+        updateSelectEmpName,
+        authorization,
+        updateAuthorization
+
     }
     return <PayrolMasterContext.Provider value={value} >
         {children}
