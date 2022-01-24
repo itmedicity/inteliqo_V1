@@ -1,43 +1,54 @@
 import MaterialTable from 'material-table'
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { MdCheckCircle } from "react-icons/md"
 import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const OTApprovalInchargeTable = () => {
-
+    const [data, setTableData] = useState();
     //Table
     const title = [
         {
-            title: "SlNo", field: "SlNo"
+            title: "SlNo", field: "ot_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Emp_no", field: "Emp_no"
+            title: "Emp_No", field: "emp_no", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
-            title: "Employee name", field: "Employee_name"
+            title: "Emp_Name", field: 'em_name', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Department Section", field: "Department_section"
+            title: "OT Date", field: "ot_days", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Date", field: "date"
+            title: "Requested Date", field: "ot_date", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
-            title: "Status", field: "Status"
+            title: "OT in Minutes", field: 'over_time', cellStyle: { minWidth: 1, maxWidth: 3 }
+        },
+        {
+            title: "Amount", field: "ot_amount", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
 
+
     ]
-    const data = [
-        {
-            SlNo: 1,
-            Emp_no: 18,
-            Employee_name: 'Reshma',
-            Department_section: 'IT',
-            date: '27/12/2021',
-            Status: 'pending'
-        },
-    ]
+    //Get Data
+    useEffect(() => {
+        const getOt = async () => {
+            const result = await axioslogin.get('/overtimerequest/incharge/list')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                warningNofity(" Error occured contact EDP")
+            }
+        }
+        getOt();
+    }, []);
+
+
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);

@@ -53,6 +53,7 @@ const Settings = () => {
                                 <Link to="/Home/ReligionMaster" className="list-group-item pt-1 pb-1"  >Religion Master</Link>
                                 <Link to="/Home/YearlyLeaveCalendar" className="list-group-item pt-1 pb-1"  >Yearly Leave Calendar</Link>
                                 <Link to="/Home/RegistrationType" className="list-group-item pt-1 pb-1"  >Registration Type</Link>
+                                <Link to="/Home/BoardEdu" className="list-group-item pt-1 pb-1">Board Master</Link>
                             </ul>
                         </div>
                     </div>
@@ -72,8 +73,8 @@ const Settings = () => {
                                 <Link to="/Home/ModuleUserRights" className="list-group-item pt-1 pb-1"  > User Group Rights</Link>
                                 <Link to="/Home/UserGroup" className="list-group-item pt-1 pb-1"  > Group Master</Link>
                                 <Link to="/Home/GroupRights" className="list-group-item pt-1 pb-1"  > Group Rights</Link>
-                                {/* <Link to="/Home/Designation" className="list-group-item pt-1 pb-1"  > User Group Assign</Link> */}
-                                {/* <Link to="/Home/Qualification" className="list-group-item pt-1 pb-1"  > Qualification</Link> */}
+                                <Link to="/Home/Authorisation" className="list-group-item pt-1 pb-1"  >Assign Authorisation</Link>
+                                <Link to="/Home/HodMark" className="list-group-item pt-1 pb-1"  > HOD Authorisation Mark</Link>
                             </ul>
                         </div>
                         <div className="col-4">

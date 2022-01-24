@@ -18,6 +18,9 @@ const DesignationTable = ({ update }) => {
             title: "Designation", field: "desg_name"
         },
         {
+            title: "Notice Period", field: "desg_notice_prd"
+        },
+        {
             title: "Status", field: "status"
         },
     ]

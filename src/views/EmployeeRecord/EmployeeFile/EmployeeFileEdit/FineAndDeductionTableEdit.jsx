@@ -12,6 +12,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import FineAndDeductionTable from '../EmployeeFileTable/FineAndDeductionTable'
 import ModelAddFineMaster from '../EmpFileComponent/ModelAddFineMaster'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import ReactTooltip from 'react-tooltip';
 
 const FineAndDeductionTableEdit = () => {
     const history = useHistory()
@@ -204,7 +205,9 @@ const FineAndDeductionTableEdit = () => {
                                             changeTextValue={(e) => updateFineDed(e)}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+
+                                    <div className="col-md-6 " data-tip="Fine Start Date" data-for='toolTip1' data-place='top'>
+                                        <ReactTooltip id="toolTip1" />
                                         <TextInput
                                             type="date"
                                             classname="form-control form-control-sm"
@@ -216,12 +219,14 @@ const FineAndDeductionTableEdit = () => {
                                             }}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" data-tip="Fine End Date" data-for='toolTip3' data-place='top'>
+                                        <ReactTooltip id="toolTip3" />
                                         <TextInput
                                             type="date"
                                             classname="form-control form-control-sm"
                                             Placeholder="End Date"
                                             value={fineend}
+                                            min={finestart}
                                             name="fineend"
                                             changeTextValue={(e) => {
                                                 getend(e)
