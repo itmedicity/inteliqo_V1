@@ -24,10 +24,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const ModelApproveReject = ({ open, handleClose }) => {
-
-
-
-
     return (
         <Fragment>
             <Dialog
