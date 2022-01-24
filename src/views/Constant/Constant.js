@@ -61,5 +61,15 @@ export const getFineSlno = async () => {
     }
 }
 
-export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
+export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/";
 
+//GET ASSINED MENU LIST
+
+export const getMenuSlno = async () => {
+    const result = await axioslogin.get(`/common/getempid/${employeeNumber()}`)
+    const { success, data } = result.data
+    if (success === 1) {
+        const { emp_id } = data[0]
+        console.log(emp_id)
+    }
+}

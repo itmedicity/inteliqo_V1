@@ -5,7 +5,7 @@ const Home = () => {
     return (
         <div>
             <h1>This is the home page for hrm</h1>
-            <Employeedetails />
+            {/* <Employeedetails /> */}
         </div>
     )
 }
