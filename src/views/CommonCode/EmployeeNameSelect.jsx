@@ -4,13 +4,13 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from '../Axios/Axios'
 
 const EmployeeNameSelect = (props) => {
-    console.log('fgfg')
+
     const [employeeName, setEmployeeName] = useState([])
     const { selectEmpName, updateSelectEmpName, selectDeptSection, selectedDept } = useContext(PayrolMasterContext)
-    console.log(selectDeptSection)
+
     // Get Employee Details
     useEffect(() => {
-        console.log(selectDeptSection)
+
         if (selectDeptSection !== 0 && selectedDept !== 0) {
             const postData = {
                 em_dept_section: selectDeptSection,
@@ -18,7 +18,6 @@ const EmployeeNameSelect = (props) => {
             }
             const fetchEmploye = async () => {
                 const result = await axioslogin.post('/empmast/getempName', postData)
-                console.log(result)
                 const { data } = result.data;
                 setEmployeeName(data)
             }

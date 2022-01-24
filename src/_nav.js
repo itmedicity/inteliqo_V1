@@ -18,6 +18,14 @@ import PerformanceApproval from './Menus/PerformaneApproval'
 import TrainingAndDevelopment from './Menus/TrainingAndDevelopment'
 import Resignation from './Menus/Resignation'
 
+
+
+const empRecords = [1]
+
+const newEmployRecord = Employeerecord.filter(val => empRecords.includes(val.men_slno))
+
+console.log(newEmployRecord)
+
 const _nav = [
   {
     slno: 1,
@@ -38,7 +46,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Employee Record',
     icon: <IoDocumentAttachOutline className="text-light nav-icon" size={20} />,
-    items: Employeerecord
+    items: newEmployRecord
   },
   {
     slno: 4,

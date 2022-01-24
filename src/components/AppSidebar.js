@@ -29,7 +29,6 @@ const AppSidebar = () => {
     const module_rights = []
     const getModuleUserRight = async () => {
       const userinfo = sessionStorage.getItem('userDetl');
-      console.log(userinfo)
       const emp_no = userinfo ? JSON.parse(sessionStorage.getItem('userDetl')).empno : 0;
       const result = await axioslogin.get(`/common/getempid/${emp_no}`)
       const { success, data } = result.data
@@ -51,7 +50,6 @@ const AppSidebar = () => {
             const menus = navigation.filter((element, index, array) => {
               return module_rights.includes(element.slno)
             })
-            // console.log(menus);
             setMenu(menus)
           }
 

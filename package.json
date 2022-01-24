@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Travancore Medicity EDP",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=8192 build",
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
