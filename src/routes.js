@@ -108,8 +108,8 @@ const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/O
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
 const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
-
-
+const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationRequest'))
+const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResignationApproval/ResignationApprovalIncharge'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/Home', exact: true, name: 'Home', component: HomePage },
@@ -222,7 +222,8 @@ const routes = [
   { path: '/Home/LeaveRequestType', exact: true, name: 'Leave Request Type', component: LeaveRequestType },
   { path: '/Home/LeaveRequestTypeEdit/:id', exact: true, name: 'Leave Request Type Edit', component: LeaveRequestTypeEdit },
   { path: '/Home/ShiftUpdation', exact: true, name: 'Shift Details Updation', component: ShiftUpdation },
-
+  { path: '/Home/ResignationRequest', exact: true, name: 'Resignation Request', component: ResignationRequest },
+  { path: '/Home/ResignationApprovalIncharge', exact: true, name: 'Resignation Request Incharge Approval', component: ResignationApprovalIncharge },
 ]
 
 export default routes

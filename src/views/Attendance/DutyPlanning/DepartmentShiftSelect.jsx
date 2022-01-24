@@ -43,7 +43,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
             }
         }
         getdepartmentShift()
-    }, [selectDeptSection, selectedDept])
+    }, [])
     return (
         <Fragment>
             <select className="custom-select"

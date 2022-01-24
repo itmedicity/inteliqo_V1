@@ -109,6 +109,14 @@ const MasterContext = ({ children }) => {
         em_name: '',
         em_no: 0
     })
+    //authorization details
+    const [authorization, updateAuthorization] = useState({
+        incharge_level: 0,
+        hod_level: 0,
+        ceo_level: 0,
+        is_incharge: 0,
+        is_hod: 0
+    })
 
     const value = {
         selectedDept,
@@ -208,7 +216,9 @@ const MasterContext = ({ children }) => {
         getleavereqtype,
         updateleavereqtype,
         selectEmpName,
-        updateSelectEmpName
+        updateSelectEmpName,
+        authorization,
+        updateAuthorization
 
     }
     return <PayrolMasterContext.Provider value={value} >

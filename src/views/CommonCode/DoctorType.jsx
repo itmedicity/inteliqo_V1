@@ -4,7 +4,6 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
 const DoctorType = (props) => {
-    console.log(props)
     // intializing use state
     const [doctortype, setDoctortype] = useState([]);
 

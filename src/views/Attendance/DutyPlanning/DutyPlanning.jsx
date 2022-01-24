@@ -65,7 +65,6 @@ const DutyPlanning = () => {
           setdisable(true)
         }
         const results = await axioslogin.post("/departmentshift/checkshift", postData);
-        console.log(results)
         const { successs } = results.data
         if (successs === 1) {
           setdisable(false)
