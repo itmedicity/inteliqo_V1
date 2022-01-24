@@ -21,7 +21,7 @@ const OTRequest = () => {
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
     const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_no, em_name, desg_name } = employeedetails
+    const { em_id, em_name, desg_name } = employeedetails
     const [flag, setflag] = useState(0)
     const [tabledata, setTableData] = useState({
         date: '',
@@ -46,30 +46,30 @@ const OTRequest = () => {
         ot_slno: ''
     })
     const postdata = {
-        emp_no: em_no,
-        ot_days: otDate,
+        emp_id: em_id,
+        duty_day: otDate,
     }
 
     const getShiftdetail = async () => {
         const result = await axioslogin.post('/common/getShiftdetails', postdata)
         const { success, data } = result.data;
         if (success === 1) {
-            const { ot_days, shft_code, shft_slno, shft_chkin_time, shft_chkout_time, check_in, check_out } = data[0]
+            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out } = data[0]
             const frmdata = {
-                date: ot_days,
-                shift: shft_code,
+                date: duty_day,
+                shift: shift_id,
                 shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
                 shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
-                in_time: format(new Date(check_in), "HH:mm:ss"),
-                out_time: format(new Date(check_out), "HH:mm:ss")
+                in_time: format(new Date(punch_in), "HH:mm:ss"),
+                out_time: format(new Date(punch_out), "HH:mm:ss")
             }
             const set = {
                 otDate: '',
                 ot_reson: '',
                 ot_remarks: '',
                 shft_slno: shft_slno,
-                checkin: check_in,
-                checkout: check_out,
+                checkin: punch_in,
+                checkout: punch_out,
                 shiftcheckout: shft_chkout_time,
                 shiftcheckin: shft_chkin_time
             }
@@ -88,12 +88,14 @@ const OTRequest = () => {
     const y = moment(request.shiftcheckout).format("YYYY-MM-DD HH:mm:ss")
     const yy = moment(y)
     const exactWork = getTotalShiftHours(xx, yy)
+
     //Working hours
     const a = moment(new Date(request.checkin)).format("YYYY-MM-DD HH:mm:ss")
     const aa = moment(a)
     const b = moment(new Date(request.checkout)).format("YYYY-MM-DD HH:mm:ss")
     const bb = moment(b)
     const working = getTotalShiftHours(aa, bb)
+
     //over time
     const overTime = working - exactWork
     var othour = Math.floor(overTime / 60);
@@ -101,6 +103,7 @@ const OTRequest = () => {
     var remove = Math.floor(otminute / 1);
     const finaltime = `${othour}:${remove}`;
 
+    console.log(overTime);
     //over time rate calculation
     var minRate = 0;
     var hrRate = (othour * 200)
@@ -127,7 +130,7 @@ const OTRequest = () => {
 
     //post Data
     const postData = {
-        emp_no: employeedetails.em_no,
+        emp_id: employeedetails.em_id,
         ot_date: new Date(),
         ot_days: tabledata.date,
         ot_shift_id: request.shft_slno,
@@ -168,7 +171,7 @@ const OTRequest = () => {
     const submitRequest = async (e) => {
         e.preventDefault();
         if (flag === 0) {
-            if (overTime > 60) {
+            if (overTime >= 60) {
                 const result = await axioslogin.post('/overtimerequest', postData)
                 const { message, success } = result.data;
                 if (success === 1) {
@@ -222,7 +225,7 @@ const OTRequest = () => {
                                     type="text"
                                     classname="form-control form-control-sm"
                                     Placeholder="Employee Name"
-                                    value={em_no}
+                                    value={em_id}
                                     name="em_name"
                                     disabled="Disabled"
                                 />

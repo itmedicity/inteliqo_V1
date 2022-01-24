@@ -23,10 +23,9 @@ const MarkingComponent = ({ value }, key) => {
     }
 
     const postData = {
-        emp_id: value.emplo_id,
+        emp_id: value.emp_id,
         co_assign: assign.coassign === true ? 1 : 0,
-        create_user: em_no,
-        authori_slno: value.auth_slno
+        create_user: em_no
     }
 
     const submitAssign = async (e) => {
@@ -48,13 +47,12 @@ const MarkingComponent = ({ value }, key) => {
     return (
         <Fragment>
             <TableRow
-                key={value.auth_slno}
+                key={value.emp_id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-                <TableCell align="center">{value.auth_slno}</TableCell>
-                <TableCell align="center">{value.dept_name}</TableCell>
-                <TableCell align="center">{value.name_emp}</TableCell>
-                <TableCell align="center">{value.dept_name_post}</TableCell>
+                <TableCell align="center">{value.emp_id}</TableCell>
+                <TableCell align="center">{value.sect_name}</TableCell>
+                <TableCell align="center">{value.em_name}</TableCell>
                 <TableCell align="center">{
                     <Checkbox
                         name="coassign"

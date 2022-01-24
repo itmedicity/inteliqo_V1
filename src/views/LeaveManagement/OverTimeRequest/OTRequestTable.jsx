@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
     const [data, setData] = useState();
     const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_no } = employeedetails
+    const { em_id } = employeedetails
 
     // table
     const title = [
@@ -40,7 +40,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
     //Get Data
     useEffect(() => {
         const getBoard = async () => {
-            const result = await axioslogin.get(`/overtimerequest/${em_no}`)
+            const result = await axioslogin.get(`/overtimerequest/${em_id}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setData(data);
@@ -49,7 +49,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
             }
         }
         getBoard();
-    }, [update, em_no]);
+    }, [update, em_id]);
 
     const getData = async (tabledata) => {
         const { ot_slno } = tabledata
@@ -103,7 +103,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: 0
+                    actionsColumnIndex: -1
                 }}
             />
         </Fragment >
