@@ -14,6 +14,9 @@ const SpecializationSelection = (props) => {
             setSpec(data)
         }
         getSpec()
+        return (
+            updateSpec(0)
+        )
 
     }, [updateSpec, selectCourse]);
 
@@ -35,6 +38,7 @@ const SpecializationSelection = (props) => {
                     onChange={(e) => updateSpec(e.target.value)}
                     defaultValue={0}
                     style={props.style}
+                    disabled={props.disable}
                 >
                     <MenuItem value='0' disabled>
                         Select Secialization

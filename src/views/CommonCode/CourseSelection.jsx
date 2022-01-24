@@ -36,6 +36,7 @@ const CourseSelection = (props) => {
                     onChange={(e) => updateCourse(e.target.value)}
                     defaultValue={0}
                     style={props.style}
+                    disabled={props.disable}
                 >
                     <MenuItem value='0' disabled>
                         Select Course

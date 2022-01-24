@@ -19,10 +19,12 @@ const DepartmentSecEdit = () => {
     // get and set state 
     const [setSecedetl, updatesetSecedetl] = useState({
         sect_name: '',
+        authorization_incharge: false,
+        authorization_hod: false,
         status: false
     });
 
-    var { sect_name, status } = setSecedetl;
+    var { sect_name, authorization_incharge, authorization_hod, status } = setSecedetl;
     const { id } = useParams();
     useEffect(() => {
         const getSectionDetl = async () => {
@@ -32,10 +34,14 @@ const DepartmentSecEdit = () => {
                 infoNofity('Somthing went wrong')
                 return;
             }
-            var { sect_name, dept_id, status } = data[0];
+            var { sect_name, dept_id, authorization_incharge, authorization_hod, status } = data[0];
+            authorization_incharge = authorization_incharge === 1 ? true : false;
+            authorization_hod = authorization_hod === 1 ? true : false;
             status = status === 1 ? true : false;
             const editsecData = {
                 sect_name,
+                authorization_incharge,
+                authorization_hod,
                 status,
                 dept_id: updateSelected(dept_id)
             }
@@ -52,16 +58,19 @@ const DepartmentSecEdit = () => {
 
     const saveUpdateddeptSec = async (e) => {
         e.preventDefault();
-        var { sect_name, status } = setSecedetl;
+        var { sect_name, authorization_incharge, authorization_hod, status } = setSecedetl;
+        authorization_incharge = authorization_incharge === true ? 1 : 0;
+        authorization_hod = authorization_hod === true ? 1 : 0;
         status = status === true ? 1 : 0;
         const updateData = {
             sect_name,
+            authorization_incharge,
+            authorization_hod,
             sect_status: status,
             dept_id: selectedDept,
             edit_user: employeeNumber(),
             sect_id: id
         }
-
         await axioslogin.patch('/section', updateData)
             .then((response) => {
                 const { success, message } = response.data;
@@ -111,6 +120,32 @@ const DepartmentSecEdit = () => {
                                     onChange={(e) => getUpdatedsedInput(e)}
                                 />
                                 <DepartmentSelect />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="authorization_incharge"
+                                            color="primary"
+                                            value={authorization_incharge}
+                                            checked={authorization_incharge}
+                                            className="ml-2"
+                                            onChange={(e) => { getUpdatedsedInput(e) }}
+                                        />
+                                    }
+                                    label="Authorization for Leave and OT (Incharge)"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="authorization_hod"
+                                            color="primary"
+                                            value={authorization_hod}
+                                            checked={authorization_hod}
+                                            className="ml-2"
+                                            onChange={(e) => { getUpdatedsedInput(e) }}
+                                        />
+                                    }
+                                    label="Authorization for Leave and OT (HOD)"
+                                />
                                 <FormControlLabel
                                     control={
                                         <Checkbox

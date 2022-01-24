@@ -19,26 +19,33 @@ const DepartmentSectionMast = () => {
     const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
     //  State Update
     const [deptSectionName, updateSectionName] = useState('');
+    const [incharge_status, updateincharge] = useState(false);
+    const [hod_status, updatehod] = useState(false);
     const [septSectionStatus, updateSectionStat] = useState(false);
+    const inchargestatus = incharge_status === true ? 1 : 0;
+    const hodstatus = hod_status === true ? 1 : 0;
     const sectionStatus = septSectionStatus === true ? 1 : 0;
     const [count, setCount] = useState(0);
 
     const deptSectValus = {
         sect_name: deptSectionName,
         dept_id: selectedDept,
+        authorization_incharge: inchargestatus,
+        authorization_hod: hodstatus,
         sect_status: sectionStatus,
         create_user: employeeNumber()
     }
     // reset from fn
     const resetSectionDept = () => {
         updateSectionName('')
+        updateincharge(false)
+        updatehod(false)
         updateSectionStat(false)
         updateSelected(0)
     }
     // Submit form data
     const submitDeptSectionMast = async (e) => {
         e.preventDefault();
-
         await axioslogin.post('/section', deptSectValus)
             .then((res) => {
                 const response = res.data;
@@ -87,6 +94,30 @@ const DepartmentSectionMast = () => {
                                     onChange={(e) => updateSectionName(e.target.value)}
                                 />
                                 <DepartmentSelect />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            value={incharge_status}
+                                            checked={incharge_status}
+                                            className="ml-2"
+                                            onChange={(e) => { updateincharge(e.target.checked) }}
+                                        />
+                                    }
+                                    label="Authorization for Leave and OT (Incharge)"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            value={hod_status}
+                                            checked={hod_status}
+                                            className="ml-2"
+                                            onChange={(e) => { updatehod(e.target.checked) }}
+                                        />
+                                    }
+                                    label="Authorization for Leave and OT (HOD)"
+                                />
                                 <FormControlLabel
                                     control={
                                         <Checkbox

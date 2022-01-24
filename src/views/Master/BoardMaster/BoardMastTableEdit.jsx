@@ -1,50 +1,82 @@
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
+import { useHistory, useParams } from 'react-router'
 import { ToastContainer } from 'react-toastify'
-import { axioslogin } from 'src/views/Axios/Axios'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import EducationSelection from 'src/views/CommonCode/EducationSelection'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import PageLayout from 'src/views/CommonCode/PageLayout'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import DesignationTable from './DesignationTable'
+import BoardMastTable from './BoardMastTable'
 
-const DesignationMast = () => {
-    const classes = useStyles();
-    const [count, setCount] = useState(0);
-    const history = useHistory();
-    const [designation, setDesignation] = useState({
-        desg_name: '',
-        desg_status: false
-    });
-    const { desg_name, desg_notice_prd, desg_status } = designation;
-    // update state to feild
-    const updateDesignationfld = (e) => {
+const BoardMastTableEdit = () => {
+    const history = useHistory()
+    const classes = useStyles()
+    const { id } = useParams()
+    const { selectEducation, updateEducation } = useContext(PayrolMasterContext);
+
+    //Initializing
+    const [board, setBoard] = useState({
+        board_name: '',
+        education_slno: '',
+        board_status: false,
+
+    })
+
+    //Destucturing
+    const { board_name, board_status } = board;
+    const updateBoard = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setDesignation({ ...designation, [e.target.name]: value })
+        setBoard({ ...board, [e.target.name]: value })
     }
 
-    const postDesigData = {
-        desg_name,
-        desg_notice_prd,
-        desg_status: desg_status === true ? 1 : 0,
-        create_user: employeeNumber()
+    //Get data by ID
+    useEffect(() => {
+        const getBoard = async () => {
+            const result = await axioslogin.get(`/boardEdu/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { board_name, education_slno, board_status } = data[0]
+                const frmdata = {
+                    board_name: board_name,
+                    education_slno: updateEducation(education_slno),
+                    board_status: board_status === 1 ? true : false
+                }
+                setBoard(frmdata)
+            }
+        }
+        getBoard()
+    }, [id, updateEducation])
+
+    const postBoardData = {
+        board_name,
+        education_slno: selectEducation,
+        board_status: board_status === true ? 1 : 0,
+        edit_user: employeeNumber(),
+        board_slno: id
     }
-    // reset forn
     const resetForm = {
-        desg_name: '',
-        desg_notice_prd: '',
-        desg_status: false
+        board_name: '',
+        education_slno: '',
+        board_status: false,
     }
-    // submit fnc
-    const submitDesignation = async (e) => {
+    const reset = () => {
+        updateEducation(0)
+    }
+
+    //update
+    const submitBoard = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/designation', postDesigData)
+        const result = await axioslogin.patch('/boardEdu', postBoardData)
         const { message, success } = result.data;
-        if (success === 1) {
+        if (success === 2) {
+            setBoard(resetForm);
+            reset();
+            history.push('/Home/BoardEdu');
             succesNofity(message);
-            setCount(count + 1);
-            setDesignation(resetForm);
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
@@ -52,61 +84,47 @@ const DesignationMast = () => {
         }
     }
 
-    // redirect to setting
+    //Back to homes
     const toSettings = () => {
         history.push('/Home/Settings');
     }
-
     return (
         <Fragment>
             <SessionCheck />
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Designation</h5>
-                </div>
+            <PageLayout heading="Board">
                 <div className="card-body">
                     <div className="row">
                         <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitDesignation} >
+                            <form className={classes.root} onSubmit={submitBoard}>
                                 <div className="row">
                                     <div className="col-md-12">
                                         <TextField
-                                            label="Designation Name"
+                                            label="Board Name"
                                             fullWidth
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
-                                            name="desg_name"
-                                            value={desg_name}
-                                            onChange={(e) => updateDesignationfld(e)}
+                                            name="board_name"
+                                            value={board_name}
+                                            onChange={(e) => updateBoard(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">
-                                        <TextField
-                                            label="Notice Period"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="desg_notice_prd"
-                                            value={desg_notice_prd}
-                                            onChange={(e) => updateDesignationfld(e)}
-                                        />
+                                        <EducationSelection />
                                     </div>
                                     <div className="col-md-12">
                                         <FormControlLabel
                                             className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
-                                                    name="desg_status"
-                                                    color="secondary"
-                                                    value={desg_status}
-                                                    checked={desg_status}
-                                                    className="ml-2 "
-                                                    onChange={(e) => updateDesignationfld(e)}
+                                                    name="board_status"
+                                                    color="primary"
+                                                    value={board_status}
+                                                    checked={board_status}
+                                                    className="ml-2"
+                                                    onChange={(e) => updateBoard(e)}
                                                 />
                                             }
                                             label="Status"
@@ -142,13 +160,13 @@ const DesignationMast = () => {
                             </form>
                         </div>
                         <div className="col-md-8">
-                            <DesignationTable update={count} />
+                            <BoardMastTable />
                         </div>
                     </div>
                 </div>
-            </div>
+            </PageLayout>
         </Fragment>
     )
 }
 
-export default DesignationMast
+export default BoardMastTableEdit
