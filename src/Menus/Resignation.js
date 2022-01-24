@@ -22,6 +22,11 @@ const Resignation = [
     },
     {
         component: CNavItem,
+        name: 'Approval - CEO',
+        to: '/Home/Resignation',
+    },
+    {
+        component: CNavItem,
         name: 'Resignation Cancel',
         to: '/Home/Resignation',
     },

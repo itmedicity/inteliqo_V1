@@ -36,16 +36,6 @@ const ResignationApprovalIncharge = () => {
                             <div className="col-md-3">
                                 <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
                             </div>
-                            <div className="col-md-1 text-center">
-                                <IconButton
-                                    aria-label="add"
-                                    style={{ padding: '0rem' }}
-                                // onClick={submitAuthorization}
-                                >
-                                    <FcPlus className="text-info" size={30}
-                                    />
-                                </IconButton>
-                            </div>
                             <AuthorizationDetails />
                         </div>
                     </div>
