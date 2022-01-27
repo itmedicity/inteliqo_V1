@@ -18,15 +18,7 @@ import PerformanceApproval from './Menus/PerformaneApproval'
 import TrainingAndDevelopment from './Menus/TrainingAndDevelopment'
 import Resignation from './Menus/Resignation'
 import { employeeNumber, getMenuSlno } from './views/Constant/Constant';
-
-const empId = employeeNumber()
-console.log(getMenuSlno())
-
-const empRecords = [1]
-
-const newEmployRecord = Employeerecord.filter(val => empRecords.includes(val.men_slno))
-
-// console.log(newEmployRecord)
+import { CollectionsOutlined } from '@material-ui/icons';
 
 
 
@@ -51,7 +43,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Employee Record',
     icon: <IoDocumentAttachOutline className="text-light nav-icon" size={20} />,
-    items: newEmployRecord
+    items: Employeerecord
   },
   {
     slno: 4,
