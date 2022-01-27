@@ -14,7 +14,7 @@ const OTApprovalInchargeTable = () => {
             title: "SlNo", field: "ot_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Emp_No", field: "emp_no", cellStyle: { minWidth: 198, maxWidth: 250 }
+            title: "Emp_ID", field: "emp_id", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
             title: "Emp_Name", field: 'em_name', cellStyle: { minWidth: 1, maxWidth: 3 }

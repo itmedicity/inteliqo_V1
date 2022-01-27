@@ -20,11 +20,9 @@ const HodAuthorisation = () => {
     const [tabledataset, settabledata] = useState(0)
 
     const [tabledata, setTabledata] = useState([{
-        auth_slno: '',
-        dept_name: '',
-        dept_name_post: '',
-        name_emp: '',
-        emplo_id: '',
+        sect_name: '',
+        em_name: '',
+        emp_id: '',
         coassign: false,
     }])
 
@@ -58,8 +56,6 @@ const HodAuthorisation = () => {
             warningNofity(" Error occured contact EDP")
         }
     }
-
-
 
     const toSettings = () => {
         history.push('/Home/Settings');
@@ -126,10 +122,9 @@ const HodAuthorisation = () => {
                                     stickyHeader aria-label="sticky table">
                                     <TableHead >
                                         <TableRow >
-                                            <TableCell align="center">sl_no</TableCell>
+                                            <TableCell align="center">emp_id</TableCell>
                                             <TableCell align="center">Department</TableCell>
                                             <TableCell align="center">Employee Name</TableCell>
-                                            <TableCell align="center">Emp Department</TableCell>
                                             <TableCell align="center">CO</TableCell>
                                             <TableCell align="center">Assign</TableCell>
                                         </TableRow>
