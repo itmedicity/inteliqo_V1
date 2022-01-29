@@ -1,82 +1,44 @@
-import React, { Fragment } from 'react'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import React, { Fragment, useState } from 'react'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
-import { FiSearch } from "react-icons/fi";
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
-import TextInput from 'src/views/Component/TextInput';
 import OTApprovalHODTable from './OTApprovalHODTable';
-import Tooltip from "@material-ui/core/Tooltip";
+import OTApprovalHodSecTable from './OTApprovalHodSecTable';
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
+import ResignationApprovalSection from 'src/views/Resignation/ResignationApproval/ResignationApprovalSection';
 
 const OTApprovalHOD = () => {
+    const [DeptSect, updateDeptSect] = useState([])
+    const [depsect, setDeptsect] = useState(0)
     const history = useHistory()
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-
+    const handleChange = async (e) => {
+        setDeptsect(e)
+    }
     return (
         <Fragment>
-            <PageLayoutSave
-                heading="OT Approval HOD"
+            <PageLayoutCloseOnly
+                heading="Over Time Approval HOD"
                 redirect={RedirectToProfilePage}
-            //submit={submitFine}
             >
-                <div className="card">
-                    <div className="card-body">
-                        <div className="row g-1">
-                            <div className="col-md-12">
-                                <div className="row">
-                                    <div className="col-md-3">
-                                        <DeptSectionMastSelect
-                                            style={SELECT_CMP_STYLE}
-                                        />
-                                    </div>
-                                    <div className="col-md-1">
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    name="all"
-                                                    color="secondary"
-                                                    // value={Leave_Carry_Forwad}
-                                                    // checked={Leave_Carry_Forwad}
-                                                    checked={true}
-                                                />
-                                            }
-                                            label="All"
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pl-0">
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="Employee No"
-                                        // value={fine_descp}
-                                        // name="fine_descp"
-                                        // changeTextValue={(e) => }
-                                        />
-                                    </div>
-                                    <div className="col-md-1 pl-0">
-                                        <Tooltip title="Search">
-                                            <IconButton >
-                                                < FiSearch size={22} />
-                                            </IconButton>
-                                            {/* disabled={props.disable}
-                                                 clickable={true}  */}
-                                        </Tooltip>
-                                    </div>
-                                </div>
+                <div className="col-md-12">
+                    <div className="row g-1">
+                        <div className="d-flex justify-content-center">
+                            <div className="col-md-3">
+                                <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
                             </div>
-                        </div>
-                        <div className="card ">
-                            <div className="col-md-12">
-                                <OTApprovalHODTable />
-                            </div>
+                            <AuthorizationDetails />
                         </div>
                     </div>
                 </div>
-            </PageLayoutSave>
-        </Fragment >
+                <div className="col-md-12 mt-3">
+                    {depsect === 0 ? <OTApprovalHODTable DeptSect={DeptSect} /> : null}
+                    {depsect !== 0 ? <OTApprovalHodSecTable DeptSect={depsect} /> : null}
+                </div>
+            </PageLayoutCloseOnly>
+        </Fragment>
     )
 }
 

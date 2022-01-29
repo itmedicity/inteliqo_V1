@@ -15,13 +15,15 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { format } from 'date-fns'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 
 const OTRequest = () => {
     const history = useHistory()
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
-    const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id, em_name, desg_name } = employeedetails
+    const { employeedetails, authorization } = useContext(PayrolMasterContext)
+    const { em_id, em_name, desg_name, em_dept_section } = employeedetails
+    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     const [flag, setflag] = useState(0)
     const [tabledata, setTableData] = useState({
         date: '',
@@ -48,6 +50,20 @@ const OTRequest = () => {
     const postdata = {
         emp_id: em_id,
         duty_day: otDate,
+    }
+
+    const defaultState = {
+        date: '',
+        shift: '',
+        shift_Start: '',
+        shift_end: '',
+        in_time: '',
+        out_time: '',
+        finaltime: '',
+        otDate: '',
+        ot_reson: '',
+        ot_remarks: '',
+        shft_slno: '',
     }
 
     const getShiftdetail = async () => {
@@ -77,6 +93,8 @@ const OTRequest = () => {
             setrequest(set)
         } else if (success === 2) {
             infoNofity("No Shift is added to this employee")
+            setTableData(defaultState)
+            setrequest(defaultState)
         } else {
             warningNofity(" Error occured contact EDP")
         }
@@ -103,7 +121,6 @@ const OTRequest = () => {
     var remove = Math.floor(otminute / 1);
     const finaltime = `${othour}:${remove}`;
 
-    console.log(overTime);
     //over time rate calculation
     var minRate = 0;
     var hrRate = (othour * 200)
@@ -140,7 +157,12 @@ const OTRequest = () => {
         ot_reson: ot_reson,
         ot_remarks: ot_remarks,
         ot_convert: '0',
-        ot_amount: amount
+        ot_amount: amount,
+        ot_inch_require: is_incharge === 1 ? 0 : incharge_level,
+        ot_hod_require: is_hod === 1 ? 0 : hod_level,
+        ot_hr_require: '1',
+        ot_ceo_require: ceo_level,
+        ot_deptsec_id: em_dept_section
     }
 
     const resetForm = {
@@ -194,6 +216,7 @@ const OTRequest = () => {
             if (success === 2) {
                 setrequest(resetForm);
                 setTableData(resetForm);
+                setcount(count + 1)
                 history.push('/Home/OTRequest');
                 succesNofity(message);
             } else if (success === 0) {
@@ -202,8 +225,6 @@ const OTRequest = () => {
                 infoNofity(message)
             }
         }
-
-
     }
 
     const RedirectToProfilePage = () => {
@@ -212,6 +233,7 @@ const OTRequest = () => {
 
     return (
         <Fragment>
+            <AuthorizationDetails />
             <PageLayoutSave
                 heading="Over Time Request"
                 redirect={RedirectToProfilePage}

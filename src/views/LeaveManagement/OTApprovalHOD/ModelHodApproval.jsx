@@ -13,24 +13,26 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
+const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
     const [modeldata, setModeldata] = useState({
         ot_days: '',
         over_time: '',
-        ot_reson: ''
+        ot_reson: '',
+        ot_inch_remark: ''
     })
 
     //Get Data
     useEffect(() => {
         const getOt = async () => {
-            const result = await axioslogin.get(`/overtimerequest/incharge/list/${otno}`)
+            const result = await axioslogin.get(`/overtimerequest/hod/list/${otno}`)
             const { success, data } = result.data;
             if (success === 1) {
-                const { ot_days, over_time, ot_reson } = data[0]
+                const { ot_days, over_time, ot_reson, ot_inch_remark } = data[0]
                 const frmdata = {
                     ot_days: ot_days,
                     over_time: over_time,
-                    ot_reson: ot_reson
+                    ot_reson: ot_reson,
+                    ot_inch_remark: ot_inch_remark
                 }
                 setModeldata(frmdata);
             } else {
@@ -40,34 +42,34 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
         getOt();
     }, [otno]);
 
-    const [incharge, seIncharge] = useState({
+    const [hod, sehod] = useState({
         approve: false,
         reject: false,
-        ot_inch_remark: ''
+        ot_hod_remark: ''
     })
-    const { approve, reject, ot_inch_remark } = incharge
-    const updateInchargeApproval = async (e) => {
+    const { approve, reject, ot_hod_remark } = hod
+    const updatehodApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        seIncharge({ ...incharge, [e.target.name]: value })
+        sehod({ ...hod, [e.target.name]: value })
     }
     const patchData = {
-        ot_inch_status: approve === true ? 1 : reject === true ? 2 : 0,
-        ot_inch_remark: ot_inch_remark,
+        ot_hod_status: approve === true ? 1 : reject === true ? 2 : 0,
+        ot_hod_remark: ot_hod_remark,
         ot_slno: otno
     }
-    const resetfrm = {
+    const deafaultstate = {
         approve: false,
         reject: false,
-        ot_inch_remark: ''
+        ot_hod_remark: ''
     }
-    const submitIncharge = async (e) => {
+    const submithod = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)
+        const result = await axioslogin.patch('/overtimerequest/hodapprove', patchData)
         const { success, message } = result.data
         if (success === 2) {
             succesNofity(message)
             setCount(count + 1)
-            seIncharge(resetfrm)
+            sehod(deafaultstate)
             handleClose()
         }
         else {
@@ -85,7 +87,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Over Time Incharge Approval/Reject"}
+                    {"Over Time HOD Approval/Reject"}
                 </DialogTitle>
                 <DialogContent sx={{
                     minWidth: 500,
@@ -126,15 +128,31 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                     </div>
                                 </div>
                                 <div className="row g-1 pt-2">
-                                    <div className="col-md-12" >
-                                        <TextareaAutosize
-                                            aria-label="minimum height"
-                                            minRows={3}
-                                            placeholder="Over Time Reason"
-                                            style={{ width: 514 }}
-                                            disabled={true}
-                                            value={modeldata.ot_reson}
-                                        />
+                                    <div className="col-md-12">
+                                        <Typography variant='h6'>
+                                            Over Time Reason
+                                        </Typography>
+                                    </div>
+                                </div>
+                                <div className="row g-1 pt-2">
+                                    <div className="col-md-12">
+                                        <Typography align='justify'>
+                                            {modeldata.ot_reson}
+                                        </Typography>
+                                    </div>
+                                </div>
+                                <div className="row g-1 pt-2">
+                                    <div className="col-md-12">
+                                        <Typography variant='h6'>
+                                            Incharge Remarks
+                                        </Typography>
+                                    </div>
+                                </div>
+                                <div className="row g-1 pt-2">
+                                    <div className="col-md-12">
+                                        <Typography align='justify'>
+                                            {modeldata.ot_inch_remark}
+                                        </Typography>
                                     </div>
                                 </div>
                                 <div className="row g-1">
@@ -152,7 +170,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={reject === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updatehodApproval(e)
                                                         }
                                                     />
                                                 }
@@ -171,7 +189,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={approve === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updatehodApproval(e)
                                                         }
                                                     />
                                                 }
@@ -185,11 +203,11 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
-                                            placeholder="Incharge Remarks"
-                                            style={{ width: 515 }}
-                                            name="ot_inch_remark"
-                                            value={ot_inch_remark}
-                                            onChange={(e) => updateInchargeApproval(e)}
+                                            placeholder="hod Remarks"
+                                            style={{ width: 514 }}
+                                            name="ot_hod_remark"
+                                            value={ot_hod_remark}
+                                            onChange={(e) => updatehodApproval(e)}
                                         />
                                     </div>
                                 </div>
@@ -198,7 +216,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={submitIncharge}>Submit</Button>
+                    <Button color="primary" onClick={submithod}>Submit</Button>
                     <Button onClick={handleClose} color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog>
@@ -206,4 +224,4 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
     )
 }
 
-export default memo(ModelOTApprove)
+export default memo(ModelHodApproval)

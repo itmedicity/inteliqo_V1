@@ -52,6 +52,11 @@ const Leavemanagement = [
     },
     {
         component: CNavItem,
+        name: 'OT Approval - CEO',
+        to: '/Home/OTApprovalCEO',
+    },
+    {
+        component: CNavItem,
         name: 'OT Updation',
         to: '/Home/OTUpdation',
     },

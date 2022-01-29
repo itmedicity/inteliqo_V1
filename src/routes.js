@@ -114,7 +114,7 @@ const BoardEdu = React.lazy(() => import('./views/Master/BoardMaster/BoardMaster
 const BoardMastEdit = React.lazy(() => import('./views/Master/BoardMaster/BoardMastTableEdit'))
 const HodMarking = React.lazy(() => import('./views/Master/AuthorisationHod/HodMarking'))
 const HodAuthorisation = React.lazy(() => import('./views/Master/AuthorisationHod/HodAuthorisation'))
-
+const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -234,6 +234,7 @@ const routes = [
   { path: '/Home/BoardMastEdit/:id', exact: true, name: 'Educations Board Master Edit', component: BoardMastEdit },
   { path: '/Home/Authorisation', exact: true, name: 'hod and Incharge Marking', component: HodMarking },
   { path: '/Home/HodMark', exact: true, name: 'Hod Authorisation', component: HodAuthorisation },
+  { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
 ]
 
 export default routes
