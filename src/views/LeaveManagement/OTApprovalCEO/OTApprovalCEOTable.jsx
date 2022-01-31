@@ -4,9 +4,9 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import ModelHRApproval from './ModelHRApproval';
+import ModelCEOApproval from './ModelCEOApproval';
 
-const OTApprovalHRTable = ({ DeptSect }) => {
+const OTApprovalCEOTable = () => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
@@ -31,34 +31,25 @@ const OTApprovalHRTable = ({ DeptSect }) => {
             title: "OT in Minutes", field: 'over_time', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Status", field: 'ot_hr_status', cellStyle: { minWidth: 1, maxWidth: 3 }
+            title: "Status", field: 'ot_ceo_status', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
     ]
 
     //Get Data
     useEffect(() => {
-        if (DeptSect.length !== 0) {
-            const deptid = DeptSect && DeptSect.map((val) => {
-                return val.dept_section
-            })
-            const postData = {
-                dept_id: deptid
+        const getOt = async () => {
+            const result = await axioslogin.get('/overtimerequest/otceo')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                warningNofity("Error Occured Please Contact EDP")
             }
-            const getOt = async () => {
-                const result = await axioslogin.post('/overtimerequest/othr', postData)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setTableData(data);
-                } else {
-                    warningNofity("Error Occured Please Contact EDP")
-                }
-            }
-            getOt();
         }
-    }, [DeptSect, count]);
+        getOt();
+    }, []);
 
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
@@ -70,7 +61,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     return (
         < Fragment >
             {otno !== 0 ?
-                <ModelHRApproval
+                <ModelCEOApproval
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
@@ -79,7 +70,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                 />
                 : null}
             <MaterialTable
-                title="OT Approval HR"
+                title="OT Approval CEO"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -101,4 +92,4 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     )
 }
 
-export default memo(OTApprovalHRTable)
+export default memo(OTApprovalCEOTable)

@@ -6,7 +6,7 @@ import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ModelHRApproval from './ModelHRApproval';
 
-const OTApprovalHRTable = ({ DeptSect }) => {
+const OTApprovalHRTableSec = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
@@ -37,24 +37,19 @@ const OTApprovalHRTable = ({ DeptSect }) => {
 
     //Get Data
     useEffect(() => {
-        if (DeptSect.length !== 0) {
-            const deptid = DeptSect && DeptSect.map((val) => {
-                return val.dept_section
-            })
-            const postData = {
-                dept_id: deptid
-            }
-            const getOt = async () => {
-                const result = await axioslogin.post('/overtimerequest/othr', postData)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setTableData(data);
-                } else {
-                    warningNofity("Error Occured Please Contact EDP")
-                }
-            }
-            getOt();
+        const postData = {
+            dept_id: DeptSect
         }
+        const getOt = async () => {
+            const result = await axioslogin.post('/overtimerequest/othr', postData)
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                warningNofity("Error Occured Please Contact EDP")
+            }
+        }
+        getOt();
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
@@ -101,4 +96,4 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     )
 }
 
-export default memo(OTApprovalHRTable)
+export default memo(OTApprovalHRTableSec)
