@@ -133,29 +133,35 @@ const AppSidebar = () => {
 
     //MENU RIGHTS FROM HERE
     const menuRight = getMenuSlno().then((val) => {
-      const menuRitSlno = val[0];
-      const menuSlnoAry = menuRitSlno.map((menu) => {
-        return menu.menu_slno;
-      })
 
-      const newEmployRecord = Employeerecord.filter(val => menuSlnoAry.includes(val.men_slno));
-      setEmployeerecord(newEmployRecord)
-      const newRecruitMent = recruitMenuArray.filter(val => menuSlnoAry.includes(val.men_slno));
-      setRecruitMenuArray(newRecruitMent)
-      const newAttendanceMangt = AttendanceManagement.filter(val => menuSlnoAry.includes(val.men_slno));
-      setAttendanceManagement(newAttendanceMangt)
-      const newLeaveMangt = Leavemanagement.filter(val => menuSlnoAry.includes(val.men_slno));
-      setLeavemanagement(newLeaveMangt)
-      const newPayrollmgnt = PayrollMenu.filter(val => menuSlnoAry.includes(val.men_slno));
-      setPayrollMenu(newPayrollmgnt)
-      const newPerformance = PerformanceApproval.filter(val => menuSlnoAry.includes(val.men_slno));
-      setPerformanceApproval(newPerformance)
-      const newTrainging = TrainingAndDevelopment.filter(val => menuSlnoAry.includes(val.men_slno));
-      setTrainingAndDevelopment(newTrainging)
-      const newResignation = Resignation.filter(val => menuSlnoAry.includes(val.men_slno));
-      setResignation(newResignation)
-      //For Rerent the Component
-      setCount(1)
+      const resultLength = Object.keys(val[0]).length
+
+      if (resultLength > 0) {
+
+        const menuRitSlno = val[0];
+        const menuSlnoAry = menuRitSlno.map((menu) => {
+          return menu.menu_slno;
+        })
+
+        const newEmployRecord = Employeerecord.filter(val => menuSlnoAry.includes(val.men_slno));
+        setEmployeerecord(newEmployRecord)
+        const newRecruitMent = recruitMenuArray.filter(val => menuSlnoAry.includes(val.men_slno));
+        setRecruitMenuArray(newRecruitMent)
+        const newAttendanceMangt = AttendanceManagement.filter(val => menuSlnoAry.includes(val.men_slno));
+        setAttendanceManagement(newAttendanceMangt)
+        const newLeaveMangt = Leavemanagement.filter(val => menuSlnoAry.includes(val.men_slno));
+        setLeavemanagement(newLeaveMangt)
+        const newPayrollmgnt = PayrollMenu.filter(val => menuSlnoAry.includes(val.men_slno));
+        setPayrollMenu(newPayrollmgnt)
+        const newPerformance = PerformanceApproval.filter(val => menuSlnoAry.includes(val.men_slno));
+        setPerformanceApproval(newPerformance)
+        const newTrainging = TrainingAndDevelopment.filter(val => menuSlnoAry.includes(val.men_slno));
+        setTrainingAndDevelopment(newTrainging)
+        const newResignation = Resignation.filter(val => menuSlnoAry.includes(val.men_slno));
+        setResignation(newResignation)
+        //For Rerent the Component
+        setCount(1)
+      }
 
     })
 
