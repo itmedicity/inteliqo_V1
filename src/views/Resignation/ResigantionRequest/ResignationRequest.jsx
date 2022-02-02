@@ -9,7 +9,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ResignationComponent from './ResignationComponent';
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 
@@ -21,7 +21,7 @@ const ResignationRequest = () => {
     const [noticeperiod, setNoticePeriod] = useState(0)
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
     const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
-    const { incharge_level, hod_level, ceo_level } = authorization
+    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     const [FormData, setFormData] = useState({
         resignation_type: '0',
         request_date: '',
@@ -61,8 +61,8 @@ const ResignationRequest = () => {
         relieving_date: moment(addDays(new Date(request_date), noticeperiod)).format('YYYY-MM-DD'),
         resign_reason: resignation_reason,
         notice_period: noticeperiod,
-        incharge_required: incharge_level,
-        hod_required: hod_level,
+        incharge_required: is_incharge === 1 ? 0 : incharge_level,
+        hod_required: is_hod === 1 ? 0 : hod_level,
         ceo_required: ceo_level,
     }
     //saving employee resignation
@@ -73,6 +73,9 @@ const ResignationRequest = () => {
         if (success === 1) {
             succesNofity(message)
             setFormData(defaultState)
+        }
+        else if (success === 2) {
+            warningNofity(message)
         }
         else {
             errorNofity("Error Occured!!!!! Please Contact EDP")

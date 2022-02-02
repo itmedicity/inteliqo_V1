@@ -13,11 +13,10 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useContext } from 'react';
 import moment from 'moment';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) => {
+const CEOApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const [approvalData, setApprovalData] = useState({
@@ -31,20 +30,18 @@ const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) =
     const [formData, setFormData] = useState({
         approve: false,
         reject: false,
-        incharge_comment: '',
-        replacement: false
+        ceo_comment: '',
     })
     const defaultState = {
         approve: false,
         reject: false,
-        incharge_comment: '',
-        replacement: false
+        ceo_comment: '',
     }
-    const { approve, reject, incharge_comment, replacement } = formData
+    const { approve, reject, ceo_comment } = formData
     const { resig_slno, relieving_date, request_date, resign_reason, emp_id, designation } = approvalData
     useEffect(() => {
         const getApprovalData = async () => {
-            const result = await axioslogin.get(`/Resignation/${slno}`)
+            const result = await axioslogin.get(`/Resignation/ceopendingbyID/${slno}`)
             const { success, data } = result.data
             if (success === 1) {
                 const { resig_slno, relieving_date, request_date, resign_reason, em_id, designation } = data[0]
@@ -66,18 +63,15 @@ const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) =
         setFormData({ ...formData, [e.target.name]: value })
     }
     const approveData = {
-        em_id: emp_id,
-        designation: designation,
-        inch_id: em_id,
-        inch_app_date: moment(new Date()).format('YYYY-MM-DD'),
-        inch_app_status: approve === true ? 1 : reject === true ? 0 : 0,
-        inch_coment: incharge_comment,
+        ceo_id: em_id,
+        ceo_appr_date: moment(new Date()).format('YYYY-MM-DD'),
+        ceo_appr_status: approve === true ? 1 : reject === true ? 0 : 0,
+        ceo_comment: ceo_comment,
         resig_slno: resig_slno,
-        replacement_required_incharge: replacement === true ? 1 : 0
     }
     const submitFormdata = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/Resignation', approveData)
+        const result = await axioslogin.patch('/Resignation/resignhr', approveData)
         const { success, message } = result.data
         if (success === 1) {
             succesNofity("Resignation Request Approved")
@@ -104,11 +98,13 @@ const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) =
                 <DialogTitle>
                     {"Resignation Approval/Reject"}
                 </DialogTitle>
-                <DialogContent sx={{
-                    minWidth: 800,
-                    maxWidth: 800,
-                    width: 800,
-                }}>
+                <DialogContent
+                    sx={{
+                        minWidth: 800,
+                        maxWidth: 800,
+                        width: 800,
+                    }}
+                >
                     <div className="card">
                         <div className="card-body">
                             <div className="col-md-12 col-sm-12">
@@ -205,32 +201,11 @@ const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) =
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
-                                            placeholder="Incharge Comment"
+                                            placeholder="CEO Comment"
                                             style={{ width: 500 }}
-                                            name="incharge_comment"
-                                            value={incharge_comment}
+                                            name="ceo_comment"
+                                            value={ceo_comment}
                                             onChange={(e) => updateInchargeApproval(e)}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-0 pl-5">
-                                    <div className="col-md-12" >
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="replacement"
-                                                    color="primary"
-                                                    value={replacement}
-                                                    checked={replacement}
-                                                    className="ml-2"
-                                                    onChange={(e) =>
-                                                        updateInchargeApproval(e)
-
-                                                    }
-                                                />
-                                            }
-                                            label="Replacement Required"
                                         />
                                     </div>
                                 </div>
@@ -243,8 +218,8 @@ const ResignationApproveModel = ({ open, handleClose, slno, setCount, count }) =
                     <Button onClick={handleClose} color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog>
-        </Fragment >
+        </Fragment>
     )
 };
 
-export default ResignationApproveModel;
+export default CEOApprovalComponent;

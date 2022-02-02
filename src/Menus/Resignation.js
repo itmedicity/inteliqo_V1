@@ -13,27 +13,27 @@ const Resignation = [
     {
         component: CNavItem,
         name: 'Approval - HOD',
-        to: '/Home/Resignation',
-    },
-    {
-        component: CNavItem,
-        name: 'Approval - HR',
-        to: '/Home/Resignation',
+        to: '/Home/ResignationApprovalHod',
     },
     {
         component: CNavItem,
         name: 'Approval - CEO',
-        to: '/Home/Resignation',
+        to: '/Home/ResignationApprovalCEO',
+    },
+    {
+        component: CNavItem,
+        name: 'Approval - HR',
+        to: '/Home/ResignationApprovalHR',
     },
     {
         component: CNavItem,
         name: 'Resignation Cancel',
-        to: '/Home/Resignation',
+        to: '/Home/ResignationCancel',
     },
     {
         component: CNavItem,
         name: 'Due Clearance -Department',
-        to: '/Home/Resignation',
+        to: '/Home/DueClearence',
     },
     {
         component: CNavItem,

@@ -26,6 +26,7 @@ const Settings = () => {
                                 <Link to="/Home/LeaveTypeMaster" className="list-group-item pt-1 pb-1"  > Leave Type</Link>
                                 <Link to="/Home/EducationMaster" className="list-group-item pt-1 pb-1"  > Education Master</Link>
                                 <Link to="/Home/DepartmentShift" className="list-group-item pt-1 pb-1"  > Department Shift Master</Link>
+                                <Link to="/Home/DueClearenceDepartment" className="list-group-item pt-1 pb-1"  >Due Clearence Department</Link>
                             </ul>
                         </div>
                         <div className="col-4">

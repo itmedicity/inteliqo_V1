@@ -5,7 +5,7 @@ import { axioslogin } from '../Axios/Axios';
 
 const DeptSecSelectAuth = (props) => {
     const [deptsec, setDeptsec] = useState([]);
-    const { selectDeptSec, updateDeptSec } = useContext(PayrolMasterContext)
+    const { selectDeptSec, updateDeptSec, updatedeptname } = useContext(PayrolMasterContext)
 
     useEffect(() => {
         const getdeptsection = async () => {
@@ -20,6 +20,11 @@ const DeptSecSelectAuth = (props) => {
             updateDeptSec(0)
         )
     }, [updateDeptSec]);
+    const getLabel = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        updatedeptname(selectedText)
+    }
+
     return (
         <Fragment>
             <FormControl
@@ -32,7 +37,10 @@ const DeptSecSelectAuth = (props) => {
                     id="demo-simple-select"
                     name="selectedDept"
                     value={selectDeptSec}
-                    onChange={(e) => updateDeptSec(e.target.value)}
+                    onChange={(e) => {
+                        updateDeptSec(e.target.value)
+                        getLabel(e)
+                    }}
                     fullWidth
                     variant="outlined"
                     className="ml-0"
@@ -49,7 +57,7 @@ const DeptSecSelectAuth = (props) => {
                     }
                 </Select>
             </FormControl>
-        </Fragment>
+        </Fragment >
     )
 }
 

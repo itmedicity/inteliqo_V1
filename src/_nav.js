@@ -51,7 +51,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Employee Record',
     icon: <IoDocumentAttachOutline className="text-light nav-icon" size={20} />,
-    items: newEmployRecord
+    items: Employeerecord
   },
   {
     slno: 4,

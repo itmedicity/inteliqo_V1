@@ -1,36 +1,33 @@
-import React, { Fragment, memo } from 'react'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import MaterialTable from 'material-table';
-import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import MaterialTable from "material-table";
+import React, { Fragment, useContext, useEffect } from "react";
+import { useState } from "react";
+import { memo } from "react";
+import { axioslogin } from "src/views/Axios/Axios";
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { IconButton } from '@mui/material';
-import ResignationApproveModel from '../ResignationComponent/ResignationApproveModel';
-
-const InchargeApprovalTableSection = ({ DeptSect }) => {
+import { tableIcons } from 'src/views/Constant/MaterialIcon';
+import AuthorizationDetails from "src/views/CommonCode/AuthorizationDetails";
+import { PayrolMasterContext } from "src/Context/MasterContext";
+import CEOApprovalComponent from "./CEOApprovalComponent";
+const CeoApprovalTable = () => {
+    const { authorization } = useContext(PayrolMasterContext)
+    const { is_ceo } = authorization
     const [tableData, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [slno, setSlno] = useState(0);
     useEffect(() => {
-        const postData = {
-            dept_id: DeptSect
-        }
-        const getInchargePending = async () => {
-            const result = await axioslogin.post('/Resignation/resignlist', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
+        if (is_ceo === 1) {
+            const getCeoRequest = async () => {
+                const result = await axioslogin.get("/Resignation")
+                console.log(result)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                }
             }
-            else if (success === 0) {
-                setTableData([])
-            }
+            getCeoRequest()
         }
-        getInchargePending()
-    }, [DeptSect, count])
+    }, [is_ceo, count])
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setSlno(data)
         setOpen(true);
@@ -58,14 +55,15 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
             title: 'Request Date', field: 'request_date', cellStyle: { minWidth: 200, maxWidth: 400 }
         },
         {
-            title: 'Status', field: 'inch_app_status', cellStyle: { minWidth: 300, maxWidth: 400 }
+            title: 'Status', field: 'ceo_appr_status', cellStyle: { minWidth: 300, maxWidth: 400 }
         },
     ]
     return (
         <Fragment>
-            {slno !== 0 ? <ResignationApproveModel open={open} handleClose={handleClose} slno={slno} setCount={setCount} count={count} /> : null}
+            {slno !== 0 ? <CEOApprovalComponent open={open} handleClose={handleClose} slno={slno} setCount={setCount} count={count} /> : null}
+            <AuthorizationDetails />
             <MaterialTable
-                title="Resignation Request Incharge Approval"
+                title="Resignation Request CEO Approval"
                 data={tableData}
                 columns={title}
                 icons={tableIcons}
@@ -75,7 +73,7 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
                             icon: () => <AddTaskRoundedIcon color='success' />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, data) => handleClickOpen(data.resig_slno),
-                            disabled: tableData.inch_app_status == 'Approved'
+                            disabled: tableData.ceo_appr_status == 'Approved'
 
                         }
                     )
@@ -91,5 +89,4 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
         </Fragment>
     )
 };
-
-export default memo(InchargeApprovalTableSection);
+export default memo(CeoApprovalTable)
