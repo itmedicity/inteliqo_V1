@@ -17,7 +17,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
     const [modeldata, setModeldata] = useState({
         ot_days: '',
         over_time: '',
-        ot_reson: ''
+        ot_reson: '',
     })
 
     //Get Data
