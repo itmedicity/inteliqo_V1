@@ -1,80 +1,91 @@
-import React, { Fragment, memo, useState, useEffect } from 'react'
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
+import React, { Fragment } from 'react';
+import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
+import { Dialog, DialogContent, DialogTitle, Slide } from "@material-ui/core";
 import TextInput from 'src/views/Component/TextInput';
+import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { TextareaAutosize, Typography } from '@material-ui/core'
+import { useState } from 'react';
 import { Button, Checkbox, DialogActions } from '@mui/material';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { useContext } from 'react';
+import moment from 'moment';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-
-const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
-    const [modeldata, setModeldata] = useState({
-        ot_days: '',
-        over_time: '',
-        ot_reson: '',
+const CEOApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
+    const [approvalData, setApprovalData] = useState({
+        relieving_date: '',
+        request_date: '',
+        resign_reason: '',
+        emp_id: '',
+        designation: '',
+        resig_slno: ''
     })
-
-    //Get Data
+    const [formData, setFormData] = useState({
+        approve: false,
+        reject: false,
+        ceo_comment: '',
+    })
+    const defaultState = {
+        approve: false,
+        reject: false,
+        ceo_comment: '',
+    }
+    const { approve, reject, ceo_comment } = formData
+    const { resig_slno, relieving_date, request_date, resign_reason, emp_id, designation } = approvalData
     useEffect(() => {
-        const getOt = async () => {
-            const result = await axioslogin.get(`/overtimerequest/incharge/list/${otno}`)
-            const { success, data } = result.data;
+        const getApprovalData = async () => {
+            const result = await axioslogin.get(`/Resignation/ceopendingbyID/${slno}`)
+            const { success, data } = result.data
             if (success === 1) {
-                const { ot_days, over_time, ot_reson } = data[0]
-                const frmdata = {
-                    ot_days: ot_days,
-                    over_time: over_time,
-                    ot_reson: ot_reson
+                const { resig_slno, relieving_date, request_date, resign_reason, em_id, designation } = data[0]
+                const apprveData = {
+                    relieving_date: relieving_date,
+                    request_date: request_date,
+                    resign_reason: resign_reason,
+                    designation: designation,
+                    emp_id: em_id,
+                    resig_slno: resig_slno
                 }
-                setModeldata(frmdata);
-            } else {
-                warningNofity(" Error occured contact EDP")
+                setApprovalData(apprveData)
             }
         }
-        getOt();
-    }, [otno]);
-
-    const [incharge, seIncharge] = useState({
-        approve: false,
-        reject: false,
-        ot_inch_remark: ''
-    })
-    const { approve, reject, ot_inch_remark } = incharge
+        getApprovalData()
+    }, [slno])
     const updateInchargeApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        seIncharge({ ...incharge, [e.target.name]: value })
+        setFormData({ ...formData, [e.target.name]: value })
     }
-    const patchData = {
-        ot_inch_status: approve === true ? 1 : reject === true ? 2 : 0,
-        ot_inch_remark: ot_inch_remark,
-        ot_slno: otno
+    const approveData = {
+        ceo_id: em_id,
+        ceo_appr_date: moment(new Date()).format('YYYY-MM-DD'),
+        ceo_appr_status: approve === true ? 1 : reject === true ? 0 : 0,
+        ceo_comment: ceo_comment,
+        resig_slno: resig_slno,
     }
-    const resetfrm = {
-        approve: false,
-        reject: false,
-        ot_inch_remark: ''
-    }
-    const submitIncharge = async (e) => {
+    const submitFormdata = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)
+        const result = await axioslogin.patch('/Resignation/resignhr', approveData)
         const { success, message } = result.data
-        if (success === 2) {
-            succesNofity(message)
+        if (success === 1) {
+            succesNofity("Resignation Request Approved")
             setCount(count + 1)
-            seIncharge(resetfrm)
+            setFormData(defaultState)
             handleClose()
+        }
+        else if (success === 2) {
+            warningNofity(message)
         }
         else {
             errorNofity(message)
         }
     }
-
     return (
         <Fragment>
             <Dialog
@@ -85,56 +96,60 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Over Time Incharge Approval/Reject"}
+                    {"Resignation Approval/Reject"}
                 </DialogTitle>
-                <DialogContent sx={{
-                    minWidth: 500,
-                    maxWidth: 600,
-                    width: 600,
-                }}>
+                <DialogContent
+                    sx={{
+                        minWidth: 800,
+                        maxWidth: 800,
+                        width: 800,
+                    }}
+                >
                     <div className="card">
                         <div className="card-body">
                             <div className="col-md-12 col-sm-12">
                                 <div className="row g-1">
                                     <div className="col-md-5 pt-1" >
-                                        <Typography>Over Time Date</Typography>
+                                        <Typography>Resignation Date</Typography>
                                     </div>
                                     <div className="col-md-7" >
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Over Time Date"
+                                            Placeholder="Resign Date"
                                             fullWidth
                                             disabled="Disabled"
-                                            value={modeldata.ot_days}
+                                            value={request_date}
                                         />
                                     </div>
                                 </div>
                                 <div className="row g-1 pt-2">
                                     <div className="col-md-5 pt-1" >
-                                        <Typography>Time in Minutes</Typography>
+                                        <Typography>Relieving Date</Typography>
                                     </div>
                                     <div className="col-md-7" >
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Time in Minutes"
+                                            Placeholder="Relieving Date"
                                             fullWidth
                                             disabled="Disabled"
-                                            value={modeldata.over_time}
+                                            value={relieving_date}
                                         />
                                     </div>
                                 </div>
                                 <div className="row g-1 pt-2">
                                     <div className="col-md-12" >
-                                        <TextareaAutosize
-                                            aria-label="minimum height"
-                                            minRows={3}
-                                            placeholder="Over Time Reason"
-                                            style={{ width: 514 }}
-                                            disabled={true}
-                                            value={modeldata.ot_reson}
-                                        />
+                                        <Typography variant='h6'>
+                                            Resignation Reason
+                                        </Typography>
+                                    </div>
+                                </div>
+                                <div className="row g-1 pt-2">
+                                    <div className="col-md-12" >
+                                        <Typography align='justify'>
+                                            {resign_reason}
+                                        </Typography>
                                     </div>
                                 </div>
                                 <div className="row g-1">
@@ -172,6 +187,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                                         className="ml-2 "
                                                         onChange={(e) =>
                                                             updateInchargeApproval(e)
+
                                                         }
                                                     />
                                                 }
@@ -185,10 +201,10 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
-                                            placeholder="Incharge Remarks"
-                                            style={{ width: 515 }}
-                                            name="ot_inch_remark"
-                                            value={ot_inch_remark}
+                                            placeholder="CEO Comment"
+                                            style={{ width: 500 }}
+                                            name="ceo_comment"
+                                            value={ceo_comment}
                                             onChange={(e) => updateInchargeApproval(e)}
                                         />
                                     </div>
@@ -198,12 +214,12 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={submitIncharge}>Submit</Button>
+                    <Button color="primary" onClick={submitFormdata} >Submit</Button>
                     <Button onClick={handleClose} color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog>
-        </Fragment >
+        </Fragment>
     )
-}
+};
 
-export default memo(ModelOTApprove)
+export default CEOApprovalComponent;

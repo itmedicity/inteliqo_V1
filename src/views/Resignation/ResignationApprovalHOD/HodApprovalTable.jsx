@@ -1,36 +1,37 @@
-import React, { Fragment, memo } from 'react'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import MaterialTable from 'material-table';
-import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import MaterialTable from "material-table";
+import React, { Fragment, memo, useEffect, useState } from "react";
+import { tableIcons } from "src/views/Constant/MaterialIcon";
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { IconButton } from '@mui/material';
-import ResignationApproveModel from '../ResignationComponent/ResignationApproveModel';
+import { axioslogin } from "src/views/Axios/Axios";
+import HodResignationApproval from "../ResignationComponent/HodResignationApproval";
 
-const InchargeApprovalTableSection = ({ DeptSect }) => {
+const HodApprovalTable = ({ DeptSect }) => {
+
     const [tableData, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [slno, setSlno] = useState(0);
     useEffect(() => {
-        const postData = {
-            dept_id: DeptSect
-        }
-        const getInchargePending = async () => {
-            const result = await axioslogin.post('/Resignation/resignlist', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
+        if (DeptSect.length !== 0) {
+            const deptid = DeptSect && DeptSect.map((val) => {
+                return val.dept_section
+            })
+            const postData = {
+                dept_id: deptid
             }
-            else if (success === 0) {
-                setTableData([])
+            const getInchargePending = async () => {
+                const result = await axioslogin.post('/Resignation/resignlistHOD', postData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                }
+                else if (success === 0) {
+                    setTableData([])
+                }
             }
+            getInchargePending()
         }
-        getInchargePending()
     }, [DeptSect, count])
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setSlno(data)
         setOpen(true);
@@ -63,9 +64,9 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
     ]
     return (
         <Fragment>
-            {slno !== 0 ? <ResignationApproveModel open={open} handleClose={handleClose} slno={slno} setCount={setCount} count={count} /> : null}
+            {slno !== 0 ? <HodResignationApproval open={open} handleClose={handleClose} slno={slno} setCount={setCount} count={count} /> : null}
             <MaterialTable
-                title="Resignation Request Incharge Approval"
+                title="Resignation Request HOD Approval"
                 data={tableData}
                 columns={title}
                 icons={tableIcons}
@@ -82,6 +83,7 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
 
                 ]}
                 options={{
+
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
@@ -92,4 +94,4 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
     )
 };
 
-export default memo(InchargeApprovalTableSection);
+export default memo(HodApprovalTable)

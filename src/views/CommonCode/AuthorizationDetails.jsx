@@ -27,11 +27,22 @@ const AuthorizationDetails = () => {
                                 hod_level: authorization_hod,
                                 ceo_level: co_assign,
                                 is_incharge: incharge,
-                                is_hod: hod
+                                is_hod: hod,
+                                is_ceo: 1
                             }
                             updateAuthorization(setData)
                         }
-
+                        else if (success === 0) {
+                            const setData = {
+                                incharge_level: authorization_incharge,
+                                hod_level: authorization_hod,
+                                ceo_level: 0,
+                                is_incharge: incharge,
+                                is_hod: hod,
+                                is_ceo: 1
+                            }
+                            updateAuthorization(setData)
+                        }
                     }
                 }
             }

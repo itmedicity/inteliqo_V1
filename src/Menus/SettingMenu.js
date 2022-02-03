@@ -10,6 +10,8 @@ export const py_setting_one = [
     { to: '/Home/EducationMaster', name: 'Education Master', slno: 83 },
     { to: '/Home/DepartmentShift', name: 'Department Shift Master', slno: 84 },
     { to: '/Home/DueClearenceDepartment', name: 'Due Clearence Department', slno: 121 },
+    { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
+
 ]
 
 export const py_setting_two = [

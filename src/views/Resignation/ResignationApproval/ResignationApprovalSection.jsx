@@ -6,10 +6,10 @@ import { axioslogin } from 'src/views/Axios/Axios'
 const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, updateDeptSect }) => {
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
-    const { is_incharge, incharge_level } = authorization
-    //use effect inchargedeptSect
+    const { is_incharge } = authorization
+    //use effect incharge deptSect
     useEffect(() => {
-        if (is_incharge === 1 && incharge_level === 1) {
+        if (is_incharge === 1) {
             const getInchargeDeptSect = async () => {
                 const result = await axioslogin.get(`/common/inchargedeptSect/${em_id}`)
                 const { success, data1 } = result.data
@@ -19,7 +19,7 @@ const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, u
             }
             getInchargeDeptSect()
         }
-    }, [is_incharge, incharge_level, em_id])
+    }, [is_incharge, em_id])
     return (
         <div>
             <Fragment>
