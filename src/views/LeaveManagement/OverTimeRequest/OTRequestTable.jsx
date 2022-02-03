@@ -55,7 +55,6 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
         getBoard();
     }, [update, em_id, count]);
 
-
     const getData = async (tabledata) => {
         const { ot_slno } = tabledata
         const result = await axioslogin.get(`/overtimerequest/select/${ot_slno}`)
@@ -101,7 +100,6 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
             warningNofity(" Error occured contact EDP")
         }
     }
-
 
     return (
         < Fragment >

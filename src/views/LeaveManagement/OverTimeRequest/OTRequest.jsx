@@ -20,7 +20,7 @@ import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 const OTRequest = () => {
     const history = useHistory()
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
-    const [count, setcount] = useState()
+    const [count, setcount] = useState(0)
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
     const { em_id, em_name, desg_name, em_dept_section } = employeedetails
     const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
@@ -45,13 +45,14 @@ const OTRequest = () => {
         shiftcheckout: new Date(),
         shiftcheckin: new Date(),
         finaltime: '',
-        ot_slno: ''
+        ot_slno: '',
+        ot_amount: ''
     })
     const postdata = {
         emp_id: em_id,
         duty_day: otDate,
-    }
 
+    }
     const defaultState = {
         date: '',
         shift: '',
@@ -70,7 +71,7 @@ const OTRequest = () => {
         const result = await axioslogin.post('/common/getShiftdetails', postdata)
         const { success, data } = result.data;
         if (success === 1) {
-            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out } = data[0]
+            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out, ot_amount } = data[0]
             const frmdata = {
                 date: duty_day,
                 shift: shift_id,
@@ -87,7 +88,8 @@ const OTRequest = () => {
                 checkin: punch_in,
                 checkout: punch_out,
                 shiftcheckout: shft_chkout_time,
-                shiftcheckin: shft_chkin_time
+                shiftcheckin: shft_chkin_time,
+                ot_amount: ot_amount
             }
             setTableData(frmdata);
             setrequest(set)
@@ -123,9 +125,9 @@ const OTRequest = () => {
 
     //over time rate calculation
     var minRate = 0;
-    var hrRate = (othour * 200)
+    var hrRate = (othour * request.ot_amount)
     if (otminute >= 30) {
-        minRate = 200 / 2
+        minRate = request.ot_amount / 2
     } else { }
     var amount = hrRate + minRate
 
