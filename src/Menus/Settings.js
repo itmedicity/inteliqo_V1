@@ -1,7 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { py_setting_one, py_setting_two, py_setting_three, userManagement_one } from './SettingMenu';
+import { getMenuSlno } from '../views/Constant/Constant'
 
 const Settings = () => {
+
+    const [pyrol_secOne, setpyrol_secOne] = useState();
+    const [pyrol_secTwo, setpyrol_secTwo] = useState();
+    const [pyrol_secThree, setpyrol_secThree] = useState();
+    const [user_secOne, setuser_secOne] = useState();
+    const [count, setCount] = useState(0)
+    const a = [75, 76, 77, 78, 79, 80, 81, 82, 83, 84]
+    useEffect(() => {
+        const userSettingsRight = getMenuSlno().then((val) => {
+            const menuSlnoArray = val[0].map((value) => {
+                return value.menu_slno;
+            })
+            const setting_section_one = py_setting_one.filter(val => menuSlnoArray.includes(val.slno));
+            setpyrol_secOne(setting_section_one)
+            const setting_section_two = py_setting_two.filter(val => menuSlnoArray.includes(val.slno));
+            setpyrol_secTwo(setting_section_two)
+            const setting_section_three = py_setting_three.filter(val => menuSlnoArray.includes(val.slno));
+            setpyrol_secThree(setting_section_three)
+            const setting_section_usermngt = userManagement_one.filter(val => menuSlnoArray.includes(val.slno));
+            setuser_secOne(setting_section_usermngt)
+            setCount(1)
+        })
+    }, [count])
+
+
     return (
         <div>
             {/* Payroll Master */}
@@ -16,45 +43,29 @@ const Settings = () => {
                     <div className="row" >
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                <Link to="/Home/DepartmentMaster" className="list-group-item pt-1 pb-1"  > Department Name</Link>
-                                <Link to="/Home/DeptSection" className="list-group-item pt-1 pb-1"  > Department Section</Link>
-                                <Link to="/Home/EmployeeType" className="list-group-item pt-1 pb-1"  > Employee Type</Link>
-                                <Link to="/Home/DesignationType" className="list-group-item pt-1 pb-1"  > Designation Type</Link>
-                                <Link to="/Home/Designation" className="list-group-item pt-1 pb-1"  > Designation</Link>
-                                <Link to="/Home/Qualification" className="list-group-item pt-1 pb-1"  > Qualification</Link>
-                                <Link to="/Home/District" className="list-group-item pt-1 pb-1"  > District</Link>
-                                <Link to="/Home/LeaveTypeMaster" className="list-group-item pt-1 pb-1"  > Leave Type</Link>
-                                <Link to="/Home/EducationMaster" className="list-group-item pt-1 pb-1"  > Education Master</Link>
-                                <Link to="/Home/DepartmentShift" className="list-group-item pt-1 pb-1"  > Department Shift Master</Link>
-                                <Link to="/Home/DueClearenceDepartment" className="list-group-item pt-1 pb-1"  >Due Clearence Department</Link>
+                                {
+                                    pyrol_secOne && pyrol_secOne.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
                             </ul>
                         </div>
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                <Link to="/Home/University" className="list-group-item pt-1 pb-1"  > University</Link>
-                                <Link to="/Home/Specialization" className="list-group-item pt-1 pb-1"  > Specialization</Link>
-                                <Link to="/Home/EmpDesignationType" className="list-group-item pt-1 pb-1"  > Employee Institution Type</Link>
-                                <Link to="/Home/Branch" className="list-group-item pt-1 pb-1"  > Branch Master</Link>
-                                <Link to="/Home/Bank" className="list-group-item pt-1 pb-1"  > Bank</Link>
-                                <Link to="/Home/Region" className="list-group-item pt-1 pb-1"  > Region</Link>
-                                <Link to="/Home/DoctorType" className="list-group-item pt-1 pb-1"  > Doctor Type</Link>
-                                <Link to="/Home/YearlyLeaveCount" className="list-group-item pt-1 pb-1"  >Yearly Leave Count</Link>
-                                <Link to="/Home/CourseMaster" className="list-group-item pt-1 pb-1"  > Course Master</Link>
-                                <Link to="/Home/LeaveRequestType" className="list-group-item pt-1 pb-1"  > Leave Request Type Master</Link>
+                                {
+                                    pyrol_secTwo && pyrol_secTwo.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
                             </ul>
                         </div>
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                <Link to="/Home/EmploymentType" className="list-group-item pt-1 pb-1"  >Employee Category</Link>
-                                <Link to="/Home/EarnDeduct" className="list-group-item pt-1 pb-1"  > Earning/Deduction</Link>
-                                <Link to="/Home/EarnType" className="list-group-item pt-1 pb-1"  > Earn Type Master</Link>
-                                <Link to="/Home/ShiftMaster" className="list-group-item pt-1 pb-1"  > Shift Master</Link>
-                                <Link to="/Home/Grade" className="list-group-item pt-1 pb-1"  > Grade Master</Link>
-                                <Link to="/Home/State" className="list-group-item pt-1 pb-1"  > State</Link>
-                                <Link to="/Home/ReligionMaster" className="list-group-item pt-1 pb-1"  >Religion Master</Link>
-                                <Link to="/Home/YearlyLeaveCalendar" className="list-group-item pt-1 pb-1"  >Yearly Leave Calendar</Link>
-                                <Link to="/Home/RegistrationType" className="list-group-item pt-1 pb-1"  >Registration Type</Link>
-                                <Link to="/Home/BoardEdu" className="list-group-item pt-1 pb-1">Board Master</Link>
+                                {
+                                    pyrol_secThree && pyrol_secThree.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
                             </ul>
                         </div>
                     </div>
@@ -70,32 +81,21 @@ const Settings = () => {
                     <div className="row" >
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                <Link to="/Home/ModuleGroupMaster" className="list-group-item pt-1 pb-1"  > Module Group Master</Link>
-                                <Link to="/Home/ModuleUserRights" className="list-group-item pt-1 pb-1"  > User Group Rights</Link>
-                                <Link to="/Home/UserGroup" className="list-group-item pt-1 pb-1"  > Group Master</Link>
-                                <Link to="/Home/GroupRights" className="list-group-item pt-1 pb-1"  > Group Rights</Link>
-                                <Link to="/Home/Authorisation" className="list-group-item pt-1 pb-1"  >Assign Authorisation</Link>
-                                <Link to="/Home/HodMark" className="list-group-item pt-1 pb-1"  > HOD Authorisation Mark</Link>
+                                {
+                                    user_secOne && user_secOne.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
                             </ul>
                         </div>
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                {/* <Link to="/Home/University" className="list-group-item pt-1 pb-1"  > University</Link>
-                                <Link to="/Home/Specialization" className="list-group-item pt-1 pb-1"  > Specialization</Link>
-                                <Link to="/Home/EmpDesignationType" className="list-group-item pt-1 pb-1"  > Employee Institution Type</Link>
-                                <Link to="/Home/Branch" className="list-group-item pt-1 pb-1"  > Branch Master</Link>
-                                <Link to="/Home/Bank" className="list-group-item pt-1 pb-1"  > Bank</Link>
-                                <Link to="/Home/Region" className="list-group-item pt-1 pb-1"  > Region</Link> */}
+
                             </ul>
                         </div>
                         <div className="col-4">
                             <ul className="list-group list-group-flush">
-                                {/* <Link to="/Home/EmploymentType" className="list-group-item pt-1 pb-1"  >Employee Category</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Earning/Deduction</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Earn Type Master</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Shift Master</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Grade Master</Link>
-                                <Link to="/Home" className="list-group-item pt-1 pb-1"  > Blood Group</Link> */}
+
                             </ul>
                         </div>
                     </div>

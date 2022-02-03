@@ -2,15 +2,17 @@ import MaterialTable from 'material-table'
 import React, { Fragment, memo, useEffect, useState, useContext } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { warningNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { format } from 'date-fns'
+import { HiTrash } from "react-icons/hi";
 
 const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
     const [data, setData] = useState();
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
+    const [count, setCount] = useState(0)
 
     // table
     const title = [
@@ -44,12 +46,14 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
             const { success, data } = result.data;
             if (success === 1) {
                 setData(data);
+            } else if (success === 0) {
+                infoNofity("No Over Time requested to this employee")
             } else {
                 warningNofity(" Error occured contact EDP")
             }
         }
         getBoard();
-    }, [update, em_id]);
+    }, [update, em_id, count]);
 
     const getData = async (tabledata) => {
         const { ot_slno } = tabledata
@@ -85,6 +89,18 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
         }
     }
 
+    const deletOTRequest = async (getdata) => {
+        const { ot_slno } = getdata
+        const result = await axioslogin.delete(`/overtimerequest/delete/${ot_slno}`)
+        const { message, success } = result.data;
+        if (success === 1) {
+            setCount(count - 1)
+            succesNofity(message);
+        } else {
+            warningNofity(" Error occured contact EDP")
+        }
+    }
+
     return (
         < Fragment >
             <MaterialTable
@@ -97,6 +113,11 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
                         onClick: (e, data) => getData(data)
+                    },
+                    {
+                        icon: () => <HiTrash size={24} color='success' />,
+                        tooltip: "Click here to Delete",
+                        onClick: (e, data) => deletOTRequest(data)
                     }
                 ]}
                 options={{

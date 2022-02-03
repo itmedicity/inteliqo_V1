@@ -121,6 +121,10 @@ const HodAuthorisation = React.lazy(() => import('./views/Master/AuthorisationHo
 const DueClearenceDepartment = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDepartment'))
 const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
 const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/DueClearence'))
+const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
+const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
+const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -247,6 +251,10 @@ const routes = [
   { path: '/Home/DueClearenceDepartment', exact: true, name: 'Due Clearence Department', component: DueClearenceDepartment },
   { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
   { path: '/Home/DueClearence', exact: true, name: 'Due Clearence', component: DueClearence },
+  { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
+  { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
+  { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
+
 ]
 
 export default routes

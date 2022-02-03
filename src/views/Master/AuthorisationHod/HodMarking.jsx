@@ -12,7 +12,7 @@ import DeptSecSelectAuth from 'src/views/CommonCode/DeptSecSelectAuth'
 import HodMarkingTable from './HodMarkingTable'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
 const HodMarking = () => {
     const history = useHistory()
@@ -70,6 +70,7 @@ const HodMarking = () => {
 
     useEffect(() => {
     }, [])
+
     const toSettings = () => {
         history.push('/Home/Settings');
     }

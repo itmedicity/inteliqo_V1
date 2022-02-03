@@ -1,12 +1,12 @@
 import MaterialTable from 'material-table'
 import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
+import ModelHodApproval from './ModelHodApproval';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import ModelHRApproval from './ModelHRApproval';
 
-const OTApprovalHRTable = ({ DeptSect }) => {
+const OTApprovalHodSecTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
@@ -31,34 +31,28 @@ const OTApprovalHRTable = ({ DeptSect }) => {
             title: "OT in Minutes", field: 'over_time', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Status", field: 'ot_hr_status', cellStyle: { minWidth: 1, maxWidth: 3 }
+            title: "Status", field: 'ot_hod_status', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
     ]
 
     //Get Data
     useEffect(() => {
-        if (DeptSect.length !== 0) {
-            const deptid = DeptSect && DeptSect.map((val) => {
-                return val.dept_section
-            })
-            const postData = {
-                dept_id: deptid
-            }
-            const getOt = async () => {
-                const result = await axioslogin.post('/overtimerequest/othr', postData)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setTableData(data);
-                } else {
-                    warningNofity("Error Occured Please Contact EDP")
-                }
-            }
-            getOt();
+        const postData = {
+            dept_id: DeptSect
         }
+        const getOt = async () => {
+            const result = await axioslogin.post('/overtimerequest/othod', postData)
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                warningNofity("Error Occured Please Contact EDP")
+            }
+        }
+        getOt();
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
@@ -70,7 +64,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     return (
         < Fragment >
             {otno !== 0 ?
-                <ModelHRApproval
+                <ModelHodApproval
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
@@ -79,7 +73,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                 />
                 : null}
             <MaterialTable
-                title="OT Approval HR"
+                title="OT Approval HOD"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -101,4 +95,4 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     )
 }
 
-export default memo(OTApprovalHRTable)
+export default memo(OTApprovalHodSecTable)

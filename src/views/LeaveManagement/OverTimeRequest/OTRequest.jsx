@@ -15,13 +15,15 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { format } from 'date-fns'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 
 const OTRequest = () => {
     const history = useHistory()
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
-    const [count, setcount] = useState()
-    const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id, em_name, desg_name } = employeedetails
+    const [count, setcount] = useState(0)
+    const { employeedetails, authorization } = useContext(PayrolMasterContext)
+    const { em_id, em_name, desg_name, em_dept_section } = employeedetails
+    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     const [flag, setflag] = useState(0)
     const [tabledata, setTableData] = useState({
         date: '',
@@ -43,18 +45,33 @@ const OTRequest = () => {
         shiftcheckout: new Date(),
         shiftcheckin: new Date(),
         finaltime: '',
-        ot_slno: ''
+        ot_slno: '',
+        ot_amount: ''
     })
     const postdata = {
         emp_id: em_id,
         duty_day: otDate,
+
+    }
+    const defaultState = {
+        date: '',
+        shift: '',
+        shift_Start: '',
+        shift_end: '',
+        in_time: '',
+        out_time: '',
+        finaltime: '',
+        otDate: '',
+        ot_reson: '',
+        ot_remarks: '',
+        shft_slno: '',
     }
 
     const getShiftdetail = async () => {
         const result = await axioslogin.post('/common/getShiftdetails', postdata)
         const { success, data } = result.data;
         if (success === 1) {
-            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out } = data[0]
+            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out, ot_amount } = data[0]
             const frmdata = {
                 date: duty_day,
                 shift: shift_id,
@@ -71,12 +88,15 @@ const OTRequest = () => {
                 checkin: punch_in,
                 checkout: punch_out,
                 shiftcheckout: shft_chkout_time,
-                shiftcheckin: shft_chkin_time
+                shiftcheckin: shft_chkin_time,
+                ot_amount: ot_amount
             }
             setTableData(frmdata);
             setrequest(set)
         } else if (success === 2) {
             infoNofity("No Shift is added to this employee")
+            setTableData(defaultState)
+            setrequest(defaultState)
         } else {
             warningNofity(" Error occured contact EDP")
         }
@@ -103,12 +123,11 @@ const OTRequest = () => {
     var remove = Math.floor(otminute / 1);
     const finaltime = `${othour}:${remove}`;
 
-    console.log(overTime);
     //over time rate calculation
     var minRate = 0;
-    var hrRate = (othour * 200)
+    var hrRate = (othour * request.ot_amount)
     if (otminute >= 30) {
-        minRate = 200 / 2
+        minRate = request.ot_amount / 2
     } else { }
     var amount = hrRate + minRate
 
@@ -140,7 +159,12 @@ const OTRequest = () => {
         ot_reson: ot_reson,
         ot_remarks: ot_remarks,
         ot_convert: '0',
-        ot_amount: amount
+        ot_amount: amount,
+        ot_inch_require: is_incharge === 1 ? 0 : incharge_level,
+        ot_hod_require: is_hod === 1 ? 0 : hod_level,
+        ot_hr_require: '1',
+        ot_ceo_require: ceo_level,
+        ot_deptsec_id: em_dept_section
     }
 
     const resetForm = {
@@ -194,6 +218,7 @@ const OTRequest = () => {
             if (success === 2) {
                 setrequest(resetForm);
                 setTableData(resetForm);
+                setcount(count + 1)
                 history.push('/Home/OTRequest');
                 succesNofity(message);
             } else if (success === 0) {
@@ -202,8 +227,6 @@ const OTRequest = () => {
                 infoNofity(message)
             }
         }
-
-
     }
 
     const RedirectToProfilePage = () => {
@@ -212,6 +235,7 @@ const OTRequest = () => {
 
     return (
         <Fragment>
+            <AuthorizationDetails />
             <PageLayoutSave
                 heading="Over Time Request"
                 redirect={RedirectToProfilePage}

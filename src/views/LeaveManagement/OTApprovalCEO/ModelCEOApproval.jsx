@@ -13,17 +13,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
+const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
     const [modeldata, setModeldata] = useState({
         ot_days: '',
         over_time: '',
-        ot_reson: '',
+        ot_reson: ''
     })
-
     //Get Data
     useEffect(() => {
         const getOt = async () => {
-            const result = await axioslogin.get(`/overtimerequest/incharge/list/${otno}`)
+            const result = await axioslogin.get(`/overtimerequest/ceo/list/${otno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { ot_days, over_time, ot_reson } = data[0]
@@ -38,36 +37,38 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
             }
         }
         getOt();
-    }, [otno]);
+    }, [otno, count]);
 
-    const [incharge, seIncharge] = useState({
+    const [ceo, setceo] = useState({
         approve: false,
         reject: false,
-        ot_inch_remark: ''
+        ot_ceo_remark: ''
+
     })
-    const { approve, reject, ot_inch_remark } = incharge
-    const updateInchargeApproval = async (e) => {
+    const { approve, reject, ot_ceo_remark } = ceo
+    const updateCeoApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        seIncharge({ ...incharge, [e.target.name]: value })
+        setceo({ ...ceo, [e.target.name]: value })
     }
     const patchData = {
-        ot_inch_status: approve === true ? 1 : reject === true ? 2 : 0,
-        ot_inch_remark: ot_inch_remark,
+        ot_ceo_status: approve === true ? 1 : reject === true ? 2 : 0,
+        ot_ceo_remark: ot_ceo_remark,
         ot_slno: otno
     }
     const resetfrm = {
         approve: false,
         reject: false,
-        ot_inch_remark: ''
+        ot_ceo_remark: ''
     }
-    const submitIncharge = async (e) => {
+
+    const submitCeo = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)
+        const result = await axioslogin.patch('/overtimerequest/ceoapprove', patchData)
         const { success, message } = result.data
         if (success === 2) {
             succesNofity(message)
             setCount(count + 1)
-            seIncharge(resetfrm)
+            setceo(resetfrm)
             handleClose()
         }
         else {
@@ -85,7 +86,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Over Time Incharge Approval/Reject"}
+                    {"Over Time CEO Approval/Reject"}
                 </DialogTitle>
                 <DialogContent sx={{
                     minWidth: 500,
@@ -152,7 +153,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={reject === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updateCeoApproval(e)
                                                         }
                                                     />
                                                 }
@@ -171,7 +172,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={approve === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updateCeoApproval(e)
                                                         }
                                                     />
                                                 }
@@ -185,11 +186,11 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
-                                            placeholder="Incharge Remarks"
-                                            style={{ width: 515 }}
-                                            name="ot_inch_remark"
-                                            value={ot_inch_remark}
-                                            onChange={(e) => updateInchargeApproval(e)}
+                                            placeholder="CEO Remarks"
+                                            style={{ width: 514 }}
+                                            name="ot_ceo_remark"
+                                            value={ot_ceo_remark}
+                                            onChange={(e) => updateCeoApproval(e)}
                                         />
                                     </div>
                                 </div>
@@ -198,7 +199,7 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={submitIncharge}>Submit</Button>
+                    <Button color="primary" onClick={submitCeo}>Submit</Button>
                     <Button onClick={handleClose} color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog>
@@ -206,4 +207,4 @@ const ModelOTApprove = ({ open, handleClose, otno, setCount, count }) => {
     )
 }
 
-export default memo(ModelOTApprove)
+export default memo(ModelCEOApproval)
