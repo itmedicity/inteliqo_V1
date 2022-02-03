@@ -1,14 +1,7 @@
-import { IconButton } from '@material-ui/core'
-import { Checkbox, FormControlLabel } from '@mui/material'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { FcPlus } from 'react-icons/fc'
 import { useHistory } from 'react-router-dom'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
-import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import InchargeApprovalTable from './InchargeApprovalTable'
 import InchargeApprovalTableSection from './InchargeApprovalTableSection'
@@ -42,7 +35,7 @@ const ResignationApprovalIncharge = () => {
                 </div>
                 <div className="col-md-12 mt-3">
                     {depsect === 0 ? <InchargeApprovalTable DeptSect={DeptSect} /> : null}
-                    {depsect === 1 ? <InchargeApprovalTableSection DeptSect={depsect} /> : null}
+                    {depsect !== 0 ? <InchargeApprovalTableSection DeptSect={depsect} /> : null}
                 </div>
             </PageLayoutCloseOnly>
         </Fragment>

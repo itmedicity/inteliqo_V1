@@ -110,13 +110,21 @@ const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveReques
 const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
 const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationRequest'))
 const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResignationApproval/ResignationApprovalIncharge'))
+const ResignationApprovalHod = React.lazy(() => import('./views/Resignation/ResignationApprovalHOD/ResignationApprovalHod'))
+const ResignationApprovalHR = React.lazy(() => import('./views/Resignation/ResignationApprovalHR/ResignationApprovalHR'))
+const ResignationApprovalCEO = React.lazy(() => import('./views/Resignation/ResignationApprovalCEO/ResignationApprovalCEO'))
+const ResignationCancel = React.lazy(() => import('./views/Resignation/ResignationCancel/ResignationCancel'))
 const BoardEdu = React.lazy(() => import('./views/Master/BoardMaster/BoardMaster'))
 const BoardMastEdit = React.lazy(() => import('./views/Master/BoardMaster/BoardMastTableEdit'))
 const HodMarking = React.lazy(() => import('./views/Master/AuthorisationHod/HodMarking'))
 const HodAuthorisation = React.lazy(() => import('./views/Master/AuthorisationHod/HodAuthorisation'))
+const DueClearenceDepartment = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDepartment'))
+const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
+const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/DueClearence'))
 const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -232,13 +240,21 @@ const routes = [
   { path: '/Home/ShiftUpdation', exact: true, name: 'Shift Details Updation', component: ShiftUpdation },
   { path: '/Home/ResignationRequest', exact: true, name: 'Resignation Request', component: ResignationRequest },
   { path: '/Home/ResignationApprovalIncharge', exact: true, name: 'Resignation Request Incharge Approval', component: ResignationApprovalIncharge },
+  { path: '/Home/ResignationApprovalHod', exact: true, name: 'Resignation Request HOD Approval', component: ResignationApprovalHod },
+  { path: '/Home/ResignationApprovalHR', exact: true, name: 'Resignation Request HR Approval', component: ResignationApprovalHR },
+  { path: '/Home/ResignationApprovalCEO', exact: true, name: 'Resignation Request CEO Approval', component: ResignationApprovalCEO },
+  { path: '/Home/ResignationCancel', exact: true, name: 'Resignation Request Cancel', component: ResignationCancel },
   { path: '/Home/BoardEdu', exact: true, name: 'Educations board master', component: BoardEdu },
   { path: '/Home/BoardMastEdit/:id', exact: true, name: 'Educations Board Master Edit', component: BoardMastEdit },
   { path: '/Home/Authorisation', exact: true, name: 'hod and Incharge Marking', component: HodMarking },
   { path: '/Home/HodMark', exact: true, name: 'Hod Authorisation', component: HodAuthorisation },
+  { path: '/Home/DueClearenceDepartment', exact: true, name: 'Due Clearence Department', component: DueClearenceDepartment },
+  { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
+  { path: '/Home/DueClearence', exact: true, name: 'Due Clearence', component: DueClearence },
   { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
   { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
   { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
+
 ]
 
 export default routes

@@ -100,6 +100,8 @@ const MasterContext = ({ children }) => {
     const [getleavereqtype, updateleavereqtype] = useState(0)
     //employee name under department section
     const [selectEmpName, updateSelectEmpName] = useState(0)
+    //department section name
+    const [deptname, updatedeptname] = useState('')
     //employeedetails 
     const [employeedetails, updateemployeedetails] = useState({
         em_department: 0,
@@ -115,7 +117,8 @@ const MasterContext = ({ children }) => {
         hod_level: 0,
         ceo_level: 0,
         is_incharge: 0,
-        is_hod: 0
+        is_hod: 0,
+        is_ceo: 0,
     })
     //Board Selection depands on education
     const [selectBoard, updateBoard] = useState(0)
@@ -229,7 +232,9 @@ const MasterContext = ({ children }) => {
         selectEmpName,
         updateSelectEmpName,
         authorization,
-        updateAuthorization
+        updateAuthorization,
+        deptname,
+        updatedeptname
 
     }
     return <PayrolMasterContext.Provider value={value} >
