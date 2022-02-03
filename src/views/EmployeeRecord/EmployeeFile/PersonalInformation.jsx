@@ -14,9 +14,11 @@ import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md'
 import { axioslogin } from 'src/views/Axios/Axios'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeNumber, PUBLIC_NAS_FOLDER } from 'src/views/Constant/Constant'
 import BankNameSelect from 'src/views/CommonCode/BankNameSelect'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import ProfilePic from '../../../assets/images/default.png'
+import { Avatar, Stack } from '@mui/material'
 
 const PersonalInformation = () => {
     const history = useHistory()
@@ -296,6 +298,28 @@ const PersonalInformation = () => {
             infoNofity(message)
         }
     }
+    //Profile pic Display
+
+    const [src, setSrc] = useState(ProfilePic)
+    const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
+
+    const empiddata = {
+        em_id: no
+    }
+
+    useEffect(() => {
+        const getProfilePicInform = async () => {
+            const result = await axioslogin.post('/upload', empiddata);
+            const { data } = result.data;
+            var { hrm_profile } = data[0];
+            if (hrm_profile === 1) {
+                setSrc(profilePic)
+            }
+        }
+        getProfilePicInform()
+    }, [empiddata, profilePic])
+
+
     return (
         <Fragment>
             <PageLayout heading="Personal Information">
@@ -407,7 +431,29 @@ const PersonalInformation = () => {
                                     </div>
                                 </div>
                                 <div className="col-md-2 d-flex justify-content-evenly">
-                                    <img src={Spinner} className="img-thumbnail border-2 empImage" />
+                                    {/* <img src={src} className="img-thumbnail border-2 empImage" /> */}
+                                    {/* <Avatar
+                                        alt="Remy Sharp"
+                                        src={src}
+                                        variant="square"
+                                        className="img-thumbnail border-2 empImage"
+                                        sx={{ width: 150, height: 150, opacity: 10, border: 2, borderColor: "white" }}
+                                    /> */}
+                                    <Stack
+                                        direction="row"
+                                        spacing={3}
+                                        justifyContent="center"
+                                        alignItems="center"
+                                    // sx={{ paddingTop: 4, paddingBottom: 4 }}
+                                    >
+                                        <Avatar
+                                            alt="Remy Sharp"
+                                            src={src}
+                                            variant="square"
+                                            className="img-thumbnail border-2 empImage"
+                                            sx={{ width: 150, height: 150, opacity: 10 }}
+                                        />
+                                    </Stack>
                                 </div>
                                 <div className="col-md-12">
                                     <div className="card">
@@ -845,7 +891,7 @@ const PersonalInformation = () => {
                     </div>
                 </form>
             </PageLayout>
-        </Fragment>
+        </Fragment >
     )
 }
 

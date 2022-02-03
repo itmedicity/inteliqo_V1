@@ -77,7 +77,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee document checklist
     const Employeedocumentchecklist = () => {
-        // history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
+        history.push(`/Home/EmployeeDocumentChecklist/${id}/${no}`)
     }
     //Vaccination Information
     const Vaccinationinformation = () => {
