@@ -75,3 +75,12 @@ export const getMenuSlno = async () => {
         return resdata;
     }
 }
+
+//URL EXSIT CHECK FUNCTION
+
+export const urlExist = (url, callBack) => {
+    fetch(url)
+        .then((status) => {
+            callBack(status.status)
+        })
+}
