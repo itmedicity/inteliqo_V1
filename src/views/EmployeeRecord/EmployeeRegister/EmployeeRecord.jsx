@@ -332,6 +332,9 @@ const EmployeeRecord = () => {
         } else if (success === 2) {
             infoNofity(message)
         }
+        else {
+            infoNofity(message)
+        }
     }
 
     // toSetting

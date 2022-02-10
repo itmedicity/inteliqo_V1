@@ -36,7 +36,10 @@ const LeaveRequestType = (props) => {
                     id="demo-simple-selects"
                     name="getleavereqtype"
                     value={getleavereqtype}
-                    onChange={(e) => updateleavereqtype(e.target.value)}
+                    onChange={(e) => {
+                        updateleavereqtype(e.target.value)
+                        props.setleavereqtype(e.target.value)
+                    }}
                     fullWidth
                     variant="outlined"
                     className="ml-1"

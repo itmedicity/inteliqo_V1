@@ -6,7 +6,8 @@ import { useStyles } from '../CommonCode/MaterialStyle'
 
 const Timepicker = (props) => {
     const classes = useStyles()
-    const { changetextvalue, value, mintime, maxtime } = props
+    const { changetextvalue, value, mintime, maxtime, disable } = props
+
 
     return (
         < LocalizationProvider dateAdapter={AdapterDateFns} >
@@ -25,6 +26,7 @@ const Timepicker = (props) => {
                     autoComplete="off"
                     variant="outlined"
                 />}
+                disabled={disable}
             />
         </LocalizationProvider>
     )
