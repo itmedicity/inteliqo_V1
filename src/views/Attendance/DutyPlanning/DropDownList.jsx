@@ -7,7 +7,7 @@ import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
 import DepartmentShiftSelect from 'src/views/Attendance/DutyPlanning/DepartmentShiftSelect';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const DropDownList = ({ data, duty, count }) => {
+const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) => {
     const { emp_id, start, end } = data;
     const [dutyplan, setDutyplan] = useState();
     const [change, setChange] = useState(0)
@@ -61,7 +61,8 @@ const DropDownList = ({ data, duty, count }) => {
 
                         return <td key={val.plan_slno} className='text-center' width={300} >
                             <DepartmentShiftSelect index={index} data={val} setDutyPlan={setEmpPlan}
-                                planArray={empPlan} changeColor={setChange} />
+                                planArray={empPlan} changeColor={setChange}
+                                selectedDept={selectedDept} selectDeptSection={selectDeptSection} />
                         </td>
                     })
                 }

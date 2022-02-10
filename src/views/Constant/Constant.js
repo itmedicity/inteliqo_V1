@@ -61,5 +61,15 @@ export const getFineSlno = async () => {
     }
 }
 
+export const getleaverequest = async () => {
+    const result = await axioslogin.get('/common/getleaverequwestslno')
+    const { success } = result.data;
+    const [serial_current] = result.data.data
+    if (success === 1) {
+
+        return serial_current.serial_current
+    }
+}
+
 export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
 
