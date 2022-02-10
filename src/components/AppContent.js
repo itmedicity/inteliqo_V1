@@ -7,12 +7,14 @@ import routes from '../routes'
 import MasterContext from 'src/Context/MasterContext'
 import TokenAuth from 'src/Context/TokenAuth'
 import FullPageloader from './FullPageloader'
+import Employeedetails from 'src/views/CommonCode/Employeedetails'
 
 const AppContent = () => {
   return (
     <TokenAuth>
       <MasterContext>
         <CContainer fluid>
+          <Employeedetails />
           <Suspense fallback={<FullPageloader />}>
             <Switch>
               {routes.map((route, idx) => {

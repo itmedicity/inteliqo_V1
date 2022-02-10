@@ -2,15 +2,15 @@
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Constant'
-import ProfilePic from '../../../../assets/images/default.png'
+import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant'
+import ProfilePicDefault from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const EmployeeProfileCard = () => {
     const { no } = useParams()
-    const [src, setSrc] = useState(ProfilePic)
+    const [src, setSrc] = useState(ProfilePicDefault)
     // const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
     const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
 
@@ -19,13 +19,16 @@ const EmployeeProfileCard = () => {
     }
 
     useEffect(() => {
-
         const getProfilePicInform = async () => {
             const result = await axioslogin.post('/upload', empiddata);
             const { data } = result.data;
             var { hrm_profile } = data[0];
             if (hrm_profile === 1) {
-                setSrc(profilePic)
+                urlExist(profilePic, (status) => {
+                    if (status === 200) {
+                        setSrc(profilePic)
+                    }
+                })
             }
         }
         getProfilePicInform()

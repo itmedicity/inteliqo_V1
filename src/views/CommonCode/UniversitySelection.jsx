@@ -6,7 +6,8 @@ import { axioslogin } from '../Axios/Axios';
 export const UniversitySelection = (props) => {
 
     const [university, setUniversity] = useState([]);
-    const { selectUniversity, updateUniversity } = useContext(PayrolMasterContext);
+    // const [disable, setDisable] = useState(false)
+    const { selectUniversity, updateUniversity, selectEducation } = useContext(PayrolMasterContext);
 
     useEffect(() => {
         const getUniversity = async () => {
@@ -18,7 +19,8 @@ export const UniversitySelection = (props) => {
         return (
             updateUniversity(0)
         )
-    }, [updateUniversity]);
+
+    }, [updateUniversity, selectEducation]);
 
     return (
         <Fragment>
@@ -32,11 +34,13 @@ export const UniversitySelection = (props) => {
                     name="selectUniversity"
                     fullWidth
                     variant="outlined"
+                    disabled={props.disable}
                     className="ml-1"
                     value={selectUniversity}
                     onChange={(e) => updateUniversity(e.target.value)}
                     defaultValue={0}
                     style={props.style}
+
                 >
                     <MenuItem value='0' disabled>
                         Select University

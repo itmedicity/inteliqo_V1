@@ -17,6 +17,11 @@ import PayrollMenu from './Menus/PayrollMenu'
 import PerformanceApproval from './Menus/PerformaneApproval'
 import TrainingAndDevelopment from './Menus/TrainingAndDevelopment'
 import Resignation from './Menus/Resignation'
+import { employeeNumber, getMenuSlno } from './views/Constant/Constant';
+import { CollectionsOutlined } from '@material-ui/icons';
+
+
+
 
 const _nav = [
   {

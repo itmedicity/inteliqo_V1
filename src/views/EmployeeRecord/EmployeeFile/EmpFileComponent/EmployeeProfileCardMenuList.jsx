@@ -17,10 +17,16 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import { useState } from 'react';
+import { getMenuSlno } from 'src/views/Constant/Constant';
+import { useEffect } from 'react';
 
 const EmployeeProfileCardMenuList = (props) => {
-    const { id, no } = props.empid
-    const history = useHistory()
+    const { id, no } = props.empid;
+    const history = useHistory();
+
+    const [menuArray, setMenuarray] = useState([]);
+    const [count, setCount] = useState(0)
 
     const appplicationform = () => {
         // history.push(`/Home/ApplicationForm/${4516}`)
@@ -71,7 +77,7 @@ const EmployeeProfileCardMenuList = (props) => {
     }
     //Employee document checklist
     const Employeedocumentchecklist = () => {
-        // history.push(`/Home/EmployeeDocumentChecklist/${4516}`)
+        history.push(`/Home/EmployeeDocumentChecklist/${id}/${no}`)
     }
     //Vaccination Information
     const Vaccinationinformation = () => {
@@ -85,8 +91,38 @@ const EmployeeProfileCardMenuList = (props) => {
     const endofservice = () => {
         // history.push(`/Home/EmployeeEndofService/${4516}`)
     }
+
+    const listArray = [
+        { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
+        { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
+        { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: AnnualLeaveSettings, slno: 113 },
+        { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: fineorotherdeduction, slno: 114 },
+        { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: SalaryIncrementSettings, slno: 115 },
+        { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: Employeedocumentchecklist, slno: 116 },
+        { color: '#e1bee7', name: 'Vaccination Information', Icon: <EnhancedEncryptionIcon />, funName: Vaccinationinformation, slno: 117 },
+    ]
+
+    useEffect(() => {
+        const menuRights = getMenuSlno().then((val) => {
+
+            const resultLength = Object.keys(val[0]).length
+            if (resultLength > 0) {
+
+                const menuRitSlno = val[0];
+                const menuSlnoAry = menuRitSlno.map((menu) => {
+                    return menu.menu_slno;
+                })
+
+                const newCardMenuList = listArray.filter(val => menuSlnoAry.includes(val.slno));
+                setMenuarray(newCardMenuList)
+                setCount(1)
+            }
+        })
+
+    }, [count])
+
     return (
-        <Fragment>
+        < Fragment >
             <Card sx={{ borderRadius: 8, boxShadow: 10 }} >
                 <CardActionArea>
                     <CardContent>
@@ -159,7 +195,7 @@ const EmployeeProfileCardMenuList = (props) => {
                                                 <BusinessIcon />
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary="Company Information"
+                                        <ListItemText primary="Company Informat ion"
                                             primaryTypographyProps={{ noWrap: true }}
                                         />
                                     </ListItem>
@@ -167,8 +203,23 @@ const EmployeeProfileCardMenuList = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                    {
+                                        menuArray && menuArray.map((val, index) => {
+                                            return <ListItem style={{ cursor: "pointer" }} onClick={val.funName} key={index} >
+                                                <ListItemAvatar>
+                                                    <Avatar sx={{ bgcolor: val.color, boxShadow: 15 }} variant="circular" >
+                                                        {/* <AttachMoneyIcon /> */}
+                                                        {val.Icon}
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary={val.name}
+                                                    primaryTypographyProps={{ noWrap: true }}
+                                                />
+                                            </ListItem>;
 
-                                    <ListItem style={{ cursor: "pointer" }} onClick={SalaryInformation}>
+                                        })
+                                    }
+                                    {/* <ListItem style={{ cursor: "pointer" }} onClick={SalaryInformation}>
                                         <ListItemAvatar>
                                             <Avatar sx={{ bgcolor: '#80cbc4', boxShadow: 15 }} variant="circular" >
                                                 <AttachMoneyIcon />
@@ -237,7 +288,7 @@ const EmployeeProfileCardMenuList = (props) => {
                                         <ListItemText primary="Vaccination Information"
                                             primaryTypographyProps={{ noWrap: true }}
                                         />
-                                    </ListItem>
+                                    </ListItem> */}
                                 </List>
 
                             </Grid>
@@ -269,7 +320,7 @@ const EmployeeProfileCardMenuList = (props) => {
                     </CardContent>
                 </CardActionArea>
             </Card>
-        </Fragment>
+        </Fragment >
     )
 }
 

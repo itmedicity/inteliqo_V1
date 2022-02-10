@@ -4,9 +4,10 @@ export const ToeknContext = createContext();
 
 const TokenAuth = ({ children }) => {
 
-    const [accessToken, setToken] = useState(0);
+    const [loggedUserID, setLoggedUserID] = useState(0);
 
-    const value = { accessToken, setToken }
+    const value = { loggedUserID, setLoggedUserID }
+
     return <ToeknContext.Provider value={value} >
         {children}
     </ToeknContext.Provider>

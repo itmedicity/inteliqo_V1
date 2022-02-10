@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 
 const EmployeeDocumentChecklist = () => {
-    return (
-        <div>
+    const history = useHistory()
+    const { id, no } = useParams()
+    const RedirectToProfilePage = () => {
+        history.push(`/Home/Profile/${id}/${no}`)
+    }
 
-        </div>
+    return (
+        <Fragment>
+            <PageLayoutCloseOnly
+                heading="Employee Document CheckList"
+                redirect={RedirectToProfilePage}
+            >
+
+            </PageLayoutCloseOnly>
+        </Fragment>
     )
 }
 

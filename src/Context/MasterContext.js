@@ -98,7 +98,10 @@ const MasterContext = ({ children }) => {
     const [DepartmentShiftselec, updateDepartmentShiftSelect] = useState(0)
     //leave request type 
     const [getleavereqtype, updateleavereqtype] = useState(0)
-
+    //employee name under department section
+    const [selectEmpName, updateSelectEmpName] = useState(0)
+    //department section name
+    const [deptname, updatedeptname] = useState('')
     //employeedetails 
     const [employeedetails, updateemployeedetails] = useState({
         em_department: 0,
@@ -108,6 +111,22 @@ const MasterContext = ({ children }) => {
         em_name: '',
         em_no: 0
     })
+    //authorization details
+    const [authorization, updateAuthorization] = useState({
+        incharge_level: 0,
+        hod_level: 0,
+        ceo_level: 0,
+        is_incharge: 0,
+        is_hod: 0,
+        is_ceo: 0,
+    })
+    //Board Selection depands on education
+    const [selectBoard, updateBoard] = useState(0)
+    //Employee Name based on department section
+    const [selectempName, updateEmpName] = useState(0)
+    //Dept Section selection form authorization of HOD/Incharge
+    const [selectDeptSec, updateDeptSec] = useState(0)
+
 
     const value = {
         selectedDept,
@@ -201,11 +220,21 @@ const MasterContext = ({ children }) => {
         categorycontract,
         updatecategorycontract,
         DepartmentShiftselec,
-        updateDepartmentShiftSelect,
-        employeedetails,
-        updateemployeedetails,
+        updateDepartmentShiftSelect, employeedetails, updateemployeedetails,
+        selectBoard,
+        updateBoard,
         getleavereqtype,
-        updateleavereqtype
+        updateleavereqtype,
+        selectempName,
+        updateEmpName,
+        selectDeptSec,
+        updateDeptSec,
+        selectEmpName,
+        updateSelectEmpName,
+        authorization,
+        updateAuthorization,
+        deptname,
+        updatedeptname
 
     }
     return <PayrolMasterContext.Provider value={value} >

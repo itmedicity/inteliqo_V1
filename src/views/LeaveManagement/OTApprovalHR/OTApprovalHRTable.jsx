@@ -1,54 +1,83 @@
 import MaterialTable from 'material-table'
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import { MdCheckCircle } from "react-icons/md"
-import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
+import { axioslogin } from 'src/views/Axios/Axios';
+import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import ModelHRApproval from './ModelHRApproval';
 
-const OTApprovalHRTable = () => {
-
+const OTApprovalHRTable = ({ DeptSect }) => {
+    const [data, setTableData] = useState([]);
+    const [count, setCount] = useState(0)
+    const [otno, setOtno] = useState(0);
     //Table
     const title = [
         {
-            title: "SlNo", field: "SlNo"
+            title: "SlNo", field: "ot_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Emp_no", field: "Emp_no"
+            title: "Emp_ID", field: "em_no", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
-            title: "Employee name", field: "Employee_name"
+            title: "Emp_Name", field: 'em_name', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Department Section", field: "Department_section"
+            title: "OT Date", field: "ot_days", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Date", field: "date"
+            title: "Requested Date", field: "ot_date", cellStyle: { minWidth: 198, maxWidth: 250 }
         },
         {
-            title: "Status", field: "Status"
+            title: "OT in Minutes", field: 'over_time', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
+        {
+            title: "Status", field: 'ot_hr_status', cellStyle: { minWidth: 1, maxWidth: 3 }
+        },
+    ]
 
-    ]
-    const data = [
-        {
-            SlNo: 1,
-            Emp_no: 18,
-            Employee_name: 'Reshma',
-            Department_section: 'IT',
-            date: '27/12/2021',
-            Status: 'pending'
-        },
-    ]
+    //Get Data
+    useEffect(() => {
+        if (DeptSect.length !== 0) {
+            const deptid = DeptSect && DeptSect.map((val) => {
+                return val.dept_section
+            })
+            const postData = {
+                dept_id: deptid
+            }
+            const getOt = async () => {
+                const result = await axioslogin.post('/overtimerequest/othr', postData)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setTableData(data);
+                } else {
+                    warningNofity("Error Occured Please Contact EDP")
+                }
+            }
+            getOt();
+        }
+    }, [DeptSect, count]);
+
     const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
 
+    const handleClickOpen = (data) => {
+        setOtno(data)
+        setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
     };
+
     return (
         < Fragment >
-            <ModelOTApprove open={open} handleClose={handleClose} />
+            {otno !== 0 ?
+                <ModelHRApproval
+                    open={open}
+                    handleClose={handleClose}
+                    otno={otno}
+                    setCount={setCount}
+                    count={count}
+                />
+                : null}
             <MaterialTable
                 title="OT Approval HR"
                 data={data}
@@ -56,9 +85,9 @@ const OTApprovalHRTable = () => {
                 icons={tableIcons}
                 actions={[
                     {
-                        icon: () => <MdCheckCircle size={26} color="secondary" />,
-                        tooltip: "Click here to Edit",
-                        onClick: (e, data) => handleClickOpen()
+                        icon: () => <AddTaskRoundedIcon size={26} color='success' />,
+                        tooltip: "Click here to Approve/Reject",
+                        onClick: (e, data) => handleClickOpen(data.ot_slno)
                     }
                 ]}
                 options={{
@@ -67,7 +96,6 @@ const OTApprovalHRTable = () => {
                     padding: "dense",
                     actionsColumnIndex: -1
                 }}
-
             />
         </Fragment >
     )

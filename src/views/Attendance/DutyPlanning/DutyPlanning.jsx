@@ -60,16 +60,23 @@ const DutyPlanning = () => {
           setdisable(false)
         }
         else {
-          warningNofity("There is No employees In This Department And Department Section")
+          // warningNofity("There is No employees In This Department And Department Section")
           setDuty(0)
           setdisable(true)
+        }
+        const results = await axioslogin.post("/departmentshift/checkshift", postData);
+        const { successs } = results.data
+        if (successs === 1) {
+          setdisable(false)
+        }
+        else {
+          setdisable(true)
+          warningNofity("Please Map Shift For This Department Section")
         }
       }
     }
     getempdetl()
   }, [selectedDept, selectDeptSection])
-
-
   //insert duty planning
   const insertDutyPlanning = async (e) => {
     setCount(count + 1)

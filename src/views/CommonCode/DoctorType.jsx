@@ -41,6 +41,7 @@ const DoctorType = (props) => {
                     fullWidth
                     variant="outlined"
                     className="ml-0"
+                    disabled={props.doctortype === false ? true : false}
                     defaultValue={0}
                     style={props.style}
                 >

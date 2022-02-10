@@ -73,3 +73,25 @@ export const getleaverequest = async () => {
 
 export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
 
+
+//GET ASSINED MENU LIST
+
+export const getMenuSlno = async () => {
+    const result = await axioslogin.get(`/common/getempid/${employeeNumber()}`)
+    const { success, data } = result.data
+    if (success === 1) {
+        const { emp_id } = data[0]
+        const results = await axioslogin.get(`/grprights/${emp_id}`)
+        const { status, resdata } = results.data;
+        return resdata;
+    }
+}
+
+//URL EXSIT CHECK FUNCTION
+
+export const urlExist = (url, callBack) => {
+    fetch(url)
+        .then((status) => {
+            callBack(status.status)
+        })
+}

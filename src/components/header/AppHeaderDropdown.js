@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   CAvatar,
   CDropdown,
@@ -15,6 +15,11 @@ import { IoPower } from 'react-icons/io5'
 import avatar8 from './../../assets/images/avatars/4.jpg'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { useHistory } from 'react-router-dom'
+import ProfilePicDefault from './../../assets/images/default.png'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { employeeNumber, PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant'
+import { useState } from 'react'
+import { Avatar } from '@mui/material'
 
 const AppHeaderDropdown = () => {
 
@@ -25,11 +30,39 @@ const AppHeaderDropdown = () => {
     infoNofity('You Are Logged Out Successfully');
     history.push('/')
   }
+  const [src, setSrc] = useState(ProfilePicDefault)
+
+
+  useEffect(() => {
+    const getEmpIdforProfilePic = async () => {
+      const result = await axioslogin.get(`/common/getempid/${employeeNumber()}`)
+      const { success, data } = result.data
+      if (success === 1) {
+
+        const { emp_id } = data[0]
+        const empiddata = {
+          em_id: emp_id
+        }
+        const profilePic = `${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`;
+        urlExist(profilePic, (status) => {
+          if (status === 200) {
+            setSrc(profilePic)
+          }
+        })
+      }
+    }
+    getEmpIdforProfilePic()
+  }, [])
+
 
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+        {/* <CAvatar src={src} size="md" height={24} width={24} /> */}
+        <Avatar
+          alt="Remy Sharp"
+          src={src}
+        />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>

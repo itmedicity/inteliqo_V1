@@ -17,10 +17,10 @@ const QualificationTable = ({ update }) => {
             title: "SlNo", field: "emqual_slno", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
         {
-            title: "Education", field: 'edu_desc', cellStyle: { minWidth: 250, maxWidth: 400 }
+            title: "Education", field: 'edu_desc', cellStyle: { minWidth: 400, maxWidth: 500 }
         },
         {
-            title: "Course", field: "em_course", cellStyle: { minWidth: 200, maxWidth: 300 }
+            title: "Course", field: "cour_desc", cellStyle: { minWidth: 200, maxWidth: 300 }
         },
         {
             title: "Specialization", field: "spec_desc", cellStyle: { minWidth: 250, maxWidth: 400 }

@@ -25,19 +25,19 @@ const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) =>
                 if (success === 1) {
                     setDutyplan(data)
                 }
-                else if (success === 0) {
-                    warningNofity("No Record Found")
-                }
-                else {
-                    errorNofity("Error Occured!!!Please Contact EDP")
-                }
+                // else if (success === 0) {
+                //     warningNofity("No Record Found")
+                // }
+                // else {
+                //     errorNofity("Error Occured!!!Please Contact EDP")
+                // }
             }
             getDutyPlan()
         }
         else {
             errorNofity("Error Occured!!!Please Contact EDP")
         }
-    }, [duty, count, postdata])
+    }, [duty, count])
     // shift Array 
     const [empPlan, setEmpPlan] = useState([]);
     // Submit the Duty Plan to the Database 
