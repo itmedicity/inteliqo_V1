@@ -1,92 +1,58 @@
-import React, { Fragment } from 'react';
-import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
-import { Dialog, DialogContent, DialogTitle, Slide } from "@material-ui/core";
-import TextInput from 'src/views/Component/TextInput';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import { useEffect } from 'react';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { useState } from 'react';
-import { Button, Checkbox, DialogActions } from '@mui/material';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { useContext } from 'react';
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Slide, TextareaAutosize, Typography } from '@material-ui/core'
 import moment from 'moment';
+import React, { Fragment, useEffect } from 'react'
+import { useContext } from 'react';
+import { useState } from 'react';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import InchargeStatus from './InchargeStatus';
-import HodStatus from './HodStatus';
+import TextInput from 'src/views/Component/TextInput';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
+const ContractCloseHrApprovalModel = ({ open, handleClose, slno, setCount, count }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const [dueDept, SetDueDept] = useState({})
     const [approvalData, setApprovalData] = useState({
-        relieving_date: '',
-        request_date: '',
-        resign_reason: '',
+        em_cont_start: '',
+        em_cont_close_date: '',
         emp_id: '',
-        sect_id: '0',
-        dept_id: '0',
-        designation: '',
-        resig_slno: '',
-        inch_app_status: '',
-        inch_coment: '',
-        incharge_required: '0',
-        hod_coment: '',
-        hod_required: '0',
-        hod_app_status: ''
+        em_department: '',
+        em_dept_section: '',
+        em_no: '',
+        em_designation: ''
     })
-    const [formData, setFormData] = useState({
-        approve: false,
-        reject: false,
-        hr_comment: '',
-    })
-    const defaultState = {
-        approve: false,
-        reject: false,
-        hr_comment: '',
-    }
-    const { approve, reject, hr_comment } = formData
-    const { resig_slno, relieving_date, request_date, resign_reason, emp_id, designation, sect_id, dept_id,
-        inch_app_status, inch_coment, incharge_required, hod_coment, hod_required, hod_app_status } = approvalData
+    const { em_cont_start, em_cont_close_date, emp_id, em_department, em_dept_section,
+        em_no, em_designation } = approvalData
+
     useEffect(() => {
-        const getApprovalData = async () => {
-            const postDeptData = {
-                dept_id: dept_id,
-                sect_id: sect_id,
-            }
-            const result = await axioslogin.get(`/Resignation/hrpendingbyID/${slno}`)
+        const postDeptData = {
+            dept_id: em_department,
+            sect_id: em_dept_section,
+        }
+        const getContractdetlbyId = async () => {
+            const result = await axioslogin.get(`/empcontract/contractclosedetl/${slno}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { resig_slno, relieving_date, request_date, resign_reason, em_id, sect_id, dept_id,
-                    designation, inch_app_status, inch_coment, incharge_required, hod_coment, hod_required
-                } = data[0]
-                const apprveData = {
-                    relieving_date: relieving_date,
-                    request_date: request_date,
-                    resign_reason: resign_reason,
-                    designation: designation,
+                const { em_cont_start, em_cont_close_date, em_id, em_department, em_dept_section,
+                    em_no, em_designation } = data[0]
+                const apprdata = {
+                    em_cont_start: em_cont_start,
+                    em_cont_close_date: em_cont_close_date,
                     emp_id: em_id,
-                    sect_id: sect_id,
-                    dept_id: dept_id,
-                    resig_slno: resig_slno,
-                    incharge_required: incharge_required,
-                    inch_app_status: inch_app_status,
-                    inch_coment: inch_coment,
-                    hod_coment: hod_coment,
-                    hod_required: hod_required,
-                    hod_app_status: hod_app_status,
+                    em_department: em_department,
+                    em_dept_section: em_dept_section,
+                    em_no: em_no,
+                    em_designation: em_designation
                 }
-                setApprovalData(apprveData)
-
+                setApprovalData(apprdata)
             }
             else {
-                errorNofity("Error Occured Please Contact EDP")
+                errorNofity("Error Occured!!!Please Contact Edp")
             }
             //getting due clearence Department
-            if (dept_id !== 0 && sect_id !== 0) {
+            if (em_department !== 0 && em_dept_section !== 0) {
                 const results = await axioslogin.post('/Duedepartment/duedept', postDeptData)
                 const { success1, data1 } = results.data
                 if (success1 === 1) {
@@ -98,31 +64,49 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
                     SetDueDept(duedeptdetl)
                 }
             }
-
         }
-        getApprovalData()
-    }, [slno, dept_id, sect_id])
+        getContractdetlbyId()
+    }, [slno, em_department, em_dept_section])
+    const [formData, setFormData] = useState({
+        approve: false,
+        reject: false,
+        hr_comment: '',
+    })
+    const defaultState = {
+        approve: false,
+        reject: false,
+        hr_comment: '',
+    }
+    const { approve, reject, hr_comment } = formData
     const updateInchargeApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
     }
-    const approveData = {
+    const postData = {
+        dept_id: em_department,
+        sect_id: em_dept_section,
         em_id: emp_id,
+        em_no: em_no,
+        designation: em_designation,
+        resignation_type: 3,
+        request_date: em_cont_close_date,
+        relieving_date: em_cont_close_date,
+        resign_reason: "Contract Closed",
+        contract_close_resign: 'C',
         hr_id: em_id,
         hr_app_date: moment(new Date()).format('YYYY-MM-DD'),
         hr_app_status: approve === true ? 1 : reject === true ? 0 : 0,
         hr_coment: hr_comment,
         resign_status: approve === true ? 'A' : reject === true ? 'R' : null,
-        resig_slno: resig_slno,
     }
     const submitFormdata = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/Resignation/resignapproval', approveData)
+        const result = await axioslogin.post('/Resignation/contractcloseHrapprvl', postData)
         const { success, message } = result.data
         if (success === 1) {
             succesNofity("Resignation Request Approved")
-            setCount(count + 1)
             setFormData(defaultState)
+            setCount(count + 1)
             handleClose()
             if (approve === true) {
                 const result = await axioslogin.post('/dueclearence', dueDept)
@@ -135,7 +119,7 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
             warningNofity(message)
         }
         else {
-            errorNofity(message)
+            errorNofity("Error Occured!!!Please Contact EDP")
         }
     }
     return (
@@ -148,7 +132,7 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Resignation Approval/Reject"}
+                    {"Contract Close HR Approval"}
                 </DialogTitle>
                 <DialogContent sx={{
                     minWidth: 800,
@@ -157,56 +141,37 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
                 }}>
                     <div className="card">
                         <div className="card-body">
-                            <div className="col-md-12 col-sm-12">
+                            <div className="col-md-12">
                                 <div className="row g-1">
-                                    <div className="col-md-5 pt-1" >
-                                        <Typography>Resignation Date</Typography>
+                                    <div className="col-md-6 pt-1" >
+                                        <Typography>Contract Start Date</Typography>
                                     </div>
-                                    <div className="col-md-7" >
+                                    <div className="col-md-6" >
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Resign Date"
+                                            Placeholder="Cpntarct Start Date"
                                             fullWidth
                                             disabled="Disabled"
-                                            value={request_date}
+                                            value={em_cont_start}
                                         />
                                     </div>
                                 </div>
                                 <div className="row g-1 pt-2">
-                                    <div className="col-md-5 pt-1" >
-                                        <Typography>Relieving Date</Typography>
+                                    <div className="col-md-6 pt-1" >
+                                        <Typography>Contarct End Date</Typography>
                                     </div>
-                                    <div className="col-md-7" >
+                                    <div className="col-md-6" >
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Relieving Date"
+                                            Placeholder="Contarct End Date"
                                             fullWidth
                                             disabled="Disabled"
-                                            value={relieving_date}
+                                            value={em_cont_close_date}
                                         />
                                     </div>
                                 </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12" >
-                                        <Typography variant='h6'>
-                                            Resignation Reason
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12" >
-                                        <Typography align='justify'>
-                                            {resign_reason}
-                                        </Typography>
-                                    </div>
-                                </div>{
-                                    incharge_required === 1 ? <InchargeStatus inch_app_status={inch_app_status} inch_coment={inch_coment} /> : null
-                                }
-                                {
-                                    hod_required === 1 ? <HodStatus hod_app_status={hod_app_status} hod_coment={hod_coment} /> : null
-                                }
                                 <div className="row g-1">
                                     <div className="d-flex justify-content-center">
                                         <div className="col-md-4"></div>
@@ -267,14 +232,14 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
                             </div>
                         </div>
                     </div>
-                    <DialogActions>
-                        <Button color="primary" onClick={submitFormdata} >Submit</Button>
-                        <Button onClick={handleClose} color="primary" >Cancel</Button>
-                    </DialogActions>
                 </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={submitFormdata} >Submit</Button>
+                    <Button onClick={handleClose} color="primary" >Cancel</Button>
+                </DialogActions>
             </Dialog>
         </Fragment >
     )
-};
+}
 
-export default HRApprovalComponent;
+export default ContractCloseHrApprovalModel

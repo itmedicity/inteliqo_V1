@@ -74,6 +74,7 @@ const DepartmentShiftEdit = () => {
             updateSelected(0)
             updateDepartmentSection(0)
             updateShifts(0)
+            arraydataset([])
         }
         else {
             errorNofity("Error Occured!!!Please Contact EDP")

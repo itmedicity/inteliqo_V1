@@ -211,6 +211,8 @@ const DutyPlanning = () => {
               enddate={endDate}
               duty={duty}
               count={count}
+              selectedDept={selectedDept}
+              selectDeptSection={selectDeptSection}
             /> : null
         }
         </div>

@@ -13,8 +13,9 @@ import DueClearenceApprovalModel from './DueClearenceApprovalModel';
 const DueClearenceTable = () => {
     const [tableData, setTableData] = useState([]);
     const { authorization, employeedetails } = useContext(PayrolMasterContext)
-    const { em_dept_section, em_id } = employeedetails
+    const { em_dept_section } = employeedetails
     const { is_incharge, is_hod } = authorization
+    const [count, setCount] = useState(0)
     //getting due Clearence List
     useEffect(() => {
         if (is_incharge === 1 || is_hod === 1) {
@@ -36,7 +37,7 @@ const DueClearenceTable = () => {
             }
             getClearenceList()
         }
-    }, [em_dept_section, is_incharge, is_hod])
+    }, [em_dept_section, is_incharge, is_hod, count])
     const title = [
         {
             title: 'slno', field: 'due_slno', cellStyle: { minWidth: 1, maxWidth: 50 }
@@ -66,9 +67,10 @@ const DueClearenceTable = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
     return (
         < Fragment >
-            {slno !== 0 ? <DueClearenceApprovalModel open={open} handleClose={handleClose} slno={slno} /> : null}
+            {slno !== 0 ? <DueClearenceApprovalModel open={open} handleClose={handleClose} slno={slno} setCount={setCount} count={count} /> : null}
             <AuthorizationDetails />
             <MaterialTable
                 title="Due Clearence List"

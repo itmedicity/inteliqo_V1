@@ -14,7 +14,11 @@ import { ImSearch } from "react-icons/im";
 const ApprovalIncharge = () => {
     const history = useHistory()
     const { updateleaverequest } = useContext(PayrolMasterContext)
+    // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
+    // to get the ype leave request
+
+    const [levtpevalue, setleavetypevalue] = useState([])
 
     useEffect(() => {
         const getleaverequest = async () => {
@@ -30,10 +34,18 @@ const ApprovalIncharge = () => {
         )
     }, [updateleaverequest]);
 
+
+
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
 
+    const leverequesttypechange = async (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        // console.log(Object.keys(levtpevalue))
+        setleavetypevalue({ ...levtpevalue, [e.target.name]: value })
+    }
+    // console.log(levtpevalue)
     return (
         <Fragment>
             <PageLayoutSave
@@ -73,8 +85,8 @@ const ApprovalIncharge = () => {
                                                                         name={val.lrequest_short}
                                                                         color="secondary"
                                                                         value={val.lrequest_slno}
-                                                                    // checked={Leave_Carry_Forwad}
-                                                                    //onChange={(e) => null}
+                                                                        // checked={Leave_Carry_Forwad}
+                                                                        onChange={(e) => leverequesttypechange(e)}
                                                                     />
                                                                 </Tooltip>
                                                             }

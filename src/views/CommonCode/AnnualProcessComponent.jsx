@@ -110,7 +110,7 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
                         hd_slno: val.hld_slno,
                         hl_lv_year: val.hld_date,
                         hl_date: val.hld_date,
-                        hl_lv_credit: 0,
+                        hl_lv_credit: 1,
                         hl_lv_taken: 0,
                         hl_lv_allowed: 1,
                         lv_process_slno: lv_process_slnocurrent,

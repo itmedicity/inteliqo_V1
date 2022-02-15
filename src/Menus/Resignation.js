@@ -46,7 +46,7 @@ const Resignation = [
         men_slno: 66,
         component: CNavItem,
         name: 'Due Clearance -HR',
-        to: '/Home/Resignation',
+        to: '/Home/DueClearenceHR',
     },
     {
         men_slno: 67,

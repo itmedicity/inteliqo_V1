@@ -4,12 +4,11 @@ import TextInput from 'src/views/Component/TextInput';
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave';
 import { useHistory } from 'react-router';
 import Timepicker from 'src/views/Component/Timepicker';
-import { FormControl, MenuItem, Select } from '@mui/material';
-import { Checkbox, FormControlLabel } from '@material-ui/core'
+import { Checkbox, FormControlLabel, FormControl, MenuItem, Select } from '@material-ui/core'
 import MinutePicker from 'src/views/Component/MinutePicker';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, getHoursWorked, getTimeminutes, getTotalMinitsWorked, getTotalShiftHours, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, getTotalShiftHours, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
 
 
@@ -104,6 +103,7 @@ const ShiftMaster = () => {
     }
     //FUNCTION TO GET TO TOMORROW DATE
     const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
+
     //use State for Setting Initial State
     const [formData, setFormData] = useState({
         shift_name: "",
@@ -137,7 +137,7 @@ const ShiftMaster = () => {
     const shiftduration = getTotalShiftHours(xx, yy)
     //shiftduration in minutes if crossday is 1
     const n = moment(checkIn).format("YYYY-MM-DD HH:mm:ss")
-    const nn = moment(x)
+    const nn = moment(n)
     const m = moment(nextdate).format("YYYY-MM-DD HH:mm:ss")
     const mm = moment(m)
     const shiftdurationforcrossday = getTotalShiftHours(nn, mm)
@@ -213,8 +213,6 @@ const ShiftMaster = () => {
             errorNofity('Errror Occured!!!!Please Contact EDP')
         }
     }
-
-
     return (
         <Fragment>
             <PageLayoutSave
