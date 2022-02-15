@@ -38,7 +38,6 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
                 }
                 if (success === 0) {
                     setDepartmentShiftSelect(0)
-                    // infoNofity(message);
                 }
             }
         }

@@ -49,7 +49,6 @@ const HodResignationApproval = ({ open, handleClose, slno, setCount, count }) =>
     useEffect(() => {
         const getApprovalData = async () => {
             const result = await axioslogin.get(`/Resignation/hodpending/${slno}`)
-            console.log(result)
             const { success, data } = result.data
             if (success === 1) {
                 const { resig_slno, relieving_date, request_date, resign_reason, em_id,

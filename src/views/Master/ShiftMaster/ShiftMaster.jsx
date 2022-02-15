@@ -137,7 +137,7 @@ const ShiftMaster = () => {
     const shiftduration = getTotalShiftHours(xx, yy)
     //shiftduration in minutes if crossday is 1
     const n = moment(checkIn).format("YYYY-MM-DD HH:mm:ss")
-    const nn = moment(x)
+    const nn = moment(n)
     const m = moment(nextdate).format("YYYY-MM-DD HH:mm:ss")
     const mm = moment(m)
     const shiftdurationforcrossday = getTotalShiftHours(nn, mm)
@@ -213,8 +213,6 @@ const ShiftMaster = () => {
             errorNofity('Errror Occured!!!!Please Contact EDP')
         }
     }
-
-
     return (
         <Fragment>
             <PageLayoutSave
