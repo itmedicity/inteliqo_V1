@@ -1,5 +1,5 @@
 import { IconButton, LinearProgress } from '@mui/material'
-import React, { Fragment, Suspense, useContext } from 'react'
+import React, { Fragment, Suspense, useContext, useEffect } from 'react'
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import TextInput from 'src/views/Component/TextInput'
 import { FcPlus, FcCancel } from "react-icons/fc";
@@ -13,6 +13,8 @@ import { useState } from 'react';
 import { addDays, format } from 'date-fns';
 import moment from 'moment';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { memo } from 'react';
 const ShiftPunchUpdationTable = React.lazy((() => import('../ShiftUpdation/ShiftUpdationTable')))
 
 
@@ -38,34 +40,53 @@ const ShiftUpdation = () => {
     } = useContext(PayrolMasterContext)
 
     //SET  POST DATA
-
     const [postData, setPostData] = useState({});
+    const [apiData, setApiData] = useState([])
 
-    const getPunchDetl = () => {
+    const getPunchDetl = async () => {
+
         if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
+                cmpCode: 1
             }
-            setPostData(deptDetl)
+
+            if (Object.keys(deptDetl).length > 1) {
+                setPostData(deptDetl)
+            }
+
         } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
-                empName: selectEmpName
+                empName: selectEmpName,
+                cmpCode: 1
             }
-            setPostData(deptDetl)
+
+            if (Object.keys(deptDetl).length > 1) {
+                setPostData(deptDetl)
+            }
+
+            // const result = await axioslogin.post("/attendCal", deptDetl);
+
         } else {
             infoNofity("AtLeast Department & Section is Required");
         }
-
     }
 
-    console.log(postData);
+    useEffect(() => {
+        if (Object.keys(postData).length > 1) {
+            // console.log(postData)
+            const result = axioslogin.post("/attendCal", postData);
+            // console.log(result)
+            setApiData(result)
+        }
+    }, [postData])
 
     return (
         <Fragment>
@@ -128,7 +149,7 @@ const ShiftUpdation = () => {
                 </div>
                 <div className="col-md-12">
                     <Suspense fallback={<LinearProgress />} >
-                        <ShiftPunchUpdationTable />
+                        <ShiftPunchUpdationTable data={apiData} />
                     </Suspense>
                 </div>
             </PageLayoutProcess>
@@ -136,4 +157,4 @@ const ShiftUpdation = () => {
     )
 }
 
-export default ShiftUpdation
+export default memo(ShiftUpdation)

@@ -1,7 +1,7 @@
 import { TableCell, TableRow, Avatar } from '@mui/material'
 import { isValid } from 'date-fns';
 import moment from 'moment'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { getHoursWorked, getTotalMinitsWorked, getTotalShiftHours } from 'src/views/CommonCode/Commonfunc';
 import { deepOrange, deepPurple } from '@mui/material/colors';
 
@@ -96,4 +96,4 @@ const ShiftUpdationTblRow = ({ val }) => {
     )
 }
 
-export default ShiftUpdationTblRow
+export default memo(ShiftUpdationTblRow)

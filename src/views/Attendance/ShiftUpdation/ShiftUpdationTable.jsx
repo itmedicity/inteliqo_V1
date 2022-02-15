@@ -1,11 +1,13 @@
-import { Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-import React, { Fragment, useState } from 'react';
+import { LinearProgress, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
+import React, { Fragment, memo, Suspense, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import CustomePagination from 'src/views/CommonCode/CustomePagination';
 import { rows } from './data'
 import ShiftUpdationTblRow from './ShiftUpdationTblRow';
 
-const ShiftUpdationTable = () => {
+const ShiftUpdationTable = ({ data }) => {
+
+    // console.log(rows)
 
     // Pagination Custome State
     const [page, setPage] = useState(0);
@@ -48,13 +50,16 @@ const ShiftUpdationTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+                        <Suspense fallback={<LinearProgress />}>
+
+                        </Suspense>
                         {
-                            (rowsPerPage > 0
-                                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : rows
-                            ).map((val, index) => {
-                                return <ShiftUpdationTblRow val={val} key={index} />
-                            })
+                            // (rowsPerPage > 0
+                            //     ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            //     : rows
+                            // ).map((val, index) => {
+                            //     return <ShiftUpdationTblRow val={val} key={index} />
+                            // })
                         }
                     </TableBody>
                     <TableFooter>
@@ -76,4 +81,4 @@ const ShiftUpdationTable = () => {
     )
 }
 
-export default ShiftUpdationTable
+export default memo(ShiftUpdationTable)
