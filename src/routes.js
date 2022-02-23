@@ -127,8 +127,8 @@ const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OT
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
-
-
+const EmployeeReport = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReport'))
+const EmployeeReportInactive = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReportInactive'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/Home', exact: true, name: 'Home', component: HomePage },
@@ -260,6 +260,8 @@ const routes = [
   { path: '/Home/DueClearenceHR', exact: true, name: 'DueClearence HR', component: DueClearenceHR },
   { path: '/Home/DueClearenceMaster', exact: true, name: 'Due Clearence Master', component: DueClearenceMaster },
   { path: '/Home/DueClearenceEdit/:id', exact: true, name: 'Due Clearence Edit', component: DueClearenceEdit },
+  { path: '/Home/EmployeeReport', exact: true, name: 'Active Employees', component: EmployeeReport },
+  { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
 ]
 
 export default routes

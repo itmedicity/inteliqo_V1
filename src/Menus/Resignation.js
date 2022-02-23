@@ -84,6 +84,18 @@ const Resignation = [
         name: 'Exit Interview - HR',
         to: '/Home/Resignation',
     },
+    {
+        men_slno: 73,
+        component: CNavItem,
+        name: 'Report-Active Employees',
+        to: '/Home/EmployeeReport',
+    },
+    {
+        men_slno: 74,
+        component: CNavItem,
+        name: 'Report-InActive Employees',
+        to: '/Home/EmployeeReportInactive',
+    },
 ]
 
 export default Resignation;
