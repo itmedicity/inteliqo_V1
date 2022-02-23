@@ -8,7 +8,6 @@ import ShiftUpdationTblRow from './ShiftUpdationTblRow';
 const ShiftUpdationTable = ({ data }) => {
 
     // console.log(rows)
-
     // Pagination Custome State
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -51,16 +50,16 @@ const ShiftUpdationTable = ({ data }) => {
                     </TableHead>
                     <TableBody>
                         <Suspense fallback={<LinearProgress />}>
+                            {
 
+                                // (rowsPerPage > 0
+                                //     ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                //     : rows
+                                // ).map((val, index) => {
+                                //     return <ShiftUpdationTblRow val={val} key={index} />
+                                // })
+                            }
                         </Suspense>
-                        {
-                            // (rowsPerPage > 0
-                            //     ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            //     : rows
-                            // ).map((val, index) => {
-                            //     return <ShiftUpdationTblRow val={val} key={index} />
-                            // })
-                        }
                     </TableBody>
                     <TableFooter>
                         <TableRow hover={true} >
