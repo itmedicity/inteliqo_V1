@@ -4,13 +4,14 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import TextInput from 'src/views/Component/TextInput';
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave';
 import { useHistory } from 'react-router';
-import { FormControl, MenuItem, Select } from '@mui/material';
-import { Checkbox, FormControlLabel } from '@material-ui/core'
+import { Checkbox, FormControlLabel, FormControl, MenuItem, Select } from '@material-ui/core'
 import moment from 'moment';
 import { errorNofity, getTotalShiftHours, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
 import Timepicker from 'src/views/Component/Timepicker';
 import MinutePicker from 'src/views/Component/MinutePicker';
+import { subHours } from 'date-fns';
+import { addHours } from 'date-fns/esm';
 
 const ShiftMasterEdit = () => {
     const { id } = useParams()
@@ -36,37 +37,44 @@ const ShiftMasterEdit = () => {
         earlyoutcalculation: '1',
         shift_status: true
     }
-
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
     const SetcheckInTime = (val) => {
         setCheckIn(val)
+        const result = subHours(new Date(val), 3)
+        setcheckInStart(result)
+        const result2 = addHours(new Date(val), 3)
+        setcheckInEnd(result2)
     }
     //use State For Check Out
     const [checkOut, setCheckOut] = useState(new Date());
     const SetcheckOutTime = (val) => {
         setCheckOut(val)
+        const result = subHours(new Date(val), 3)
+        setcheckOutStart(result)
+        const result2 = addHours(new Date(val), 3)
+        setcheckOutEnd(result2)
     }
     //use State For Check In Start
     const [checkInStart, setcheckInStart] = useState(new Date());
-    const SetcheckInTimeStart = (val) => {
-        setcheckInStart(val)
-    }
-    //use State For Check In End
+    // const SetcheckInTimeStart = (val) => {
+    //     setcheckInStart(val)
+    // }
+    // //use State For Check In End
     const [checkInEnd, setcheckInEnd] = useState(new Date());
-    const SetcheckInTimeEnd = (val) => {
-        setcheckInEnd(val)
-    }
+    // const SetcheckInTimeEnd = (val) => {
+    //     setcheckInEnd(val)
+    // }
     //use State For Check Out Start
     const [checkOutStart, setcheckOutStart] = useState(new Date());
-    const SetcheckoutTimeStart = (val) => {
-        setcheckOutStart(val)
-    }
+    // const SetcheckoutTimeStart = (val) => {
+    //     setcheckOutStart(val)
+    // }
     //use State For Check Out End
     const [checkOutEnd, setcheckOutEnd] = useState(new Date());
-    const SetcheckoutTimeEnd = (val) => {
-        setcheckOutEnd(val)
-    }
+    // const SetcheckoutTimeEnd = (val) => {
+    //     setcheckOutEnd(val)
+    // }
     //use State For Break Start
     const [BreakStart, setBreakStart] = useState(new Date());
     const SetBreakTimestart = (val) => {
@@ -117,6 +125,8 @@ const ShiftMasterEdit = () => {
     const SetSecondhalfcheckOutTime = (val) => {
         SetSecondhalfcheckout(val)
     }
+    //FUNCTION TO GET TO TOMORROW DATE
+    const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
     useEffect(() => {
         const getShiftMasterDetails = async () => {
             const result = await axioslogin.get(`/shift/${id}`)
@@ -189,6 +199,13 @@ const ShiftMasterEdit = () => {
     const y = moment(checkOut).format("YYYY-MM-DD HH:mm:ss")
     const yy = moment(y)
     const shiftduration = getTotalShiftHours(xx, yy)
+    //shiftduration in minutes if crossday is 1
+    const n = moment(checkIn).format("YYYY-MM-DD HH:mm:ss")
+    const nn = moment(n)
+    const m = moment(nextdate).format("YYYY-MM-DD HH:mm:ss")
+    const mm = moment(m)
+    const shiftdurationforcrossday = getTotalShiftHours(nn, mm)
+
     //converting check in an check in tikme to minutes
     const z = moment(new Date()).format("YYYY-MM-DD 00:00:00")
     const zz = moment(z)
@@ -196,15 +213,16 @@ const ShiftMasterEdit = () => {
     // console.log(checkinminutes)
     //calculating checkmout in minutes
     const checkoutinminutes = getTotalShiftHours(zz, yy)
-    // console.log(checkoutinminutes)
+    //check out in minutes in if cross day is 1
+    const checkoutminutescrossday = getTotalShiftHours(zz, mm)
     //saving Data
     const postData = {
         shft_slno: id,
         shft_desc: shift_name,
         shft_code: shift_code,
         shft_chkin_time: moment(checkIn).format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_time: moment(checkOut).format("YYYY-MM-DD HH:mm:ss"),
         shft_cross_day: crossday,
+        shft_chkout_time: crossday === '1' ? moment(nextdate).format("YYYY-MM-DD HH:mm:ss") : moment(checkOut).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_start: moment(checkInStart).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_end: moment(checkInEnd).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkout_start: moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
@@ -222,9 +240,9 @@ const ShiftMasterEdit = () => {
         first_half_out: moment(firsthalfcheckout).format("YYYY-MM-DD HH:mm:ss"),
         second_half_in: moment(Secondhalfcheckin).format("YYYY-MM-DD HH:mm:ss"),
         second_half_out: moment(Secondhalfcheckout).format("YYYY-MM-DD HH:mm:ss"),
-        shift_duration_in_min: shiftduration,
+        shift_duration_in_min: crossday === '1' ? shiftdurationforcrossday : shiftduration,
         shift_start_in_min: checkinminutes,
-        shift_end_in_min: checkoutinminutes,
+        shift_end_in_min: crossday === '1' ? checkoutminutescrossday : checkoutinminutes,
         shft_status: shift_status === true ? 1 : 0,
     }
     const submitFormData = async (e) => {
@@ -232,7 +250,6 @@ const ShiftMasterEdit = () => {
         const result = await axioslogin.patch('/shift', postData)
         const { success, message } = result.data
         if (success === 2) {
-            succesNofity(message)
             setFormData(defaultState)
             setCheckIn(new Date())
             setCheckOut(new Date())
@@ -250,6 +267,8 @@ const ShiftMasterEdit = () => {
             setfirsthalfcheckout(new Date())
             setSecondhalfcheckin(new Date())
             SetSecondhalfcheckout(new Date())
+            history.push('/Home/ShiftMaster')
+            succesNofity(message)
         }
         else {
             errorNofity('Errror Occured!!!!Please Contact EDP')
@@ -258,7 +277,6 @@ const ShiftMasterEdit = () => {
     const toSettings = () => {
         history.push('/Home/Settings')
     }
-
     return (
         <Fragment>
             <PageLayoutSave
@@ -267,7 +285,7 @@ const ShiftMasterEdit = () => {
                 submit={submitFormData}
             >
                 <div className="row g-1">
-                    <div className="col-md-7" >
+                    <div className="col-md-12" >
                         <div className="card">
                             <div className="card-body">
                                 <div className="row g-3">
@@ -327,7 +345,7 @@ const ShiftMasterEdit = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkInStart}
-                                                changetextvalue={(e) => SetcheckInTimeStart(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                         <div className="col-md-3" >
@@ -338,7 +356,7 @@ const ShiftMasterEdit = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkInEnd}
-                                                changetextvalue={(e) => SetcheckInTimeEnd(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                     </div>
@@ -352,7 +370,7 @@ const ShiftMasterEdit = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkOutStart}
-                                                changetextvalue={(e) => SetcheckoutTimeStart(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                         <div className="col-md-3">
@@ -363,7 +381,7 @@ const ShiftMasterEdit = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkOutEnd}
-                                                changetextvalue={(e) => SetcheckoutTimeEnd(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                     </div>
@@ -433,8 +451,6 @@ const ShiftMasterEdit = () => {
                                         </div>
                                         <div className="col-md-3">
                                             <Timepicker
-                                                mintime={checkIn}
-                                                maxtime={checkOut}
                                                 value={BreakStart}
                                                 changetextvalue={(e) => SetBreakTimestart(e)}
                                             />
@@ -446,8 +462,6 @@ const ShiftMasterEdit = () => {
                                         </div>
                                         <div className="col-md-3">
                                             <Timepicker
-                                                mintime={checkIn}
-                                                maxtime={checkOut}
                                                 value={Breakend}
                                                 changetextvalue={(e) => SetBreakTimeend(e)}
                                             />
@@ -634,7 +648,9 @@ const ShiftMasterEdit = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-5">
+                </div>
+                <div className="row g-1 pt-2">
+                    <div className="col-md-12">
                         <div className="card">
                             <ShiftMasterTable />
                         </div>
