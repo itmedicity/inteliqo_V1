@@ -81,3 +81,13 @@ export const getHoursWorked = (x, y) => {
     }
     return 0;
 }
+
+//GET DAYS BETWEEN TWO DAYS
+export const getDayDiffrence = (x, y) => {
+    if (x.isValid() && y.isValid()) {
+        const daysDuration = moment.duration(y.diff(x));
+        const days = daysDuration.asDays()
+        return days;
+    }
+    return 0;
+}

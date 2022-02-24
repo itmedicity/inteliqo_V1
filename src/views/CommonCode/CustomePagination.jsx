@@ -86,7 +86,7 @@ const CustomePagination = ({ data, rowsPerPage, page, handleChangePage, handleCh
     <CustomTablePagination
       className='px-2 py-1'
       rowsPerPageOptions={[10, 15, 25, { label: 'All', value: -1 }]}
-      colSpan={11}
+      colSpan={12}
       count={data.length}
       rowsPerPage={rowsPerPage}
       page={page}
