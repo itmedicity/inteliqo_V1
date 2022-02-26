@@ -5,7 +5,7 @@ import OTApprovalHODTable from './OTApprovalHODTable';
 import OTApprovalHodSecTable from './OTApprovalHodSecTable';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
-import ResignationApprovalSection from 'src/views/Resignation/ResignationApproval/ResignationApprovalSection';
+import HodSections from 'src/views/Resignation/ResignationApprovalHOD/HodSections';
 
 const OTApprovalHOD = () => {
     const [DeptSect, updateDeptSect] = useState([])
@@ -27,7 +27,7 @@ const OTApprovalHOD = () => {
                     <div className="row g-1">
                         <div className="d-flex justify-content-center">
                             <div className="col-md-3">
-                                <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
+                                <HodSections style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
                             </div>
                             <AuthorizationDetails />
                         </div>

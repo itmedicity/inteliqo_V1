@@ -6,7 +6,7 @@ import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ModelCEOApproval from './ModelCEOApproval';
 
-const OTApprovalCEOTable = () => {
+const OTApprovalCEOTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
@@ -43,11 +43,12 @@ const OTApprovalCEOTable = () => {
             if (success === 1) {
                 setTableData(data);
             } else {
+                setTableData(data);
                 warningNofity("Error Occured Please Contact EDP")
             }
         }
         getOt();
-    }, []);
+    }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
     const handleClickOpen = (data) => {

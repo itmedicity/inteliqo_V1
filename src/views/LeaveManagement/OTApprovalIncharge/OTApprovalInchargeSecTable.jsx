@@ -1,10 +1,10 @@
 import MaterialTable from 'material-table'
 import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import ModelInchargeApproval from './ModelInchargeApproval';
 
 const OTApprovalInchargeSecTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
@@ -36,6 +36,7 @@ const OTApprovalInchargeSecTable = ({ DeptSect }) => {
         },
     ]
 
+
     //Get Data
     useEffect(() => {
         const postData = {
@@ -47,14 +48,15 @@ const OTApprovalInchargeSecTable = ({ DeptSect }) => {
             if (success === 1) {
                 setTableData(data);
             } else {
-                warningNofity("Error Occured Please Contact EDP")
+                setTableData(data);
+                warningNofity("No data available")
             }
         }
         getOt();
     }, [DeptSect, count]);
 
-    const [open, setOpen] = useState(false);
 
+    const [open, setOpen] = useState(false);
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
@@ -66,7 +68,7 @@ const OTApprovalInchargeSecTable = ({ DeptSect }) => {
     return (
         < Fragment >
             {otno !== 0 ?
-                <ModelOTApprove
+                <ModelInchargeApproval
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
@@ -75,7 +77,7 @@ const OTApprovalInchargeSecTable = ({ DeptSect }) => {
                 />
                 : null}
             <MaterialTable
-                title="OT Approval Incharge"
+                title="Over Time Approval Incharge"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -92,7 +94,6 @@ const OTApprovalInchargeSecTable = ({ DeptSect }) => {
                     padding: "dense",
                     actionsColumnIndex: -1
                 }}
-
             />
         </Fragment >
     )

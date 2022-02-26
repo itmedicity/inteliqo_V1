@@ -39,7 +39,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     useEffect(() => {
         if (DeptSect.length !== 0) {
             const deptid = DeptSect && DeptSect.map((val) => {
-                return val.dept_section
+                return val.sect_id
             })
             const postData = {
                 dept_id: deptid
@@ -50,6 +50,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                 if (success === 1) {
                     setTableData(data);
                 } else {
+                    setTableData(data);
                     warningNofity("Error Occured Please Contact EDP")
                 }
             }
@@ -58,7 +59,6 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);

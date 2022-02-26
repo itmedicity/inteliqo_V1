@@ -46,7 +46,8 @@ const OTApprovalHodSecTable = ({ DeptSect }) => {
             if (success === 1) {
                 setTableData(data);
             } else {
-                warningNofity("Error Occured Please Contact EDP")
+                setTableData(data);
+                warningNofity("No data available")
             }
         }
         getOt();

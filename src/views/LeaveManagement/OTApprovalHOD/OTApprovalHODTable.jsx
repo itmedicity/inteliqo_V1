@@ -50,13 +50,13 @@ const OTApprovalHODTable = ({ DeptSect }) => {
                 if (success === 1) {
                     setTableData(data);
                 } else {
+                    setTableData(data);
                     warningNofity("Error Occured Please Contact EDP")
                 }
             }
             getOt();
         }
     }, [DeptSect, count]);
-
 
     const [open, setOpen] = useState(false);
     const handleClickOpen = (data) => {
