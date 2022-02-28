@@ -71,30 +71,39 @@ const OTRequest = () => {
         const result = await axioslogin.post('/common/getShiftdetails', postdata)
         const { success, data } = result.data;
         if (success === 1) {
-            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out, ot_amount } = data[0]
-            const frmdata = {
-                date: duty_day,
-                shift: shift_id,
-                shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
-                shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
-                in_time: format(new Date(punch_in), "HH:mm:ss"),
-                out_time: format(new Date(punch_out), "HH:mm:ss")
+            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out, ot_amount, ot_request_flag } = data[0]
+            if (ot_request_flag === 1) {
+                infoNofity("Already Applied for Over Time")
+            } else {
+                if (punch_in !== null && punch_out !== null) {
+                    const frmdata = {
+                        date: duty_day,
+                        shift: shift_id,
+                        shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
+                        shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
+                        in_time: format(new Date(punch_in), "HH:mm:ss"),
+                        out_time: format(new Date(punch_out), "HH:mm:ss")
+                    }
+                    const set = {
+                        otDate: '',
+                        ot_reson: '',
+                        ot_remarks: '',
+                        shft_slno: shft_slno,
+                        checkin: punch_in,
+                        checkout: punch_out,
+                        shiftcheckout: shft_chkout_time,
+                        shiftcheckin: shft_chkin_time,
+                        ot_amount: ot_amount
+                    }
+                    setTableData(frmdata);
+                    setrequest(set)
+                }
+                else {
+                    infoNofity("Punch not available")
+                }
             }
-            const set = {
-                otDate: '',
-                ot_reson: '',
-                ot_remarks: '',
-                shft_slno: shft_slno,
-                checkin: punch_in,
-                checkout: punch_out,
-                shiftcheckout: shft_chkout_time,
-                shiftcheckin: shft_chkin_time,
-                ot_amount: ot_amount
-            }
-            setTableData(frmdata);
-            setrequest(set)
         } else if (success === 2) {
-            infoNofity("No Shift is added to this employee")
+            infoNofity("No Punch against to this employee")
             setTableData(defaultState)
             setrequest(defaultState)
         } else {

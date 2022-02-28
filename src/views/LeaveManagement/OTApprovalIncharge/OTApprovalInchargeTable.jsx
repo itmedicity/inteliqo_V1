@@ -1,11 +1,10 @@
 import MaterialTable from 'material-table'
 import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
-import ModelOTApprove from '../LeaveCommonComponent/ModelOTApprove';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-
+import ModelInchargeApproval from './ModelInchargeApproval';
 
 const OTApprovalInchargeTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
@@ -34,8 +33,6 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
         {
             title: "Status", field: 'ot_inch_status', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
-
-
     ]
 
     //Get Data
@@ -53,6 +50,7 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                 if (success === 1) {
                     setTableData(data);
                 } else {
+                    setTableData(data);
                     warningNofity("Error Occured Please Contact EDP")
                 }
             }
@@ -61,7 +59,6 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
-
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
@@ -73,7 +70,7 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
     return (
         < Fragment >
             {otno !== 0 ?
-                <ModelOTApprove
+                <ModelInchargeApproval
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
@@ -82,7 +79,7 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                 />
                 : null}
             <MaterialTable
-                title="OT Approval Incharge"
+                title="Over Time Approval Incharge"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -92,7 +89,6 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                         tooltip: "Click here to Approve/Reject",
                         onClick: (e, data) => handleClickOpen(data.ot_slno)
                     }
-
                 ]}
                 options={{
                     paginationType: "stepped",
