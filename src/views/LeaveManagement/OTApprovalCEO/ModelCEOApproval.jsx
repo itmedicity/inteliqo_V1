@@ -7,7 +7,8 @@ import TextInput from 'src/views/Component/TextInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { useContext } from 'react';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
 import { Button, Checkbox, DialogActions } from '@mui/material';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -18,6 +19,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [tableset, settable] = useState(false)
     const [countcl, setcount] = useState(0)
     const [days, setdays] = useState(0)
@@ -168,6 +171,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
     const patchData = {
         ot_ceo_status: approve === true ? 1 : reject === true ? 2 : 0,
         ot_ceo_remark: ot_ceo_remark,
+        ot_ceo_user: em_id,
         ot_coff_type: ot_type,
         ot_new_time: otAdd.totalot,
         emp_id: modeldata.emp_id,
@@ -181,7 +185,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
             credited: 1,
             lvetype_slno: 11,
             credited_date: moment(new Date()).format('YYYY-MM-DD  HH:mm:ss'),
-            approver_user: employeeNumber(),
+            approver_user: em_id,
             ot_slno: otno
         }
         leavecalarray.push(postdata)

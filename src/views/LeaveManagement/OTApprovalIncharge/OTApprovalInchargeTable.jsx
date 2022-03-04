@@ -3,13 +3,16 @@ import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ModelInchargeApproval from './ModelInchargeApproval';
+import { HiTrash } from "react-icons/hi";
+import OTCancelModel from '../OTComponent/OTCancelModel';
 
 const OTApprovalInchargeTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
+    const [slno, setSlno] = useState(0);
     //Table
     const title = [
         {
@@ -58,13 +61,35 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
         }
     }, [DeptSect, count]);
 
+    // const inchargecancel = async (getdata) => {
+    //     const { ot_slno } = getdata
+    //     // const result = await axioslogin.delete(`/otcancel/delete/${ot_slno}`)
+    //     // const { message, success } = result.data;
+    //     // if (success === 1) {
+    //     //     setCount(count - 1)
+    //     //     succesNofity(message);
+    //     // } else {
+    //     //     warningNofity(" Error occured contact EDP")
+    //     // }
+    // }
+
     const [open, setOpen] = useState(false);
+    const [cancelopen, setcancelOpen] = useState(false);
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+
+    };
+    const cancelClose = () => {
+        setcancelOpen(false);
+    };
+
+    const inchargecancel = (data) => {
+        setSlno(data)
+        setcancelOpen(true);
     };
 
     return (
@@ -74,6 +99,16 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
+                    setCount={setCount}
+                    count={count}
+                />
+                : null}
+            {slno !== 0 ?
+                <OTCancelModel
+                    cancelopen={cancelopen}
+                    cancelClose={cancelClose}
+                    heading={"Over Time Incharge Cancel"}
+                    slno={slno}
                     setCount={setCount}
                     count={count}
                 />
@@ -88,6 +123,11 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
                         onClick: (e, data) => handleClickOpen(data.ot_slno)
+                    },
+                    {
+                        icon: () => <HiTrash size={24} color='success' />,
+                        tooltip: "Click here to Cancel",
+                        onClick: (e, data) => inchargecancel(data.ot_slno)
                     }
                 ]}
                 options={{
