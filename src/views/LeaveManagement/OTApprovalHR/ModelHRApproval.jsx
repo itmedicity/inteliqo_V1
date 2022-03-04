@@ -6,6 +6,8 @@ import Slide from '@mui/material/Slide';
 import TextInput from 'src/views/Component/TextInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { useContext } from 'react';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
 import { Button, Checkbox, DialogActions } from '@mui/material';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -15,6 +17,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [otAdd, setOtAdd] = useState({
         totalot: ''
     })
@@ -132,6 +136,7 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
     const patchData = {
         ot_hr_status: approve === true ? 1 : reject === true ? 2 : 0,
         ot_hr_remark: ot_hr_remark,
+        ot_hr_user: em_id,
         ot_coff_type: ot_type,
         ot_new_time: otAdd.totalot,
         emp_id: modeldata.emp_id,
