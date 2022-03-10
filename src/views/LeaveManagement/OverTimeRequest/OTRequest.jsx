@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useContext, useState } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import TextInput from 'src/views/Component/TextInput'
-import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,18 +15,21 @@ import { format } from 'date-fns'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
+import GetPunchdata from '../OTComponent/GetPunchdata'
 
 const OTRequest = () => {
     const history = useHistory()
     const [otDate, setOtDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState(0)
+    const [punchindatamain, setpunchindatamain] = useState(0)
+    const [punchoutdatamain, setpunchoutdatamain] = useState(0)
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
-    const { em_id, em_name, desg_name, em_dept_section } = employeedetails
+    const { em_id, em_name, desg_name, em_dept_section, sect_name, em_no } = employeedetails
     const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     const [flag, setflag] = useState(0)
+    const [shiftid, setShiftid] = useState(0)
+    const [tableset, setTable] = useState(0)
     const [tabledata, setTableData] = useState({
-        date: '',
-        shift: '',
         shift_Start: '',
         shift_end: '',
         in_time: '',
@@ -36,92 +38,91 @@ const OTRequest = () => {
 
     //Initializing
     const [request, setrequest] = useState({
-        otDate: '',
         ot_reson: '',
         ot_remarks: '',
-        shft_slno: '',
-        checkin: new Date(),
-        checkout: new Date(),
-        shiftcheckout: new Date(),
-        shiftcheckin: new Date(),
         finaltime: '',
         ot_slno: '',
         ot_amount: ''
     })
-    const postdata = {
-        emp_id: em_id,
-        duty_day: otDate,
-
-    }
+    const [shiftdata, setShiftdata] = useState({
+        shiftcheckout: new Date(),
+        shiftcheckin: new Date(),
+    })
     const defaultState = {
-        date: '',
-        shift: '',
         shift_Start: '',
         shift_end: '',
         in_time: '',
         out_time: '',
-        finaltime: '',
-        otDate: '',
         ot_reson: '',
         ot_remarks: '',
-        shft_slno: '',
+        finaltime: '',
+        ot_slno: '',
+        ot_amount: '',
+        shiftcheckout: '',
+        shiftcheckin: ''
     }
 
-    const getShiftdetail = async () => {
-        const result = await axioslogin.post('/common/getShiftdetails', postdata)
-        const { success, data } = result.data;
-        if (success === 1) {
-            const { duty_day, shift_id, shft_slno, shft_chkin_time, shft_chkout_time, punch_in, punch_out, ot_amount, ot_request_flag } = data[0]
-            if (ot_request_flag === 1) {
-                infoNofity("Already Applied for Over Time")
-            } else {
-                if (punch_in !== null && punch_out !== null) {
+    useEffect(() => {
+        if ((punchindatamain !== 0) && (punchoutdatamain !== 0)) {
+            setTable(1)
+            const getTable = async () => {
+                console.log(shiftid);
+                const result = await axioslogin.get(`/shift/${shiftid}`)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const { shft_chkin_time, shft_chkout_time } = data[0]
                     const frmdata = {
-                        date: duty_day,
-                        shift: shift_id,
                         shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
                         shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
-                        in_time: format(new Date(punch_in), "HH:mm:ss"),
-                        out_time: format(new Date(punch_out), "HH:mm:ss")
+                        in_time: punchindatamain,
+                        out_time: punchoutdatamain
                     }
                     const set = {
-                        otDate: '',
-                        ot_reson: '',
-                        ot_remarks: '',
-                        shft_slno: shft_slno,
-                        checkin: punch_in,
-                        checkout: punch_out,
                         shiftcheckout: shft_chkout_time,
                         shiftcheckin: shft_chkin_time,
-                        ot_amount: ot_amount
                     }
                     setTableData(frmdata);
-                    setrequest(set)
-                }
-                else {
-                    infoNofity("Punch not available")
+                    setShiftdata(set)
+                } else {
+                    setTableData(defaultState);
+                    setShiftdata(defaultState)
                 }
             }
-        } else if (success === 2) {
-            infoNofity("No Punch against to this employee")
-            setTableData(defaultState)
-            setrequest(defaultState)
-        } else {
-            warningNofity(" Error occured contact EDP")
-        }
-    }
+            getTable()
+            const getotamount = async () => {
+                const result = await axioslogin.get(`/common/getotwage/${em_id}`)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const { ot_amount } = data[0]
+                    const frm = {
+                        ot_amount: ot_amount,
+                        ot_reson: '',
+                        ot_remarks: '',
+                        finaltime: '',
+                        ot_slno: ''
+                    }
+                    setrequest(frm)
+                }
+                else {
+                    setrequest(defaultState)
+                }
+            }
+            getotamount()
+
+        } else { }
+    }, [punchindatamain, punchoutdatamain]);
 
     //Shift Hours
-    const x = moment(request.shiftcheckin).format("YYYY-MM-DD HH:mm:ss")
+    const x = moment(shiftdata.shiftcheckin).format("YYYY-MM-DD HH:mm:ss")
     const xx = moment(x)
-    const y = moment(request.shiftcheckout).format("YYYY-MM-DD HH:mm:ss")
+    const y = moment(shiftdata.shiftcheckout).format("YYYY-MM-DD HH:mm:ss")
     const yy = moment(y)
     const exactWork = getTotalShiftHours(xx, yy)
 
     //Working hours
-    const a = moment(new Date(request.checkin)).format("YYYY-MM-DD HH:mm:ss")
+    const a = moment(new Date(punchindatamain)).format("YYYY-MM-DD HH:mm:ss")
     const aa = moment(a)
-    const b = moment(new Date(request.checkout)).format("YYYY-MM-DD HH:mm:ss")
+    const b = moment(new Date(punchoutdatamain)).format("YYYY-MM-DD HH:mm:ss")
     const bb = moment(b)
     const working = getTotalShiftHours(aa, bb)
 
@@ -140,15 +141,6 @@ const OTRequest = () => {
     } else { }
     var amount = hrRate + minRate
 
-    useEffect(() => {
-    }, []);
-
-    const getDate = (e) => {
-        var selectdate = e.target.value
-        var selectDate = format(new Date(selectdate), "yyyy-MM-dd")
-        setOtDate(selectDate)
-    }
-
     //Destructuring
     const { ot_reson, ot_remarks } = request;
     const updateRequest = (e) => {
@@ -158,12 +150,13 @@ const OTRequest = () => {
 
     //post Data
     const postData = {
-        emp_id: employeedetails.em_id,
+        emp_id: em_id,
+        em_no: em_no,
         ot_date: new Date(),
-        ot_days: tabledata.date,
-        ot_shift_id: request.shft_slno,
-        check_in: request.checkin,
-        check_out: request.checkout,
+        ot_days: otDate,
+        ot_shift_id: shiftid,
+        check_in: punchindatamain,
+        check_out: punchoutdatamain,
         over_time: overTime,
         ot_reson: ot_reson,
         ot_remarks: ot_remarks,
@@ -175,9 +168,7 @@ const OTRequest = () => {
         ot_ceo_require: ceo_level,
         ot_deptsec_id: em_dept_section
     }
-
     const resetForm = {
-        otDate: '',
         ot_reson: '',
         ot_remarks: '',
         shft_slno: '',
@@ -237,7 +228,6 @@ const OTRequest = () => {
             }
         }
     }
-
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
@@ -252,90 +242,95 @@ const OTRequest = () => {
             >
                 <div className="card">
                     <div className="card-body">
-                        <div className="row g-1">
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Employee Name"
-                                    value={em_id}
-                                    name="em_name"
-                                    disabled="Disabled"
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Employee ID"
-                                    value={em_name}
-                                    name="em_no"
-                                    disabled="Disabled"
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Designation"
-                                    value={desg_name}
-                                    name="desg_name"
-                                    disabled="Disabled"
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="date"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Start Date"
-                                    value={otDate}
-                                    name="otDate"
-                                    max={moment(new Date()).format('YYYY-MM-DD')}
-                                    changeTextValue={(e) => {
-                                        getDate(e)
-                                    }}
-                                />
-                            </div>
-                            <div className="col-md-1 pl-2">
-                                <MdOutlineAddCircleOutline align="right" className="text-danger" size={32}
-                                    onClick={getShiftdetail} />
-                            </div>
-                        </div>
-                        <div className="row g-1 ">
-                            <div className="card ">
-                                <div className="col-md-12 pt-1">
-                                    <TableContainer sx={{ maxHeight: 150 }}>
-                                        <Table size="small"
-                                            stickyHeader aria-label="sticky table">
-                                            <TableHead>
-                                                <TableRow >
-                                                    <TableCell align="center">Date</TableCell>
-                                                    <TableCell align="center">Shift</TableCell>
-                                                    <TableCell align="center">Shift Start</TableCell>
-                                                    <TableCell align="center">Shift end</TableCell>
-                                                    <TableCell align="center">In</TableCell>
-                                                    <TableCell align="center">Out</TableCell>
-                                                    <TableCell align="center">OT(In hour)</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow
-                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                >
-                                                    <TableCell align="center">{tabledata.date}</TableCell>
-                                                    <TableCell align="center">{tabledata.shift}</TableCell>
-                                                    <TableCell align="center">{tabledata.shift_Start}</TableCell>
-                                                    <TableCell align="center">{tabledata.shift_end}</TableCell>
-                                                    <TableCell align="center">{tabledata.in_time}</TableCell>
-                                                    <TableCell align="center">{tabledata.out_time}</TableCell>
-                                                    <TableCell align="center">{finaltime}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                        <div className="col-md-12">
+                            <div className="row g-1 mb-2">
+                                <div className="col-md-3">
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Employee Name"
+                                        value={em_id}
+                                        name="em_name"
+                                        disabled="Disabled"
+                                    />
+                                </div>
+                                <div className="col-md-3">
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Employee ID"
+                                        value={em_name}
+                                        name="em_no"
+                                        disabled="Disabled"
+                                    />
+                                </div>
+                                <div className="col-md-3">
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Employee ID"
+                                        value={sect_name}
+                                        name="sect_name"
+                                        disabled="Disabled"
+                                    />
+                                </div>
+                                <div className="col-md-3">
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Designation"
+                                        value={desg_name}
+                                        name="desg_name"
+                                        disabled="Disabled"
+                                    />
                                 </div>
                             </div>
                         </div>
+                        <GetPunchdata
+                            otDate={otDate}
+                            setOtDate={setOtDate}
+                            shiftid={shiftid}
+                            setShiftid={setShiftid}
+                            setpunchindatamain={setpunchindatamain}
+                            setpunchoutdatamain={setpunchoutdatamain} />
+                        {tableset === 1 ?
+                            <div className="row g-1 ">
+                                <div className="card ">
+                                    <div className="col-md-12 pt-1">
+                                        <TableContainer sx={{ maxHeight: 150 }}>
+                                            <Table size="small"
+                                                stickyHeader aria-label="sticky table">
+                                                <TableHead>
+                                                    <TableRow >
+                                                        <TableCell align="center">Date</TableCell>
+                                                        <TableCell align="center">Shift</TableCell>
+                                                        <TableCell align="center">Shift Start</TableCell>
+                                                        <TableCell align="center">Shift end</TableCell>
+                                                        <TableCell align="center">Punch In</TableCell>
+                                                        <TableCell align="center">Punch Out</TableCell>
+                                                        <TableCell align="center">OT(In hour)</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell align="center">{otDate}</TableCell>
+                                                        <TableCell align="center">{shiftid}</TableCell>
+                                                        <TableCell align="center">{tabledata.shift_Start}</TableCell>
+                                                        <TableCell align="center">{tabledata.shift_end}</TableCell>
+                                                        <TableCell align="center">{tabledata.in_time}</TableCell>
+                                                        <TableCell align="center">{tabledata.out_time}</TableCell>
+                                                        <TableCell align="center">{finaltime}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
+                                </div>
+                            </div>
+                            : null
+                        }
                         <div className="row g-1 pt-1">
                             < div className="col-md-12">
                                 <TextInput
