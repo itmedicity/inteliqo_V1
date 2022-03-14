@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
 import { Checkbox, FormControlLabel, MenuItem, Select } from '@material-ui/core'
 
 const Compenofflpundata = ({ style, punchtime, setpunchindatamain, setpunchoutdatamain }) => {
@@ -119,4 +119,4 @@ const Compenofflpundata = ({ style, punchtime, setpunchindatamain, setpunchoutda
     )
 };
 
-export default Compenofflpundata;
+export default memo(Compenofflpundata)

@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState, } from 'react'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
@@ -10,45 +10,67 @@ import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
+import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 
 const ApprovalIncharge = () => {
     const history = useHistory()
-    const { updateleaverequest } = useContext(PayrolMasterContext)
+    const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
     // to get the ype leave request
-
     const [levtpevalue, setleavetypevalue] = useState([])
-
+    const [levtpevaluearry, setleavetypevaluearry] = useState({
+        COFF: false,
+        HDLR: false,
+        LR: false,
+        NOP: false,
+    })
+    const { COFF, HDLR, LR, NOP } = levtpevaluearry
+    // for get leave requesst details
+    const [leavereq, setleavereqst] = useState([])
+    // console.log(leavereq)
+    // get nopunch request
+    const [nopunch, setnopunch] = useState([])
+    // get halfdayrequest
+    const [halfday, sethalfday] = useState([])
+    const [compensetory, setcompensetory] = useState([])
     useEffect(() => {
-        const getleaverequest = async () => {
-            const result = await axioslogin.get('/leaveRequestType/select')
-            const { success, data } = result.data;
-            if (success === 1) {
-                setleaverequesttype(data)
-            }
-        }
-        getleaverequest()
+        getleaverequestget(getDeptSection).then((val) => {
+            setleavereqst(val)
+        })
+        getleaverequest(getDeptSection).then((val) => {
+            setleaverequesttype(val)
+        })
+        getnopunchrequst(getDeptSection).then((val) => {
+            setnopunch(val)
+        })
+        halfdayrequest(getDeptSection).then((val) => {
+            sethalfday(val)
+        })
+        compensatory(getDeptSection).then((val) => {
+            setcompensetory(val)
+        })
         return (
             updateleaverequest(0)
         )
-    }, [updateleaverequest]);
-
-
-
+    }, [updateleaverequest, getDeptSection]);
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-
     const leverequesttypechange = async (e) => {
+        const ob1 = {
+            COFF: false,
+            HDLR: false,
+            LR: false,
+            NOP: false,
+        }
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        // console.log(Object.keys(levtpevalue))
-        setleavetypevalue({ ...levtpevalue, [e.target.name]: value })
+        setleavetypevaluearry({ ...ob1, [e.target.name]: value })
+        setleavetypevalue(e.target.value)
     }
-    // console.log(levtpevalue)
     return (
         <Fragment>
-            <PageLayoutSave
+            <PageLayoutCloseOnly
                 heading="Leave Approval Incharge"
                 redirect={RedirectToProfilePage}
             //submit={submitFine}
@@ -60,21 +82,7 @@ const ApprovalIncharge = () => {
                                 <div className="row">
                                     <div className="col-md-5 col-sm-12 col-xs-12">
                                         <div className="d-flex justify-content-around">
-                                            <div className="pt-0">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            name="all"
-                                                            color="secondary"
-                                                            // value={Leave_Carry_Forwad}
-                                                            // checked={Leave_Carry_Forwad}
-                                                            //onChange={(e) => null}
-                                                            checked={true}
-                                                        />
-                                                    }
-                                                    label="All"
-                                                />
-                                            </div>
+
                                             {
                                                 leaverequesttype && leaverequesttype.map((val) => {
                                                     return <div className="pt-0" key={val.lrequest_slno} >
@@ -85,7 +93,12 @@ const ApprovalIncharge = () => {
                                                                         name={val.lrequest_short}
                                                                         color="secondary"
                                                                         value={val.lrequest_slno}
-                                                                        // checked={Leave_Carry_Forwad}
+                                                                        checked={val.lrequest_short === 'LR' ? LR :
+                                                                            val.lrequest_short === 'HDLR' ? HDLR :
+                                                                                val.lrequest_short === 'NOP' ? NOP :
+                                                                                    val.lrequest_short === 'COFF' ? COFF : false
+
+                                                                        }
                                                                         onChange={(e) => leverequesttypechange(e)}
                                                                     />
                                                                 </Tooltip>
@@ -149,11 +162,20 @@ const ApprovalIncharge = () => {
                     </div>
                     <div className="card ">
                         <div className="col-md-12">
-                            <ApprovalInchargeTable />
+                            <ApprovalInchargeTable leavereq={levtpevalue == 1 ? leavereq :
+                                levtpevalue == 2 ? halfday :
+                                    levtpevalue == 4 ? compensetory :
+                                        levtpevalue == 3 ? nopunch : []
+                            } levtpevalue={levtpevalue} authority={1}
+                                setleavereq={levtpevalue == 1 ? setleavereqst :
+                                    levtpevalue == 2 ? sethalfday :
+                                        levtpevalue == 4 ? setcompensetory :
+                                            levtpevalue == 3 ? setnopunch : null}
+                            />
                         </div>
                     </div>
                 </div>
-            </PageLayoutSave>
+            </PageLayoutCloseOnly>
         </Fragment >
     )
 }

@@ -20,6 +20,7 @@ const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, u
             getInchargeDeptSect()
         }
     }, [is_incharge, em_id])
+
     return (
         <div>
             <Fragment>

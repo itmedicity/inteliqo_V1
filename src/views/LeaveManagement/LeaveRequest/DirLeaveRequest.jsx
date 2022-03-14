@@ -15,29 +15,22 @@ const DirLeaveRequest = ({
     leveData,//for getting the leave data based o
     setLeveData,//for getting the leave data based o
     setleavestartend,//to get start and end dates
-    setleavedata//setleavedata for leavedata to main page
+    setleavedata,//setleavedata for leavedata to main page
+    setleavedaystype
 }) => {
     const [date, setDate] = useState([]);// leave dates based on the interval dates
-
-
     const [checkState, setCheckState] = useState(false)
-
     const [casualLevestore, setCasualLevestore] = useState([])//array of object for leave data casual leave
-
     const [holidayLevestore, setholidayLevestore] = useState([])//array of object for leave data casual leave
-
-
     const [festivalholidayLevestore, setfestivalholidayLevestore] = useState([])//array of object for leave data casual leave
-
-
     const [display, setDisplyleave] = useState(0)
+    const [durationleave, setdurationleave] = useState(0)
 
     // use state for start and end date
     const [formData, setFormData] = useState({
         startDate: format(new Date(), "yyyy-MM-dd"),
         endDate: format(new Date(), "yyyy-MM-dd"),
     })
-
     // destructuring start and end date
     const { startDate, endDate } = formData
     // on change  start and end date
@@ -51,11 +44,9 @@ const DirLeaveRequest = ({
         const range = eachDayOfInterval(
             { start: new Date(startDate), end: new Date(e) }
         )
-        const newDateFormat = range.map((val) => { return { date: moment(val).format('DD-MM-YYYY') } })
-
-
+        setleavedaystype(Object.keys(range).length)
+        const newDateFormat = range.map((val) => { return { date: moment(val).format('yyyy-MM-DD') } })
         setDate(newDateFormat)
-
     }
 
 
@@ -163,6 +154,7 @@ const DirLeaveRequest = ({
                                     leveData={leveData}
                                     leaveDetails={leaveDetails}// for main page details of leave 
                                     leaveretypeid={leaveretypeid}// type of request half,leave,latecoming
+                                    durationleave={durationleave}
                                 />
                             }) : null
                     }
