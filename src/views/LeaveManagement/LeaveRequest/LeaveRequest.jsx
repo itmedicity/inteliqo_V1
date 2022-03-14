@@ -22,6 +22,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { id } from 'date-fns/locale'
 import Compensatoryoff from './Component/Compensatoryoff'
 import moment from 'moment'
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 const Input = styled('input')({
     display: 'none',
 });
@@ -31,6 +32,7 @@ const LeaveRequest = () => {
     // usestate for leaveslno
     const [leaveslno, setleaveslno] = useState()
     const [levereqtype, setleavereqtype] = useState(0)
+    const [leavdaystype, setleavedaystype] = useState(0)
     useEffect(() => {
         getleaverequest().then((val) => {
             setleaveslno(val)
@@ -62,13 +64,11 @@ const LeaveRequest = () => {
     const [leveda, setleavedata] = useState()
     // use conext data 
     const { employeedetails,//for employee details
-        updateemployeedetails,
         getleavereqtype,//type of leave request half,leave,latecoming
-        updateleavereqtype } = useContext(PayrolMasterContext)
-
+        updateleavereqtype, authorization } = useContext(PayrolMasterContext)
+    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     // destructuring employee details
     const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
-
     // for main page details of leave 
     const [leaveDetails, setLeaveDetails] = useState({
         fromDate: '',
@@ -78,7 +78,6 @@ const LeaveRequest = () => {
     })
     // destructuring of leave details
     const { fromDate, noofleavetaken, resonforleave, emergencynumber } = leaveDetails
-
     // on change in main page 
     const updateLeaveDetails = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -96,7 +95,14 @@ const LeaveRequest = () => {
         leavefrom_date: startDate,
         leavetodate: endDate,
         rejoin_date: format(add(new Date(endDate), { days: 1 }), "yyyy-MM-dd"),
-        request_status: 1
+        request_status: 1,
+        incharge_level: incharge_level,
+        hod_level: hod_level,
+        ceo_level: ceo_level,
+        leavdaystype: (leavdaystype >= 3) && (leavdaystype < 5) ? 1 : (leavdaystype >= 5) ? 2 : 0,
+        resonforleave: resonforleave,
+        emergencynumber: emergencynumber,
+        noofleavetaken: noofleavetaken
     }
     const submitLeave = async () => {
 
@@ -109,35 +115,40 @@ const LeaveRequest = () => {
                     leave: val.leave,
                     levtypename: val.levtypename,
                     lveDate: val.lveDate,
-                    lveType: val.lveType
+                    lveType: val.lveType,
+                    incharge_level: incharge_level,
+                    hod_level: hod_level,
+                    ceo_level: ceo_level
                 }
                 return levedsata
             })
-
-            const result = await axioslogin.post('/LeaveRequest/', leavemastdata)
-            const { success, data } = result.data
-            if (success === 1) {
-
-                const result = await axioslogin.post('/LeaveRequest/createdetlleave', leavedatadetl)
+            if (resonforleave !== '') {
+                const result = await axioslogin.post('/LeaveRequest', leavemastdata)
+                const { success } = result.data
                 if (success === 1) {
-
-                    succesNofity('saved successsfully')
-                    updateleavereqtype(0)
+                    const result2 = await axioslogin.post('/LeaveRequest/createdetlleave', leavedatadetl)
+                    if (result2.data.success === 1) {
+                        succesNofity('saved successsfully')
+                        updateleavereqtype(0)
+                    }
+                    else if (result2.data.success === 2) {
+                        warningNofity("There Is No Casual Leave Left For This Employee")
+                    }
+                    else {
+                        errorNofity("Error Occured!!!!Please Contact EDP6767")
+                    }
                 }
                 else if (success === 2) {
                     warningNofity("There Is No Casual Leave Left For This Employee")
                 }
                 else {
-                    errorNofity("Error Occured!!!!Please Contact EDP")
+                    errorNofity("Error Occured!!!!Please Contact EDPrty")
                 }
-            }
-            else if (success === 2) {
-                warningNofity("There Is No Casual Leave Left For This Employee")
-            }
-            else {
-                errorNofity("Error Occured!!!!Please Contact EDP")
+            } else {
+                warningNofity("Please Enter The Reason")
             }
         }
+
         else if (levereqtype === 2) {
             const halfdaysavedata = {
                 checkIn: format(halfday.checkIn, "yyyy-MM-dd HH:MM:SS"),
@@ -145,32 +156,32 @@ const LeaveRequest = () => {
                 leavedate: halfday.startDate,
                 planslno: halfday.casullevemonth,
                 shiftid: halfday.planslno,
-                month: 'januvary',
+                month: halfday.monthleave,
                 em_id: em_id,
                 em_no: em_no,
                 em_department: em_department,
                 em_dept_section: em_dept_section,
+                incharge_level: incharge_level,
+                hod_level: hod_level,
+                ceo_level: ceo_level,
+                resonforleave: resonforleave,
             }
+            if (resonforleave !== '') {
+                const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    updateleavereqtype(0)
 
-            const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-
-
-            const { success, message } = result.data
-
-            if (success === 1) {
-                succesNofity(message)
-
-                updateleavereqtype(0)
-
-            } else {
-                errorNofity(message)
+                } else {
+                    errorNofity(message)
+                }
+            }
+            else {
+                warningNofity("Please Enter The Reason")
             }
         }
-
-
         else if (levereqtype === 3) {
-
-
             if (mispunchflag === 0) {
                 if (checkinflag === true || checkoutflag === true) {
                     const lopdayreqst = {
@@ -186,56 +197,43 @@ const LeaveRequest = () => {
                         em_no: em_no,
                         em_department: em_department,
                         em_dept_section: em_dept_section,
-                        punch_slno: punch_slno
+                        punch_slno: punch_slno,
+                        incharge_level: incharge_level,
+                        hod_level: hod_level,
+                        ceo_level: ceo_level,
+                        resonforleave: resonforleave,
+
                     }
+                    if (resonforleave !== '') {
+                        const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', lopdayreqst)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            succesNofity(message)
+                            updateleavereqtype(0)
 
-
-
-                    const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', lopdayreqst)
-                    const { success, message } = result.data
-
-                    if (success === 1) {
-                        succesNofity(message)
-
-                        updateleavereqtype(0)
-
-                    } else {
-                        errorNofity(message)
+                        } else {
+                            errorNofity(message)
+                        }
                     }
-
-
-
-
-
+                    else {
+                        warningNofity("Please Enter The Reason")
+                    }
                 }
                 else {
-
                     warningNofity('Select A Punch')
                 }
             } else {
                 warningNofity('Already request Added')
             }
-
-
-
-
-
-
         }
         else if (levereqtype === 5) {
-
-
-
             const { punchin, punchout, reqtype, selectshitid, shifturation, startdate } = compensatoryoff
-
             if (reqtype === 1) {
                 const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
                 const puninfinal = moment(puin)
                 const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
                 const punoutfinal = moment(puout)
                 const duration = getTotalShiftHours(puninfinal, punoutfinal)
-
-
                 const constdatasave = {
                     startdate: startdate,
                     punchindata: punchin,
@@ -249,32 +247,33 @@ const LeaveRequest = () => {
                     em_no: em_no,
                     em_department: em_department,
                     em_dept_section: em_dept_section,
-                    shift_id: selectshitid
+                    shift_id: selectshitid,
+                    incharge_level: incharge_level,
+                    hod_level: hod_level,
+                    ceo_level: ceo_level,
+                    resonforleave: resonforleave,
 
                 }
-
-                const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
-                const { success, message } = result.data
-
-                if (success === 1) {
-                    succesNofity(message)
-
-                    updateleavereqtype(0)
-
-                } else {
-                    errorNofity(message)
+                if (resonforleave !== '') {
+                    const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        succesNofity(message)
+                        updateleavereqtype(0)
+                    } else {
+                        errorNofity(message)
+                    }
                 }
-
+                else {
+                    warningNofity("Please Enter The Reason")
+                }
             }
             if (reqtype === 2) {
-
                 const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
                 const puninfinal = moment(puin)
                 const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
                 const punoutfinal = moment(puout)
                 const duration = getTotalShiftHours(puninfinal, punoutfinal)
-
-
                 const constdatasave = {
                     startdate: startdate,
                     punchindata: punchin,
@@ -288,32 +287,30 @@ const LeaveRequest = () => {
                     em_no: em_no,
                     em_department: em_department,
                     em_dept_section: em_dept_section,
-
+                    incharge_level: incharge_level,
+                    hod_level: hod_level,
+                    ceo_level: ceo_level,
+                    resonforleave: resonforleave,
                 }
-                const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
-                const { success, message } = result.data
-
-                if (success === 1) {
-
-                    updateleavereqtype(0)
-
-                    succesNofity(message)
-                } else {
-                    errorNofity(message)
+                if (resonforleave !== '') {
+                    const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        updateleavereqtype(0)
+                        succesNofity(message)
+                    } else {
+                        errorNofity(message)
+                    }
                 }
-
-
-
-
-
+                else {
+                    warningNofity("Please Enter The Reason")
+                }
             }
-
-
         }
     }
-
     return (
         <Fragment>
+            <AuthorizationDetails />
             <PageLayoutSave
                 heading="Leave Request"
                 redirect={RedirectToProfilePage}
@@ -428,6 +425,7 @@ const LeaveRequest = () => {
                                 leveData={lveData}
                                 setleavestartend={setleavestartend}
                                 setleavedata={setleavedata}
+                                setleavedaystype={setleavedaystype}
                             /> :
                                 getleavereqtype === 2 ? <HalfDayLeaveRequest sethalfday={sethalfday} /> :
                                     getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch} /> :
@@ -445,5 +443,4 @@ const LeaveRequest = () => {
         </Fragment>
     )
 }
-
 export default LeaveRequest

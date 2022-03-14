@@ -124,7 +124,8 @@ const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/D
 const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
-
+const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
+const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -254,7 +255,8 @@ const routes = [
   { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
   { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
   { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
-
+  { path: '/Home/ApprovalCEO', exact: true, name: 'Approval CEO', component: ApprovalCEO },
+  { path: '/Home/CommonSettings', exact: true, name: 'Common Settings', component: CommonSettings },
 ]
 
 export default routes

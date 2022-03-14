@@ -38,6 +38,7 @@ export const py_setting_three = [
     { to: '/Home/YearlyLeaveCalendar', name: 'Yearly Leave Calendar', slno: 102 },
     { to: '/Home/RegistrationType', name: 'Registration Type', slno: 103 },
     { to: '/Home/BoardEdu', name: 'Board Master', slno: 104 },
+    { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
 ]
 
 export const userManagement_one = [

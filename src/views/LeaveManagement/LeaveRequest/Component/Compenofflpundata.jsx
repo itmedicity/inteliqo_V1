@@ -1,6 +1,5 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
 import { Checkbox, FormControlLabel, MenuItem, Select } from '@material-ui/core'
-// import { MenuItem, Select } from '@mui/material';
 
 const Compenofflpundata = ({ style, punchtime, setpunchindatamain, setpunchoutdatamain }) => {
     const [punchindata, setpunin] = useState(0)
@@ -101,11 +100,9 @@ const Compenofflpundata = ({ style, punchtime, setpunchindatamain, setpunchoutda
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </Fragment>
     )
 };
 
-export default Compenofflpundata;
+export default memo(Compenofflpundata)

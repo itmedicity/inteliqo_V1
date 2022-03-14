@@ -6,7 +6,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import TextInput from 'src/views/Component/TextInput';
+// import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+// import Radio from '@mui/material/Radio';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,43 +20,44 @@ import { format } from 'date-fns';
 import { Checkbox, Typography } from '@material-ui/core';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment'
-import { errorNofity, getleaverequestget, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, getnopunchrequst, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedetail, setleavereq, authority, em_id }) => {
-    const {
-        emno,
-        leave_date,
-        leavetodate, leave_slno,
-        reqtype, nodays, lve_uniq_no
-    } = leaveremastdata[0]
+const ModelNopunch = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id }) => {
     const [reason, setreason] = useState('')
     const [status, setstatus] = useState({
         apprv: false,
         reject: false
     })
     const { apprv, reject } = status
-    const submitdata = async () => {
-        const postleavedata = {
+    const updatenopunchreq = async (e) => {
+        const ob1 = {
+            apprv: false,
+            reject: false
+        }
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setstatus({ ...ob1, [e.target.name]: value })
+    }
+    const submitnopunch = async () => {
+        const submitpunch = {
             status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
             comment: reason,
-            slno: leave_slno,
+            slno: hafdaydata[0].nopunch_slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-            us_code: em_id,
-            lve_uniq_no: lve_uniq_no
+            us_code: em_id
         }
         if (authority === 1) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', postleavedata)
-            const { success, message } = result.data;
+            const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvnopunch', submitpunch)
+            const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getnopunchrequst().then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
-
-            } else if (success === 2) {
+            }
+            else if (success === 2) {
                 warningNofity(message)
             }
             else {
@@ -62,34 +65,33 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
-            const { success, message } = result.data;
+            const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlnopunch', submitpunch)
+            const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getnopunchrequst().then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
-
-            } else if (success === 2) {
+            }
+            else if (success === 2) {
                 warningNofity(message)
             }
             else {
                 errorNofity(message)
             }
-
         }
         else if (authority === 3) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/CeoApprvLeave', postleavedata)
-            const { success, message } = result.data;
+            const result = await axioslogin.patch('./LeaveRequestApproval/Ceonopunch', submitpunch)
+            const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getnopunchrequst().then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
-
-            } else if (success === 2) {
+            }
+            else if (success === 2) {
                 warningNofity(message)
             }
             else {
@@ -97,65 +99,84 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             }
         }
         else if (authority === 4) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+            const result = await axioslogin.patch('/LeaveRequestApproval/HrNopunch', submitpunch)
             const { success, data, message } = result.data;
             if (success === 1) {
                 const post = data.map((val) => {
-                    const postData = {
-                        date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
-                        req_type: 'LV',
-                        leave: val.leave_typeid,
-                        leave_subreq: val.leave_processid,
-                        em_no: emno,
+                    if (val.checkinflag === 1) {
+                        const postData = {
+                            date: moment(new Date(val.nopunchdate)).format('YYYY-MM-DD'),
+                            req_type: 'NP',
+                            em_no: val.em_no,
+                            punch: val.checkintime,
+                        }
+                        return postData
+                    } else if (val.checkoutflag === 1) {
+                        const postData = {
+                            date: moment(new Date(val.nopunchdate)).format('YYYY-MM-DD'),
+                            req_type: 'NP',
+                            em_no: val.em_no,
+                            punch: val.checkouttime,
+                        }
+                        return postData
+
                     }
-                    return postData
                 })
-                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
-                const { success, message } = results.data
-                if (success === 1) {
-                    succesNofity("Updated")
-                    getleaverequestget().then((val) => {
-                        setleavereq(val)
-                    })
-                    handleClose()
-                }
-                else if (success === 2) {
-                    warningNofity(message)
-                }
-                else {
-                    errorNofity(message)
+                if (data[0].checkinflag === 1) {
+                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchnopunch', post)
+                    const { success, message } = results.data
+                    if (success === 1) {
+                        succesNofity("Updated")
+                        getnopunchrequst().then((val) => {
+                            setleavereq(val)
+                        })
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
+                } else if (data[0].checkoutflag === 1) {
+                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchnopunchOUt', post)
+                    const { success, message } = results.data
+                    if (success === 1) {
+                        succesNofity("Updated")
+                        getnopunchrequst().then((val) => {
+                            setleavereq(val)
+                        })
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
             }
             else {
                 errorNofity(message)
             }
-        } else if (authority === 5) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/lveReqCancel', postleavedata)
-            const { success, message } = result.data;
+        }
+        else if (authority === 5) {
+            const result = await axioslogin.patch('./LeaveRequestApproval/nopunchCancel', submitpunch)
+            const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getnopunchrequst().then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
-
-            } else if (success === 2) {
+            }
+            else if (success === 2) {
                 warningNofity(message)
             }
             else {
                 errorNofity(message)
             }
         }
-
-    }
-    const updateInchargeApproval = async (e) => {
-        const ob1 = {
-            apprv: false,
-            reject: false
-
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setstatus({ ...ob1, [e.target.name]: value })
     }
     return (
         <Fragment>
@@ -166,7 +187,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                 keepMounted
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
-                <DialogTitle>{"Leave Approval/Reject"}</DialogTitle>
+                <DialogTitle>{"No Punch Request"}</DialogTitle>
                 <DialogContent sx={{
                     minWidth: 300,
                     maxWidth: 600,
@@ -175,55 +196,6 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                     <div className="card">
                         <div className="card-body">
                             <div className="col-md-12 col-sm-12" >
-                                <div className="col-md-12 col-sm-12">
-                                    {/* <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Leave Request Type"
-                                        fullWidth
-                                        disabled="Disabled"
-                                        value={reqtype}
-                                    // name=""
-                                    /> */}
-                                    <Typography>{reqtype}</Typography>
-                                </div>
-                                <div className="row g-1 pt-1">
-                                    <div className="col-md-4">
-                                        <TextInput
-                                            type="date"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="Start Date"
-                                            disabled="Disabled"
-                                            value={leave_date}
-                                        //name="finestart"
-                                        // changeTextValue={(e) => {
-                                        //     getstart(e)
-                                        // }}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <TextInput
-                                            type="date"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="End  Date"
-                                            disabled="Disabled"
-                                            value={leavetodate}
-
-                                        />
-                                    </div>
-                                    <div className="col-md-4 col-sm-12">
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="No of days"
-                                            fullWidth
-                                            disabled="Disabled"
-                                            value={nodays}
-
-
-                                        />
-                                    </div>
-                                </div>
                                 <div className="row g-1 pt-2">
                                     <div className="col-md-12">
                                         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -232,22 +204,25 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                                                     <TableHead>
                                                         <TableRow>
                                                             <TableCell align="center">Days</TableCell>
-                                                            <TableCell align="center">Leave Type</TableCell>
-                                                            <TableCell align="center">Month of Leaves</TableCell>
+                                                            <TableCell align="center">Check IN</TableCell>
+                                                            <TableCell align="center">Check Out</TableCell>
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
+
                                                         {
-                                                            leavestatedetail.map((val, index) => {
+                                                            hafdaydata.map((val, index) => {
                                                                 const tr = <TableRow key={index}>
-                                                                    <TableCell align="center">{format(new Date(val.leave_dates), 'dd-MM-yyyy')}</TableCell>
-                                                                    <TableCell align="center">{val.leavetype_name}</TableCell>
-                                                                    <TableCell align="center">{val.leave_name}</TableCell>
+                                                                    <TableCell align="center">{format(new Date(val.nopunchdate), 'dd-MM-yyyy')}</TableCell>
+                                                                    <TableCell align="center">{val.checkinflag === 1 ? val.checkintime : ''}</TableCell>
+                                                                    <TableCell align="center">{val.checkoutflag === 1 ? format(new Date(val.checkouttime), 'HH:mm:ss') : ''}</TableCell>
                                                                 </TableRow>
 
                                                                 return tr
                                                             })
                                                         }
+
+
 
                                                     </TableBody>
                                                 </Table>
@@ -261,10 +236,11 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="Reason"
+                                            Placeholder=" Reason For Leave"
                                             fullWidth
                                             disabled="Disabled"
-
+                                        // value={}
+                                        // name=""
                                         />
                                     </div>
                                 </div>
@@ -280,7 +256,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                                                         value={apprv}
                                                         checked={apprv}
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updatenopunchreq(e)
                                                         }
                                                     />
                                                 }
@@ -298,7 +274,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
 
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateInchargeApproval(e)
+                                                            updatenopunchreq(e)
                                                         }
                                                     />
                                                 }
@@ -315,7 +291,6 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                                             Placeholder="Remark"
                                             fullWidth
                                             value={reason}
-                                            name="reasonautho"
                                             changeTextValue={(e) => setreason(e.target.value)}
                                         />
                                     </div>
@@ -325,12 +300,14 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                     </div >
                 </DialogContent >
                 <DialogActions>
-                    <Button color="primary" onClick={submitdata} >Submit</Button>
-                    <Button onClick={handleClose} color="primary" >Cancel</Button>
+                    <Button color="primary" onClick={submitnopunch} >Submit</Button>
+                    <Button
+                        onClick={handleClose}
+                        color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog >
-        </Fragment >
+        </Fragment>
     )
 }
 
-export default memo(ModelApproveReject)
+export default ModelNopunch

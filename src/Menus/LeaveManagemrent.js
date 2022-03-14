@@ -19,17 +19,23 @@ const Leavemanagement = [
         to: '/Home/ApprovalHOD',
     },
     {
+        men_slno: 123,
+        component: CNavItem,
+        name: 'Appproval-CEO',
+        to: '/Home/ApprovalCEO',
+    },
+    {
         men_slno: 28,
         component: CNavItem,
         name: 'Approval - HR',
         to: '/Home/ApprovalHR',
     },
-    {
-        men_slno: 29,
-        component: CNavItem,
-        name: 'Leave Cancel - Employees',
-        to: '/Home/LeaveCancelEmployee',
-    },
+    // {
+    //     men_slno: 29,
+    //     component: CNavItem,
+    //     name: 'Leave Cancel - Employees',
+    //     to: '/Home/LeaveCancelEmployee',
+    // },
     {
         men_slno: 30,
         component: CNavItem,

@@ -7,6 +7,8 @@ import { deepOrange, deepPurple } from '@mui/material/colors';
 
 const ShiftUpdationTblRow = ({ val }) => {
 
+    console.log(val)
+
     const checkInTime = moment(val.checkin).isValid() ? moment(val.checkin).format("HH:mm:ss") : '00:00:00';
     const checkOutTime = moment(val.checkout).isValid() ? moment(val.checkout).format("HH:mm:ss") : '00:00:00';
 
@@ -34,7 +36,6 @@ const ShiftUpdationTblRow = ({ val }) => {
         return totalExtraMint >= 0 && totalExtraMint >= 60 ? totalExtraMint : 0;
     }
     const extraWorked = getExtraWrkMints(totalShiftInMinits, totalMinitsWorked);
-
     // Get The Late Comming in minits
     const getLateComing = (shiftInTime, checkInTime) => {
         //Convert Shift In and Check In time as String First And Pass to this Function For Get the Minits
@@ -76,7 +77,7 @@ const ShiftUpdationTblRow = ({ val }) => {
                 <TableCell align="center">{checkInTime}</TableCell>
                 <TableCell align="center">{checkOutTime}</TableCell>
                 <TableCell align="right">{hoursWorked}</TableCell>
-                <TableCell align="center">{extraWorked}</TableCell>
+                <TableCell align="center">{extraWorked >= 30 ? extraWorked : 0}</TableCell>
                 <TableCell align="center">{lateComeIn}</TableCell>
                 <TableCell align="center">{earlyGo}</TableCell>
                 <TableCell align="center">

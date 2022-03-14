@@ -20,6 +20,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
     const [casualdata, setcasual] = useState(0)
     const [planslno, setplanslno] = useState(0)
     const [monthleave, setmonthleave] = useState('')
+
     const [checkOut, setCheckOut] = useState(new Date());
     const [checkIn, setCheckIn] = useState(new Date());
 
@@ -30,7 +31,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
 
     const [casullevemonth, setcasualleavemnth] = useState(0)
     const handleChange = ({ target: { name, value }, nativeEvent }) => {
-        setmonthleave(nativeEvent.target.innerTextveEvent)
+        setmonthleave(nativeEvent.target.innerText)
         setcasualleavemnth(value)
         updatecasleaveusestate({ ...getcasleave, dsname: name, getvalvalue: value })
     }
@@ -69,7 +70,11 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
     } = leavestate
     useEffect(() => {
         const getshiftdata = async () => {
-            const result = await axioslogin.post('LeaveRequest/gethafdayshift/', formData)
+            const setformdataset = {
+                startDate: startDate,
+                em_id: em_id
+            }
+            const result = await axioslogin.post('LeaveRequest/gethafdayshift/', setformdataset)
             const { success, data } = result.data
             if (success === 1) {
                 var arrayshiftdata = data.map((val) => {
@@ -106,7 +111,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
         getcategorydata();
         getshiftdata()
         getcaual()
-    }, [])
+    }, [formData])
 
     const handeleonchange = async (e) => {
         setshifthalf(e.target.value)
@@ -148,7 +153,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
             monthleave: monthleave
         }
         sethalfday(formdataa)
-    }, [casullevemonth, checkIn, checkOut])
+    }, [casullevemonth, checkIn, checkOut, monthleave])
 
 
     return (
