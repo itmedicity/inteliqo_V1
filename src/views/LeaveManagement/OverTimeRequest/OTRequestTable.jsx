@@ -42,7 +42,7 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
     //Get Data
     useEffect(() => {
         const getBoard = async () => {
-            const result = await axioslogin.get(`/overtimerequest/${em_id}`)
+            const result = await axioslogin.get(`overtimerequest/${em_id}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setData(data);
