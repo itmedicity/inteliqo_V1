@@ -11,9 +11,6 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, getTotalShiftHours, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
 import { addHours, subHours } from 'date-fns';
-
-
-
 const ShiftMaster = () => {
     // const classes = useStyles()
     const history = useHistory()
@@ -25,18 +22,18 @@ const ShiftMaster = () => {
     const [checkIn, setCheckIn] = useState(new Date());
     const SetcheckInTime = (val) => {
         setCheckIn(val)
-        const result = subHours(new Date(val), 3)
+        const result = subHours(new Date(val), 4)
         setcheckInStart(result)
-        const result2 = addHours(new Date(val), 3)
+        const result2 = addHours(new Date(val), 4)
         setcheckInEnd(result2)
     }
     //use State For Check Out
     const [checkOut, setCheckOut] = useState(new Date());
     const SetcheckOutTime = (val) => {
         setCheckOut(val)
-        const result = subHours(new Date(val), 3)
+        const result = subHours(new Date(val), 4)
         setcheckOutStart(result)
-        const result2 = addHours(new Date(val), 3)
+        const result2 = addHours(new Date(val), 4)
         setcheckOutEnd(result2)
     }
     //use State For Check In Start
