@@ -82,7 +82,6 @@ export const getHoursWorked = (x, y) => {
     }
     return 0;
 }
-// leave request check box
 
 export const getleaverequest = async () => {
     const result = await axioslogin.get('/leaveRequestType/select')
@@ -209,4 +208,13 @@ export const compensatory = async (getDeptSection) => {
     }
 }
 
+//GET DAYS BETWEEN TWO DAYS
+export const getDayDiffrence = (x, y) => {
+    if (x.isValid() && y.isValid()) {
+        const daysDuration = moment.duration(y.diff(x));
+        const days = daysDuration.asDays()
+        return days;
+    }
+    return 0;
+}
 

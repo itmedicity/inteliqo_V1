@@ -6,21 +6,51 @@ import Slide from '@mui/material/Slide';
 import TextInput from 'src/views/Component/TextInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { TextareaAutosize, Typography } from '@material-ui/core'
+import { useContext } from 'react';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
 import { Button, Checkbox, DialogActions } from '@mui/material';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import OTRemarkCompnt from '../OTComponent/OTRemarkCompnt';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
+    const [otAdd, setOtAdd] = useState({
+        totalot: ''
+    })
+    const [newottime, setnewottime] = useState({
+        over_time: 0,
+    })
     const [modeldata, setModeldata] = useState({
         ot_days: '',
-        over_time: '',
+        overtime: '',
         ot_reson: '',
+        ot_inch_status: '',
         ot_inch_remark: '',
-        ot_hod_remark: ''
+        ot_hod_status: '',
+        ot_hod_remark: '',
+        ot_ceo_status: '',
+        ot_ceo_remark: '',
+        emp_id: '',
+        inchargeAuth: '',
+        hodAuth: '',
+        ceoAuth: ''
     })
+    const [hr, sethr] = useState({
+        ot_type: '0',
+        approve: false,
+        reject: false,
+        ot_hr_remark: ''
+    })
+    const { ot_type, approve, reject, ot_hr_remark } = hr
+    const updatehrApproval = async (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        sethr({ ...hr, [e.target.name]: value })
+    }
 
     //Get Data
     useEffect(() => {
@@ -28,42 +58,117 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
             const result = await axioslogin.get(`/overtimerequest/hr/list/${otno}`)
             const { success, data } = result.data;
             if (success === 1) {
-                const { ot_days, over_time, ot_reson, ot_inch_remark, ot_hod_remark } = data[0]
-                const frmdata = {
-                    ot_days: ot_days,
-                    over_time: over_time,
-                    ot_reson: ot_reson,
-                    ot_inch_remark: ot_inch_remark,
-                    ot_hod_remark: ot_hod_remark
+                const { ot_coff_type, ot_days, over_time, ot_reson, ot_inch_remark, ot_hod_remark, emp_id,
+                    ot_inch_status, ot_hod_status, ot_ceo_status, ot_ceo_remark, ot_hr_status, ot_hr_remark,
+                    ot_inch_require, ot_hod_require, ot_ceo_require } = data[0]
+                if (ot_hr_status !== 0) {
+                    const frmdata = {
+                        ot_days: ot_days,
+                        overtime: over_time,
+                        ot_reson: ot_reson,
+                        ot_inch_status: ot_inch_status,
+                        ot_inch_remark: ot_inch_remark,
+                        ot_hod_status: ot_hod_status,
+                        ot_hod_remark: ot_hod_remark,
+                        ot_ceo_status: ot_ceo_status,
+                        ot_ceo_remark: ot_ceo_remark,
+                        emp_id: emp_id,
+                        inchargeAuth: ot_inch_require,
+                        hodAuth: ot_hod_require,
+                        ceoAuth: ot_ceo_require
+                    }
+                    const hr = {
+                        ot_type: ot_coff_type,
+                        ot_hr_remark: ot_hr_remark,
+                        approve: ot_hr_status === 1 ? true : false,
+                        reject: ot_hr_status === 2 ? true : false,
+                    }
+                    const frm = {
+                        over_time: over_time
+                    }
+                    const frmot = {
+                        totalot: over_time
+                    }
+                    setOtAdd(frmot)
+                    setnewottime(frm)
+                    setModeldata(frmdata);
+                    sethr(hr)
+                } else {
+                    const frmdata = {
+                        ot_days: ot_days,
+                        overtime: over_time,
+                        ot_reson: ot_reson,
+                        ot_inch_status: ot_inch_status,
+                        ot_inch_remark: ot_inch_remark,
+                        ot_hod_status: ot_hod_status,
+                        ot_hod_remark: ot_hod_remark,
+                        ot_ceo_status: ot_ceo_status,
+                        ot_ceo_remark: ot_ceo_remark,
+                        emp_id: emp_id,
+                        inchargeAuth: ot_inch_require,
+                        hodAuth: ot_hod_require,
+                        ceoAuth: ot_ceo_require
+                    }
+                    const hr = {
+                        ot_type: ot_coff_type,
+                        ot_hr_remark: '',
+                        approve: false,
+                        reject: false,
+                    }
+                    const frm = {
+                        over_time: over_time
+                    }
+                    const frmot = {
+                        totalot: over_time
+                    }
+                    setOtAdd(frmot)
+                    setnewottime(frm)
+                    setModeldata(frmdata);
+                    sethr(hr)
                 }
-                setModeldata(frmdata);
             } else {
                 warningNofity(" Error occured contact EDP")
             }
         }
         getOt();
     }, [otno]);
-    const [hr, sehr] = useState({
-        approve: false,
-        reject: false,
-        ot_hr_remark: ''
-
-    })
-    const { approve, reject, ot_hr_remark } = hr
-    const updatehrApproval = async (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        sehr({ ...hr, [e.target.name]: value })
-    }
 
     const patchData = {
         ot_hr_status: approve === true ? 1 : reject === true ? 2 : 0,
         ot_hr_remark: ot_hr_remark,
+        ot_hr_user: em_id,
+        ot_coff_type: ot_type,
+        ot_new_time: otAdd.totalot,
+        emp_id: modeldata.emp_id,
+        ot_status: reject === true ? 2 : 0,
         ot_slno: otno
     }
-    const defaultstate = {
+    const resetotadd = {
+        totalot: ''
+    }
+    const resetnewot = {
+        over_time: ''
+    }
+    const resetmodel = {
+        ot_days: '',
+        overtime: '',
+        ot_reson: '',
+        ot_inch_status: '',
+        ot_inch_remark: '',
+        ot_hod_status: '',
+        ot_hod_remark: '',
+        ot_ceo_status: '',
+        ot_ceo_remark: '',
+        emp_id: '',
+        inchargeAuth: '',
+        hodAuth: '',
+        ceoAuth: ''
+    }
+    const resethr = {
+        ot_type: '',
         approve: false,
         reject: false,
-        ot_hr_remark: ''
+        ot_inch_remark: ''
     }
 
     const submithr = async (e) => {
@@ -71,15 +176,16 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
         const result = await axioslogin.patch('/overtimerequest/hrapprove', patchData)
         const { success, message } = result.data
         if (success === 2) {
-            succesNofity(message)
+            succesNofity(message);
             setCount(count + 1)
-            sehr(defaultstate)
+            sethr(resethr)
+            setModeldata(resetmodel)
+            setnewottime(resetnewot)
+            setOtAdd(resetotadd)
             handleClose()
         }
-        else {
-            errorNofity(message)
-        }
     }
+
     return (
         <Fragment>
             <Dialog
@@ -126,59 +232,57 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
                                             Placeholder="Time in Minutes"
                                             fullWidth
                                             disabled="Disabled"
-                                            value={modeldata.over_time}
+                                            value={newottime.over_time}
                                         />
                                     </div>
                                 </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography variant='h6'>
-                                            Over Time Reason
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography align='justify'>
-                                            {modeldata.ot_reson}
-                                        </Typography>
-                                    </div>
-                                </div>
-
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography variant='h6'>
-                                            Incharge Remarks
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography align='justify'>
-                                            {modeldata.ot_inch_remark}
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography variant='h6'>
-                                            HOD Remarks
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1 pt-2">
-                                    <div className="col-md-12">
-                                        <Typography align='justify'>
-                                            {modeldata.ot_hod_remark}
-                                        </Typography>
-                                    </div>
-                                </div>
-                                <div className="row g-1">
-                                    <div className="d-flex justify-content-center">
-                                        <div className="col-md-4"></div>
-                                        <div className="col-md-4">
+                                {<OTRemarkCompnt heading={'Over Time Reason'} remarks={modeldata.ot_reson} />}
+                                {modeldata.ot_inch_status === 1 ? <OTRemarkCompnt
+                                    heading={'Incharge Remarks'}
+                                    status={modeldata.ot_inch_status}
+                                    remarks={modeldata.ot_inch_remark}
+                                /> : null}
+                                {modeldata.ot_hod_status === 1 ? <OTRemarkCompnt
+                                    heading={'HOD Remarks'}
+                                    status={modeldata.ot_hod_status}
+                                    remarks={modeldata.ot_hod_remark}
+                                /> : null}
+                                {modeldata.ot_ceo_status === 1 ? <OTRemarkCompnt
+                                    heading={'CEO Remarks'}
+                                    status={modeldata.ot_ceo_status}
+                                    remarks={modeldata.ot_ceo_remark}
+                                /> : null}
+                                <div className="col-md-12">
+                                    <div className="row g-3">
+                                        <div className="col-md-5">
+                                            <FormControl
+                                                fullWidth
+                                                margin="dense"
+                                            >
+                                                <Select
+                                                    name="ot_type"
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    className="ml-1"
+                                                    defaultValue={0}
+                                                    value={ot_type}
+                                                    // onChange={(e) => {
+                                                    //     updatehrApproval(e)
+                                                    //     updatechageottype(e.target.value)
+                                                    //     checkOT(e.target.value)
+                                                    // }
+                                                    //}
+                                                    style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
+                                                >
+                                                    <MenuItem value='0'>Select OT Type</MenuItem>
+                                                    <MenuItem value='1'>Compensatory Off</MenuItem>
+                                                    <MenuItem value='2'>Over Time</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </div>
+                                        <div className="col-md-1"></div>
+                                        <div className="col-md-3">
                                             <FormControlLabel
-                                                className="pb-0 mb-0"
                                                 control={
                                                     <Checkbox
                                                         name="approve"
@@ -195,9 +299,8 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
                                                 label="Approve"
                                             />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className="col-md-3">
                                             <FormControlLabel
-                                                className="pb-0 mb-0"
                                                 control={
                                                     <Checkbox
                                                         name="reject"
@@ -208,7 +311,6 @@ const ModelHRApproval = ({ open, handleClose, otno, setCount, count }) => {
                                                         className="ml-2 "
                                                         onChange={(e) =>
                                                             updatehrApproval(e)
-
                                                         }
                                                     />
                                                 }

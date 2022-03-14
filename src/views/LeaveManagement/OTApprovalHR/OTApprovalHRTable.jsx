@@ -5,11 +5,14 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ModelHRApproval from './ModelHRApproval';
+import { HiTrash } from "react-icons/hi";
+import OTCancelModel from '../OTComponent/OTCancelModel';
 
 const OTApprovalHRTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
+    const [slno, setSlno] = useState(0);
     //Table
     const title = [
         {
@@ -39,7 +42,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     useEffect(() => {
         if (DeptSect.length !== 0) {
             const deptid = DeptSect && DeptSect.map((val) => {
-                return val.dept_section
+                return val.sect_id
             })
             const postData = {
                 dept_id: deptid
@@ -50,6 +53,7 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                 if (success === 1) {
                     setTableData(data);
                 } else {
+                    setTableData(data);
                     warningNofity("Error Occured Please Contact EDP")
                 }
             }
@@ -58,13 +62,22 @@ const OTApprovalHRTable = ({ DeptSect }) => {
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
-
+    const [cancelopen, setcancelOpen] = useState(false);
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+
+    };
+    const cancelClose = () => {
+        setcancelOpen(false);
+    };
+
+    const hrcancel = (data) => {
+        setSlno(data)
+        setcancelOpen(true);
     };
 
     return (
@@ -74,6 +87,16 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
+                    setCount={setCount}
+                    count={count}
+                />
+                : null}
+            {slno !== 0 ?
+                <OTCancelModel
+                    cancelopen={cancelopen}
+                    cancelClose={cancelClose}
+                    heading={"Over Time HR Cancel"}
+                    slno={slno}
                     setCount={setCount}
                     count={count}
                 />
@@ -88,6 +111,11 @@ const OTApprovalHRTable = ({ DeptSect }) => {
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
                         onClick: (e, data) => handleClickOpen(data.ot_slno)
+                    },
+                    {
+                        icon: () => <HiTrash size={24} color='success' />,
+                        tooltip: "Click here to Cancel",
+                        onClick: (e, data) => hrcancel(data.ot_slno)
                     }
                 ]}
                 options={{

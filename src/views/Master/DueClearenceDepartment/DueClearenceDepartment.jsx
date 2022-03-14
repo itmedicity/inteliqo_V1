@@ -56,6 +56,7 @@ const DueClearenceDepartment = () => {
             updateSelected(0)
             updateDepartmentSection(0)
             updateDeptSec(0)
+            arraydataset([])
         }
         else {
             errorNofity("Error Occured!!!!Please Contact EDP")

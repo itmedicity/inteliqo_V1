@@ -46,7 +46,7 @@ const Resignation = [
         men_slno: 66,
         component: CNavItem,
         name: 'Due Clearance -HR',
-        to: '/Home/Resignation',
+        to: '/Home/DueClearenceHR',
     },
     {
         men_slno: 67,
@@ -83,6 +83,18 @@ const Resignation = [
         component: CNavItem,
         name: 'Exit Interview - HR',
         to: '/Home/Resignation',
+    },
+    {
+        men_slno: 73,
+        component: CNavItem,
+        name: 'Report-Active Employees',
+        to: '/Home/EmployeeReport',
+    },
+    {
+        men_slno: 74,
+        component: CNavItem,
+        name: 'Report-InActive Employees',
+        to: '/Home/EmployeeReportInactive',
     },
 ]
 

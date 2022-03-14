@@ -5,11 +5,14 @@ import ModelHodApproval from './ModelHodApproval';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { HiTrash } from "react-icons/hi";
+import OTCancelModel from '../OTComponent/OTCancelModel';
 
 const OTApprovalHodSecTable = ({ DeptSect }) => {
     const [data, setTableData] = useState([]);
     const [count, setCount] = useState(0)
     const [otno, setOtno] = useState(0);
+    const [slno, setSlno] = useState(0);
     //Table
     const title = [
         {
@@ -46,19 +49,30 @@ const OTApprovalHodSecTable = ({ DeptSect }) => {
             if (success === 1) {
                 setTableData(data);
             } else {
-                warningNofity("Error Occured Please Contact EDP")
+                setTableData(data);
+                warningNofity("No data available")
             }
         }
         getOt();
     }, [DeptSect, count]);
 
     const [open, setOpen] = useState(false);
+    const [cancelopen, setcancelOpen] = useState(false);
     const handleClickOpen = (data) => {
         setOtno(data)
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+
+    };
+    const cancelClose = () => {
+        setcancelOpen(false);
+    };
+
+    const hodcancel = (data) => {
+        setSlno(data)
+        setcancelOpen(true);
     };
 
     return (
@@ -68,6 +82,16 @@ const OTApprovalHodSecTable = ({ DeptSect }) => {
                     open={open}
                     handleClose={handleClose}
                     otno={otno}
+                    setCount={setCount}
+                    count={count}
+                />
+                : null}
+            {slno !== 0 ?
+                <OTCancelModel
+                    cancelopen={cancelopen}
+                    cancelClose={cancelClose}
+                    heading={"Over Time HOD Cancel"}
+                    slno={slno}
                     setCount={setCount}
                     count={count}
                 />
@@ -82,6 +106,11 @@ const OTApprovalHodSecTable = ({ DeptSect }) => {
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
                         onClick: (e, data) => handleClickOpen(data.ot_slno)
+                    },
+                    {
+                        icon: () => <HiTrash size={24} color='success' />,
+                        tooltip: "Click here to Cancel",
+                        onClick: (e, data) => hodcancel(data.ot_slno)
                     }
                 ]}
                 options={{

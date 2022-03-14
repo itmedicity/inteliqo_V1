@@ -102,7 +102,6 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
         }
         getApprovalData()
     }, [slno, dept_id, sect_id])
-    console.log(dueDept)
     const updateInchargeApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
@@ -131,8 +130,6 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
             else {
 
             }
-
-
         }
         else if (success === 2) {
             warningNofity(message)

@@ -18,7 +18,6 @@ const CeoApprovalTable = () => {
         if (is_ceo === 1) {
             const getCeoRequest = async () => {
                 const result = await axioslogin.get("/Resignation")
-                console.log(result)
                 const { success, data } = result.data
                 if (success === 1) {
                     setTableData(data)

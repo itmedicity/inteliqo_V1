@@ -181,12 +181,6 @@ const ContractInformation = () => {
         setconendDate(endDate)
 
     }
-    getSerialnumberempnumber().then((val) => {
-        const newemno = val
-        Setnewempno(newemno)
-    })
-    getSerialnumberempnumber()
-
     //contract renew
     const contractRenew = async (e) => {
         e.preventDefault();
@@ -207,9 +201,11 @@ const ContractInformation = () => {
             else {
                 Setenablefield(false)
                 setmodelcate(1)
-
-
-
+                getSerialnumberempnumber().then((val) => {
+                    const newemno = val
+                    Setnewempno(newemno)
+                })
+                getSerialnumberempnumber()
             }
 
         }

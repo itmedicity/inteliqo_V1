@@ -25,6 +25,7 @@ export const py_setting_two = [
     { to: '/Home/YearlyLeaveCount', name: 'Yearly Leave Count', slno: 92 },
     { to: '/Home/CourseMaster', name: 'Course Master', slno: 93 },
     { to: '/Home/LeaveRequestType', name: 'Leave Request Type Master', slno: 94 },
+    { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
 ]
 
 export const py_setting_three = [

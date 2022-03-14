@@ -7,7 +7,6 @@ import moment from 'moment';
 import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayout from 'src/views/CommonCode/PageLayout'
-import { employeeNumber } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -25,7 +24,9 @@ const EmployeeExperience = () => {
     const [count, setCount] = useState(0)
     //designation select list
     const { selectDesignation,
-        updateDesignation } = useContext(PayrolMasterContext)
+        updateDesignation, employeedetails } = useContext(PayrolMasterContext)
+
+    const { em_id } = employeedetails
     const reset = () => {
         updateDesignation(0)
     }
@@ -87,7 +88,7 @@ const EmployeeExperience = () => {
         em_to: moment(workenddate).format('YYYY-MM-DD'),
         em_total_year: total_year,
         em_salary: gross_salary,
-        create_user: employeeNumber()
+        create_user: em_id
     }
     //saving formdata
     const submitFormData = async (e) => {

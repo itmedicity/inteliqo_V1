@@ -107,7 +107,6 @@ const DutyPlanning = () => {
         return dutydate
       })
       const dutyplanarray = dutyday.flat(Infinity)
-
       //filtering the data from the data base and inserting dates and finding the new array to insert
       const newdutyplanarray = dutyplanarray.filter((val) => {
         return data.filter((data) => {

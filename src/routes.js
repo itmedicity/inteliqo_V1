@@ -126,6 +126,11 @@ const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWage
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
 const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
 const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
+const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
+const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
+const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
+const EmployeeReport = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReport'))
+const EmployeeReportInactive = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReportInactive'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -257,6 +262,12 @@ const routes = [
   { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
   { path: '/Home/ApprovalCEO', exact: true, name: 'Approval CEO', component: ApprovalCEO },
   { path: '/Home/CommonSettings', exact: true, name: 'Common Settings', component: CommonSettings },
+  { path: '/Home/DueClearenceHR', exact: true, name: 'DueClearence HR', component: DueClearenceHR },
+  { path: '/Home/DueClearenceMaster', exact: true, name: 'Due Clearence Master', component: DueClearenceMaster },
+  { path: '/Home/DueClearenceEdit/:id', exact: true, name: 'Due Clearence Edit', component: DueClearenceEdit },
+  { path: '/Home/EmployeeReport', exact: true, name: 'Active Employees', component: EmployeeReport },
+  { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
+
 ]
 
 export default routes
