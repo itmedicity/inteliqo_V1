@@ -1,5 +1,5 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ProfessionalExp from './ProfessionalExp';
@@ -37,4 +37,4 @@ const AnualLeave = () => {
     )
 }
 
-export default AnualLeave
+export default memo(AnualLeave)

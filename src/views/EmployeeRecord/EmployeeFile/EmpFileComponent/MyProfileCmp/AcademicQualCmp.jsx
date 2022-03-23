@@ -1,5 +1,5 @@
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import SchoolIcon from '@mui/icons-material/School';
 
 const AcademicQualCmp = () => {
@@ -50,4 +50,4 @@ const AcademicQualCmp = () => {
     )
 }
 
-export default AcademicQualCmp
+export default memo(AcademicQualCmp)

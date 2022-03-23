@@ -1,5 +1,9 @@
-import { Button, Card, Badge, CardActionArea, CardContent, CardHeader, Grid, Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography, ListItemButton, ListItemIcon, TextField, Tooltip } from '@mui/material'
-import React, { Fragment, useState, useEffect } from 'react'
+import {
+    Button, Card, Badge, CardActionArea, CardContent, CardHeader, Grid, Avatar,
+    IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography,
+    ListItemButton, ListItemIcon, TextField, Tooltip, Skeleton
+} from '@mui/material'
+import React, { Fragment, useState, useEffect, memo } from 'react'
 import { red } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
@@ -31,6 +35,7 @@ import MyProfleExperience from './MyProfleExperience';
 import MyProfileSalary from './MyProfileSalary';
 import AnualLeave from './AnualLeave';
 import CloseIcon from '@mui/icons-material/Close';
+import { useSelector } from 'react-redux';
 
 
 const MyProfilePersonalInform = ({ empid, redirect }) => {
@@ -38,11 +43,12 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
     const [src, setSrc] = useState(ProfilePicDefault)
     const profilePic = `${PUBLIC_NAS_FOLDER + empid}/profilePic.jpg`;
 
-    const empiddata = {
-        em_id: empid
-    }
-
     useEffect(() => {
+
+        const empiddata = {
+            em_id: empid
+        }
+
         const getProfilePicInform = async () => {
             const result = await axioslogin.post('/upload', empiddata);
             const { data } = result.data;
@@ -56,7 +62,15 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
             }
         }
         getProfilePicInform()
-    }, [empiddata, profilePic])
+    }, [empid, profilePic])
+
+    const loginDetl = useSelector((state) => {
+        return state.getProfileData
+    })
+
+    const { ProfileData, lodingStatus } = loginDetl;
+
+    console.log(lodingStatus)
 
     return (
         <Fragment>
@@ -67,7 +81,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                     titleTypographyProps={{
                         variant: 'body1',
                     }}
-                    subheader="Asst. Manager IT"
+                    subheader={<> {lodingStatus === false ? <Skeleton /> : "Asst Manager IT"} </>}
                     subheaderTypographyProps={{
                         variant: 'subtitle2',
                     }}
@@ -403,4 +417,4 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
     )
 }
 
-export default MyProfilePersonalInform
+export default memo(MyProfilePersonalInform)

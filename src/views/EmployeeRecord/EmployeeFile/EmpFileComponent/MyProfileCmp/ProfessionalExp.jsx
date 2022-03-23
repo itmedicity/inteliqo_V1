@@ -1,5 +1,5 @@
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 
 const ProfessionalExp = () => {
@@ -50,4 +50,4 @@ const ProfessionalExp = () => {
     )
 }
 
-export default ProfessionalExp
+export default memo(ProfessionalExp)

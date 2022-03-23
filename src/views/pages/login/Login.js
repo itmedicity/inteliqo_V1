@@ -18,9 +18,13 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import { ToastContainer } from 'react-toastify'
 import { errorNofity, infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { useDispatch } from 'react-redux'
+import { Actiontypes } from '../../../redux/constants/action.type'
 
 const Login = () => {
 
+  const { FETCH_LOGIN_CRED } = Actiontypes;
+  const dispatch = useDispatch()
   const history = useHistory()
   const [emp_username, setUsername] = useState("");
   const [emp_password, setPassword] = useState("");
@@ -51,12 +55,14 @@ const Login = () => {
       if (data.success === 0) {
         errorNofity("User does not exsit");
       } else {
+
         const loggedDetl = {
           user: data.user,
           token: data.token,
-          empno: data.emp_no
+          empno: data.emp_no,
+          empid: data.emp_id
         }
-        console.log(loggedDetl)
+        dispatch({ type: FETCH_LOGIN_CRED, payload: loggedDetl })
         const loggedCredential = sessionStorage.setItem('userDetl', JSON.stringify(loggedDetl));
         if (loggedCredential !== null) {
           history.push("/home")
