@@ -7,18 +7,18 @@ import TextInput from 'src/views/Component/TextInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
-import { useContext } from 'react';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
 import { Button, Checkbox, DialogActions } from '@mui/material';
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import OTRemarkCompnt from '../OTComponent/OTRemarkCompnt';
+import { succesNofity, warningNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import CoffshowTable from '../OTComponent/CoffshowTable';
+import OTRemarkCompnt from '../OTComponent/OTRemarkCompnt';
+import { useContext } from 'react';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
+const ModelInchargeApproval = ({ open, handleClose, otno, setCount, count }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const [tableset, settable] = useState(false)
@@ -37,54 +37,46 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
         ot_days: '',
         overtime: '',
         ot_reson: '',
-        ot_inch_status: '',
-        ot_inch_remark: '',
-        ot_hod_status: '',
-        ot_hod_remark: '',
         emp_id: '',
         inchargeAuth: '',
         hodAuth: '',
         ceoAuth: ''
     })
-    const [ceo, setceo] = useState({
+    const [incharge, seIncharge] = useState({
         ot_type: '0',
         approve: false,
         reject: false,
-        ot_ceo_remark: ''
+        ot_inch_remark: ''
     })
-    const { ot_type, approve, reject, ot_ceo_remark } = ceo
-    const updateCeoApproval = async (e) => {
+    const { ot_type, approve, reject, ot_inch_remark } = incharge
+    const updateInchargeApproval = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setceo({ ...ceo, [e.target.name]: value })
+        seIncharge({ ...incharge, [e.target.name]: value })
     }
-    //Get Data
+
+    // Get Data
     useEffect(() => {
         const getOt = async () => {
-            const result = await axioslogin.get(`/overtimerequest/ceo/list/${otno}`)
-            const { success, data } = result.data;
+            const result1 = await axioslogin.get(`/overtimerequest/incharge/list/${otno}`)
+            const { success, data } = result1.data;
             if (success === 1) {
-                const { ot_coff_type, ot_days, over_time, ot_reson, ot_inch_remark, ot_hod_remark, emp_id,
-                    ot_inch_status, ot_hod_status, ot_ceo_status, ot_ceo_remark,
+                const { ot_days, over_time, ot_reson, ot_coff_type, ot_inch_status, ot_inch_remark, emp_id,
                     ot_inch_require, ot_hod_require, ot_ceo_require } = data[0]
-                if (ot_ceo_status !== 0) {
+                if (ot_inch_status !== 0) {
                     const frmdata = {
                         ot_days: ot_days,
                         overtime: over_time,
                         ot_reson: ot_reson,
-                        ot_inch_status: ot_inch_status,
-                        ot_inch_remark: ot_inch_remark,
-                        ot_hod_status: ot_hod_status,
-                        ot_hod_remark: ot_hod_remark,
                         emp_id: emp_id,
                         inchargeAuth: ot_inch_require,
                         hodAuth: ot_hod_require,
                         ceoAuth: ot_ceo_require
                     }
-                    const ceo = {
+                    const inch = {
                         ot_type: ot_coff_type,
-                        ot_ceo_remark: ot_ceo_remark,
-                        approve: ot_ceo_status === 1 ? true : false,
-                        reject: ot_ceo_status === 2 ? true : false,
+                        ot_inch_remark: ot_inch_remark,
+                        approve: ot_inch_status === 1 ? true : false,
+                        reject: ot_inch_status === 2 ? true : false,
                     }
                     const frm = {
                         over_time: over_time
@@ -95,24 +87,20 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                     setOtAdd(frmot)
                     setnewottime(frm)
                     setModeldata(frmdata);
-                    setceo(ceo)
+                    seIncharge(inch)
                 } else {
                     const frmdata = {
                         ot_days: ot_days,
                         overtime: over_time,
                         ot_reson: ot_reson,
-                        ot_inch_status: ot_inch_status,
-                        ot_inch_remark: ot_inch_remark,
-                        ot_hod_status: ot_hod_status,
-                        ot_hod_remark: ot_hod_remark,
                         emp_id: emp_id,
                         inchargeAuth: ot_inch_require,
                         hodAuth: ot_hod_require,
                         ceoAuth: ot_ceo_require
                     }
-                    const ceo = {
+                    const inch = {
                         ot_type: '0',
-                        ot_ceo_remark: '',
+                        ot_inch_remark: '',
                         approve: false,
                         reject: false,
                     }
@@ -125,7 +113,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                     setOtAdd(frmot)
                     setnewottime(frm)
                     setModeldata(frmdata);
-                    setceo(ceo)
+                    seIncharge(inch)
                 }
                 if (over_time <= 480) {
                     infoNofity("Not Applicable for COff please check more OT Available")
@@ -169,9 +157,9 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
     }, [otAdd.totalot])
 
     const patchData = {
-        ot_ceo_status: approve === true ? 1 : reject === true ? 2 : 0,
-        ot_ceo_remark: ot_ceo_remark,
-        ot_ceo_user: em_id,
+        ot_inch_status: approve === true ? 1 : reject === true ? 2 : 0,
+        ot_inch_remark: ot_inch_remark,
+        ot_inch_user: em_id,
         ot_coff_type: ot_type,
         ot_new_time: otAdd.totalot,
         emp_id: modeldata.emp_id,
@@ -200,16 +188,12 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
         ot_days: '',
         overtime: '',
         ot_reson: '',
-        ot_inch_status: '',
-        ot_inch_remark: '',
-        ot_hod_status: '',
-        ot_hod_remark: '',
         emp_id: '',
         inchargeAuth: '',
         hodAuth: '',
         ceoAuth: ''
     }
-    const resetceo = {
+    const resetinch = {
         ot_type: '',
         approve: false,
         reject: false,
@@ -240,17 +224,18 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
         ot_slno: overtimeSl
     }
 
-    const submitCeo = async (e) => {
+    const submitIncharge = async (e) => {
         e.preventDefault()
-        const result = await axioslogin.patch('/overtimerequest/ceoapprove', patchData)
-        const { success, message } = result.data
+        const result1 = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)
+        const { success, message } = result1.data
         if (success === 2) {
             succesNofity(message);
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
                 const { message, success } = result.data;
                 if (success === 2) {
-                    if (modeldata.inchargeAuth === 1 && modeldata.hodAuth === 1) {
+
+                    if ((modeldata.inchargeAuth === 1) && (modeldata.hodAuth === 0) && (modeldata.ceoAuth === 0)) {
                         const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
                         const { message, success } = result2.data;
                         if (success === 1) {
@@ -264,16 +249,18 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                 const { message, success } = result.data;
                 const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
                 const { messagee, succes } = result4.data;
-                if (modeldata.inchargeAuth === 1 && modeldata.hodAuth === 0) {
+                if ((modeldata.inchargeAuth === 1) && (modeldata.hodAuth === 0) && (modeldata.ceoAuth === 0)) {
                     const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
                     const { messagee, success } = result2.data;
                 }
+            } else if (flag === 3) {
+                succesNofity("Converted to Over Time");
             }
             else {
                 const result3 = await axioslogin.patch('/overtimerequest/coff/insert', coffpostdata)
             }
             setCount(count + 1)
-            setceo(resetceo)
+            seIncharge(resetinch)
             setModeldata(resetmodel)
             setnewottime(resetnewot)
             setOtAdd(resetotadd)
@@ -292,7 +279,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Over Time CEO Approval/Reject"}
+                    {"Over Time Incharge Approval/Reject"}
                 </DialogTitle>
                 <DialogContent sx={{
                     minWidth: 500,
@@ -333,16 +320,6 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                                     </div>
                                 </div>
                                 {<OTRemarkCompnt heading={'Over Time Reason'} remarks={modeldata.ot_reson} />}
-                                {modeldata.ot_inch_status === 1 ? <OTRemarkCompnt
-                                    heading={'Incharge Remarks'}
-                                    status={modeldata.ot_inch_status}
-                                    remarks={modeldata.ot_inch_remark}
-                                /> : null}
-                                {modeldata.ot_hod_status === 1 ? <OTRemarkCompnt
-                                    heading={'HOD Remarks'}
-                                    status={modeldata.ot_hod_status}
-                                    remarks={modeldata.ot_hod_remark}
-                                /> : null}
                                 <div className="col-md-12">
                                     <div className="row g-3">
                                         <div className="col-md-5">
@@ -358,7 +335,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                                                     defaultValue={0}
                                                     value={ot_type}
                                                     onChange={(e) => {
-                                                        updateCeoApproval(e)
+                                                        updateInchargeApproval(e)
                                                         updatechageottype(e.target.value)
                                                         checkOT(e.target.value)
                                                     }
@@ -383,7 +360,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={reject === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateCeoApproval(e)
+                                                            updateInchargeApproval(e)
                                                         }
                                                     />
                                                 }
@@ -401,7 +378,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                                                         disabled={approve === true ? true : false}
                                                         className="ml-2 "
                                                         onChange={(e) =>
-                                                            updateCeoApproval(e)
+                                                            updateInchargeApproval(e)
                                                         }
                                                     />
                                                 }
@@ -427,11 +404,11 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
-                                            placeholder="CEO Remarks"
-                                            style={{ width: 514 }}
-                                            name="ot_ceo_remark"
-                                            value={ot_ceo_remark}
-                                            onChange={(e) => updateCeoApproval(e)}
+                                            placeholder="Incharge Remarks"
+                                            style={{ width: 515 }}
+                                            name="ot_inch_remark"
+                                            value={ot_inch_remark}
+                                            onChange={(e) => updateInchargeApproval(e)}
                                         />
                                     </div>
                                 </div>
@@ -440,7 +417,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={submitCeo}>Submit</Button>
+                    <Button color="primary" onClick={submitIncharge}>Submit</Button>
                     <Button onClick={handleClose} color="primary" >Cancel</Button>
                 </DialogActions>
             </Dialog>
@@ -448,4 +425,4 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
     )
 }
 
-export default memo(ModelCEOApproval)
+export default memo(ModelInchargeApproval)

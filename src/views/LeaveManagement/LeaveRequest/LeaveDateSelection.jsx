@@ -1,8 +1,6 @@
 import { IconButton, Typography } from '@mui/material';
 import React, { Fragment, useContext, useState } from 'react';
 import { useEffect } from 'react';
-import Salutation from 'src/views/CommonCode/Salutation';
-import TestSelectComponent from 'src/views/CommonCode/TestSelectComponent';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import TestCasulLeave from './Component/TestCasulLeave';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -26,7 +24,8 @@ const LeaveDateSelection = ({
     leaveDetails,// for main page details of leave 
     leaveretypeid,// type of request half,leave,latecoming
     setholidayLevestore,
-    setfestivalholidayLevestore//holiday leave set data
+    setfestivalholidayLevestore,//holiday leave set data
+    durationleave
 }) => {
     const { emergencynumber, fromDate, resonforleave } = leaveDetails
     const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
@@ -124,6 +123,7 @@ const LeaveDateSelection = ({
                 }
             }
             else {
+
                 setCasualLevee((casualLeve) => [...casualLeve, {
                     caulmnth: value,
                     lveDate: format(new Date(date), "yyyy-MM-dd"),
@@ -253,20 +253,14 @@ const LeaveDateSelection = ({
                 }])
 
             }
-
-
-
-
         }
         else if (leavetype === 8) {
             updategetEarnleave({ ...getEarnleave, earnname: name, getEarnvalue: value })
             setcreditedleave(value)
             if (casualLevee.length > 0) {
                 const calfind = casualLevee.find((val) => {
-
                     return val.caulmnth === value
                 })
-
                 if (calfind !== undefined) {
                     if (calfind.length === 0) {
                         setCasualLevee((casualLeve) => [...casualLeve, {
@@ -310,18 +304,10 @@ const LeaveDateSelection = ({
                 }])
 
             }
-
         }
-
-
-
-
-
-
     }
     // on select leave type
     const handleLveType = async ({ target: { name, value }, nativeEvent }) => {
-
         settype(value)
         //   if casual leave 
         if (value === 1) {
@@ -353,8 +339,6 @@ const LeaveDateSelection = ({
             }])
 
         }
-
-
         else if (value === 3) {
             const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/${em_id}`)
             const { success, data } = result.data
@@ -372,6 +356,7 @@ const LeaveDateSelection = ({
         else if (value === 4) {
             const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowablefesitval/${em_id}`)
             const { success, data } = result.data
+
             if (success === 1) {
                 setfesivalavailholiday(data)
                 settype(value)

@@ -21,7 +21,6 @@ const OTApprovalCEO = () => {
                             <div className="col-md-12">
                                 <OTApprovalCEOTable />
                             </div>
-                            <AuthorizationDetails />
                         </div>
                     </div>
                 </div>

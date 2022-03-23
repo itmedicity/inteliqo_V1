@@ -86,18 +86,6 @@ const NoPunchRequest = ({ setnopunch }) => {
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
     useEffect(() => {
 
 
@@ -116,7 +104,7 @@ const NoPunchRequest = ({ setnopunch }) => {
     }, [startDate, checkin, checkout, starttime, endtime, plan_slno, shift_id])
     const checkinset = (e) => {
         if (e.target.checked === true) {
-
+            setcheckout(false)
             setindisable(true)
             setstartime(shft_chkin_time)
         }
@@ -126,7 +114,9 @@ const NoPunchRequest = ({ setnopunch }) => {
         }
     }
     const checkoutset = (e) => {
+
         if (e.target.checked === true) {
+            setcheckin(false)
             setoutdisable(true)
             setendtime(shft_chkout_time)
         }

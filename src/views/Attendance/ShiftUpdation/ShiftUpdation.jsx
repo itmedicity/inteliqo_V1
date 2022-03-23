@@ -130,15 +130,16 @@ const ShiftUpdation = () => {
 
             if (Object.keys(deptDetl).length > 1) {
 
-                const result = await axioslogin.post("/attendCal/proc", deptDetl);
-                // const { success, data, message } = result.data;
-                // if (success === 1) {
-                //     setApiData(data)
-                // }
+                const result = await axioslogin.post("/attendCal/proc", deptDetl)
 
-                // if (success === 0) {
-                //     infoNofity("Please Do the Shift Marking")
-                // }
+                const { success, message } = result.data;
+                if (success === 1) {
+                    const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
+                }
+
+                if (success === 0) {
+                    infoNofity("Please Do the Shift Marking")
+                }
             }
 
         } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {

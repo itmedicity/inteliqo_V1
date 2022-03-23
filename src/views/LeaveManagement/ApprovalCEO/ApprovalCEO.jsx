@@ -4,16 +4,18 @@ import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
+import { axioslogin } from 'src/views/Axios/Axios'
+import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
-const ApprovalHod = () => {
+
+const ApprovalCEO = () => {
     const [levtpevalue, setleavetypevalue] = useState([])
     const history = useHistory()
-    const { updateleaverequest, getDeptSection } = useContext(PayrolMasterContext)
+    const { updateleaverequest } = useContext(PayrolMasterContext)
     const [leaverequesttype, setleaverequesttype] = useState([]);
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
@@ -30,32 +32,36 @@ const ApprovalHod = () => {
         NOP: false,
     }
     )
+
     const { COFF, DOFF, HDLR, LR, NOP } = levtpevaluearry
     useEffect(() => {
-        getleaverequestget(getDeptSection).then((val) => {
+        getleaverequestget().then((val) => {
+
             setleavereqst(val)
         })
-        getleaverequest(getDeptSection).then((val) => {
+        getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-        getnopunchrequst(getDeptSection).then((val) => {
+        getnopunchrequst().then((val) => {
             setnopunch(val)
         })
-        halfdayrequest(getDeptSection).then((val) => {
+        halfdayrequest().then((val) => {
             sethalfday(val)
         })
-        compensatory(getDeptSection).then((val) => {
+        compensatory().then((val) => {
             setcompensetory(val)
         })
 
         return (
             updateleaverequest(0)
         )
-    }, [updateleaverequest, getDeptSection]);
+    }, [updateleaverequest]);
 
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
+
+
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
@@ -63,15 +69,18 @@ const ApprovalHod = () => {
             HDLR: false,
             LR: false,
             NOP: false,
+
         }
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setleavetypevaluearry({ ...ob1, [e.target.name]: value })
         setleavetypevalue(e.target.value)
+
     }
+
     return (
         <Fragment>
             <PageLayoutSave
-                heading="Leave Approval HOD"
+                heading="Leave Approval CEO"
                 redirect={RedirectToProfilePage}
             //submit={submitFine}
             >
@@ -183,20 +192,19 @@ const ApprovalHod = () => {
                                     levtpevalue == 2 ? halfday :
                                         levtpevalue == 4 ? compensetory :
                                             levtpevalue == 3 ? nopunch : []
-                                } levtpevalue={levtpevalue} authority={2}
+                                } levtpevalue={levtpevalue} authority={3}
                                     setleavereq={levtpevalue == 1 ? setleavereqst :
                                         levtpevalue == 2 ? sethalfday :
                                             levtpevalue == 4 ? setcompensetory :
                                                 levtpevalue == 3 ? setnopunch : null}
-                                    getDeptSection={getDeptSection}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
             </PageLayoutSave>
-        </Fragment >
+        </Fragment>
     )
 }
 
-export default ApprovalHod
+export default ApprovalCEO

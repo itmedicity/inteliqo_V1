@@ -6,8 +6,6 @@ import { rows } from './data'
 import ShiftUpdationTblRow from './ShiftUpdationTblRow';
 
 const ShiftUpdationTable = ({ data }) => {
-
-    // console.log(rows)
     // Pagination Custome State
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -21,7 +19,7 @@ const ShiftUpdationTable = ({ data }) => {
         setPage(0);
     };
 
-
+    console.log(rowsPerPage)
     return (
         <Fragment>
             {/* <div className="card">

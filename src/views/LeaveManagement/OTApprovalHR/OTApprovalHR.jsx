@@ -5,7 +5,7 @@ import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 import OTApprovalHRTable from './OTApprovalHRTable';
 import OTApprovalHRTableSec from './OTApprovalHRTableSec';
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
+import HRApprovalSections from 'src/views/Resignation/ResignationApprovalHR/HRApprovalSections';
 
 const OTApprovalHR = () => {
     const [DeptSect, updateDeptSect] = useState([])
@@ -27,7 +27,7 @@ const OTApprovalHR = () => {
                     <div className="row g-1">
                         <div className="d-flex justify-content-center">
                             <div className="col-md-3">
-                                <DeptSectionMastSelect style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
+                                <HRApprovalSections style={SELECT_CMP_STYLE} DeptSect={DeptSect} updateDeptSect={updateDeptSect} onChange={handleChange} />
                             </div>
                             <AuthorizationDetails />
                         </div>

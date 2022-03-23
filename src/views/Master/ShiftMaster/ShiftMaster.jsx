@@ -10,9 +10,7 @@ import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, getTotalShiftHours, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftMasterTable from './ShiftMasterTable';
-
-
-
+import { addHours, subHours } from 'date-fns';
 const ShiftMaster = () => {
     // const classes = useStyles()
     const history = useHistory()
@@ -20,37 +18,44 @@ const ShiftMaster = () => {
         history.push('/Home/Settings')
     }
     const [count, setCount] = useState(0)
-
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
     const SetcheckInTime = (val) => {
         setCheckIn(val)
+        const result = subHours(new Date(val), 4)
+        setcheckInStart(result)
+        const result2 = addHours(new Date(val), 4)
+        setcheckInEnd(result2)
     }
     //use State For Check Out
     const [checkOut, setCheckOut] = useState(new Date());
     const SetcheckOutTime = (val) => {
         setCheckOut(val)
+        const result = subHours(new Date(val), 4)
+        setcheckOutStart(result)
+        const result2 = addHours(new Date(val), 4)
+        setcheckOutEnd(result2)
     }
     //use State For Check In Start
     const [checkInStart, setcheckInStart] = useState(new Date());
-    const SetcheckInTimeStart = (val) => {
-        setcheckInStart(val)
-    }
+    // const SetcheckInTimeStart = (val) => {
+    //     setcheckInStart(val)
+    // }
     //use State For Check In End
     const [checkInEnd, setcheckInEnd] = useState(new Date());
-    const SetcheckInTimeEnd = (val) => {
-        setcheckInEnd(val)
-    }
+    // const SetcheckInTimeEnd = (val) => {
+    //     setcheckInEnd(val)
+    // }
     //use State For Check Out Start
     const [checkOutStart, setcheckOutStart] = useState(new Date());
-    const SetcheckoutTimeStart = (val) => {
-        setcheckOutStart(val)
-    }
+    // const SetcheckoutTimeStart = (val) => {
+    //     setcheckOutStart(val)
+    // }
     //use State For Check Out End
     const [checkOutEnd, setcheckOutEnd] = useState(new Date());
-    const SetcheckoutTimeEnd = (val) => {
-        setcheckOutEnd(val)
-    }
+    // const SetcheckoutTimeEnd = (val) => {
+    //     setcheckOutEnd(val)
+    // }
     //use State For Break Start
     const [BreakStart, setBreakStart] = useState(new Date());
     const SetBreakTimestart = (val) => {
@@ -221,7 +226,7 @@ const ShiftMaster = () => {
                 submit={submitFormData}
             >
                 <div className="row g-1">
-                    <div className="col-md-7" >
+                    <div className="col-md-12" >
                         <div className="card">
                             <div className="card-body">
                                 <div className="row g-3">
@@ -283,7 +288,7 @@ const ShiftMaster = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkInStart}
-                                                changetextvalue={(e) => SetcheckInTimeStart(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                         <div className="col-md-3" >
@@ -294,7 +299,7 @@ const ShiftMaster = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkInEnd}
-                                                changetextvalue={(e) => SetcheckInTimeEnd(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                     </div>
@@ -308,7 +313,7 @@ const ShiftMaster = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkOutStart}
-                                                changetextvalue={(e) => SetcheckoutTimeStart(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                         <div className="col-md-3">
@@ -319,7 +324,7 @@ const ShiftMaster = () => {
                                         <div className="col-md-3" >
                                             <Timepicker
                                                 value={checkOutEnd}
-                                                changetextvalue={(e) => SetcheckoutTimeEnd(e)}
+                                                changetextvalue={(e) => null}
                                             />
                                         </div>
                                     </div>
@@ -389,8 +394,6 @@ const ShiftMaster = () => {
                                         </div>
                                         <div className="col-md-3">
                                             <Timepicker
-                                                mintime={checkIn}
-                                                maxtime={crossday == 1 ? nextdate : checkOut}
                                                 value={BreakStart}
                                                 changetextvalue={(e) => SetBreakTimestart(e)}
                                             />
@@ -402,8 +405,6 @@ const ShiftMaster = () => {
                                         </div>
                                         <div className="col-md-3">
                                             <Timepicker
-                                                mintime={checkIn}
-                                                maxtime={crossday == 1 ? nextdate : checkOut}
                                                 value={Breakend}
                                                 changetextvalue={(e) => SetBreakTimeend(e)}
                                             />
@@ -590,7 +591,9 @@ const ShiftMaster = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-5">
+                </div>
+                <div className="row g-1 pt-2">
+                    <div className="col-md-12">
                         <div className="card">
                             <ShiftMasterTable update={count} />
                         </div>

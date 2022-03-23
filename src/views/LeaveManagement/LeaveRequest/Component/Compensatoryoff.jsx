@@ -1,11 +1,8 @@
-import { Checkbox, FormControlLabel } from '@material-ui/core'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, memo, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
-import Timepicker from 'src/views/Component/Timepicker'
-
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { add, format, setDate } from 'date-fns'
+import { add, format } from 'date-fns'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { useContext } from 'react'
 import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -22,19 +19,15 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
         value: 0
     }])
     const [shifturation, setshiftduration] = useState(0)
-
     const [selectshitid, setselectedshiftid] = useState(0)
     const [punchview, setpunchview] = useState(0)
     const [reqtype, setreqtype] = useState(0)
     const [punchindatamain, setpunchindatamain] = useState(0)
     const [punchoutdatamain, setpunchoutdatamain] = useState(0)
-
-
     const { employeedetails,//for employee details
         updateemployeedetails,
         getleavereqtype,//type of leave request half,leave,latecoming
         updateleavereqtype } = useContext(PayrolMasterContext)
-
     // destructuring employee details
     const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
     const [shiftdata, setshiftdata] = useState([{
@@ -44,13 +37,11 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
         shft_chkout_time: '',
         plan_slno: ''
     }])
-
     const [formData, setFormData] = useState({
         startDate: format(new Date(), "yyyy-MM-dd"),
     })
     // destructuring start and end date
     const { startDate } = formData
-
     useEffect(() => {
         //postData
         const postData = {
@@ -80,7 +71,6 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
             }
         }
         getdepartmentShift()
-
     }, [])
 
     const getpuchdetl = async (e) => {
@@ -89,28 +79,18 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
             duty_day: e.target.value
         }
         const result = await axioslogin.post('common/getShiftdetails/', datagetpunch)
-
         const { success, data } = result.data
         if (success === 1) {
             const { punch_in, punch_out, punch_slno, mis_punch_flag, shft_slno, ot_request_flag } = data[0]
 
             if (ot_request_flag === 1) {
                 errorNofity('Already Request Present')
-
             }
-
         } else if (success === 2) {
-
         }
-
-
     }
     const displaypunch = async () => {
-
-        console.log(selectshitid)
-        console.log(reqtype)
         if (selectshitid === 0 || reqtype === 0) {
-
             warningNofity("Plese Select Shift And Type")
         }
         else {
@@ -125,7 +105,6 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
                 if (ot_request_flag === 1) {
                     warningNofity('Already Request Present')
                 } else {
-
                     const datatogetpunch = {
                         date1: moment(new Date(startDate)).format('YYYY-MM-DD'),
                         date2: moment(add(new Date(startDate), { days: 1 })).format('YYYY-MM-DD'),
@@ -147,7 +126,6 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
                         warningNofity('No Shift Present')
 
                     }
-
                 }
             }
         }
@@ -171,7 +149,6 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
     //     }
     // }
     const handleChnage = async (e) => {
-
         setselectedshiftid(e.target.value)
         const result = await axioslogin.get(`shift/${e.target.value}`)
         const { success, data } = result.data
@@ -179,11 +156,9 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
         if (success === 1) {
             setshiftduration(data[0].shift_duration_in_min)
         }
-
     }
     useEffect(() => {
         if (punchoutdatamain != 0) {
-
             const compensoffdata = {
                 startdate: startDate,
                 reqtype: reqtype,
@@ -192,13 +167,9 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
                 punchin: punchindatamain,
                 punchout: punchoutdatamain,
                 selectshitid: selectshitid
-
-
             }
             setcopensatoryoff(compensoffdata)
-
         }
-
     }, [punchoutdatamain])
 
 

@@ -46,7 +46,7 @@ const ApprovalHODTable = () => {
 
     return (
         < Fragment >
-            <ModelApproveReject open={open} handleClose={handleClose} />
+            {/* <ModelApproveReject open={open} handleClose={handleClose} /> */}
             <MaterialTable
                 title="Leave Approval HOD"
                 data={data}
