@@ -35,8 +35,6 @@ const EmployeeRecord = () => {
         }
     }, [employeeRecordList])
 
-    console.log(tableData)
-
     const {
         selectedDept,
         selectDeptSection,
