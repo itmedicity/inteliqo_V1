@@ -8,6 +8,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Checkbox, FormControlLabel } from '@material-ui/core'
 
 const CommonSettings = () => {
     const history = useHistory()
@@ -20,9 +21,14 @@ const CommonSettings = () => {
         commn_latein: '',
         commn_earlyout: '',
         commn_latein_grace: '',
-        commn_earlyout_grace: ''
+        commn_earlyout_grace: '',
+        carry_hl: false,
+        carry_cl: false,
+        carry_el: false,
+        carry_sl: false
     })
-    const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace } = FormData
+    const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
+        carry_hl, carry_el, carry_cl, carry_sl } = FormData
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -33,15 +39,19 @@ const CommonSettings = () => {
             const result = await axioslogin.get('/commonsettings')
             const { success, data } = result.data
             if (success === 1) {
-                const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out,
-                    cmmn_early_out_grace, cmmn_late_in_grace } = data[0]
+                const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
+                    cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
                     commn_latein: cmmn_late_in,
                     commn_earlyout: cmmn_early_out,
                     commn_latein_grace: cmmn_late_in_grace,
-                    commn_earlyout_grace: cmmn_early_out_grace
+                    commn_earlyout_grace: cmmn_early_out_grace,
+                    carry_hl: carry_hl === 1 ? true : false,
+                    carry_cl: carry_cl === 1 ? true : false,
+                    carry_el: carry_el === 1 ? true : false,
+                    carry_sl: carry_sl === 1 ? true : false
                 }
                 setFormData(frmData)
                 setValue(1)
@@ -62,7 +72,11 @@ const CommonSettings = () => {
         cmmn_early_out: commn_earlyout,
         cmmn_late_in_grace: commn_latein_grace,
         cmmn_early_out_grace: commn_earlyout_grace,
-        creat_user: em_id,
+        carry_hl: carry_hl === true ? 1 : 0,
+        carry_cl: carry_cl === true ? 1 : 0,
+        carry_el: carry_el === true ? 1 : 0,
+        carry_sl: carry_sl === true ? 1 : 0,
+        creat_user: em_id
     }
     //data to edit
     const postDataEdit = {
@@ -71,6 +85,10 @@ const CommonSettings = () => {
         cmmn_early_out: commn_earlyout,
         cmmn_late_in_grace: commn_latein_grace,
         cmmn_early_out_grace: commn_earlyout_grace,
+        carry_hl: carry_hl === true ? 1 : 0,
+        carry_cl: carry_cl === true ? 1 : 0,
+        carry_el: carry_el === true ? 1 : 0,
+        carry_sl: carry_sl === true ? 1 : 0,
         update_user: em_id,
         setting_slno: slno
     }
@@ -79,7 +97,6 @@ const CommonSettings = () => {
         e.preventDefault();
         if (value === 0) {
             const result = await axioslogin.post('/commonsettings', postData)
-            console.log(result)
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
@@ -118,100 +135,197 @@ const CommonSettings = () => {
                 submit={submitFormData}
                 redirect={RedirectToprofilePage}
             >
-                <div className="card-body">
-                    <div className="col-md-12">
-                        <div className="row g-1">
-                            <div className="col-md-2 pt-1">
-                                <Typography>Common Grace Period:</Typography>
-                            </div>
-                            <div className="col-md-1">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="commn_grace"
-                                    value={commn_grace}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </div>
-                            <div className="col-md-1 pt-1">
-                                <Typography>In Minutes</Typography>
+                <div className="col-md-12">
+                    <div className="row">
+                        <div className="col-md-1"></div>
+                        <div className="col-md-5">
+                            <div className="card">
+                                <div className="card-body">
+                                    <div className="col-md-12">
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Common Grace Period:</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="commn_grace"
+                                                    value={commn_grace}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Common Late In</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="commn_latein"
+                                                    value={commn_latein}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Common Early Out</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="commn_earlyout"
+                                                    value={commn_earlyout}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Late In Grace Period</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="commn_latein_grace"
+                                                    value={commn_latein_grace}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Early Out Grace Period</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="commn_earlyout_grace"
+                                                    value={commn_earlyout_grace}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="row g-1 pt-2">
-                            <div className="col-md-2 pt-1">
-                                <Typography>Common Late In</Typography>
-                            </div>
-                            <div className="col-md-1">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="commn_latein"
-                                    value={commn_latein}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </div>
-                            <div className="col-md-1 pt-1">
-                                <Typography>In Minutes</Typography>
-                            </div>
-                        </div>
-                        <div className="row g-1 pt-2">
-                            <div className="col-md-2 pt-1">
-                                <Typography>Common Early Out</Typography>
-                            </div>
-                            <div className="col-md-1">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="commn_earlyout"
-                                    value={commn_earlyout}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </div>
-                            <div className="col-md-1 pt-1">
-                                <Typography>In Minutes</Typography>
-                            </div>
-                        </div>
-                        <div className="row g-1 pt-2">
-                            <div className="col-md-2 pt-1">
-                                <Typography>Late In Grace Period</Typography>
-                            </div>
-                            <div className="col-md-1">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="commn_latein_grace"
-                                    value={commn_latein_grace}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </div>
-                            <div className="col-md-1 pt-1">
-                                <Typography>In Minutes</Typography>
-                            </div>
-                        </div>
-                        <div className="row g-1 pt-2">
-                            <div className="col-md-2 pt-1">
-                                <Typography>Early Out Grace Period</Typography>
-                            </div>
-                            <div className="col-md-1">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="commn_earlyout_grace"
-                                    value={commn_earlyout_grace}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </div>
-                            <div className="col-md-1 pt-1">
-                                <Typography>In Minutes</Typography>
+                        <div className="col-md-5">
+                            <div className="card">
+                                <div className="card-header pb-0 border  text-black">
+                                    <h6>CarryForward Leave Setting</h6>
+                                </div>
+                                <div className="card-body">
+
+                                    <div className="col-md-12">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <FormControlLabel
+                                                    className="pb-0 mb-0"
+                                                    control={
+                                                        <Checkbox
+                                                            name="carry_hl"
+                                                            color="primary"
+                                                            value={carry_hl}
+                                                            checked={carry_hl}
+                                                            className="ml-2"
+                                                            onChange={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    }
+                                                    label="National Holiday"
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <FormControlLabel
+                                                    className="pb-0 mb-0"
+                                                    control={
+                                                        <Checkbox
+                                                            name="carry_cl"
+                                                            color="primary"
+                                                            value={carry_cl}
+                                                            checked={carry_cl}
+                                                            className="ml-2"
+                                                            onChange={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    }
+                                                    label="Casual Leave"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <FormControlLabel
+                                                    className="pb-0 mb-0"
+                                                    control={
+                                                        <Checkbox
+                                                            name="carry_el"
+                                                            color="primary"
+                                                            value={carry_el}
+                                                            checked={carry_el}
+                                                            className="ml-2"
+                                                            onChange={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    }
+                                                    label="Earn Leave"
+                                                />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <FormControlLabel
+                                                    className="pb-0 mb-0"
+                                                    control={
+                                                        <Checkbox
+                                                            name="carry_sl"
+                                                            color="primary"
+                                                            value={carry_sl}
+                                                            checked={carry_sl}
+                                                            className="ml-2"
+                                                            onChange={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    }
+                                                    label="Sick Leave"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </PageLayoutProcess>
         </Fragment >
     )

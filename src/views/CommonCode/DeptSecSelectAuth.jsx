@@ -61,4 +61,4 @@ const DeptSecSelectAuth = (props) => {
     )
 }
 
-export default DeptSecSelectAuth
+export default memo(DeptSecSelectAuth)

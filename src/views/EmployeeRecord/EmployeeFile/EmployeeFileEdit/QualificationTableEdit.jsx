@@ -159,8 +159,14 @@ const QualificationTableEdit = () => {
 
     //Form reset
     const resetForm = {
+        em_education: '0',
+        em_course: '0',
+        em_specialization: '0',
+        em_univ_institute: '0',
+        em_board: '0',
         em_year: '',
         em_mark_grade: '',
+        em_reg_type: '0',
         em_reg_no: ''
     }
     const reset = () => {

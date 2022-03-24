@@ -106,10 +106,8 @@ const FineAndDeductionTableEdit = () => {
     const resetForm = {
         fine_descp: '',
         fine_amount: '',
-        fine_start: '',
-        fine_end: '',
-        fine_period: '',
-        fine_remark: ''
+        fine_remark: '',
+        fine_status: ''
     }
     const reset = () => {
         updateFine(0);
