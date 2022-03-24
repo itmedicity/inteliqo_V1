@@ -10,7 +10,7 @@ import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
-import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
+import { HrLeave, getleaverequest, Hrhalfdayrequest, getHRnopunchrequst, compensatoryHr } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 
 const ApprovalHR = () => {
@@ -22,13 +22,13 @@ const ApprovalHR = () => {
     const [levtpevalue, setleavetypevalue] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
         COFF: false,
-        DOFF: false,
         HDLR: false,
         LR: false,
         NOP: false,
+        specialapproval: false
     }
     )
-    const { COFF, DOFF, HDLR, LR, NOP } = levtpevaluearry
+    const { COFF, HDLR, LR, NOP, specialapproval } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
     // get nopunch request
@@ -36,24 +36,30 @@ const ApprovalHR = () => {
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
     const [compensetory, setcompensetory] = useState([])
+
+    const [spclapproval, setspclapproval] = useState([])
     useEffect(() => {
-        getleaverequestget(getDeptSection).then((val) => {
+        HrLeave().then((val) => {
             setleavereqst(val)
         })
-        getleaverequest(getDeptSection).then((val) => {
+        getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-        getnopunchrequst(getDeptSection).then((val) => {
+        getHRnopunchrequst().then((val) => {
             setnopunch(val)
         })
-        halfdayrequest(getDeptSection).then((val) => {
+        Hrhalfdayrequest().then((val) => {
             sethalfday(val)
         })
-        compensatory(getDeptSection).then((val) => {
+        compensatoryHr().then((val) => {
             setcompensetory(val)
+        })
+        HrLeave().then((val) => {
+            setspclapproval(val)
         })
         return (
             updateleaverequest(0)
+
         )
 
     }, [updateleaverequest]);
@@ -65,10 +71,10 @@ const ApprovalHR = () => {
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
-            DOFF: false,
             HDLR: false,
             LR: false,
             NOP: false,
+            specialapproval: false
 
         }
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -117,7 +123,23 @@ const ApprovalHR = () => {
                                             }
                                         </div>
                                     </div>
-                                    <div className="col-md-7 col-sm-12 col-xs-12">
+                                    <div className="col-md-1">
+                                        <FormControlLabel
+                                            control={
+                                                <Tooltip title="Special Approval">
+                                                    <Checkbox
+                                                        name="specialapproval"
+                                                        color="secondary"
+                                                        value={specialapproval === false ? 5 : 0}
+                                                        checked={specialapproval}
+                                                        onChange={(e) => leverequesttypechange(e)}
+                                                    />
+                                                </Tooltip>
+                                            }
+                                            label="SP"
+                                        />
+                                    </div>
+                                    <div className="col-md-6 col-sm-12 col-xs-12">
                                         <div className="d-flex justify-content-around">
                                             <div className="col-md-4  col-sm-12">
                                                 <DeptSectionMastSelect
@@ -172,12 +194,14 @@ const ApprovalHR = () => {
                             <ApprovalInchargeTable leavereq={levtpevalue == 1 ? leavereq :
                                 levtpevalue == 2 ? halfday :
                                     levtpevalue == 4 ? compensetory :
-                                        levtpevalue == 3 ? nopunch : []
-                            } levtpevalue={levtpevalue} authority={4}
+                                        levtpevalue == 3 ? nopunch :
+                                            levtpevalue == 5 ? spclapproval : []
+                            } levtpevalue={levtpevalue} authority={levtpevalue === '5' ? 6 : 4}
                                 setleavereq={levtpevalue == 1 ? setleavereqst :
                                     levtpevalue == 2 ? sethalfday :
                                         levtpevalue == 4 ? setcompensetory :
-                                            levtpevalue == 3 ? setnopunch : null}
+                                            levtpevalue == 3 ? setnopunch :
+                                                levtpevalue == 5 ? setspclapproval : null}
                             />
                         </div>
                     </div>

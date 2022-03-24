@@ -27,7 +27,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
         emno,
         leave_date,
         leavetodate, leave_slno,
-        reqtype, nodays, lve_uniq_no
+        reqtype, nodays, lve_uniq_no, leave_reason
     } = leaveremastdata[0]
     const [reason, setreason] = useState('')
     const [status, setstatus] = useState({
@@ -264,7 +264,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                                             Placeholder="Reason"
                                             fullWidth
                                             disabled="Disabled"
-
+                                            value={leave_reason}
                                         />
                                     </div>
                                 </div>

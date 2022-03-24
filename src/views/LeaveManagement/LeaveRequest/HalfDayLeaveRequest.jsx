@@ -1,12 +1,9 @@
-import { IconButton } from '@mui/material'
 import { format } from 'date-fns'
-import React, { Fragment, useEffect, useState } from 'react'
-import { MdOutlineAddCircleOutline } from 'react-icons/md'
+import React, { Fragment, useEffect, useState, memo } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import ShiftHalfdayComponent from './Component/ShiftHalfdayComponent'
 import TestCasulLeave from './Component/TestCasulLeave'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Timepicker from 'src/views/Component/Timepicker';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { FormControl, MenuItem, Select } from '@material-ui/core';
@@ -15,12 +12,11 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 
 const HalfDayLeaveRequest = ({ sethalfday }) => {
-    const { employeedetails, updateemployeedetails, updateleavereqtype } = useContext(PayrolMasterContext)
-    const { em_id, em_no, em_department, em_dept_section } = employeedetails
+    const { employeedetails, updateleavereqtype } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [casualdata, setcasual] = useState(0)
     const [planslno, setplanslno] = useState(0)
     const [monthleave, setmonthleave] = useState('')
-
     const [checkOut, setCheckOut] = useState(new Date());
     const [checkIn, setCheckIn] = useState(new Date());
 
@@ -154,10 +150,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
         }
         sethalfday(formdataa)
     }, [casullevemonth, checkIn, checkOut, monthleave])
-
-
     return (
-
         <Fragment>
             <div className="card">
                 <div className="card-body">
@@ -264,4 +257,4 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
     )
 }
 
-export default HalfDayLeaveRequest
+export default memo(HalfDayLeaveRequest)

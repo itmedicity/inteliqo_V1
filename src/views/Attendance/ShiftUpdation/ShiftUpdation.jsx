@@ -1,5 +1,5 @@
-import { IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useContext, useEffect, memo } from 'react'
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
+import React, { Fragment, useContext, useEffect, memo } from 'react'
 import Paper from '@mui/material/Paper';
 import CustomePagination from 'src/views/CommonCode/CustomePagination';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
@@ -13,12 +13,9 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
 import { addDays, format } from 'date-fns';
 import moment from 'moment';
-import { infoNofity, getDayDiffrence } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, getDayDiffrence, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { rows } from './data'
-
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
-
 const ShiftUpdation = () => {
 
     //SHIFT TABLE CODE
@@ -59,21 +56,15 @@ const ShiftUpdation = () => {
         setRowsPerPage(rows)
         // setDays(daysDiff)
     }, [startDate, endDate])
-
-
     const {
         selectedDept,
         selectDeptSection,
         selectEmpName
     } = useContext(PayrolMasterContext)
-
     //SET  POST DATA
-    const [postData, setPostData] = useState({});
     const [apiData, setApiData] = useState([]);
-
     // Get the attendance data from the database 
     const getPunchDetl = async () => {
-
         if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
@@ -82,12 +73,18 @@ const ShiftUpdation = () => {
                 departmentSec: selectDeptSection,
                 cmpCode: 1
             }
-
             if (Object.keys(deptDetl).length > 1) {
                 const result = await axioslogin.post("/attendCal", deptDetl);
-                const { success, data, message } = result.data;
+                const { success, data } = result.data;
                 if (success === 1) {
-                    setApiData(data)
+                    if (data.length !== 0) {
+                        setApiData(data)
+                    }
+                    else {
+                        setApiData(data)
+                        infoNofity("Please Do the Shift Marking")
+                    }
+
                 }
 
                 if (success === 0) {
@@ -135,6 +132,17 @@ const ShiftUpdation = () => {
                 const { success, message } = result.data;
                 if (success === 1) {
                     const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
+
+                    const { success, message } = result.data;
+
+
+                    if (success === 1) {
+                        succesNofity("Processed SuccessFully")
+                    } else {
+                        errorNofity('Please Contact')
+                    }
+
+
                 }
 
                 if (success === 0) {
@@ -191,15 +199,15 @@ const ShiftUpdation = () => {
                                 changeTextValue={(e) => getStartEndDate(e)}
                             />
                         </div>
-                        <div className="col-md-2">
+                        <div className="col-md-3">
                             <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
-                        <div className="col-md-2">
+                        <div className="col-md-3">
                             <DepartmentSectionSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
-                        <div className="col-md-2">
+                        {/* <div className="col-md-2">
                             <EmployeeNameSelect select="Department Section" style={SELECT_CMP_STYLE} />
-                        </div>
+                        </div> */}
                         <div className="col-md-1">
                             <div className='d-flex justify-content-evenly' >
                                 <div>

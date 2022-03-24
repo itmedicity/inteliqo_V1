@@ -25,7 +25,9 @@ const DutyPlanning = () => {
   const [empData, setempData] = useState([])
   //use State for Date Format
   const [dateFormat, setdateFormat] = useState([])
+
   const [duty, setDuty] = useState(0)
+
   const [count, setCount] = useState(0)
   const [disable, setdisable] = useState(true)
   //use state for initial start date and end date
@@ -154,7 +156,6 @@ const DutyPlanning = () => {
   const redirecting = () => {
     history.push('/Home')
   }
-
   return (
     <Fragment>
       <PageLayoutCloseOnly heading="Duty Planning"

@@ -62,7 +62,7 @@ const CommonSettings = () => {
         cmmn_early_out: commn_earlyout,
         cmmn_late_in_grace: commn_latein_grace,
         cmmn_early_out_grace: commn_earlyout_grace,
-        creat_user: em_id
+        creat_user: em_id,
     }
     //data to edit
     const postDataEdit = {

@@ -1,6 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState, } from 'react'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { useHistory } from 'react-router'
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import ApprovalInchargeTable from './ApprovalInchargeTable'
@@ -11,12 +12,16 @@ import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
+import ResignationApprovalSection from '../../Resignation/ResignationApproval/ResignationApprovalSection'
 
 const ApprovalIncharge = () => {
     const history = useHistory()
     const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
+    const [DeptSect, updateDeptSect] = useState([])
+    const [depsect, setDeptsect] = useState(0)
+
     // to get the ype leave request
     const [levtpevalue, setleavetypevalue] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
@@ -28,32 +33,60 @@ const ApprovalIncharge = () => {
     const { COFF, HDLR, LR, NOP } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
-    // console.log(leavereq)
     // get nopunch request
     const [nopunch, setnopunch] = useState([])
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
     const [compensetory, setcompensetory] = useState([])
+
+
+    const handleChange = async (e) => {
+        setDeptsect(e)
+        // depsection change filter based on dept section leave request
+        const filterleavereq = leavereq.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        setleavereqst(filterleavereq)
+        // depsection change filter based on dept section no punch
+        const filternopunch = nopunch.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        setnopunch(filternopunch)
+
+        // depsection change filter based on dept section halfday
+        const filterhalfday = halfday.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        sethalfday(filterhalfday)
+
+        // depsection change filter based on dept section setcompensetory
+        const filtercompen = compensetory.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        setcompensetory(filtercompen)
+
+    }
     useEffect(() => {
-        getleaverequestget(getDeptSection).then((val) => {
-            setleavereqst(val)
-        })
-        getleaverequest(getDeptSection).then((val) => {
-            setleaverequesttype(val)
-        })
-        getnopunchrequst(getDeptSection).then((val) => {
-            setnopunch(val)
-        })
-        halfdayrequest(getDeptSection).then((val) => {
-            sethalfday(val)
-        })
-        compensatory(getDeptSection).then((val) => {
-            setcompensetory(val)
-        })
-        return (
-            updateleaverequest(0)
-        )
-    }, [updateleaverequest, getDeptSection]);
+        const arraydepsect = DeptSect.map((val) => { return val.dept_section })
+        if (arraydepsect.length !== 0) {
+            getleaverequestget(arraydepsect).then((val) => {
+                setleavereqst(val)
+            })
+            getleaverequest(arraydepsect).then((val) => {
+                setleaverequesttype(val)
+            })
+            getnopunchrequst(arraydepsect).then((val) => {
+
+                setnopunch(val)
+            })
+            halfdayrequest(arraydepsect).then((val) => {
+                sethalfday(val)
+            })
+            compensatory(arraydepsect).then((val) => {
+                setcompensetory(val)
+            })
+        }
+    }, [DeptSect]);
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
@@ -109,13 +142,16 @@ const ApprovalIncharge = () => {
                                                 })
                                             }
                                         </div>
+                                        <AuthorizationDetails />
                                     </div>
                                     <div className="col-md-7 col-sm-12 col-xs-12">
                                         <div className="d-flex justify-content-around">
                                             <div className="col-md-4  col-sm-12">
-                                                <DeptSectionMastSelect
+                                                {/* <DeptSectionMastSelect
                                                     style={SELECT_CMP_STYLE}
-                                                />
+                                                /> */}
+                                                <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect}
+                                                    updateDeptSect={updateDeptSect} onChange={handleChange} />
                                             </div>
                                             <div className="col-md-1  col-sm-12">
                                                 <FormControlLabel
