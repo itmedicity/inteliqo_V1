@@ -9,13 +9,13 @@ import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
-import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
+import { ceoLeavereq, getleaverequest, CEohalfdayrequest, getCEOnopunchrequst, compensatoryCeo } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 
 const ApprovalCEO = () => {
     const [levtpevalue, setleavetypevalue] = useState([])
     const history = useHistory()
-    const { updateleaverequest } = useContext(PayrolMasterContext)
+    const { updateleaverequest, getDeptSection, updateDeptSection } = useContext(PayrolMasterContext)
     const [leaverequesttype, setleaverequesttype] = useState([]);
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
@@ -26,36 +26,34 @@ const ApprovalCEO = () => {
     const [compensetory, setcompensetory] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
         COFF: false,
-        DOFF: false,
         HDLR: false,
         LR: false,
         NOP: false,
     }
     )
-
-    const { COFF, DOFF, HDLR, LR, NOP } = levtpevaluearry
+    const { COFF, HDLR, LR, NOP } = levtpevaluearry
     useEffect(() => {
-        getleaverequestget().then((val) => {
-
+        ceoLeavereq().then((val) => {
             setleavereqst(val)
         })
         getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-        getnopunchrequst().then((val) => {
+        getCEOnopunchrequst().then((val) => {
             setnopunch(val)
         })
-        halfdayrequest().then((val) => {
+        CEohalfdayrequest().then((val) => {
             sethalfday(val)
         })
-        compensatory().then((val) => {
+        compensatoryCeo().then((val) => {
             setcompensetory(val)
         })
 
         return (
-            updateleaverequest(0)
+            updateleaverequest(0),
+            updateDeptSection(0)
         )
-    }, [updateleaverequest]);
+    }, [updateleaverequest, updateDeptSection]);
 
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
@@ -65,7 +63,6 @@ const ApprovalCEO = () => {
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
-            DOFF: false,
             HDLR: false,
             LR: false,
             NOP: false,
@@ -149,8 +146,6 @@ const ApprovalCEO = () => {
                                                             <Checkbox
                                                                 name="all"
                                                                 color="secondary"
-                                                                // value={Leave_Carry_Forwad}
-                                                                // checked={Leave_Carry_Forwad}
                                                                 checked={true}
                                                             />
                                                         }
@@ -162,9 +157,6 @@ const ApprovalCEO = () => {
                                                         type="text"
                                                         classname="form-control form-control-sm"
                                                         Placeholder="Employee No"
-                                                    // value={fine_descp}
-                                                    // name="fine_descp"
-                                                    // changeTextValue={(e) => }
                                                     />
                                                 </div>
                                                 <div className="col-md-1 pl-0">
@@ -172,8 +164,6 @@ const ApprovalCEO = () => {
                                                         <IconButton >
                                                             < ImSearch size={22} />
                                                         </IconButton>
-                                                        {/* disabled={props.disable}
-                                                 clickable={true}  */}
                                                     </Tooltip>
                                                 </div>
                                             </div>

@@ -195,7 +195,7 @@ const EmployeeProfileCardMenuList = (props) => {
                                                 <BusinessIcon />
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary="Company Informat ion"
+                                        <ListItemText primary="Company Information"
                                             primaryTypographyProps={{ noWrap: true }}
                                         />
                                     </ListItem>

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
@@ -42,7 +42,6 @@ import { getMenuSlno } from 'src/views/Constant/Constant'
 
 const AppSidebar = () => {
 
-  const [menuSlno, setMenuSlno] = useState();
   const [empRecruit, setRecruitMenuArray] = useState();
   const [empRecord, setEmployeerecord] = useState();
   const [empAttendance, setAttendanceManagement] = useState();
@@ -123,9 +122,9 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
-  const [empid, setEmpid] = useState({
-    emp_slno: 0,
-  })
+  // const [empid, setEmpid] = useState({
+  //   emp_slno: 0,
+  // })
 
   const [menu, setMenu] = useState([])
 

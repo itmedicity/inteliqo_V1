@@ -1,20 +1,11 @@
 import { TableCell, TableRow, Avatar } from '@mui/material'
-import { isValid } from 'date-fns';
-import moment from 'moment'
 import React, { Fragment, memo } from 'react'
-import { getHoursWorked, getTotalMinitsWorked, getTotalShiftHours } from 'src/views/CommonCode/Commonfunc';
 import { deepOrange, deepPurple, green, brown, cyan } from '@mui/material/colors';
-// import { green } from '@material-ui/core/colors';
-
 const ShiftUpdationTblRow = ({ val }) => {
-    console.log(val)
-
-    const { duty_day, early_out, em_no, emp_id, hrs_worked, late_in, duty_status, leave_type,
+    const { duty_day, early_out, em_no, hrs_worked, late_in, duty_status, leave_type,
         lvreq_type,
         name, ot_request_flag, over_time, punch_in, punch_out,
         punch_slno, shift_id, shift_in, shift_out } = val;
-
-
     const checkInTime = punch_in !== null ? punch_in : '00:00';
     const checkOutTime = punch_out !== null ? punch_out : '00:00';
     return (

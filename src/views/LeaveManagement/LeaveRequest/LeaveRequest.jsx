@@ -226,7 +226,7 @@ const LeaveRequest = () => {
                 warningNofity('Already request Added')
             }
         }
-        else if (levereqtype === 5) {
+        else if (levereqtype === 4) {
             const { punchin, punchout, reqtype, selectshitid, shifturation, startdate } = compensatoryoff
             if (reqtype === 1) {
                 const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
@@ -431,12 +431,12 @@ const LeaveRequest = () => {
                                     getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch} /> :
                                         getleavereqtype === '4' ? <LateComming /> :
                                             getleavereqtype === '5' ? <EarlyGoing /> :
-                                                getleavereqtype === 5 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff} /> : null
+                                                getleavereqtype === 4 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff} /> : null
                         }
                     </div>
                     {/* Diplay the Allowed Leave Calender */}
                     <div className="col-md-12">
-                        <LeaveCalender />
+                        <LeaveCalender em_id={em_id} />
                     </div>
                 </form>
             </PageLayoutSave >

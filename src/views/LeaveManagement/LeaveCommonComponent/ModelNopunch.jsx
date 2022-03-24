@@ -310,4 +310,4 @@ const ModelNopunch = ({ open, handleClose, hafdaydata, setleavereq, authority, e
     )
 }
 
-export default ModelNopunch
+export default memo(ModelNopunch)

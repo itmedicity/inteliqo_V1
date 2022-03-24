@@ -1,51 +1,19 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios'
 
-const LeaveCalender = () => {
-
-    const data = [
-        {
-            slno: 1,
-            leaveType: "Holidays",
-            Allowed: 4,
-            Credited: 4,
-            Taken: 4,
-            Balance: 5
-        },
-        {
-            slno: 2,
-            leaveType: "Casual Leave",
-            Allowed: 4,
-            Credited: 4,
-            Taken: 4,
-            Balance: 5
-        },
-        {
-            slno: 3,
-            leaveType: "Sick Leave",
-            Allowed: 4,
-            Credited: 4,
-            Taken: 4,
-            Balance: 5
-        },
-        {
-            slno: 4,
-            leaveType: "Earn leave",
-            Allowed: 4,
-            Credited: 4,
-            Taken: 4,
-            Balance: 5
-        },
-        {
-            slno: 5,
-            leaveType: "Compansatory Off",
-            Allowed: 4,
-            Credited: 4,
-            Taken: 4,
-            Balance: 5
-        },
-    ]
-
+const LeaveCalender = ({ em_id }) => {
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const getLeave = async () => {
+            const result = await axioslogin.get(`/leaveRequestType/leavesetdata/${em_id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                setData(data[0])
+            }
+        }
+        getLeave()
+    }, [em_id])
     return (
         <Fragment>
             <TableContainer component={Paper}>
@@ -63,16 +31,16 @@ const LeaveCalender = () => {
                         {
                             data && data.map((val) => {
                                 return < TableRow
-                                    key={val.slno}
+                                    key={val.typeleve}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {val.leaveType}
+                                        {val.typeleve}
                                     </TableCell>
-                                    <TableCell align="right">{val.Allowed}</TableCell>
-                                    <TableCell align="right">{val.Credited}</TableCell>
-                                    <TableCell align="right">{val.Taken}</TableCell>
-                                    <TableCell align="right">{val.Balance}</TableCell>
+                                    <TableCell align="right">{val.allowed}</TableCell>
+                                    <TableCell align="right">{val.credited}</TableCell>
+                                    <TableCell align="right">{val.taken}</TableCell>
+                                    <TableCell align="right">{val.balance}</TableCell>
                                 </TableRow>
                             })
                         }

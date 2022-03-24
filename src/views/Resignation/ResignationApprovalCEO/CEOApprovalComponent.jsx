@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, memo } from 'react';
 import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, Slide } from "@material-ui/core";
 import TextInput from 'src/views/Component/TextInput';
@@ -222,4 +222,4 @@ const CEOApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
     )
 };
 
-export default CEOApprovalComponent;
+export default memo(CEOApprovalComponent);

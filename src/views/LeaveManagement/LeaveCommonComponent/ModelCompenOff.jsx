@@ -280,4 +280,4 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
     )
 }
 
-export default ModelCompenOff
+export default memo(ModelCompenOff)

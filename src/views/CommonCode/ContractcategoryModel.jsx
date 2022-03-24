@@ -11,7 +11,7 @@ import { axioslogin } from '../Axios/Axios';
 import { succesNofity, warningNofity } from './Commonfunc';
 
 
-const ContractcategoryModel = ({ em_category, id, setcategorysave, setmodelcate }) => {
+const ContractcategoryModel = ({ em_category, id, setcategorysave, setmodelcate, newempno }) => {
     const [modelcat, setmodelcat] = useState(true)
     // useContext
     const { categorycontract, updatecategorycontract } = useContext(PayrolMasterContext)
@@ -26,11 +26,8 @@ const ContractcategoryModel = ({ em_category, id, setcategorysave, setmodelcate 
             em_no: id
 
         }
-
         const result = await axioslogin.patch('/empmast/updatecategory', updatecategory)
-
         const { success, message } = result.data;
-
         if (success === 2) {
             succesNofity(message)
             setmodelcat(false)
@@ -41,19 +38,14 @@ const ContractcategoryModel = ({ em_category, id, setcategorysave, setmodelcate 
             warningNofity("Contact Edp")
             setmodelcate(0)
         }
-
     }
 
     const handleonchange = () => {
         setmodelcat(false)
         setmodelcate(0)
     }
-
     return (
-
         <Fragment>
-
-
             <Dialog open={modelcat}>
                 <DialogTitle></DialogTitle>
                 <DialogContent>
@@ -67,10 +59,7 @@ const ContractcategoryModel = ({ em_category, id, setcategorysave, setmodelcate 
                     <Button onClick={changecategory}>save </Button>
                 </DialogActions>
             </Dialog>
-
         </Fragment>
-
     )
 }
-
 export default memo(ContractcategoryModel)

@@ -1,40 +1,29 @@
 import { Typography } from '@mui/material';
-import React, { Fragment } from 'react'
+import moment from 'moment';
+import React, { Fragment, useEffect, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios';
 import { TEXT_DARK, TEXT_MUTED } from 'src/views/Constant/Constant';
 
-const CalculatedOffDays = () => {
-    const list = [
-        {
-            name: "10/11/2021",
-            date: "C OFF",
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "10/11/2021",
-            date: "W OFF",
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "10/11/2021",
-            date: "C OFF",
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "10/11/2021",
-            date: "W OFF",
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "10/11/2021",
-            date: "C OFF",
-            credit: 1,
-            taken: 0
-        },
-    ]
+const CalculatedOffDays = ({ empid }) => {
+    const [list, setlist] = useState([{
+        calculated_date: 0,
+        credited: 0,
+        taken: 0
+
+    }])
+    useEffect(() => {
+        const getholidaylleave = async () => {
+            const result = await axioslogin.get(`/common/getcoff/${empid}`)
+            const { success, data } = result.data
+            if (success === 0) {
+                setlist([])
+            }
+            else {
+                setlist(data)
+            }
+        }
+        getholidaylleave();
+    }, [empid])
     return (
         <Fragment>
             <ul className="list-group list-group-flush ">
@@ -46,15 +35,15 @@ const CalculatedOffDays = () => {
                             >
                                 <div className="col-sm-4 py-0 text-start" >
                                     <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.name}
+                                        COFF
                                     </Typography>
                                 </div>
                                 <div className="col-sm-3 py-0 text-start">
                                     <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.date}
+                                        {moment(val.calculated_date).format('DD/MM/YYYY')}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-start">{val.credit}</div>
+                                <div className="col-sm-2 py-0 text-start">{val.credited}</div>
                                 <div className="col-sm-1 py-0 text-start">{val.taken}</div>
                             </div>
                         </li>;

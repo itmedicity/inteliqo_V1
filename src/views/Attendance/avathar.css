@@ -1,0 +1,27 @@
+.avathar{
+       /* Center the content */
+       display: inline-block;
+       vertical-align: middle;
+
+       /* Used to position the content */
+       /* position: relative; */
+
+       /* Colors */
+       background-color: rgba(0, 0, 0, 0.3);
+       color: #fff;
+
+       /* Rounded border */
+       border-radius: 50%;
+       height: 35px;
+       width: 35px;
+}
+.avatarattan_letters {
+    /* Center the content */
+    left: 50%;
+    /* position: relative; */
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.orange{
+     background-color: #b959189a;
+}
