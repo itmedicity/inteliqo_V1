@@ -131,6 +131,9 @@ const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceM
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
 const EmployeeReport = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReport'))
 const EmployeeReportInactive = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReportInactive'))
+const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMast'))
+const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -267,6 +270,8 @@ const routes = [
   { path: '/Home/DueClearenceEdit/:id', exact: true, name: 'Due Clearence Edit', component: DueClearenceEdit },
   { path: '/Home/EmployeeReport', exact: true, name: 'Active Employees', component: EmployeeReport },
   { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
+  { path: '/Home/CarryForwardSetting', exact: true, name: 'Carry Forward Leave Setting', component: CarryforwardLeaveSetting },//Leave carryforward
+  { path: '/Home/CarryforwardEdit/:id', exact: true, name: 'Due Clearence Edit', component: CarryforwardLeaveEdit },
 
 ]
 

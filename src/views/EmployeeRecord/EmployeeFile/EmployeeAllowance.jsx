@@ -65,12 +65,24 @@ const EmployeeAllowance = () => {
                         include_pf: include_pf,
                         include_lwf: include_lwf,
                         include_protax: include_protax,
+                        em_amount: '',
                         start_month: false,
                         end_month: false,
                     }
                     setWageType(formdata)
                 }
                 else {
+                    const defaultstate = {
+                        earning_type_name: '',
+                        em_earning_type: '',
+                        include_esi: 0,
+                        include_pf: 0,
+                        include_lwf: 0,
+                        include_protax: 0,
+                        em_amount: '',
+                        start_month: false,
+                    }
+                    setWageType(defaultstate)
                 }
             }
             getWageType()
@@ -109,6 +121,7 @@ const EmployeeAllowance = () => {
     const resetForm = {
         em_salary_desc: '',
         earning_type_name: '',
+        em_earning_type: '',
         include_esi: 0,
         include_pf: 0,
         include_lwf: 0,
