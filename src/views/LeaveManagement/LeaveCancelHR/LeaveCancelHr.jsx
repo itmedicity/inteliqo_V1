@@ -5,30 +5,26 @@ import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
-import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
-
-
+import { HrLeave, getleaverequest, Hrhalfdayrequest, getHRnopunchrequst, compensatoryHr } from 'src/views/CommonCode/Commonfunc';
 const LeaveCancelHr = () => {
     const history = useHistory()
-    const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
+    const { getDeptSection, updateleaverequest, updateDeptSection } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
     // to get the ype leave request
     const [levtpevalue, setleavetypevalue] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
         COFF: false,
-        DOFF: false,
         HDLR: false,
         LR: false,
         NOP: false,
     }
     )
-    const { COFF, DOFF, HDLR, LR, NOP } = levtpevaluearry
+    const { COFF, HDLR, LR, NOP } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
     // get nopunch request
@@ -37,34 +33,44 @@ const LeaveCancelHr = () => {
     const [halfday, sethalfday] = useState([])
     const [compensetory, setcompensetory] = useState([])
     useEffect(() => {
-        getleaverequestget(getDeptSection).then((val) => {
-            setleavereqst(val)
+        HrLeave().then((val) => {
+            const leavecancel = val.filter((value) => {
+                return (value.hr_apprv === 1)
+            })
+            setleavereqst(leavecancel)
         })
-        getleaverequest(getDeptSection).then((val) => {
+        getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-        getnopunchrequst(getDeptSection).then((val) => {
-            setnopunch(val)
+        getHRnopunchrequst().then((val) => {
+            const leavecancel = val.filter((value) => {
+                return (value.hr_apprv === 1)
+            })
+            setnopunch(leavecancel)
         })
-        halfdayrequest(getDeptSection).then((val) => {
-            sethalfday(val)
+        Hrhalfdayrequest().then((val) => {
+            const leavecancel = val.filter((value) => {
+                return (value.hr_apprv === 1)
+            })
+            sethalfday(leavecancel)
         })
-        compensatory(getDeptSection).then((val) => {
-            setcompensetory(val)
+        compensatoryHr().then((val) => {
+            const leavecancel = val.filter((value) => {
+                return (value.hr_apprv === 1)
+            })
+            setcompensetory(leavecancel)
         })
         return (
-            updateleaverequest(0)
+            updateleaverequest(0),
+            updateDeptSection(0)
         )
-
-    }, [updateleaverequest, getDeptSection]);
-
+    }, [updateleaverequest, updateDeptSection]);
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
-            DOFF: false,
             HDLR: false,
             LR: false,
             NOP: false,
@@ -78,7 +84,7 @@ const LeaveCancelHr = () => {
             <PageLayoutSave
                 heading="Leave Cancel HR"
                 redirect={RedirectToProfilePage}
-            //submit={submitFine}
+            // submit={submitFine}
             >
                 <div className="row g-2">
                     <div className="col-md-12 col-sm-12 col-xs-12">

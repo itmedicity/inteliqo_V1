@@ -1,58 +1,63 @@
-import MaterialTable from 'material-table'
-import React, { Fragment, memo, useEffect, useState } from 'react'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import MaterialTable from 'material-table';
+import React, { Fragment, memo, useEffect, useState } from 'react';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { useHistory, useParams } from 'react-router';
+import { useHistory } from 'react-router';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const QualificationTable = ({ update }) => {
-    const history = useHistory();
+const CarryforwardTable = ({ update }) => {
     const [data, setTableData] = useState();
-    const { id, no } = useParams()
-
+    const history = useHistory();
     //Table
     const title = [
         {
-            title: "SlNo", field: "emqual_slno"
+            title: "SlNo", field: "carry_slno"
         },
         {
-            title: "Education", field: 'edu_desc'
+            title: "Department Section", field: "sect_name", cellStyle: { minWidth: 50, maxWidth: 400 }
         },
         {
-            title: "Course", field: "cour_desc"
+            title: "Emp Type", field: "emptype_name"
         },
         {
-            title: "Specialization", field: "spec_desc"
+            title: "NH", field: "carry_hl"
+        },
+        {
+            title: "CL", field: "carry_cl"
+        },
+        {
+            title: "EL", field: "carry_el"
+        },
+        {
+            title: "SL", field: "carry_sl"
         },
     ]
-
-    //Get Data
+    //GetData
     useEffect(() => {
-        const getQualification = async () => {
-            const result = await axioslogin.get(`/qualify/${id}`)
+        const getCarryForward = async () => {
+            const result = await axioslogin.get('/carryforward')
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data);
-            } else if (success === 0) {
-                infoNofity("No Qualification is added to this employee")
             } else {
                 warningNofity(" Error occured contact EDP")
             }
         }
-        getQualification();
-    }, [id, update]);
+        getCarryForward();
+    }, [update]);
 
-    //For Edit
+    //For Editing
     const getDataTable = (data) => {
-        const { emqual_slno } = data
-        history.push(`/Home/QualificationTableEdit/${emqual_slno}/${id}/${no}`)
+        const { carry_slno } = data
+        history.push(`/Home/CarryforwardEdit/${carry_slno}`)
     }
+
 
     return (
         <Fragment>
             <MaterialTable
-                title="Qualification"
+                title="Carry Forward Leave Setting"
                 data={data}
                 columns={title}
                 icons={tableIcons}
@@ -74,4 +79,4 @@ const QualificationTable = ({ update }) => {
     )
 }
 
-export default memo(QualificationTable)
+export default memo(CarryforwardTable)

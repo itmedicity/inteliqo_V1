@@ -10,11 +10,16 @@ import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
+import HodSections from 'src/views/Resignation/ResignationApprovalHOD/HodSections';
+import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails';
 const ApprovalHod = () => {
     const [levtpevalue, setleavetypevalue] = useState([])
     const history = useHistory()
-    const { updateleaverequest, getDeptSection } = useContext(PayrolMasterContext)
+    // const { updateleaverequest, getDeptSection } = useContext(PayrolMasterContext)
     const [leaverequesttype, setleaverequesttype] = useState([]);
+    const [DeptSect, updateDeptSect] = useState([])
+    const [depsect, setDeptsect] = useState(0)
+
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
     // get nopunch request
@@ -24,34 +29,59 @@ const ApprovalHod = () => {
     const [compensetory, setcompensetory] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
         COFF: false,
-        DOFF: false,
         HDLR: false,
         LR: false,
         NOP: false,
     }
     )
-    const { COFF, DOFF, HDLR, LR, NOP } = levtpevaluearry
-    useEffect(() => {
-        getleaverequestget(getDeptSection).then((val) => {
-            setleavereqst(val)
+    const { COFF, HDLR, LR, NOP } = levtpevaluearry
+    const handleChange = async (e) => {
+        setDeptsect(e)
+        // depsection change filter based on dept section leave request
+        const filterleavereq = leavereq.filter((val) => {
+            return (val.dept_section === depsect)
         })
-        getleaverequest(getDeptSection).then((val) => {
-            setleaverequesttype(val)
+        setleavereqst(filterleavereq)
+        // depsection change filter based on dept section no punch
+        const filternopunch = nopunch.filter((val) => {
+            return (val.dept_section === depsect)
         })
-        getnopunchrequst(getDeptSection).then((val) => {
-            setnopunch(val)
-        })
-        halfdayrequest(getDeptSection).then((val) => {
-            sethalfday(val)
-        })
-        compensatory(getDeptSection).then((val) => {
-            setcompensetory(val)
-        })
+        setnopunch(filternopunch)
 
-        return (
-            updateleaverequest(0)
-        )
-    }, [updateleaverequest, getDeptSection]);
+        // depsection change filter based on dept section halfday
+        const filterhalfday = halfday.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        sethalfday(filterhalfday)
+
+        // depsection change filter based on dept section setcompensetory
+        const filtercompen = compensetory.filter((val) => {
+            return (val.dept_section === depsect)
+        })
+        setcompensetory(filtercompen)
+
+    }
+    useEffect(() => {
+        const arraydepsect = DeptSect.map((val) => { return val.dept_section })
+        if (arraydepsect.length !== 0) {
+            getleaverequestget(arraydepsect).then((val) => {
+                setleavereqst(val)
+            })
+            getleaverequest(arraydepsect).then((val) => {
+                setleaverequesttype(val)
+            })
+            getnopunchrequst(arraydepsect).then((val) => {
+
+                setnopunch(val)
+            })
+            halfdayrequest(arraydepsect).then((val) => {
+                sethalfday(val)
+            })
+            compensatory(arraydepsect).then((val) => {
+                setcompensetory(val)
+            })
+        }
+    }, [DeptSect]);
 
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
@@ -59,7 +89,6 @@ const ApprovalHod = () => {
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
-            DOFF: false,
             HDLR: false,
             LR: false,
             NOP: false,
@@ -97,6 +126,7 @@ const ApprovalHod = () => {
                                                         }
                                                         label="All"
                                                     /> */}
+                                                    <AuthorizationDetails />
                                                 </div>
                                                 {
                                                     leaverequesttype && leaverequesttype.map((val) => {
@@ -130,8 +160,9 @@ const ApprovalHod = () => {
                                         <div className="row">
                                             <div className="d-flex justify-content-around">
                                                 <div className="col-md-4">
-                                                    <DeptSectionMastSelect
-                                                        style={SELECT_CMP_STYLE}
+                                                    <HodSections
+                                                        style={SELECT_CMP_STYLE} DeptSect={DeptSect}
+                                                        updateDeptSect={updateDeptSect} onChange={handleChange}
                                                     />
                                                 </div>
                                                 <div className="col-md-2">
@@ -188,7 +219,6 @@ const ApprovalHod = () => {
                                         levtpevalue == 2 ? sethalfday :
                                             levtpevalue == 4 ? setcompensetory :
                                                 levtpevalue == 3 ? setnopunch : null}
-                                    getDeptSection={getDeptSection}
                                 />
                             </div>
                         </div>

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import {
-  CAvatar,
   CDropdown,
   CDropdownDivider,
   CDropdownHeader,
@@ -11,8 +10,6 @@ import {
 import { cilSettings, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { IoPower } from 'react-icons/io5'
-
-import avatar8 from './../../assets/images/avatars/4.jpg'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { useHistory } from 'react-router-dom'
 import ProfilePicDefault from './../../assets/images/default.png'

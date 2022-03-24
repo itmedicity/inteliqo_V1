@@ -23,14 +23,6 @@ const StatutoryInformation = () => {
     esino: '',
     uanno: '',
   })
-  //defaultstate
-  const defaultstate = {
-    pf: false,
-    pfno: '',
-    esi: false,
-    esino: '',
-    uanno: '',
-  }
   //destructuring
   const { pf, pfno, esi, esino, uanno } = formData
   //grade select list
@@ -108,7 +100,6 @@ const StatutoryInformation = () => {
       if (success === 1) {
         succesNofity(message)
         UpdateGrade(0)
-        SetformData(defaultstate)
       } else {
         errorNofity('Error Occured!!!Please Contact EDP')
       }
@@ -118,7 +109,6 @@ const StatutoryInformation = () => {
       if (success === 2) {
         succesNofity(message)
         UpdateGrade(0)
-        SetformData(defaultstate)
         Setenable(true)
       } else {
         errorNofity('Error Occured !!! Plaese Contact EDP')

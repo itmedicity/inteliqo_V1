@@ -24,7 +24,7 @@ th:last-child {
 }
 
 table tr td:nth-child(2) {
-  background-color: #bdbdbd;
+   background-color: #bdbdbd;
   position: sticky;
   left: 100px;
   z-index:0;
@@ -32,9 +32,9 @@ table tr td:nth-child(2) {
   min-width: 75px;
   max-width: 100px;
   text-overflow: ellipsis;
-}
-table tr th:nth-child(2) {
-  background-color: #9ea7aa;
+} 
+table tr th:nth-child(2) { 
+ background-color: #9ea7aa;
   position: sticky;
   left: 100px;
   z-index:0;
@@ -42,4 +42,4 @@ table tr th:nth-child(2) {
   min-width: 75px;
   max-width: 100px;
   text-overflow: ellipsis;
-}
+} 

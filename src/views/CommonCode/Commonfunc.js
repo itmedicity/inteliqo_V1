@@ -93,7 +93,8 @@ export const getleaverequest = async () => {
 
 // for get leave requesst details
 export const getleaverequestget = async (getDeptSection) => {
-    const result = await axioslogin.get(`/LeaveRequestApproval/getleaverequestdep/${'1'}`)
+    // console.log(getDeptSection)
+    const result = await axioslogin.post('/LeaveRequestApproval/getleaverequestdep', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
         const leavereqst = data.map((val) => {
@@ -119,13 +120,15 @@ export const getleaverequestget = async (getDeptSection) => {
         return leavereqst
 
     } else {
+
+        // console.log('asdh')
         return []
     }
 }
 
 // get nopunch request
 export const getnopunchrequst = async (getDeptSection) => {
-    const result = await axioslogin.get(`/LeaveRequestApproval/nopunchreq/${'1'}`)
+    const result = await axioslogin.post('/LeaveRequestApproval/nopunchreq', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
         const nopunchreq = data.map((val) => {
@@ -150,11 +153,16 @@ export const getnopunchrequst = async (getDeptSection) => {
         // setnopunch(nopunchreq)
         return nopunchreq
     }
+    else {
+        // console.log('dasds')
+        return []
+    }
 }
 
 // get halfdayrequest
 export const halfdayrequest = async (getDeptSection) => {
-    const result = await axioslogin.get(`/LeaveRequestApproval/halfrequst/${'1'}`)
+    // console.log(getDeptSection)
+    const result = await axioslogin.post('/LeaveRequestApproval/halfrequst', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
         const halfdayreq = data.map((val) => {
@@ -178,14 +186,18 @@ export const halfdayrequest = async (getDeptSection) => {
         })
         return halfdayreq
     }
+    else {
+        // console.log('dasds')
+        return []
+    }
 }
 // get compensatory off  request 
 export const compensatory = async (getDeptSection) => {
-    const result = await axioslogin.get(`/LeaveRequestApproval/getcompenoff/${'1'}`)
+    // console.log(getDeptSection)
+    const result = await axioslogin.post('/LeaveRequestApproval/getcompenoff', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
         const compensatory = data.map((val) => {
-
             const data4 = {
                 req_type: 4,
                 SlNo: val.cmp_off_reqid,
@@ -206,8 +218,264 @@ export const compensatory = async (getDeptSection) => {
         })
         return compensatory
     }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+export const ceoLeavereq = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const ceoLeave = data.map((val) => {
+            const data4 = {
+                req_type: 1,
+                SlNo: val.leave_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.ceo_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.ceo_apprv_status,
+                ceo_req: val.ceo_req_status,
+                hod_req: val.hod_apprv_req,
+                hodaprv: val.hod_apprv_status,
+                hr_apprv: val.hr_apprv_status,
+                hrreq: val.hr_aprrv_requ,
+                increq: val.inc_apprv_req,
+                incaprv: val.incapprv_status,
+                longleave_spclleave: val.longleave_spclleave
+            }
+            return data4
+        })
+        return ceoLeave
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
 }
 
+export const HrLeave = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval/hrPending/leave')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const HrLeave = data.map((val) => {
+            const data4 = {
+                req_type: 1,
+                SlNo: val.leave_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.hr_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.ceo_apprv_status,
+                ceo_req: val.ceo_req_status,
+                hod_req: val.hod_apprv_req,
+                hodaprv: val.hod_apprv_status,
+                hr_apprv: val.hr_apprv_status,
+                hrreq: val.hr_aprrv_requ,
+                increq: val.inc_apprv_req,
+                incaprv: val.incapprv_status,
+                longleave_spclleave: val.longleave_spclleave
+            }
+            return data4
+        })
+        return HrLeave
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+
+// get halfdayrequest
+export const CEohalfdayrequest = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval/ceopending/halfday')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const halfdayreq = data.map((val) => {
+            const data3 = {
+                req_type: 2,
+                SlNo: val.half_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.hf_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.hf_ceo_apprv_status,
+                ceo_req: val.hf_ceo_req_status,
+                hod_req: val.hf_hod_apprv_req,
+                hodaprv: val.hf_hod_apprv_status,
+                hr_apprv: val.hf_hr_apprv_status,
+                hrreq: val.hf_hr_aprrv_requ,
+                increq: val.hf_inc_apprv_req,
+                incaprv: val.hf_incapprv_status
+            }
+            return data3
+        })
+        return halfdayreq
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+export const Hrhalfdayrequest = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval/HrHalfdayreq/halfDay')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const halfdayreq = data.map((val) => {
+            const data3 = {
+                req_type: 2,
+                SlNo: val.half_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.hf_hr_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.hf_ceo_apprv_status,
+                ceo_req: val.hf_ceo_req_status,
+                hod_req: val.hf_hod_apprv_req,
+                hodaprv: val.hf_hod_apprv_status,
+                hr_apprv: val.hf_hr_apprv_status,
+                hrreq: val.hf_hr_aprrv_requ,
+                increq: val.hf_inc_apprv_req,
+                incaprv: val.hf_incapprv_status
+            }
+            return data3
+        })
+        return halfdayreq
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+// get nopunch request
+export const getCEOnopunchrequst = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval/Ceonopunch/nopunch')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const nopunchreq = data.map((val) => {
+            const data2 = {
+                req_type: 3,
+                SlNo: val.nopunch_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.np_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.np_ceo_apprv_status,
+                ceo_req: val.np_ceo_req_status,
+                hod_req: val.np_hod_apprv_req,
+                hodaprv: val.np_hod_apprv_status,
+                hr_apprv: val.np_hr_apprv_status,
+                hrreq: val.np_hr_aprrv_requ,
+                increq: val.np_inc_apprv_req,
+                incaprv: val.np_incapprv_status
+            }
+            return data2
+        })
+        // setnopunch(nopunchreq)
+        return nopunchreq
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+// get nopunch request
+export const getHRnopunchrequst = async () => {
+    const result = await axioslogin.get('/LeaveRequestApproval/HrNopunch/Nopunch')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const nopunchreq = data.map((val) => {
+            const data2 = {
+                req_type: 3,
+                SlNo: val.nopunch_slno,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.np_hr_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.np_ceo_apprv_status,
+                ceo_req: val.np_ceo_req_status,
+                hod_req: val.np_hod_apprv_req,
+                hodaprv: val.np_hod_apprv_status,
+                hr_apprv: val.np_hr_apprv_status,
+                hrreq: val.np_hr_aprrv_requ,
+                increq: val.np_inc_apprv_req,
+                incaprv: val.np_incapprv_status
+            }
+            return data2
+        })
+        // setnopunch(nopunchreq)
+        return nopunchreq
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+// get compensatory off  request 
+export const compensatoryCeo = async (getDeptSection) => {
+    // console.log(getDeptSection)
+    const result = await axioslogin.get('/LeaveRequestApproval/ceoCoff/Coff')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: 4,
+                SlNo: val.cmp_off_reqid,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.cf_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.cf_ceo_apprv_status,
+                ceo_req: val.cf_ceo_req_status,
+                hod_req: val.cf_hod_apprv_req,
+                hodaprv: val.cf_hod_apprv_status,
+                hr_apprv: val.cf_hr_apprv_status,
+                hrreq: val.cf_hr_aprrv_requ,
+                increq: val.cf_inc_apprv_req,
+                incaprv: val.cf_incapprv_status
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
+// get compensatory off  request 
+export const compensatoryHr = async () => {
+    // console.log(getDeptSection)
+    const result = await axioslogin.get('/LeaveRequestApproval/HrCoff/coff')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: 4,
+                SlNo: val.cmp_off_reqid,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.dept_name,
+                Status: val.cf_hr_apprv_status === 0 ? 'Pending' : 'Approved',
+                ceo_apprv: val.cf_ceo_apprv_status,
+                ceo_req: val.cf_ceo_req_status,
+                hod_req: val.cf_hod_apprv_req,
+                hodaprv: val.cf_hod_apprv_status,
+                hr_apprv: val.cf_hr_apprv_status,
+                hrreq: val.cf_hr_aprrv_requ,
+                increq: val.cf_inc_apprv_req,
+                incaprv: val.cf_incapprv_status
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        // console.log('dasds')
+        return []
+    }
+}
 //GET DAYS BETWEEN TWO DAYS
 export const getDayDiffrence = (x, y) => {
     if (x.isValid() && y.isValid()) {

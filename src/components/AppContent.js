@@ -1,14 +1,11 @@
 import React, { Suspense } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { CContainer } from '@coreui/react'
-
-// routes config
 import routes from '../routes'
 import MasterContext from 'src/Context/MasterContext'
 import TokenAuth from 'src/Context/TokenAuth'
 import FullPageloader from './FullPageloader'
 import Employeedetails from 'src/views/CommonCode/Employeedetails'
-
 const AppContent = () => {
   return (
     <TokenAuth>

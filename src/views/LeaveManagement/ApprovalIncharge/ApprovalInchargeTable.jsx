@@ -9,7 +9,7 @@ import ModelaprvrejcHalf from '../LeaveCommonComponent/ModelaprvrejcHalf';
 import ModelNopunch from '../LeaveCommonComponent/ModelNopunch';
 import ModelCompenOff from '../LeaveCommonComponent/ModelCompenOff';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, getDeptSection }) => {
+const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     // get leave mast data
@@ -22,7 +22,8 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
                 leavetodate: '',
                 nodays: '',
                 reqtype: '',
-                lve_uniq_no: ''
+                lve_uniq_no: '',
+                leave_reason: ''
             }
         ])
     // get leave detail data 
@@ -35,6 +36,8 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
     const [comoffsetdata, setcomoff] = useState([])
     // to set reqtype 
     const [reqtype, setreqtype] = useState([])
+    // to set special approval 
+    // const [spapproval, sespapproval] = useState([])
     //Table
     useEffect(() => {
         if (authority === 1) {
@@ -56,36 +59,22 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
 
             setleavereqtabledata(filterleavereq)
         } else if (authority === 3) {
-            const filterleavereq = leavereq.filter((val) => {
-                return (
-                    ((val.increq === 1 && val.incaprv === 1) ||
-                        (val.increq === 0 && val.incaprv === 0)))
-                    && ((val.hod_req === 1 && val.hodaprv === 1) ||
-                        (val.hod_req === 0 && val.hodaprv === 0))
-                    && (val.ceo_req === 1 && val.ceo_apprv === 0) ||
-                    (val.ceo_req === 1 && val.ceo_apprv === 1) && (val.hr_apprv === 0)
-
-            })
-            // console.log(filterleavereq)
-            setleavereqtabledata(filterleavereq)
+            setleavereqtabledata(leavereq)
         }
         else if (authority === 4) {
-            const filterleavereq = leavereq.filter((val) => {
-                return (
-                    ((val.increq === 1 && val.incaprv === 1) ||
-                        (val.increq === 0 && val.incaprv === 0)))
-                    && ((val.hod_req === 1 && val.hodaprv === 1) ||
-                        (val.hod_req === 0 && val.hodaprv === 0))
-                    && (val.hrreq === 1 && val.hr_apprv === 0)
-
-            })
-            // console.log(filterleavereq)
-            setleavereqtabledata(filterleavereq)
+            setleavereqtabledata(leavereq)
         }
         else if (authority === 5) {
             const filterleavereq = leavereq.filter((val) => {
                 return (
                     (val.hrreq === 1 && val.hr_apprv === 1))
+            })
+            setleavereqtabledata(filterleavereq)
+        }
+        else if (authority === 6) {
+            const filterleavereq = leavereq.filter((val) => {
+                return (
+                    (val.longleave_spclleave === 2))
             })
             setleavereqtabledata(filterleavereq)
         }
@@ -131,7 +120,8 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
                             reqtype: val.reqtype,
                             leave_slno: val.leave_slno,
                             emno: val.em_no,
-                            lve_uniq_no: val.lve_uniq_no
+                            lve_uniq_no: val.lve_uniq_no,
+                            leave_reason: val.leave_reason
                         }
                         return d1
                     })
@@ -199,9 +189,7 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
                     showFirstLastPageButtons: false,
                     padding: "dense",
                     actionsColumnIndex: -1,
-                    // rowStyle: {
-                    //     backgroundColor: '#EEE',
-                    // }
+                    rowStyle: (data, index) => data.longleave_spclleave === 1 ? { background: "#E3E4FA" } : null
                 }}
             />
         </Fragment>

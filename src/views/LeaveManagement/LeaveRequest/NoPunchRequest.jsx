@@ -1,11 +1,11 @@
 import { Checkbox, FormControlLabel } from '@material-ui/core'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, memo } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import Timepicker from 'src/views/Component/Timepicker'
 import ShiftHalfdayComponent from './Component/ShiftHalfdayComponent'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { format, setDate } from 'date-fns'
+import { format } from 'date-fns'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { useContext } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -13,7 +13,6 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 const NoPunchRequest = ({ setnopunch }) => {
     // use conext data 
     const { employeedetails,//for employee details
-        updateemployeedetails,
         getleavereqtype,//type of leave request half,leave,latecoming
         updateleavereqtype } = useContext(PayrolMasterContext)
 
@@ -38,7 +37,6 @@ const NoPunchRequest = ({ setnopunch }) => {
 
     const [checkindisable, setckeindisable] = useState(false)
     // for disable out check
-
     const [checkoutdisable, setckeoutdisable] = useState(false)
     // checkbox value set for out
     const [checkout, setcheckout] = useState(false)
@@ -46,7 +44,6 @@ const NoPunchRequest = ({ setnopunch }) => {
     const [indisable, setindisable] = useState(true)
     // punch out disable
     const [outdisable, setoutdisable] = useState(true)
-
     const [punch_slno, setpunchslno] = useState(0)
     const [mispunchflag, setmispunchflag] = useState(0)
     const [starttime, setstartime] = useState('')
@@ -56,13 +53,11 @@ const NoPunchRequest = ({ setnopunch }) => {
     })
     // destructuring start and end date
     const { startDate } = formData
-
     const getshiftdata = async (date, emp_id) => {
         const shiftgetdata = {
             startDate: date,
             em_id: emp_id
         }
-
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', shiftgetdata)
         const { success, data } = result.data
         if (success === 1) {
@@ -87,8 +82,6 @@ const NoPunchRequest = ({ setnopunch }) => {
         }
     }
     useEffect(() => {
-
-
         const datanopunch = {
             nopunchdate: startDate,
             checkinflag: checkin,
@@ -125,7 +118,6 @@ const NoPunchRequest = ({ setnopunch }) => {
             setoutdisable(true)
         }
     }
-
     // on date change
     const getpuchdetl = async (e) => {
 
@@ -193,11 +185,9 @@ const NoPunchRequest = ({ setnopunch }) => {
             setckeindisable(false)
             setstartime(null)
             setendtime(null)
-
         }
         getshiftdata(e.target.value, em_id);
     }
-
     return (
         <Fragment>
             <div className="card">
@@ -294,4 +284,4 @@ const NoPunchRequest = ({ setnopunch }) => {
     )
 }
 
-export default NoPunchRequest
+export default memo(NoPunchRequest)

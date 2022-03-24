@@ -26,9 +26,10 @@ const ModelAvailLeavelist = ({
     setnodatacl,
     setnodatael,
     setnodatahl,
-    setnodatafixed, categorychge
+    setnodatafixed, categorychge, nodatafixed
 
 }) => {
+    console.log(nodatafixed)
     const [processCount, setProcessCount] = useState(0)
     const { ecat_cl,
         ecat_lop, ecat_el, ecat_esi_allow,
@@ -50,8 +51,7 @@ const ModelAvailLeavelist = ({
         process_user: " "
     })
     const {
-        em_id, em_no, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
-
+        em_id, em_no, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld
     } = leaveproceedaata
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const ModelAvailLeavelist = ({
                             /> : hrm_hld === 1 ? <AnnualLeaveProcessComplete name={'Holiday Leave'} /> : null
                         }
                         {
-                            (ecat_esi_allow === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) && hrm_cmn === 0 ?
+                            (ecat_esi_allow === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) && (hrm_cmn === 0 || nodatafixed === 1) ?
                                 <AnnualProcessComponent name={'Common Leave'}
                                     dataleave={dataleave}
                                     value={'O'}
@@ -124,7 +124,7 @@ const ModelAvailLeavelist = ({
                                     countdata={processCount}
                                     setnodatafixed={setnodatafixed}
                                     categorychge={categorychge}
-                                /> : hrm_cmn === 1 ?
+                                /> : (hrm_cmn === 1) ?
                                     <AnnualLeaveProcessComplete name={'Common Leave'} /> : null
                         }
 

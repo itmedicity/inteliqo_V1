@@ -116,8 +116,8 @@ const AnnualLeaveSettings = () => {
 
     const CalculatedLeave = {
         mainHeading: "Approved off Days",
-        headingOne: "Date",
-        headingTwo: "Off",
+        headingOne: "Off",
+        headingTwo: "Date",
         headingThee: "Credited",
         headingFour: "Taken"
     }
@@ -248,6 +248,7 @@ const AnnualLeaveSettings = () => {
                     setnodatael={setnodatael} //dataset render  for rerendering the earnleave
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
+                    nodatafixed={nodatafixed}
                 /> : null}
                 <div className="row g-1 pb-1">
                     <div className="col-md-4">
@@ -310,7 +311,7 @@ const AnnualLeaveSettings = () => {
                         <CardLeaveContainer title={Carryfoward}  >
                             <Suspense fallback={<CircularProgress />} >
                                 <div className="card-casual-leave">
-                                    <CarryForwardLeaveList />
+                                    <CarryForwardLeaveList empid={no} />
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>
@@ -319,7 +320,7 @@ const AnnualLeaveSettings = () => {
                         <CardLeaveContainer title={CalculatedLeave}  >
                             <Suspense fallback={<CircularProgress />} >
                                 <div className="card-casual-leave">
-                                    <CalculatedOffDays />
+                                    <CalculatedOffDays empid={no} />
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>

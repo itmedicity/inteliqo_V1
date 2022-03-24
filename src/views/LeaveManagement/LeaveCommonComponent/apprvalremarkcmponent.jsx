@@ -24,4 +24,4 @@ const apprvalremarkcmponent = ({ heading, status, remarks }) => {
     )
 }
 
-export default apprvalremarkcmponent
+export default memo(apprvalremarkcmponent)
