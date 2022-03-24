@@ -6,7 +6,7 @@ import { useParams } from 'react-router';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const TestLeaveType = ({ name, select, style, onChange }) => {
+const TestLeaveType = ({ name, select, style, onChange, leavetype }) => {
     const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
     const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
     const [leaveType, setLeaveType] = useState([]);
@@ -63,6 +63,7 @@ const TestLeaveType = ({ name, select, style, onChange }) => {
                     name={name}
                     onChange={onChange}
                     fullWidth
+                    value={leavetype}
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}

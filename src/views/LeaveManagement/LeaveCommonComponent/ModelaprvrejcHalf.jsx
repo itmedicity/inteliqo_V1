@@ -25,6 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id }) => {
+    // const { hf_reason } = hafdaydata[0]
     const [reason, setreason] = useState('')
     const [status, setstatus] = useState({
         apprv: false,
@@ -150,7 +151,6 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
             }
         }
     }
-    // console.log(hafdaydata)
     return (
         <Fragment>
             <Dialog
@@ -208,8 +208,8 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
                                             Placeholder=" Reason For Leave"
                                             fullWidth
                                             disabled="Disabled"
-                                        // value={}
-                                        // name=""
+                                        // value={hf_reason}
+
                                         />
                                     </div>
                                 </div>
@@ -278,4 +278,4 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
     )
 }
 
-export default ModelaprvrejcHalf
+export default memo(ModelaprvrejcHalf)

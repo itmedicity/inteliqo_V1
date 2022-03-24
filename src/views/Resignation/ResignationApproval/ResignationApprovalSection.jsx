@@ -1,5 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, memo } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 
@@ -53,4 +53,4 @@ const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, u
     )
 }
 
-export default ResignationApprovalSection
+export default memo(ResignationApprovalSection)

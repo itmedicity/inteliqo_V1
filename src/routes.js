@@ -133,6 +133,8 @@ const EmployeeReport = React.lazy(() => import('./views/Resignation/EmployeeRepo
 const EmployeeReportInactive = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReportInactive'))
 const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMast'))
 const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
+const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
+const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryForwad/LeaveCarryForwad'))
 
 
 const routes = [
@@ -191,7 +193,7 @@ const routes = [
   { path: '/Home/YearlyLeaveCountMastEdit/:id', exact: true, name: 'Leave Count Edit', component: YearlyLeaveCountMastEdit },
   { path: '/Home/YearlyLeaveCalendar', exact: true, name: 'Yearly Leave Calendar', component: YearlyLeaveCalendar },
   { path: '/Home/YearlyLeaveCalendarEdit/:id', exact: true, name: 'Yearly Leave Calendar Edit', component: YearlyLeaveCalendarEdit },
-  { path: '/Home/ApplicationForm/:id', exact: true, name: 'Application Form', component: ApplicationForm },
+  { path: '/Home/ApplicationForm/:id/:no', exact: true, name: 'Application Form', component: ApplicationForm },
   { path: '/Home/PersonalInformation/:id/:no', exact: true, name: 'Personal Information', component: PersonalInformation },
   { path: '/Home/EmployeeExperience/:id/:no', exact: true, name: 'Experience', component: EmployeeExperience },
   { path: '/Home/EmployeeExperienceEdit/:slno/:id/:no', exact: true, name: 'Experience Edit', component: EmployeeExperienceEdit },
@@ -272,7 +274,8 @@ const routes = [
   { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
   { path: '/Home/CarryForwardSetting', exact: true, name: 'Carry Forward Leave Setting', component: CarryforwardLeaveSetting },//Leave carryforward
   { path: '/Home/CarryforwardEdit/:id', exact: true, name: 'Due Clearence Edit', component: CarryforwardLeaveEdit },
-
+  { path: '/Home/AttendanceMarking', exact: true, name: 'Attendance Marking', component: AttendanceMarking },
+  { path: '/Home/LeaveCarryForwad', exact: true, name: 'Leave Carry Forwad', component: LeaveCarryForwad },
 ]
 
 export default routes

@@ -7,6 +7,7 @@ import { getMonth, eachDayOfInterval, format } from 'date-fns'
 import moment from 'moment';
 import { MdOutlineAddCircleOutline } from 'react-icons/md';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const DirLeaveRequest = ({
     emid,//employee id
@@ -41,12 +42,19 @@ const DirLeaveRequest = ({
     }
     // calculateing leave days
     const leaveDays = (e) => {
-        const range = eachDayOfInterval(
-            { start: new Date(startDate), end: new Date(e) }
-        )
-        setleavedaystype(Object.keys(range).length)
-        const newDateFormat = range.map((val) => { return { date: moment(val).format('yyyy-MM-DD') } })
-        setDate(newDateFormat)
+        if (new Date(startDate) < new Date(endDate)) {
+            const range = eachDayOfInterval(
+                { start: new Date(startDate), end: new Date(endDate) }
+            )
+
+            setleavedaystype(Object.keys(range).length)
+            const newDateFormat = range.map((val) => { return { date: moment(val).format('yyyy-MM-DD') } })
+            setDate(newDateFormat)
+        }
+        else {
+            warningNofity('End Date Must Be Grreater than Start Date')
+        }
+
     }
 
 
@@ -103,7 +111,7 @@ const DirLeaveRequest = ({
                                     value={endDate}
                                     changeTextValue={(e) => {
                                         updateLeaveRequest(e)
-                                        leaveDays(e.target.value)
+
                                     }}
                                 />
                             </div>
@@ -111,7 +119,11 @@ const DirLeaveRequest = ({
                                 <IconButton
                                     aria-label="add"
                                     style={{ padding: '0rem' }}
-                                    onClick={displayleave}
+                                    onClick={(e) => {
+                                        displayleave(e)
+                                        leaveDays(e)
+                                    }}
+
                                 >
                                     <MdOutlineAddCircleOutline className="text-info" size={30} />
                                 </IconButton>

@@ -73,9 +73,6 @@ const Leavemanagement = [
         to: '/Home/OTApprovalHR',
     },
 
-
-
-
     {
         men_slno: 35,
         component: CNavItem,

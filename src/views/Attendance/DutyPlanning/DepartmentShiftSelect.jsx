@@ -22,12 +22,12 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     const [DepartmentShift, setDepartmentShiftSelect] = useState([]);
     const { selectDeptSection, selectedDept,
     } = useContext(PayrolMasterContext);
-    //postData
-    const postData = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
+
     useEffect(() => {
+        const postData = {
+            dept_id: selectedDept,
+            sect_id: selectDeptSection
+        }
         const getdepartmentShift = async () => {
             if (selectedDept !== 0 && selectDeptSection !== 0) {
                 const result = await axioslogin.post('/departmentshift/shift', postData)
@@ -43,7 +43,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
             }
         }
         getdepartmentShift()
-    }, [])
+    }, [selectedDept, selectDeptSection])
     return (
         <Fragment>
             <select className="custom-select"

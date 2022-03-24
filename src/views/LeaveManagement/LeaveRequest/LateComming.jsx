@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 
 const LateComming = () => {
     return (
@@ -12,4 +12,4 @@ const LateComming = () => {
     )
 }
 
-export default LateComming
+export default memo(LateComming)
