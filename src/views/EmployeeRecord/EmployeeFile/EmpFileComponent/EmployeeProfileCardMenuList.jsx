@@ -29,7 +29,7 @@ const EmployeeProfileCardMenuList = (props) => {
     const [count, setCount] = useState(0)
 
     const appplicationform = () => {
-        // history.push(`/Home/ApplicationForm/${4516}`)
+        history.push(`/Home/ApplicationForm/${id}/${no}`)
     }
     // Personal Information
     const personalInformation = () => {

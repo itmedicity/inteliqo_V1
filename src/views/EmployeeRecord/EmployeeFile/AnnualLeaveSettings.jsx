@@ -90,8 +90,6 @@ const AnnualLeaveSettings = () => {
         headingFour: "Taken"
     }
 
-
-
     const Holidy = {
         mainHeading: "National & Festival Holiday",
         headingOne: "Days",

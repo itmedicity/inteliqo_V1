@@ -13,6 +13,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import { IoHome, IoPower, IoSettingsSharp } from 'react-icons/io5'
+import { Actiontypes } from '../redux/constants/action.type'
 
 import { AppHeaderDropdown } from './header/index'
 // import { logo } from 'src/assets/brand/logo'
@@ -20,7 +21,8 @@ import { useHistory } from 'react-router-dom'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 const AppHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+
+  const sidebarShow = useSelector((state) => state.changeState.sidebarShow)
 
   const history = useHistory();
 
@@ -36,7 +38,7 @@ const AppHeader = () => {
         <CContainer fluid>
           <CHeaderToggler
             className="ps-1"
-            onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+            onClick={() => dispatch({ type: Actiontypes.APP_SIDEBAR_SHOW, sidebarShow: !sidebarShow })}
           >
             <CIcon icon={cilMenu} size="lg" />
           </CHeaderToggler>

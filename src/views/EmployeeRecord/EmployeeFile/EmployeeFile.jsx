@@ -1,6 +1,6 @@
 import MaterialTable from 'material-table'
 import { Button } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-bootstrap'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
@@ -14,11 +14,28 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { setEmployeeList } from '../../../redux/actions/Profile.action'
+import { useDispatch, useSelector } from 'react-redux'
 
 const EmployeeRecord = () => {
     const classes = useStyles()
     const history = useHistory()
     const [tableData, setTableData] = useState([])
+    const dispatch = useDispatch()
+
+    const employeeRecordList = useSelector((state) => {
+        return state.getEmployeeRecordList.empRecordData;
+    })
+
+    // console.log(employeeRecordList)
+    useEffect(() => {
+        // set the table data from reducx store to material table data
+        if (Object.keys(employeeRecordList).length > 0) {
+            setTableData(employeeRecordList)
+        }
+    }, [employeeRecordList])
+
+    console.log(tableData)
 
     const {
         selectedDept,
@@ -101,6 +118,7 @@ const EmployeeRecord = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
+                dispatch(setEmployeeList(data))
             }
         } else {
             warningNofity("Choose All Option")

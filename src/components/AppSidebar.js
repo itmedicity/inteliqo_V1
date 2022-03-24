@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Actiontypes } from '../redux/constants/action.type'
 
 import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
 // import CIcon from '@coreui/icons-react'
@@ -208,7 +209,7 @@ const AppSidebar = () => {
         unfoldable={unfoldable}
         visible={sidebarShow}
         onVisibleChange={(visible) => {
-          dispatch({ type: 'set', sidebarShow: visible })
+          dispatch({ type: Actiontypes.APP_SIDEBAR_SHOW, sidebarShow: visible })
         }}
       >
         <CSidebarBrand className="d-none d-md-flex" to="/">
@@ -224,7 +225,7 @@ const AppSidebar = () => {
         </CSidebarNav>
         <CSidebarToggler
           className="d-none d-lg-flex"
-          onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
+          onClick={() => dispatch({ type: Actiontypes.APP_SIDEBAR_SHOW, sidebarUnfoldable: !unfoldable })}
         />
       </CSidebar>
     </Fragment>
