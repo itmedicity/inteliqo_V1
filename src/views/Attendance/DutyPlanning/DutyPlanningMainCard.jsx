@@ -1,11 +1,12 @@
 import { LinearProgress, Typography } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
+import React, { Fragment, memo, Suspense, useEffect } from 'react'
 import '../Att_Style.css'
 import DropDownList from './DropDownList'
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 
 
-const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count }) => {
+const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, empID }) => {
+
     return (
         <Fragment>
             <div className="card">
@@ -60,7 +61,7 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
                                                     </td>
                                                     <td width="100">{name.em_id}</td>
                                                     <Suspense fallback={<LinearProgress />} >
-                                                        <DropDownList data={data} duty={duty} count={count} />
+                                                        <DropDownList data={data} duty={duty} count={count} empID={empID} />
                                                     </Suspense>
                                                 </tr>
                                             })
@@ -76,4 +77,4 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
     )
 }
 
-export default DutyPlanningMainCard
+export default memo(DutyPlanningMainCard) 

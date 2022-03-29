@@ -16,18 +16,21 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DutyPlanningMainCard from './DutyPlanningMainCard'
 import { useHistory } from 'react-router'
+import { useDispatch } from 'react-redux'
+import { getdeptShift } from 'src/redux/actions/dutyplan.action'
 const moment = extendMoment(Moment);
 
 const DutyPlanning = () => {
   const history = useHistory()
   const { selectedDept, selectDeptSection } = useContext(PayrolMasterContext)
+  //disptach function for updating store
+  const dispatch = useDispatch()
   //use state for employee details
   const [empData, setempData] = useState([])
   //use State for Date Format
   const [dateFormat, setdateFormat] = useState([])
-
+  //states for rendering the component
   const [duty, setDuty] = useState(0)
-
   const [count, setCount] = useState(0)
   const [disable, setdisable] = useState(true)
   //use state for initial start date and end date
@@ -79,6 +82,7 @@ const DutyPlanning = () => {
     }
     getempdetl()
   }, [selectedDept, selectDeptSection])
+
   //insert duty planning
   const insertDutyPlanning = async (e) => {
     setCount(count + 1)
@@ -104,7 +108,7 @@ const DutyPlanning = () => {
     if (success === 1) {
       const dutyday = empData.map((val) => {
         const dutydate = newDateFormat2.map((value) => {
-          return { date: value.date, emp_id: val.em_id }
+          return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
         })
         return dutydate
       })
@@ -115,6 +119,10 @@ const DutyPlanning = () => {
           return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
         }).length === 0
       })
+      //inserting duty plan based on date of join
+      const insertnewdutyplanarray = newdutyplanarray.map((val) => {
+        return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+      })
       //if new array lenth is zero no need to inset
       if (newdutyplanarray.length === 0) {
         setDuty(1)
@@ -123,7 +131,7 @@ const DutyPlanning = () => {
       //if new array length not eqal to zero inserting the new array
       else {
         //inserting the duty plan
-        const results = await axioslogin.post("/plan/insert", newdutyplanarray)
+        const results = await axioslogin.post("/plan/insert", insertnewdutyplanarray)
         const { success1 } = results.data
         if (success1 === 1) {
           setDuty(1)
@@ -137,13 +145,17 @@ const DutyPlanning = () => {
     else {
       const dutyday = empData.map((val) => {
         const dutydate = newDateFormat2.map((value) => {
-          return { date: value.date, emp_id: val.em_id }
+          return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
         })
         return dutydate
       })
       const dutyplanarray = dutyday.flat(Infinity)
+      //inserting duty plan based on date of join
+      const insertdutyplanarray = dutyplanarray.map((val) => {
+        return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+      })
       //inserting the duty plan
-      const results = await axioslogin.post("/plan/insert", dutyplanarray)
+      const results = await axioslogin.post("/plan/insert", insertdutyplanarray)
       const { success1 } = results.data
       if (success1 === 1) {
         setDuty(1)
@@ -152,7 +164,17 @@ const DutyPlanning = () => {
         errorNofity("Error Occured!!Please Contact EDP")
       }
     }
+    //getting shift assigned to the selected department and department section
+    if (selectedDept !== 0 && selectDeptSection !== 0) {
+      const postDataaa = {
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
+      }
+      dispatch(getdeptShift(postDataaa))
+    }
   }
+
+  //redirecting to profile page
   const redirecting = () => {
     history.push('/Home')
   }

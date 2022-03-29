@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
 import DepartmentShiftSelect from 'src/views/Attendance/DutyPlanning/DepartmentShiftSelect';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
 const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) => {
     const { emp_id, start, end } = data;
@@ -25,12 +25,7 @@ const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) =>
                 if (success === 1) {
                     setDutyplan(data)
                 }
-                else if (success === 0) {
-                    warningNofity("No Record Found")
-                }
-                else {
-                    errorNofity("Error Occured!!!Please Contact EDP")
-                }
+
             }
             getDutyPlan()
         }

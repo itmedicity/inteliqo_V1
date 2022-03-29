@@ -27,7 +27,6 @@ const EmployeeRecord = () => {
         return state.getEmployeeRecordList.empRecordData;
     })
 
-    // console.log(employeeRecordList)
     useEffect(() => {
         // set the table data from reducx store to material table data
         if (Object.keys(employeeRecordList).length > 0) {

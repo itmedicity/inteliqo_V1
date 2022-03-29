@@ -18,9 +18,7 @@ const Protected = (props) => {
         if (!loginDetl) {
             history.push('/');
         } else {
-
             dispatch({ type: FETCH_LOGIN_CRED, payload: login })
-
         }
         const { empid } = login
         const timer = setTimeout(() => {
