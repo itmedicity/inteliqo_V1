@@ -13,9 +13,12 @@ import TextInput from 'src/views/Component/TextInput';
 import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 import ResignationApprovalSection from '../../Resignation/ResignationApproval/ResignationApprovalSection'
+import { useDispatch, useSelector } from 'react-redux'
+import { getlevedata } from '../../../redux/actions/LeaveReqst.action'
 
 const ApprovalIncharge = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
     const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
@@ -66,9 +69,14 @@ const ApprovalIncharge = () => {
         setcompensetory(filtercompen)
 
     }
+    // useSelector((state) => {
+    //     // console.log(state.leavedata)
+    // })
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
         if (arraydepsect.length !== 0) {
+            dispatch(getlevedata(arraydepsect))
+
             getleaverequestget(arraydepsect).then((val) => {
                 setleavereqst(val)
             })

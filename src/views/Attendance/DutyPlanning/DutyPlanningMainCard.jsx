@@ -1,5 +1,5 @@
 import { LinearProgress, Typography } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
+import React, { Fragment, memo, Suspense } from 'react'
 import '../Att_Style.css'
 import DropDownList from './DropDownList'
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
@@ -76,4 +76,4 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
     )
 }
 
-export default DutyPlanningMainCard
+export default memo(DutyPlanningMainCard)

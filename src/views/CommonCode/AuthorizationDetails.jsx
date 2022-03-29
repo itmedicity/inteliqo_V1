@@ -48,7 +48,10 @@ const AuthorizationDetails = () => {
             }
             getAuthorization()
         }
-    }, [em_dept_section, em_id])
+        return (
+            updateAuthorization(0)
+        )
+    }, [em_dept_section, em_id, updateAuthorization])
     return (
         <Fragment>
             <SessionCheck>

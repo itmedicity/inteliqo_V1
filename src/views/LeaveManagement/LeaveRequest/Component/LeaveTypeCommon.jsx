@@ -6,7 +6,8 @@ import { useParams } from 'react-router';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const TestLeaveType = ({ name, style, onChange, leavetype }) => {
+
+const LeaveTypeCommon = ({ name, style, onChange, leavetype }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const [leaveType, setLeaveType] = useState([]);
@@ -33,13 +34,14 @@ const TestLeaveType = ({ name, style, onChange, leavetype }) => {
     } = leavestate
 
     // get id and number of logged user
-    const { id, no } = useParams()
+    const { no } = useParams()
     useEffect(() => {
         const getleaveTypeData = async () => {
             const result = await axioslogin.get('/leaveType/select')
             const { success, data } = result.data
+            const dataleve = data.filter(t => (t.lvetype_slno === 2) || (t.lvetype_slno === 5) || (t.lvetype_slno === 6) || (t.lvetype_slno === 7))
             if (success === 1) {
-                setLeaveType(data)
+                setLeaveType(dataleve)
             }
         }
         getleaveTypeData();
@@ -51,8 +53,8 @@ const TestLeaveType = ({ name, style, onChange, leavetype }) => {
         }
         getcategorydata();
     }, [no])
-
     return (
+
         <Fragment>
             <FormControl
                 fullWidth
@@ -88,8 +90,12 @@ const TestLeaveType = ({ name, style, onChange, leavetype }) => {
                     }
                 </Select>
             </FormControl>
+
+
         </Fragment>
+
     )
 }
 
-export default TestLeaveType
+export default LeaveTypeCommon
+
