@@ -27,7 +27,7 @@ const FineorDeduction = () => {
     const [serialno, getSerialno] = useState(0)
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
-        fine_amount: '',
+        fine_amount: 0,
         fine_remark: '',
         fine_status: ''
     })
@@ -93,7 +93,7 @@ const FineorDeduction = () => {
 
     const resetForm = {
         fine_descp: '',
-        fine_amount: '',
+        fine_amount: 0,
         fine_start: '',
         fine_end: '',
         fine_period: '',
@@ -128,14 +128,13 @@ const FineorDeduction = () => {
         setOpen(true);
         history.push(`/Home/FineorDeduction/${id}/${no}`);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
+
 
     return (
         <Fragment>
