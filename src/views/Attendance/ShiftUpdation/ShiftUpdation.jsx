@@ -8,7 +8,6 @@ import { FcPlus, FcCancel, FcProcess } from "react-icons/fc";
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
-import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
 import { addDays, format } from 'date-fns';
@@ -129,11 +128,11 @@ const ShiftUpdation = () => {
 
                 const result = await axioslogin.post("/attendCal/proc", deptDetl)
 
-                const { success, message } = result.data;
+                const { success } = result.data;
                 if (success === 1) {
                     const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
 
-                    const { success, message } = result.data;
+                    const { success } = result.data;
 
 
                     if (success === 1) {

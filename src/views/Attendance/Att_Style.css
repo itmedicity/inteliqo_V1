@@ -1,5 +1,5 @@
-td:first-child,
-th:first-child {
+.planTable td:first-child,
+.planTable th:first-child {
   position: sticky;
   left: 0;
   z-index: 1;
@@ -9,8 +9,8 @@ th:first-child {
   border-color: #bdbdbd;
   height: 2.1rem;
 }
-td:last-child, 
-th:last-child {
+.planTable td:last-child, 
+.planTable th:last-child {
   position:sticky;
   right:0;
   z-index:1;
@@ -23,7 +23,7 @@ th:last-child {
   color: rgb(63, 62, 62);
 }
 
-table tr td:nth-child(2) {
+.planTable tr td:nth-child(2) {
    background-color: #bdbdbd;
   position: sticky;
   left: 100px;
@@ -33,7 +33,7 @@ table tr td:nth-child(2) {
   max-width: 100px;
   text-overflow: ellipsis;
 } 
-table tr th:nth-child(2) { 
+.planTable tr th:nth-child(2) { 
  background-color: #9ea7aa;
   position: sticky;
   left: 100px;

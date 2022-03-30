@@ -1,14 +1,14 @@
 import { LinearProgress, Typography } from '@mui/material'
-import { Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@material-ui/core';
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import React, { Fragment, memo, Suspense, useEffect } from 'react'
 import Paper from '@mui/material/Paper';
 import '../styleattnd.css'
-import ViewComfyIcon from '@mui/icons-material/ViewComfy';
-import { axioslogin } from 'src/views/Axios/Axios';
 import AttendanceMarkingTabdata from './AttendanceMarkingTabdata';
 import AttandanceMarkingtotal from './AttandanceMarkingtotal';
+import AttandanceDatecmpont from './AttandanceDatecmpont';
 const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count }) => {
-    const [date, setdate] = useState(dateformat)
+
+
     useEffect(() => {
 
     }, [count])
@@ -22,16 +22,8 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
                             <TableCell>Name</TableCell>
                             <TableCell align="right">Emp ID</TableCell>
 
-                            {
-                                dateformat.map((val) => {
-                                    return <TableCell align="center" key={val.date} className="p-2" style={{ width: '8rem' }}>
-                                        {val.date}
-                                    </TableCell>
-                                })
-                            }
-                            {/* <TableCell align="center" className="p-0" style={{ width: '8rem', }}>
-                                <ViewComfyIcon size={18} style={{ color: "blue" }} />
-                            </TableCell> */}
+                            <AttandanceDatecmpont date={dateformat} />
+
                             <TableCell>Work Days </TableCell>
                             <TableCell>Present</TableCell>
                             <TableCell>Leave</TableCell>
@@ -42,13 +34,13 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
                     <TableBody>
                         <Suspense fallback={<LinearProgress />} >
                             {
-                                employeedata.map((name) => {
+                                employeedata.map((name, key) => {
                                     const data = {
                                         emp_id: name.em_id,
                                         start: startdate,
                                         end: enddate,
                                     }
-                                    return <TableRow key={name.em_name}  >
+                                    return <TableRow key={key}  >
 
                                         <TableCell align="center" style={{ padding: 0, width: '8rem', backgroundColor: "#a2a3ac", height: '3rem' }} >
                                             <Typography variant="subtitle2" noWrap={true}>
@@ -81,4 +73,4 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
     )
 }
 
-export default AttendanceMarkingMainCard
+export default memo(AttendanceMarkingMainCard)

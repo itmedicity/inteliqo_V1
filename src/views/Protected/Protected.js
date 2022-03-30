@@ -19,8 +19,8 @@ const Protected = (props) => {
             history.push('/');
         } else {
             const { empid } = login
-            dispatch({ type: FETCH_LOGIN_CRED, payload: login })
             // Dispatch function for the Profile Data Updation
+            dispatch({ type: FETCH_LOGIN_CRED, payload: login })
             dispatch(setProfileData(empid))
         }
     }, [history]);

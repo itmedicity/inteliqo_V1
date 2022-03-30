@@ -9,9 +9,10 @@ const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id }) => {
         const getleavecount = async () => {
             const result = await axioslogin.get(`/common/getLeavecount/${emid}`)
             const { success, data } = result.data;
-            setemp_id(emid)
-            SetleaveCount(data[0])
-
+            if (success === 1) {
+                setemp_id(emid)
+                SetleaveCount(data[0])
+            } else { }
         }
         getleavecount()
     }, [emid])
@@ -39,20 +40,10 @@ const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id }) => {
                                     </div>
                                 </div>
                             </div>
-
-
                         </TableCell>
-
                     })
                 }
-
-
-
-
-
-
             </Suspense>
-
         </Fragment >
     )
 }

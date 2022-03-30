@@ -31,6 +31,7 @@ const RegistrationTypeSelection = (props) => {
                     name="selectreg"
                     fullWidth
                     variant="outlined"
+                    disabled={props.disable}
                     className="ml-1"
                     value={selectreg}
                     onChange={(e) => updatereg(e.target.value)}

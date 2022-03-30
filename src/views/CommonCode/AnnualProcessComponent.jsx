@@ -2,8 +2,6 @@ import { Button, DialogContentText } from '@mui/material'
 import { eachMonthOfInterval, lastDayOfYear, subMonths } from 'date-fns'
 import moment from 'moment'
 import React, { memo } from 'react'
-import { useState } from 'react'
-
 import { axioslogin } from '../Axios/Axios'
 import { employeeNumber } from '../Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from './Commonfunc'
@@ -21,27 +19,27 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
     } = dataleave
 
     // useState for common leave data
-    const [commonleave, setcommonleave] = useState({
-        com_slno: 0,
-        lvetype_slno_cl: 0,
-        lvetype_slno_conference: 0,
-        lvetype_slno_lop: 0,
-        lvetype_slno_maternity: 0,
-        lvetype_slno_previlage: 0,
-        lvetype_slno_sick: 0,
-        max_allowed_count_cl: 0,
-        max_allowed_count_conference: 0,
-        max_allowed_count_lop: 0,
-        max_allowed_count_maternity: 0,
-        max_allowed_count_previlage: 0,
-        max_allowed_count_sick: 0,
-        month_year_cl: 0,
-        month_year_conference: 0,
-        month_year_lop: 0,
-        month_year_maternity: 0,
-        month_year_previlage: 0,
-        month_year_sick: 0,
-    })
+    // const [commonleave, setcommonleave] = useState({
+    //     com_slno: 0,
+    //     lvetype_slno_cl: 0,
+    //     lvetype_slno_conference: 0,
+    //     lvetype_slno_lop: 0,
+    //     lvetype_slno_maternity: 0,
+    //     lvetype_slno_previlage: 0,
+    //     lvetype_slno_sick: 0,
+    //     max_allowed_count_cl: 0,
+    //     max_allowed_count_conference: 0,
+    //     max_allowed_count_lop: 0,
+    //     max_allowed_count_maternity: 0,
+    //     max_allowed_count_previlage: 0,
+    //     max_allowed_count_sick: 0,
+    //     month_year_cl: 0,
+    //     month_year_conference: 0,
+    //     month_year_lop: 0,
+    //     month_year_maternity: 0,
+    //     month_year_previlage: 0,
+    //     month_year_sick: 0,
+    // })
     // const {
     //     // max_allowed_count_conference,
     //     // max_allowed_count_lop,
@@ -152,10 +150,10 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
         // commonleave save
         const getCommonleave = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearlyleaves')
-            const { successleave, messageleave } = result.data
+            const { successleave } = result.data
 
             if (successleave === 1) {
-                setcommonleave(messageleave[0])
+                // setcommonleave(messageleave[0])
                 const result = await axioslogin.get('/yearlyleaves/get/getcommonleave')
 
                 const { successcommonleave, messagecommonleave } = result.data

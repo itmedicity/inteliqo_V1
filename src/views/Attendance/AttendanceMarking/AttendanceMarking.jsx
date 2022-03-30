@@ -1,6 +1,5 @@
 import { IconButton } from '@material-ui/core'
-import { addDays, eachDayOfInterval, format, getMonth } from 'date-fns'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import { eachDayOfInterval } from 'date-fns'
 import moment from 'moment'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
@@ -13,33 +12,39 @@ import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import TextInput from 'src/views/Component/TextInput'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import AttendanceMarkingMainCard from './AttendanceMarkingMainCard'
-import { DatePicker, LocalizationProvider } from '@mui/lab'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { TextField } from '@mui/material'
 
 const AttendanceMarking = () => {
-    const classes = useStyles();
+
     const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(new Date());
+
     const [count, setcount] = useState(0)
     const firstdate = moment(year).startOf('month').format('yyyy-MM-DD');
+
     const endodate = moment(year).endOf('month').format('yyyy-MM-DD');
     const [value, setValue] = useState(0)
     const [empData, setempData] = useState([])
     //use State for Date Format
     const [dateFormat, setdateFormat] = useState([])
-    const setchange = () => {
-        setValue(0)
+
+    const setchange = (e) => {
+
         //finding the dates between start date and end date
+        setYear(e.target.value)
+        const f1date = moment(e.target.value).startOf('month').format('yyyy-MM-DD');
+        const enddate = moment(e.target.value).endOf('month').format('yyyy-MM-DD');
+
         const rage = eachDayOfInterval(
-            { start: new Date(firstdate), end: new Date(endodate) }
+            { start: new Date(f1date), end: new Date(enddate) }
         )
+
 
         //finding the dates between start date and end date
         const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d') } })
-        setdateFormat([newDateFormat])
+        setdateFormat(newDateFormat)
         setcount(count + 1)
     }
+
     useEffect(() => {
         const getempdetl = async () => {
             if (selectedDept !== 0 && selectDeptSection !== 0) {
@@ -59,9 +64,6 @@ const AttendanceMarking = () => {
             }
         }
         getempdetl()
-
-
-
     }, [selectedDept, selectDeptSection, dateFormat, updateDepartmentSection, updateSelected])
     //attendance marking function
     const attendanceMarking = () => {
@@ -89,8 +91,8 @@ const AttendanceMarking = () => {
                                 classname="form-control form-control-sm"
                                 Placeholder="Arrived Time"
                                 changeTextValue={(e) => {
-                                    setYear(e.target.value)
-                                    setchange()
+
+                                    setchange(e)
 
                                 }}
                                 value={year}
@@ -107,7 +109,7 @@ const AttendanceMarking = () => {
                             <IconButton
                                 aria-label="add"
                                 style={{ padding: '0rem' }}
-                                onClick={attendanceMarking}
+                                onClick={(e) => { attendanceMarking() }}
                             // disabled={disable}
                             >
                                 <MdOutlineAddCircleOutline className="text-info" size={30} />

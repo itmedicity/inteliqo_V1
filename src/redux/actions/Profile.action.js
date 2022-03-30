@@ -49,3 +49,4 @@ export const setExperienceData = (id) => {
         const { data, success } = result.data;
     }
 }
+

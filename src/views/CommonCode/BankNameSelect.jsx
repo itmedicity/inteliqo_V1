@@ -1,11 +1,10 @@
-import React, { Fragment, useEffect, useState, useContext } from 'react'
+import React, { Fragment, useEffect, memo, useState, useContext } from 'react'
 import { FormControl, MenuItem, Select } from '@material-ui/core'
 import { axioslogin } from '../Axios/Axios'
 import { warningNofity } from './Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 
 const BankNameSelect = (props) => {
-
     const [bankname, setBankName] = useState([])
     const { selectBank, updateBankName } = useContext(PayrolMasterContext)
 
@@ -21,7 +20,10 @@ const BankNameSelect = (props) => {
             }
         }
         getBankNames()
-    }, [])
+        return (
+            updateBankName(0)
+        )
+    }, [updateBankName])
 
     return (
         <Fragment>
@@ -42,8 +44,8 @@ const BankNameSelect = (props) => {
                     defaultValue={0}
                     style={props.style}
                 >
-                    <MenuItem value='0' disabled>
-                        Select Bank Names
+                    <MenuItem value={0} disabled>
+                        Select Bank Name
                     </MenuItem>
                     {
                         bankname && bankname.map((val, index) => {
@@ -56,4 +58,4 @@ const BankNameSelect = (props) => {
     )
 }
 
-export default BankNameSelect
+export default memo(BankNameSelect)

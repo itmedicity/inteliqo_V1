@@ -21,8 +21,7 @@ import LeaveCarryRow from './LeaveCarryRow';
 import { getYear } from 'date-fns';
 
 const LeaveCarryForwad = () => {
-    const { selectDeptSection, updateDepartmentSection,
-        selectEmpName, updateSelectEmpNameselectedDept } = useContext(PayrolMasterContext);
+    const { selectDeptSection, selectEmpName } = useContext(PayrolMasterContext);
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const history = useHistory();
@@ -34,11 +33,9 @@ const LeaveCarryForwad = () => {
     })
     //getting the leave carry forwad year
     const year = getYear(new Date()) - 1
-
     const [emp_id, setemp_id] = useState(0)
     const [tableflag, setTableFlag] = useState(0)
     const [name, setname] = useState([])
-    const [leavecount, setleaveCount] = useState()
     const gettable = async () => {
         if ((selectEmpName === 0)) {
             const result = await axioslogin.get(`/common/getEmpName/${selectDeptSection}`)
@@ -56,7 +53,6 @@ const LeaveCarryForwad = () => {
             }
             setTableFlag(1)
         }
-
     }
 
     const postdata = {
@@ -72,14 +68,12 @@ const LeaveCarryForwad = () => {
         carry_year: year,
         create_user: em_id
     }
-
     const reset = {
         EL: 0,
         CL: 0,
         SL: 0,
         HL: 0
     }
-
     const setCarryForwardLeave = async (e) => {
         e.preventDefault()
         const result = await axioslogin.post('/CarryLeave', postdata)
@@ -88,14 +82,11 @@ const LeaveCarryForwad = () => {
             succesNofity(message);
             setedit(reset)
         } else {
-
         }
     }
-
     const redirect = () => {
         history.push('/Home/Settings');
     }
-
 
     return (
         <Fragment>
