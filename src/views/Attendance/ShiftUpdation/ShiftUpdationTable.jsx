@@ -18,8 +18,6 @@ const ShiftUpdationTable = ({ data }) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    console.log(rowsPerPage)
     return (
         <Fragment>
             {/* <div className="card">

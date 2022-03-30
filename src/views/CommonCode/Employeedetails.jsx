@@ -1,7 +1,5 @@
-import { DataUsage } from '@material-ui/icons'
 import React, { Fragment } from 'react'
 import { useContext } from 'react'
-import { useState } from 'react'
 import { useEffect } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from '../Axios/Axios'
@@ -21,7 +19,7 @@ const Employeedetails = () => {
             }
         }
         getEmpData()
-    }, [])
+    }, [updateemployeedetails])
     return (
         <Fragment>
 

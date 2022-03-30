@@ -13,6 +13,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import FestivalLeaveComponent from './Component/FestivalLeaveComponent';
 import { format } from 'date-fns';
 import EsiLeaveComponent from './Component/EsiLeaveComponent';
+import Compensatoryoffcomponent from './Component/Compensatoryoffcomponent';
 
 const LeaveDateSelection = ({
     casualLevee,//array of object for leave data
@@ -23,31 +24,31 @@ const LeaveDateSelection = ({
     leveData,
     leaveDetails,// for main page details of leave 
     leaveretypeid,// type of request half,leave,latecoming
-    setholidayLevestore,
-    setfestivalholidayLevestore,//holiday leave set data
+    // setholidayLevestore,
+    // setfestivalholidayLevestore,//holiday leave set data
     durationleave
 }) => {
-    const { emergencynumber, fromDate, resonforleave } = leaveDetails
-    const { employeedetails, updateemployeedetails } = useContext(PayrolMasterContext)
-    const { em_id, em_no, em_department, em_dept_section } = employeedetails
+    // const { emergencynumber, fromDate, resonforleave } = leaveDetails
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [leavetype, settype] = useState(0)//set leave type wheather casual leave or other type
-    const [creditedleave, setcreditedleave] = useState(0)//credited leave
+    // const [creditedleave, setcreditedleave] = useState(0)//credited leave
     const [casualLeve, setCasualLeve] = useState({})//array of object for leave
-    const [holidayleave, setHolidayleave] = useState({})//array of object for festival HOLIDAY
-    const [festivalleave, setfestivalleave] = useState({})//array of object for NATIONAL HOLIDAY
-    const [nameselect, setnameselect] = useState({})
-    const [casualLeve2, setCasualLeve2] = useState({})
-    const [postData, setPostData] = useState({})
+    // const [holidayleave, setHolidayleave] = useState({})//array of object for festival HOLIDAY
+    // const [festivalleave, setfestivalleave] = useState({})//array of object for NATIONAL HOLIDAY
+    // const [nameselect, setnameselect] = useState({})
+    // const [casualLeve2, setCasualLeve2] = useState({})
+    // const [postData, setPostData] = useState({})
     const [casualLeavesallowable, setcasualleaveallowable] = useState([])// allowable casual leave 
     const [allowableholiday, setavailholiday] = useState([])// available holiday
     const [allowablefestivalholiday, setfesivalavailholiday] = useState([])// available festival holiday
     const [allowableearnholiday, setearnholiday] = useState([])// available festival holiday
-    const [applyBtn, setAppleBtn] = useState(0) //apply butto n colour
+    const [availablecomoff, setavailcompoff] = useState([])
+    // const [applyBtn, setAppleBtn] = useState(0) //apply butto n colour
     const [getcasleave, updatecasleaveusestate] = useState({
         dsname: '',
         getvalvalue: 0
     });
-    const { dsname, getvalvalue } = getcasleave
     const [gethldleave, updategethldleave] = useState({
         hldname: '',
         gethldvalvalue: 0
@@ -62,6 +63,11 @@ const LeaveDateSelection = ({
         getEarnvalue: 0
     });
 
+
+    const [getcoff, updatecoff] = useState({
+        coffname: '',
+        getcoffvalvalue: 0
+    });
     const { hldname, gethldvalvalue } = gethldleave
 
     // on change of allowable leave 
@@ -69,7 +75,7 @@ const LeaveDateSelection = ({
         //casual leave
         if (leavetype === 1) {
             updatecasleaveusestate({ ...getcasleave, dsname: name, getvalvalue: value })
-            setcreditedleave(value)
+            // setcreditedleave(value)
             setCasualLeve({
                 ...casualLeve,
                 caulmnth: value,
@@ -125,13 +131,13 @@ const LeaveDateSelection = ({
                 }])
 
             }
-            setAppleBtn(0)
+            // setAppleBtn(0)
 
         }
         // national holiday
         else if (leavetype === 3) {
             updategethldleave({ ...gethldleave, hldname: name, gethldvalvalue: value })
-            setcreditedleave(value)
+            // setcreditedleave(value)
             setCasualLeve({
                 ...casualLeve,
                 caulmnth: value,
@@ -194,7 +200,7 @@ const LeaveDateSelection = ({
 
         else if (leavetype === 4) {
             updategetfestivalleave({ ...getfestivalleave, festivalname: name, getfestivalvalue: value })
-            setcreditedleave(value)
+            // setcreditedleave(value)
             if (casualLevee.length > 0) {
                 const calfind = casualLevee.find((val) => {
 
@@ -247,7 +253,7 @@ const LeaveDateSelection = ({
         }
         else if (leavetype === 8) {
             updategetEarnleave({ ...getEarnleave, earnname: name, getEarnvalue: value })
-            setcreditedleave(value)
+            // setcreditedleave(value)
             if (casualLevee.length > 0) {
                 const calfind = casualLevee.find((val) => {
                     return val.caulmnth === value
@@ -296,11 +302,60 @@ const LeaveDateSelection = ({
 
             }
         }
+        else if (leavetype === 11) {
+            updatecoff({ ...getcoff, coffname: name, getcoffvalvalue: value })
+            // setcreditedleave(value)
+            if (casualLevee.length > 0) {
+                const calfind = casualLevee.find((val) => {
+                    return val.caulmnth === value
+                })
+                if (calfind !== undefined) {
+                    if (calfind.length === 0) {
+                        setCasualLevee((casualLeve) => [...casualLeve, {
+                            caulmnth: value,
+                            levtypename: 'COFF',
+                            lveDate: format(new Date(date), "yyyy-MM-dd"),
+                            lveType: leavetype,
+                            leave: nativeEvent.target.innerText,
+                            index: index
+                        }])
+                    }
+                    else {
+                        warningNofity('Already selected')
+                        updatecoff({ ...getcoff, coffname: name, getcoffvalvalue: 0 })
+
+                        const filtedLeave = casualLevee.filter((val) => {
+                            return (val.caulmnth !== casualLevee.caulmnth && val.index !== casualLeve.index)
+                        })
+                        setCasualLevee(filtedLeave)
+                    }
+                }
+                else {
+                    setCasualLevee((casualLeve) => [...casualLeve, {
+                        caulmnth: value,
+                        levtypename: 'COFF',
+                        lveDate: format(new Date(date), "yyyy-MM-dd"),
+                        lveType: leavetype,
+                        leave: nativeEvent.target.innerText,
+                        index: index
+                    }])
+                }
+            }
+            else {
+                setCasualLevee((casualLeve) => [...casualLeve, {
+                    caulmnth: value,
+                    levtypename: 'COFF',
+                    lveDate: format(new Date(date), "yyyy-MM-dd"),
+                    lveType: leavetype,
+                    leave: nativeEvent.target.innerText,
+                    index: index
+                }])
+
+            }
+        }
     }
     // on select leave type
     const handleLveType = async ({ target: { name, value }, nativeEvent }) => {
-        console.log(value)
-
         settype(value)
         //   if casual leave 
         if (value === 1) {
@@ -317,21 +372,19 @@ const LeaveDateSelection = ({
                 errorNofity("Error Occured!!!!Please Contact EDP")
             }
         }
-        else if (value === 2 || value === 5 || value === 6 || value === 7 || value === 9 || value === 10 || value === 11) {
-
-            setcreditedleave(value)
+        else if (value === 2 || value === 5 || value === 6 || value === 7 || value === 9 || value === 10) {
+            // setcreditedleave(value)
             const data1 = {
                 em_id: em_id,
                 value: value
             }
-
             const result = await axioslogin.post('/yearleaveprocess/allowablcommon/allowableconleave/data/', data1)
             const { success, data } = result.data
-            console.log(data)
             if (success === 1) {
+
                 if (data[0].cmn_lv_balance > 0) {
                     setCasualLevee((casualLeve) => [...casualLeve, {
-                        caulmnth: value,
+                        caulmnth: data[0].hrm_lv_cmn,
                         levtypename: value === 2 ? 'Maternity Leave' : value === 5 ?
                             "LOP" : value === 6 ? "ESI" : value === 7 ? "SICK LEAVE" : value === 9 ? "DAY OFF" : value === 10 ? "WORK  OFF" : 'CONFERRANCE LEAVE',
                         lveDate: format(new Date(date), "yyyy-MM-dd"),
@@ -353,8 +406,6 @@ const LeaveDateSelection = ({
             else {
                 errorNofity("Error Occured!!!!Please Contact EDP")
             }
-
-
         }
         else if (value === 3) {
             const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/${em_id}`)
@@ -365,6 +416,21 @@ const LeaveDateSelection = ({
             }
             else if (success === 2) {
                 warningNofity("There Is No Holiday Left For This Employee")
+            }
+            else {
+                errorNofity("Error Occured!!!!Please Contact EDP")
+            }
+        }
+        else if (value === 11) {
+            const result = await axioslogin.get(`/common/getcoffDetl/${em_id}`)
+            const { success, data } = result.data
+
+            if (success === 1) {
+                setavailcompoff(data)
+                settype(value)
+            }
+            else if (success === 0) {
+                warningNofity("There Is No Compensatory Left For This Employee")
             }
             else {
                 errorNofity("Error Occured!!!!Please Contact EDP")
@@ -400,24 +466,24 @@ const LeaveDateSelection = ({
             }
         }
     }
-    useEffect(() => {
-        if (leavetype === 1 || leavetype === 3) {
-            setPostData(casualLeve)
-        } else {
-            setPostData(casualLeve2)
-        }
-    }, [casualLeve, casualLeve2, leavetype])
-    const validateSubmit = async () => {
-        const filtedLeave = leveData.filter((val) => {
-            return val.index !== postData.index
-        })
-        if (leavetype === 0 || leavetype === 0 && creditedleave === 0) {
-            warningNofity("Select The Leave Type")
-        } else {
-            setLeveData([...filtedLeave, postData])
-            setAppleBtn(1)
-        }
-    }
+    // useEffect(() => {
+    //     if (leavetype === 1 || leavetype === 3) {
+    //         setPostData(casualLeve)
+    //     } else {
+    //         setPostData(casualLeve2)
+    //     }
+    // }, [casualLeve, casualLeve2, leavetype])
+    // const validateSubmit = async () => {
+    //     const filtedLeave = leveData.filter((val) => {
+    //         return val.index !== postData.index
+    //     })
+    //     if (leavetype === 0 || leavetype === 0 && creditedleave === 0) {
+    //         warningNofity("Select The Leave Type")
+    //     } else {
+    //         setLeveData([...filtedLeave, postData])
+    //         setAppleBtn(1)
+    //     }
+    // }
     return (
         <Fragment>
             <ToastContainer />
@@ -465,7 +531,6 @@ const LeaveDateSelection = ({
                                         NL={allowableholiday}
                                         hldname={hldname}
                                         gethldleave={gethldleave}
-                                        setnameselect={setnameselect}
                                         updategethldleave={updategethldleave}
                                     />
                                 </div> : leavetype === 4 ?//NATIONAL holidaychange
@@ -492,16 +557,28 @@ const LeaveDateSelection = ({
                                                 hldname={hldname}
                                                 getEarnleave={getEarnleave}
                                             />
-                                        </div> : null
+                                        </div> : leavetype === 11 ?//Earn Leave
+                                            <div className="col-md-3" >
+                                                <Compensatoryoffcomponent
+                                                    style={SELECT_CMP_STYLE}
+                                                    className="mb-0"
+                                                    name={index}
+                                                    select="Holiday"
+                                                    onChange={handleChange}
+                                                    coff={availablecomoff}
+                                                    hldname={hldname}
+                                                    getcoff={getcoff}
+                                                />
+                                            </div> : null
                     }
                     <div className='col-md-1'  >
-                        <IconButton
+                        {/* <IconButton
                             edge="end"
                             className='py-1'
                             style={applyBtn === 0 ? { color: 'red' } : { color: 'green' }}
                             onClick={validateSubmit}  >
                             <ExitToAppIcon className='p-0' />
-                        </IconButton>
+                        </IconButton> */}
                     </div>
                 </div>
             </div>

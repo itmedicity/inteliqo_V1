@@ -17,16 +17,17 @@ const DirLeaveRequest = ({
     setLeveData,//for getting the leave data based o
     setleavestartend,//to get start and end dates
     setleavedata,//setleavedata for leavedata to main page
-    setleavedaystype
+    setleavedaystype,
+    leavdaystype,//no of days leave
+    setsingleselect//check wheather single leave selection
 }) => {
     const [date, setDate] = useState([]);// leave dates based on the interval dates
     const [checkState, setCheckState] = useState(false)
     const [casualLevestore, setCasualLevestore] = useState([])//array of object for leave data casual leave
-    const [holidayLevestore, setholidayLevestore] = useState([])//array of object for leave data casual leave
-    const [festivalholidayLevestore, setfestivalholidayLevestore] = useState([])//array of object for leave data casual leave
+    // const [holidayLevestore, setholidayLevestore] = useState([])//array of object for leave data casual leave
+    // const [festivalholidayLevestore, setfestivalholidayLevestore] = useState([])//array of object for leave data casual leave
     const [display, setDisplyleave] = useState(0)
     const [durationleave, setdurationleave] = useState(0)
-
     // use state for start and end date
     const [formData, setFormData] = useState({
         startDate: format(new Date(), "yyyy-MM-dd"),
@@ -42,11 +43,10 @@ const DirLeaveRequest = ({
     }
     // calculateing leave days
     const leaveDays = (e) => {
-        if (new Date(startDate) < new Date(endDate)) {
+        if (new Date(startDate) <= new Date(endDate)) {
             const range = eachDayOfInterval(
                 { start: new Date(startDate), end: new Date(endDate) }
             )
-
             setleavedaystype(Object.keys(range).length)
             const newDateFormat = range.map((val) => { return { date: moment(val).format('yyyy-MM-DD') } })
             setDate(newDateFormat)
@@ -54,10 +54,7 @@ const DirLeaveRequest = ({
         else {
             warningNofity('End Date Must Be Grreater than Start Date')
         }
-
     }
-
-
     //processing  leave first credit the leave of the current month
     const displayleave = async () => {
         setDisplyleave(1)//for view the leave list
@@ -70,22 +67,27 @@ const DirLeaveRequest = ({
                 return val.cl_lv_mnth === leaveMonth + 1
             })
             if (casual.length !== 0) {
-                const { cl_lv_mnth, hrm_cl_slno } = casual[0]
+                const { hrm_cl_slno } = casual[0]
                 const postdata = {
                     hrm_cl_slno: hrm_cl_slno
                 }
                 const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
+
             }
+        }
+    }
+    const setCheckStatemain = (e) => {
+        if (e.target.checked === true) {
+            setsingleselect(1)
+        }
+        else {
+            setsingleselect(0)
         }
     }
 
     useEffect(() => {
         setleavedata(casualLevestore)
     }, [casualLevestore])
-
-
-
-
     return (
         <Fragment>
             <div className="card">
@@ -138,7 +140,12 @@ const DirLeaveRequest = ({
                                             // value={Leave_Carry_Forwad}
                                             // checked={Leave_Carry_Forwad}
                                             className="ml-2"
-                                            onChange={(e) => setCheckState(e.target.checked)}
+                                            onChange={(e) => {
+                                                setCheckState(e.target.checked)
+
+                                                setCheckStatemain(e)
+
+                                            }}
                                             checked={checkState}
                                         />
                                     }
@@ -147,7 +154,11 @@ const DirLeaveRequest = ({
                             </div>
                             {
                                 checkState === true ? <LeaveSingleSelection
-                                    setLeveData={setLeveData} /> : null
+                                    setLeveData={setLeveData}
+                                    leavdaystype={leavdaystype}
+                                    formData={formData}
+                                    setCasualLevee={setCasualLevestore}//array of object for leave data set function
+                                /> : null
                             }
                         </div>
                     </div>
@@ -157,8 +168,8 @@ const DirLeaveRequest = ({
                                 return <LeaveDateSelection
                                     casualLevee={casualLevestore}//array of object for leave data
                                     setCasualLevee={setCasualLevestore}//array of object for leave data set function
-                                    setholidayLevestore={setholidayLevestore}
-                                    setfestivalholidayLevestore={setfestivalholidayLevestore}//holiday leave set data
+                                    // setholidayLevestore={setholidayLevestore}
+                                    // setfestivalholidayLevestore={setfestivalholidayLevestore}//holiday leave set data
                                     key={index}//key of array
                                     index={index}//index
                                     date={val.date}//date

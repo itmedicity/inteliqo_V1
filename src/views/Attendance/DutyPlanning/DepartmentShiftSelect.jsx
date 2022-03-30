@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
@@ -61,4 +61,4 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     )
 }
 
-export default DepartmentShiftSelect
+export default memo(DepartmentShiftSelect)
