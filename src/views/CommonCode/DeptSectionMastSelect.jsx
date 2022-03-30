@@ -7,10 +7,10 @@ const DeptSectionMastSelect = (props) => {
     // intializing use state
     const [dept, setDept] = useState([]);
 
-    // // useContext
+    // useContext
     const { getDeptSection, updateDeptSection } = useContext(PayrolMasterContext)
 
-    // useeffect 
+    // useffect 
     useEffect(() => {
         const getdeptsection = async () => {
             const result = await axioslogin.get('/section/select/all')

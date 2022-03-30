@@ -66,7 +66,6 @@ const OTRequest = () => {
         if ((punchindatamain !== 0) && (punchoutdatamain !== 0)) {
             setTable(1)
             const getTable = async () => {
-                console.log(shiftid);
                 const result = await axioslogin.get(`/shift/${shiftid}`)
                 const { success, data } = result.data;
                 if (success === 1) {

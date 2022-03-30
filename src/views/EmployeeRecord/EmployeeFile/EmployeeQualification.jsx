@@ -28,9 +28,10 @@ const EmployeeQualification = () => {
     const [boarddisable, setBoarddisable] = useState(false)
     const [coursedisable, setcoursedisable] = useState(false)
     const [specdisable, setspecdisable] = useState(false)
+    const [regTypedisable, setregTypedisable] = useState(false)
     const [count, setcount] = useState(0);
-    const { selectEducation, selectCourse, selectSpec, selectUniversity,
-        selectBoard, selectreg } = useContext(PayrolMasterContext)
+    const { selectEducation, selectCourse, selectSpec, selectUniversity, updateUniversity, updatereg,
+        selectBoard, selectreg, updateBoard, updateSpec, updateEducation, updateCourse } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(null);
 
     //Initializing
@@ -57,8 +58,6 @@ const EmployeeQualification = () => {
     const updateYear = (val) => {
         setYear(val)
     }
-
-    //moment passout year
     const qual_year = moment(year).format('YYYY')
 
     useEffect(() => {
@@ -67,17 +66,20 @@ const EmployeeQualification = () => {
             setBoarddisable(false)
             setcoursedisable(false)
             setspecdisable(false)
+            setregTypedisable(true)
         }
         else if (selectEducation === 5) {
             setBoarddisable(false)
             setunidisable(true)
             setcoursedisable(true)
             setspecdisable(true)
+            setregTypedisable(true)
         } else {
             setcoursedisable(false)
             setspecdisable(false)
             setunidisable(false)
             setBoarddisable(true)
+            setregTypedisable(false)
         }
     }, [selectEducation])
 
@@ -91,9 +93,9 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity,
         em_board: selectBoard !== 0 ? selectBoard : null,
         em_year: qual_year,
-        em_mark_grade,
+        em_mark_grade: em_mark_grade,
         em_reg_type: selectreg,
-        em_reg_no,
+        em_reg_no: em_reg_no,
         create_user: employeeNumber(),
     }
     const postData5 = {
@@ -105,9 +107,9 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
-        em_mark_grade,
+        em_mark_grade: em_mark_grade,
         em_reg_type: selectreg,
-        em_reg_no,
+        em_reg_no: em_reg_no,
         create_user: employeeNumber(),
     }
     const postData4 = {
@@ -119,9 +121,9 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
-        em_mark_grade,
+        em_mark_grade: em_mark_grade,
         em_reg_type: selectreg,
-        em_reg_no,
+        em_reg_no: em_reg_no,
         create_user: employeeNumber(),
     }
 
@@ -138,6 +140,15 @@ const EmployeeQualification = () => {
         em_reg_no: ''
     }
 
+    const reset = () => {
+        updateBoard(0)
+        updateSpec(0)
+        updateEducation(0)
+        updateCourse(0)
+        updateUniversity(0)
+        updatereg(0)
+    }
+
     //Form Submitting
     const submitQualification = async (e) => {
         e.preventDefault();
@@ -148,6 +159,7 @@ const EmployeeQualification = () => {
                 succesNofity(message);
                 setcount(count + 1)
                 setQualification(resetForm);
+                reset()
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
@@ -160,6 +172,7 @@ const EmployeeQualification = () => {
                 succesNofity(message);
                 setcount(count + 1)
                 setQualification(resetForm);
+                reset()
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
@@ -172,6 +185,7 @@ const EmployeeQualification = () => {
                 succesNofity(message);
                 setcount(count + 1)
                 setQualification(resetForm);
+                reset()
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
@@ -252,7 +266,9 @@ const EmployeeQualification = () => {
                                         />
                                     </div>
                                     <div className="col-md-12 pt-1">
-                                        <RegistrationTypeSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        <RegistrationTypeSelection
+                                            disable={regTypedisable}
+                                            style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12 pt-1">
                                         <TextInput

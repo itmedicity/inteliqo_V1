@@ -121,8 +121,8 @@ const AppSidebar = () => {
   ]
 
   const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const unfoldable = useSelector((state) => state.changeState.sidebarUnfoldable)
+  const sidebarShow = useSelector((state) => state.changeState.sidebarShow)
   // const [empid, setEmpid] = useState({
   //   emp_slno: 0,
   // })

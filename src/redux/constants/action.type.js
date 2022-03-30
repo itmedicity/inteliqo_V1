@@ -8,5 +8,7 @@ export const Actiontypes = {
     FETCH_LEAVE_DATA: "FETCH_LEAVE_DATA",
     FETCH_EMP_RECORD_LIST: "FETCH_EMP_RECORD_LIST",
     FETCH_EMP_LEAVE_LIST: "FETCH_EMP_LEAVE_LIST"
+    FETCH_DEPARTMENT_LIST: "FETCH_DEPARTMENT_LIST",//department list dropdown
+    FETCH_DEPARTSEC_LIST: "FETCH_DEPARTSEC_LIST",//dept section list dropdown
 
 }
