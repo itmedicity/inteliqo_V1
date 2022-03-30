@@ -18,16 +18,11 @@ const Protected = (props) => {
         if (!loginDetl) {
             history.push('/');
         } else {
-
+            const { empid } = login
             dispatch({ type: FETCH_LOGIN_CRED, payload: login })
-
-        }
-        const { empid } = login
-        const timer = setTimeout(() => {
+            // Dispatch function for the Profile Data Updation
             dispatch(setProfileData(empid))
-        }, 5000);
-        return () => clearTimeout(timer);
-
+        }
     }, [history]);
 
     return (

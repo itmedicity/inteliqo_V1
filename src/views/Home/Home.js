@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 const Home = () => {
 
     const login = useSelector((state) => {
-        // console.log(state)
+        console.log(state)
     })
 
     return (

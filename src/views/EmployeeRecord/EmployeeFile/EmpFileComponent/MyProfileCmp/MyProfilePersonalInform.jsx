@@ -36,12 +36,25 @@ import MyProfileSalary from './MyProfileSalary';
 import AnualLeave from './AnualLeave';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import DomainIcon from '@mui/icons-material/Domain';
+import CategoryIcon from '@mui/icons-material/Category';
+import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 
 
 const MyProfilePersonalInform = ({ empid, redirect }) => {
 
     const [src, setSrc] = useState(ProfilePicDefault)
     const profilePic = `${PUBLIC_NAS_FOLDER + empid}/profilePic.jpg`;
+
+    const loginDetl = useSelector((state) => {
+        return state.getPrifileDateEachEmp;
+    })
+
+    const { personalData, personalDataStatus } = loginDetl.empPersonalData;
 
     useEffect(() => {
 
@@ -64,24 +77,72 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
         getProfilePicInform()
     }, [empid, profilePic])
 
-    const loginDetl = useSelector((state) => {
-        return state.getProfileData
-    })
+    const {
+        addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name,
+        desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email,
+        em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
+        sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no
+    } = personalData
 
-    const { ProfileData, lodingStatus } = loginDetl;
 
-    console.log(lodingStatus)
+    const emp = {
+        name: em_name === '' ? 'NOT UPDATED' : em_name,
+        presAddress: addressPermnt1 === '' ? 'NOT UPDATED' : ` ${addressPermnt1} ${addressPermnt2} ${per_region}`,
+        permAddress: addressPresent1 === '' ? 'NOT UPDATED' : `${addressPresent1} ${addressPresent2} ${pres_region}`,
+        region: per_region === '' ? 'NOT UPDATED' : per_region,
+        pincode: hrm_pin1 === '' ? 'NOT UPDATED' : hrm_pin1,
+        mobile: em_mobile === '' ? 'NOT UPDATED' : em_mobile,
+        phone: em_phone === '' ? 'NOT UPDATED' : em_phone,
+        email: em_email === '' ? 'NOT UPDATED' : em_email,
+        adhar: em_adhar_no === null ? 'NOT UPDATED' : em_adhar_no,
+        designation: desg_name === '' ? 'NOT UPDATED' : desg_name,
+        account: em_account_no === null ? 'NOT UPDATED' : em_account_no,
+        bank: bank_name === null ? 'NOT UPDATED' : bank_name,
+        gender: em_gender === 2 ? 'Female' : 'Male',
+        ismarried: em_maritalstatus === 2 ? 'Not Married' : 'Married',
+        religion: relg_name === null ? 'NOT UPDATED' : relg_name,
+        age: em_dob === null ? 'NOT UPDATED' : em_dob,
+        dob: em_dob === null ? 'NOT UPDATED' : em_dob,
+        bloodgroup: group_name === null ? 'NOT UPDATED' : group_name,
+        ifcscode: em_ifsc === null ? 'NOT UPDATED' : em_ifsc,
+        panNo: em_pan_no === null ? 'NOT UPDATED' : em_pan_no,
+        dateofJoin: em_doj === null ? 'NOT UPATED' : em_doj,
+        branch: branch_name === null ? 'NOT UPATED' : branch_name,
+        department: dept_name === null ? 'NOT UPATED' : dept_name,
+        deptSection: sect_name === null ? 'NOT UPATED' : sect_name,
+        emp_category: ecat_name === null ? 'NOT UPATED' : ecat_name,
+        probEndDate: em_conf_end_date === null ? 'NOT UPATED' : em_conf_end_date,
+        constractEnd: em_contract_end_date === null ? 'NOT UPATED' : em_contract_end_date,
+        retirement: em_retirement_date === null ? 'NOT UPATED' : em_retirement_date,
+    }
+
+
 
     return (
         <Fragment>
             <Card sx={{ borderRadius: 2, boxShadow: 5 }} >
                 <CardHeader
                     // sx={{ backgroundColor: '#b6b8c3' }}
-                    title="Ajith Arjunan"
+                    title={
+                        <Fragment>
+                            {
+                                personalDataStatus === true ? emp.name : <Skeleton />
+                            }
+                        </Fragment>
+                    }
                     titleTypographyProps={{
                         variant: 'body1',
                     }}
-                    subheader={<> {lodingStatus === false ? <Skeleton /> : "Asst Manager IT"} </>}
+                    subheader={
+                        <Fragment>
+                            {
+                                personalDataStatus === true ? emp.designation : <Skeleton />
+                            }
+                            <Typography variant="subtitle2" component="div" gutterBottom>
+                                Information Technology
+                            </Typography>
+                        </Fragment>
+                    }
                     subheaderTypographyProps={{
                         variant: 'subtitle2',
                     }}
@@ -92,11 +153,13 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                             variant="rounded"
                             src={src}
                         >
-                            {/* <PersonPinIcon /> */}
+                            <PersonPinIcon />
                         </Avatar>
                     }
+
                     action={
                         <Fragment>
+
                             <IconButton aria-label="settings">
                                 <Badge badgeContent={4} color="secondary">
                                     <MessageIcon fontSize='large' sx={{ color: "#64b5f6" }} />
@@ -112,6 +175,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                     <EmailIcon fontSize='large' sx={{ color: "#81c784" }} />
                                 </Badge>
                             </IconButton>
+
                             <IconButton aria-label="settings" sx={{ marginLeft: 10 }} onClick={() => redirect()} >
                                 <CloseIcon fontSize='large' sx={{ color: "#212121" }} />
                             </IconButton>
@@ -142,7 +206,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                     variant="body2"
                                                     color="text.primary"
                                                 >
-                                                    Medicity,Umayanallor, Thattamal P O, Kollam 691020
+                                                    {emp.presAddress}
                                                 </Typography>
                                                 {/* {" — I'll be in your neighborhood doing errands this…"} */}
                                             </React.Fragment>
@@ -158,7 +222,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <PlaceIcon />
                                                     </ListItemIcon>
                                                     {/* place */}
-                                                    <ListItemText primary="Kallumthazham" />
+                                                    <ListItemText primary={emp.region} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -169,7 +233,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <PersonPinCircleIcon />
                                                     </ListItemIcon>
                                                     {/* pin code */}
-                                                    <ListItemText primary="691515" />
+                                                    <ListItemText primary={emp.pincode} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -185,7 +249,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <PhoneIphoneIcon />
                                                     </ListItemIcon>
                                                     {/* mobile */}
-                                                    <ListItemText primary="91 9846009616" />
+                                                    <ListItemText primary={emp.mobile} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -196,7 +260,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <LocalPhoneIcon />
                                                     </ListItemIcon>
                                                     {/* Phone */}
-                                                    <ListItemText primary="0474 27229393" />
+                                                    <ListItemText primary={emp.phone} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -211,7 +275,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <AlternateEmailIcon />
                                                     </ListItemIcon>
                                                     {/* Mail Id */}
-                                                    <ListItemText primary="ajithajeesh@gmail.com" />
+                                                    <ListItemText primary={emp.email} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -222,7 +286,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <BadgeIcon />
                                                     </ListItemIcon>
                                                     {/* adhar number */}
-                                                    <ListItemText primary="1234 1234 1234 1234" />
+                                                    <ListItemText primary={emp.adhar} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -238,7 +302,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <AccountBalanceIcon />
                                                     </ListItemIcon>
                                                     {/* Account number */}
-                                                    <ListItemText primary="1010012232647" />
+                                                    <ListItemText primary={emp.account} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -249,7 +313,59 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <SavingsIcon />
                                                     </ListItemIcon>
                                                     {/* bank Master */}
-                                                    <ListItemText primary="FEDERAL BANK" />
+                                                    <ListItemText primary={emp.bank} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12}  >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Date Of Join" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <DateRangeIcon />
+                                                    </ListItemIcon>
+                                                    {/* Date of Join */}
+                                                    <ListItemText primary={emp.dateofJoin} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="Company Branch Name" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <DomainIcon />
+                                                    </ListItemIcon>
+                                                    {/* Company Branch Name */}
+                                                    <ListItemText primary={emp.branch} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12}  >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Department Name" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <AccountBalanceIcon />
+                                                    </ListItemIcon>
+                                                    {/* Department Name */}
+                                                    <ListItemText primary={emp.department} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="Department Section" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <SavingsIcon />
+                                                    </ListItemIcon>
+                                                    {/* Department Section Name */}
+                                                    <ListItemText primary={emp.deptSection} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -276,7 +392,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                     variant="body2"
                                                     color="text.primary"
                                                 >
-                                                    Medicity,Umayanallor, Thattamal P O, Kollam 691020
+                                                    {emp.permAddress}
                                                 </Typography>
                                                 {/* {" — I'll be in your neighborhood doing errands this…"} */}
                                             </React.Fragment>
@@ -293,7 +409,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <WcIcon />
                                                     </ListItemIcon>
                                                     {/* Gender */}
-                                                    <ListItemText primary="Male" />
+                                                    <ListItemText primary={emp.gender} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -304,7 +420,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <SupervisorAccountIcon />
                                                     </ListItemIcon>
                                                     {/* Marital Status */}
-                                                    <ListItemText primary="Not Married" />
+                                                    <ListItemText primary={emp.ismarried} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -320,7 +436,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <SupervisorAccountIcon />
                                                     </ListItemIcon>
                                                     {/* Religion */}
-                                                    <ListItemText primary="Hindhu" />
+                                                    <ListItemText primary={emp.religion} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -331,7 +447,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <CalendarViewMonthIcon />
                                                     </ListItemIcon>
                                                     {/* Age */}
-                                                    <ListItemText primary="28 Y 10 M" />
+                                                    <ListItemText primary={emp.age} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -347,7 +463,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <CalendarViewWeekIcon />
                                                     </ListItemIcon>
                                                     {/* DOB */}
-                                                    <ListItemText primary="02-01-1988" />
+                                                    <ListItemText primary={emp.dob} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -358,7 +474,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <BloodtypeIcon />
                                                     </ListItemIcon>
                                                     {/* BLood Group */}
-                                                    <ListItemText primary="B +Ve" />
+                                                    <ListItemText primary={emp.bloodgroup} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -374,7 +490,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <AccountBalanceWalletIcon />
                                                     </ListItemIcon>
                                                     {/* Ifsc Code*/}
-                                                    <ListItemText primary="FDRL001023" />
+                                                    <ListItemText primary={emp.ifcscode} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -385,7 +501,59 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                                                         <ConfirmationNumberIcon />
                                                     </ListItemIcon>
                                                     {/* Pan Number */}
-                                                    <ListItemText primary="BRXBA2654P" />
+                                                    <ListItemText primary={emp.panNo} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12} >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Employee Category " followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <CategoryIcon />
+                                                    </ListItemIcon>
+                                                    {/* Employee category*/}
+                                                    <ListItemText primary={emp.emp_category} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="Probation / Training End Date" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <EventAvailableIcon />
+                                                    </ListItemIcon>
+                                                    {/* Probation/ Trainig End Date */}
+                                                    <ListItemText primary={emp.probEndDate} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12} >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Retirement Date" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <PermContactCalendarIcon />
+                                                    </ListItemIcon>
+                                                    {/* Retirement Date*/}
+                                                    <ListItemText primary={emp.retirement} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="Contract End Date" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <EventBusyIcon />
+                                                    </ListItemIcon>
+                                                    {/* Contract End Date*/}
+                                                    <ListItemText primary={emp.constractEnd} />
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
@@ -397,16 +565,18 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                     <Grid item container xs={12} md={12} direction="row" spacing={2} >
                         <Grid item xs={12} md={6} >
                             <MyProfileExpQualify />
-                        </Grid>
-                        <Grid item xs={12} md={6} >
-                            <MyProfleExperience />
-                        </Grid>
-                        <Grid item xs={12} md={6} >
                             <MyProfileSalary />
                         </Grid>
                         <Grid item xs={12} md={6} >
+                            <MyProfleExperience />
                             <AnualLeave />
                         </Grid>
+                        {/* <Grid item xs={12} md={6} >
+
+                        </Grid>
+                        <Grid item xs={12} md={6} >
+
+                        </Grid> */}
                     </Grid>
                 </CardContent>
                 <CardActionArea>

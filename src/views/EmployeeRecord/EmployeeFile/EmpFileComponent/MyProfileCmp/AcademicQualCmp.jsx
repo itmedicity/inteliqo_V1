@@ -2,7 +2,9 @@ import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubh
 import React, { Fragment, memo } from 'react'
 import SchoolIcon from '@mui/icons-material/School';
 
-const AcademicQualCmp = () => {
+const AcademicQualCmp = ({ data }) => {
+    console.log(data)
+    const { edu_desc, cour_desc, spec_desc, unver_name } = data;
     return (
         <Fragment>
             <ListItem alignItems="flex-start" className='py-1' >
@@ -12,7 +14,7 @@ const AcademicQualCmp = () => {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary="MBA"
+                    primary={edu_desc}
                     primaryTypographyProps={{ variant: "subtitle1" }}
                     secondary={
                         <Fragment>
@@ -22,9 +24,12 @@ const AcademicQualCmp = () => {
                                 variant="body1"
                                 color="text.primary"
                             >
-                                Human Resource Management
+                                {`${cour_desc === 'NILL' ? '' : cour_desc} ${spec_desc === 'NILL' ? '' : spec_desc}`}
                             </Typography>
-                            {"— Kerala Univercity"}
+
+                            <Typography variant="caption" >
+                                {unver_name === 'NILL' ? '' : ` — ${unver_name}`}
+                            </Typography>
                         </Fragment>
                     }
                 // secondaryTypographyProps={{ variant: "body1" }}
@@ -39,7 +44,7 @@ const AcademicQualCmp = () => {
                                 variant="subtitle1"
                                 color="text.primary"
                             >
-                                2019
+
                             </Typography>
                         </Fragment>
                     }

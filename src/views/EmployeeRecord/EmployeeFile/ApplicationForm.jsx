@@ -11,16 +11,26 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ClearIcon from '@mui/icons-material/Clear';
 import MyProfileExpQualify from './EmpFileComponent/MyProfileCmp/MyProfileExpQualify'
 import { useDispatch } from 'react-redux'
-import { setProfileData } from '../../../redux/actions/Profile.action'
+import {
+    setProfileData,
+    setPersonalData,
+    setAccademicData
+} from '../../../redux/actions/Profile.action'
 
 const ApplicationForm = () => {
     const history = useHistory()
     // get id and number of logged user
     const { id, no } = useParams()
+    const dispath = useDispatch()
 
     const RedirectToProfilePage = useCallback(() => {
         history.push(`/Home/Profile/${id}/${no}`)
     })
+
+    useEffect(() => {
+        dispath(setPersonalData(no))
+        dispath(setAccademicData(id))
+    }, [no])
 
     return (
         <Fragment>

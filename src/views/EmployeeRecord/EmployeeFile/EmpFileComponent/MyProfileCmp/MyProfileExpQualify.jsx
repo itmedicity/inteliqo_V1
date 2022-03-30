@@ -1,11 +1,33 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import AcademicQualCmp from './AcademicQualCmp';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import SchoolIcon from '@mui/icons-material/School';
+import { useSelector } from 'react-redux';
 
 const MyProfileExpQualify = () => {
+
+    const [accedData, setaccedemicData] = useState([])
+
+    const state = useSelector((state) => {
+        return state.getPrifileDateEachEmp.empAcademicData;
+    })
+
+    // console.log(state)
+
+    useEffect(() => {
+        const { academicData, academicDataStatus } = state;
+        setaccedemicData(state.academicData)
+    }, [state])
+
+    // console.log(accedData)
+
+    // accedData.map((val) => {
+    //     console.log(val)
+    // })
+
+
     return (
         <Fragment>
             <Card sx={{ borderRadius: 2, boxShadow: 2 }} className="mt-1" >
@@ -28,8 +50,9 @@ const MyProfileExpQualify = () => {
                 />
                 <CardContent className='pt-0' >
                     <List className='p-0' >
-                        <AcademicQualCmp />
-                        <AcademicQualCmp />
+                        {
+                            accedData && accedData.map((val, index) => <AcademicQualCmp key={index} data={val} />)
+                        }
                     </List>
                 </CardContent>
             </Card>
