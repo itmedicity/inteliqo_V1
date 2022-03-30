@@ -1,8 +1,6 @@
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 
+import React, { Fragment, memo, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 
 const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColor }) => {
     const { plan_slno, shift_id } = data;
@@ -20,30 +18,17 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
         changeColor(1)
     }
     const [DepartmentShift, setDepartmentShiftSelect] = useState([]);
-    const { selectDeptSection, selectedDept,
-    } = useContext(PayrolMasterContext);
+    //getting the department shift from store   
+    const departmentShiftt = useSelector((state) => {
+        return state.getDepartmentShiftData.deptShiftData;
 
+    })
     useEffect(() => {
-        const postData = {
-            dept_id: selectedDept,
-            sect_id: selectDeptSection
+        if (Object.keys(departmentShiftt).length > 0) {
+            setDepartmentShiftSelect(departmentShiftt)
         }
-        const getdepartmentShift = async () => {
-            if (selectedDept !== 0 && selectDeptSection !== 0) {
-                const result = await axioslogin.post('/departmentshift/shift', postData)
-                const { success, data, message } = await result.data;
-                if (success === 1) {
-                    const { shft_code } = data[0]
-                    const obj = JSON.parse(shft_code)
-                    setDepartmentShiftSelect(obj);
-                }
-                if (success === 0) {
-                    setDepartmentShiftSelect(0)
-                }
-            }
-        }
-        getdepartmentShift()
-    }, [selectedDept, selectDeptSection])
+
+    }, [departmentShiftt])
     return (
         <Fragment>
             <select className="custom-select"
@@ -61,4 +46,6 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     )
 }
 
-export default memo(DepartmentShiftSelect)
+
+export default memo(DepartmentShiftSelect) 
+
