@@ -1,8 +1,9 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useState } from 'react'
+import { Select, FormControl, MenuItem } from '@material-ui/core'
 
-const TestHalfday = ({ name, select, style, onChange, NL, gethldleave }) => {
-    const { gethldvalvalue } = gethldleave
+import React, { Fragment } from 'react'
+
+const Compensatoryoffcomponent = ({ name, select, style, onChange, coff, getcoff }) => {
+
     return (
         <Fragment>
             <FormControl
@@ -15,21 +16,20 @@ const TestHalfday = ({ name, select, style, onChange, NL, gethldleave }) => {
                     // name={holname}
                     onChange={onChange}
                     fullWidth
-                    value={gethldvalvalue}
+                    value={getcoff.getcoffvalvalue}
                     variant="outlined"
                     className="ml-0"
                     defaultValue={0}
                     style={style}
                 >
                     <MenuItem value={0} disabled selected >{select}</MenuItem>
-
-                    {NL && NL.map((val, index) => {
-                        return <MenuItem key={index} value={val.hrm_hl_slno} disabled={val.hl_lv_taken === 1 ? true : null} >{val.hld_desc}</MenuItem>
+                    {coff && coff.map((val, index) => {
+                        return <MenuItem key={index} value={val.hrm_calc_holiday} disabled={val.hl_lv_taken === 1 ? true : null} >{val.calculated_date}</MenuItem>
                     })}
                 </Select>
             </FormControl>
-        </Fragment>
+        </Fragment >
     )
 }
 
-export default TestHalfday
+export default Compensatoryoffcomponent

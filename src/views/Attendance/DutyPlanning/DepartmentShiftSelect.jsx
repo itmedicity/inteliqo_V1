@@ -1,6 +1,6 @@
+
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-
 
 const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColor }) => {
     const { plan_slno, shift_id } = data;
@@ -46,4 +46,6 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     )
 }
 
+
 export default memo(DepartmentShiftSelect) 
+

@@ -110,6 +110,7 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
                         date2: moment(add(new Date(startDate), { days: 1 })).format('YYYY-MM-DD'),
                         em_no: em_no
                     }
+
                     const result = await axioslogin.post('common/getShiftdata/', datatogetpunch)
                     const { success, data } = result.data
                     if (success === 1) {
