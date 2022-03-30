@@ -1,29 +1,33 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core'
 import React, { Fragment, memo, useEffect, useState, useContext } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { axioslogin } from '../Axios/Axios';
+import { setDepartment } from '../../redux/actions/Department.action';
+import { useDispatch, useSelector } from 'react-redux';
 
 const DepartmentSelect = (props) => {
+    const dispatch = useDispatch()
     const [deptData, setdeptData] = useState([]);
     const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
+    const departments = useSelector((state) => {
+        return state.getDepartmentList.empDepartmentList
+    })
+
     useEffect(() => {
         const fetchDeptData = async () => {
-
-            const result = await axioslogin.get('/common/getdept')
-                .then((response) => {
-                    setdeptData(response.data.data)
-                    return response.data.data;
-                })
-                .catch((error) => {
-                    return error;
-                });
-            return result;
+            if (Object.keys(departments).length > 0) {
+                setdeptData(departments)
+            }
         }
         fetchDeptData();
         return (
             updateSelected(0)
         )
-    }, [updateSelected]);
+    }, [updateSelected, departments]);
+
+
+    useEffect(() => {
+        dispatch(setDepartment())
+    }, [])
 
     return (
         <Fragment>
