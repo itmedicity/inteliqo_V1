@@ -27,12 +27,10 @@ const ContractInformation = () => {
     const [categorychge, setcategorychange] = useState(1)
     // use State foe serial number
     const [processslno, setprocessslno] = useState(0)
-
     // to model message
     const [modelmessage, setmodelmessage] = useState('');
     // usestate for leaveprocess model
     const [modelvalue, setmodelvalue] = useState(0)
-    console.log(modelvalue)
     // set open model true false for leave setting
     const [open, setOpen] = useState(false);
     // usestae to check wheather category is saved 
@@ -92,9 +90,6 @@ const ContractInformation = () => {
     })
     //destructuring
     const { remaining_days, em_no, em_id, startdate, endate, contractstatus, em_category } = formData
-
-    console.log(em_category)
-
     //setting Contract start Date
     const setContractStartDate = (val) => {
         setcontstrtDate(val)
@@ -103,7 +98,6 @@ const ContractInformation = () => {
     const setContractEndDate = (val) => {
         setconendDate(val)
     }
-
     const getcontractInformation = async () => {
         const result = await axioslogin.get(`/empcontract/${no}`)
         const { success, data } = result.data
@@ -155,7 +149,6 @@ const ContractInformation = () => {
     useEffect(() => {
         getcontractInformation()
     }, [id, no, categorysave])
-
     //data to close a request
     const closeData = {
         em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
@@ -179,10 +172,8 @@ const ContractInformation = () => {
         }
     }
     const setContractEndDateforRenew = () => {
-
         const endDate = addDays(new Date(contractstartDate), 365)
         setconendDate(endDate)
-
     }
     //contract renew
     const contractRenew = async (e) => {
@@ -210,7 +201,6 @@ const ContractInformation = () => {
                 })
                 getSerialnumberempnumber()
             }
-
         }
     }
     const RenewData = {
@@ -236,18 +226,12 @@ const ContractInformation = () => {
         e.preventDefault()
         const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
         const { success, message } = result.data
-        console.log(categorysave)
-        console.log(success)
         if (success === 2) {
             succesNofity(message)
-
             Setenablefield(true)
-
             if (categorysave === 1) {
-
                 getProcessserialnum().then((val) => {
                     setprocessslno(val)
-
                 })
                 // get current data allowed  leave based on category
                 const getcategorydata = async () => {
@@ -256,18 +240,15 @@ const ContractInformation = () => {
                     setleavestate(data[0])
                 }
                 getcategorydata();
-
                 const postFormdata =
                 {
                     em_no: no,
                     em_id: id
                 }
-
                 const getdata = async () => {
                     // check the table where data present if present get the details process table
                     const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
                     const { success, message } = result.data;
-                    console.log(result)
                     const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
                         lv_process_slno, next_updatedate } = message[0]
 
@@ -292,19 +273,13 @@ const ContractInformation = () => {
                     else if (success === 1) {
                         setcategorysave(0)
                         leaveprocessidupdate(dataprvleave)
-                        console.log(category_slno)
-                        console.log(em_category)
                         // if employee process date has over 
                         if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
-                            console.log('fsioi')
                             setOpen(true)
                             setmodelvalue(1)
                             setmodelmessage('Date Exceeded do you Want To Process')
                         }
-
-
                         else if (category_slno !== em_category) {
-                            console.log('uiouo')
                             setcategorysave(0)
                             setmodelvalue(1)
                             setmodelmessage('Category Change Do You Want to  To Process')
@@ -315,7 +290,6 @@ const ContractInformation = () => {
                             // setmodellist(true)
                         }
                     }
-
                 }
                 getdata()
             }
@@ -357,9 +331,6 @@ const ContractInformation = () => {
                 olddata={olddata}// check wheather new data
                 setmodelvalue={setmodelvalue}
                 categorychge={categorychge}
-
-
-
             /> : null}
             <PageLayout heading="Contract Information">
                 <div className="col-md-12">

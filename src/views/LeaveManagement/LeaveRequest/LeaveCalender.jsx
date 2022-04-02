@@ -6,10 +6,12 @@ const LeaveCalender = ({ em_id }) => {
     const [data, setData] = useState([])
     useEffect(() => {
         const getLeave = async () => {
-            const result = await axioslogin.get(`/leaveRequestType/leavesetdata/${em_id}`)
-            const { success, data } = result.data
-            if (success === 1) {
-                setData(data[0])
+            if (em_id !== '') {
+                const result = await axioslogin.get(`/leaveRequestType/leavesetdata/${em_id}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setData(data[0])
+                }
             }
         }
         getLeave()

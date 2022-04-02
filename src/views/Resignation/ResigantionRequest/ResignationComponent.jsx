@@ -1,6 +1,5 @@
-import { Typography } from '@material-ui/core'
 import { Alert, Stack } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 
 const ResignationComponent = () => {
     return (
@@ -12,4 +11,4 @@ const ResignationComponent = () => {
     )
 }
 
-export default ResignationComponent
+export default memo(ResignationComponent)

@@ -3,7 +3,6 @@ import React, { Fragment, memo } from 'react'
 import SchoolIcon from '@mui/icons-material/School';
 
 const AcademicQualCmp = ({ data }) => {
-    console.log(data)
     const { edu_desc, cour_desc, spec_desc, unver_name } = data;
     return (
         <Fragment>

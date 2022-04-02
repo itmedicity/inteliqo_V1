@@ -35,16 +35,18 @@ const ResignationRequest = () => {
     const { resignation_type, request_date, resignation_reason } = FormData
     //use effect for getting notice period
     useEffect(() => {
-        const getNoticePeriod = async () => {
-            const result = await axioslogin.get(`/designation/noticeperiod/${em_designation}`)
-            const { success, data } = result.data
-            if (success == 1) {
-                const { desg_notice_prd } = data[0]
-                setNoticePeriod(desg_notice_prd)
+        if (em_designation !== 0) {
+            const getNoticePeriod = async () => {
+                const result = await axioslogin.get(`/designation/noticeperiod/${em_designation}`)
+                const { success, data } = result.data
+                if (success == 1) {
+                    const { desg_notice_prd } = data[0]
+                    setNoticePeriod(desg_notice_prd)
+                }
             }
+            getNoticePeriod()
         }
-        getNoticePeriod()
-    }, [])
+    }, [em_designation])
     //getting form data
     const updateResignationRequest = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
