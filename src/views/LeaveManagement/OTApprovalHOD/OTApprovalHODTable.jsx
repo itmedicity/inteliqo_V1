@@ -4,7 +4,6 @@ import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import ModelHodApproval from './ModelHodApproval';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import OTCancelModel from '../OTComponent/OTCancelModel';
 import { HiTrash } from "react-icons/hi";
 
@@ -54,7 +53,6 @@ const OTApprovalHODTable = ({ DeptSect }) => {
                     setTableData(data);
                 } else {
                     setTableData(data);
-                    warningNofity("Error Occured Please Contact EDP")
                 }
             }
             getOt();

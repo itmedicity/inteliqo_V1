@@ -41,18 +41,20 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
 
     //Get Data
     useEffect(() => {
-        const getBoard = async () => {
-            const result = await axioslogin.get(`overtimerequest/${em_id}`)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setData(data);
-            } else if (success === 0) {
-                infoNofity("No Over Time requested to this employee")
-            } else {
-                warningNofity(" Error occured contact EDP")
+        if (em_id !== '') {
+            const getBoard = async () => {
+                const result = await axioslogin.get(`overtimerequest/${em_id}`)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setData(data);
+                } else if (success === 0) {
+                    infoNofity("No Over Time requested to this employee")
+                } else {
+                    warningNofity(" Error occured contact EDP")
+                }
             }
+            getBoard();
         }
-        getBoard();
     }, [update, em_id, count]);
 
     const getData = async (tabledata) => {

@@ -5,6 +5,8 @@ const { FETCH_DEPARTSEC_LIST } = Actiontypes;
 
 export const setdeptSection = () => async (dispatch) => {
     const result = await axioslogin.get('/section/select/all');
-    const { data } = result.data;
-    dispatch({ type: FETCH_DEPARTSEC_LIST, payload: data })
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_DEPARTSEC_LIST, payload: data })
+    }
 }
