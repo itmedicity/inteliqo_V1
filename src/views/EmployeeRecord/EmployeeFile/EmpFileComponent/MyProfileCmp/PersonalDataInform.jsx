@@ -1,19 +1,23 @@
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography } from '@mui/material'
-import React, { Fragment, memo } from 'react'
-import SchoolIcon from '@mui/icons-material/School';
+import React, { Fragment, memo, useEffect, useState } from 'react'
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import { useSelector } from 'react-redux';
+import { format } from 'date-fns';
 
-const AcademicQualCmp = ({ data }) => {
-    const { edu_desc, cour_desc, spec_desc, unver_name } = data;
+const PersonalDataInform = ({ name, sub_name, data }) => {
+
+    const datecurrent = format(new Date(), 'MMMM yyyy')
+
     return (
         <Fragment>
             <ListItem alignItems="flex-start" className='py-1' >
                 <ListItemAvatar>
                     <Avatar sx={{ bgcolor: '#7986cb' }} >
-                        <SchoolIcon sx={{ color: 'white' }} />
+                        <WorkOutlineIcon sx={{ color: 'white' }} />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={edu_desc}
+                    primary={name}
                     primaryTypographyProps={{ variant: "subtitle1" }}
                     secondary={
                         <Fragment>
@@ -23,17 +27,16 @@ const AcademicQualCmp = ({ data }) => {
                                 variant="body1"
                                 color="text.primary"
                             >
-                                {`${cour_desc === 'NILL' ? '' : cour_desc} ${spec_desc === 'NILL' ? '' : spec_desc}`}
-                            </Typography>
+                                {sub_name}
 
-                            <Typography variant="caption" >
-                                {unver_name === 'NILL' ? '' : ` — ${unver_name}`}
                             </Typography>
+                            {data}
+
                         </Fragment>
                     }
-                // secondaryTypographyProps={{ variant: "body1" }}
+
                 />
-                {/* <ListSubheader>2019</ListSubheader> */}
+
                 <ListItemText sx={{ textAlignLast: "right" }}
                     secondary={
                         <Fragment>
@@ -43,7 +46,7 @@ const AcademicQualCmp = ({ data }) => {
                                 variant="subtitle1"
                                 color="text.primary"
                             >
-
+                                {datecurrent}
                             </Typography>
                         </Fragment>
                     }
@@ -54,4 +57,4 @@ const AcademicQualCmp = ({ data }) => {
     )
 }
 
-export default memo(AcademicQualCmp)
+export default PersonalDataInform

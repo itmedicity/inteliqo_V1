@@ -23,6 +23,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
         return state.getDepartmentShiftData.deptShiftData;
 
     })
+    console.log(departmentShiftt)
     useEffect(() => {
         if (Object.keys(departmentShiftt).length > 0) {
             setDepartmentShiftSelect(departmentShiftt)
@@ -47,5 +48,5 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
 }
 
 
-export default memo(DepartmentShiftSelect) 
+export default memo(DepartmentShiftSelect)
 

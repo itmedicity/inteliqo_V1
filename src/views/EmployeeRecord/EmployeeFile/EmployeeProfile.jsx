@@ -2,7 +2,6 @@ import {
     CardHeader, Divider
 } from '@mui/material';
 import React, { Fragment } from 'react';
-
 import { useParams } from 'react-router';
 import EmployeeProfileCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCard';
 import EmployeeProfileCardMenuList from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileCardMenuList';

@@ -78,10 +78,12 @@ const LeaveCarryForwad = () => {
         e.preventDefault()
         const result = await axioslogin.post('/CarryLeave', postdata)
         const { success, message } = result.data
-        if (success === 2) {
+        if (success === 1) {
             succesNofity(message);
             setedit(reset)
-        } else {
+        } else if (success === 2) {
+            succesNofity(message);
+            setedit(reset)
         }
     }
     const redirect = () => {

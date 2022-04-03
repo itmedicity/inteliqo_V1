@@ -14,7 +14,9 @@ import { useDispatch } from 'react-redux'
 import {
     setProfileData,
     setPersonalData,
-    setAccademicData
+    setAccademicData,
+    getannualleave,
+    notify
 } from '../../../redux/actions/Profile.action'
 
 const ApplicationForm = () => {
@@ -30,6 +32,8 @@ const ApplicationForm = () => {
     useEffect(() => {
         dispath(setPersonalData(no))
         dispath(setAccademicData(id))
+        dispath(getannualleave(no))
+        dispath(notify(no))
     }, [no])
 
     return (

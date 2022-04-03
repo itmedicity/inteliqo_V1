@@ -24,9 +24,8 @@ const EmployeeExperience = () => {
     const [count, setCount] = useState(0)
     //designation select list
     const { selectDesignation,
-        updateDesignation, employeedetails } = useContext(PayrolMasterContext)
+        updateDesignation } = useContext(PayrolMasterContext)
 
-    const { em_id } = employeedetails
     const reset = () => {
         updateDesignation(0)
     }
@@ -88,7 +87,7 @@ const EmployeeExperience = () => {
         em_to: moment(workenddate).format('YYYY-MM-DD'),
         em_total_year: total_year,
         em_salary: gross_salary,
-        create_user: em_id
+        create_user: no
     }
     //saving formdata
     const submitFormData = async (e) => {

@@ -1,6 +1,6 @@
 import { axioslogin } from "src/views/Axios/Axios";
 import { Actiontypes } from "../constants/action.type";
-const { FETCH_DEPT_SHIFT_DATA } = Actiontypes
+const { FETCH_DEPT_SHIFT_DATA, FETCH_EMP_DETAILS } = Actiontypes
 
 export const getdeptShift = (postData) => async (dispatch) => {
     const result = await axioslogin.post('/departmentshift/shift', postData)
@@ -10,7 +10,12 @@ export const getdeptShift = (postData) => async (dispatch) => {
         const obj = JSON.parse(shft_code)
         dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: obj })
     }
-    if (success === 0) {
-        dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: 0 })
+}
+//getting employee details for duty plan
+export const getempdetails = (postDataa) => async (dispatch) => {
+    const result = await axioslogin.post("/plan/create", postDataa);
+    const { success, data } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_EMP_DETAILS, payload: data })
     }
 }

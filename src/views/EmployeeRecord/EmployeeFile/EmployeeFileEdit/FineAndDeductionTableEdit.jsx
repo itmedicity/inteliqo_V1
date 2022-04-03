@@ -27,7 +27,7 @@ const FineAndDeductionTableEdit = () => {
     //initializing
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
-        fine_amount: '',
+        fine_amount: 0,
         fine_remark: '',
         fine_status: ''
     })
@@ -105,13 +105,14 @@ const FineAndDeductionTableEdit = () => {
     }
     const resetForm = {
         fine_descp: '',
-        fine_amount: '',
+        fine_amount: 0,
         fine_remark: '',
         fine_status: ''
     }
     const reset = () => {
         updateFine(0);
         setPeriod(0);
+        setStatus(0);
         setMonthstart(format(new Date(), "yyyy-MM-dd"));
         setMonthend(format(new Date(), "yyyy-MM-dd"));
     }

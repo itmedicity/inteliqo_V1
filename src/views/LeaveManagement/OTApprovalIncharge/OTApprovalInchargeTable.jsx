@@ -3,7 +3,6 @@ import React, { Fragment, memo, useState, useEffect } from 'react'
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ModelInchargeApproval from './ModelInchargeApproval';
 import { HiTrash } from "react-icons/hi";
 import OTCancelModel from '../OTComponent/OTCancelModel';
@@ -54,24 +53,11 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                     setTableData(data);
                 } else {
                     setTableData(data);
-                    warningNofity("Error Occured Please Contact EDP")
                 }
             }
             getOt();
         }
     }, [DeptSect, count]);
-
-    // const inchargecancel = async (getdata) => {
-    //     const { ot_slno } = getdata
-    //     // const result = await axioslogin.delete(`/otcancel/delete/${ot_slno}`)
-    //     // const { message, success } = result.data;
-    //     // if (success === 1) {
-    //     //     setCount(count - 1)
-    //     //     succesNofity(message);
-    //     // } else {
-    //     //     warningNofity(" Error occured contact EDP")
-    //     // }
-    // }
 
     const [open, setOpen] = useState(false);
     const [cancelopen, setcancelOpen] = useState(false);
