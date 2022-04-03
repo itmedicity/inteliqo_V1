@@ -13,11 +13,11 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DutyPlanningMainCard from './DutyPlanningMainCard'
 import { useHistory } from 'react-router'
-import { useDispatch } from 'react-redux'
-import { getdeptShift } from 'src/redux/actions/dutyplan.action'
+import { useDispatch, useSelector } from 'react-redux'
+import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
 const moment = extendMoment(Moment);
 
 const DutyPlanning = () => {
@@ -31,8 +31,9 @@ const DutyPlanning = () => {
   const [dateFormat, setdateFormat] = useState([])
   //states for rendering the component
   const [duty, setDuty] = useState(0)
+  const [duty1, setDuty1] = useState(0)
   const [count, setCount] = useState(0)
-  const [disable, setdisable] = useState(true)
+  const [disable, setdisable] = useState(false)
   //use state for initial start date and end date
   const [formData, setFormData] = useState({
     startDate: format(new Date(), "yyyy-MM-dd"),
@@ -48,7 +49,6 @@ const DutyPlanning = () => {
   //date validations
   const maxdate = addDays(new Date(startDate), 30)
   const maxdatee = moment(maxdate).format('YYYY-MM-DD')
-
   //use effect getting the employee details of the selected department and department section
   useEffect(() => {
     //post data for getting employee details
@@ -58,113 +58,124 @@ const DutyPlanning = () => {
           em_department: selectedDept,
           em_dept_section: selectDeptSection
         }
-        const result = await axioslogin.post("/plan/create", postData);
-        const { success, data } = result.data
-        if (success === 1) {
-          setempData(data)
-          setdisable(false)
-        }
-        else {
-          // warningNofity("There is No employees In This Department And Department Section")
-          setDuty(0)
-          setdisable(true)
-        }
-        const results = await axioslogin.post("/departmentshift/checkshift", postData);
-        const { successs } = results.data
-        if (successs === 1) {
-          setdisable(false)
-        }
-        else {
-          setdisable(true)
-          warningNofity("Please Map Shift For This Department Section")
-        }
+        dispatch(getempdetails(postData))
       }
     }
     getempdetl()
   }, [selectedDept, selectDeptSection])
 
-  //insert duty planning
-  const insertDutyPlanning = async (e) => {
-    setCount(count + 1)
-    //finding the dates between start date and end date
-    const rage = eachDayOfInterval(
-      { start: new Date(startDate), end: new Date(endDate) }
-    )
-    //finding the dates between start date and end date
-    const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D-dd'), sunday: moment(val).format('d') } })
-    setdateFormat(newDateFormat)
-    const newDateFormat2 = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } })
-    //checking wheher duty plan is already setted in thse dates
-    const empidata = empData && empData.map((val) => {
-      return val.em_id
-    })
-    const postDate = {
-      start_date: moment(startDate).format('YYYY-MM-DD'),
-      end_date: moment(endDate).format('YYYY-MM-DD'),
-      empData: empidata
-    }
-    const result = await axioslogin.post("/plan/check", postDate)
-    const { success, data } = result.data
-    if (success === 1) {
-      const dutyday = empData.map((val) => {
-        const dutydate = newDateFormat2.map((value) => {
-          return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
-        })
-        return dutydate
-      })
-      const dutyplanarray = dutyday.flat(Infinity)
-      //filtering the data from the data base and inserting dates and finding the new array to insert
-      const newdutyplanarray = dutyplanarray.filter((val) => {
-        return data.filter((data) => {
-          return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
-        }).length === 0
-      })
-      //inserting duty plan based on date of join
-      const insertnewdutyplanarray = newdutyplanarray.map((val) => {
-        return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
-      })
-      //if new array lenth is zero no need to inset
-      if (newdutyplanarray.length === 0) {
-        setDuty(1)
-      }
+  //getting employee details
+  const empdetl = useSelector((state) => {
+    return state.getEmployeedetailsDutyplan.EmpdetlInitialdata
 
-      //if new array length not eqal to zero inserting the new array
-      else {
-        //inserting the duty plan
-        const results = await axioslogin.post("/plan/insert", insertnewdutyplanarray)
-        const { success1 } = results.data
-        if (success1 === 1) {
-          setDuty(1)
-        }
-        else {
-          errorNofity("Error Occured!!Please Contact EDP")
-        }
+  })
+
+  //insert duty planning
+  const insertDutyPlanning = async () => {
+    setCount(count + 1)
+    if (Object.keys(empdetl).length > 0) {
+      setempData(empdetl)
+      //checking whether shift is assigned for this department and department section
+      const postData = {
+        em_department: selectedDept,
+        em_dept_section: selectDeptSection
       }
-    }
-    //if the no dates are inserted betwen the start date and end date inserting the dates
-    else {
-      const dutyday = empData.map((val) => {
-        const dutydate = newDateFormat2.map((value) => {
-          return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
+      const results = await axioslogin.post("/departmentshift/checkshift", postData);
+      const { successs } = results.data
+      if (successs === 1) {
+        //finding the dates between start date and end date
+        const rage = eachDayOfInterval(
+          { start: new Date(startDate), end: new Date(endDate) }
+        )
+        //finding the dates between start date and end date
+        const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D-dd'), sunday: moment(val).format('d') } })
+        setdateFormat(newDateFormat)
+        const newDateFormat2 = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } })
+        //checking wheher duty plan is already setted in thse dates
+        const empidata = empdetl && empdetl.map((val) => {
+          return val.em_id
         })
-        return dutydate
-      })
-      const dutyplanarray = dutyday.flat(Infinity)
-      //inserting duty plan based on date of join
-      const insertdutyplanarray = dutyplanarray.map((val) => {
-        return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
-      })
-      //inserting the duty plan
-      const results = await axioslogin.post("/plan/insert", insertdutyplanarray)
-      const { success1 } = results.data
-      if (success1 === 1) {
-        setDuty(1)
+        const postDate = {
+          start_date: moment(startDate).format('YYYY-MM-DD'),
+          end_date: moment(endDate).format('YYYY-MM-DD'),
+          empData: empidata
+        }
+        const result = await axioslogin.post("/plan/check", postDate)
+        const { success, data } = result.data
+        if (success === 1) {
+          const dutyday = empdetl.map((val) => {
+            const dutydate = newDateFormat2.map((value) => {
+              return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
+            })
+            return dutydate
+          })
+          const dutyplanarray = dutyday.flat(Infinity)
+          //filtering the data from the data base and inserting dates and finding the new array to insert
+          const newdutyplanarray = dutyplanarray.filter((val) => {
+            return data.filter((data) => {
+              return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
+            }).length === 0
+          })
+
+          //inserting duty plan based on date of join
+          const insertnewdutyplanarray = newdutyplanarray.map((val) => {
+            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+          })
+          //if new array lenth is zero no need to inset
+          if (newdutyplanarray.length === 0) {
+            setDuty(1)
+          }
+          //if new array length not eqal to zero inserting the new array
+          else {
+            //inserting the duty plan
+            const results = await axioslogin.post("/plan/insert", insertnewdutyplanarray)
+            const { success1 } = results.data
+            if (success1 === 1) {
+              setDuty(1)
+              setDuty1(1)
+            }
+            else {
+              errorNofity("Error Occured!!Please Contact EDP")
+            }
+          }
+        }
+        //if the no dates are inserted betwen the start date and end date inserting the dates
+        else {
+          const dutyday = empdetl.map((val) => {
+            const dutydate = newDateFormat2.map((value) => {
+              return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
+            })
+            return dutydate
+          })
+          const dutyplanarray = dutyday.flat(Infinity)
+          //inserting duty plan based on date of join
+          const insertdutyplanarray = dutyplanarray.map((val) => {
+            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+          })
+          //inserting the duty plan
+          const results = await axioslogin.post("/plan/insert", insertdutyplanarray)
+          const { success1 } = results.data
+          if (success1 === 1) {
+            setDuty(1)
+            setDuty1(duty1 + 1)
+          }
+          else {
+            errorNofity("Error Occured!!Please Contact EDP")
+          }
+        }
+
       }
       else {
-        errorNofity("Error Occured!!Please Contact EDP")
+        setDuty(0)
+        infoNofity("Please Map Shift For This Department Section")
       }
     }
-    //getting shift assigned to the selected department and department section
+    else {
+      setDuty(0)
+      warningNofity("There Is No Employees Under This Department Section")
+    }
+
+    // getting shift assigned to the selected department and department section
     if (selectedDept !== 0 && selectDeptSection !== 0) {
       const postDataaa = {
         dept_id: selectedDept,
@@ -172,8 +183,8 @@ const DutyPlanning = () => {
       }
       dispatch(getdeptShift(postDataaa))
     }
-  }
 
+  }
   //redirecting to profile page
   const redirecting = () => {
     history.push('/Home')
@@ -232,6 +243,7 @@ const DutyPlanning = () => {
               startdate={startDate}
               enddate={endDate}
               duty={duty}
+              duty1={duty1}
               count={count}
               selectedDept={selectedDept}
               selectDeptSection={selectDeptSection}

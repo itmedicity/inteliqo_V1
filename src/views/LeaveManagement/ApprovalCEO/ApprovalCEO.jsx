@@ -4,7 +4,6 @@ import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
 import TextInput from 'src/views/Component/TextInput';
@@ -24,6 +23,13 @@ const ApprovalCEO = () => {
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
     const [compensetory, setcompensetory] = useState([])
+    // for get leave requesst details
+    const [leavereqmast, setmastleavereqst] = useState([])
+    // get nopunch request
+    const [nopunchmast, setmastnopunch] = useState([])
+    // get halfdayrequest
+    const [halfdaymast, setmasthalfday] = useState([])
+    const [compensetorymast, setmastcompensetory] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
         COFF: false,
         HDLR: false,
@@ -34,18 +40,23 @@ const ApprovalCEO = () => {
     const { COFF, HDLR, LR, NOP } = levtpevaluearry
     useEffect(() => {
         ceoLeavereq().then((val) => {
+            setmastleavereqst(val)
             setleavereqst(val)
         })
         getleaverequest().then((val) => {
             setleaverequesttype(val)
+
         })
         getCEOnopunchrequst().then((val) => {
+            setmastnopunch(val)
             setnopunch(val)
         })
         CEohalfdayrequest().then((val) => {
+            setmasthalfday(val)
             sethalfday(val)
         })
         compensatoryCeo().then((val) => {
+            setmastcompensetory(val)
             setcompensetory(val)
         })
 
@@ -53,13 +64,37 @@ const ApprovalCEO = () => {
             updateleaverequest(0),
             updateDeptSection(0)
         )
-    }, [updateleaverequest, updateDeptSection]);
+    }, []);
+    //use Effect for filtering leave request against  selected department section
+    useEffect(() => {
+        if (getDeptSection !== 0) {
+            // depsection change filter based on dept section leave request
+            const filterleavereq = leavereqmast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setleavereqst(filterleavereq)
+            // depsection change filter based on dept section no punch
+            const filternopunch = nopunchmast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setnopunch(filternopunch)
 
+            // depsection change filter based on dept section halfday
+            const filterhalfday = halfdaymast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            sethalfday(filterhalfday)
+
+            // depsection change filter based on dept section setcompensetory
+            const filtercompen = compensetorymast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setcompensetory(filtercompen)
+        }
+    }, [getDeptSection])
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-
-
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
@@ -79,7 +114,6 @@ const ApprovalCEO = () => {
             <PageLayoutSave
                 heading="Leave Approval CEO"
                 redirect={RedirectToProfilePage}
-            //submit={submitFine}
             >
                 <div className="row g-1">
                     <div className="card">
@@ -89,21 +123,6 @@ const ApprovalCEO = () => {
                                     <div className="col-md-6 col-sm-12 col-xs-12">
                                         <div className="row g-1">
                                             <div className="d-flex justify-content-around">
-                                                <div className="col-md-2">
-                                                    {/* 
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                name="all"
-                                                                color="secondary"
-                                                                // value={Leave_Carry_Forwad}
-                                                                // checked={Leave_Carry_Forwad}
-                                                                checked={true}
-                                                            />
-                                                        }
-                                                        label="All"
-                                                    /> */}
-                                                </div>
                                                 {
                                                     leaverequesttype && leaverequesttype.map((val) => {
                                                         return <div className="col-md-2" key={val.lrequest_slno} >
@@ -134,37 +153,11 @@ const ApprovalCEO = () => {
                                     </div>
                                     <div className="col-md-6 col-sm-12 col-xs-12">
                                         <div className="row">
-                                            <div className="d-flex justify-content-around">
-                                                <div className="col-md-4">
+                                            <div className="d-flex justify-content-start">
+                                                <div className="col-md-5 pt-1">
                                                     <DeptSectionMastSelect
                                                         style={SELECT_CMP_STYLE}
                                                     />
-                                                </div>
-                                                <div className="col-md-2">
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                name="all"
-                                                                color="secondary"
-                                                                checked={true}
-                                                            />
-                                                        }
-                                                        label="All"
-                                                    />
-                                                </div>
-                                                <div className="col-md-3 pl-0">
-                                                    <TextInput
-                                                        type="text"
-                                                        classname="form-control form-control-sm"
-                                                        Placeholder="Employee No"
-                                                    />
-                                                </div>
-                                                <div className="col-md-1 pl-0">
-                                                    <Tooltip title="Search">
-                                                        <IconButton >
-                                                            < ImSearch size={22} />
-                                                        </IconButton>
-                                                    </Tooltip>
                                                 </div>
                                             </div>
                                         </div>
@@ -178,10 +171,11 @@ const ApprovalCEO = () => {
                     <div className="card ">
                         <div className="card-body">
                             <div className="col-md-12">
-                                <ApprovalInchargeTable leavereq={levtpevalue == 1 ? leavereq :
-                                    levtpevalue == 2 ? halfday :
-                                        levtpevalue == 4 ? compensetory :
-                                            levtpevalue == 3 ? nopunch : []
+                                <ApprovalInchargeTable leavereq={
+                                    levtpevalue == 1 ? leavereq :
+                                        levtpevalue == 2 ? halfday :
+                                            levtpevalue == 4 ? compensetory :
+                                                levtpevalue == 3 ? nopunch : []
                                 } levtpevalue={levtpevalue} authority={3}
                                     setleavereq={levtpevalue == 1 ? setleavereqst :
                                         levtpevalue == 2 ? sethalfday :

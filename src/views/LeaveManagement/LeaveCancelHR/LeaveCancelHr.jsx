@@ -2,17 +2,15 @@ import React, { Fragment, useContext, useEffect, useState, } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
-import TextInput from 'src/views/Component/TextInput';
-import { ImSearch } from "react-icons/im";
 import { HrLeave, getleaverequest, Hrhalfdayrequest, getHRnopunchrequst, compensatoryHr } from 'src/views/CommonCode/Commonfunc';
 const LeaveCancelHr = () => {
     const history = useHistory()
-    const { getDeptSection, updateleaverequest, updateDeptSection } = useContext(PayrolMasterContext)
+    const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
     // to get the ype leave request
@@ -27,17 +25,22 @@ const LeaveCancelHr = () => {
     const { COFF, HDLR, LR, NOP } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
+    const [leavereqmast, setmastleavereqst] = useState([])
     // get nopunch request
     const [nopunch, setnopunch] = useState([])
+    const [nopunchmast, setmastnopunch] = useState([])
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
+    const [halfdaymast, setmasthalfday] = useState([])
     const [compensetory, setcompensetory] = useState([])
+    const [compensetorymast, setmastcompensetory] = useState([])
     useEffect(() => {
         HrLeave().then((val) => {
             const leavecancel = val.filter((value) => {
                 return (value.hr_apprv === 1)
             })
             setleavereqst(leavecancel)
+            setmastleavereqst(leavecancel)
         })
         getleaverequest().then((val) => {
             setleaverequesttype(val)
@@ -47,24 +50,52 @@ const LeaveCancelHr = () => {
                 return (value.hr_apprv === 1)
             })
             setnopunch(leavecancel)
+            setmastnopunch(leavecancel)
         })
         Hrhalfdayrequest().then((val) => {
             const leavecancel = val.filter((value) => {
                 return (value.hr_apprv === 1)
             })
             sethalfday(leavecancel)
+            setmasthalfday(leavecancel)
         })
         compensatoryHr().then((val) => {
             const leavecancel = val.filter((value) => {
                 return (value.hr_apprv === 1)
             })
             setcompensetory(leavecancel)
+            setmastcompensetory(leavecancel)
         })
         return (
-            updateleaverequest(0),
-            updateDeptSection(0)
+            updateleaverequest(0)
         )
-    }, [updateleaverequest, updateDeptSection]);
+    }, [updateleaverequest]);
+    //use effect for flitering leave requests against department section
+    useEffect(() => {
+        if (getDeptSection !== 0) {
+            const leavecancel = leavereqmast.filter((value) => {
+                return ((value.hr_apprv === 1) && (value.dept_section === getDeptSection))
+            });
+            setleavereqst(leavecancel)
+            getleaverequest().then((val) => {
+                setleaverequesttype(val)
+            });
+            const leavecancelnopunch = nopunchmast.filter((value) => {
+                return ((value.hr_apprv === 1) && (value.dept_section === getDeptSection))
+            })
+            setnopunch(leavecancelnopunch)
+
+            const leavecancelhalfday = halfdaymast.filter((value) => {
+                return ((value.hr_apprv === 1) && (value.dept_section === getDeptSection))
+            })
+            sethalfday(leavecancelhalfday)
+
+            const leavecancelcoff = compensetorymast.filter((value) => {
+                return ((value.hr_apprv === 1) && (value.dept_section === getDeptSection))
+            })
+            setcompensetory(leavecancelcoff)
+        }
+    }, [getDeptSection]);
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
@@ -84,7 +115,6 @@ const LeaveCancelHr = () => {
             <PageLayoutSave
                 heading="Leave Cancel HR"
                 redirect={RedirectToProfilePage}
-            // submit={submitFine}
             >
                 <div className="row g-2">
                     <div className="col-md-12 col-sm-12 col-xs-12">
@@ -122,48 +152,10 @@ const LeaveCancelHr = () => {
                                         </div>
                                     </div>
                                     <div className="col-md-7 col-sm-12 col-xs-12">
-                                        <div className="d-flex justify-content-around">
-                                            <div className="col-md-4  col-sm-12">
-                                                <DeptSectionMastSelect
-                                                    style={SELECT_CMP_STYLE}
-                                                />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            name="all"
-                                                            color="secondary"
-                                                            // value={Leave_Carry_Forwad}
-                                                            // checked={Leave_Carry_Forwad}
-                                                            checked={true}
-                                                        />
-                                                    }
-
-                                                    label="All"
-                                                />
-                                            </div>
-                                            <div className="col-md-4 col-sm-12">
-                                                <TextInput
-                                                    type="text"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Employee No"
-                                                // value={fine_descp}
-                                                // name="fine_descp"
-                                                // changeTextValue={(e) => }
-                                                />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <Tooltip title="Search">
-                                                    <IconButton >
-                                                        < ImSearch size={22} />
-                                                    </IconButton>
-
-                                                    {/* // disabled={props.disable}
-                                                // clickable={true} */}
-                                                </Tooltip>
-
-                                            </div>
+                                        <div className="col-md-4  col-sm-12">
+                                            <DeptSectionMastSelect
+                                                style={SELECT_CMP_STYLE}
+                                            />
                                         </div>
 
                                     </div>

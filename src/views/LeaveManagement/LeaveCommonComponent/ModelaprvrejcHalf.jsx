@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,9 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import TextInput from 'src/views/Component/TextInput';
-import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,7 +15,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
-import { Checkbox, Typography } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
 import { errorNofity, halfdayrequest, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -25,7 +23,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id }) => {
-    // const { hf_reason } = hafdaydata[0]
+    const [halfreason, setHalfreason] = useState('')
+    useEffect(() => {
+        if (hafdaydata.length === 1) {
+            const { hf_reason } = hafdaydata[0]
+            setHalfreason(hf_reason)
+        }
+    }, [hafdaydata])
     const [reason, setreason] = useState('')
     const [status, setstatus] = useState({
         apprv: false,
@@ -208,8 +212,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
                                             Placeholder=" Reason For Leave"
                                             fullWidth
                                             disabled="Disabled"
-                                        // value={hf_reason}
-
+                                            value={halfreason}
                                         />
                                     </div>
                                 </div>

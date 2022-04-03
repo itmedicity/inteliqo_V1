@@ -1,30 +1,21 @@
-import React, { Fragment, useContext, useEffect, useState, } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { useHistory } from 'react-router'
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 import ApprovalInchargeTable from './ApprovalInchargeTable'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
-import TextInput from 'src/views/Component/TextInput';
-import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 import ResignationApprovalSection from '../../Resignation/ResignationApproval/ResignationApprovalSection'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { getlevedata } from '../../../redux/actions/LeaveReqst.action'
-
 const ApprovalIncharge = () => {
     const history = useHistory()
     const dispatch = useDispatch()
-    const { getDeptSection, updateleaverequest } = useContext(PayrolMasterContext)
     // type of leave request 
     const [leaverequesttype, setleaverequesttype] = useState([]);
     const [DeptSect, updateDeptSect] = useState([])
-    const [depsect, setDeptsect] = useState(0)
-
     // to get the ype leave request
     const [levtpevalue, setleavetypevalue] = useState([])
     const [levtpevaluearry, setleavetypevaluearry] = useState({
@@ -36,42 +27,38 @@ const ApprovalIncharge = () => {
     const { COFF, HDLR, LR, NOP } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
+    const [leavereqmast, setmastleavereqst] = useState([])
     // get nopunch request
     const [nopunch, setnopunch] = useState([])
+    const [nopunchmast, setmastnopunch] = useState([])
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
+    const [halfdaymast, setmasthalfday] = useState([])
+    const [compensetorymast, setmastcompensetory] = useState([])
     const [compensetory, setcompensetory] = useState([])
 
-
     const handleChange = async (e) => {
-        setDeptsect(e)
         // depsection change filter based on dept section leave request
-        const filterleavereq = leavereq.filter((val) => {
-            return (val.dept_section === depsect)
+        const filterleavereq = leavereqmast.filter((val) => {
+            return (val.dept_section === e)
         })
         setleavereqst(filterleavereq)
         // depsection change filter based on dept section no punch
-        const filternopunch = nopunch.filter((val) => {
-            return (val.dept_section === depsect)
+        const filternopunch = nopunchmast.filter((val) => {
+            return (val.dept_section === e)
         })
         setnopunch(filternopunch)
-
         // depsection change filter based on dept section halfday
-        const filterhalfday = halfday.filter((val) => {
-            return (val.dept_section === depsect)
+        const filterhalfday = halfdaymast.filter((val) => {
+            return (val.dept_section === e)
         })
         sethalfday(filterhalfday)
-
         // depsection change filter based on dept section setcompensetory
-        const filtercompen = compensetory.filter((val) => {
-            return (val.dept_section === depsect)
+        const filtercompen = compensetorymast.filter((val) => {
+            return (val.dept_section === e)
         })
         setcompensetory(filtercompen)
-
     }
-    // useSelector((state) => {
-    //     // console.log(state.leavedata)
-    // })
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
         if (arraydepsect.length !== 0) {
@@ -79,19 +66,22 @@ const ApprovalIncharge = () => {
 
             getleaverequestget(arraydepsect).then((val) => {
                 setleavereqst(val)
+                setmastleavereqst(val)
             })
             getleaverequest(arraydepsect).then((val) => {
                 setleaverequesttype(val)
             })
             getnopunchrequst(arraydepsect).then((val) => {
-
+                setmastnopunch(val)
                 setnopunch(val)
             })
             halfdayrequest(arraydepsect).then((val) => {
                 sethalfday(val)
+                setmasthalfday(val)
             })
             compensatory(arraydepsect).then((val) => {
                 setcompensetory(val)
+                setmastcompensetory(val)
             })
         }
     }, [DeptSect]);
@@ -114,7 +104,6 @@ const ApprovalIncharge = () => {
             <PageLayoutCloseOnly
                 heading="Leave Approval Incharge"
                 redirect={RedirectToProfilePage}
-            //submit={submitFine}
             >
                 <div className="row g-2">
                     <div className="col-md-12 col-sm-12 col-xs-12">
@@ -123,7 +112,6 @@ const ApprovalIncharge = () => {
                                 <div className="row">
                                     <div className="col-md-5 col-sm-12 col-xs-12">
                                         <div className="d-flex justify-content-around">
-
                                             {
                                                 leaverequesttype && leaverequesttype.map((val) => {
                                                     return <div className="pt-0" key={val.lrequest_slno} >
@@ -153,52 +141,10 @@ const ApprovalIncharge = () => {
                                         <AuthorizationDetails />
                                     </div>
                                     <div className="col-md-7 col-sm-12 col-xs-12">
-                                        <div className="d-flex justify-content-around">
-                                            <div className="col-md-4  col-sm-12">
-                                                {/* <DeptSectionMastSelect
-                                                    style={SELECT_CMP_STYLE}
-                                                /> */}
-                                                <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect}
-                                                    updateDeptSect={updateDeptSect} onChange={handleChange} />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            name="all"
-                                                            color="secondary"
-                                                            // value={Leave_Carry_Forwad}
-                                                            // checked={Leave_Carry_Forwad}
-                                                            checked={true}
-                                                        />
-                                                    }
-
-                                                    label="All"
-                                                />
-                                            </div>
-                                            <div className="col-md-4 col-sm-12">
-                                                <TextInput
-                                                    type="text"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Employee No"
-                                                // value={fine_descp}
-                                                // name="fine_descp"
-                                                // changeTextValue={(e) => }
-                                                />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <Tooltip title="Search">
-                                                    <IconButton >
-                                                        < ImSearch size={22} />
-                                                    </IconButton>
-
-                                                    {/* // disabled={props.disable}
-                                                // clickable={true} */}
-                                                </Tooltip>
-
-                                            </div>
+                                        <div className="col-md-4  col-sm-12 pt-1">
+                                            <ResignationApprovalSection style={SELECT_CMP_STYLE} DeptSect={DeptSect}
+                                                updateDeptSect={updateDeptSect} onChange={handleChange} />
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

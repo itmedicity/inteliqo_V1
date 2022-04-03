@@ -7,7 +7,7 @@ import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
 import DepartmentShiftSelect from 'src/views/Attendance/DutyPlanning/DepartmentShiftSelect';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
-const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) => {
+const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection, duty1 }) => {
     const { emp_id, start, end } = data;
     const [dutyplan, setDutyplan] = useState();
     const [change, setChange] = useState(0)
@@ -16,9 +16,11 @@ const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) =>
         start_date: moment(start).format('YYYY-MM-DD HH:mm:ss'),
         end_date: moment(end).format('YYYY-MM-DD HH:mm:ss'),
     }
+
     // Get the Duty Plan Details from Database
     useEffect(() => {
         if (duty === 1) {
+
             const getDutyPlan = async () => {
                 const result = await axioslogin.post("/plan", postdata);
                 const { success, data } = result.data;
@@ -32,7 +34,7 @@ const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection }) =>
         else {
             errorNofity("Error Occured!!!Please Contact EDP")
         }
-    }, [duty, count])
+    }, [duty, count, duty1])
     // shift Array 
     const [empPlan, setEmpPlan] = useState([]);
     // Submit the Duty Plan to the Database 

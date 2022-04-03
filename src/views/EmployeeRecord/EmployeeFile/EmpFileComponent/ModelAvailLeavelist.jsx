@@ -29,7 +29,6 @@ const ModelAvailLeavelist = ({
     setnodatafixed, categorychge, nodatafixed
 
 }) => {
-    console.log(nodatafixed)
     const [processCount, setProcessCount] = useState(0)
     const { ecat_cl,
         ecat_lop, ecat_el, ecat_esi_allow,
