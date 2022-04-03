@@ -99,7 +99,6 @@ const YearlyLeaveCountMast = () => {
         const { success, message } = result.data
         if (success === 1) {
             succesNofity(message)
-            setformdata(defaultState)
         }
         else if (success === 7) {
             warningNofity(message)

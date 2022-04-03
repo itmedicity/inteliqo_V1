@@ -2,17 +2,12 @@ import React, { Fragment, useContext, useEffect, useState, } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { axioslogin } from 'src/views/Axios/Axios'
-import ApprovalHRTable from './ApprovalHRTable';
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
-import TextInput from 'src/views/Component/TextInput';
-import { ImSearch } from "react-icons/im";
 import { HrLeave, getleaverequest, Hrhalfdayrequest, getHRnopunchrequst, compensatoryHr } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
-
+import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 const ApprovalHR = () => {
     const history = useHistory()
     const { updateleaverequest, getDeptSection } = useContext(PayrolMasterContext)
@@ -31,43 +26,77 @@ const ApprovalHR = () => {
     const { COFF, HDLR, LR, NOP, specialapproval } = levtpevaluearry
     // for get leave requesst details
     const [leavereq, setleavereqst] = useState([])
+    const [leavereqmast, setmastleavereqst] = useState([])
     // get nopunch request
     const [nopunch, setnopunch] = useState([])
+    const [nopunchmast, setmastnopunch] = useState([])
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
+    const [halfdaymast, setmasthalfday] = useState([])
+    //compensatory off details
     const [compensetory, setcompensetory] = useState([])
-
+    const [compensetorymast, setmastcompensetory] = useState([])
+    //for hr special approval for long leave
     const [spclapproval, setspclapproval] = useState([])
+    //use effect for getting pending leave requests
     useEffect(() => {
         HrLeave().then((val) => {
             setleavereqst(val)
+            setmastleavereqst(val)
         })
         getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
         getHRnopunchrequst().then((val) => {
             setnopunch(val)
+            setmastnopunch(val)
         })
         Hrhalfdayrequest().then((val) => {
             sethalfday(val)
+            setmasthalfday(val)
         })
         compensatoryHr().then((val) => {
             setcompensetory(val)
+            setmastcompensetory(val)
         })
         HrLeave().then((val) => {
             setspclapproval(val)
         })
         return (
             updateleaverequest(0)
-
         )
-
     }, [updateleaverequest]);
+    //use effect for filtering pending leave request against department section
+    useEffect(() => {
+        if (getDeptSection !== 0) {
+            // depsection change filter based on dept section leave request
+            const filterleavereq = leavereqmast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setleavereqst(filterleavereq)
+            // depsection change filter based on dept section no punch
+            const filternopunch = nopunchmast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setnopunch(filternopunch)
 
+            // depsection change filter based on dept section halfday
+            const filterhalfday = halfdaymast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            sethalfday(filterhalfday)
+
+            // depsection change filter based on dept section setcompensetory
+            const filtercompen = compensetorymast.filter((val) => {
+                return (val.dept_section === getDeptSection)
+            })
+            setcompensetory(filtercompen)
+        }
+    }, [getDeptSection])
+    //return to home page
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-
     const leverequesttypechange = async (e) => {
         const ob1 = {
             COFF: false,
@@ -80,14 +109,12 @@ const ApprovalHR = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setleavetypevaluearry({ ...ob1, [e.target.name]: value })
         setleavetypevalue(e.target.value)
-
     }
     return (
         <Fragment>
             <PageLayoutSave
                 heading="Leave Approval HR"
                 redirect={RedirectToProfilePage}
-            //submit={submitFine}
             >
                 <div className="row g-2">
                     <div className="col-md-12 col-sm-12 col-xs-12">
@@ -140,50 +167,11 @@ const ApprovalHR = () => {
                                         />
                                     </div>
                                     <div className="col-md-6 col-sm-12 col-xs-12">
-                                        <div className="d-flex justify-content-around">
-                                            <div className="col-md-4  col-sm-12">
-                                                <DeptSectionMastSelect
-                                                    style={SELECT_CMP_STYLE}
-                                                />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            name="all"
-                                                            color="secondary"
-                                                            // value={Leave_Carry_Forwad}
-                                                            // checked={Leave_Carry_Forwad}
-                                                            checked={true}
-                                                        />
-                                                    }
-
-                                                    label="All"
-                                                />
-                                            </div>
-                                            <div className="col-md-3  col-sm-12">
-                                                <TextInput
-                                                    type="text"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Employee No"
-                                                // value={fine_descp}
-                                                // name="fine_descp"
-                                                // changeTextValue={(e) => }
-                                                />
-                                            </div>
-                                            <div className="col-md-1  col-sm-12">
-                                                <Tooltip title="Search">
-                                                    <IconButton >
-                                                        < ImSearch size={22} />
-                                                    </IconButton>
-
-                                                    {/* // disabled={props.disable}
-                                                // clickable={true} */}
-                                                </Tooltip>
-
-                                            </div>
+                                        <div className="col-md-5  col-sm-12 pt-1">
+                                            <DeptSectionMastSelect
+                                                style={SELECT_CMP_STYLE}
+                                            />
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

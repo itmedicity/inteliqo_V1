@@ -13,7 +13,6 @@ const LeaveCalender = ({ em_id }) => {
 
 
     useEffect(() => {
-
         const { leaveData, apiStatus } = state
         setData(leaveData)
         setstatus(apiStatus)

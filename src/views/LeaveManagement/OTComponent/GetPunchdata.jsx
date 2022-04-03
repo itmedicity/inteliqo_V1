@@ -10,11 +10,10 @@ import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import Compenofflpundata from '../LeaveRequest/Component/Compenofflpundata'
 
-const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatamain, setpunchoutdatamain }) => {
+const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatamain, model, setpunchoutdatamain, setmodel }) => {
     const [shiftdata, setShiftdata] = useState([]);
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_department, em_dept_section, em_id, em_no } = employeedetails
-    const [model, setmodel] = useState(0)
     const [punchview, setpunchview] = useState(0)
     const [punchtime, setmunctime] = useState([{
         desc: 'Select Punch',
@@ -31,20 +30,23 @@ const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatama
     }
 
     useEffect(() => {
-        const getdepartmentShift = async () => {
-            const result = await axioslogin.post('/departmentshift/shift', getshift)
-            const { success, data, message } = await result.data;
-            if (success === 1) {
-                const { shft_code } = data[0]
-                const obj = JSON.parse(shft_code)
-                setShiftdata(obj);
+        if ((em_department !== 0) && (em_dept_section !== 0)) {
+            const getdepartmentShift = async () => {
+                const result = await axioslogin.post('/departmentshift/shift', getshift)
+                const { success, data, message } = await result.data;
+                if (success === 1) {
+                    const { shft_code } = data[0]
+                    const obj = JSON.parse(shft_code)
+                    setShiftdata(obj);
+                }
+                if (success === 0) {
+                    setShiftdata(0)
+                }
             }
-            if (success === 0) {
-                setShiftdata(0)
-            }
+            getdepartmentShift()
         }
-        getdepartmentShift()
-    }, []);
+
+    }, [model]);
     const getShiftdetail = async () => {
         if (shiftid === 0) {
             warningNofity('Please Select Shift')

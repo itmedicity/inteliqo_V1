@@ -104,6 +104,7 @@ export const getleaverequestget = async (getDeptSection) => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.dept_section,
                 Status: val.hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.ceo_apprv_status,
                 ceo_req: val.ceo_req_status,
@@ -138,6 +139,7 @@ export const getnopunchrequst = async (getDeptSection) => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.np_hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.np_ceo_apprv_status,
                 ceo_req: val.np_ceo_req_status,
@@ -172,6 +174,7 @@ export const halfdayrequest = async (getDeptSection) => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.dept_section,
                 Status: val.hf_incapprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.hf_ceo_apprv_status,
                 ceo_req: val.hf_ceo_req_status,
@@ -204,6 +207,7 @@ export const compensatory = async (getDeptSection) => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.cf_incapprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.cf_ceo_apprv_status,
                 ceo_req: val.cf_ceo_req_status,
@@ -233,6 +237,7 @@ export const ceoLeavereq = async () => {
                 SlNo: val.leave_slno,
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
+                dept_section: val.dept_section,
                 Department_section: val.dept_name,
                 Status: val.ceo_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.ceo_apprv_status,
@@ -250,7 +255,6 @@ export const ceoLeavereq = async () => {
         return ceoLeave
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -266,6 +270,7 @@ export const HrLeave = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.dept_section,
                 Status: val.hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.ceo_apprv_status,
                 ceo_req: val.ceo_req_status,
@@ -299,6 +304,7 @@ export const CEohalfdayrequest = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.dept_section,
                 Status: val.hf_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.hf_ceo_apprv_status,
                 ceo_req: val.hf_ceo_req_status,
@@ -329,6 +335,7 @@ export const Hrhalfdayrequest = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.dept_section,
                 Status: val.hf_hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.hf_ceo_apprv_status,
                 ceo_req: val.hf_ceo_req_status,
@@ -360,6 +367,7 @@ export const getCEOnopunchrequst = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.np_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.np_ceo_apprv_status,
                 ceo_req: val.np_ceo_req_status,
@@ -392,6 +400,7 @@ export const getHRnopunchrequst = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.np_hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.np_ceo_apprv_status,
                 ceo_req: val.np_ceo_req_status,
@@ -425,6 +434,7 @@ export const compensatoryCeo = async (getDeptSection) => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.cf_ceo_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.cf_ceo_apprv_status,
                 ceo_req: val.cf_ceo_req_status,
@@ -457,6 +467,7 @@ export const compensatoryHr = async () => {
                 Emp_no: val.em_no,
                 Employee_name: val.em_name,
                 Department_section: val.dept_name,
+                dept_section: val.em_dept_section,
                 Status: val.cf_hr_apprv_status === 0 ? 'Pending' : 'Approved',
                 ceo_apprv: val.cf_ceo_apprv_status,
                 ceo_req: val.cf_ceo_req_status,

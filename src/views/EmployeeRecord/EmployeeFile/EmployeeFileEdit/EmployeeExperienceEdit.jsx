@@ -24,8 +24,7 @@ const EmployeeExperienceEdit = () => {
     const [workstartdate, setWorkdate] = useState(new Date())
     const [workenddate, setWorkEnddate] = useState(new Date())
     const { selectDesignation,
-        updateDesignation, employeedetails } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
+        updateDesignation } = useContext(PayrolMasterContext)
     //setting work start Date
     const setWorkstartdate = (val) => {
         setWorkdate(val)
@@ -106,7 +105,7 @@ const EmployeeExperienceEdit = () => {
         em_to: moment(workenddate).format('YYYY-MM-DD'),
         em_total_year: total_year,
         em_salary: gross_salary,
-        create_user: em_id
+        create_user: no
     }
 
     //saving formdata

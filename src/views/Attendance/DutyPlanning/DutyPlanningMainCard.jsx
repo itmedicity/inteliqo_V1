@@ -5,8 +5,11 @@ import DropDownList from './DropDownList'
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 
 
-const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, empID }) => {
+const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, empID, duty1 }) => {
 
+    useEffect(() => {
+
+    }, [count, employeedata])
     return (
         <Fragment>
             <div className="card">
@@ -59,9 +62,9 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
                                                             {name.em_name}
                                                         </Typography>
                                                     </td>
-                                                    <td width="100">{name.em_id}</td>
+                                                    <td width="100">{name.em_no}</td>
                                                     <Suspense fallback={<LinearProgress />} >
-                                                        <DropDownList data={data} duty={duty} count={count} empID={empID} />
+                                                        <DropDownList data={data} duty={duty} count={count} empID={empID} duty1={duty1} />
                                                     </Suspense>
                                                 </tr>
                                             })
@@ -77,5 +80,5 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
     )
 }
 
-export default memo(DutyPlanningMainCard) 
+export default memo(DutyPlanningMainCard)
 

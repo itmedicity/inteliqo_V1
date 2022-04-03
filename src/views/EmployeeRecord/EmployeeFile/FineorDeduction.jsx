@@ -94,10 +94,8 @@ const FineorDeduction = () => {
     const resetForm = {
         fine_descp: '',
         fine_amount: 0,
-        fine_start: '',
-        fine_end: '',
-        fine_period: '',
-        fine_remark: ''
+        fine_remark: '',
+        fine_status: ''
     }
 
     const reset = () => {

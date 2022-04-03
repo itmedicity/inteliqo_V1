@@ -151,7 +151,7 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
                 }
                 if (over_time <= 480) {
                     infoNofity("Not Applicable for COff please check more OT Available")
-                } else { }
+                }
             } else {
                 warningNofity(" Error occured contact EDP")
             }
@@ -269,7 +269,11 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
         const result1 = await axioslogin.patch('/overtimerequest/hodapprove', patchData)
         const { success, message } = result1.data
         if (success === 2) {
-            succesNofity(message);
+            if (approve === true && reject === false) {
+                succesNofity("HOD Approved ");
+            } else if (approve === false && reject === true) {
+                succesNofity("HOD Rejected ");
+            }
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
                 const { message, success } = result.data;
