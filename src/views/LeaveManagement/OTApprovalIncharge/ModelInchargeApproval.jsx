@@ -229,7 +229,11 @@ const ModelInchargeApproval = ({ open, handleClose, otno, setCount, count }) => 
         const result1 = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)
         const { success, message } = result1.data
         if (success === 2) {
-            succesNofity(message);
+            if (approve === true && reject === false) {
+                succesNofity("Incharge Approved ");
+            } else if (approve === false && reject === true) {
+                succesNofity("Incharge Rejected ");
+            }
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
                 const { message, success } = result.data;

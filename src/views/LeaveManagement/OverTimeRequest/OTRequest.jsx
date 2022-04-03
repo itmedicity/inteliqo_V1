@@ -29,6 +29,7 @@ const OTRequest = () => {
     const [flag, setflag] = useState(0)
     const [shiftid, setShiftid] = useState(0)
     const [tableset, setTable] = useState(0)
+    const [model, setmodel] = useState(0)
     const [tabledata, setTableData] = useState({
         shift_Start: '',
         shift_end: '',
@@ -53,15 +54,21 @@ const OTRequest = () => {
         shift_end: '',
         in_time: '',
         out_time: '',
+    }
+    const defaltstate = {
+        shiftcheckout: "",
+        shiftcheckin: "",
+    }
+
+    const defal = {
         ot_reson: '',
         ot_remarks: '',
         finaltime: '',
         ot_slno: '',
-        ot_amount: '',
-        shiftcheckout: '',
-        shiftcheckin: ''
+        ot_amount: ''
     }
-
+    console.log(punchindatamain);
+    console.log(punchoutdatamain);
     useEffect(() => {
         if ((punchindatamain !== 0) && (punchoutdatamain !== 0)) {
             setTable(1)
@@ -84,7 +91,8 @@ const OTRequest = () => {
                     setShiftdata(set)
                 } else {
                     setTableData(defaultState);
-                    setShiftdata(defaultState)
+                    setShiftdata(defaltstate)
+                    setrequest(defal)
                 }
             }
             getTable()
@@ -108,8 +116,10 @@ const OTRequest = () => {
             }
             getotamount()
 
-        } else { }
-    }, [punchindatamain, punchoutdatamain]);
+        } else {
+            setTable(0)
+        }
+    }, [punchindatamain, punchoutdatamain, model]);
 
     //Shift Hours
     const x = moment(shiftdata.shiftcheckin).format("YYYY-MM-DD HH:mm:ss")
@@ -167,29 +177,29 @@ const OTRequest = () => {
         ot_ceo_require: ceo_level,
         ot_deptsec_id: em_dept_section
     }
-    const resetForm = {
-        ot_reson: '',
-        ot_remarks: '',
-        shft_slno: '',
-        checkin: new Date(),
-        checkout: new Date(),
-        shiftcheckout: new Date(),
-        shiftcheckin: new Date(),
-        date: '',
-        shift: '',
-        shift_Start: '',
-        shift_end: '',
-        in_time: '',
-        out_time: '',
-        over_time: '',
-        finaltime: ''
-    }
     const patchData = {
         ot_reson: ot_reson,
         ot_remarks: ot_remarks,
         ot_slno: request.ot_slno
     }
+    const resetForm = {
+        shift_Start: '',
+        shift_end: '',
+        in_time: '',
+        out_time: '',
+    }
+    const restfm = {
+        shiftcheckout: "",
+        shiftcheckin: "",
+    }
 
+    const reset = {
+        ot_reson: '',
+        ot_remarks: '',
+        finaltime: '',
+        ot_slno: '',
+        ot_amount: ''
+    }
     //Submit data
     const submitRequest = async (e) => {
         e.preventDefault();
@@ -200,8 +210,12 @@ const OTRequest = () => {
                 if (success === 1) {
                     succesNofity(message);
                     setcount(count + 1)
-                    setrequest(resetForm);
+                    setrequest(reset);
                     setTableData(resetForm);
+                    setShiftdata(restfm)
+                    setmodel(0)
+                    setTable(0)
+                    history.push('/Home/OTRequest');
                 } else if (success === 0) {
                     infoNofity(message.sqlMessage);
                 } else {
@@ -215,8 +229,11 @@ const OTRequest = () => {
             const result = await axioslogin.patch('/overtimerequest', patchData)
             const { message, success } = result.data;
             if (success === 2) {
-                setrequest(resetForm);
+                setrequest(reset);
                 setTableData(resetForm);
+                setShiftdata(restfm)
+                setmodel(0)
+                setTable(0)
                 setcount(count + 1)
                 history.push('/Home/OTRequest');
                 succesNofity(message);
@@ -291,7 +308,10 @@ const OTRequest = () => {
                             shiftid={shiftid}
                             setShiftid={setShiftid}
                             setpunchindatamain={setpunchindatamain}
-                            setpunchoutdatamain={setpunchoutdatamain} />
+                            setpunchoutdatamain={setpunchoutdatamain}
+                            setmodel={setmodel}
+                            model={model}
+                        />
                         {tableset === 1 ?
                             <div className="row g-1 ">
                                 <div className="card ">
