@@ -4,6 +4,7 @@ import PersonPinIcon from '@mui/icons-material/PersonPin';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ProfessionalExp from './ProfessionalExp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LeaveCalender from 'src/views/LeaveManagement/LeaveRequest/LeaveCalender'
 
 const AnualLeave = () => {
     return (
@@ -28,8 +29,7 @@ const AnualLeave = () => {
                 />
                 <CardContent className='pt-0' >
                     <List className='p-0' >
-                        <ProfessionalExp />
-                        <ProfessionalExp />
+                        <LeaveCalender em_id={1} />
                     </List>
                 </CardContent>
             </Card>

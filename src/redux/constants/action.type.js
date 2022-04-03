@@ -14,7 +14,8 @@ export const Actiontypes = {
     FETCH_EMP_LEAVE_LIST: "FETCH_EMP_LEAVE_LIST",
     FETCH_DEPARTMENT_LIST: "FETCH_DEPARTMENT_LIST",//department list dropdown
     FETCH_DEPARTSEC_LIST: "FETCH_DEPARTSEC_LIST",//dept section list dropdown
-
+    FETCH_LEAVE_AVAIL_LIST: "FETCH_LEAVE_AVAIL_LIST",
+    FETCH_NOTIFYDETL: "FETCH_NOTIFYDETL",
     //For the employee record list in the Employee File From
     FETCH_EMP_RECORD_LIST: "FETCH_EMP_RECORD_LIST",
     //for getting employee details in duty plan

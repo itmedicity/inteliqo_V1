@@ -14,6 +14,7 @@ import { addDays, format } from 'date-fns';
 import moment from 'moment';
 import { infoNofity, getDayDiffrence, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
+import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
 const ShiftUpdation = () => {
 
@@ -21,6 +22,7 @@ const ShiftUpdation = () => {
     //SHIFT TABLE - pagination code
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [count, setcount] = useState(0)
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -70,7 +72,8 @@ const ShiftUpdation = () => {
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
-                cmpCode: 1
+                cmpCode: 1,
+                emp_code: selectEmpName
             }
             if (Object.keys(deptDetl).length > 1) {
                 const result = await axioslogin.post("/attendCal", deptDetl);
@@ -78,9 +81,11 @@ const ShiftUpdation = () => {
                 if (success === 1) {
                     if (data.length !== 0) {
                         setApiData(data)
+                        setcount(count + 1)
                     }
                     else {
                         setApiData(data)
+                        setcount(count + 1)
                         infoNofity("Please Do the Shift Marking")
                     }
 
@@ -88,6 +93,7 @@ const ShiftUpdation = () => {
 
                 if (success === 0) {
                     infoNofity("Please Do the Shift Marking")
+                    setcount(count + 1)
                 }
             }
 
@@ -98,12 +104,29 @@ const ShiftUpdation = () => {
                 department: selectedDept,
                 departmentSec: selectDeptSection,
                 empName: selectEmpName,
-                cmpCode: 1
+                cmpCode: 1,
+                emp_code: selectEmpName
             }
 
             if (Object.keys(deptDetl).length > 1) {
-                // setPostData(deptDetl)
-                setApiData([])
+                const result = await axioslogin.post("/attendCal", deptDetl);
+                const { success, data } = result.data;
+                if (success === 1) {
+                    if (data.length !== 0) {
+                        setApiData(data)
+                        setcount(count + 1)
+                    }
+                    else {
+                        setApiData(data)
+                        infoNofity("Please Do the Shift Marking")
+                        setcount(count + 1)
+                    }
+
+                }
+
+                if (success === 0) {
+                    infoNofity("Please Do the Shift Marking")
+                }
             }
             // const result = await axioslogin.post("/attendCal", deptDetl);
         } else {
@@ -121,7 +144,64 @@ const ShiftUpdation = () => {
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
-                cmpCode: 1
+                cmpCode: 1,
+                emp_code: selectEmpName
+            }
+
+            if (Object.keys(deptDetl).length > 1) {
+
+                const result = await axioslogin.post("/attendCal/proc", deptDetl)
+
+                const { success } = result.data;
+                if (success === 1) {
+                    const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
+
+                    const { success, data } = result.data;
+
+
+                    if (success === 1) {
+                        const result = await axioslogin.post("/attendCal", deptDetl);
+                        const { success, data } = result.data;
+                        if (success === 1) {
+                            if (data.length !== 0) {
+                                setApiData(data)
+                                setcount(count + 1)
+                            }
+                            else {
+                                setApiData(data)
+                                infoNofity("Please Do the Shift Marking")
+                                setcount(count + 1)
+                            }
+
+                        }
+
+                        if (success === 0) {
+                            infoNofity("Please Do the Shift Marking")
+                        }
+
+                    } else {
+                        setcount(count + 1)
+                        errorNofity('Please Contact')
+                    }
+
+
+                }
+
+                if (success === 0) {
+                    setcount(count + 1)
+                    infoNofity("Please Do the Shift Marking")
+                }
+            }
+
+        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
+            const deptDetl = {
+                startDate: startDate,
+                endDate: endDate,
+                department: selectedDept,
+                departmentSec: selectDeptSection,
+                empName: selectEmpName,
+                cmpCode: 1,
+                emp_code: selectEmpName
             }
 
             if (Object.keys(deptDetl).length > 1) {
@@ -134,12 +214,31 @@ const ShiftUpdation = () => {
 
                     const { success } = result.data;
 
-
                     if (success === 1) {
-                        succesNofity("Processed SuccessFully")
+                        const result = await axioslogin.post("/attendCal", deptDetl);
+                        const { success, data } = result.data;
+                        if (success === 1) {
+                            if (data.length !== 0) {
+                                setApiData(data)
+                                setcount(count + 1)
+                            }
+                            else {
+                                setApiData(data)
+                                infoNofity("Please Do the Shift Marking")
+                                setcount(count + 1)
+                            }
+
+                        }
+
+                        if (success === 0) {
+                            infoNofity("Please Do the Shift Marking")
+                        }
+
                     } else {
+                        setcount(count + 1)
                         errorNofity('Please Contact')
                     }
+
 
 
                 }
@@ -148,22 +247,6 @@ const ShiftUpdation = () => {
                     infoNofity("Please Do the Shift Marking")
                 }
             }
-
-        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
-            const deptDetl = {
-                startDate: startDate,
-                endDate: endDate,
-                department: selectedDept,
-                departmentSec: selectDeptSection,
-                empName: selectEmpName,
-                cmpCode: 1
-            }
-
-            if (Object.keys(deptDetl).length > 1) {
-                // setPostData(deptDetl)
-                setApiData([])
-            }
-            // const result = await axioslogin.post("/attendCal", deptDetl);
         } else {
             setApiData([])
             infoNofity("AtLeast Department & Section is Required");
@@ -198,15 +281,15 @@ const ShiftUpdation = () => {
                                 changeTextValue={(e) => getStartEndDate(e)}
                             />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                             <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                             <DepartmentSectionSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
-                        {/* <div className="col-md-2">
+                        <div className="col-md-2">
                             <EmployeeNameSelect select="Department Section" style={SELECT_CMP_STYLE} />
-                        </div> */}
+                        </div>
                         <div className="col-md-1">
                             <div className='d-flex justify-content-evenly' >
                                 <div>
@@ -276,7 +359,7 @@ const ShiftUpdation = () => {
                                         ? apiData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : apiData
                                     ).map((val, index) => {
-                                        return <ShiftTableDataRow val={val} key={index} />
+                                        return <ShiftTableDataRow val={val} key={index} count={count} />
                                     })
                                 }
                             </TableBody>

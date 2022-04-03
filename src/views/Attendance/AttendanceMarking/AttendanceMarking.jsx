@@ -8,6 +8,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
+import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import TextInput from 'src/views/Component/TextInput'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -105,6 +106,7 @@ const AttendanceMarking = () => {
                         <div className="col-md-3">
                             <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} />
                         </div>
+
                         <div className="col-md-1 text-center">
                             <IconButton
                                 aria-label="add"

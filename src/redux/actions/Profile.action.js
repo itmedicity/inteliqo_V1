@@ -6,7 +6,9 @@ const {
     FETCH_EMP_RECORD_LIST,
     FETCH_EMP_PERSONAL_INFOM,
     FETCH_ACADEMIC_DATA,
-    FETCH_EXPERIENCE_DATA
+    FETCH_EXPERIENCE_DATA,
+    FETCH_LEAVE_AVAIL_LIST,
+    FETCH_NOTIFYDETL
 } = Actiontypes;
 
 export const setProfileData = (id) => async (dispatch) => {
@@ -24,6 +26,7 @@ export const setEmployeeList = (emprecord) => {
 }
 
 export const setPersonalData = (id) => {
+
     return async (dispatch) => {
         const result = await axioslogin.get(`common/getEmpProfileInform/${id}`);
         const { data, success } = result.data;
@@ -34,6 +37,7 @@ export const setPersonalData = (id) => {
 }
 
 export const setAccademicData = (no) => {
+
     return async (dispatch) => {
         const result = await axioslogin.get(`qualify/${no}`);
         const { data, success } = result.data;
@@ -44,9 +48,37 @@ export const setAccademicData = (no) => {
 }
 
 export const setExperienceData = (id) => {
+
     return async (dispatch) => {
         const result = await axioslogin.get(`/experience/select/${id}`);
         const { data, success } = result.data;
     }
 }
+export const getannualleave = (no) => {
+
+    return async (dispatch) => {
+        const result = await axioslogin.get(`/leaveRequestType/leavesetdata/${no}`)
+        const { success, data } = result.data
+
+
+        if (success === 1) {
+            dispatch({ type: FETCH_LEAVE_AVAIL_LIST, payload: data[0] })
+        }
+    }
+}
+
+export const notify = (no) => {
+
+    return async (dispatch) => {
+        const result = await axioslogin.get(`/common/getnotifydata/${no}`)
+        const { success, data } = result.data
+
+        if (success === 1) {
+            dispatch({ type: FETCH_NOTIFYDETL, payload: data[0] })
+        }
+    }
+}
+
+
+
 

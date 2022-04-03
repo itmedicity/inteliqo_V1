@@ -4,7 +4,9 @@ const {
     FETCH_EMP_PROFILE_DATA,
     FETCH_EMP_PERSONAL_INFOM,
     FETCH_ACADEMIC_DATA,
-    FETCH_EXPERIENCE_DATA
+    FETCH_EXPERIENCE_DATA,
+    FETCH_LEAVE_AVAIL_LIST,
+    FETCH_NOTIFYDETL
 } = Actiontypes;
 
 const Profile_inititalData = {
@@ -85,9 +87,13 @@ const profileData = {
         apiStatus: false
     },
     empLeaveData: {
-        leaveData: {},
+        leaveData: [],
         apiStatus: false
-    }
+    },
+    empnotify: {
+        empnotifydata: {},
+        empnotifyStatus: false
+    },
 }
 
 export const getPrifileDateEachEmp = (state = profileData, { type, payload }) => {
@@ -117,6 +123,27 @@ export const getPrifileDateEachEmp = (state = profileData, { type, payload }) =>
                     ...state.empExperData,
                     experienData: payload,
                     experienDataStatus: true
+                }
+            }
+
+        case FETCH_LEAVE_AVAIL_LIST:
+            return {
+                ...state,
+                empLeaveData: {
+                    ...state.empLeaveData,
+                    leaveData: payload,
+                    apiStatus: true
+
+                }
+            }
+        case FETCH_NOTIFYDETL:
+            return {
+                ...state,
+                empnotify: {
+                    ...state.empnotify,
+                    empnotifydata: payload,
+                    empnotifyStatus: true
+
                 }
             }
         default:
