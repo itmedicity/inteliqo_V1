@@ -104,7 +104,8 @@ const LeaveRequest = () => {
     }
     const submitLeave = async () => {
         if (levereqtype === 1) {
-            if (leveda.length === 0) {
+
+            if ((leveda.length === 0) || (leveda.length !== leavdaystype)) {
                 warningNofity("Plese Select The Details")
             }
             else {

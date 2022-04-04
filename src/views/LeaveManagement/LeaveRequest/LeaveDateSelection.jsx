@@ -49,6 +49,7 @@ const LeaveDateSelection = ({
         dsname: '',
         getvalvalue: 0
     });
+    const { dsname, getvalvalue } = getcasleave
     const [gethldleave, updategethldleave] = useState({
         hldname: '',
         gethldvalvalue: 0
@@ -64,6 +65,9 @@ const LeaveDateSelection = ({
     });
 
 
+
+
+
     const [getcoff, updatecoff] = useState({
         coffname: '',
         getcoffvalvalue: 0
@@ -72,8 +76,15 @@ const LeaveDateSelection = ({
 
     // on change of allowable leave 
     const handleChange = ({ target: { name, value }, nativeEvent }) => {
-        //casual leave
+        const filtedLeavefirst = casualLevee.filter((val) => {
+            return (val.caulmnth !== casualLevee.caulmnth && val.index !== casualLeve.index)
+        })
+        setCasualLevee(filtedLeavefirst)
         if (leavetype === 1) {
+
+
+
+
             updatecasleaveusestate({ ...getcasleave, dsname: name, getvalvalue: value })
             // setcreditedleave(value)
             setCasualLeve({
@@ -83,12 +94,14 @@ const LeaveDateSelection = ({
                 lveDate: format(new Date(date), "yyyy-MM-dd"),
                 lveType: leavetype,
                 leave: nativeEvent.target.innerTextveEvent,
-                index: index
+                index: name
             })
             if (casualLevee.length > 0) {
+
                 const calfind = casualLevee.find((val) => {
                     return val.caulmnth === value
                 })
+
                 if (calfind !== undefined) {
                     if (calfind.length === 0) {
                         setCasualLevee((casualLeve) => [...casualLeve, {
@@ -96,8 +109,9 @@ const LeaveDateSelection = ({
                             levtypename: 'CASUAL LEAVE',
                             lveDate: format(new Date(date), "yyyy-MM-dd"),
                             lveType: nativeEvent.target.innerText,
-                            index: index
+                            index: name
                         }])
+
                     }
                     else {
                         warningNofity('Already selected')
@@ -105,6 +119,7 @@ const LeaveDateSelection = ({
                         const filtedLeave = casualLevee.filter((val) => {
                             return (val.caulmnth !== casualLevee.caulmnth && val.index !== casualLeve.index)
                         })
+
                         setCasualLevee(filtedLeave)
                     }
                 }
@@ -115,11 +130,12 @@ const LeaveDateSelection = ({
                         lveDate: format(new Date(date), "yyyy-MM-dd"),
                         lveType: leavetype,
                         leave: nativeEvent.target.innerText,
-                        index: index
+                        index: name
                     }])
                 }
             }
             else {
+
 
                 setCasualLevee((casualLeve) => [...casualLeve, {
                     caulmnth: value,
@@ -127,7 +143,7 @@ const LeaveDateSelection = ({
                     levtypename: 'CASUAL LEAVE',
                     lveType: leavetype,
                     leave: nativeEvent.target.innerText,
-                    index: index
+                    index: name
                 }])
 
             }
