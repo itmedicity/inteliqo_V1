@@ -9,11 +9,12 @@ import ModelaprvrejcHalf from '../LeaveCommonComponent/ModelaprvrejcHalf';
 import ModelNopunch from '../LeaveCommonComponent/ModelNopunch';
 import ModelCompenOff from '../LeaveCommonComponent/ModelCompenOff';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq }) => {
+const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, DeptSect }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     // get leave mast data
     const [leavereqtabledata, setleavereqtabledata] = useState([])
+    const [count, setcount] = useState(0)
     const [leaveremastdata, setleavereqmastdata] =
         useState([
             {
@@ -78,7 +79,7 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq }
             })
             setleavereqtabledata(filterleavereq)
         }
-    }, [leavereq])
+    }, [leavereq, count])
     const title = [
         {
             title: "SlNo", field: "SlNo"
@@ -168,10 +169,10 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq }
     return (
         < Fragment >
             {
-                reqtype === 1 ? <ModelApproveReject open={openleave} handleClose={handleClose} leaveremastdata={leaveremastdata} leavestatedetail={leavestatedetail} authority={authority} setleavereq={setleavereq} em_id={em_id} /> :
-                    reqtype === 2 ? <ModelaprvrejcHalf open={openhalf} handleClose={handleClose} hafdaydata={hafdaydata} authority={authority} setleavereq={setleavereq} em_id={em_id} /> :
-                        reqtype === 3 ? <ModelNopunch open={opennopunch} handleClose={handleClose} hafdaydata={nopunch} authority={authority} setleavereq={setleavereq} em_id={em_id} /> :
-                            reqtype === 4 ? <ModelCompenOff open={opencompen} handleClose={handleClose} hafdaydata={comoffsetdata} authority={authority} setleavereq={setleavereq} em_id={em_id} /> : null
+                reqtype === 1 ? <ModelApproveReject open={openleave} handleClose={handleClose} DeptSect={DeptSect} leaveremastdata={leaveremastdata} leavestatedetail={leavestatedetail} authority={authority} setleavereq={setleavereq} em_id={em_id} count={count} setcount={setcount} /> :
+                    reqtype === 2 ? <ModelaprvrejcHalf open={openhalf} handleClose={handleClose} DeptSect={DeptSect} hafdaydata={hafdaydata} authority={authority} setleavereq={setleavereq} em_id={em_id} /> :
+                        reqtype === 3 ? <ModelNopunch open={opennopunch} handleClose={handleClose} DeptSect={DeptSect} hafdaydata={nopunch} authority={authority} setleavereq={setleavereq} em_id={em_id} /> :
+                            reqtype === 4 ? <ModelCompenOff open={opencompen} handleClose={handleClose} DeptSect={DeptSect} hafdaydata={comoffsetdata} authority={authority} setleavereq={setleavereq} em_id={em_id} /> : null
             }
             <MaterialTable
                 title="Leave Approval"
@@ -179,10 +180,15 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq }
                 columns={title}
                 icons={tableIcons}
                 actions={[
-                    {
-                        icon: () => <MdCheckCircle size={26} color="secondary" />,
-                        onClick: (e, leavereq) => handleClickOpen(leavereq),
-                    }
+                    leavereqtabledata => (
+                        {
+                            icon: () => <MdCheckCircle size={26} color="secondary" />,
+                            tooltip: "Click Here to Approve/Reject",
+                            onClick: (e, leavereq) => handleClickOpen(leavereq),
+                            disabled: ((authority === 1 && leavereqtabledata.incaprv == 1) || (authority === 2 && leavereqtabledata.hodaprv == 1) ||
+                                ((authority === 4 || authority === 6) && leavereqtabledata.hr_apprv == 1) || (authority === 3 && leavereqtabledata.ceo_apprv == 1))
+                        }
+                    )
                 ]}
                 options={{
                     paginationType: "stepped",

@@ -18,11 +18,11 @@ import { format } from 'date-fns';
 import { Checkbox } from '@material-ui/core';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
-import { errorNofity, halfdayrequest, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, halfdayrequest, succesNofity, warningNofity, CEohalfdayrequest, Hrhalfdayrequest } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id }) => {
+const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id, DeptSect }) => {
     const [halfreason, setHalfreason] = useState('')
     useEffect(() => {
         if (hafdaydata.length === 1) {
@@ -44,6 +44,11 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setstatus({ ...ob1, [e.target.name]: value })
     }
+    var arraydepsect;
+    if ((authority === 1) || (authority === 2)) {
+        arraydepsect = DeptSect.map((val) => { return val.dept_section })
+    }
+
     const submithaday = async () => {
         const submhalfday = {
             status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
@@ -57,7 +62,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                halfdayrequest().then((val) => {
+                halfdayrequest(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -74,7 +79,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                halfdayrequest().then((val) => {
+                halfdayrequest(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -91,7 +96,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                halfdayrequest().then((val) => {
+                CEohalfdayrequest(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -121,7 +126,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
                 const { success, message } = results.data
                 if (success === 1) {
                     succesNofity("Updated")
-                    halfdayrequest().then((val) => {
+                    Hrhalfdayrequest(arraydepsect).then((val) => {
                         setleavereq(val)
                     })
                     handleClose()
@@ -142,7 +147,7 @@ const ModelaprvrejcHalf = ({ open, handleClose, hafdaydata, setleavereq, authori
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                halfdayrequest().then((val) => {
+                Hrhalfdayrequest(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()

@@ -18,11 +18,11 @@ import { format } from 'date-fns';
 import { Checkbox, Typography } from '@material-ui/core';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment'
-import { errorNofity, getleaverequestget, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, getleaverequestget, ceoLeavereq, HrLeave, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedetail, setleavereq, authority, em_id }) => {
+const ModelApproveReject = ({ open, handleClose, DeptSect, leaveremastdata, leavestatedetail, setleavereq, authority, em_id, setcount, count }) => {
     const {
         emno,
         leave_date,
@@ -34,6 +34,11 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
         apprv: false,
         reject: false
     })
+    var arraydepsect;
+    if ((authority === 1) || (authority === 2)) {
+        arraydepsect = DeptSect.map((val) => { return val.dept_section })
+    }
+
     const { apprv, reject } = status
     const submitdata = async () => {
         const postleavedata = {
@@ -49,9 +54,10 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             const { success, message } = result.data;
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getleaverequestget(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
+                setcount(count + 1)
                 handleClose()
 
             } else if (success === 2) {
@@ -66,7 +72,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             const { success, message } = result.data;
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                getleaverequestget(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -84,7 +90,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             const { success, message } = result.data;
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                ceoLeavereq(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -114,7 +120,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
                 const { success, message } = results.data
                 if (success === 1) {
                     succesNofity("Updated")
-                    getleaverequestget().then((val) => {
+                    HrLeave(arraydepsect).then((val) => {
                         setleavereq(val)
                     })
                     handleClose()
@@ -134,7 +140,7 @@ const ModelApproveReject = ({ open, handleClose, leaveremastdata, leavestatedeta
             const { success, message } = result.data;
             if (success === 1) {
                 succesNofity(message)
-                getleaverequestget().then((val) => {
+                HrLeave(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()

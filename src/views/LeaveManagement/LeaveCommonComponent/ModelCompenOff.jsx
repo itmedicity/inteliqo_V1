@@ -17,11 +17,11 @@ import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
 import { Checkbox } from '@material-ui/core';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, compensatory, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, compensatory, succesNofity, warningNofity, compensatoryHr, compensatoryCeo } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority, em_id }) => {
+const ModelCompenOff = ({ open, handleClose, DeptSect, hafdaydata, setleavereq, authority, em_id }) => {
     const [coffreason, setcoffreason] = useState('')
     useEffect(() => {
         if (hafdaydata.length === 1) {
@@ -40,13 +40,15 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
         const ob1 = {
             apprv: false,
             reject: false
-
         }
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setstatus({ ...ob1, [e.target.name]: value })
-
-
     }
+    var arraydepsect;
+    if ((authority === 1) || (authority === 2)) {
+        arraydepsect = DeptSect.map((val) => { return val.dept_section })
+    }
+
     const submitcompensatry = async () => {
         const sumbcompens = {
             status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
@@ -60,7 +62,7 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                compensatory().then((val) => {
+                compensatory(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -77,7 +79,7 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                compensatory().then((val) => {
+                compensatory(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -94,7 +96,7 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                compensatory().then((val) => {
+                compensatoryCeo(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()
@@ -119,7 +121,7 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
                 const { success, message } = results.data
                 if (success === 1) {
                     succesNofity("Updated")
-                    compensatory().then((val) => {
+                    compensatoryHr(arraydepsect).then((val) => {
                         setleavereq(val)
                     })
                     handleClose()
@@ -140,7 +142,7 @@ const ModelCompenOff = ({ open, handleClose, hafdaydata, setleavereq, authority,
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
-                compensatory().then((val) => {
+                compensatoryHr(arraydepsect).then((val) => {
                     setleavereq(val)
                 })
                 handleClose()

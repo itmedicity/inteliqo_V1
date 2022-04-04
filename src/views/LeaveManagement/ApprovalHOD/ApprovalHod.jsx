@@ -172,6 +172,7 @@ const ApprovalHod = () => {
                                         levtpevalue == 2 ? sethalfday :
                                             levtpevalue == 4 ? setcompensetory :
                                                 levtpevalue == 3 ? setnopunch : null}
+                                    DeptSect={DeptSect}
                                 />
                             </div>
                         </div>

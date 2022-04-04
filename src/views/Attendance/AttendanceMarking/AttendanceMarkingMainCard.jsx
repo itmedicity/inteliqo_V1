@@ -6,7 +6,7 @@ import '../styleattnd.css'
 import AttendanceMarkingTabdata from './AttendanceMarkingTabdata';
 import AttandanceMarkingtotal from './AttandanceMarkingtotal';
 import AttandanceDatecmpont from './AttandanceDatecmpont';
-const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count }) => {
+const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, rageset }) => {
 
 
     useEffect(() => {
@@ -54,7 +54,7 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
                                         </TableCell>
 
                                         <Suspense fallback={<LinearProgress />} >
-                                            <AttendanceMarkingTabdata data={data} count={count} />
+                                            <AttendanceMarkingTabdata data={data} count={count} dateformat={dateformat} rageset={rageset} />
                                             <AttandanceMarkingtotal data={data} length={dateformat.length} count={count} />
 
                                         </Suspense>

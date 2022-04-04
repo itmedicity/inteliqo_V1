@@ -190,6 +190,7 @@ const ApprovalHR = () => {
                                         levtpevalue == 4 ? setcompensetory :
                                             levtpevalue == 3 ? setnopunch :
                                                 levtpevalue == 5 ? setspclapproval : null}
+                                DeptSect={getDeptSection}
                             />
                         </div>
                     </div>
