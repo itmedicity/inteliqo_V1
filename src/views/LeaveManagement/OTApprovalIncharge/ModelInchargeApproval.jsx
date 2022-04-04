@@ -29,6 +29,7 @@ const ModelInchargeApproval = ({ open, handleClose, otno, setCount, count }) => 
     const [otAdd, setOtAdd] = useState({
         totalot: ''
     })
+
     const [flag, setFlag] = useState(0)
     const [newottime, setnewottime] = useState({
         over_time: 0,
@@ -238,7 +239,6 @@ const ModelInchargeApproval = ({ open, handleClose, otno, setCount, count }) => 
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
                 const { message, success } = result.data;
                 if (success === 2) {
-
                     if ((modeldata.inchargeAuth === 1) && (modeldata.hodAuth === 0) && (modeldata.ceoAuth === 0)) {
                         const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
                         const { message, success } = result2.data;

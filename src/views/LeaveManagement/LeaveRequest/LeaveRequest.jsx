@@ -6,7 +6,7 @@ import { getleaverequest, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import LeaveCalender from './LeaveCalender'
 import DirLeaveRequest from './DirLeaveRequest'
 import HalfDayLeaveRequest from './HalfDayLeaveRequest'
-import { add, format, intervalToDuration } from 'date-fns'
+import { add, format } from 'date-fns'
 import NoPunchRequest from './NoPunchRequest'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import Button from '@mui/material/Button';
@@ -18,10 +18,20 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import Compensatoryoff from './Component/Compensatoryoff'
 import moment from 'moment'
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
+import { useDispatch } from 'react-redux'
+import { getannualleave } from 'src/redux/actions/Profile.action'
 const Input = styled('input')({
     display: 'none',
 });
 const LeaveRequest = () => {
+    // use conext data 
+    const { employeedetails,//for employee details
+        getleavereqtype,//type of leave request half,leave,latecoming
+        updateleavereqtype, authorization } = useContext(PayrolMasterContext)
+    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
+    // destructuring employee details
+    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
+    const dispath = useDispatch()
     //for use history  
     const history = useHistory()
     // usestate for leaveslno
@@ -34,7 +44,10 @@ const LeaveRequest = () => {
         getleaverequest().then((val) => {
             setleaveslno(val)
         })
-    }, [getleaverequest])
+        if (em_id !== '') {
+            dispath(getannualleave(em_id))
+        }
+    }, [getleaverequest, em_id])
     // get haif day requested
     const [halfday, sethalfday] = useState()
     // no puch request details
@@ -50,23 +63,13 @@ const LeaveRequest = () => {
         mispunchflag: 0
     })
     const { checkinflag, checkintime, checkoutflag, checkouttime, nopunchdate, plan_slno, shift_id, punch_slno, mispunchflag } = nopunch
-
     // redirect to home page 
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
     // compensatoryoffdetails
     const [compensatoryoff, setcopensatoryoff] = useState()
-
-
     const [leveda, setleavedata] = useState()
-    // use conext data 
-    const { employeedetails,//for employee details
-        getleavereqtype,//type of leave request half,leave,latecoming
-        updateleavereqtype, authorization } = useContext(PayrolMasterContext)
-    const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
-    // destructuring employee details
-    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
     // for main page details of leave 
     const [leaveDetails, setLeaveDetails] = useState({
         fromDate: '',

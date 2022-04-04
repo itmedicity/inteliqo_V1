@@ -9,7 +9,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ResignationComponent from './ResignationComponent';
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 
@@ -78,6 +78,10 @@ const ResignationRequest = () => {
         }
         else if (success === 2) {
             warningNofity(message)
+        }
+        else if (success === 0) {
+            infoNofity("Your Resignation Already In Process")
+            setFormData(defaultState)
         }
         else {
             errorNofity("Error Occured!!!!! Please Contact EDP")
