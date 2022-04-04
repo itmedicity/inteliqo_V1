@@ -10,8 +10,6 @@ const LeaveCalender = ({ em_id }) => {
     const state = useSelector((state) => {
         return state.getPrifileDateEachEmp.empLeaveData;
     })
-
-
     useEffect(() => {
         const { leaveData, apiStatus } = state
         setData(leaveData)

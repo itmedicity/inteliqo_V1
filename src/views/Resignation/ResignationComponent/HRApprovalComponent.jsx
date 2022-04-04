@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
-    const [dueDept, SetDueDept] = useState({})
+    const [dueDept, SetDueDept] = useState([])
     const [approvalData, setApprovalData] = useState({
         relieving_date: '',
         request_date: '',
