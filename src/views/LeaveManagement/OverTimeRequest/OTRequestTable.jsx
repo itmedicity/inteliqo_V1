@@ -37,6 +37,9 @@ const OTRequestTable = ({ update, setTableData, setrequest, setflag }) => {
         {
             title: "OT Remarks", field: "ot_remarks", cellStyle: { minWidth: 10, maxWidth: 200 }
         },
+        {
+            title: "OT Status", field: "ot_status", cellStyle: { minWidth: 10, maxWidth: 200 }
+        },
     ]
 
     //Get Data

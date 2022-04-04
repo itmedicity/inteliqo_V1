@@ -40,14 +40,14 @@ const CoffshowTable = ({ emp_id, overtime, setOtAdd, setnewottime, setotslno, Se
 
     useEffect(() => {
         const addot = async () => {
-            const fixedwagessum = arraydata.map((val) => val.ot_time).reduce((sum, val) => sum + val, 0)
-            const totalOT = fixedwagessum + overtime;
-            setOtAdd({
-                totalot: totalOT,
-            })
-            setnewottime({
-                over_time: totalOT,
-            })
+            // const fixedwagessum = arraydata.map((val) => val.ot_time).reduce((sum, val) => sum + val, 0)
+            // const totalOT = fixedwagessum + overtime;
+            // setOtAdd({
+            //     totalot: totalOT,
+            // })
+            // setnewottime({
+            //     over_time: totalOT,
+            // })
             setotslno(arraydata.map((val) => val.coff_slno))
             Setovertimesl(arraydata.map((val) => val.ot_slno))
         }
@@ -79,6 +79,10 @@ const CoffshowTable = ({ emp_id, overtime, setOtAdd, setnewottime, setotslno, Se
                                             arraydata={arraydata}
                                             setDeletearry={setDeletearry}
                                             deletearry={deletearry}
+                                            setOtAdd={setOtAdd}
+                                            setnewottime={setnewottime}
+                                            overtime={overtime}
+
                                         />
                                     }
                                     )}

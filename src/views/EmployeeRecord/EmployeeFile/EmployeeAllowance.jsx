@@ -301,6 +301,7 @@ const EmployeeAllowance = () => {
                                                     type="date"
                                                     name="monthstart"
                                                     value={monthstart}
+                                                    minDate={new Date()}
                                                     disabled={toggle}
                                                     onChange={(e) => { updateMonthstart(e) }}
                                                     InputProps={{

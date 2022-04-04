@@ -291,6 +291,7 @@ const EmpAllowanceTableEdit = () => {
                                                     <DatePicker
                                                         type="date"
                                                         name="monthstart"
+                                                        minDate={new Date()}
                                                         value={monthstart}
                                                         disabled={toggle}
                                                         onChange={(e) => { updateMonthstart(e) }}
