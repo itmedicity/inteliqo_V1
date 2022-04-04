@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Employeedetails from '../CommonCode/Employeedetails'
 import { useSelector } from 'react-redux';
 import AppBar from '@mui/material/AppBar';
@@ -17,6 +17,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import Badge from '@mui/material/Badge';
 import { FormControlLabel, Stack } from '@mui/material';
 import DigitalCLock from './Components/DigitalCLock';
+import ProfileComponent from './Components/ProfileComponent';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -47,125 +48,126 @@ const Home = () => {
 
 
     return (
-        <AppBar position="static" color="inherit" >
-            <Container maxWidth="false">
-                <Toolbar disableGutters>
+        <Fragment>
+            <AppBar position="static" color="inherit" >
+                <Container maxWidth="false">
+                    <Toolbar disableGutters>
 
-                    <Stack spacing={2} direction="row">
+                        <Stack spacing={2} direction="row">
 
 
 
-                        <FormControlLabel
-                            sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
-                            control={
-                                <IconButton  >
-                                    <Badge badgeContent={1} variant='standard' color='error'
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "white",
-                                                backgroundColor: "#EF5350",
-                                                boxShadow: "0 0 8px 2px lightblue",
-                                            }
-                                        }}
-                                    >
-                                        <MailIcon color="primary" />
-                                    </Badge>
-                                </IconButton>
-                            }
-                            label="Overtime "
-                            labelPlacement='end'
-                            disableTypography={true}
-                        />
-                        <FormControlLabel
-                            sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
-                            control={
-                                <IconButton  >
-                                    <Badge badgeContent={10} variant='standard' color='error'
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "white",
-                                                backgroundColor: "#EF5350",
-                                                boxShadow: "0 0 8px 2px lightblue",
-                                            }
-                                        }}
-                                    >
-                                        <MailIcon color="primary" />
-                                    </Badge>
-                                </IconButton>
-                            }
-                            label="Resignation"
-                            labelPlacement='end'
-                            disableTypography={true}
-                        />
+                            <FormControlLabel
+                                sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
+                                control={
+                                    <IconButton  >
+                                        <Badge badgeContent={1} variant='standard' color='error'
+                                            sx={{
+                                                "& .MuiBadge-badge": {
+                                                    color: "white",
+                                                    backgroundColor: "#EF5350",
+                                                    boxShadow: "0 0 8px 2px lightblue",
+                                                }
+                                            }}
+                                        >
+                                            <MailIcon color="primary" />
+                                        </Badge>
+                                    </IconButton>
+                                }
+                                label="Overtime "
+                                labelPlacement='end'
+                                disableTypography={true}
+                            />
+                            <FormControlLabel
+                                sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
+                                control={
+                                    <IconButton  >
+                                        <Badge badgeContent={10} variant='standard' color='error'
+                                            sx={{
+                                                "& .MuiBadge-badge": {
+                                                    color: "white",
+                                                    backgroundColor: "#EF5350",
+                                                    boxShadow: "0 0 8px 2px lightblue",
+                                                }
+                                            }}
+                                        >
+                                            <MailIcon color="primary" />
+                                        </Badge>
+                                    </IconButton>
+                                }
+                                label="Resignation"
+                                labelPlacement='end'
+                                disableTypography={true}
+                            />
 
-                        <FormControlLabel
-                            sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
-                            control={
-                                <IconButton  >
-                                    <Badge badgeContent={10} variant='standard' color='error'
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "white",
-                                                backgroundColor: "#EF5350",
-                                                boxShadow: "0 0 8px 2px lightblue",
-                                            }
-                                        }}
-                                    >
-                                        <MailIcon color="primary" />
-                                    </Badge>
-                                </IconButton>
-                            }
-                            label="Alert"
-                            labelPlacement='end'
-                            disableTypography={true}
-                        />
+                            <FormControlLabel
+                                sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
+                                control={
+                                    <IconButton  >
+                                        <Badge badgeContent={10} variant='standard' color='error'
+                                            sx={{
+                                                "& .MuiBadge-badge": {
+                                                    color: "white",
+                                                    backgroundColor: "#EF5350",
+                                                    boxShadow: "0 0 8px 2px lightblue",
+                                                }
+                                            }}
+                                        >
+                                            <MailIcon color="primary" />
+                                        </Badge>
+                                    </IconButton>
+                                }
+                                label="Alert"
+                                labelPlacement='end'
+                                disableTypography={true}
+                            />
 
-                        <FormControlLabel
-                            sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
-                            control={
-                                <IconButton  >
-                                    <Badge badgeContent={10} variant='standard' color='error'
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "white",
-                                                backgroundColor: "#EF5350",
-                                                boxShadow: "0 0 8px 2px lightblue",
-                                            }
-                                        }}
-                                    >
-                                        <MailIcon color="primary" />
-                                    </Badge>
-                                </IconButton>
-                            }
-                            label="Notification"
-                            labelPlacement='end'
-                            disableTypography={true}
-                        />
+                            <FormControlLabel
+                                sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
+                                control={
+                                    <IconButton  >
+                                        <Badge badgeContent={10} variant='standard' color='error'
+                                            sx={{
+                                                "& .MuiBadge-badge": {
+                                                    color: "white",
+                                                    backgroundColor: "#EF5350",
+                                                    boxShadow: "0 0 8px 2px lightblue",
+                                                }
+                                            }}
+                                        >
+                                            <MailIcon color="primary" />
+                                        </Badge>
+                                    </IconButton>
+                                }
+                                label="Notification"
+                                labelPlacement='end'
+                                disableTypography={true}
+                            />
 
-                        <FormControlLabel
-                            sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
-                            control={
-                                <IconButton  >
-                                    <Badge badgeContent={10} variant='standard' color='error'
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "white",
-                                                backgroundColor: "#EF5350",
-                                                boxShadow: "0 0 8px 2px lightblue",
-                                            }
-                                        }}
-                                    >
-                                        <MailIcon color="primary" />
-                                    </Badge>
-                                </IconButton>
-                            }
-                            label="Messages"
-                            labelPlacement='end'
-                            disableTypography={true}
-                        />
+                            <FormControlLabel
+                                sx={{ color: '#1976D2', fontSize: 15, fontWeight: "bold", width: 150 }}
+                                control={
+                                    <IconButton  >
+                                        <Badge badgeContent={10} variant='standard' color='error'
+                                            sx={{
+                                                "& .MuiBadge-badge": {
+                                                    color: "white",
+                                                    backgroundColor: "#EF5350",
+                                                    boxShadow: "0 0 8px 2px lightblue",
+                                                }
+                                            }}
+                                        >
+                                            <MailIcon color="primary" />
+                                        </Badge>
+                                    </IconButton>
+                                }
+                                label="Messages"
+                                labelPlacement='end'
+                                disableTypography={true}
+                            />
 
-                    </Stack>
-                    {/* <Typography
+                        </Stack>
+                        {/* <Typography
                         variant="h6"
                         noWrap
                         component="div"
@@ -174,18 +176,18 @@ const Home = () => {
                         LOGO
                     </Typography> */}
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        {/* <Menu
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            {/* <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
                             anchorOrigin={{
@@ -209,17 +211,17 @@ const Home = () => {
                                 </MenuItem>
                             ))}
                         </Menu> */}
-                    </Box>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
-                    >
-                        LOGO
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {/* {pages.map((page) => (
+                        </Box>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+                        >
+                            LOGO
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                            {/* {pages.map((page) => (
                             <Button
                                 key={page}
                                 onClick={handleCloseNavMenu}
@@ -228,20 +230,24 @@ const Home = () => {
                                 {page}
                             </Button>
                         ))} */}
-                    </Box>
+                        </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        {/* <Tooltip title="Open settings">
+                        <Box sx={{ flexGrow: 0 }}>
+                            {/* <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip> */}
 
-                        <DigitalCLock />
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+                            <DigitalCLock />
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+
+            <ProfileComponent />
+
+        </Fragment>
     )
 }
 

@@ -41,9 +41,21 @@ const AppHeader = () => {
     history.push('/')
   }
 
+  // Notification and Message Component Function
+
+  const [anchorElMessage, setAnchorElMessage] = React.useState(null);
+  const openMessage = Boolean(anchorElMessage);
+
+  const handleMessageClick = (event) => {
+    setAnchorElMessage(event.currentTarget);
+  };
+  const handleMessageClose = () => {
+    setAnchorElMessage(null);
+  };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -99,10 +111,10 @@ const AppHeader = () => {
             <CNavItem>
               <IconButton sx={{ paddingX: 1.5 }}
                 id="basic-button"
-                aria-controls={open ? 'message-menu' : undefined}
+                aria-controls={openMessage ? 'message-menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
+                aria-expanded={openMessage ? 'true' : undefined}
+                onClick={handleMessageClick}
               >
                 <Badge badgeContent={9} variant='standard' color='error'
                   sx={{
@@ -155,10 +167,10 @@ const AppHeader = () => {
           {/* Profile Picture And Profile Settings */}
         </CContainer>
       </CHeader>
-      {/* Message NOtificaton CComp */}
-      <MessageComponent anchorEl={anchorEl} open={open} handleClose={handleClose} />
-      <NotificationComponent anchorEl={anchorEl} open={open} handleClose={handleClose} />
 
+      {/* Message NOtificaton CComp */}
+      <MessageComponent anchorEl={anchorElMessage} open={openMessage} handleClose={handleMessageClose} />
+      <NotificationComponent anchorEl={anchorEl} open={open} handleClose={handleClose} />
 
     </Fragment>
   )
