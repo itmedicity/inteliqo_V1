@@ -18,6 +18,7 @@ const AttendanceMarking = () => {
 
     const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(new Date());
+    const [rageset, setrange] = useState()
 
     const [count, setcount] = useState(0)
     const firstdate = moment(year).startOf('month').format('yyyy-MM-DD');
@@ -38,7 +39,7 @@ const AttendanceMarking = () => {
         const rage = eachDayOfInterval(
             { start: new Date(f1date), end: new Date(enddate) }
         )
-
+        setrange(rage)
 
         //finding the dates between start date and end date
         const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d') } })
@@ -126,7 +127,7 @@ const AttendanceMarking = () => {
                             employeedata={empData}
                             startdate={firstdate}
                             enddate={endodate}
-                            // duty={duty}
+                            rageset={rageset}
                             count={count}
                         // selectedDept={selectedDept}
                         // selectDeptSection={selectDeptSection}

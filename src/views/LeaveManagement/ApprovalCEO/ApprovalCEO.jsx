@@ -6,8 +6,6 @@ import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
-import TextInput from 'src/views/Component/TextInput';
-import { ImSearch } from "react-icons/im";
 import { ceoLeavereq, getleaverequest, CEohalfdayrequest, getCEOnopunchrequst, compensatoryCeo } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 
@@ -181,6 +179,7 @@ const ApprovalCEO = () => {
                                         levtpevalue == 2 ? sethalfday :
                                             levtpevalue == 4 ? setcompensetory :
                                                 levtpevalue == 3 ? setnopunch : null}
+
                                 />
                             </div>
                         </div>
