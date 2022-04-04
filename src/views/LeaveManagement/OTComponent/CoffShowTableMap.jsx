@@ -3,7 +3,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Checkbox } from '@mui/material'
 
-const CoffShowTableMap = ({ value, setarraydata, arraydata }, key) => {
+const CoffShowTableMap = ({ value, setarraydata, arraydata, setnewottime, setOtAdd, overtime }, key) => {
     const [select, setSelect] = useState({ check: false })
     const updateSelect = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -16,6 +16,12 @@ const CoffShowTableMap = ({ value, setarraydata, arraydata }, key) => {
                 ot_time: value.ot_time,
                 ot_slno: value.ot_slno
             }
+            setnewottime({
+                over_time: value.ot_time + overtime
+            })
+            setOtAdd({
+                totalot: value.ot_time + overtime
+            })
             const newarry = ([...arraydata, otdata])
             setarraydata(newarry)
         }
@@ -25,6 +31,12 @@ const CoffShowTableMap = ({ value, setarraydata, arraydata }, key) => {
                 ot_time: value.ot_time,
                 ot_slno: value.ot_slno
             }
+            setnewottime({
+                over_time: overtime - value.ot_time
+            })
+            setOtAdd({
+                totalot: value.ot_time + overtime
+            })
             const FineArry = arraydata.filter((val) => {
                 return val.coff_slno !== delet.coff_slno
             })

@@ -213,7 +213,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
         ot_type: '',
         approve: false,
         reject: false,
-        ot_inch_remark: ''
+        ot_ceo_remark: ''
     }
     const dataPost = {
         ot_time: newottime.over_time,
@@ -246,22 +246,21 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
         const { success, message } = result.data
         if (success === 2) {
             if (approve === true && reject === false) {
-                succesNofity("Incharge Approved ");
+                succesNofity("CEO Approved ");
             } else if (approve === false && reject === true) {
-                succesNofity("Incharge Rejected ");
+                succesNofity("CEO Rejected ");
             }
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
                 const { message, success } = result.data;
                 if (success === 2) {
-                    if (modeldata.inchargeAuth === 1 && modeldata.hodAuth === 1) {
-                        const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
-                        const { message, success } = result2.data;
-                        if (success === 1) {
-                            succesNofity(message);
-                        }
-                        setcount(countcl + 1)
-                    } else { }
+                    const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
+                    const { message, success } = result2.data;
+                    if (success === 1) {
+                        succesNofity(message);
+                    }
+                    setcount(countcl + 1)
+
                 }
             } else if (flag === 2) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPostflagtwo)

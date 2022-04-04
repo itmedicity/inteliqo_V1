@@ -61,10 +61,11 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
         const getOt = async () => {
             const result = await axioslogin.get(`/overtimerequest/hod/list/${otno}`)
             const { success, data } = result.data;
+
             if (success === 1) {
                 const { ot_days, over_time, ot_reson, ot_inch_status, ot_inch_remark, ot_coff_type, ot_hod_status,
-                    ot_hod_remark, emp_id, ot_inch_require, ot_new_time, ot_hod_require, ot_ceo_require } = data[0]
-                if (ot_hod_status !== 0) {
+                    ot_hod_remark, emp_id, ot_inch_require, ot_hod_require, ot_ceo_require } = data[0]
+                if (ot_hod_status === 0) {
                     const frmdata = {
                         ot_days: ot_days,
                         overtime: over_time,
@@ -95,7 +96,7 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
                 } else if ((ot_inch_status === 1) && (ot_hod_status === 0)) {
                     const frmdata = {
                         ot_days: ot_days,
-                        overtime: ot_new_time,
+                        overtime: over_time,
                         ot_reson: ot_reson,
                         ot_inch_status: ot_inch_status,
                         ot_inch_remark: ot_inch_remark,
@@ -111,7 +112,7 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
                         reject: false,
                     }
                     const frm = {
-                        over_time: ot_new_time
+                        over_time: over_time
                     }
                     const frmot = {
                         totalot: over_time

@@ -59,7 +59,6 @@ const OTRequest = () => {
         shiftcheckout: "",
         shiftcheckin: "",
     }
-
     const defal = {
         ot_reson: '',
         ot_remarks: '',
@@ -67,8 +66,7 @@ const OTRequest = () => {
         ot_slno: '',
         ot_amount: ''
     }
-    console.log(punchindatamain);
-    console.log(punchoutdatamain);
+
     useEffect(() => {
         if ((punchindatamain !== 0) && (punchoutdatamain !== 0)) {
             setTable(1)

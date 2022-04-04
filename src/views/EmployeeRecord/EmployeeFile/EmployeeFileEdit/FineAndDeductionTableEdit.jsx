@@ -211,6 +211,7 @@ const FineAndDeductionTableEdit = () => {
                                             type="date"
                                             classname="form-control form-control-sm"
                                             Placeholder="Start Date"
+                                            min={new Date()}
                                             value={finestart}
                                             name="finestart"
                                             changeTextValue={(e) => {
