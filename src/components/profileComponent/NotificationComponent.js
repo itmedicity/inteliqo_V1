@@ -1,19 +1,31 @@
 import { Avatar, Divider, ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
+import AlertComponent from './AlertComponent';
 
-
-const NotificationContent = ({ handleClose }) => {
+const NotificationContent = ({ handleClose, alerts }) => {
+    const [open, setOpen] = useState(false);
+    const [alertmsg, setAlertmsg] = useState('')
+    const openMessage = async () => {
+        setOpen(true)
+        setAlertmsg(alerts.alert)
+    }
+    const handleClosee = () => {
+        setOpen(false);
+    };
     return (
         <Fragment>
-            <MenuItem onClick={handleClose}  >
+            <AlertComponent open={open} handleClosee={handleClosee} alertmsg={alertmsg} />
+            <MenuItem onClick={openMessage}  >
                 <ListItemAvatar>
                     <Avatar sx={{ bgcolor: "#ff9800" }} >
                         <NotificationsNoneIcon />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary="September 14, 2016"
+                    primary={moment(alerts.create_date).format('DD-MM-YYYY')}
                     primaryTypographyProps={{ variant: "caption" }}
                     secondary={
                         <Fragment>
@@ -25,7 +37,7 @@ const NotificationContent = ({ handleClose }) => {
                             >
                                 Hr Department
                             </Typography>
-                            {' — Message From HR Department asdasdasdasdasdasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+                            --{alerts.alert}
                         </Fragment>
                     }
                     secondaryTypographyProps={{ noWrap: true }}
@@ -37,10 +49,59 @@ const NotificationContent = ({ handleClose }) => {
 }
 
 
-const NotificationComponent = ({ anchorEl, open, handleClose }) => {
+const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) => {
+    const [alert, setAlert] = useState([])
+    const [empDetl, setEmpdetl] = useState([])
+    const alertlist = useSelector((state) => {
+        return state.getAlertList.alertList
 
-    const array = [1, 2, 3, 4]
+    })
+    const empdetails = useSelector((state) => {
+        return state.getProfileData.ProfileData
+    })
+    useEffect(() => {
+        if (Object.keys(alertlist).length > 0) {
+            setAlert(alertlist)
+        }
+        if (Object.keys(empdetails).length > 0) {
+            setEmpdetl(empdetails)
+        }
+    }, [alertlist, empdetails])
 
+    const alerts = empDetl.map((value) => {
+        return alert.filter((val) => {
+            return (val.alert_branch === 1 && val.alert_department === 0 && val.aler_deptsec === 0 && val.designation === 0 && val.emp_category === 0) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00')) ||
+
+                ((val.alert_branch !== 0 && val.alert_department !== 0 && val.aler_deptsec === 0 && val.designation === 0 && val.emp_category === 0)
+                    && (val.alert_department === value.em_department) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                ((val.alert_branch !== 0 && val.alert_department === 0 && val.aler_deptsec === 0 &&
+                    val.designation !== 0 && val.emp_category === 0) && (val.designation === value.em_designation) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                ((val.alert_branch !== 0 && val.alert_department === 0 && val.aler_deptsec === 0 &&
+                    val.designation === 0 && val.emp_category !== 0) && (val.emp_category === value.em_category) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                ((val.alert_branch !== 0 && val.alert_department !== 0 && val.aler_deptsec !== 0
+                    && val.designation === 0 && val.emp_category === 0) && ((val.alert_department === value.em_department)
+                        && (val.aler_deptsec === value.em_dept_section)) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                ((val.alert_branch !== 0 && val.alert_department !== 0 && val.aler_deptsec !== 0 &&
+                    val.designation !== 0 && val.emp_category === 0) && ((val.alert_department === value.em_department)
+                        && (val.aler_deptsec === value.em_dept_section) && (val.designation === value.em_designation)) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                ((val.alert_branch !== 0 && val.alert_department !== 0 && val.aler_deptsec !== 0 &&
+                    val.designation !== 0 && val.emp_category !== 0) && ((val.alert_department === value.em_department)
+                        && (val.aler_deptsec === value.em_dept_section) && (val.designation === value.em_designation) && (val.emp_category === value.em_category) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00'))) ||
+
+                    ((val.alert_branch !== 0 && val.alert_department !== 0 && val.aler_deptsec !== 0 &&
+                        val.designation === 0 && val.emp_category !== 0) && ((val.alert_department === value.em_department)
+                            && (val.aler_deptsec === value.em_dept_section) && (val.emp_category === value.em_category)) && (val.alert_expr_date >= moment(new Date()).format('YYYY-MM-DD 00:00:00')))
+                )
+        })
+    })
+    if (alerts[0] !== undefined) {
+        setalertcount(alerts[0].length)
+    }
     return (
         <Fragment>
             <Menu
@@ -54,8 +115,8 @@ const NotificationComponent = ({ anchorEl, open, handleClose }) => {
                 sx={{ width: '100%', maxWidth: 500, }}
             >
                 {
-                    array.map((val) => {
-                        return <NotificationContent key={val} handleClose={handleClose} />
+                    alerts[0] && alerts[0].map((val) => {
+                        return <NotificationContent key={val.alert_slno} alerts={val} handleClose={handleClose} />
                     })
                 }
             </Menu>
@@ -63,4 +124,4 @@ const NotificationComponent = ({ anchorEl, open, handleClose }) => {
     )
 }
 
-export default NotificationComponent
+export default memo(NotificationComponent) 

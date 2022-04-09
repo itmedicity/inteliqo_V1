@@ -21,9 +21,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     //getting the department shift from store   
     const departmentShiftt = useSelector((state) => {
         return state.getDepartmentShiftData.deptShiftData;
-
     })
-    console.log(departmentShiftt)
     useEffect(() => {
         if (Object.keys(departmentShiftt).length > 0) {
             setDepartmentShiftSelect(departmentShiftt)
