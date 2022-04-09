@@ -13,8 +13,10 @@ import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import TextInput from 'src/views/Component/TextInput'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import AttendanceMarkingMainCard from './AttendanceMarkingMainCard'
+import { useHistory } from 'react-router'
 
 const AttendanceMarking = () => {
+    const history = useHistory()
 
     const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(new Date());
@@ -80,10 +82,15 @@ const AttendanceMarking = () => {
         const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d') } })
         setdateFormat(newDateFormat)
     }
+    //redirecting to profile page
+    const redirecting = () => {
+
+        history.push('/Home')
+    }
     return (
         <Fragment>
             <PageLayoutCloseOnly
-                heading="Attendance Marking">
+                heading="Attendance Marking" redirect={redirecting}>
                 <div className="col-md-12 mb-2">
                     <div className="row g-2">
 
@@ -113,7 +120,6 @@ const AttendanceMarking = () => {
                                 aria-label="add"
                                 style={{ padding: '0rem' }}
                                 onClick={(e) => { attendanceMarking() }}
-                            // disabled={disable}
                             >
                                 <MdOutlineAddCircleOutline className="text-info" size={30} />
                             </IconButton>
@@ -129,8 +135,7 @@ const AttendanceMarking = () => {
                             enddate={endodate}
                             rageset={rageset}
                             count={count}
-                        // selectedDept={selectedDept}
-                        // selectDeptSection={selectDeptSection}
+
                         />
                         : null
                 }
