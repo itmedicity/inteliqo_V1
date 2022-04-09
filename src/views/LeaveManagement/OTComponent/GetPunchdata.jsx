@@ -46,7 +46,7 @@ const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatama
             getdepartmentShift()
         }
 
-    }, [model]);
+    }, [model, em_department, em_dept_section]);
     const getShiftdetail = async () => {
         if (shiftid === 0) {
             warningNofity('Please Select Shift')

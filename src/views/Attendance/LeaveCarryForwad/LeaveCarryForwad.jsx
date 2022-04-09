@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useContext, useState } from 'react'
+import React, { Fragment, Suspense, useContext, useEffect, useState } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
@@ -31,14 +31,23 @@ const LeaveCarryForwad = () => {
         SL: 0,
         HL: 0
     })
+    const [lcmast, setLcMast] = useState({
+        emp_type: 0,
+        el: 0,
+        cl: 0,
+        sl: 0,
+        hl: 0
+    })
+
     //getting the leave carry forwad year
     const year = getYear(new Date()) - 1
     const [emp_id, setemp_id] = useState(0)
+    const [emp_tpe, setemp_type] = useState(0)
     const [tableflag, setTableFlag] = useState(0)
     const [name, setname] = useState([])
     const gettable = async () => {
         if ((selectEmpName === 0)) {
-            const result = await axioslogin.get(`/common/getEmpName/${selectDeptSection}`)
+            const result = await axioslogin.get(`/common/getEmpNameCategory/${selectDeptSection}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setname(data)
@@ -47,13 +56,33 @@ const LeaveCarryForwad = () => {
         } else if (selectEmpName !== 0) {
             const result = await axioslogin.get(`/common/getENameLeaveCarry/${selectEmpName}`)
             const { success, data } = result.data;
-
             if (success === 1) {
                 setname(data)
             }
             setTableFlag(1)
         }
     }
+
+    useEffect(() => {
+        if (selectDeptSection !== 0) {
+            const getLeavecarryMast = async () => {
+                const result = await axioslogin.get(`/CarryLeave/${selectDeptSection}`)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const { emp_type, carry_hl, carry_cl, carry_el, carry_sl } = data[0]
+                    const frmdata = {
+                        emp_type: emp_type,
+                        el: carry_el,
+                        cl: carry_cl,
+                        sl: carry_sl,
+                        hl: carry_hl
+                    }
+                    setLcMast(frmdata)
+                }
+            }
+            getLeavecarryMast();
+        }
+    }, [selectDeptSection])
 
     const postdata = {
         emp_id: emp_id,
@@ -87,7 +116,7 @@ const LeaveCarryForwad = () => {
         }
     }
     const redirect = () => {
-        history.push('/Home/Settings');
+        history.push('/Home');
     }
 
     return (
@@ -146,7 +175,9 @@ const LeaveCarryForwad = () => {
                                                         edit={edit}
                                                         setCarryForwardLeave={setCarryForwardLeave}
                                                         setemp_id={setemp_id}
-                                                    />
+                                                        setemp_type={setemp_type}
+                                                        setLcMast={setLcMast}
+                                                        lcmast={lcmast} />
                                                 </Suspense>
                                             </TableBody>
                                         </Table>

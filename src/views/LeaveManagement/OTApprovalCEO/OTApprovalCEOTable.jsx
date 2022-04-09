@@ -68,7 +68,7 @@ const OTApprovalCEOTable = ({ DeptSect }) => {
         setcancelOpen(false);
     };
 
-    const inchargecancel = (data) => {
+    const ceocancel = (data) => {
         setSlno(data)
         setcancelOpen(true);
     };
@@ -101,15 +101,17 @@ const OTApprovalCEOTable = ({ DeptSect }) => {
                 columns={title}
                 icons={tableIcons}
                 actions={[
-                    {
+                    data => ({
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
-                        onClick: (e, data) => handleClickOpen(data.ot_slno)
-                    },
+                        onClick: (e, data) => handleClickOpen(data.ot_slno),
+                        disabled: data.ot_ceo_status == 'Approved'
+
+                    }),
                     {
                         icon: () => <HiTrash size={24} color='success' />,
                         tooltip: "Click here to Cancel",
-                        onClick: (e, data) => inchargecancel(data.ot_slno)
+                        onClick: (e, data) => ceocancel(data.ot_slno)
                     }
                 ]}
                 options={{

@@ -3,7 +3,7 @@ import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
 import LeaveCarryTextFeild from './LeaveCarryTextFeild';
 
-const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id }) => {
+const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id, setLcMast, lcmast, setemp_type }) => {
     const [leavecount, SetleaveCount] = useState([])
     useEffect(() => {
         const getleavecount = async () => {
@@ -16,7 +16,6 @@ const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id }) => {
         }
         getleavecount()
     }, [emid])
-
 
     return (
         <Fragment>
@@ -36,6 +35,8 @@ const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id }) => {
                                             setedit={setedit}
                                             edit={edit}
                                             name={val.leavetype}
+                                            setemp_type={setemp_type}
+                                            lcmast={lcmast}
                                         />
                                     </div>
                                 </div>
