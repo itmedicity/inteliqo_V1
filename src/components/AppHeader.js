@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -25,16 +25,18 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import EmailIcon from '@mui/icons-material/Email';
 import MessageComponent from './profileComponent/MessageComponent'
 import NotificationComponent from './profileComponent/NotificationComponent'
+import { setAlertList } from '../redux/actions/Alert.Actions'
+import { setMsgList } from 'src/redux/actions/Message.actions'
+
 
 const AppHeader = () => {
+  //alert Count
+  const [alertcount, setalertcount] = useState(0)
+  const [msgcount, setmsgcount] = useState(0)
   const dispatch = useDispatch()
-
   const sidebarShow = useSelector((state) => state.changeState.sidebarShow)
-
   const history = useHistory();
-
   const today = moment().format('dddd, DD MMMM - YYYY')
-
   const hrmLogout = () => {
     sessionStorage.clear();
     infoNofity('You Are Logged Out Successfully');
@@ -62,7 +64,15 @@ const AppHeader = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  //getting employee id
+  const empid = useSelector((state) => {
+    return state.getProfileData.ProfileData[0].em_id
+  })
+  //getting alert list
+  useEffect(() => {
+    dispatch(setAlertList())
+    dispatch(setMsgList(empid))
+  }, [empid])
 
   return (
     <Fragment>
@@ -116,7 +126,7 @@ const AppHeader = () => {
                 aria-expanded={openMessage ? 'true' : undefined}
                 onClick={handleMessageClick}
               >
-                <Badge badgeContent={9} variant='standard' color='error'
+                <Badge badgeContent={msgcount} variant='standard' color='error'
                   sx={{
                     "& .MuiBadge-badge": {
                       color: "white",
@@ -138,7 +148,7 @@ const AppHeader = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                <Badge badgeContent={9} variant='standard' color='error'
+                <Badge badgeContent={alertcount} variant='standard' color='error'
                   sx={{
                     "& .MuiBadge-badge": {
                       color: "white",
@@ -169,8 +179,8 @@ const AppHeader = () => {
       </CHeader>
 
       {/* Message NOtificaton CComp */}
-      <MessageComponent anchorEl={anchorElMessage} open={openMessage} handleClose={handleMessageClose} />
-      <NotificationComponent anchorEl={anchorEl} open={open} handleClose={handleClose} />
+      <MessageComponent anchorEl={anchorElMessage} open={openMessage} handleClose={handleMessageClose} setmsgcount={setmsgcount} />
+      <NotificationComponent anchorEl={anchorEl} open={open} handleClose={handleClose} setalertcount={setalertcount} />
 
     </Fragment>
   )

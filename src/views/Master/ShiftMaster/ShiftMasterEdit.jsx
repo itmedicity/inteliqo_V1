@@ -24,9 +24,10 @@ const ShiftMasterEdit = () => {
         dutyday: '1',
         earlyincalculation: '1',
         earlyoutcalculation: '1',
-        shift_status: true
+        shift_status: true,
+        nightoff: false
     })
-    const { shift_name, shift_code, crossday, dutyday, earlyincalculation, earlyoutcalculation, shift_status } = formData
+    const { shift_name, shift_code, crossday, dutyday, earlyincalculation, earlyoutcalculation, nightoff, shift_status } = formData
     //default State
     const defaultState = {
         shift_name: "",
@@ -35,7 +36,8 @@ const ShiftMasterEdit = () => {
         dutyday: '1',
         earlyincalculation: '1',
         earlyoutcalculation: '1',
-        shift_status: true
+        shift_status: true,
+        nightoff: false
     }
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
@@ -155,6 +157,7 @@ const ShiftMasterEdit = () => {
                     first_half_out,
                     second_half_in,
                     second_half_out,
+                    night_off_flag,
                     shft_status
                 } = data[0]
 
@@ -165,6 +168,7 @@ const ShiftMasterEdit = () => {
                     dutyday: shft_duty_day,
                     earlyincalculation: shft_early_in_criteria,
                     earlyoutcalculation: shft_late_out_criteria,
+                    nightoff: night_off_flag === 1 ? true : false,
                     shift_status: shft_status === 1 ? true : false
                 }
                 setCheckIn(new Date(shft_chkin_time))
@@ -243,6 +247,7 @@ const ShiftMasterEdit = () => {
         shift_duration_in_min: crossday === '1' ? shiftdurationforcrossday : shiftduration,
         shift_start_in_min: checkinminutes,
         shift_end_in_min: crossday === '1' ? checkoutminutescrossday : checkoutinminutes,
+        night_off_flag: nightoff === false ? 0 : 1,
         shft_status: shift_status === true ? 1 : 0,
     }
     const submitFormData = async (e) => {
@@ -626,7 +631,23 @@ const ShiftMasterEdit = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="row g-1 d-flex flex-row justify-content-between align-items-center">
+                                    <div className="row g-1 d-flex justify-content-start">
+                                        <div className="col-md-1 pb-2">
+                                            <FormControlLabel
+                                                className=""
+                                                control={
+                                                    <Checkbox
+                                                        name="nightoff"
+                                                        color="secondary"
+                                                        value={nightoff}
+                                                        checked={nightoff}
+                                                        className="ml-2"
+                                                        onChange={(e) => updateShiftmasterData(e)}
+                                                    />
+                                                }
+                                                label="Night Off"
+                                            />
+                                        </div>
                                         <div className="col-md-5 ">
                                             <FormControlLabel
                                                 className=""

@@ -15,6 +15,7 @@ import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeMast = () => {
     const [cont_period, setcont_period] = useState(0)
+    const [disable, setdisable] = useState(false)
     const [data, setdata] = useState('')
     const classes = useStyles();
     const {
@@ -36,8 +37,13 @@ const EmploymentTypeMast = () => {
 
             setdata(earntypename + '+' + designattypename)
         }
+        if (selectDesignationType === 3) {
+            setdisable(true)
+        }
+        else {
+            setdisable(false)
+        }
     }, [selectDesignationType, selectEmployeeType, designattypename, earntypename])
-
     // use effect for append
     useEffect(() => {
 
@@ -626,6 +632,7 @@ const EmploymentTypeMast = () => {
                                                     color="secondary"
                                                     value={cont_renw}
                                                     checked={cont_renw}
+                                                    disabled={disable}
                                                     className="ml-2 "
                                                     onChange={(e) => getEmploymentFormData(e)}
                                                 />
@@ -646,6 +653,7 @@ const EmploymentTypeMast = () => {
                                             allowNegative={false}
                                             name="contract_perd"
                                             value={contract_perd}
+                                            disabled={disable}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
 

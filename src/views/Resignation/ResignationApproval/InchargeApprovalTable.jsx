@@ -23,7 +23,6 @@ const InchargeApprovalTable = ({ DeptSect }) => {
                 const result = await axioslogin.post('/Resignation/resignlist', postData)
                 const { success, data } = result.data
                 if (success === 1) {
-                    console.log(data)
                     setTableData(data)
                 }
                 else if (success === 0) {

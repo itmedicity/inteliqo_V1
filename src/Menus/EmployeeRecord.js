@@ -24,6 +24,18 @@ const Employeerecord = [
     //     name: 'Bulk Updation',
     //     to: '/homes',
     // },
+    {
+        men_slno: 130,
+        component: CNavItem,
+        name: 'Hrm Alert',
+        to: '/Home/Hrm_Alert',
+    },
+    {
+        men_slno: 131,
+        component: CNavItem,
+        name: 'Hrm Message',
+        to: '/Home/Hrm_message',
+    },
 ]
 
 export default Employeerecord;

@@ -1,9 +1,9 @@
 import { IconButton, LinearProgress, TableCell, TableRow } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
+import React, { Fragment, Suspense, memo } from 'react'
 import LeaveCarryCount from './LeaveCarryCount'
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 
-const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id }) => {
+const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id, setemp_type, lcmast, setLcMast }) => {
     return (
         <Fragment>
             {name && name.map((val, index) => {
@@ -16,6 +16,9 @@ const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id })
                             setedit={setedit}
                             edit={edit}
                             setemp_id={setemp_id}
+                            setLcMast={setLcMast}
+                            setemp_type={val.emp_type}
+                            lcmast={lcmast}
                         />
                         <TableCell align="center" style={{ padding: 0, width: '10rem', height: '1rem' }}>
                             <IconButton
@@ -39,4 +42,4 @@ const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id })
     )
 }
 
-export default LeaveCarryRow
+export default memo(LeaveCarryRow)

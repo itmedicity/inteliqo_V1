@@ -260,17 +260,12 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                         succesNofity(message);
                     }
                     setcount(countcl + 1)
-
                 }
             } else if (flag === 2) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPostflagtwo)
-                const { message, success } = result.data;
                 const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
-                const { messagee, succes } = result4.data;
-                if (modeldata.inchargeAuth === 1 && modeldata.hodAuth === 0) {
-                    const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
-                    const { messagee, success } = result2.data;
-                }
+                const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
+                const { messagee, success } = result2.data;
             }
             else {
                 const result3 = await axioslogin.patch('/overtimerequest/coff/insert', coffpostdata)

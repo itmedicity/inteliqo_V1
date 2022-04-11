@@ -19,5 +19,7 @@ export const Actiontypes = {
     //For the employee record list in the Employee File From
     FETCH_EMP_RECORD_LIST: "FETCH_EMP_RECORD_LIST",
     //for getting employee details in duty plan
-    FETCH_EMP_DETAILS: "FETCH_EMP_DETAILS"
+    FETCH_EMP_DETAILS: "FETCH_EMP_DETAILS",
+    FETCH_ALERT_MESSAGE: "FETCH_ALERT_MESSAGE",
+    FETCH_EMP_MESSAGE: "FETCH_EMP_MESSAGE"
 }

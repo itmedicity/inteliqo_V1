@@ -1,18 +1,31 @@
 import { Avatar, Divider, ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import MessageIcon from '@mui/icons-material/Message';
+import { useSelector } from 'react-redux';
+import moment from 'moment'
+import MessageComponents from './MessageComponents';
 
-const MessageContent = ({ handleClose }) => {
+const MessageContent = ({ msgs, handleClose }) => {
+    const [open, setOpen] = useState(false);
+    const [msglist, setmsglist] = useState('')
+    const openMessage = async () => {
+        setOpen(true)
+        setmsglist(msgs.message)
+    }
+    const handleClosee = () => {
+        setOpen(false);
+    };
     return (
         <Fragment>
-            <MenuItem onClick={handleClose}  >
+            <MessageComponents open={open} handleClosee={handleClosee} msglist={msglist} />
+            <MenuItem onClick={openMessage}  >
                 <ListItemAvatar>
                     <Avatar sx={{ bgcolor: "#66bb6a" }} >
                         <MessageIcon />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary="September 14, 2016"
+                    primary={moment(msgs.created_date).format('DD-MM-YYYY')}
                     primaryTypographyProps={{ variant: "caption" }}
                     secondary={
                         <Fragment>
@@ -24,7 +37,7 @@ const MessageContent = ({ handleClose }) => {
                             >
                                 Hr Department
                             </Typography>
-                            {' — Message From HR Department asdasdasdasdasdasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+                            ---{msgs.message}
                         </Fragment>
                     }
                     secondaryTypographyProps={{ noWrap: true }}
@@ -37,9 +50,20 @@ const MessageContent = ({ handleClose }) => {
 
 
 
-const MessageComponent = ({ anchorEl, open, handleClose }) => {
+const MessageComponent = ({ anchorEl, open, handleClose, setmsgcount }) => {
+    const [Msg, setMsg] = useState([])
+    const msglist = useSelector((state) => {
+        return state.getMsgList.MessageList
 
-    const array = [1, 2, 3, 4]
+    })
+    useEffect(() => {
+        if (Object.keys(msglist).length > 0) {
+            setMsg(msglist)
+        }
+        if (msglist.length !== 0) {
+            setmsgcount(msglist.length)
+        }
+    }, [msglist])
 
     return (
         <Fragment>
@@ -54,8 +78,8 @@ const MessageComponent = ({ anchorEl, open, handleClose }) => {
                 sx={{ width: '100%', maxWidth: 500, }}
             >
                 {
-                    array.map((val) => {
-                        return <MessageContent key={val} handleClose={handleClose} />
+                    Msg && Msg.map((val) => {
+                        return <MessageContent key={val.message_slno} msgs={val} handleClose={handleClose} />
                     })
                 }
             </Menu>
@@ -63,4 +87,4 @@ const MessageComponent = ({ anchorEl, open, handleClose }) => {
     )
 }
 
-export default MessageComponent
+export default memo(MessageComponent) 
