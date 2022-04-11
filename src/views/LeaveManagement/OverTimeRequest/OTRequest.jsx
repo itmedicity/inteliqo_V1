@@ -49,6 +49,7 @@ const OTRequest = () => {
         shiftcheckout: new Date(),
         shiftcheckin: new Date(),
     })
+    const [dutyday, setdutyday] = useState(new Date())
     const defaultState = {
         shift_Start: '',
         shift_end: '',
@@ -66,7 +67,12 @@ const OTRequest = () => {
         ot_slno: '',
         ot_amount: ''
     }
+    const checkpost = {
+        punch_in: punchindatamain,
+        punch_out: punchoutdatamain,
+        emp_id: em_id
 
+    }
     useEffect(() => {
         if ((punchindatamain !== 0) && (punchoutdatamain !== 0)) {
             setTable(1)
@@ -113,7 +119,19 @@ const OTRequest = () => {
                 }
             }
             getotamount()
-
+            const checkpuch = async () => {
+                const result = await axioslogin.post('/common/getdutydaycheck', checkpost)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const { duty_day } = data[0]
+                    if (duty_day !== 'NULL') {
+                        setdutyday(moment(duty_day).format("YYYY-MM-DD"))
+                    } else {
+                        setdutyday(moment(new Date()).format("YYYY-MM-DD"))
+                    }
+                }
+            }
+            checkpuch()
         } else {
             setTable(0)
         }
@@ -173,8 +191,10 @@ const OTRequest = () => {
         ot_hod_require: is_hod === 1 ? 0 : hod_level,
         ot_hr_require: '1',
         ot_ceo_require: ceo_level,
-        ot_deptsec_id: em_dept_section
+        ot_deptsec_id: em_dept_section,
+        duty_day: dutyday
     }
+
     const patchData = {
         ot_reson: ot_reson,
         ot_remarks: ot_remarks,
@@ -213,6 +233,7 @@ const OTRequest = () => {
                     setShiftdata(restfm)
                     setmodel(0)
                     setTable(0)
+                    setdutyday(new Date())
                     history.push('/Home/OTRequest');
                 } else if (success === 0) {
                     infoNofity(message.sqlMessage);

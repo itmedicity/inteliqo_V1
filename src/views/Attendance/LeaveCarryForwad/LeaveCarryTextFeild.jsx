@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { TextField } from '@material-ui/core'
 
-const LeaveCarryTextFeild = ({ setedit, edit, count, name }) => {
+const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis }) => {
     const [newedit, setNewedit] = useState(count)
     useEffect(() => {
         setedit({ ...edit, [name]: count })
@@ -19,7 +19,7 @@ const LeaveCarryTextFeild = ({ setedit, edit, count, name }) => {
                     label=""
                     width="20px"
                     height="1em"
-
+                    disabled={dis}
                     size="small"
                     autoComplete="off"
                     variant="outlined"

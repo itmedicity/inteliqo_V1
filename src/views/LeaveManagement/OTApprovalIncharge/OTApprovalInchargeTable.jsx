@@ -105,11 +105,13 @@ const OTApprovalInchargeTable = ({ DeptSect }) => {
                 columns={title}
                 icons={tableIcons}
                 actions={[
-                    {
+                    data => ({
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
-                        onClick: (e, data) => handleClickOpen(data.ot_slno)
-                    },
+                        onClick: (e, data) => handleClickOpen(data.ot_slno),
+                        disabled: data.ot_inch_status == 'Approved'
+
+                    }),
                     {
                         icon: () => <HiTrash size={24} color='success' />,
                         tooltip: "Click here to Cancel",
