@@ -24,6 +24,18 @@ const Employeerecord = [
     //     name: 'Bulk Updation',
     //     to: '/homes',
     // },
+    {
+        men_slno: 128,
+        component: CNavItem,
+        name: 'Probation End Details',
+        to: '/Home/Probation_end_details',
+    },
+    {
+        men_slno: 129,
+        component: CNavItem,
+        name: 'Contract End Details',
+        to: '/Home/Contract_end_details',
+    },
 ]
 
 export default Employeerecord;
