@@ -25,16 +25,16 @@ const Employeerecord = [
     //     to: '/homes',
     // },
     {
-        men_slno: 128,
+        men_slno: 130,
         component: CNavItem,
-        name: 'Probation End Details',
-        to: '/Home/Probation_end_details',
+        name: 'Hrm Alert',
+        to: '/Home/Hrm_Alert',
     },
     {
-        men_slno: 129,
+        men_slno: 131,
         component: CNavItem,
-        name: 'Contract End Details',
-        to: '/Home/Contract_end_details',
+        name: 'Hrm Message',
+        to: '/Home/Hrm_message',
     },
 ]
 

@@ -135,6 +135,8 @@ const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/Carryfo
 const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
 const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
 const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryForwad/LeaveCarryForwad'))
+const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
+const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/Hrm_message'))
 const Probation_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Probation_end_details'))
 const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Contract_end_details'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
@@ -278,6 +280,8 @@ const routes = [
   { path: '/Home/CarryforwardEdit/:id', exact: true, name: 'Due Clearence Edit', component: CarryforwardLeaveEdit },
   { path: '/Home/AttendanceMarking', exact: true, name: 'Attendance Marking', component: AttendanceMarking },
   { path: '/Home/LeaveCarryForwad', exact: true, name: 'Leave Carry Forwad', component: LeaveCarryForwad },
+  { path: '/Home/Hrm_Alert', exact: true, name: 'Hrm Alert', component: Hrm_Alert },
+  { path: '/Home/Hrm_message', exact: true, name: 'Hrm message', component: Hrm_message },
   { path: '/Home/Probation_end_details', exact: true, name: 'Probation End Details', component: Probation_end_details },
   { path: '/Home/Contract_end_details', exact: true, name: 'Contract End Details', component: Contract_end_details },
   { path: '/Home/NightOffRequest', exact: true, name: 'Night Off Request', component: NightOffRequest },

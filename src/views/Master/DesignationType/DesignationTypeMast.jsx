@@ -26,7 +26,6 @@ const DesignationTypeMast = () => {
     }
     // state update
     const { empstat_name, desigstatus } = desigTypdetl;
-    console.log(desigstatus)
     const updateDesigType = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getDesigtyepe({ ...desigTypdetl, [e.target.name]: value })

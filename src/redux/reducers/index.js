@@ -9,6 +9,8 @@ import { leavedata } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
 import { getEmployeedetailsDutyplan } from '../reducers/EmployeeDetails'
+import { getAlertList } from '../reducers/AlertReducres'
+import { getMsgList } from '../reducers/MessageReducres'
 
 const reducer = combineReducers({
     changeState,
@@ -20,7 +22,9 @@ const reducer = combineReducers({
     leavedata,
     getDepartmentList,
     getDeprtSection,
-    getEmployeedetailsDutyplan
+    getEmployeedetailsDutyplan,
+    getAlertList,
+    getMsgList
 })
 
 export default reducer;
