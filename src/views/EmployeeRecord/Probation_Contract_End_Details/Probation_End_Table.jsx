@@ -69,7 +69,7 @@ const Probation_End_Table = () => {
                     showFirstLastPageButtons: false,
                     padding: "dense",
                     actionsColumnIndex: -1,
-                    rowStyle: (data, index) => data.probation_falg === 1 ? { background: "#E3E4FA" } : null
+                    rowStyle: (data, index) => data.probation_falg === 1 ? { background: "#9fa8da" } : null
                 }}
             />
         </Fragment>

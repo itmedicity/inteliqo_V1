@@ -66,6 +66,9 @@ const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) =
         if (Object.keys(empdetails).length > 0) {
             setEmpdetl(empdetails)
         }
+        if (alerts[0] !== undefined) {
+            setalertcount(alerts[0].length)
+        }
     }, [alertlist, empdetails])
 
     const alerts = empDetl.map((value) => {
@@ -99,9 +102,6 @@ const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) =
                 )
         })
     })
-    if (alerts[0] !== undefined) {
-        setalertcount(alerts[0].length)
-    }
     return (
         <Fragment>
             <Menu
