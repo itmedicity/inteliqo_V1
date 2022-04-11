@@ -72,7 +72,7 @@ const ResignationApprovalHR = () => {
                 </div>
                 <div className="col-md-12 mt-3">
                     {depsect === 0 && conttrcatclose !== 1 ? <HRApprovalTable DeptSect={DeptSect} /> : null}
-                    {depsect !== 0 ? <HrApprovalTableSection DeptSect={depsect} /> : null}
+                    {depsect !== 0 && conttrcatclose !== 1 ? <HrApprovalTableSection DeptSect={depsect} /> : null}
                     {conttrcatclose === 1 ? <ContractCloseHRApproval /> : null}
                 </div>
             </PageLayoutCloseOnly>
