@@ -41,6 +41,7 @@ const AppHeaderDropdown = () => {
           em_id: emp_id
         }
         const profilePic = `${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`;
+
         urlExist(profilePic, (status) => {
           if (status === 200) {
             setSrc(profilePic)
