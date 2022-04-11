@@ -30,17 +30,17 @@ const Leavemanagement = [
         name: 'Approval - HR',
         to: '/Home/ApprovalHR',
     },
-    // {
-    //     men_slno: 29,
-    //     component: CNavItem,
-    //     name: 'Leave Cancel - Employees',
-    //     to: '/Home/LeaveCancelEmployee',
-    // },
     {
         men_slno: 30,
         component: CNavItem,
         name: 'Leave Cancel - HR',
         to: '/Home/LeaveCancelHR',
+    },
+    {
+        men_slno: 29,
+        component: CNavItem,
+        name: 'Night Off Request',
+        to: '/Home/NightOffRequest',
     },
     {
         men_slno: 31,

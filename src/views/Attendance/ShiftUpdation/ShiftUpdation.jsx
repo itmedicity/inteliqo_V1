@@ -1,6 +1,7 @@
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
-import React, { Fragment, useContext, useEffect, memo } from 'react'
+import { IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
+import React, { Fragment, useContext, useEffect, memo, Suspense } from 'react'
 import Paper from '@mui/material/Paper';
+import { useHistory } from 'react-router'
 import CustomePagination from 'src/views/CommonCode/CustomePagination';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import TextInput from 'src/views/Component/TextInput'
@@ -10,14 +11,19 @@ import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { addDays, format } from 'date-fns';
+import { addDays, format, getMonth } from 'date-fns';
 import moment from 'moment';
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { infoNofity, getDayDiffrence, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
-const ShiftUpdation = () => {
 
+const ShiftUpdation = () => {
+    //SET  POST DATA
+    const history = useHistory()
+    const [apiData, setApiData] = useState([]);
+    const [year, setYear] = useState(new Date());
     //SHIFT TABLE CODE
     //SHIFT TABLE - pagination code
     const [page, setPage] = useState(0);
@@ -39,11 +45,21 @@ const ShiftUpdation = () => {
         endDate: format(new Date(), "yyyy-MM-dd"),
     })
 
-    const getStartEndDate = async (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-        setApiData([])
-    }
 
+
+
+
+    const setchange = (e) => {
+
+        //finding the dates between start date and end date
+        setYear(e.target.value)
+        const f1date = moment(e.target.value).startOf('month').format('yyyy-MM-DD');
+        const enddate = moment(e.target.value).endOf('month').format('yyyy-MM-DD');
+        setFormData({
+            startDate: format(new Date(f1date), "yyyy-MM-dd"),
+            endDate: format(new Date(enddate), "yyyy-MM-dd"),
+        })
+    }
     const { startDate, endDate } = formData;
     const maxdate = addDays(new Date(startDate), 30);
     const maxdatee = moment(maxdate).format('YYYY-MM-DD');
@@ -56,16 +72,17 @@ const ShiftUpdation = () => {
         const rows = daysDiff === 0 ? 0 : daysDiff + 1;
         setRowsPerPage(rows)
         // setDays(daysDiff)
-    }, [startDate, endDate])
+    }, [startDate, endDate, apiData])
     const {
         selectedDept,
         selectDeptSection,
         selectEmpName
     } = useContext(PayrolMasterContext)
-    //SET  POST DATA
-    const [apiData, setApiData] = useState([]);
+
     // Get the attendance data from the database 
     const getPunchDetl = async () => {
+
+        displayleave()
         if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
@@ -134,10 +151,51 @@ const ShiftUpdation = () => {
             infoNofity("AtLeast Department & Section is Required");
         }
     }
+    //processing  leave first credit the leave of the current month
+    const displayleave = async () => {
+
+        const selempdata = {
+
+            em_department: selectedDept,
+            em_dept_section: selectDeptSection,
+
+        }
+        const result = await axioslogin.post('/empmast/getempName/', selempdata)
+        const { success, data } = result.data
+
+        const empdata = data.map((val) => {
+            return val.em_id
+
+        })
+
+        const result2 = await axioslogin.post('/common/getCasualeavearry/', empdata)
+
+
+        if (result2.data.success === 1) {
+            const leaveMonth = getMonth(new Date())
+            const casual = result2.data.data.filter((val) => {
+
+                return val.cl_lv_mnth === leaveMonth
+            })
+            if (casual.length !== 0) {
+                const { hrm_cl_slno } = casual[0]
+                const postdata = {
+                    hrm_cl_slno: hrm_cl_slno
+                }
+
+
+                const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
+
+
+
+            }
+        }
+    }
 
     //Process and Get Attendance data from the database
     const processPunchdetl = async () => {
 
+        setApiData([])
         if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
@@ -147,7 +205,6 @@ const ShiftUpdation = () => {
                 cmpCode: 1,
                 emp_code: selectEmpName
             }
-
             if (Object.keys(deptDetl).length > 1) {
 
                 const result = await axioslogin.post("/attendCal/proc", deptDetl)
@@ -155,30 +212,34 @@ const ShiftUpdation = () => {
                 const { success } = result.data;
                 if (success === 1) {
                     const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
-
                     const { success, data } = result.data;
 
-
                     if (success === 1) {
-                        const result = await axioslogin.post("/attendCal", deptDetl);
-                        const { success, data } = result.data;
-                        if (success === 1) {
-                            if (data.length !== 0) {
-                                setApiData(data)
-                                setcount(count + 1)
+                        const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
+
+                        if (resultcalc.data.success === 1) {
+                            const result = await axioslogin.post("/attendCal", deptDetl);
+                            const { success, data } = result.data;
+                            if (success === 1) {
+                                if (data.length !== 0) {
+                                    setApiData(data)
+                                    setcount(count + 1)
+                                }
+                                else {
+                                    setApiData(data)
+                                    infoNofity("Please Do the Shift Marking")
+                                    setcount(count + 1)
+                                }
+
                             }
-                            else {
-                                setApiData(data)
+
+                            if (success === 0) {
                                 infoNofity("Please Do the Shift Marking")
-                                setcount(count + 1)
                             }
 
+                        } else {
+                            errorNofity('Please Contact')
                         }
-
-                        if (success === 0) {
-                            infoNofity("Please Do the Shift Marking")
-                        }
-
                     } else {
                         setcount(count + 1)
                         errorNofity('Please Contact')
@@ -215,24 +276,32 @@ const ShiftUpdation = () => {
                     const { success } = result.data;
 
                     if (success === 1) {
-                        const result = await axioslogin.post("/attendCal", deptDetl);
-                        const { success, data } = result.data;
-                        if (success === 1) {
-                            if (data.length !== 0) {
-                                setApiData(data)
-                                setcount(count + 1)
+                        const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
+
+                        if (resultcalc.data.success === 1) {
+                            const result = await axioslogin.post("/attendCal", deptDetl);
+                            const { success, data } = result.data;
+                            if (success === 1) {
+                                if (data.length !== 0) {
+                                    setApiData(data)
+                                    setcount(count + 1)
+                                }
+                                else {
+                                    setApiData(data)
+                                    infoNofity("Please Do the Shift Marking")
+                                    setcount(count + 1)
+                                }
+
                             }
-                            else {
-                                setApiData(data)
+
+                            if (success === 0) {
                                 infoNofity("Please Do the Shift Marking")
-                                setcount(count + 1)
                             }
 
+                        } else {
+                            errorNofity('Please Contact')
                         }
 
-                        if (success === 0) {
-                            infoNofity("Please Do the Shift Marking")
-                        }
 
                     } else {
                         setcount(count + 1)
@@ -253,34 +322,34 @@ const ShiftUpdation = () => {
         }
 
     }
+    //redirecting to profile page
+    const redirecting = () => {
 
+        history.push('/Home')
+    }
     return (
         <Fragment>
-            <PageLayoutProcess heading="Attendance Details" >
+            <PageLayoutCloseOnly
+                heading="Attendance Marking" redirect={redirecting}>
                 <div className="col-md-12 mb-2">
                     <div className="row g-2">
                         <div className="col-md-2">
-                            <TextInput
-                                type="date"
-                                classname="form-control form-control-sm custom-datefeild-height"
-                                Placeholder="Date"
-                                name="startDate"
-                                value={startDate}
-                                changeTextValue={(e) => getStartEndDate(e)}
-                            />
+                            <div className="col-md-12">
+                                <TextInput
+                                    type="month"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="Arrived Time"
+                                    changeTextValue={(e) => {
+
+                                        setchange(e)
+
+                                    }}
+                                    value={year}
+                                    name="monthwise"
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-2">
-                            <TextInput
-                                type="date"
-                                classname="form-control form-control-sm custom-datefeild-height"
-                                Placeholder="Date"
-                                name="endDate"
-                                value={endDate}
-                                min={startDate}
-                                max={maxdatee}
-                                changeTextValue={(e) => getStartEndDate(e)}
-                            />
-                        </div>
+
                         <div className="col-md-2">
                             <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
@@ -354,6 +423,7 @@ const ShiftUpdation = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+
                                 {
                                     (rowsPerPage > 0
                                         ? apiData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -362,6 +432,8 @@ const ShiftUpdation = () => {
                                         return <ShiftTableDataRow val={val} key={index} count={count} />
                                     })
                                 }
+
+
                             </TableBody>
                             <TableFooter>
                                 <TableRow hover={true} >
@@ -377,7 +449,7 @@ const ShiftUpdation = () => {
                         </Table>
                     </TableContainer>
                 </div>
-            </PageLayoutProcess>
+            </PageLayoutCloseOnly>
         </Fragment>
     )
 }

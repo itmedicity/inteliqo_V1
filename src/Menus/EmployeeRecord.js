@@ -31,7 +31,7 @@ const Employeerecord = [
         to: '/Home/Hrm_Alert',
     },
     {
-        men_slno: 130,
+        men_slno: 131,
         component: CNavItem,
         name: 'Hrm Message',
         to: '/Home/Hrm_message',
