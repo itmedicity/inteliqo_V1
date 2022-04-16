@@ -125,9 +125,9 @@ const OTRequest = () => {
                 if (success === 1) {
                     const { duty_day } = data[0]
                     if (duty_day !== 'NULL') {
-                        setdutyday(moment(duty_day).format("YYYY-MM-DD"))
+                        setdutyday(duty_day)
                     } else {
-                        setdutyday(moment(new Date()).format("YYYY-MM-DD"))
+                        setdutyday(new Date())
                     }
                 }
             }
@@ -192,7 +192,7 @@ const OTRequest = () => {
         ot_hr_require: '1',
         ot_ceo_require: ceo_level,
         ot_deptsec_id: em_dept_section,
-        duty_day: dutyday
+        duty_day: moment(dutyday).format("YYYY-MM-DD")
     }
 
     const patchData = {
