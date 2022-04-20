@@ -27,3 +27,7 @@
         font-size: 12px;
         padding: 20px 0 0;
     }
+
+    .ListItemScrol::-webkit-scrollbar{
+        display: none;
+    }

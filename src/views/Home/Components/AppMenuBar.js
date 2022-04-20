@@ -27,12 +27,12 @@ const AppMenuBar = () => {
                                     sx={{ display: { xs: 'inline-grid', md: 'flex' } }}
                                 >
                                     <Grid container  >
-                                        <Grid item md={2} xs={6} sm={2} >
+                                        {/* <Grid item md={2} xs={6} sm={2} >
                                             <Overtime />
                                         </Grid>
                                         <Grid item md={2} xs={6} sm={2} >
                                             <Resignation />
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item md={2} xs={6} sm={2}>
                                             <Alert />
                                         </Grid>
