@@ -63,7 +63,7 @@ const MessageComponent = ({ anchorEl, open, handleClose, setmsgcount }) => {
         if (msglist.length !== 0) {
             setmsgcount(msglist.length)
         }
-    }, [msglist])
+    }, [msglist, setmsgcount])
 
     return (
         <Fragment>

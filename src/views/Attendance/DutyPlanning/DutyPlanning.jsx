@@ -33,7 +33,6 @@ const DutyPlanning = () => {
   const [duty, setDuty] = useState(0)
   const [duty1, setDuty1] = useState(0)
   const [count, setCount] = useState(0)
-  const [disable, setdisable] = useState(false)
   //use state for initial start date and end date
   const [formData, setFormData] = useState({
     startDate: format(new Date(), "yyyy-MM-dd"),
@@ -228,7 +227,6 @@ const DutyPlanning = () => {
                 aria-label="add"
                 style={{ padding: '0rem' }}
                 onClick={insertDutyPlanning}
-                disabled={disable}
               >
                 <MdOutlineAddCircleOutline className="text-info" size={30} />
               </IconButton>

@@ -1,22 +1,21 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { TextField } from '@mui/material'
 import { getYear } from 'date-fns'
 import React, { Fragment, memo, useContext, useState } from 'react'
 import moment from 'moment';
 import { useHistory, useParams } from 'react-router'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import EmployeeExperienceTable from './EmployeeFileTable/EmployeeExperienceTable'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 import TextInput from 'src/views/Component/TextInput'
+import ReactTooltip from 'react-tooltip'
+import { format } from 'date-fns'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 
 const EmployeeExperience = () => {
-
     const classes = useStyles()
     const { id, no } = useParams();
     const history = useHistory();
@@ -25,57 +24,35 @@ const EmployeeExperience = () => {
     //designation select list
     const { selectDesignation,
         updateDesignation } = useContext(PayrolMasterContext)
-
     const reset = () => {
         updateDesignation(0)
     }
-    //use States for date
-    const [workstartdate, setWorkdate] = useState(new Date())
-    const [workenddate, setWorkEnddate] = useState(new Date())
-
+    const [totyear, settotyear] = useState(0)
     //Initial State
     const [formData, setformData] = useState({
         institution_name: "",
-        designation: "",
-        total_year: 0,
-        gross_salary: ""
+        gross_salary: "",
+        workstartdate: format(new Date(), "yyyy-MM-dd"),
+        workenddate: format(new Date(), "yyyy-MM-dd")
     })
     //defaultState
     const defaultState = {
         institution_name: "",
-        designation: "",
-        total_year: 0,
-        gross_salary: ""
+        gross_salary: "",
+        workstartdate: format(new Date(), "yyyy-MM-dd"),
+        workenddate: format(new Date(), "yyyy-MM-dd")
     }
     //Destructuring
-    const { institution_name, designation, total_year, gross_salary } = formData
-
-    //setting work start Date
-    const setWorkstartdate = (val) => {
-        setWorkdate(val)
-    }
-    //setting work End Date
-    const setWorkenddate = (val) => {
-        setWorkEnddate(val)
-    }
+    const { institution_name, gross_salary, workstartdate, workenddate } = formData
     //getting form data
     const updateEmployeeExpFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setformData({ ...formData, [e.target.name]: value })
-    }
-
-    //for calculating total year
-    const changeyear = () => {
-        const startdate = getYear(workstartdate)
-        const enddate = getYear(workenddate)
+        //calculating total working year
+        const startdate = getYear(new Date(workstartdate))
+        const enddate = getYear(new Date(workenddate))
         const expyear = enddate - startdate
-        const year = {
-            institution_name: institution_name,
-            designation: designation,
-            total_year: expyear,
-            gross_salary: gross_salary
-        }
-        setformData(year)
+        settotyear(expyear)
     }
     //postData
     const postData = {
@@ -85,7 +62,7 @@ const EmployeeExperience = () => {
         em_designation: selectDesignation,
         em_from: moment(workstartdate).format('YYYY-MM-DD'),
         em_to: moment(workenddate).format('YYYY-MM-DD'),
-        em_total_year: total_year,
+        em_total_year: totyear,
         em_salary: gross_salary,
         create_user: no
     }
@@ -98,9 +75,11 @@ const EmployeeExperience = () => {
             succesNofity(message)
             setformData(defaultState)
             setCount(count + 1)
-            setWorkdate(new Date())
-            setWorkEnddate(new Date())
+            settotyear(0)
             reset()
+        }
+        else if (success === 2) {
+            warningNofity(message)
         }
         else {
             errorNofity('Error Occured!!!!Please Contact EDP')
@@ -114,13 +93,13 @@ const EmployeeExperience = () => {
         <Fragment>
             <PageLayout heading="Employee Experience">
                 <div className="card">
-                    <form onSubmit={submitFormData}>
+                    <form className={classes.root} onSubmit={submitFormData}>
                         <div className="card-body">
-                            <div className="row g-2">
-                                <div className="col-md-5">
+                            <div className="row g-1">
+                                <div className="col-md-4">
                                     <div className="card">
                                         <div className="card-body">
-                                            <div className="row g-2">
+                                            <div className="row g-1">
                                                 <div className="col-md-12">
                                                     <TextInput
                                                         type="text"
@@ -132,67 +111,49 @@ const EmployeeExperience = () => {
                                                     />
                                                 </div>
                                                 <div className="col-md-12">
-                                                    <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                                    <DesignationMast style={SELECT_CMP_STYLE} />
                                                 </div>
-                                                <div className="col-md-12" >
-                                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                        <DatePicker
-                                                            //label="Work Start Date"
-                                                            name="workstartdate"
-                                                            maxDate={new Date()}
-                                                            type="date"
-                                                            clearable
-                                                            value={workstartdate}
-                                                            onChange={(e) => {
-                                                                setWorkstartdate(e)
-                                                                changeyear()
-                                                            }}
-                                                            InputProps={{
-                                                                className: classes.customInputFeild
-                                                            }}
-                                                            renderInput={(params) => <TextField {...params}
-                                                                fullWidth
-                                                                size="small"
-                                                                autoComplete="off"
-                                                                variant="outlined"
-                                                            />}
-                                                        />
-                                                    </LocalizationProvider>
+                                                <div className="col-md-12">
+                                                    <div className="row g-1">
+                                                        <div className="col-md-6 " data-tip="Work Start Date" data-for='toolTip1' data-place='top'>
+                                                            <ReactTooltip id="toolTip1" />
+                                                            <TextInput
+                                                                type="date"
+                                                                classname="form-control form-control-sm"
+                                                                Placeholder="Start Date"
+                                                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                                                value={workstartdate}
+                                                                name="workstartdate"
+                                                                changeTextValue={(e) => {
+                                                                    updateEmployeeExpFormData(e)
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-6 " data-tip="Work End Date" data-for='toolTip1' data-place='top'>
+                                                            <ReactTooltip id="toolTip1" />
+                                                            <TextInput
+                                                                type="date"
+                                                                classname="form-control form-control-sm"
+                                                                Placeholder="Start Date"
+                                                                min={moment(workstartdate).format('YYYY-MM-DD')}
+                                                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                                                value={workenddate}
+                                                                name="workenddate"
+                                                                changeTextValue={(e) => {
+                                                                    updateEmployeeExpFormData(e)
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="col-md-12" >
-                                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                        <DatePicker
-                                                            //label="Work End Date"
-                                                            name="workenddate"
-                                                            minDate={new Date(workstartdate)}
-                                                            maxDate={new Date()}
-                                                            type="date"
-                                                            value={workenddate}
-                                                            onChange={(e) => {
-                                                                setWorkenddate(e)
-                                                                changeyear()
-                                                            }}
-                                                            InputProps={{
-                                                                className: classes.customInputFeild
-                                                            }}
-                                                            renderInput={(params) => <TextField {...params}
-                                                                fullWidth
-                                                                size="small"
-                                                                autoComplete="off"
-                                                                variant="outlined"
-                                                            />}
-                                                        />
-                                                    </LocalizationProvider>
-                                                </div>
-
                                                 <div className="col-md-12">
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
                                                         Placeholder="Total Year"
-                                                        changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                                        value={total_year}
-                                                        name="total_year"
+                                                        value={totyear}
+                                                        name="totyear"
+                                                        disabled={true}
                                                     />
                                                 </div>
 
@@ -206,11 +167,11 @@ const EmployeeExperience = () => {
                                                         name="gross_salary"
                                                     />
                                                 </div>
-                                            </div >
+                                            </div>
                                         </div >
                                     </div >
                                 </div >
-                                <div className="col-md-7">
+                                <div className="col-md-8">
                                     <EmployeeExperienceTable update={count} />
                                 </div>
                             </div >

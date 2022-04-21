@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import TextInput from 'src/views/Component/TextInput';
@@ -14,8 +14,8 @@ import { subHours } from 'date-fns';
 import { addHours } from 'date-fns/esm';
 
 const ShiftMasterEdit = () => {
-    const { id } = useParams()
     const history = useHistory()
+    const { id } = useParams()
     //use State for Setting Initial State
     const [formData, setFormData] = useState({
         shift_name: "",
@@ -129,6 +129,8 @@ const ShiftMasterEdit = () => {
     }
     //FUNCTION TO GET TO TOMORROW DATE
     const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
+    const checkoutstartcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
+    const checkoutendcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
     useEffect(() => {
         const getShiftMasterDetails = async () => {
             const result = await axioslogin.get(`/shift/${id}`)
@@ -190,7 +192,6 @@ const ShiftMasterEdit = () => {
                 setFormData(frmData)
             }
         }
-
         getShiftMasterDetails()
     }, [id])
     const updateShiftmasterData = async (e) => {
@@ -229,8 +230,8 @@ const ShiftMasterEdit = () => {
         shft_chkout_time: crossday === '1' ? moment(nextdate).format("YYYY-MM-DD HH:mm:ss") : moment(checkOut).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_start: moment(checkInStart).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_end: moment(checkInEnd).format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_start: moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_end: moment(checkOutEnd).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_start: crossday === '1' ? moment(checkoutstartcrossday).format("YYYY-MM-DD HH:mm:ss") : moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_end: crossday === '1' ? moment(checkoutendcrossday).format("YYYY-MM-DD HH:mm:ss") : moment(checkOutEnd).format("YYYY-MM-DD HH:mm:ss"),
         shft_duty_day: dutyday,
         shft_brk_start: moment(BreakStart).format("YYYY-MM-DD HH:mm:ss"),
         shft_brk_end: moment(Breakend).format("YYYY-MM-DD HH:mm:ss"),
@@ -250,6 +251,7 @@ const ShiftMasterEdit = () => {
         night_off_flag: nightoff === false ? 0 : 1,
         shft_status: shift_status === true ? 1 : 0,
     }
+    // console.log('checkIn')
     const submitFormData = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/shift', postData)
@@ -683,4 +685,4 @@ const ShiftMasterEdit = () => {
     )
 }
 
-export default ShiftMasterEdit
+export default memo(ShiftMasterEdit) 

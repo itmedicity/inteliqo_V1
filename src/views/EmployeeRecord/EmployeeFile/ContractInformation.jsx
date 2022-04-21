@@ -21,11 +21,12 @@ import Paper from '@mui/material/Paper';
 import ContractcategoryModel from 'src/views/CommonCode/ContractcategoryModel'
 import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess'
 import compareAsc from 'date-fns/compareAsc'
+import ContractRenewModel from './EmpFileComponent/ContractRenewModel'
 
 const ContractInformation = () => {
 
     const [categorychge, setcategorychange] = useState(1)
-    // use State foe serial number
+    // use State for serial number
     const [processslno, setprocessslno] = useState(0)
     // to model message
     const [modelmessage, setmodelmessage] = useState('');
@@ -33,6 +34,7 @@ const ContractInformation = () => {
     const [modelvalue, setmodelvalue] = useState(0)
     // set open model true false for leave setting
     const [open, setOpen] = useState(false);
+    const [openn, setOpenn] = useState(false);
     // usestae to check wheather category is saved 
     const [categorysave, setcategorysave] = useState(0)
     // check wheathe old or new
@@ -54,8 +56,6 @@ const ContractInformation = () => {
         ecat_sl: 0,
         em_category: 0
     })
-
-
     // current process details
     const [leaveprocessid, leaveprocessidupdate] = useState({
         hrm_calcu: 0,
@@ -68,8 +68,8 @@ const ContractInformation = () => {
     });
 
     // destructuring current process details
-
     const [modelcateg, setmodelcate] = useState(0)
+    const [modelrenew, setmodelrenew] = useState(0)
     const classes = useStyles()
     const history = useHistory()
     const { id, no } = useParams()
@@ -139,6 +139,7 @@ const ContractInformation = () => {
             }
         }
         else if (success === 0) {
+            Setenableclose(true)
             infoNofity("There Is No Contract Information Against This Employee")
         }
         else {
@@ -165,7 +166,6 @@ const ContractInformation = () => {
             succesNofity(message)
             Setenableclose(true)
             Setenable(true)
-
         }
         else {
             errorNofity('Error Occured!!!!Please Contact EDP')
@@ -194,7 +194,6 @@ const ContractInformation = () => {
             else {
                 setmodelcate(1)
                 Setenablefield(false)
-                // setmodelcate(1)
                 getSerialnumberempnumber().then((val) => {
                     const newemno = val
                     Setnewempno(newemno)
@@ -222,11 +221,12 @@ const ContractInformation = () => {
         // setmodellist(false)
     }
     const submitFormData = async (e) => {
-
         e.preventDefault()
         const result = await axioslogin.patch('/empcontract/contractrenew', RenewData)
         const { success, message } = result.data
         if (success === 2) {
+            setmodelrenew(1)
+            setOpenn(true)
             succesNofity(message)
             Setenablefield(true)
             if (categorysave === 1) {
@@ -309,8 +309,16 @@ const ContractInformation = () => {
         createData('Remaining Days', remaining_days),
         createData('', contractstatus),
     ];
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const data = {
+        emp_id: no,
+        start: moment(firstDay).format('YYYY-MM-DD'),
+        end: moment(new Date()).format('YYYY-MM-DD'),
+    }
     return (
         <Fragment>
+            {modelvalue !== 1 && modelrenew === 1 ? <ContractRenewModel data={data} open={openn} setOpenn={setOpenn} /> : null}
             {modelcateg === 1 ? <ContractcategoryModel em_category={em_category}//old category
                 id={id}//employeenumber
                 setcategorysave={setcategorysave} //setcategory change
@@ -411,7 +419,6 @@ const ContractInformation = () => {
                                             />
                                         </div>
                                     </div>
-
                                     <div className="col-md-2">
                                         <div className="col-md-12 pt-2 pl-1">
                                             <Button

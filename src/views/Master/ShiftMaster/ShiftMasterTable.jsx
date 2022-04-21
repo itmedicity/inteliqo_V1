@@ -29,6 +29,18 @@ const ShiftMasterTable = ({ update }) => {
             }
         },
         {
+            title: 'ChecK In Time', field: 'shft_chkin_time', cellStyle: {
+                minWidth: 200,
+                maxWidth: 250
+            }
+        },
+        {
+            title: 'ChecK Out Time', field: 'shft_chkout_time', cellStyle: {
+                minWidth: 200,
+                maxWidth: 250
+            }
+        },
+        {
             title: 'Status', field: 'shft_status', cellStyle: {
                 minWidth: 1,
                 maxWidth: 2

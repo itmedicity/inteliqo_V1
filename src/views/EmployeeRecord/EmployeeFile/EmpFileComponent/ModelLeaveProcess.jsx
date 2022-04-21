@@ -153,7 +153,6 @@ const ModelLeaveProcess = ({ open,
                 datayearsave(funprocessdata(em_category, category_slno))
             }
 
-
             if ((em_category !== category_slno)) {
                 { // casual leave update
                     if ((ecat_cl === 0 && hrm_clv === 1)) {
@@ -189,6 +188,7 @@ const ModelLeaveProcess = ({ open,
         }
     }
     const handleClosee = () => {
+        setmodelvalue(0)
         setopenleavelist(false)
     }
     const handleClleaveprocess = () => {

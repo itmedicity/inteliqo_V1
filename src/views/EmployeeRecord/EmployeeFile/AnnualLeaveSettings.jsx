@@ -103,7 +103,7 @@ const AnnualLeaveSettings = () => {
     const Carryfoward = {
         mainHeading: "Carry Forward Leave",
         headingOne: "Leave Name",
-        headingTwo: "Date",
+        headingTwo: "Allowed",
         headingThee: "Credited",
         headingFour: "Taken"
     }

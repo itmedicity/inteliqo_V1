@@ -1,61 +1,44 @@
 import { Typography } from '@mui/material';
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { TEXT_DARK, TEXT_MUTED } from 'src/views/Constant/Constant';
+import { axioslogin } from 'src/views/Axios/Axios';
+const CarryForwardLeaveList = ({ empid }) => {
+    const [list, setlist] = useState([{
+        name: 0,
+        credited: 0,
+        taken: 0
 
-const CarryForwardLeaveList = () => {
-    const list = [
-        {
-            name: "January (CL)",
-            date: "10/11/2021",
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "February (SL)",
-            date: "10/11/2021",
-            credit: 1,
-            taken: 1
-        },
-        {
-            name: "March (HL)",
-            date: "10/11/2021",
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "April (CL)",
-            date: "10/11/2021",
-            credit: 1,
-            taken: 0
-        },
-        {
-            name: "May (HL)",
-            date: "10/11/2021",
-            credit: 1,
-            taken: 0
-        },
-    ]
+    }])
+    useEffect(() => {
+        const getholidaylleave = async () => {
+            const result = await axioslogin.get(`/common/carry/getcarryleave/${empid}`)
+            const { success, data } = result.data
+            if (success === 0) {
+                setlist([])
+            }
+            else {
+                setlist(data)
+            }
+        }
+        getholidaylleave();
+    }, [empid])
     return (
         <Fragment>
             <ul className="list-group list-group-flush ">
                 {
-                    list.map((val, index) => {
+                    list && list.map((val, index) => {
                         return <li className="list-group-item py-0" key={index}>
                             <div className="d-md-flex d-sm-flex justify-content-around"
-                                style={val.taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
+                                style={val.Taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
                             >
                                 <div className="col-sm-4 py-0 text-start" >
                                     <Typography variant="body2" gutterBottom className="my-0">
                                         {val.name}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-3 py-0 text-center">
-                                    <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.date}
-                                    </Typography>
-                                </div>
-                                <div className="col-sm-2 py-0 text-start">{val.credit}</div>
-                                <div className="col-sm-1 py-0 text-start">{val.taken}</div>
+                                <div className="col-sm-2 py-0 text-start">{val.Credited}</div>
+                                <div className="col-sm-2 py-0 text-start">{val.Credited}</div>
+                                <div className="col-sm-1 py-0 text-start">{0}</div>
                             </div>
                         </li>;
                     })
