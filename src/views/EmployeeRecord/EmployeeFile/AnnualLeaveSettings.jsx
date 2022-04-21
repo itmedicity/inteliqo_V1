@@ -17,8 +17,6 @@ import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess';
 import './EmpStyle.css'
 const CasualLeaveList = React.lazy(() => import('./EmpFileComponent/CasualLeaveList'))
 
-
-
 const AnnualLeaveSettings = () => {
     const history = useHistory()
     // get id and number of logged user
@@ -27,7 +25,6 @@ const AnnualLeaveSettings = () => {
     const [olddata, setolddat] = useState(0)
     // use sate for causltable rerender
     const [castable, setcastable] = useState(0)
-
     // to check wheather data is present
     const [nodatacl, setnodatacl] = useState(0)
     const [nodatahl, setnodatahl] = useState(0)
@@ -56,7 +53,6 @@ const AnnualLeaveSettings = () => {
 
     // destructuring current process details
     const { lv_process_slno } = leaveprocessid
-
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
@@ -76,9 +72,9 @@ const AnnualLeaveSettings = () => {
         ecat_prob: 0,
         ecat_woff_allow: 0,
         ecat_sl: 0,
-        em_category: 0
+        em_category: 0,
+        em_doj: ''
     })
-
     const { ecat_cl, ecat_el, ecat_esi_allow,
         ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
     } = leavestate
@@ -89,7 +85,6 @@ const AnnualLeaveSettings = () => {
         headingThee: "Credited",
         headingFour: "Taken"
     }
-
     const Holidy = {
         mainHeading: "National & Festival Holiday",
         headingOne: "Days",
@@ -97,7 +92,6 @@ const AnnualLeaveSettings = () => {
         headingThee: "Credited",
         headingFour: "Taken"
     }
-
     const EarnLeave = {
         mainHeading: "Earn Leave (Privilage Leave)",
         headingOne: "Month",
@@ -140,7 +134,6 @@ const AnnualLeaveSettings = () => {
         getcategorydata();
         getProcessserialnum().then((val) => {
             setprocessslno(val)
-
         }
         )
 
@@ -152,16 +145,12 @@ const AnnualLeaveSettings = () => {
         em_id: id
     }
     const submitprocess = () => {
-
         const getdata = async () => {
-
             // check the table where data present if present get the details process table
             const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
             const { success, message } = result.data;
-
             const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
                 lv_process_slno, next_updatedate } = message[0]
-
             const dataprvleave = {
                 hrm_calcu: hrm_calcu,
                 hrm_clv: hrm_clv,
@@ -171,8 +160,6 @@ const AnnualLeaveSettings = () => {
                 category_slno: category_slno,
                 lv_process_slno: lv_process_slno
             }
-
-
             // if no data available
             if (success === 0) {
 
@@ -200,10 +187,8 @@ const AnnualLeaveSettings = () => {
                     setmodellist(true)
                 }
             }
-
         }
         getdata()
-
     }
     const handleClose = () => {
         setmodellist(false)
@@ -234,8 +219,6 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     setmodelvalue={setmodelvalue}
-
-
                 /> : null}
                 {/* if new process pending */}
                 {modellist === true ? <ModelAvailLeavelist
@@ -254,13 +237,11 @@ const AnnualLeaveSettings = () => {
                     <div className="col-md-4">
                         <CardLeaveContainer title={CasualLeave}  >
                             <Suspense fallback={<CircularProgress />} >
-
                                 <div className="card-casual-leave">
                                     {ecat_cl === 1 && nodatacl === 0 ? <CasualLeaveList
                                         nodataset={setnodatacl}
                                         no={no} //employee id
                                         castable={castable}// for rerendering on process click
-
                                     /> : nodatacl === 1 ? "Not Processed" : 'NOT APPLICABLE'}
 
                                 </div>
