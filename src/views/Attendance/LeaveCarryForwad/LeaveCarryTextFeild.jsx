@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, memo } from 'react'
 import { TextField } from '@material-ui/core'
 
-const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis }) => {
+const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis, lcmast }) => {
     const [newedit, setNewedit] = useState(count)
     useEffect(() => {
         setedit({ ...edit, [name]: count })
@@ -11,7 +11,6 @@ const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis }) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setedit({ ...edit, [e.target.name]: value })
     }
-
     return (
         <Fragment>
             <div className="col-md-12">
@@ -19,7 +18,8 @@ const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis }) => {
                     label=""
                     width="20px"
                     height="1em"
-                    disabled={dis}
+                    disabled={(lcmast.el === 1 && name === 'EL') || (lcmast.sl === 1 && name === 'SL')
+                        || (lcmast.cl === 1 && name === 'CL') || (lcmast.hl === 1 && name === 'HL') ? false : true}
                     size="small"
                     autoComplete="off"
                     variant="outlined"
@@ -39,4 +39,4 @@ const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis }) => {
     )
 }
 
-export default LeaveCarryTextFeild
+export default memo(LeaveCarryTextFeild)

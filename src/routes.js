@@ -140,6 +140,7 @@ const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/
 const Probation_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Probation_end_details'))
 const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Contract_end_details'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
+const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/AnnualLeaveProcess'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -285,6 +286,7 @@ const routes = [
   { path: '/Home/Probation_end_details', exact: true, name: 'Probation End Details', component: Probation_end_details },
   { path: '/Home/Contract_end_details', exact: true, name: 'Contract End Details', component: Contract_end_details },
   { path: '/Home/NightOffRequest', exact: true, name: 'Night Off Request', component: NightOffRequest },
+  { path: '/Home/AnnualLeaveProcess', exact: true, name: 'Annual Leave Process', component: AnnualLeaveProcess },
 ]
 
 export default routes

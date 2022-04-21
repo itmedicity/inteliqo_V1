@@ -1,6 +1,5 @@
 import React, { Fragment, Suspense, useContext, useEffect, useState } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
@@ -14,11 +13,12 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { LinearProgress } from '@mui/material'
 import LeaveCarryRow from './LeaveCarryRow';
 import { getYear } from 'date-fns';
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 
 const LeaveCarryForwad = () => {
     const { selectDeptSection, selectEmpName } = useContext(PayrolMasterContext);
@@ -51,15 +51,23 @@ const LeaveCarryForwad = () => {
             const { success, data } = result.data;
             if (success === 1) {
                 setname(data)
+                setTableFlag(1)
             }
-            setTableFlag(1)
+            else {
+                warningNofity("No Employee in this department")
+                setTableFlag(0)
+            }
         } else if (selectEmpName !== 0) {
             const result = await axioslogin.get(`/common/getENameLeaveCarry/${selectEmpName}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setname(data)
+                setTableFlag(1)
             }
-            setTableFlag(1)
+            else {
+                warningNofity("No Employee in this department")
+                setTableFlag(0)
+            }
         }
     }
 
@@ -82,6 +90,7 @@ const LeaveCarryForwad = () => {
             }
             getLeavecarryMast();
         }
+        setTableFlag(0)
     }, [selectDeptSection])
 
     const postdata = {
@@ -121,7 +130,7 @@ const LeaveCarryForwad = () => {
 
     return (
         <Fragment>
-            <PageLayoutProcess
+            <PageLayoutCloseOnly
                 heading="Leave Carry Forwad"
                 redirect={redirect}
             >
@@ -188,7 +197,7 @@ const LeaveCarryForwad = () => {
                         : null
                     }
                 </div>
-            </PageLayoutProcess>
+            </PageLayoutCloseOnly>
         </Fragment >
     )
 }

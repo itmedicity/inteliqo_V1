@@ -25,6 +25,12 @@ const AttendanceManagement = [
         name: 'Leave Carry Forwad',
         to: '/Home/LeaveCarryForwad',
     },
+    {
+        men_slno: 127,
+        component: CNavItem,
+        name: 'Annual Leave Process',
+        to: '/Home/AnnualLeaveProcess',
+    },
 ]
 
 export default AttendanceManagement;

@@ -26,9 +26,10 @@ const ModelAvailLeavelist = ({
     setnodatacl,
     setnodatael,
     setnodatahl,
-    setnodatafixed, categorychge, nodatafixed
+    setnodatafixed, categorychge, nodatafixed, nameel
 
 }) => {
+
     const [processCount, setProcessCount] = useState(0)
     const { ecat_cl,
         ecat_lop, ecat_el, ecat_esi_allow,
@@ -82,7 +83,7 @@ const ModelAvailLeavelist = ({
                         {
                             (ecat_cl === 1 && hrm_clv === 0) ? <AnnualProcessComponent
                                 name={'Caual Leave'}
-                                value={'C'}
+                                value={1}
                                 dataleave={dataleave}//{leaves available based on category}
                                 em_no={em_no}
                                 em_id={em_id}
@@ -95,12 +96,13 @@ const ModelAvailLeavelist = ({
                                 setnodatahl={setnodatahl}
                                 setnodatafixed={setnodatafixed}
                                 categorychge={categorychge}
+                                nameel={nameel}
                             /> : hrm_clv === 1 ? <AnnualLeaveProcessComplete name={'Caual Leave'} /> : null
                         }
                         {
                             ((ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0) ? <AnnualProcessComponent
                                 name={'Holiday Leave'}
-                                value={'H'}
+                                value={2}
                                 dataleave={dataleave}
                                 em_no={em_no}
                                 em_id={em_id}
@@ -109,13 +111,14 @@ const ModelAvailLeavelist = ({
                                 countdata={processCount}
                                 setnodatahl={setnodatahl}
                                 categorychge={categorychge}
+                                nameel={nameel}
                             /> : hrm_hld === 1 ? <AnnualLeaveProcessComplete name={'Holiday Leave'} /> : null
                         }
                         {
                             (ecat_esi_allow === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) && (hrm_cmn === 0 || nodatafixed === 1) ?
                                 <AnnualProcessComponent name={'Common Leave'}
                                     dataleave={dataleave}
-                                    value={'O'}
+                                    value={3}
                                     em_no={em_no}
                                     em_id={em_id}
                                     lv_process_slnocurrent={lv_process_slnocurrent}
@@ -123,15 +126,16 @@ const ModelAvailLeavelist = ({
                                     countdata={processCount}
                                     setnodatafixed={setnodatafixed}
                                     categorychge={categorychge}
+                                    nameel={nameel}
                                 /> : (hrm_cmn === 1) ?
                                     <AnnualLeaveProcessComplete name={'Common Leave'} /> : null
                         }
-
+                        {/* 
                         {
 
                             (ecat_el === 1 && hrm_ern_lv === 0) ? <AnnualProcessComponent
                                 name={'Earn Leave'}
-                                value={'E'}
+                                value={4}
                                 dataleave={dataleave}//{leaves available based on category}
                                 em_no={em_no}
                                 em_id={em_id}
@@ -140,8 +144,9 @@ const ModelAvailLeavelist = ({
                                 setnodatael={setnodatael}
                                 countdata={processCount}
                                 categorychge={categorychge}
+                                nameel={nameel}
                             /> : hrm_ern_lv === 1 ? <AnnualLeaveProcessComplete name={'Earn Leave'} /> : null
-                        }
+                        } */}
 
 
                     </DialogContent>

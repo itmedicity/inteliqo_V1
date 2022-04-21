@@ -16,7 +16,6 @@ const LeaveCarryCount = ({ emid, setedit, edit, count, setemp_id, setLcMast, lcm
         }
         getleavecount()
     }, [emid])
-
     return (
         <Fragment>
             <Suspense fallback={<LinearProgress />} >

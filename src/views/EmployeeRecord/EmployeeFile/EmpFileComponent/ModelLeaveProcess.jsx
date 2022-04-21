@@ -30,7 +30,7 @@ const ModelLeaveProcess = ({ open,
     setnodatacl,
     setnodatael,
     setnodatahl,
-    setnodatafixed, setmodelvalue, categorychge
+    setnodatafixed, setmodelvalue, categorychge, nameel
 
 
 
@@ -43,6 +43,7 @@ const ModelLeaveProcess = ({ open,
     const { ecat_cl, ecat_cont, ecat_el, ecat_esi_allow,
         ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl,
         em_category, em_contract_end_date, em_prob_end_date } = dataleave
+
 
     // destructuring  leaveprocessid
     const {
@@ -143,6 +144,7 @@ const ModelLeaveProcess = ({ open,
         // for updateing processes table  if previous data
         const resultupdate = await axioslogin.patch('/yearleaveprocess/', updata)
         const { message, success } = resultupdate.data
+
         if (success === 2) {
             if (olddata === 1) {
                 datayearsave(processdatanew)
@@ -190,7 +192,7 @@ const ModelLeaveProcess = ({ open,
         setopenleavelist(false)
     }
     const handleClleaveprocess = () => {
-
+        setOpen(false)
     }
 
 
@@ -208,6 +210,7 @@ const ModelLeaveProcess = ({ open,
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     handleClose={handleClosee}
                     categorychge={categorychge}
+                    nameel={nameel}
 
                 /> : null}
 
