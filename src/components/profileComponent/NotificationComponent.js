@@ -66,10 +66,8 @@ const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) =
         if (Object.keys(empdetails).length > 0) {
             setEmpdetl(empdetails)
         }
-        if (alerts[0] !== undefined) {
-            setalertcount(alerts[0].length)
-        }
-    }, [alertlist, empdetails])
+
+    }, [alertlist, empdetails,])
 
     const alerts = empDetl.map((value) => {
         return alert.filter((val) => {
@@ -102,6 +100,11 @@ const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) =
                 )
         })
     })
+    useEffect(() => {
+        if (alerts[0] !== undefined) {
+            setalertcount(alerts[0].length)
+        }
+    }, [alerts[0], setalertcount])
     return (
         <Fragment>
             <Menu

@@ -4,13 +4,12 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import TextInput from 'src/views/Component/TextInput'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import FooterSaveEditClosebtn from '../../CommonCode/FooterSaveEditClosebtn'
-
 const StatutoryInformation = () => {
   const classes = useStyles()
   const history = useHistory()
@@ -110,7 +109,11 @@ const StatutoryInformation = () => {
         succesNofity(message)
         UpdateGrade(0)
         Setenable(true)
-      } else {
+      }
+      else if (success === 3) {
+        warningNofity(message)
+      }
+      else {
         errorNofity('Error Occured !!! Plaese Contact EDP')
       }
     }
@@ -127,7 +130,7 @@ const StatutoryInformation = () => {
             <div className="card-body">
               <div className="row g-1">
                 <div className="col-md-12">
-                  <div className="row">
+                  <div className="row d-flex justify-content-evenly">
                     <div className="col-md-1">
                       <FormControlLabel
                         control={
@@ -155,7 +158,7 @@ const StatutoryInformation = () => {
                         name="pfno"
                       />
                     </div>
-                    <div className="col-md-1 pl-0">
+                    <div className="col-md-1 pl-0 pt-0">
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -196,6 +199,7 @@ const StatutoryInformation = () => {
                     <div className="col-md-3 pl-0 pt-1">
                       <GradeSelect
                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
+                        disable={enable}
                       />
                     </div>
                     {/* <div className="card-footer text-muted">

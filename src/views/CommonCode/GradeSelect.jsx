@@ -37,6 +37,7 @@ const GradeSelect = (props) => {
                     onChange={(e) => UpdateGrade(e.target.value)}
                     variant="outlined"
                     defaultValue={0}
+                    disabled={props.disable}
                 >
                     <MenuItem value='0' disabled>
                         Select Grade

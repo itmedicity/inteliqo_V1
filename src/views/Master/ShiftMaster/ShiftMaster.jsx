@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput';
-//import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave';
 import { useHistory } from 'react-router';
 import Timepicker from 'src/views/Component/Timepicker';
@@ -108,7 +107,8 @@ const ShiftMaster = () => {
     }
     //FUNCTION TO GET TO TOMORROW DATE
     const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
-
+    const checkoutstartcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
+    const checkoutendcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
     //use State for Setting Initial State
     const [formData, setFormData] = useState({
         shift_name: "",
@@ -153,7 +153,6 @@ const ShiftMaster = () => {
     const z = moment(new Date()).format("YYYY-MM-DD 00:00:00")
     const zz = moment(z)
     const checkinminutes = getTotalShiftHours(zz, xx)
-    // console.log(checkinminutes)
     //calculating checkmout in minutes
     const checkoutinminutes = getTotalShiftHours(zz, yy)
     //check out in minutes in if cross day is 1
@@ -167,8 +166,8 @@ const ShiftMaster = () => {
         shft_chkout_time: crossday === '1' ? moment(nextdate).format("YYYY-MM-DD HH:mm:ss") : moment(checkOut).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_start: moment(checkInStart).format("YYYY-MM-DD HH:mm:ss"),
         shft_chkin_end: moment(checkInEnd).format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_start: moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
-        shft_chkout_end: moment(checkOutEnd).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_start: crossday === '1' ? moment(checkoutstartcrossday).format("YYYY-MM-DD HH:mm:ss") : moment(checkOutStart).format("YYYY-MM-DD HH:mm:ss"),
+        shft_chkout_end: crossday === '1' ? moment(checkoutendcrossday).format("YYYY-MM-DD HH:mm:ss") : moment(checkOutEnd).format("YYYY-MM-DD HH:mm:ss"),
         shft_duty_day: dutyday,
         shft_brk_start: moment(BreakStart).format("YYYY-MM-DD HH:mm:ss"),
         shft_brk_end: moment(Breakend).format("YYYY-MM-DD HH:mm:ss"),
@@ -292,6 +291,7 @@ const ShiftMaster = () => {
                                             <Timepicker
                                                 value={checkInStart}
                                                 changetextvalue={(e) => null}
+                                            // disable={true}
                                             />
                                         </div>
                                         <div className="col-md-3" >
