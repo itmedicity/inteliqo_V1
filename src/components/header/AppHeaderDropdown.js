@@ -37,9 +37,9 @@ const AppHeaderDropdown = () => {
       if (success === 1) {
 
         const { emp_id } = data[0]
-        const empiddata = {
-          em_id: emp_id
-        }
+        // const empiddata = {
+        //   em_id: emp_id
+        // }
         const profilePic = `${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`;
 
         urlExist(profilePic, (status) => {

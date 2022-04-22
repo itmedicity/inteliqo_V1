@@ -11,7 +11,7 @@ import {
   CNavItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
+import { cilMenu } from '@coreui/icons'
 import { IoHome, IoPower, IoSettingsSharp } from 'react-icons/io5'
 import { Actiontypes } from '../redux/constants/action.type'
 
@@ -19,7 +19,7 @@ import { AppHeaderDropdown } from './header/index'
 // import { logo } from 'src/assets/brand/logo'
 import { useHistory } from 'react-router-dom'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
-import { Badge, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Badge, IconButton, Typography } from '@mui/material'
 import moment from 'moment'
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EmailIcon from '@mui/icons-material/Email';
@@ -78,7 +78,7 @@ const AppHeader = () => {
   useEffect(() => {
     dispatch(setAlertList())
     dispatch(setMsgList(empid))
-  }, [empid])
+  }, [empid, dispatch])
 
   return (
     <Fragment>

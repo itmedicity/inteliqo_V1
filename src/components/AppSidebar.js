@@ -132,7 +132,7 @@ const AppSidebar = () => {
   useEffect(() => {
 
     //MENU RIGHTS FROM HERE
-    const menuRight = getMenuSlno().then((val) => {
+    getMenuSlno().then((val) => {
 
       const resultLength = Object.keys(val[0]).length
 
@@ -183,9 +183,7 @@ const AppSidebar = () => {
           if (success === 1) {
             const moduleDetl = await JSON.parse(data[0].module_slno)
             const moduleSlno = Object.values(moduleDetl)
-            moduleSlno.map((val) => {
-              module_rights.push(val)
-            })
+            moduleSlno.map((val) => module_rights.push(val))
 
             const menus = navigation.filter((element, index, array) => {
               return module_rights.includes(element.slno)

@@ -10,9 +10,9 @@ const Settings = () => {
     const [pyrol_secThree, setpyrol_secThree] = useState();
     const [user_secOne, setuser_secOne] = useState();
     const [count, setCount] = useState(0)
-    const a = [75, 76, 77, 78, 79, 80, 81, 82, 83, 84]
+
     useEffect(() => {
-        const userSettingsRight = getMenuSlno().then((val) => {
+        getMenuSlno().then((val) => {
             const menuSlnoArray = val[0].map((value) => {
                 return value.menu_slno;
             })

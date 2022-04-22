@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useContext, useEffect, useState } from 'react'
+import React, { Fragment, Suspense, useContext, useState } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';

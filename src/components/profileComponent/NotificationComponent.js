@@ -104,7 +104,7 @@ const NotificationComponent = ({ anchorEl, open, handleClose, setalertcount }) =
         if (alerts[0] !== undefined) {
             setalertcount(alerts[0].length)
         }
-    }, [alerts[0], setalertcount])
+    }, [alerts, setalertcount])
     return (
         <Fragment>
             <Menu

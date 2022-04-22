@@ -6,7 +6,7 @@ const {
     FETCH_EMP_RECORD_LIST,
     FETCH_EMP_PERSONAL_INFOM,
     FETCH_ACADEMIC_DATA,
-    FETCH_EXPERIENCE_DATA,
+    // FETCH_EXPERIENCE_DATA,
     FETCH_LEAVE_AVAIL_LIST,
     FETCH_NOTIFYDETL
 } = Actiontypes;
@@ -50,8 +50,8 @@ export const setAccademicData = (no) => {
 export const setExperienceData = (id) => {
 
     return async (dispatch) => {
-        const result = await axioslogin.get(`/experience/select/${id}`);
-        const { data, success } = result.data;
+        // const result = await axioslogin.get(`/experience/select/${id}`);
+        // const { data, success } = result.data;
     }
 }
 export const getannualleave = (no) => {
