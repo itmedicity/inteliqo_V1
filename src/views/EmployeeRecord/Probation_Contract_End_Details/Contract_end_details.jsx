@@ -6,8 +6,13 @@ import Contract_detl_table from './Contract_detl_table'
 import Contractdetl_TableByDate from './Contractdetl_TableByDate'
 import { FcPlus } from 'react-icons/fc'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { useHistory } from 'react-router-dom'
 
 const Contract_end_details = () => {
+    const history = useHistory()
+    const RedirectToProfilePage = () => {
+        history.push(`/Home`)
+    }
     const [tableData, setTableData] = useState([]);
     const [state, setState] = useState(0)
     const [formData, setFormData] = useState({
@@ -37,8 +42,8 @@ const Contract_end_details = () => {
     return (
         <Fragment>
             <PageLayoutCloseOnly
-                heading="Probation End List"
-            // redirect={RedirectToProfilePage}
+                heading="Contract End List"
+                redirect={RedirectToProfilePage}
             >
                 <div className="col-md-12">
                     <div className="row g-1">
