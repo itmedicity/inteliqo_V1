@@ -27,6 +27,7 @@ import MessageComponent from './profileComponent/MessageComponent'
 import NotificationComponent from './profileComponent/NotificationComponent'
 import { setAlertList } from '../redux/actions/Alert.Actions'
 import { setMsgList } from 'src/redux/actions/Message.actions'
+import { setAnnouncementList } from 'src/redux/actions/Announcement.action'
 
 
 const AppHeader = () => {
@@ -77,6 +78,7 @@ const AppHeader = () => {
   //getting alert list
   useEffect(() => {
     dispatch(setAlertList())
+    dispatch(setAnnouncementList())
     dispatch(setMsgList(empid))
   }, [empid])
 

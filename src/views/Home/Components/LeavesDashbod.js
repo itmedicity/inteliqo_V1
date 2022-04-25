@@ -1,21 +1,35 @@
 import { Avatar, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
-import CommentIcon from '@mui/icons-material/Comment';
+import React, { Fragment, Suspense, useEffect, useState } from 'react'
+// import CommentIcon from '@mui/icons-material/Comment';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
+import { useDispatch, useSelector } from 'react-redux';
+import { getannualleave } from 'src/redux/actions/Profile.action';
 const ListItems = React.lazy(() => import('./ListItemCmp'));
 
 
 const LeavesDashbod = () => {
-    const array = [
-        { leavesName: "Casual Leave", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Privilage Leave", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Holiday", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Carry Forward Leave", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Maternity Leave", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Off Days", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Conferance Leave", allowed: 1, credit: 1, balance: 0 },
-        { leavesName: "Loss Off Pay", allowed: 1, credit: 1, balance: 0 },
-    ]
+    const dispatch = useDispatch()
+    const [data, setData] = useState([])
+    const state = useSelector((state) => {
+        return state.getPrifileDateEachEmp.empLeaveData;
+    })
+
+    //getting employee id
+    const empid = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_id
+    })
+
+    useEffect(() => {
+        if (empid !== '') {
+            dispatch(getannualleave(empid))
+        }
+    }, [empid])
+
+    //useEffect
+    useEffect(() => {
+        const { leaveData } = state
+        setData(leaveData)
+    }, [state])
 
     const avatarStyle = {
         width: 20,
@@ -77,8 +91,8 @@ const LeavesDashbod = () => {
                             </ListItem>
                             <List dense disablePadding sx={{ paddingY: 0, height: 190, overflowY: "auto" }} className="ListItemScrol" >
                                 {
-                                    array.map((val, index) => {
-                                        return <ListItems key={index} holidayName={val.leavesName} allowed={val.allowed} credited={val.credit} balance={val.balance} />
+                                    data && data.map((val, index) => {
+                                        return <ListItems key={index} holidayName={val.typeleve} allowed={val.allowed} credited={val.credited} balance={val.balance} />
                                     })
                                 }
                             </List>

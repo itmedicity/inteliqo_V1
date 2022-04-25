@@ -1,24 +1,25 @@
 import { Avatar, Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
-import React, { Fragment, Suspense } from 'react'
-import CommentIcon from '@mui/icons-material/Comment';
+import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import DataSaverOffIcon from '@mui/icons-material/DataSaverOff';
+import { axioslogin } from 'src/views/Axios/Axios';
 const ListItemsHoliday = React.lazy(() => import('./ListItemHoliday'));
 
 
 const HolidayList = () => {
-    const array = [
-        { holiday: "January-26", holiName: "Republic Day" },
-        { holiday: "August-15", holiName: "Independence Day" },
-        { holiday: "May-1", holiName: "May Day" },
-        { holiday: "October-2", holiName: "Gandhi Jayanthi" },
-        { holiday: "March-1", holiName: "Shivarathri" },
-        { holiday: "April-15", holiName: "Good Friday" },
-        { holiday: "May-02", holiName: "Ramzan" },
-        { holiday: "July-09", holiName: "Bakrid" },
-        { holiday: "August-08", holiName: "Muharam" },
-        { holiday: "September-08", holiName: "Thiruvonam" },
-    ]
-
+    const [array, setArray] = useState([])
+    useEffect(() => {
+        const getholidaylist = async () => {
+            const result = await axioslogin.get('/holidaylist/getholidaylist/getlist')
+            const { success, data } = result.data
+            if (success === 1) {
+                setArray(data)
+            }
+            else {
+                setArray([])
+            }
+        }
+        getholidaylist()
+    }, [])
     return (
         <Fragment>
             <Grid item md={6} sm={4}
@@ -62,7 +63,7 @@ const HolidayList = () => {
                             <List dense disablePadding sx={{ paddingY: 0, height: 190, overflowY: "auto" }} className="ListItemScrol" >
                                 {
                                     array.map((val, index) => {
-                                        return <ListItemsHoliday key={index} holidayName={val.holiday} holidayDesc={val.holiName} />
+                                        return <ListItemsHoliday key={index} holidayName={val.hld_year} holidayDesc={val.hld_desc} />
                                     })
                                 }
                             </List>
