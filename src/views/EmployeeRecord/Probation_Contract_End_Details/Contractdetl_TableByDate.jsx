@@ -34,7 +34,7 @@ const Contractdetl_TableByDate = ({ tableData }) => {
     return (
         <Fragment>
             <MaterialTable
-                title="Probaton End List"
+                title="Contract End List"
                 data={tableData}
                 columns={title}
                 icons={tableIcons}

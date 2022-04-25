@@ -98,7 +98,6 @@ const StatutoryInformation = () => {
       const { success, message } = result.data
       if (success === 1) {
         succesNofity(message)
-        UpdateGrade(0)
       } else {
         errorNofity('Error Occured!!!Please Contact EDP')
       }
@@ -107,7 +106,6 @@ const StatutoryInformation = () => {
       const { success, message } = result.data
       if (success === 2) {
         succesNofity(message)
-        UpdateGrade(0)
         Setenable(true)
       }
       else if (success === 3) {

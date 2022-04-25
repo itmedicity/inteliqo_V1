@@ -51,7 +51,7 @@ const Contract_detl_table = () => {
     return (
         <Fragment>
             <MaterialTable
-                title="Probaton End List"
+                title="Contract End List"
                 data={tableData}
                 columns={title}
                 icons={tableIcons}

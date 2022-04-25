@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-
 import { changeState } from '../reducers/Layoutreducer'
 import { getProfileData, getPrifileDateEachEmp } from '../reducers/ProfileDataReducer'
 import { LoginCredential } from '../reducers/LoginReducer'
@@ -11,6 +10,7 @@ import { getDeprtSection } from '../reducers/DepartSecReducer'
 import { getEmployeedetailsDutyplan } from '../reducers/EmployeeDetails'
 import { getAlertList } from '../reducers/AlertReducres'
 import { getMsgList } from '../reducers/MessageReducres'
+import { getAnnouncementList } from '../reducers/AnnouncementReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -24,7 +24,8 @@ const reducer = combineReducers({
     getDeprtSection,
     getEmployeedetailsDutyplan,
     getAlertList,
-    getMsgList
+    getMsgList,
+    getAnnouncementList
 })
 
 export default reducer;

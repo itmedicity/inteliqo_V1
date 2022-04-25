@@ -34,7 +34,7 @@ const OTApprovalHRTableSec = ({ DeptSect }) => {
             title: "OT in Minutes", field: 'over_time', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
         {
-            title: "Status", field: 'ot_hr_status', cellStyle: { minWidth: 1, maxWidth: 3 }
+            title: "Status", field: 'who', cellStyle: { minWidth: 1, maxWidth: 3 }
         },
     ]
 

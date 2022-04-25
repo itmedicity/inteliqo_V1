@@ -1,15 +1,14 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import { Grid, Stack } from '@mui/material';
 import DigitalCLock from './DigitalCLock';
-import Overtime from './Overtime';
-import Resignation from './Resignation';
 import Alert from './Alert';
 import Notification from './Notification';
 import Message from './Message';
+
 
 
 const AppMenuBar = () => {
@@ -33,7 +32,7 @@ const AppMenuBar = () => {
                                         <Grid item md={2} xs={6} sm={2} >
                                             <Resignation />
                                         </Grid> */}
-                                        <Grid item md={2} xs={6} sm={2}>
+                                        <Grid item md={2} xs={6} sm={2} >
                                             <Alert />
                                         </Grid>
                                         <Grid item md={2} xs={6} sm={2}>

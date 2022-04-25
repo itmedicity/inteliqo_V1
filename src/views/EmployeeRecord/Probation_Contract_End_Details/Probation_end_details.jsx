@@ -6,8 +6,13 @@ import Probation_End_Table from './Probation_End_Table'
 import Probation_End_TableByDate from './Probation_End_TableByDate'
 import { FcPlus } from 'react-icons/fc'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { useHistory } from 'react-router-dom'
 
 const Probation_end_details = () => {
+    const history = useHistory()
+    const RedirectToProfilePage = () => {
+        history.push(`/Home`)
+    }
     const [tableData, setTableData] = useState([]);
     const [state, setState] = useState(0)
     const [formData, setFormData] = useState({
@@ -38,7 +43,7 @@ const Probation_end_details = () => {
         <Fragment>
             <PageLayoutCloseOnly
                 heading="Probation End List"
-            // redirect={RedirectToProfilePage}
+                redirect={RedirectToProfilePage}
             >
                 <div className="col-md-12">
                     <div className="row g-1">

@@ -37,6 +37,12 @@ const Employeerecord = [
         to: '/Home/Hrm_message',
     },
     {
+        men_slno: 129,
+        component: CNavItem,
+        name: 'Hrm Announcement',
+        to: '/Home/Hrm_Announcement',
+    },
+    {
         men_slno: 128,
         component: CNavItem,
         name: 'Probation End List',
@@ -48,6 +54,7 @@ const Employeerecord = [
         name: 'Contract End List',
         to: '/Home/Contract_end_details',
     },
+
 ]
 
 export default Employeerecord;
