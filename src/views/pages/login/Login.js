@@ -130,7 +130,7 @@ const Login = () => {
               <CCard className="text-white py-5" style={{ width: '100%', backgroundColor: "#673ab7", borderTopRightRadius: 15, borderBottomRightRadius: 15 }}  >
                 <CCardBody className="text-center">
                   <div style={{ fontFamily: "monospace" }} >
-                    <h2>InteliQo</h2>
+                    <h2>inteliQo</h2>
                     <h6>Human Resource Management System</h6>
                     <h6>Hi, Welcome Back</h6>
                     <p>
