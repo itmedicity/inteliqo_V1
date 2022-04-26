@@ -57,7 +57,7 @@ const MyProfileSalary = () => {
                             sub_name={'Status'}
                             data={dutyplan > 0 ? "— " + 'Not Processed' : "— " + 'Processed'}
                         /> */}
-                        <RequestList />
+                        {/* <RequestList /> */}
                     </List>
                 </CardContent>
             </Card>

@@ -43,7 +43,7 @@ const AnnouncementCmpnt = ({ anchorEl, open, handleClose, setannouncecount }) =>
     })
     useEffect(() => {
         setannouncecount(Announcementlist.length)
-    }, [])
+    }, [Announcementlist.length])
 
     return (
         <Fragment>
