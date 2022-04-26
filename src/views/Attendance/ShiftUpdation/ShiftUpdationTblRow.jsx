@@ -1,7 +1,7 @@
 import { TableCell, TableRow, Avatar, LinearProgress } from '@mui/material'
 import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
-import { deepOrange, deepPurple, green, brown, cyan } from '@mui/material/colors';
-import { blueGrey, teal } from '@material-ui/core/colors';
+import { deepOrange, deepPurple, green, brown } from '@mui/material/colors';
+import { blueGrey } from '@material-ui/core/colors';
 import Shiftfirstcol from './Shiftfirstcol';
 const ShiftUpdationTblRow = ({ val, count }) => {
 
@@ -70,9 +70,9 @@ const ShiftUpdationTblRow = ({ val, count }) => {
                     <TableCell align="center">
                         <Avatar sx={{
                             bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
-                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id == 5 ? blueGrey[200] :
+                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
                                     duty_status === 0.5 ? deepPurple[500] :
-                                        duty_status === 0 ? deepOrange[500] : lvreq_type != null ? lvreq_type : green[500]
+                                        duty_status === 0 ? deepOrange[500] : lvreq_type !== null ? lvreq_type : green[500]
 
 
 
@@ -80,9 +80,9 @@ const ShiftUpdationTblRow = ({ val, count }) => {
                             , width: 24, height: 24, fontSize: 10
                         }}>
                             {(late_in !== 0 || early_out !== 0) ? 'L/E' :
-                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id == 5 ? 'WOF' :
+                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 5 ? 'WOF' :
                                     duty_status === 0.5 ? 'HLP' :
-                                        duty_status === 0 ? 'LOP' : lvreq_type != null ? lvreq_type : 'P'
+                                        duty_status === 0 ? 'LOP' : lvreq_type !== null ? lvreq_type : 'P'
                             }
                         </Avatar>
                     </TableCell>
