@@ -2,7 +2,8 @@ import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubh
 import React, { Fragment, memo } from 'react'
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 
-const ProfessionalExp = () => {
+const ProfessionalExp = ({ data }) => {
+    const { em_institution, desg_name, em_total_year } = data;
     return (
         <Fragment>
             <ListItem alignItems="flex-start" className='py-1' >
@@ -12,7 +13,7 @@ const ProfessionalExp = () => {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary="System Administrator"
+                    primary={desg_name}
                     primaryTypographyProps={{ variant: "subtitle1" }}
                     secondary={
                         <Fragment>
@@ -22,12 +23,10 @@ const ProfessionalExp = () => {
                                 variant="body1"
                                 color="text.primary"
                             >
-                                NetBios Technologies PVT Ltd
+                                {em_institution}
                             </Typography>
-                            {"— Kochi"}
                         </Fragment>
                     }
-                // secondaryTypographyProps={{ variant: "body1" }}
                 />
                 {/* <ListSubheader>2019</ListSubheader> */}
                 <ListItemText sx={{ textAlignLast: "right" }}
@@ -38,8 +37,7 @@ const ProfessionalExp = () => {
                                 component="span"
                                 variant="subtitle1"
                                 color="text.primary"
-                            >
-                                2009
+                            >{em_total_year}
                             </Typography>
                         </Fragment>
                     }
