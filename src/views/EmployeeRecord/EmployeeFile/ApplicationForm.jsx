@@ -15,6 +15,7 @@ import {
     setProfileData,
     setPersonalData,
     setAccademicData,
+    setExperienceData,
     getannualleave,
     notify
 } from '../../../redux/actions/Profile.action'
@@ -32,9 +33,10 @@ const ApplicationForm = () => {
     useEffect(() => {
         dispath(setPersonalData(no))
         dispath(setAccademicData(id))
+        dispath(setExperienceData(id))
         dispath(getannualleave(no))
         dispath(notify(no))
-    }, [no])
+    }, [no, id])
 
     return (
         <Fragment>

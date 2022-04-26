@@ -79,7 +79,7 @@ const profileData = {
         academicDataStatus: false
     },
     empExperData: {
-        experienData: {},
+        experienData: [],
         experienDataStatus: false
     },
     empWageData: {
