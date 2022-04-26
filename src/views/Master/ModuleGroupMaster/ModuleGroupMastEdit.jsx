@@ -23,12 +23,13 @@ const ModuleGroupMastEdit = () => {
         module_payroll: false,
         module_performanceApp: false,
         module_trainAndDevolp: false,
-        module_resignation: false
+        module_resignation: false,
+        module_dashboard: false
     })
 
     // Destructuring FormData
     const { module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
-        module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation } = formData;
+        module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, module_dashboard } = formData;
 
     // Redirect To Home
     const toSettings = () => {
@@ -53,7 +54,8 @@ const ModuleGroupMastEdit = () => {
                     module_payroll: module_status.module_payroll === 0 ? false : true,
                     module_performanceApp: module_status.module_performanceApp === 0 ? false : true,
                     module_trainAndDevolp: module_status.module_trainAndDevolp === 0 ? false : true,
-                    module_resignation: module_status.module_resignation === 0 ? false : true
+                    module_resignation: module_status.module_resignation === 0 ? false : true,
+                    module_dashboard: module_status.module_dashboard === 0 ? false : true
                 }
                 setFormData(form_dis_data)
             } else {
@@ -85,6 +87,7 @@ const ModuleGroupMastEdit = () => {
                 module_performanceApp: module_performanceApp === true ? 7 : 0,
                 module_trainAndDevolp: module_trainAndDevolp === true ? 8 : 0,
                 module_resignation: module_resignation === true ? 9 : 0,
+                module_dashboard: module_dashboard === true ? 10 : 0,
             },
             mdgrp_slno: id
         }
@@ -252,6 +255,22 @@ const ModuleGroupMastEdit = () => {
                                                 />
                                             }
                                             label="Resignation"
+                                        />
+                                    </div>
+                                    <div className="col-md-12 pb-0 mb-0">
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
+                                            control={
+                                                <Checkbox
+                                                    name="module_dashboard"
+                                                    color="secondary"
+                                                    value={module_dashboard}
+                                                    checked={module_dashboard}
+                                                    className="ml-2"
+                                                    onChange={(e) => getUpdatedFormData(e)}
+                                                />
+                                            }
+                                            label="Dash Board"
                                         />
                                     </div>
                                     <div className="row col-md-12 mt-2 ">

@@ -28,6 +28,7 @@ import NotificationComponent from './profileComponent/NotificationComponent'
 import { setAlertList } from '../redux/actions/Alert.Actions'
 import { setMsgList } from 'src/redux/actions/Message.actions'
 import { setAnnouncementList } from 'src/redux/actions/Announcement.action'
+import { setModuleRightsList } from 'src/redux/actions/ModuleRights.Action'
 
 
 const AppHeader = () => {
@@ -80,6 +81,7 @@ const AppHeader = () => {
     dispatch(setAlertList())
     dispatch(setAnnouncementList())
     dispatch(setMsgList(empid))
+    dispatch(setModuleRightsList(empid))
   }, [empid, dispatch])
 
   return (
