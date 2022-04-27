@@ -1,8 +1,6 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
 import React, { Fragment, memo } from 'react'
-import PersonPinIcon from '@mui/icons-material/PersonPin';
 import PushPinIcon from '@mui/icons-material/PushPin';
-import ProfessionalExp from './ProfessionalExp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LeaveCalender from 'src/views/LeaveManagement/LeaveRequest/LeaveCalender'
 

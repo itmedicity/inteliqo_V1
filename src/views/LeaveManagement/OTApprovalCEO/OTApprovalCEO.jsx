@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
-import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
 import OTApprovalCEOTable from './OTApprovalCEOTable';
 import { useHistory } from 'react-router'
 

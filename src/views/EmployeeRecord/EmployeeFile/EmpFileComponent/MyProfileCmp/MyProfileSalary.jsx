@@ -1,30 +1,22 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment, memo, useEffect, useState } from 'react'
-import PersonPinIcon from '@mui/icons-material/PersonPin';
+import React, { Fragment, memo } from 'react'
 import PushPinIcon from '@mui/icons-material/PushPin';
-
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import PersonalDataInform from './PersonalDataInform';
-import { useSelector } from 'react-redux';
-import RequestList from './RequestList';
+
 
 const MyProfileSalary = () => {
-    const [getnotify, setnotify] = useState({
-        fineamunt: 0,
-        dutyplan: 0
-    })
-    const [status, setstatus] = useState(false)
-    const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp.empnotify;
-    })
-    useEffect(() => {
 
-        const { empnotifyStatus, empnotifydata } = state
+    // const [status, setstatus] = useState(false)
+    // const state = useSelector((state) => {
+    //     return state.getPrifileDateEachEmp.empnotify;
+    // })
+    // useEffect(() => {
 
-        setnotify(empnotifydata)
-        setstatus(empnotifyStatus)
-    }, [state])
-    const { fineamunt, dutyplan } = getnotify
+    //     const { empnotifyStatus, empnotifydata } = state
+    //     setnotify(empnotifydata)
+    //     setstatus(empnotifyStatus)
+    // }, [state])
+
 
     return (
         <Fragment>

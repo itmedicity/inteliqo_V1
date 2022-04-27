@@ -23,7 +23,6 @@ const ModelLeaveProcess = ({ open,
     no,//employee number
     valuemessage,//model message
     leaveprocessid,//current proceess details //old process
-    processid,
     olddata,// check wheather new data
     processslno, //processess serialno//new process slno
     setcastable,// rerender the table on process clickk
@@ -156,21 +155,21 @@ const ModelLeaveProcess = ({ open,
             if ((em_category !== category_slno)) {
                 { // casual leave update
                     if ((ecat_cl === 0 && hrm_clv === 1)) {
-                        const updatecasualleaveupdateslno = await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', updatedetllable)
-                        const { message, success } = updatecasualleaveupdateslno.data
+                        await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', updatedetllable)
+                        // const { message, success } = updatecasualleaveupdateslno.data
                     }
                     //    holiday leaves update
                     if ((ecat_nh === 0 || ecat_fh === 0) && hrm_hld === 1) {
 
-                        const updateholidayupdateslno = await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', updatedetllable)
-                        const { message, success } = updateholidayupdateslno.data
+                        await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', updatedetllable)
+                        // const { message, success } = updateholidayupdateslno.data
 
                     }
                     // earn leave update
 
                     if ((ecat_el === 0) && hrm_ern_lv === 1) {
 
-                        const updateholidayupdateslno = await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', updatedetllable)
+                        await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', updatedetllable)
                         // const { message, success } = updateholidayupdateslno.data
 
                     }

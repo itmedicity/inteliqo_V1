@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+
 import React, { Fragment, useContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -24,7 +24,7 @@ const NightOffRequest = () => {
     const [value, setvalue] = useState(0)
 
     // destructuring employee details
-    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
+    const { dept_name, em_id, em_name, em_no, sect_name } = employeedetails
     // redirect to home page 
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
@@ -40,25 +40,18 @@ const NightOffRequest = () => {
             em_id: em_id
         }
         const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
-        const { success, message } = result.data
-
+        const { success } = result.data
         if (success === 1) {
-
             const findata = result.data.message
             if (findata.length > 3) {
-
                 setvalue(1)
             }
             else {
                 warningNofity('Not Applicable for Leave')
             }
-
         } else if (success === 0) {
             warningNofity('Not Applicable for Leave')
         }
-
-
-
     }
     const submitNightoff = async () => {
         const submitdata = {
@@ -68,7 +61,7 @@ const NightOffRequest = () => {
             emp_id: em_id
         }
         const result = await axioslogin.patch('/attandancemarking/updatenightoff', submitdata)
-        const { success, message } = result.data
+        const { success } = result.data
         if (success === 1) {
             setvalue(0)
             setdates({
@@ -77,11 +70,7 @@ const NightOffRequest = () => {
                 fordate: new Date()
             })
             warningNofity("Updated Successfully")
-
         }
-
-
-
     }
     return (
         <Fragment>

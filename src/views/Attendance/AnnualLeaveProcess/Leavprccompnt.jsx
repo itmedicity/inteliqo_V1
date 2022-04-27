@@ -185,12 +185,18 @@ const Leavprccompnt = ({ name, holidaycount }) => {
                 leaveprocessid={leaveprocessid} //current proceess details
                 processslno={processslno}//processess serialno
                 olddata={olddata}// check wheather new data
+                castable={castable}
                 setcastable={setcastable}//casual leave table rerender
+                nodatacl={nodatacl}
+                nodatahl={nodatahl}
+                nodatael={nodatael}
+                nodatafixed={nodatafixed}
                 setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
                 setnodatael={setnodatael} //dataset render  for rerendering the earnleave
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 setmodelvalue={setmodelvalue}
+                modellist={modellist}
                 nameel={nameel}
             /> : null}
             {name && name.map((val, index) => {

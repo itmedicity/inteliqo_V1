@@ -32,7 +32,7 @@ const ModelAvailLeavelist = ({
 
     const [processCount, setProcessCount] = useState(0)
     const { ecat_cl,
-        ecat_lop, ecat_el, ecat_esi_allow,
+        ecat_lop, ecat_esi_allow,
         ecat_fh, ecat_mate, ecat_nh, ecat_sl } = dataleave
     const [leaveproceedaata, setleaveprocedata] = useState({
         category_slno: "",
