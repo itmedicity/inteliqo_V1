@@ -82,7 +82,7 @@ export const getMenuSlno = async () => {
     if (success === 1) {
         const { emp_id } = data[0]
         const results = await axioslogin.get(`/grprights/${emp_id}`)
-        const { status, resdata } = results.data;
+        const { resdata } = results.data;
         return resdata;
     }
 }

@@ -185,6 +185,7 @@ const LeaveCarryForwad = () => {
                                                         setCarryForwardLeave={setCarryForwardLeave}
                                                         setemp_id={setemp_id}
                                                         setemp_type={setemp_type}
+                                                        emp_tpe={emp_tpe}
                                                         setLcMast={setLcMast}
                                                         lcmast={lcmast} />
                                                 </Suspense>

@@ -1,11 +1,11 @@
 import {
-    Button, Card, Badge, CardActionArea, CardContent, CardHeader, Grid, Avatar,
+    Card, Badge, CardActionArea, CardContent, CardHeader, Grid, Avatar,
     IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography,
-    ListItemButton, ListItemIcon, TextField, Tooltip, Skeleton
+    ListItemButton, ListItemIcon, Tooltip, Skeleton
 } from '@mui/material'
 import React, { Fragment, useState, useEffect, memo } from 'react'
-import { red } from '@mui/material/colors';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import { red } from '@mui/material/colors';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
@@ -39,7 +39,7 @@ import { useSelector } from 'react-redux';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import DomainIcon from '@mui/icons-material/Domain';
 import CategoryIcon from '@mui/icons-material/Category';
-import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
+// import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -84,7 +84,6 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no
     } = personalData
 
-
     const emp = {
         name: em_name === '' ? 'NOT UPDATED' : em_name,
         presAddress: addressPermnt1 === '' ? 'NOT UPDATED' : ` ${addressPermnt1} ${addressPermnt2} ${per_region}`,
@@ -99,7 +98,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
         account: em_account_no === null ? 'NOT UPDATED' : em_account_no,
         bank: bank_name === null ? 'NOT UPDATED' : bank_name,
         gender: em_gender === 2 ? 'Female' : 'Male',
-        ismarried: em_maritalstatus === 2 ? 'Not Married' : 'Married',
+        ismarried: em_maritalstatus === '2' ? 'Not Married' : em_maritalstatus === null ? 'NOT UPDATED' : 'Married',
         religion: relg_name === null ? 'NOT UPDATED' : relg_name,
         age: em_dob === null ? 'NOT UPDATED' : em_dob,
         dob: em_dob === null ? 'NOT UPDATED' : em_dob,

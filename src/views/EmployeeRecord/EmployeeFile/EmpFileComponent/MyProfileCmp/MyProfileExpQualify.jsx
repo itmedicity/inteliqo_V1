@@ -1,6 +1,5 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
 import React, { Fragment, memo, useEffect, useState } from 'react'
-import PersonPinIcon from '@mui/icons-material/PersonPin';
 import AcademicQualCmp from './AcademicQualCmp';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import SchoolIcon from '@mui/icons-material/School';
@@ -14,19 +13,10 @@ const MyProfileExpQualify = () => {
         return state.getPrifileDateEachEmp.empAcademicData;
     })
 
-    // console.log(state)
-
     useEffect(() => {
-        const { academicData, academicDataStatus } = state;
-        setaccedemicData(state.academicData)
+        const { academicData } = state;
+        setaccedemicData(academicData)
     }, [state])
-
-    // console.log(accedData)
-
-    // accedData.map((val) => {
-    //     console.log(val)
-    // })
-
 
     return (
         <Fragment>

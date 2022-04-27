@@ -1,5 +1,4 @@
 import React from 'react'
-import Paper from '@mui/material/Paper';
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
 import { styled } from '@mui/system';
 

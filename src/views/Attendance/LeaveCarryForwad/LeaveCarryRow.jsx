@@ -3,7 +3,7 @@ import React, { Fragment, Suspense, memo } from 'react'
 import LeaveCarryCount from './LeaveCarryCount'
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 
-const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id, setemp_type, lcmast, setLcMast }) => {
+const LeaveCarryRow = ({ name, setedit, edit, setCarryForwardLeave, setemp_id, emp_tpe, setemp_type, lcmast, setLcMast }) => {
     return (
         <Fragment>
             {name && name.map((val, index) => {

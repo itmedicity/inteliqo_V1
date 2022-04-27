@@ -166,7 +166,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
             setdays(othr)
             setFlag(2)
         } else { }
-    }, [otAdd.totalot])
+    }, [otAdd.totalot, otslno.length])
 
     const patchData = {
         ot_ceo_status: approve === true ? 1 : reject === true ? 2 : 0,
@@ -243,7 +243,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
     const submitCeo = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/overtimerequest/ceoapprove', patchData)
-        const { success, message } = result.data
+        const { success } = result.data
         if (success === 2) {
             if (approve === true && reject === false) {
                 succesNofity("CEO Approved ");
@@ -252,7 +252,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
             }
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
-                const { message, success } = result.data;
+                const { success } = result.data;
                 if (success === 2) {
                     const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
                     const { message, success } = result2.data;
@@ -265,7 +265,7 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPostflagtwo)
                 const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
                 const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
-                const { messagee, success } = result2.data;
+
             }
             else {
                 const result3 = await axioslogin.patch('/overtimerequest/coff/insert', coffpostdata)

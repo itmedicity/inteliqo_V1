@@ -1,9 +1,8 @@
-import { IconButton, LinearProgress, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
-import React, { Fragment, useContext, useEffect, memo, Suspense } from 'react'
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
+import React, { Fragment, useContext, useEffect, memo } from 'react'
 import Paper from '@mui/material/Paper';
 import { useHistory } from 'react-router'
 import CustomePagination from 'src/views/CommonCode/CustomePagination';
-import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess'
 import TextInput from 'src/views/Component/TextInput'
 import { FcPlus, FcCancel, FcProcess } from "react-icons/fc";
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -11,10 +10,10 @@ import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { addDays, format, getMonth } from 'date-fns';
+import { format, getMonth } from 'date-fns';
 import moment from 'moment';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { infoNofity, getDayDiffrence, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, getDayDiffrence, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
@@ -61,8 +60,8 @@ const ShiftUpdation = () => {
         })
     }
     const { startDate, endDate } = formData;
-    const maxdate = addDays(new Date(startDate), 30);
-    const maxdatee = moment(maxdate).format('YYYY-MM-DD');
+    // const maxdate = addDays(new Date(startDate), 30);
+    // const maxdatee = moment(maxdate).format('YYYY-MM-DD');
 
     useEffect(() => {
         //get days diffrence for the page pagination
@@ -161,7 +160,7 @@ const ShiftUpdation = () => {
 
         }
         const result = await axioslogin.post('/empmast/getempName/', selempdata)
-        const { success, data } = result.data
+        const { data } = result.data
 
         const empdata = data.map((val) => {
             return val.em_id
@@ -212,7 +211,7 @@ const ShiftUpdation = () => {
                 const { success } = result.data;
                 if (success === 1) {
                     const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
-                    const { success, data } = result.data;
+                    const { success } = result.data;
 
                     if (success === 1) {
                         const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);

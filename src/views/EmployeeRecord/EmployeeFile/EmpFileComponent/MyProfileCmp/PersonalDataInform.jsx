@@ -1,7 +1,6 @@
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography } from '@mui/material'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import { Avatar, Divider, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
+import React, { Fragment, memo } from 'react'
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
-import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 
 const PersonalDataInform = ({ name, sub_name, data }) => {
@@ -57,4 +56,4 @@ const PersonalDataInform = ({ name, sub_name, data }) => {
     )
 }
 
-export default PersonalDataInform
+export default memo(PersonalDataInform)

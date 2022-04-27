@@ -1,18 +1,11 @@
-import { Card, CardHeader, Divider, IconButton } from '@mui/material'
+// import { Card, CardHeader, Divider, IconButton } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import EmployeeProfileCard from './EmpFileComponent/EmployeeProfileCard'
-import EmployeeProfileCardFooter from './EmpFileComponent/EmployeeProfileCardFooter'
-import EmployeeProfileCardMenuList from './EmpFileComponent/EmployeeProfileCardMenuList'
 import MyProfilePersonalInform from './EmpFileComponent/MyProfileCmp/MyProfilePersonalInform'
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ClearIcon from '@mui/icons-material/Clear';
-import MyProfileExpQualify from './EmpFileComponent/MyProfileCmp/MyProfileExpQualify'
 import { useDispatch } from 'react-redux'
 import {
-    setProfileData,
     setPersonalData,
     setAccademicData,
     setExperienceData,

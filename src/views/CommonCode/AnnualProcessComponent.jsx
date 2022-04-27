@@ -15,9 +15,8 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
 }) => {
 
     // destructuring  dataleave
-    const { ecat_cl, ecat_cont, ecat_el, ecat_esi_allow,
-        ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl,
-        em_category, em_contract_end_date, em_prob_end_date, em_doj
+    const { ecat_cont, ecat_esi_allow,
+        ecat_prob, em_contract_end_date, em_prob_end_date, em_doj
     } = dataleave
 
     // useState for common leave data
