@@ -18,7 +18,9 @@ const Widjet = ({ avatarIcons, widgetName, count }) => {
                     flexDirection: "row",
                     justifyContent: "center",
                     width: "100%",
-                    boxShadow: 10
+                    boxShadow: 10,
+                    marginY: 0.3,
+                    marginX: 0.3
                 }}
             >
                 <Box

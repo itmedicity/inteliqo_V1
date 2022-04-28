@@ -309,111 +309,198 @@ const DashAlertCmp = () => {
         <Fragment>
             <Card sx={{ marginTop: 1 }} >
                 <CardContent>
-                    <Grid container spacing={1}  >
-                        <Grid item sm={4} md={3} >
+                    <Grid container direction={'row'} justifyContent="space-between" alignItems="center" spacing={1} sx={{ width: '100%', marginX: 0.01 }} >
+
+                        <div style={{ width: '24%', }} >
                             {
                                 constslno.map((val, index) => {
                                     return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
                                 })}
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 134 ? <Widjet avatarIcons={leaveUSER} widgetName="Leave Request User" count={leaveUserCount} key={index} /> : null
-                            })}
+                        </div>
+                        {/* <div style={{ width: '24%', }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div>
+                        <div style={{ width: '24%' }}>
+                            {
+                                constslno.map((val, index) => {
+                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                                })}
+                        </div> */}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 135 ? <Widjet avatarIcons={leaveInch} widgetName="Leave Request Incharge" count={leaveInchargeCount} key={index} /> : null
-                            })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 136 ? <Widjet avatarIcons={leaveHOd} widgetName="Leave Request HOD" count={leaveHODCount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 134 ?
+                                <div style={{ width: '24%' }} key={index} >
+                                    <Widjet avatarIcons={leaveUSER} widgetName="Leave Request User" count={leaveUserCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 137 ? <Widjet avatarIcons={leaveCeo} widgetName="Leave Request CEO" count={leaveCEOCount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 135 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={leaveInch} widgetName="Leave Request Incharge" count={leaveInchargeCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 138 ? <Widjet avatarIcons={contractRenew} widgetName="Contract Renewal" count={contractRenewal} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 136 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={leaveHOd} widgetName="Leave Request HOD" count={leaveHODCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 139 ? <Widjet avatarIcons={training} widgetName="Training Confirmation" count={trainingConform} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 137 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={leaveCeo} widgetName="Leave Request CEO" count={leaveCEOCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 140 ? <Widjet avatarIcons={contractclose} widgetName="Contract Closed" count={contractcloseCount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 138 ?
+                                <div style={{ width: '24%' }} key={index} >
+                                    <Widjet avatarIcons={contractRenew} widgetName="Contract Renewal" count={contractRenewal} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 141 ? <Widjet avatarIcons={otrequest} widgetName="Overtime Request" count={otCount} key={index} /> : null
-                            })}
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 142 ? <Widjet avatarIcons={otuser} widgetName="Overtime Request User" count={otUserCount} key={index} /> : null
-                            })}
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 143 ? <Widjet avatarIcons={otinch} widgetName="Overtime Request Incharge" count={otCountIncharge} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 139 ?
+                                <div style={{ width: '24%' }} key={index} >
+                                    <Widjet avatarIcons={training} widgetName="Training Confirmation" count={trainingConform} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 144 ? <Widjet avatarIcons={othod} widgetName="Overtime Request HOD" count={otHODCount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 140 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={contractclose} widgetName="Contract Closed" count={contractcloseCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 145 ? <Widjet avatarIcons={otceo} widgetName="Overtime Request CEO" count={otCEOCount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 141 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={otrequest} widgetName="Overtime Request" count={otCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 146 ? <Widjet avatarIcons={resign} widgetName="Resignation Request" count={resigncount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 142 ?
+                                <div style={{ width: '24%' }}>
+                                    <Widjet avatarIcons={otuser} widgetName="Overtime Request User" count={otUserCount} key={index} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 147 ? <Widjet avatarIcons={resignInch} widgetName="Resignation Request Incharge" count={resignInchargecount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 143 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={otinch} widgetName="Overtime Request Incharge" count={otCountIncharge} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 148 ? <Widjet avatarIcons={resignHod} widgetName="Resignation Request HOD" count={resignHODcount} key={index} /> : null
-                            })}
-                        </Grid>
-                        <Grid item sm={4} md={3} >
-                            {constslno.map((val, index) => {
-                                return val.menu_slno === 149 ? <Widjet avatarIcons={resignCeo} widgetName="Resignation Request CEO" count={resignCEOcount} key={index} /> : null
-                            })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 144 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={othod} widgetName="Overtime Request HOD" count={otHODCount} />
+                                </div>
+                                : null
+                        })}
 
-                        </Grid>
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 145 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={otceo} widgetName="Overtime Request CEO" count={otCEOCount} />
+                                </div>
+                                : null
+                        })}
+
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 146 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={resign} widgetName="Resignation Request" count={resigncount} />
+                                </div>
+                                : null
+                        })}
+
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 147 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={resignInch} widgetName="Resignation Request Incharge" count={resignInchargecount} />
+                                </div>
+                                : null
+                        })}
+
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 148 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={resignHod} widgetName="Resignation Request HOD" count={resignHODcount} />
+                                </div>
+                                : null
+                        })}
+
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 149 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={resignCeo} widgetName="Resignation Request CEO" count={resignCEOcount} />
+                                </div>
+                                : null
+                        })}
+
+
 
                     </Grid>
                 </CardContent>
             </Card>
-        </Fragment>
+        </Fragment >
     )
 }
 
