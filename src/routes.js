@@ -144,6 +144,7 @@ const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLea
 const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
 const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Announcement/Hrm_Announcement'))
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
+const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -293,6 +294,7 @@ const routes = [
   { path: '/Home/OtUser', exact: true, name: 'OT User View', component: OtUser },
   { path: '/Home/Hrm_Announcement', exact: true, name: 'Hrm Announcement', component: Hrm_Announcement },
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
+  { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
 ]
 
 export default routes

@@ -77,7 +77,7 @@ const InchargeApprovalTable = ({ DeptSect }) => {
                             icon: () => <AddTaskRoundedIcon color='success' />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, data) => handleClickOpen(data.resig_slno),
-                            disabled: tableData.inch_app_status == 'Approved'
+                            disabled: tableData.inch_app_status === 'Approved'
 
                         }
                     )

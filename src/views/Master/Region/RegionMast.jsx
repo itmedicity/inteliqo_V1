@@ -2,8 +2,10 @@ import { Button, TextField, Checkbox, FormControlLabel } from '@material-ui/core
 import React, { Fragment, useContext } from 'react'
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
+import SessionCheck from 'src/views/Axios/SessionCheck';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
@@ -75,6 +77,8 @@ const RegionMast = () => {
 
     return (
         <Fragment>
+            <ToastContainer />
+            <SessionCheck />
             <div className="card">
                 <div className="card-header bg-dark pb-0 border border-dark text-white">
                     <h5>Region Master</h5>

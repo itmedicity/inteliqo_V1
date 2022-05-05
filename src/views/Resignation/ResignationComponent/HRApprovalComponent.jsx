@@ -1,10 +1,8 @@
 import React, { Fragment } from 'react';
-import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
+import { TextareaAutosize, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, Slide } from "@material-ui/core";
 import TextInput from 'src/views/Component/TextInput';
-import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
@@ -49,7 +47,7 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
         hr_comment: '',
     }
     const { approve, reject, hr_comment } = formData
-    const { resig_slno, relieving_date, request_date, resign_reason, emp_id, designation, sect_id, dept_id,
+    const { resig_slno, relieving_date, request_date, resign_reason, emp_id, sect_id, dept_id,
         inch_app_status, inch_coment, incharge_required, hod_coment, hod_required, hod_app_status } = approvalData
     useEffect(() => {
         const getApprovalData = async () => {

@@ -1,10 +1,6 @@
 import React, { Fragment } from "react";
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import AuthorizationDetails from "src/views/CommonCode/AuthorizationDetails";
 import PageLayoutCloseOnly from "src/views/CommonCode/PageLayoutCloseOnly";
-import { SELECT_CMP_STYLE } from "src/views/Constant/Constant";
-import ResignationApprovalSection from "../ResignationApproval/ResignationApprovalSection";
 import CeoApprovalTable from "./CeoApprovalTable";
 
 const ResignationApprovalCEO = () => {

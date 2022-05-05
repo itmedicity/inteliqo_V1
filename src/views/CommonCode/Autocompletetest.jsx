@@ -1,18 +1,27 @@
 import { Autocomplete } from '@mui/material'
-import React, { Fragment, useContext, useState } from 'react'
-import { useSelector } from 'react-redux';
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-
-const RegionSelect2 = () => {
-    //getting region list from redux
-    const regionList = useSelector((state) => {
-        return state.getRegionList.RegionList
-    })
-    // intializing use state
+import { axioslogin } from '../Axios/Axios';
+const Autocompletetest = () => {
     const [inputValue, setInputValue] = useState('');
-    const [input, setInput] = useState('');
+    // intializing use state
+    const [regiondata, setregion] = useState([]);
     // useContext
-    const { udateregion2 } = useContext(PayrolMasterContext)
+    const { udateregion } = useContext(PayrolMasterContext)
+    useEffect(() => {
+        const getregiondata = async () => {
+            const result = await axioslogin.get('/region')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setregion(data)
+            }
+        }
+        getregiondata()
+        return (
+            udateregion(0)
+        )
+
+    }, [udateregion]);
     return (
         <Fragment>
             <label>
@@ -35,19 +44,17 @@ const RegionSelect2 = () => {
                                 theme.palette.getContrastText(theme.palette.background.paper),
                         }
                     }}
-                    value={input}
+                    value={inputValue}
                     onChange={(event, newValue) => {
-                        udateregion2(newValue === null ? 0 : newValue.value);
-                        setInput(newValue)
+                        udateregion(newValue === null ? 0 : newValue.value);
                     }}
                     inputValue={inputValue}
                     onInputChange={(event, newInputValue) => {
                         setInputValue(newInputValue);
                     }}
-                    options={regionList && regionList.map((val) => {
+                    options={regiondata && regiondata.map((val) => {
                         return { label: val.reg_name, value: val.reg_slno }
                     })}
-                    isOptionEqualToValue={(option, value) => (option.label === value.label)}
                     renderInput={(params) => (
                         <div ref={params.InputProps.ref}>
                             <input placeholder='Region' type="text" {...params.inputProps}
@@ -58,9 +65,8 @@ const RegionSelect2 = () => {
                     )}
                 />
             </label>
-
         </Fragment>
     )
 }
 
-export default RegionSelect2
+export default Autocompletetest

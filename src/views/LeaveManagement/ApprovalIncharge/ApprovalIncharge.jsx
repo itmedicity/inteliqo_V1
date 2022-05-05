@@ -152,15 +152,15 @@ const ApprovalIncharge = () => {
                     </div>
                     <div className="card ">
                         <div className="col-md-12">
-                            <ApprovalInchargeTable leavereq={levtpevalue == 1 ? leavereq :
-                                levtpevalue == 2 ? halfday :
-                                    levtpevalue == 4 ? compensetory :
-                                        levtpevalue == 3 ? nopunch : []
+                            <ApprovalInchargeTable leavereq={levtpevalue === 1 ? leavereq :
+                                levtpevalue === 2 ? halfday :
+                                    levtpevalue === 4 ? compensetory :
+                                        levtpevalue === 3 ? nopunch : []
                             } levtpevalue={levtpevalue} authority={1}
-                                setleavereq={levtpevalue == 1 ? setleavereqst :
-                                    levtpevalue == 2 ? sethalfday :
-                                        levtpevalue == 4 ? setcompensetory :
-                                            levtpevalue == 3 ? setnopunch : null}
+                                setleavereq={levtpevalue === 1 ? setleavereqst :
+                                    levtpevalue === 2 ? sethalfday :
+                                        levtpevalue === 4 ? setcompensetory :
+                                            levtpevalue === 3 ? setnopunch : null}
                                 DeptSect={DeptSect}
                             />
                         </div>
