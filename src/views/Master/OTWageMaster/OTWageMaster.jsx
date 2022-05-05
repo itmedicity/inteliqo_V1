@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
@@ -14,7 +14,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 const OTWageMaster = () => {
     const history = useHistory()
     const [count, setcount] = useState(0)
-    const { selectEmpName, updateSelectEmpName, selectDeptSection, selectedDept } = useContext(PayrolMasterContext)
+    const { selectEmpName, selectDeptSection } = useContext(PayrolMasterContext)
     const [data, setData] = useState({
         emp__ot: '',
         ot_amount: ''

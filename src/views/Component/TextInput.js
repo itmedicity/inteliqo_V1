@@ -13,6 +13,7 @@ const TextInput = (props) => {
                 placeholder={Placeholder}
                 aria-label=".form-control-sm"
                 value={value}
+                autoComplete="off"
                 onChange={changeTextValue}
                 name={name}
                 disabled={disabled}

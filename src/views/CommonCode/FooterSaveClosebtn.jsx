@@ -1,37 +1,31 @@
-import React from 'react'
-import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
-import { Chip, IconButton } from '@material-ui/core';
-import { MdOutlineAddTask } from 'react-icons/md'
+import React, { memo } from 'react'
+import { IconButton } from '@material-ui/core';
+import ReactTooltip from 'react-tooltip';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 
 const FooterSaveClosebtn = (props) => {
     return (
+        <div className="col-md-2">
+            <div className="row">
+                <div className="col-md-1 col-sm-4 d-flex flex-row justify-content-md-between" data-tip="Save" data-for='toolTip1' data-place='top'>
+                    <div style={{ marginRight: "0.5rem" }}>
+                        <ReactTooltip id="toolTip1" />
+                        <IconButton type="submit" className="p-1" color="primary" clickable="true" onClick={props.submit}>
+                            <SaveIcon size={25} sx={{ color: "#37575f" }} />
 
-        <div className="col-md-2 col-sm-4 d-flex flex-row justify-content-md-between">
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={
-                        <IconButton type="submit" >
-                            <MdOutlineAddTask className="text-info p-0" size={22} />
                         </IconButton>
-                    }
-                    label="Save"
-                    disabled={props.disable}
-                    clickable={true}
-                />
-            </div>
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={<IconButton className="p-1" >
-                        <WrongLocationOutlinedIcon className="text-info" size={22} />
-                    </IconButton>}
-                    label="Close"
-                    onClick={props.redirect}
-                    clickable={true}
-                />
+                    </div>
+                    <div style={{ marginRight: "0.5rem" }} data-tip="Close" data-for='toolTip1' data-place='top'>
+                        <ReactTooltip id="toolTip1" />
+                        <IconButton className="p-1" onClick={props.redirect} clickable="true" >
+                            <CancelIcon size={22} sx={{ color: "#37575f" }} />
+                        </IconButton>
+                    </div>
+                </div >
             </div>
         </div>
-
     )
 }
 
-export default FooterSaveClosebtn
+export default memo(FooterSaveClosebtn)

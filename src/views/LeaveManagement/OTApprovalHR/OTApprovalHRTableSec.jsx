@@ -107,7 +107,7 @@ const OTApprovalHRTableSec = ({ DeptSect }) => {
                         icon: () => <AddTaskRoundedIcon size={26} color='success' />,
                         tooltip: "Click here to Approve/Reject",
                         onClick: (e, data) => handleClickOpen(data.ot_slno),
-                        disabled: data.ot_hr_status == 'Approved'
+                        disabled: data.ot_hr_status === 'Approved'
 
                     }),
                     {

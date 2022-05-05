@@ -40,7 +40,7 @@ const PayrollMenu = [
         men_slno: 42,
         component: CNavItem,
         name: 'Professional Tax',
-        to: '/homes',
+        to: '/Home/ProffessionalTax',
     },
     {
         men_slno: 43,

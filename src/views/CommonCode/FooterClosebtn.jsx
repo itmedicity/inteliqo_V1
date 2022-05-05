@@ -1,54 +1,34 @@
-import React from 'react'
-import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
-import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
-import { Chip, IconButton } from '@material-ui/core';
-import { MdOutlineAddTask } from 'react-icons/md'
+import React, { memo } from 'react'
+import { IconButton } from '@material-ui/core';
+import SaveIcon from '@mui/icons-material/Save';
+import PreviewIcon from '@mui/icons-material/Preview';
+import ReactTooltip from 'react-tooltip';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const FooterClosebtn = (props) => {
     return (
+        <div className="col-md-1 col-sm-4 d-flex flex-row justify-content-md-between" data-tip="Save" data-for='toolTip1' data-place='top'>
+            <div style={{ marginRight: "0.5rem" }}>
+                <ReactTooltip id="toolTip1" />
+                <IconButton type="submit" className="p-1" color="primary" clickable="true" onClick={props.submit}>
+                    <SaveIcon size={25} sx={{ color: "#37575f" }} />
 
-        <div className="col-md-2 col-sm-4 d-flex flex-row justify-content-md-between">
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={
-                        <IconButton type="submit" className="p-1"  >
-                            <MdOutlineAddTask className="text-info p-0" size={22} />
-                        </IconButton>
-                    }
-                    label="Save"
-                    // style={{ cursor: "pointer" }}
-                    clickable={true}
-                    onClick={props.submit}
-                />
+                </IconButton>
             </div>
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={
-                        <IconButton className="p-1" >
-                            <PageviewOutlinedIcon className="text-info" size={22} />
-                        </IconButton>
-                    }
-                    label="View"
-                    // style={{ cursor: "pointer" }}
-                    clickable={true}
-                />
+            <div style={{ marginRight: "0.5rem" }} data-tip="View" data-for='toolTip1' data-place='top'>
+                <ReactTooltip id="toolTip1" />
+                <IconButton className="p-1" clickable="true">
+                    <PreviewIcon size={22} sx={{ color: "#37575f" }} />
+                </IconButton>
             </div>
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={
-                        <IconButton className="p-1" >
-                            <WrongLocationOutlinedIcon className="text-info" size={22} />
-                        </IconButton>
-                    }
-                    label="Close"
-                    // style={{ cursor: "pointer" }}
-                    onClick={props.redirect}
-                    clickable={true}
-                />
+            <div style={{ marginRight: "0.5rem" }} data-tip="Close" data-for='toolTip1' data-place='top'>
+                <ReactTooltip id="toolTip1" />
+                <IconButton className="p-1" onClick={props.redirect} clickable="true" >
+                    <CancelIcon size={22} sx={{ color: "#37575f" }} />
+                </IconButton>
             </div>
-        </div>
-
+        </div >
     )
 }
 
-export default FooterClosebtn
+export default memo(FooterClosebtn)
