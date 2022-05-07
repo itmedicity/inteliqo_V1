@@ -14,6 +14,8 @@ import FixedOffDaysInformation from './EmpFileComponent/FixedOffDaysInformation'
 import HolidayLeaveList from './EmpFileComponent/HolidayLeaveList';
 import ModelAvailLeavelist from './EmpFileComponent/ModelAvailLeavelist';
 import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess';
+import NotApplicableCmp from './EmpFileComponent/NotApplicableCmp';
+import NotProcessedCmp from './EmpFileComponent/NotProcessedCmp';
 import './EmpStyle.css'
 const CasualLeaveList = React.lazy(() => import('./EmpFileComponent/CasualLeaveList'))
 
@@ -147,6 +149,16 @@ const AnnualLeaveSettings = () => {
     const submitprocess = () => {
         const getdata = async () => {
             // check the table where data present if present get the details process table
+            /*
+                First check the "hrm_leave_process" table for any data if there
+                if success === 1 and if data {
+                    fetch the data from table and show in the "dataprvleave" variable
+                    values are 
+                        {category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld}
+                        hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld ==> value = 2 --> Not Applicable
+                                                                         ==> value = 1 --> Applicable
+                }
+            */
             const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
             const { success, message } = result.data;
             const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
@@ -162,27 +174,48 @@ const AnnualLeaveSettings = () => {
             }
             // if no data available
             if (success === 0) {
+                /*
+                    If no data is present means new employee  set model
 
-                // if no data is present means new employee  set model
+                    success === 0 means --> No data available in the "hrm_leave_process" table 
+                    ie: New Employee , This is the initial process , after this leave process 
+                    one entry saved in "hrm_leave_process" table with next_updatedate and "hrm_process_status == A" (A -> Active) "N" --> Inactive
+                    Open the Model Component -->  <ModelLeaveProcess/>
+                */
                 setmodelvalue(1)
                 setmodelmessage('Leave process is not done for the employee')
-                setolddat(1)
+                setolddat(1)  // Updated the olddata === 1 for identify this is the new Process , default is 0 ,0 means not a new process
                 setOpen(true)
             }
             else if (success === 1) {
                 leaveprocessidupdate(dataprvleave)
                 // if employee process date has over 
+                /*
+                    If the current date "new Date()" > "next_updatedate" --> needed to open the model and needed to Leave Process again
+                    and "hrm_process_status == A" (A -> Active)
+                    Open the Model Component -->  <ModelLeaveProcess/>
+                */
                 if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
                     setOpen(true)
                     setmodelvalue(1)
                     setmodelmessage('Date Exceeded do you Want To Process')
                 }
+                /*
+                    If any category change happens --> needed to open the model and needed to Leave Process again
+                    and "hrm_process_status == A" (A -> Active)
+                    Open the Model Component -->  <ModelLeaveProcess/>
+                */
                 else if (category_slno !== em_category) {
                     setmodelvalue(1)
                     setmodelmessage('Category Change Do You Want to  To Process')
                     setOpen(true)
                 }
-                // if process contain data and pending leave process is present
+                /*
+                    // if process contain data and pending leave process is present
+                        If "hrm_leave_process" table have the new row with "hrm_process_status" column have the 'A' status ( Active status ) 
+                        and following column is hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0
+                        then the <ModelAvailLeavelist/> model open for Process
+                */
                 else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
                     setmodellist(true)
                 }
@@ -204,15 +237,15 @@ const AnnualLeaveSettings = () => {
                 {/* if new process needed */}
                 {modelvalue === 1 ? <ModelLeaveProcess
                     open={open}
-                    dataleave={leavestate} // {leaves available based on category}
+                    dataleave={leavestate} // {Allowed Leaves based on category}
                     handleClose={handleClose}
                     setOpen={setOpen}  //for open model
                     id={id}//employee id
                     no={no}//employee number
                     valuemessage={modelmessage}//model message
-                    leaveprocessid={leaveprocessid} //current proceess details
+                    leaveprocessid={leaveprocessid} //current proceess details from the 
                     processslno={processslno}//processess serialno
-                    olddata={olddata}// check wheather new data
+                    olddata={olddata}// check value === 1 then this is the new process and 0 is not a new process
                     setcastable={setcastable}//casual leave table rerender
                     setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
                     setnodatael={setnodatael} //dataset render  for rerendering the earnleave
@@ -242,7 +275,7 @@ const AnnualLeaveSettings = () => {
                                         nodataset={setnodatacl}
                                         no={no} //employee id
                                         castable={castable}// for rerendering on process click
-                                    /> : nodatacl === 1 ? "Not Processed" : 'NOT APPLICABLE'}
+                                    /> : nodatacl === 1 ? <NotProcessedCmp name="Casual Leaves" /> : <NotApplicableCmp name="Casual Leaves" />}
 
                                 </div>
                             </Suspense>
@@ -255,7 +288,7 @@ const AnnualLeaveSettings = () => {
                                     {ecat_el === 1 && nodatael === 0 ? <EarnLeaveList
                                         hldnodata={setnodatael}
                                         no={no} //employee id
-                                    /> : nodatael === 1 ? "Not Processed" : 'NOT APPLICABLE'}
+                                    /> : nodatael === 1 ? <NotProcessedCmp name="Privilage Leave" /> : <NotApplicableCmp name="Privilage Leave" />}
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>
@@ -267,7 +300,7 @@ const AnnualLeaveSettings = () => {
                                     {ecat_nh === 1 && nodatahl === 0 ? <HolidayLeaveList
                                         hldnodata={setnodatahl}
                                         no={no} //employee id
-                                    /> : nodatahl === 1 ? "Not Processed" : 'NOT APPLICABLE'}
+                                    /> : nodatahl === 1 ? <NotProcessedCmp name="Holiday Leaves" /> : <NotApplicableCmp name="Holiday Leaves" />}
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>
@@ -281,9 +314,7 @@ const AnnualLeaveSettings = () => {
                                     {(ecat_esi_allow === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) && nodatafixed === 0 ? <FixedOffDaysInformation
                                         hldnodata={setnodatafixed}
                                         no={no} //employee id
-                                    /> : nodatafixed === 1 ? "Not Processed" : 'NOT APPLICABLE'
-
-                                    }
+                                    /> : nodatafixed === 1 ? <NotProcessedCmp name="Common Leaves" /> : <NotApplicableCmp name="Common Leaves" />}
                                 </div>
                             </Suspense>
                         </CardLeaveContainerTwo>

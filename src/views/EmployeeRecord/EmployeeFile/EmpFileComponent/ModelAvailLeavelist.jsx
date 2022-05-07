@@ -20,7 +20,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const ModelAvailLeavelist = ({
     open,//open model
     dataleave,//{leaves available based on category}
-    lv_process_slnocurrent,//current proceess details
+    lv_process_slnocurrent,//current proceess SLNumber 
     handleClose,
     setcastable,// rerender the table on process clickk
     setnodatacl,
@@ -31,9 +31,9 @@ const ModelAvailLeavelist = ({
 }) => {
 
     const [processCount, setProcessCount] = useState(0)
-    const { ecat_cl,
-        ecat_lop, ecat_esi_allow,
-        ecat_fh, ecat_mate, ecat_nh, ecat_sl } = dataleave
+    const {
+        ecat_cl, ecat_lop, ecat_esi_allow,
+        ecat_fh, ecat_mate, ecat_nh, ecat_sl } = dataleave;
     const [leaveproceedaata, setleaveprocedata] = useState({
         category_slno: "",
         em_id: " ",
@@ -56,11 +56,10 @@ const ModelAvailLeavelist = ({
 
     useEffect(() => {
         const getleaveprocessdata = async () => {
-
+            //Get The Process Details from the "hrm_leave_process" table using the current process Serial Nulber (lv_process_slnocurrent)
             const result = await axioslogin.get(`/yearleaveprocess/${lv_process_slnocurrent}`)
             const { success, data } = result.data
             if (success === 0) {
-
                 setleaveprocedata(data[0])
             }
         }
