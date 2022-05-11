@@ -12,7 +12,7 @@ import { getAlertList } from '../reducers/AlertReducres'
 import { getMsgList } from '../reducers/MessageReducres'
 import { getAnnouncementList } from '../reducers/AnnouncementReducers'
 import { getModuleRightList } from '../reducers/GetModulerights'
-
+import { getProTaxList } from '../reducers/ProffessionalTaxReducer'
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -27,7 +27,8 @@ const reducer = combineReducers({
     getAlertList,
     getMsgList,
     getAnnouncementList,
-    getModuleRightList
+    getModuleRightList,
+    getProTaxList
 })
 
 export default reducer;
