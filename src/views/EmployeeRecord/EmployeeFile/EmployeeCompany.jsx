@@ -13,6 +13,8 @@ import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess'
 import EmpCompanyTable from './EmployeeFileTable/EmpCompanyTable'
+import TextInput from 'src/views/Component/TextInput'
+import { format } from 'date-fns'
 
 const EmployeeCompany = () => {
     const history = useHistory()
@@ -70,14 +72,30 @@ const EmployeeCompany = () => {
         lv_process_slno: 0,
         category_slno: 0
     });
+    //Employee Category set
+    const [cat, setCat] = useState({
+        catemp: ''
+    })
+    //Employee Type and Designation Type Set
+    const [empstatus, setempStatus] = useState(0)
+    const [probsataus, setProbstatus] = useState(0)
 
+    //UseState for Date Feild disabled 
+    const [dis, setDis] = useState(true)
+
+    const [probenddate, setProbenddate] = useState(format(new Date(), "yyyy-MM-dd"));
     //Get data
     useEffect(() => {
         const getCompany = async () => {
             const result = await axioslogin.get(`/common/getcompanydetails/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_branch, em_department, em_dept_section, em_institution_type, em_category } = data[0]
+                const { em_branch, em_department, em_prob_end_date, em_dept_section, em_institution_type, em_category } = data[0]
+                const frm = {
+                    catemp: em_category
+                }
+                setCat(frm)
+                setProbenddate(em_prob_end_date)
                 updateBranchSelected(em_branch)
                 updateSelected(em_department)
                 updateDepartmentSection(em_dept_section)
@@ -89,6 +107,45 @@ const EmployeeCompany = () => {
         getCompany()
     }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateInstituteSeleted, udateemployeecategory])
 
+    const [enddate, setenddate] = useState(format(new Date(), "yyyy-MM-dd"));
+
+    const getenddate = (e) => {
+        var enddate = e.target.value
+        var end = format(new Date(enddate), "yyyy-MM-dd")
+        setenddate(end)
+        return (end)
+    }
+
+    useEffect(() => {
+        if ((getemployeecategory !== cat.catemp) && (getemployeecategory !== 0)) {
+            const getEmpType = async () => {
+                const result = await axioslogin.get(`/empmast/getEmpTypeDesg/${getemployeecategory}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    const { emp_type, des_type } = data[0]
+                    if ((des_type === 1) || (des_type === 2)) {
+                        setDis(false)
+                        setProbstatus(1)
+                    } else if (des_type === 3) {
+                        setDis(true)
+                        setProbstatus(0)
+                    }
+                    else {
+                        setDis(true)
+                        setProbstatus(0)
+                    }
+                    if (emp_type === 2) {
+                        setempStatus(1)
+                    }
+                    else if (emp_type === 1) {
+                        setempStatus(0)
+                    }
+                }
+            }
+            getEmpType()
+        }
+    }, [getemployeecategory])
+
     //post Data
     const updateData = {
         em_branch: selectBranchMast,
@@ -98,6 +155,9 @@ const EmployeeCompany = () => {
         com_category: company,
         com_category_new: getemployeecategory,
         em_category: getemployeecategory,
+        em_conf_end_date: enddate,
+        contract_status: empstatus === 1 ? 1 : 0,
+        probation_status: probsataus === 1 ? 1 : 0,
         create_user: employeeNumber(),
         edit_user: employeeNumber(),
         em_id: no,
@@ -245,6 +305,21 @@ const EmployeeCompany = () => {
                                     style={SELECT_CMP_STYLE}
                                 />
                             </div>
+                            <div className="col-md-12">
+                                <TextInput
+                                    type="date"
+                                    classname="form-control form-control-sm"
+                                    Placeholder="End Date"
+                                    disabled={dis}
+                                    value={enddate}
+                                    min={probenddate}
+                                    name="enddate"
+                                    changeTextValue={(e) => {
+                                        getenddate(e)
+                                    }}
+                                />
+                            </div>
+
                         </div>
                     </div>
                     <div className="col-md-8">

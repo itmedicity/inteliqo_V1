@@ -147,6 +147,7 @@ const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/Lea
 const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
 const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
+const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -298,7 +299,8 @@ const routes = [
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
   { path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
-  { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax }
+  { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
+  { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange }
 ]
 
 export default routes
