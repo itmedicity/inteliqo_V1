@@ -26,10 +26,16 @@ const AttendanceManagement = [
         to: '/Home/LeaveCarryForwad',
     },
     {
-        men_slno: 127,
+        men_slno: 151,
         component: CNavItem,
         name: 'Annual Leave Process',
         to: '/Home/AnnualLeaveProcess',
+    },
+    {
+        men_slno: 152,
+        component: CNavItem,
+        name: 'Department Section Change',
+        to: '/Home/DeptSecChange',
     },
 ]
 

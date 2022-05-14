@@ -202,7 +202,7 @@ const ModelLeaveProcess = ({
         setOpen(false)
     }
 
-    console.log(categorychge, nameel)
+    //console.log(categorychge, nameel)
     return (
         <Fragment>
             <div>
