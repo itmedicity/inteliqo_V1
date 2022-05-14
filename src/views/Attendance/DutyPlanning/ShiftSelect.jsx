@@ -1,22 +1,7 @@
-
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
-const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColor }) => {
-    const { plan_slno, shift_id } = data;
-    const [shft, setShift] = useState(shift_id)
-    const handleChange = (e) => {
-        // const planDate = moment(duty_day).format('YYYY-MM-DD');
-        const shiftId = e.target.value;
-        const planSlno = plan_slno;
-        const newShift = { shiftSlno: planSlno, shiftId: shiftId }
-        setShift(shiftId)
-        const sortPlan = planArray.filter((val) => {
-            return val.shiftSlno !== planSlno
-        })
-        setDutyPlan([...sortPlan, newShift])
-        changeColor(1)
-    }
+const ShiftSelect = ({ SetShiftId }) => {
     const [DepartmentShift, setDepartmentShiftSelect] = useState([]);
     //getting the department shift from store   
     const departmentShiftt = useSelector((state) => {
@@ -28,13 +13,15 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
         }
 
     }, [departmentShiftt])
+    const handleChange = (e) => {
+        const shiftId = e.target.value;
+        SetShiftId(shiftId)
+    }
     return (
         <Fragment>
             <select className="custom-select"
                 onChange={(e) => { handleChange(e) }}
-                value={shft}
-            // style={update === 1 ? { backgroundColor: "red" } : { backgroundColor: "blue" }}
-
+            // value={shft}
             >
                 <option defaultValue="0">Choose...</option>
                 {
@@ -47,6 +34,4 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     )
 }
 
-
-export default memo(DepartmentShiftSelect)
-
+export default ShiftSelect

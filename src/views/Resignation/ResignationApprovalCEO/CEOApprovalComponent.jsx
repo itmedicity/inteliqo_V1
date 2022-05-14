@@ -1,10 +1,8 @@
 import React, { Fragment, memo } from 'react';
-import { FormControl, MenuItem, Select, TextareaAutosize, Typography } from '@material-ui/core'
+import { TextareaAutosize, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, Slide } from "@material-ui/core";
 import TextInput from 'src/views/Component/TextInput';
-import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
@@ -38,7 +36,7 @@ const CEOApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
         ceo_comment: '',
     }
     const { approve, reject, ceo_comment } = formData
-    const { resig_slno, relieving_date, request_date, resign_reason, emp_id, designation } = approvalData
+    const { resig_slno, relieving_date, request_date, resign_reason } = approvalData
     useEffect(() => {
         const getApprovalData = async () => {
             const result = await axioslogin.get(`/Resignation/ceopendingbyID/${slno}`)

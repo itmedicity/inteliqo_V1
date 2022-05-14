@@ -116,7 +116,6 @@ const EmployeeAllowance = () => {
         em_end_date: month_end,
         create_user: employeeNumber(),
     }
-
     //Form reset
     const resetForm = {
         em_salary_desc: '',
@@ -134,17 +133,35 @@ const EmployeeAllowance = () => {
         updateWageType(0);
         updateWage(0);
     }
-
     //Submit data
     const submitAllowance = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/empearndeduction', postData)
         const { message, success } = result.data;
         if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1)
-            setWageType(resetForm);
-            reset();
+            const result = await axioslogin.post('/empearndeduction/getwage', postData)
+            const { success, data } = result.data
+            if (success === 1) {
+                var sum = 0;
+                data[0].forEach(value => {
+                    sum += value.em_amount;
+                });
+                const postData2 = {
+                    em_no: id,
+                    em_id: no,
+                    gross_salary: sum,
+                    updated_user: employeeNumber(),
+                }
+                const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
+                const { success, message } = result2.data
+                if (success === 1) {
+                    succesNofity(message);
+                    setcount(count + 1)
+                    setWageType(resetForm);
+                    reset();
+                }
+            }
+
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {

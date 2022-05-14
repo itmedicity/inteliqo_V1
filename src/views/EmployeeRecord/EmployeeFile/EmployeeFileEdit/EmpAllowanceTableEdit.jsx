@@ -97,6 +97,7 @@ const EmpAllowanceTableEdit = () => {
     // post data
     const updateData = {
         em_id: no,
+        em_no: id,
         em_salary_desc: selectWage,
         em_amount: em_amount,
         last_wage: last_amount,
@@ -131,10 +132,29 @@ const EmpAllowanceTableEdit = () => {
         const result = await axioslogin.patch('/empearndeduction', updateData)
         const { message, success } = result.data;
         if (success === 2) {
-            setWageType(resetForm);
-            history.push(`/Home/EmployeeAllowance/${id}/${no}`)
-            succesNofity(message);
-            reset();
+            const result = await axioslogin.post('/empearndeduction/getwage', updateData)
+            const { success, data } = result.data
+            if (success === 1) {
+                var sum = 0;
+                data[0].forEach(value => {
+                    sum += value.em_amount;
+                });
+                const postData2 = {
+                    em_no: id,
+                    em_id: no,
+                    gross_salary: sum,
+                    updated_user: employeeNumber(),
+                }
+                const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
+                const { success, message } = result2.data
+                if (success === 1) {
+                    setWageType(resetForm);
+                    history.push(`/Home/EmployeeAllowance/${id}/${no}`)
+                    succesNofity(message);
+                    reset();
+                }
+            }
+
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {

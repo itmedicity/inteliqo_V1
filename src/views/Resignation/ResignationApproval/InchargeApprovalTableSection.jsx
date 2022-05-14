@@ -1,12 +1,10 @@
 import React, { Fragment, memo } from 'react'
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import MaterialTable from 'material-table';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { IconButton } from '@mui/material';
 import ResignationApproveModel from '../ResignationComponent/ResignationApproveModel';
 
 const InchargeApprovalTableSection = ({ DeptSect }) => {
@@ -75,7 +73,7 @@ const InchargeApprovalTableSection = ({ DeptSect }) => {
                             icon: () => <AddTaskRoundedIcon color='success' />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, data) => handleClickOpen(data.resig_slno),
-                            disabled: tableData.inch_app_status == 'Approved'
+                            disabled: tableData.inch_app_status === 'Approved'
 
                         }
                     )

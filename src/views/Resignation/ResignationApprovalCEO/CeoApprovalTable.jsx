@@ -72,7 +72,7 @@ const CeoApprovalTable = () => {
                             icon: () => <AddTaskRoundedIcon color='success' />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, data) => handleClickOpen(data.resig_slno),
-                            disabled: tableData.ceo_appr_status == 'Approved'
+                            disabled: tableData.ceo_appr_status === 'Approved'
 
                         }
                     )

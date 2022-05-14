@@ -51,4 +51,5 @@ export const userManagement_one = [
     { to: '/Home/GroupRights', name: 'Group Rights', slno: 108 },
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
+    // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
 ]
