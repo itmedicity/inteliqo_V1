@@ -33,7 +33,7 @@ const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatama
         if ((em_department !== 0) && (em_dept_section !== 0)) {
             const getdepartmentShift = async () => {
                 const result = await axioslogin.post('/departmentshift/shift', getshift)
-                const { success, data, message } = await result.data;
+                const { success, data } = await result.data;
                 if (success === 1) {
                     const { shft_code } = data[0]
                     const obj = JSON.parse(shft_code)
@@ -137,7 +137,6 @@ const GetPunchdata = ({ otDate, setOtDate, shiftid, setShiftid, setpunchindatama
                                     getShiftdetail()
                                     displaypunch()
                                 }} />
-
                         </div>
                         <div className="col-md-6">
                             {

@@ -6,7 +6,15 @@ import { axioslogin } from '../Axios/Axios'
 import { employeeNumber } from '../Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from './Commonfunc'
 
-const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_process_slnocurrent, count, countdata,
+const AnnualProcessComponent = ({
+    name,
+    dataleave, // Leave available based on Leave
+    em_no,
+    em_id,
+    value,
+    lv_process_slnocurrent,
+    count,
+    countdata,
     setcastable,
     setnodatacl,
     setnodatael,
@@ -15,8 +23,13 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
 }) => {
 
     // destructuring  dataleave
-    const { ecat_cont, ecat_esi_allow,
-        ecat_prob, em_contract_end_date, em_prob_end_date, em_doj
+    const {
+        ecat_cont,
+        ecat_esi_allow,
+        ecat_prob,
+        em_contract_end_date,
+        em_prob_end_date,
+        em_doj
     } = dataleave
 
     // useState for common leave data
@@ -55,7 +68,22 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
             //console.log(subMonths(new Date(), 1))
             //console.log(ecat_cont === 1 ? new Date(em_contract_end_date) : ecat_prob === 1 ? new Date(em_prob_end_date) : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'))
             var dateresult = eachMonthOfInterval({ start: subMonths(new Date(), 1), end: ecat_cont === 1 ? new Date(em_contract_end_date) : ecat_prob === 1 ? new Date(em_prob_end_date) : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') })
+            /*
+                Regular + Confirmation (At the joing Time) -->  
+                    START_DATE --> { Joing Date}  || END_DATE --> last day of the year
 
+                Regular + Confirmation (After training / Probation) -->
+                    START_DATE --> { Confirmation Date/Traing/Probation End Date}  || END_DATE --> { last day of the year }
+
+                Regular + Probation/Trainig -->
+                    START_DATE --> { Joining Date}  || END_DATE --> { last day of the year / Probation-training end Date if  < last day of the year }
+
+                Contract + Training/Probation -->
+                    START_DATE --> { Joining Date/Contract start Date}  || END_DATE --> { last day of the year / Probation-training end Date if  < last day of the year }
+
+                Contract + Confirmation -->
+                    START_DATE --> { Confirmation Date/Traing/Probation End Date}  || END_DATE --> { last day of the year / Probation-training end Date if  < last day of the year }
+            */
             var datacaual = dateresult.map((val, index) => {
                 const datacasualleave = {
                     em_no: em_no,
@@ -74,24 +102,28 @@ const AnnualProcessComponent = ({ name, dataleave, em_no, em_id, value, lv_proce
                 lv_proce: lv_process_slnocurrent
 
             }
+
+            console.log(dateresult)
+            // console.log(subMonths(new Date(), 0))
             // insert casual leave
-            const result = await axioslogin.post('/yearleaveprocess/insert', datacaual)
-            const { success, message } = result.data
-            if (success === 1) {
-                // if updated casula leave table update process table
-                const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updatecasualleave', lv_process)
-                if (resultupdatcasualleave.data.success === 2) {
-                    succesNofity(resultupdatcasualleave.data.message)
-                }
-                count(countdata + 1)
-                if (categorychge !== 1) {
-                    setcastable(1)
-                    setnodatacl(0)
-                }
-            }
-            else {
-                infoNofity(message)
-            }
+
+            // const result = await axioslogin.post('/yearleaveprocess/insert', datacaual)
+            // const { success, message } = result.data
+            // if (success === 1) {
+            //     // if updated casula leave table update process table
+            //     const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updatecasualleave', lv_process)
+            //     if (resultupdatcasualleave.data.success === 2) {
+            //         succesNofity(resultupdatcasualleave.data.message)
+            //     }
+            //     count(countdata + 1)
+            //     if (categorychge !== 1) {
+            //         setcastable(1)
+            //         setnodatacl(0)
+            //     }
+            // }
+            // else {
+            //     infoNofity(message)
+            // }
         }
 
         // function for holiday

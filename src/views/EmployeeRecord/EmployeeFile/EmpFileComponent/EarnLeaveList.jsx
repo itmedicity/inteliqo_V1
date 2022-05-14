@@ -14,7 +14,6 @@ const EarnLeaveList = ({ hldnodata, no }) => {
     }])
 
 
-
     useEffect(() => {
         const insrtcasualleave = async () => {
             const result = await axioslogin.get(`/common/getearnleave/${no}`)
@@ -28,8 +27,6 @@ const EarnLeaveList = ({ hldnodata, no }) => {
 
                 setlist(data)
             }
-
-
         }
         insrtcasualleave();
 

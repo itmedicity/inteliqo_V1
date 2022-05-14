@@ -15,9 +15,10 @@ import moment from 'moment';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ModelLeaveProcess = ({ open,
+const ModelLeaveProcess = ({
+    open,
     handleClose,
-    dataleave,// {leaves available based on category}
+    dataleave,// {leaves available based on category} 
     setOpen, //for open model
     id,//employee id
     no,//employee number
@@ -30,21 +31,18 @@ const ModelLeaveProcess = ({ open,
     setnodatael,
     setnodatahl,
     setnodatafixed, setmodelvalue, categorychge, nameel
-
-
-
 }) => {
 
 
     // open model ModelAvailLeavelist
     const [openleavelist, setopenleavelist] = useState(false);
-    // destructuring  dataleave
+
+    // destructuring  dataleave --> Available Leves and other details from the database based on Category ID
     const { ecat_cl, ecat_cont, ecat_el, ecat_esi_allow,
         ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl,
         em_category, em_contract_end_date, em_prob_end_date } = dataleave
 
-
-    // destructuring  leaveprocessid
+    // destructuring  leaveprocessid --> Data From the "hrm_leave_process" table if status is "A"
     const {
         hrm_calcu,
         hrm_clv,
@@ -57,7 +55,10 @@ const ModelLeaveProcess = ({ open,
     // function for process data
     const funprocessdata = (em_category, category_slno) => {
         // if  employee category changed
+
         if (em_category !== category_slno) {
+
+            //if the employee category slno is diffrent in "hrm_emp_mast" table and "hrm_leave_process" table 
             const processdataold = {
                 lv_process_slno: processslno,
                 em_no: id,
@@ -71,11 +72,12 @@ const ModelLeaveProcess = ({ open,
                 hrm_calcu: 0,
                 hrm_process_status: 'A',
                 next_updatedate: ecat_cont === 1 ? em_contract_end_date : ecat_prob === 1 ? em_prob_end_date : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+                // "next_updatedate"  if employee is in contract "contract end date" : if is in probation "probation end date" other wise last day of year
             }
             return processdataold
         }
         else {
-            // for save  data
+            // for save  data // Same data from the "hrm_leave_process" table only change is the "next_updatedate" date
             const processdata = {
                 lv_process_slno: processslno,
                 em_no: id,
@@ -89,12 +91,14 @@ const ModelLeaveProcess = ({ open,
                 hrm_calcu: hrm_calcu,
                 hrm_process_status: 'A',
                 next_updatedate: ecat_cont === 1 ? em_contract_end_date : ecat_prob === 1 ? em_prob_end_date : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+                // "next_updatedate"  if employee is in contract "contract end date" : if is in probation "probation end date" other wise last day of year
             }
             return processdata
         }
     }
 
-    // for new employee prime data
+    // for new employee Primary data 
+    // If it is a new Employee following new data will be inserted in the table
     const processdatanew = {
         lv_process_slno: processslno,
         em_no: id,
@@ -110,7 +114,6 @@ const ModelLeaveProcess = ({ open,
         next_updatedate: ecat_cont === 1 ? em_contract_end_date : ecat_prob === 1 ? em_prob_end_date : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
     }
 
-
     // for update data
     const updata = {
         lv_process_slno: lv_process_slno
@@ -120,14 +123,16 @@ const ModelLeaveProcess = ({ open,
         new_process: processslno,
         oldprocessslno: lv_process_slno
     }
-    // function
+    /*
+        Function for inserting initial data in to the "hrm_leave_process" table
+    */
     const datayearsave = async (data) => {
         const result = await axioslogin.post('/yearleaveprocess/create', data)
 
         const { message, success } = result.data
         if (success === 1) {
             succesNofity(message)
-            setopenleavelist(true)
+            setopenleavelist(true) //After insert data into the "hrm_leave_process" table open the Model ( Listing the )
             setOpen(false)
 
         } else if (success === 0) {
@@ -138,14 +143,21 @@ const ModelLeaveProcess = ({ open,
     }
     // on click yes process  
     const annualleaveprocess = async () => {
-
         // setmodelvalue(0)
         // for updateing processes table  if previous data
+        /*
+            When Open the Process model for a new leave Process and on Click the  "Yes" button 
+            then --> check
+                if there is any old data in the "hrm_leave_process" table --> if yes , "hrm_process_status" column  status changed as "N" ,means Inactive ( "A" --> "N" )
+            Following API will updated the coulmn as "N"
+        */
         const resultupdate = await axioslogin.patch('/yearleaveprocess/', updata)
         const { message, success } = resultupdate.data
 
         if (success === 2) {
+            // Success === 2 means "hrm_process_status" coulumn status successfully updated as "N" in the table "<ModelAvailLeavelist/>"
             if (olddata === 1) {
+                // New Process || initial Process
                 datayearsave(processdatanew)
             }
             else {
@@ -153,7 +165,11 @@ const ModelLeaveProcess = ({ open,
             }
 
             if ((em_category !== category_slno)) {
-                { // casual leave update
+                {
+                    /*
+                        Update the all leaves inactive as value "1" / this data consider for the carry forward
+                        Update casual leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
+                    */
                     if ((ecat_cl === 0 && hrm_clv === 1)) {
                         await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', updatedetllable)
                         // const { message, success } = updatecasualleaveupdateslno.data
@@ -163,26 +179,18 @@ const ModelLeaveProcess = ({ open,
 
                         await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', updatedetllable)
                         // const { message, success } = updateholidayupdateslno.data
-
                     }
                     // earn leave update
-
                     if ((ecat_el === 0) && hrm_ern_lv === 1) {
-
                         await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', updatedetllable)
                         // const { message, success } = updateholidayupdateslno.data
-
                     }
-
-
                 }
-
-
-
             }
-        } else if (success === 0) {
+        } else if (success === 0) { // If any error from the updated API
             infoNofity(message)
         } else {
+            // Any Other Error
             infoNofity(message)
         }
     }
@@ -194,7 +202,7 @@ const ModelLeaveProcess = ({ open,
         setOpen(false)
     }
 
-
+    console.log(categorychge, nameel)
     return (
         <Fragment>
             <div>

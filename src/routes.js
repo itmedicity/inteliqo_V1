@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy } from 'react'
 
 const HomePage = React.lazy(() => import('./views/Home/Home'))
 const ManpowerRequest = React.lazy(() => import('./views/recruitment/manpowerRequest/ManpowerRequest'));
@@ -145,6 +145,10 @@ const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
 const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Announcement/Hrm_Announcement'))
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
 const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
+const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
+const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
+const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -295,6 +299,9 @@ const routes = [
   { path: '/Home/Hrm_Announcement', exact: true, name: 'Hrm Announcement', component: Hrm_Announcement },
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
   { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
+  { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
+  { path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
+  { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax }
 ]
 
 export default routes
