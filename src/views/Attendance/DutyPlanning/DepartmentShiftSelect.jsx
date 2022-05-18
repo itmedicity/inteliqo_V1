@@ -33,6 +33,8 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
             <select className="custom-select"
                 onChange={(e) => { handleChange(e) }}
                 value={shft}
+            // style={update === 1 ? { backgroundColor: "red" } : { backgroundColor: "blue" }}
+
             >
                 <option defaultValue="0">Choose...</option>
                 {

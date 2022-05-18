@@ -93,8 +93,8 @@ const EmployeeProfileCardMenuList = (props) => {
     }
 
     const listArray = [
-        { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
         { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
+        { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
         { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: AnnualLeaveSettings, slno: 113 },
         { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: fineorotherdeduction, slno: 114 },
         { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: SalaryIncrementSettings, slno: 115 },

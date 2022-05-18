@@ -1,7 +1,6 @@
-import React, { Fragment, useContext, useState, memo, useEffect, } from 'react'
+import React, { Fragment, useContext, useState, useEffect, } from 'react'
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import { useHistory, useParams } from 'react-router-dom'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import EmployeType from 'src/views/CommonCode/EmployeType'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -9,6 +8,7 @@ import CarryforwardTable from './CarryforwardTable'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios'
+import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 const CarryforwardMastEdit = () => {
     const history = useHistory();
     const { id } = useParams()
@@ -98,7 +98,7 @@ const CarryforwardMastEdit = () => {
 
     return (
         <Fragment>
-            <PageLayoutSave
+            <PageLayoutSaveClose
                 heading="Carry Forward Leave Settings"
                 redirect={RedirectToProfilePage}
                 submit={submitUpdation}
@@ -190,9 +190,9 @@ const CarryforwardMastEdit = () => {
                         </div>
                     </div>
                 </div>
-            </PageLayoutSave>
+            </PageLayoutSaveClose>
         </Fragment >
     )
 }
 
-export default memo(CarryforwardMastEdit)
+export default CarryforwardMastEdit

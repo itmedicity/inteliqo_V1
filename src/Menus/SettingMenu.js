@@ -41,6 +41,7 @@ export const py_setting_three = [
     { to: '/Home/RegistrationType', name: 'Registration Type', slno: 103 },
     { to: '/Home/BoardEdu', name: 'Board Master', slno: 104 },
     { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
+    { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 }
 ]
 
 export const userManagement_one = [
@@ -50,4 +51,5 @@ export const userManagement_one = [
     { to: '/Home/GroupRights', name: 'Group Rights', slno: 108 },
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
+    // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
 ]

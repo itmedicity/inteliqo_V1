@@ -4,7 +4,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import TextInput from 'src/views/Component/TextInput'
@@ -14,6 +14,7 @@ const StatutoryInformation = () => {
   const classes = useStyles()
   const history = useHistory()
   const { id, no } = useParams()
+  const [Esiallowed, setEsiallowed] = useState(0)
   //setting initial state
   const [formData, SetformData] = useState({
     pf: false,
@@ -35,28 +36,44 @@ const StatutoryInformation = () => {
   const [enable, Setenable] = useState(true)
   //use state for setting serail no for edit
   const [value, setValue] = useState(1)
-
+  //useEffect For Checking esi is allowed for this employee
+  useEffect(() => {
+    const getesiallowed = async () => {
+      const result = await axioslogin.get(`/empesipf/esiallow/${no}`)
+      const { success, data } = result.data
+      if (success === 1) {
+        setEsiallowed(data[0].ecat_esi_allow)
+      }
+    }
+    getesiallowed()
+  }, [no])
   //useEffect
   useEffect(() => {
     const getpfesi = async () => {
-      const result = await axioslogin.get(`/empesipf/${id}`)
-      const { success, data } = result.data
-      if (success === 1) {
-        const { esi_slno, em_pf_status, em_pf_no, em_uan_no, em_esi_status, em_esi_no, em_grade } =
-          data[0]
-        const formData = {
-          pf: em_pf_status === 1 ? true : false,
-          pfno: em_pf_no,
-          uanno: em_uan_no,
-          esi: em_esi_status === 1 ? true : false,
-          esino: em_esi_no,
+      if (Esiallowed === 1) {
+        const result = await axioslogin.get(`/empesipf/${id}`)
+        const { success, data } = result.data
+        if (success === 1) {
+          const { esi_slno, em_pf_status, em_pf_no, em_uan_no, em_esi_status, em_esi_no, em_grade } =
+            data[0]
+          const formData = {
+            pf: em_pf_status === 1 ? true : false,
+            pfno: em_pf_no,
+            uanno: em_uan_no,
+            esi: em_esi_status === 1 ? true : false,
+            esino: em_esi_no,
+          }
+          UpdateGrade(em_grade)
+          SetformData(formData)
+          setValue(esi_slno)
+        } else {
+          Setenable(false)
+          setValue(0)
         }
-        UpdateGrade(em_grade)
-        SetformData(formData)
-        setValue(esi_slno)
-      } else {
-        Setenable(false)
-        setValue(0)
+      }
+      else {
+        infoNofity("Esi Is Not Allowed For This Employee")
+        Setenable(true)
       }
     }
     getpfesi()
@@ -215,6 +232,7 @@ const StatutoryInformation = () => {
             <div className="card-footer text-muted">
               <FooterSaveEditClosebtn
                 edit={reset}
+                disable={Esiallowed === 0 ? true : false}
                 redirect={RedirectToProfilePage}
                 value={value}
               />

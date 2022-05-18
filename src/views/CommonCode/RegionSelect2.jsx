@@ -1,66 +1,63 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import { Autocomplete } from '@mui/material'
+import React, { Fragment, useContext, useState } from 'react'
+import { useSelector } from 'react-redux';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { axioslogin } from '../Axios/Axios';
 
-const RegionSelect2 = (props) => {
+const RegionSelect2 = () => {
+    //getting region list from redux
+    const regionList = useSelector((state) => {
+        return state.getRegionList.RegionList
+    })
     // intializing use state
-    const [regiondata, setregion] = useState([]);
-
-
-
+    const [inputValue, setInputValue] = useState('');
+    const [input, setInput] = useState('');
     // useContext
-    const { getregion2, udateregion2 } = useContext(PayrolMasterContext)
-
-
-
-    // useeffect 
-    useEffect(() => {
-        const getregiondata = async () => {
-            const result = await axioslogin.get('/region')
-            const { success, data } = result.data;
-            if (success === 1) {
-                setregion(data)
-            }
-        }
-        getregiondata()
-        return (
-            udateregion2(0)
-        )
-
-
-    }, [udateregion2]);
+    const { udateregion2 } = useContext(PayrolMasterContext)
     return (
         <Fragment>
-            <FormControl
-                fullWidth
-                margin="dense"
-                className="mt-1"
-            >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="selectregiontype"
-                    value={getregion2}
-                    onChange={(e) => udateregion2(e.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    className="ml-0"
-                    defaultValue={0}
-                    style={props.style}
-                // SelectDisplayProps={{ style: { paddingTop: 4, paddingBottom: 4 } }}
-                >
-                    <MenuItem value={0} disabled>
-                        Region
-                    </MenuItem>
-                    {
-                        regiondata && regiondata.map((val, index) => {
-                            return <MenuItem key={index} value={val.reg_slno}>{val.reg_name}</MenuItem>
-                        })
-                    }
-
-                </Select>
-            </FormControl>
+            <label>
+                <Autocomplete
+                    sx={{
+                        display: "inline-block",
+                        "& input": {
+                            width: 250,
+                            bgcolor: "background.paper",
+                            height: 28,
+                            borderRadius: 0.9,
+                            fontSize: 15,
+                            border: 0.1,
+                            fontFamily: "inherit",
+                            fontStyle: 'normal',
+                            paddingLeft: 1.5,
+                            color: "#898a8c",
+                            borderColor: '#b1b7c1',
+                            color: (theme) =>
+                                theme.palette.getContrastText(theme.palette.background.paper),
+                        }
+                    }}
+                    value={input}
+                    onChange={(event, newValue) => {
+                        udateregion2(newValue === null ? 0 : newValue.value);
+                        setInput(newValue)
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                    }}
+                    options={regionList && regionList.map((val) => {
+                        return { label: val.reg_name, value: val.reg_slno }
+                    })}
+                    isOptionEqualToValue={(option, value) => (option.label === value.label)}
+                    renderInput={(params) => (
+                        <div ref={params.InputProps.ref}>
+                            <input placeholder='Region' type="text" {...params.inputProps}
+                                style={{
+                                    borderColor: '#b1b7c1',
+                                }} />
+                        </div>
+                    )}
+                />
+            </label>
 
         </Fragment>
     )

@@ -25,11 +25,9 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
     const [punchindatamain, setpunchindatamain] = useState(0)
     const [punchoutdatamain, setpunchoutdatamain] = useState(0)
     const { employeedetails,//for employee details
-        updateemployeedetails,
-        getleavereqtype,//type of leave request half,leave,latecoming
-        updateleavereqtype } = useContext(PayrolMasterContext)
+    } = useContext(PayrolMasterContext)
     // destructuring employee details
-    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
+    const { em_department, em_dept_section, em_id, em_no, } = employeedetails
     const [shiftdata, setshiftdata] = useState([{
         shift_id: 0,
         shft_desc: '',
@@ -71,7 +69,7 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
             }
         }
         getdepartmentShift()
-    }, [])
+    }, [em_department, em_dept_section])
 
     const getpuchdetl = async (e) => {
         const datagetpunch = {
@@ -81,7 +79,7 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
         const result = await axioslogin.post('common/getShiftdetails/', datagetpunch)
         const { success, data } = result.data
         if (success === 1) {
-            const { punch_in, punch_out, punch_slno, mis_punch_flag, shft_slno, ot_request_flag } = data[0]
+            const { ot_request_flag } = data[0]
 
             if (ot_request_flag === 1) {
                 errorNofity('Already Request Present')

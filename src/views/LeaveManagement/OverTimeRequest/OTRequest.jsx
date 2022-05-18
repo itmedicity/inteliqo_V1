@@ -26,6 +26,8 @@ const OTRequest = () => {
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
     const { em_id, em_name, desg_name, em_dept_section, sect_name, em_no } = employeedetails
     const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
+
+
     const [flag, setflag] = useState(0)
     const [shiftid, setShiftid] = useState(0)
     const [tableset, setTable] = useState(0)
@@ -187,7 +189,7 @@ const OTRequest = () => {
         ot_remarks: ot_remarks,
         ot_convert: '0',
         ot_amount: amount,
-        ot_inch_require: is_incharge === 1 ? 0 : incharge_level,
+        ot_inch_require: ((is_incharge === 1) || (is_hod === 1)) ? 0 : incharge_level,
         ot_hod_require: is_hod === 1 ? 0 : hod_level,
         ot_hr_require: '1',
         ot_ceo_require: ceo_level,

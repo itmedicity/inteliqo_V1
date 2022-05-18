@@ -5,7 +5,7 @@ import { Chip, IconButton } from '@material-ui/core';
 import { MdOutlineAddTask } from 'react-icons/md'
 
 const FooterSaveEditClosebtn = (props) => {
-    const { edit, value, redirect } = props;
+    const { edit, value, redirect, disable } = props;
     return (
         <div className="col-md-2 col-sm-4 d-flex flex-row justify-content-md-between">
             <Chip
@@ -24,6 +24,7 @@ const FooterSaveEditClosebtn = (props) => {
                             <ModeEditIcon className="text-info" size={22} />
                         </IconButton>
                     }
+                    disabled={disable}
                     label="Edit"
                     onClick={edit}
                     value={value}

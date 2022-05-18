@@ -1,5 +1,5 @@
 import MaterialTable from "material-table";
-import React, { Fragment, memo, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { tableIcons } from "src/views/Constant/MaterialIcon";
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import { axioslogin } from "src/views/Axios/Axios";
