@@ -1,21 +1,16 @@
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-
 import Slide from '@mui/material/Slide';
 import AnnualProcessComponent from 'src/views/CommonCode/AnnualProcessComponent';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AnnualLeaveProcessComplete from 'src/views/CommonCode/AnnualLeaveProcessComplete';
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-
-
 
 const ModelAvailLeavelist = ({
     open,//open model
@@ -96,7 +91,7 @@ const ModelAvailLeavelist = ({
                                 setnodatafixed={setnodatafixed}
                                 categorychge={categorychge}
                                 nameel={nameel}
-                            /> : hrm_clv === 1 ? <AnnualLeaveProcessComplete name={'Caual Leave'} /> : null
+                            /> : hrm_clv === 1 ? <AnnualLeaveProcessComplete name={'Casual Leave'} /> : null
                         }
                         {
                             ((ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0) ? <AnnualProcessComponent
@@ -150,7 +145,6 @@ const ModelAvailLeavelist = ({
 
                     </DialogContent>
                     <DialogActions>
-
                         <Button color="secondary" onClick={handleClose} >close</Button>
                     </DialogActions>
                 </Dialog>

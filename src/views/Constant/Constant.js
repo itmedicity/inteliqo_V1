@@ -13,8 +13,8 @@ export const employeeNumber = () => {
 export const getSerialnumberempid = async () => {
     const result = await axioslogin.get('/common/getSerialno')
     const { success } = result.data;
-    const [serial_current] = result.data.data
     if (success === 1) {
+        const [serial_current] = result.data.data
         return serial_current.serial_current
     }
 }

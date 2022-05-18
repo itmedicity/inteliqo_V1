@@ -11,6 +11,7 @@ import EmployeeProfileNotification from 'src/views/EmployeeRecord/EmployeeFile/E
 import EmployeeProfileAlert from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/EmployeeProfileAlert';
 import SessionCheck from 'src/views/Axios/SessionCheck';
 import { ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 const EmployeeProfile = () => {
 

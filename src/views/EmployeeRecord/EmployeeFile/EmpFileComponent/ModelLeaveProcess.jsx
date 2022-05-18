@@ -202,7 +202,6 @@ const ModelLeaveProcess = ({
         setOpen(false)
     }
 
-    console.log(categorychge, nameel)
     return (
         <Fragment>
             <div>
@@ -233,7 +232,6 @@ const ModelLeaveProcess = ({
                     }}>
                         <DialogContentText id="alert-dialog-slide-descriptiona">
                             {valuemessage}
-
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

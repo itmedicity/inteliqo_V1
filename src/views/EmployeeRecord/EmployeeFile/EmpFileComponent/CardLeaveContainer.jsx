@@ -8,7 +8,7 @@ const CardLeaveContainer = ({ children, title }) => {
         <div className="card">
             <div className="card-header py-0 d-flex justify-content-between" style={CARD_HEADER_COLOR} >
                 <div>{mainHeading}</div>
-                <div style={{ color: "#023015" }} >{10}</div>
+                <div style={{ color: "#023015" }} ></div>
             </div>
             <div className="card-header py-0" style={CARD_SUB_HEADER_COLOR} >
                 <div className="d-sm-flex d-md-flex flex-row justify-content-around">

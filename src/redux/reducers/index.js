@@ -12,6 +12,7 @@ import { getAlertList } from '../reducers/AlertReducres'
 import { getMsgList } from '../reducers/MessageReducres'
 import { getAnnouncementList } from '../reducers/AnnouncementReducers'
 import { getModuleRightList } from '../reducers/GetModulerights'
+import { getEmployeeProcessRecord } from './LeaveProcessDetl.reducer';
 
 const reducer = combineReducers({
     changeState,
@@ -27,7 +28,8 @@ const reducer = combineReducers({
     getAlertList,
     getMsgList,
     getAnnouncementList,
-    getModuleRightList
+    getModuleRightList,
+    getEmployeeProcessRecord
 })
 
 export default reducer;

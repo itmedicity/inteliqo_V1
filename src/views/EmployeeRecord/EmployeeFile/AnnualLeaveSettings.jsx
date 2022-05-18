@@ -1,7 +1,9 @@
 import { CircularProgress } from '@mui/material';
 import { compareAsc } from 'date-fns';
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
+import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { axioslogin } from 'src/views/Axios/Axios';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
@@ -22,7 +24,8 @@ const CasualLeaveList = React.lazy(() => import('./EmpFileComponent/CasualLeaveL
 const AnnualLeaveSettings = () => {
     const history = useHistory()
     // get id and number of logged user
-    const { id, no } = useParams()
+    const { id, no } = useParams();
+    const dispatch = useDispatch();
     // check wheathe old or new
     const [olddata, setolddat] = useState(0)
     // use sate for causltable rerender
@@ -95,7 +98,7 @@ const AnnualLeaveSettings = () => {
         headingFour: "Taken"
     }
     const EarnLeave = {
-        mainHeading: "Earn Leave (Privilage Leave)",
+        mainHeading: "Privilage Leave",
         headingOne: "Month",
         headingTwo: "Allowed",
         headingThee: "Credited",
@@ -111,7 +114,7 @@ const AnnualLeaveSettings = () => {
     }
 
     const CalculatedLeave = {
-        mainHeading: "Approved off Days",
+        mainHeading: "Calculated Approved off Days",
         headingOne: "Off",
         headingTwo: "Date",
         headingThee: "Credited",
@@ -138,8 +141,14 @@ const AnnualLeaveSettings = () => {
             setprocessslno(val)
         }
         )
+        // Get the Employee Joinng / Contract / category Details ( All Date Detail )
+        dispatch(setEmployeeProcessDetail(id))
 
-    }, [no, modelvalue])
+        return (
+            dispatch(setEmployeeProcessDetail(id))
+        )
+
+    }, [no, modelvalue, id])
 
     const postFormdata =
     {
