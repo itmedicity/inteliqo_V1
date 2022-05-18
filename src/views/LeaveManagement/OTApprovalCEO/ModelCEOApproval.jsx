@@ -263,12 +263,27 @@ const ModelCEOApproval = ({ open, handleClose, otno, setCount, count }) => {
                 }
             } else if (flag === 2) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPostflagtwo)
-                const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
-                const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
-
+                const { success } = result.data;
+                if (success === 2) {
+                    const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
+                    const { succes } = result4.data;
+                    if (succes === 1) {
+                        const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
+                        const { messagee, success } = result2.data;
+                        if (success === 1) {
+                            succesNofity(messagee);
+                        }
+                    }
+                }
+            } else if (flag === 3) {
+                succesNofity("Converted to Over Time");
             }
             else {
                 const result3 = await axioslogin.patch('/overtimerequest/coff/insert', coffpostdata)
+                const { message, success } = result3.data;
+                if (success === 0) {
+                    succesNofity(message)
+                }
             }
             setCount(count + 1)
             setceo(resetceo)

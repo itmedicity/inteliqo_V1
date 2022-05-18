@@ -25,7 +25,6 @@ const EmployeeCompany = () => {
     } = useContext(PayrolMasterContext)
 
     // to check the annpual leave procee wheter ist from category change
-
     const [categorychge, setcategorychange] = useState(1)
     const [count, setcount] = useState(0)
     const [company, setcompany] = useState(0)
@@ -60,9 +59,7 @@ const EmployeeCompany = () => {
         ecat_sl: 0,
         em_category: getemployeecategory
     })
-    // const { ecat_cl, ecat_el, ecat_esi_allow,
-    //     ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
-    // } = leavestate
+
     // current process details
     const [leaveprocessid, leaveprocessidupdate] = useState({
         hrm_calcu: 0,
@@ -116,8 +113,6 @@ const EmployeeCompany = () => {
 
     //update Data
     const submitCompany = async (e) => {
-
-
         e.preventDefault();
         // get current data allowed  leave based on category
         const getcategorydata = async () => {
@@ -127,20 +122,15 @@ const EmployeeCompany = () => {
         }
         getcategorydata();
         const getdata = async () => {
-
-
             getProcessserialnum().then((val) => {
                 setprocessslno(val)
-
             })
 
             // check the table where data present if present get the details process table
             const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
             const { success, message } = result.data;
-
             const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
                 lv_process_slno, next_updatedate } = message[0]
-
             const dataprvleave = {
                 hrm_calcu: hrm_calcu,
                 hrm_clv: hrm_clv,
@@ -151,10 +141,8 @@ const EmployeeCompany = () => {
                 lv_process_slno: lv_process_slno
             }
 
-
             // if no data available
             if (success === 0) {
-
                 // if no data is present means new employee  set model
                 setmodelvalue(1)
                 setmodelmessage('Leave process is not done for the employee')
@@ -180,14 +168,7 @@ const EmployeeCompany = () => {
                     setmodellist(true)
                 }
             }
-
         }
-
-
-
-
-
-
         const result = await axioslogin.post('/empmast/company', updateData)
         const { message, success } = result.data;
         if (success === 1) {
@@ -212,8 +193,6 @@ const EmployeeCompany = () => {
         em_no: no,
         em_id: id
     }
-
-
     const handleClose = () => {
         setmodellist(false)
     }
@@ -237,9 +216,6 @@ const EmployeeCompany = () => {
                     olddata={olddata}// check wheather new data
                     setmodelvalue={setmodelvalue}
                     categorychge={categorychge}
-
-
-
                 /> : null}
                 <div className="row g-2">
                     <div className="col-md-4">

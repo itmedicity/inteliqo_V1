@@ -276,7 +276,7 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
             }
             if (flag === 1) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPost)
-                const { message, success } = result.data;
+                const { success } = result.data;
                 if (success === 2) {
                     if ((modeldata.hodAuth === 1) && (modeldata.ceoAuth === 0)) {
                         const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
@@ -289,12 +289,17 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
                 }
             } else if (flag === 2) {
                 const result = await axioslogin.patch('/overtimerequest/coff/insert', dataPostflagtwo)
-                const { message, success } = result.data;
-                const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
-                const { messagee, succes } = result4.data;
-                if ((modeldata.hodAuth === 1) && (modeldata.ceoAuth === 0)) {
-                    const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
-                    const { messagee, success } = result2.data;
+                const { success } = result.data;
+                if (success === 2) {
+                    const result4 = await axioslogin.patch('/overtimerequest/cofftabl/slno/update', coffpatchdata)
+                    const { succes } = result4.data;
+                    if ((modeldata.hodAuth === 1) && (modeldata.ceoAuth === 0) && (succes === 1)) {
+                        const result2 = await axioslogin.post('/overtimerequest/leavecalculated/insert', leavecalarray)
+                        const { messagee, success } = result2.data;
+                        if (success === 1) {
+                            succesNofity(messagee);
+                        }
+                    }
                 }
             }
             else if (flag === 3) {
@@ -302,6 +307,10 @@ const ModelHodApproval = ({ open, handleClose, otno, setCount, count }) => {
             }
             else {
                 const result3 = await axioslogin.patch('/overtimerequest/coff/insert', coffpostdata)
+                const { message, success } = result3.data;
+                if (success === 0) {
+                    succesNofity(message)
+                }
             }
             setCount(count + 1)
             sethod(resethod)

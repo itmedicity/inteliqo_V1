@@ -1,7 +1,6 @@
 import React, { Fragment, useContext, useState } from 'react'
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import EmployeType from 'src/views/CommonCode/EmployeType'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -9,6 +8,7 @@ import CarryforwardTable from './CarryforwardTable'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios'
+import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 
 const CarryforwardMast = () => {
     const history = useHistory();
@@ -71,7 +71,7 @@ const CarryforwardMast = () => {
 
     return (
         <Fragment>
-            <PageLayoutSave
+            <PageLayoutSaveClose
                 heading="Carry Forward Leave Settings"
                 redirect={RedirectToProfilePage}
                 submit={submitCarryForward}
@@ -81,7 +81,6 @@ const CarryforwardMast = () => {
                         <div className="col-md-4">
                             <div className="col-md-12 ">
                                 <DeptSectionMastSelect style={SELECT_CMP_STYLE} />
-
                             </div>
                             <div className="col-md-12 pt-2">
                                 <EmployeType style={SELECT_CMP_STYLE} />
@@ -135,8 +134,7 @@ const CarryforwardMast = () => {
                                                     checked={carry_el}
                                                     className="ml-2"
                                                     onChange={(e) => updateCarryForward(e)}
-                                                />
-                                            }
+                                                />}
                                             label="Earn Leave"
                                         />
                                     </div>
@@ -164,7 +162,7 @@ const CarryforwardMast = () => {
                         </div>
                     </div>
                 </div>
-            </PageLayoutSave>
+            </PageLayoutSaveClose>
         </Fragment >
     )
 }

@@ -374,7 +374,6 @@ const EmployeeRecord = () => {
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-12">
-
                                 <div className="col-md-12">
                                     <div className="row">
                                         <div className="col-md-2">
@@ -401,7 +400,8 @@ const EmployeeRecord = () => {
                                                 name="empName"
                                             />
                                         </div>
-                                        <div className="col-md-2">
+                                        <div className="col-md-2" data-tip="Emp No" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -415,7 +415,7 @@ const EmployeeRecord = () => {
                                 </div>
                                 <div className="col-md-12 p-1">
                                     <div className="row">
-                                        <div className="col-md-4" data-tip="House Name" data-for='toolTip1' data-place='top'>
+                                        <div className="col-md-4" data-tip="Permanent-House Name" data-for='toolTip1' data-place='top'>
                                             <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
@@ -426,7 +426,7 @@ const EmployeeRecord = () => {
                                                 name="addressPermnt1"
                                             />
                                         </div>
-                                        <div className="col-md-4" data-tip="Street Name" data-for='toolTip1' data-place='top'>
+                                        <div className="col-md-4" data-tip="Permanent-Street Name" data-for='toolTip1' data-place='top'>
                                             <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
@@ -437,7 +437,8 @@ const EmployeeRecord = () => {
                                                 name="addressPermnt2"
                                             />
                                         </div>
-                                        <div className="col-md-2">
+                                        <div className="col-md-2" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -455,7 +456,7 @@ const EmployeeRecord = () => {
                                 </div>
                                 <div className="col-md-12 p-1">
                                     <div className="row">
-                                        <div className="col-md-4" data-tip="House Name" data-for='toolTip1' data-place='top'>
+                                        <div className="col-md-4" data-tip="Present-House Name" data-for='toolTip1' data-place='top'>
                                             <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
@@ -466,7 +467,7 @@ const EmployeeRecord = () => {
                                                 name="addressPresent1"
                                             />
                                         </div>
-                                        <div className="col-md-4" data-tip="Street Name" data-for='toolTip1' data-place='top'>
+                                        <div className="col-md-4" data-tip="Present-Street Name" data-for='toolTip1' data-place='top'>
                                             <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
@@ -477,7 +478,8 @@ const EmployeeRecord = () => {
                                                 name="addressPresent2"
                                             />
                                         </div>
-                                        <div className="col-md-2">
+                                        <div className="col-md-2" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -517,8 +519,8 @@ const EmployeeRecord = () => {
                                             </FormControl>
                                         </div>
 
-                                        <div className="col-md-2">
-
+                                        <div className="col-md-2" data-tip="Mobile No" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -527,10 +529,9 @@ const EmployeeRecord = () => {
                                                 value={mobileNo}
                                                 name="mobileNo"
                                             />
-
                                         </div>
-                                        <div className="col-md-3">
-
+                                        <div className="col-md-3" data-tip="Landline" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -540,8 +541,8 @@ const EmployeeRecord = () => {
                                                 name="landPhone"
                                             />
                                         </div>
-                                        <div className="col-md-3">
-
+                                        <div className="col-md-3" data-tip="email Id" data-for='toolTip1' data-place='top'>
+                                            <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"

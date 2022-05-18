@@ -19,6 +19,7 @@ import BankNameSelect from 'src/views/CommonCode/BankNameSelect'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import ProfilePic from '../../../assets/images/default.png'
 import { Avatar, Stack } from '@mui/material'
+import ReactTooltip from 'react-tooltip';
 
 const PersonalInformation = () => {
     const history = useHistory()
@@ -335,7 +336,7 @@ const PersonalInformation = () => {
                                         <div className="card-header">Present Address</div>
                                         <div className="card-body">
                                             <div className="row g-1">
-                                                <div className="col-md-12">
+                                                <div className="col-md-12" data-tip="Permanent-House Name" data-for='toolTip1' data-place='top'>
                                                     <input
                                                         type="hidden"
                                                         name="em_id"
@@ -348,7 +349,7 @@ const PersonalInformation = () => {
                                                         value={em_no}
                                                         disabled
                                                     />
-
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -358,7 +359,8 @@ const PersonalInformation = () => {
                                                         name="addressPermnt1"
                                                     />
                                                 </div>
-                                                <div className="col-md-12">
+                                                <div className="col-md-12" data-tip="Permanent-Street Name" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -373,7 +375,8 @@ const PersonalInformation = () => {
                                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 2, paddingBottom: 4 }}
                                                     />
                                                 </div>
-                                                <div className="col-md-7">
+                                                <div className="col-md-7" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -393,7 +396,8 @@ const PersonalInformation = () => {
                                         <div className="card-header">Contact Address</div>
                                         <div className="card-body">
                                             <div className="row g-1">
-                                                <div className="col-md-12">
+                                                <div className="col-md-12" data-tip="Present-House Name" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -403,7 +407,8 @@ const PersonalInformation = () => {
                                                         name="contactaddress1"
                                                     />
                                                 </div>
-                                                <div className="col-md-12">
+                                                <div className="col-md-12" data-tip="Present-Street Name" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -418,7 +423,8 @@ const PersonalInformation = () => {
                                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                                     />
                                                 </div>
-                                                <div className="col-md-7">
+                                                <div className="col-md-7" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -433,20 +439,11 @@ const PersonalInformation = () => {
                                     </div>
                                 </div>
                                 <div className="col-md-2 d-flex justify-content-evenly">
-                                    {/* <img src={src} className="img-thumbnail border-2 empImage" /> */}
-                                    {/* <Avatar
-                                        alt="Remy Sharp"
-                                        src={src}
-                                        variant="square"
-                                        className="img-thumbnail border-2 empImage"
-                                        sx={{ width: 150, height: 150, opacity: 10, border: 2, borderColor: "white" }}
-                                    /> */}
                                     <Stack
                                         direction="row"
                                         spacing={3}
                                         justifyContent="center"
                                         alignItems="center"
-                                    // sx={{ paddingTop: 4, paddingBottom: 4 }}
                                     >
                                         <Avatar
                                             alt="Remy Sharp"
@@ -486,7 +483,8 @@ const PersonalInformation = () => {
                                                         </Select>
                                                     </FormControl>
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="Mobile No" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -496,7 +494,8 @@ const PersonalInformation = () => {
                                                         name="mobile"
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="Landline" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -506,7 +505,8 @@ const PersonalInformation = () => {
                                                         name="land_no"
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="Passport No" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -516,7 +516,8 @@ const PersonalInformation = () => {
                                                         name="passp_no"
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="License No" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -526,7 +527,8 @@ const PersonalInformation = () => {
                                                         name="license"
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="Aadhar No." data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -538,7 +540,8 @@ const PersonalInformation = () => {
                                                 </div>
                                             </div>
                                             <div className="row g-1 pb-0">
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="email Id" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -583,7 +586,8 @@ const PersonalInformation = () => {
                                                 <div className="col-md-3">
                                                     <BankNameSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                                 </div>
-                                                <div className="col-md-3">
+                                                <div className="col-md-3" data-tip="Account No." data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -603,7 +607,8 @@ const PersonalInformation = () => {
                                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="DOB" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -613,7 +618,8 @@ const PersonalInformation = () => {
                                                         name="dob"
                                                     />
                                                 </div>
-                                                <div className="col-md-2">
+                                                <div className="col-md-2" data-tip="Age" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -623,7 +629,8 @@ const PersonalInformation = () => {
                                                         name="age"
                                                     />
                                                 </div>
-                                                <div className="col-md-3">
+                                                <div className="col-md-3" data-tip="IFSC" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -633,7 +640,8 @@ const PersonalInformation = () => {
                                                         name="ifc_code"
                                                     />
                                                 </div>
-                                                <div className="col-md-3">
+                                                <div className="col-md-3" data-tip="Pan No." data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"

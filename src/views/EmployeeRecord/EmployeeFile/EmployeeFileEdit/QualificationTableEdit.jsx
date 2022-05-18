@@ -29,6 +29,7 @@ const QualificationTableEdit = () => {
     const [coursedisable, setcoursedisable] = useState(false)
     const [specdisable, setspecdisable] = useState(false)
     const [regTypedisable, setregTypedisable] = useState(false)
+    const [regNodisable, setregNodisable] = useState(false)
     const { selectEducation, updateEducation,
         selectCourse, updateCourse,
         selectSpec, updateSpec,
@@ -91,6 +92,7 @@ const QualificationTableEdit = () => {
             setcoursedisable(false)
             setspecdisable(false)
             setregTypedisable(true)
+            setregNodisable(true)
         }
         else if (selectEducation === 5) {
             setBoarddisable(false)
@@ -98,12 +100,14 @@ const QualificationTableEdit = () => {
             setcoursedisable(true)
             setspecdisable(true)
             setregTypedisable(true)
+            setregNodisable(true)
         } else {
             setcoursedisable(false)
             setspecdisable(false)
             setunidisable(false)
             setBoarddisable(true)
             setregTypedisable(false)
+            setregNodisable(false)
         }
     }, [slno, updateEducation, updateCourse, updateSpec, updateUniversity, updatereg, updateBoard, selectEducation])
 
@@ -306,6 +310,7 @@ const QualificationTableEdit = () => {
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Registration No"
+                                            disabled={regNodisable}
                                             changeTextValue={(e) => updateQualification(e)}
                                             value={em_reg_no}
                                             name="em_reg_no"

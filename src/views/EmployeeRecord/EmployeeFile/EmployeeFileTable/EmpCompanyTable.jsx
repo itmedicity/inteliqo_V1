@@ -42,7 +42,7 @@ const EmpCompanyTable = ({ update }) => {
     return (
         <Fragment>
             <MaterialTable
-                title="Company Information"
+                title="Company Information Update Details"
                 data={data}
                 columns={title}
                 icons={tableIcons}

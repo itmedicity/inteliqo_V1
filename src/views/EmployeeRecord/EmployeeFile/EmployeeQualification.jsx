@@ -29,6 +29,7 @@ const EmployeeQualification = () => {
     const [coursedisable, setcoursedisable] = useState(false)
     const [specdisable, setspecdisable] = useState(false)
     const [regTypedisable, setregTypedisable] = useState(false)
+    const [regNodisable, setregNodisable] = useState(false)
     const [count, setcount] = useState(0);
     const { selectEducation, selectCourse, selectSpec, selectUniversity, updateUniversity, updatereg,
         selectBoard, selectreg, updateBoard, updateSpec, updateEducation, updateCourse } = useContext(PayrolMasterContext)
@@ -67,6 +68,7 @@ const EmployeeQualification = () => {
             setcoursedisable(false)
             setspecdisable(false)
             setregTypedisable(true)
+            setregNodisable(true)
         }
         else if (selectEducation === 5) {
             setBoarddisable(false)
@@ -74,12 +76,14 @@ const EmployeeQualification = () => {
             setcoursedisable(true)
             setspecdisable(true)
             setregTypedisable(true)
+            setregNodisable(true)
         } else {
             setcoursedisable(false)
             setspecdisable(false)
             setunidisable(false)
             setBoarddisable(true)
             setregTypedisable(false)
+            setregNodisable(false)
         }
     }, [selectEducation])
 
@@ -275,6 +279,7 @@ const EmployeeQualification = () => {
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Registration No"
+                                            disabled={regNodisable}
                                             value={em_reg_no}
                                             name="em_reg_no"
                                             changeTextValue={(e) => updateQualification(e)}
