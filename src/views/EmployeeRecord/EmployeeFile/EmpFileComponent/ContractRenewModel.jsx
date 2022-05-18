@@ -8,7 +8,8 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const ContractRenewModel = ({ data, open, setOpenn }) => {
+const ContractRenewModel = ({ data, open, setOpenn, contractenewModelclose }) => {
+    console.log(data)
     const [dutytotal, setdutydatatotal] = useState([])
     const rage = eachDayOfInterval(
         { start: new Date(data.start), end: new Date(data.end) }
@@ -33,24 +34,29 @@ const ContractRenewModel = ({ data, open, setOpenn }) => {
     const postDataa = dutytotal && dutytotal.map((val) => {
         return {
             emp_id: val.emp_id,
-            work_days: length,
-            present: val.duty_status,
-            att_leave: val.leave_type,
-            Lop: parseFloat(length) - (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
-            tot_days: (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
+            em_no: val.em_no,
+            attendance_marking_month: moment(new Date(data.start)).format('MMM-YYYY'),
+            total_working_days: length,
+            tot_days_present: val.duty_status,
+            total_leave: val.leave_type,
+            total_lop: parseFloat(length) - (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
+            total_days: (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
+            attnd_mark_startdate: moment(data.start).format('YYYY-MM-DD'),
+            attnd_mark_enddate: moment(data.end).format('YYYY-MM-DD'),
             contract_renew_date: moment(new Date()).format('YYYY-MM-DD')
         }
     })
+    console.log(postDataa)
     const submitFormdata = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/AttendanceContrRenew', postDataa)
+        const result = await axioslogin.post('/attedancemarkSave', postDataa)
         const { success, message } = result.data
         if (success === 1) {
             succesNofity(message)
             setOpenn(false)
         }
         else {
-            errorNofity("Error Occurred!!Please Contact EDp")
+            errorNofity("Error Occurred!!Please Contact EDP")
         }
     }
 
@@ -122,6 +128,7 @@ const ContractRenewModel = ({ data, open, setOpenn }) => {
                     </TableContainer>
                     <DialogActions>
                         <Button color="primary" onClick={submitFormdata} >Process</Button>
+                        <Button color="primary" onClick={contractenewModelclose} >Close</Button>
                     </DialogActions>
                 </DialogContent>
             </Dialog>

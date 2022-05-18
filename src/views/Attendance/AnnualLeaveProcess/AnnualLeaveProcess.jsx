@@ -76,6 +76,7 @@ const AnnualLeaveProcess = () => {
     return (
         <Fragment>
             <PageLayoutProcess
+                heading={"Annual Leave Process"}
                 redirect={redirect}
             >
                 <div className="col-md-12 mb-2">
@@ -171,7 +172,7 @@ const AnnualLeaveProcess = () => {
                 </div>
             </PageLayoutProcess>
 
-        </Fragment>
+        </Fragment >
     )
 }
 

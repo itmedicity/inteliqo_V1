@@ -35,18 +35,18 @@
   left: 0px;
   z-index:0;
   height: 2.1rem;
-  background-color: #bdbdbd;
+  /* background-color: #bdbdbd; */
   color: rgb(63, 62, 62);
   border-color: #bdbdbd;
   /* text-overflow: ellipsis; */
 }
-.attends td:nth-child(2),
-.attends th:nth-child(2) {
+.attends td:nth-child(3),
+.attends th:nth-child(3) {
 position: sticky;
 left: 150px;
 z-index:0;
 height: 2.1rem;
-background-color: #bdbdbd;
+/* background-color: #bdbdbd; */
 color: rgb(63, 62, 62);
 border-color: #bdbdbd;
 /* text-overflow: ellipsis; */

@@ -12,8 +12,13 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import ProfilePicDefault from '../../../assets/images/vue.jpg'
 import { Avatar } from '@mui/material';
 import './CmpStyle.scss'
+import { useSelector } from 'react-redux';
 
 const ProfileComponent = () => {
+    const login = useSelector((state) => {
+        return state.getProfileData.ProfileData[0]
+    })
+
 
     const theme = useTheme();
 
@@ -38,18 +43,18 @@ const ProfileComponent = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <CardContent sx={{ flex: '1 0 auto' }}>
                         <Typography component="div" variant="h5">
-                            Ajith Arjunan
+                            {login.em_name}
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            Asst.Manager IT
+                            {login.desg_name}
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            Information Technology
+                            {login.dept_name}
                         </Typography>
                     </CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', pl: 2, pb: 1 }}>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            Employee #  25489
+                            Employee # {login.em_no}
                         </Typography>
                     </Box>
                 </Box>

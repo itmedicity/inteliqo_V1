@@ -7,12 +7,13 @@ import { axioslogin } from 'src/views/Axios/Axios';
 const AttandanceMarkingtotal = ({ data, length, count }) => {
 
     const [dutydatatotal, setdutydatatotal] = useState([])
+    // console.log(dutydatatotal)
 
     useEffect(() => {
         const getattnsdata = async () => {
             const result = await axioslogin.post('/attandancemarking/getattendancetotal', data)
+            // console.log(result)
             const { success, message } = result.data
-
             if (success === 1) {
                 setdutydatatotal(message)
             }
@@ -25,11 +26,6 @@ const AttandanceMarkingtotal = ({ data, length, count }) => {
 
         }
         getattnsdata()
-        // if (dutydatatotal.length != 0) {
-        //     console.log(dutydatatotal)
-
-        // }
-
 
     }, [data, count])
 
@@ -41,9 +37,6 @@ const AttandanceMarkingtotal = ({ data, length, count }) => {
                     dutydatatotal && dutydatatotal.map((val, index) => {
                         return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{length}</TableCell>
                     })
-
-
-
                 }{
                     dutydatatotal && dutydatatotal.map((val, index) => {
                         return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{val.duty_status}</TableCell>

@@ -36,11 +36,11 @@ const DueApprovalHrCompoent = ({ row, setfinaldata }) => {
                     {row.due_desc}
                 </TableCell>
                 <TableCell align="left">
-                    <Checkboxcompnt approval={approval} updateHRApproval={updateHRApproval} name={'approval'} label={"Yes"} />
+                    <Checkboxcompnt approval={approval} updateApproval={updateHRApproval} name={'approval'} label={"Yes"} />
                 </TableCell>
                 <TableCell align="left">
 
-                    <Checkboxcompnt approval={reject} updateHRApproval={updateHRApproval} name={'reject'} label={"No"} />
+                    <Checkboxcompnt approval={reject} updateApproval={updateHRApproval} name={'reject'} label={"No"} />
                 </TableCell>
             </TableRow>
         </Fragment>

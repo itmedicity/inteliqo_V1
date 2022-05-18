@@ -5,26 +5,23 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-// import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import TextInput from 'src/views/Component/TextInput'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import AttendanceMarkingMainCard from './AttendanceMarkingMainCard'
 import { useHistory } from 'react-router'
+import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import { useSelector } from 'react-redux';
 
 const AttendanceMarking = () => {
     const history = useHistory()
-
     const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(new Date());
     const [rageset, setrange] = useState()
-
     const [count, setcount] = useState(0)
     const firstdate = moment(year).startOf('month').format('yyyy-MM-DD');
-
     const endodate = moment(year).endOf('month').format('yyyy-MM-DD');
     const [value, setValue] = useState(0)
     const [empData, setempData] = useState([])
@@ -32,17 +29,14 @@ const AttendanceMarking = () => {
     const [dateFormat, setdateFormat] = useState([])
 
     const setchange = (e) => {
-
         //finding the dates between start date and end date
         setYear(e.target.value)
         const f1date = moment(e.target.value).startOf('month').format('yyyy-MM-DD');
         const enddate = moment(e.target.value).endOf('month').format('yyyy-MM-DD');
-
         const rage = eachDayOfInterval(
             { start: new Date(f1date), end: new Date(enddate) }
         )
         setrange(rage)
-
         //finding the dates between start date and end date
         const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d') } })
         setdateFormat(newDateFormat)
@@ -84,13 +78,68 @@ const AttendanceMarking = () => {
     }
     //redirecting to profile page
     const redirecting = () => {
-
         history.push('/Home')
     }
+    const [arrytry, setArrytry] = useState([])
+    const empidarray = arrytry.map((val) => {
+        return val.emid
+    })
+    const PostDataSave = {
+        emp_id: empidarray,
+        start: moment(firstdate).format('YYYY-MM-DD'),
+        end: moment(endodate).format('YYYY-MM-DD')
+    }
+    //getting the employee id of loggined user
+    const loggineduser = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_id
+    })
+    //FUNCTION FOR SAVING ATTENDANCE MARKING
+    const AttendanceMarkingSave = async (e) => {
+        e.preventDefault();
+        const result = await axioslogin.post('/attandancemarking/getattendancetotalEmp', PostDataSave)
+        const { success, data } = result.data
+        if (success === 1) {
+            const attendancesave = data.map((val) => {
+                return {
+                    em_id: val.emp_id,
+                    em_no: val.em_no,
+                    attendance_marking_month: moment(new Date(firstdate)).format('MMM-YYYY'),
+                    total_working_days: dateFormat.length,
+                    tot_days_present: val.duty_status,
+                    total_leave: val.leave_type,
+                    total_lop: parseFloat(dateFormat.length) - (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
+                    total_days: (parseFloat(val.duty_status) + parseFloat(val.leave_type)), updated_user: loggineduser,
+                    attnd_mark_startdate: moment(firstdate).format('YYYY-MM-DD'),
+                    attnd_mark_enddate: moment(endodate).format('YYYY-MM-DD'),
+
+                }
+            })
+            const result = await axioslogin.post('/attedancemarkSave', attendancesave)
+            const { success, message } = result.data
+            if (success === 1) {
+                succesNofity(message)
+            }
+            else if (success === 7) {
+                warningNofity(message)
+            }
+            else {
+                errorNofity("Error Occured!!!!Please Contact EDp")
+            }
+        }
+        else {
+            errorNofity("Error Occured!!!!Please Contact EDp")
+        }
+
+    }
+
+
+
+
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Attendance Marking" redirect={redirecting}>
+            <PageLayoutSave
+                heading="Attendance Marking" redirect={redirecting}
+                submit={AttendanceMarkingSave}>
                 <div className="col-md-12 mb-2">
                     <div className="row g-2">
 
@@ -100,9 +149,7 @@ const AttendanceMarking = () => {
                                 classname="form-control form-control-sm"
                                 Placeholder="Arrived Time"
                                 changeTextValue={(e) => {
-
                                     setchange(e)
-
                                 }}
                                 value={year}
                                 name="monthwise"
@@ -135,12 +182,14 @@ const AttendanceMarking = () => {
                             enddate={endodate}
                             rageset={rageset}
                             count={count}
+                            arrytry={arrytry}
+                            setArrytry={setArrytry}
 
                         />
                         : null
                 }
                 </div>
-            </PageLayoutCloseOnly>
+            </PageLayoutSave>
         </Fragment>
     )
 }

@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
 const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColor }) => {
-    const { plan_slno, shift_id } = data;
+    const { plan_slno, shift_id, attendance_update_flag } = data;
     const [shft, setShift] = useState(shift_id)
     const handleChange = (e) => {
         // const planDate = moment(duty_day).format('YYYY-MM-DD');
@@ -33,7 +33,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
             <select className="custom-select"
                 onChange={(e) => { handleChange(e) }}
                 value={shft}
-            // style={update === 1 ? { backgroundColor: "red" } : { backgroundColor: "blue" }}
+                disabled={attendance_update_flag === 1 ? true : false}
 
             >
                 <option defaultValue="0">Choose...</option>

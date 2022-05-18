@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
-const Checkboxcompnt = ({ approval, updateApproval, name, label }) => {
+
+const AttendanceMarkingCheckbox = ({ approval, updateApproval, testChecked, name, label }) => {
     return (
         <Fragment>
             <FormControlLabel
@@ -10,12 +11,16 @@ const Checkboxcompnt = ({ approval, updateApproval, name, label }) => {
                         color="secondary"
                         value={approval}
                         checked={approval}
-                        onChange={(e) => updateApproval(e)}
+                        onChange={(e) => {
+                            updateApproval(e)
+                            testChecked(e.target.checked)
+                        }}
                     />
                 }
                 label={label}
             />
         </Fragment>
     )
-};
-export default Checkboxcompnt;
+}
+
+export default AttendanceMarkingCheckbox

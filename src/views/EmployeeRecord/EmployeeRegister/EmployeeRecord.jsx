@@ -26,14 +26,9 @@ import TextInput from 'src/views/Component/TextInput'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
-import { useDispatch } from 'react-redux'
-import { setRegionList } from 'src/redux/actions/Region.Actions'
 
 const EmployeeRecord = () => {
-    const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(setRegionList())
-    }, [])
+
 
     // use state intialization
     const [employeerecord, getFormdata] = useState({
