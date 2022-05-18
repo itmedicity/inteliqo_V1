@@ -15,7 +15,7 @@ import { employeeNumber } from 'src/views/Constant/Constant'
 
 const EmploymentTypeMast = () => {
     const [cont_period, setcont_period] = useState(0)
-    const [disable, setdisable] = useState(false)
+    const [disable, setdisable] = useState(true)
     const [data, setdata] = useState('')
     const classes = useStyles();
     const {
@@ -37,11 +37,11 @@ const EmploymentTypeMast = () => {
 
             setdata(earntypename + '+' + designattypename)
         }
-        if (selectDesignationType === 3) {
-            setdisable(true)
+        if (selectEmployeeType === 2) {
+            setdisable(false)
         }
         else {
-            setdisable(false)
+            setdisable(true)
         }
     }, [selectDesignationType, selectEmployeeType, designattypename, earntypename])
     // use effect for append

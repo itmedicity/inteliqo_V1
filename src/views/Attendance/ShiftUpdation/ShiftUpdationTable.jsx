@@ -35,6 +35,7 @@ const ShiftUpdationTable = ({ data }) => {
                             <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '4rem', }}>E-GO(min)</TableCell>
                             <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
                             <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
+                            <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
                         </TableRow>
                         <TableRow style={{ backgroundColor: "#a2a3ac", height: '1rem' }} >
                             {/* <TableCell>Date</TableCell> */}

@@ -17,7 +17,10 @@ const EmployeeProfileCard = () => {
     const empiddata = {
         em_id: no
     }
-
+    // const dispatch=useD
+    //     useEffect(() => {
+    //         dispath(setPersonalData(no))
+    //     }, [no])
     useEffect(() => {
         const getProfilePicInform = async () => {
             const result = await axioslogin.post('/upload', empiddata);
@@ -32,6 +35,7 @@ const EmployeeProfileCard = () => {
             }
         }
         getProfilePicInform()
+        //getting the personal details
     }, [empiddata, profilePic])
 
     return (

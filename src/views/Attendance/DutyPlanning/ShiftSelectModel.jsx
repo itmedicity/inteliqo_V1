@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftSelect from './ShiftSelect';
 import moment from 'moment'
-const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, update, setDuty1, duty1, setupdate }) => {
+const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, setupdate }) => {
     const rage = eachDayOfInterval(
         { start: new Date(startdate), end: new Date(enddate) }
     )
@@ -42,7 +42,7 @@ const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, update
         const result = await axioslogin.patch('/plan/shiftupdate', postData)
         const { success } = result.data
         if (success === 1) {
-            //updating sunday is week off if the weekmof sunday check box is checked
+            //updating sunday is week off if the week of sunday check box is checked
             if (apprv === true) {
                 const result = await axioslogin.patch('/plan/woffupdate', postData2)
                 const { success } = result.data
@@ -57,7 +57,6 @@ const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, update
                 handleClose()
                 setupdate(1)
             }
-
         }
         else {
             errorNofity("Error Occured!!!Please Contact EDP")

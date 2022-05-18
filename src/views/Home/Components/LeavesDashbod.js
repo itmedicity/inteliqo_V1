@@ -18,13 +18,11 @@ const LeavesDashbod = () => {
     const empid = useSelector((state) => {
         return state.getProfileData.ProfileData[0].em_id
     })
-
     useEffect(() => {
         if (empid !== '') {
             dispatch(getannualleave(empid))
         }
     }, [empid])
-
     //useEffect
     useEffect(() => {
         const { leaveData } = state

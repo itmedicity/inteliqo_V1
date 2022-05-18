@@ -13,9 +13,10 @@ import { useState } from 'react';
 import { format, getMonth } from 'date-fns';
 import moment from 'moment';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { infoNofity, getDayDiffrence, errorNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, getDayDiffrence, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
+import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection';
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
 
 const ShiftUpdation = () => {
@@ -44,10 +45,6 @@ const ShiftUpdation = () => {
         endDate: format(new Date(), "yyyy-MM-dd"),
     })
 
-
-
-
-
     const setchange = (e) => {
 
         //finding the dates between start date and end date
@@ -74,21 +71,31 @@ const ShiftUpdation = () => {
     }, [startDate, endDate, apiData])
     const {
         selectedDept,
+        updateSelected,
         selectDeptSection,
-        selectEmpName
+        updateDepartmentSection,
+        selectEmpName,
+        selectBranchMast,
+        updateBranchSelected,
+        updateSelectEmpName
     } = useContext(PayrolMasterContext)
-
+    //to Ckaer Selected Select Boxes
+    const ClearData = () => {
+        updateBranchSelected(0)
+        updateSelected(0)
+        updateDepartmentSection(0)
+        updateSelectEmpName(0)
+    }
     // Get the attendance data from the database 
     const getPunchDetl = async () => {
-
         displayleave()
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
+        if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
-                cmpCode: 1,
+                cmpCode: selectBranchMast,
                 emp_code: selectEmpName
             }
             if (Object.keys(deptDetl).length > 1) {
@@ -113,14 +120,14 @@ const ShiftUpdation = () => {
                 }
             }
 
-        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
+        } else if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
                 empName: selectEmpName,
-                cmpCode: 1,
+                cmpCode: selectBranchMast,
                 emp_code: selectEmpName
             }
 
@@ -166,9 +173,7 @@ const ShiftUpdation = () => {
             return val.em_id
 
         })
-
         const result2 = await axioslogin.post('/common/getCasualeavearry/', empdata)
-
 
         if (result2.data.success === 1) {
             const leaveMonth = getMonth(new Date())
@@ -193,131 +198,185 @@ const ShiftUpdation = () => {
 
     //Process and Get Attendance data from the database
     const processPunchdetl = async () => {
-
-        setApiData([])
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
+        // setApiData([])
+        if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName === 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
-                cmpCode: 1,
+                cmpCode: selectBranchMast,
                 emp_code: selectEmpName
             }
+            //department and department section
+            const dept = {
+                em_department: selectedDept,
+                em_dept_section: selectDeptSection
+            }
+
             if (Object.keys(deptDetl).length > 1) {
-
-                const result = await axioslogin.post("/attendCal/proc", deptDetl)
-
-                const { success } = result.data;
+                //checking whether attendance marking is saved for the selected month
+                //getting the employees id of the  selected department section
+                const result = await axioslogin.post('/plan/create', dept)
+                const { success, data } = result.data
                 if (success === 1) {
-                    const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
-                    const { success } = result.data;
-
+                    const employId = data.map((val) => {
+                        return val.em_id
+                    })
+                    const postDataCheck = {
+                        empId: employId,
+                        attenddate: moment(startDate).format('MMM-YYYY')
+                    }
+                    // checking that attendance marking is done for the any of the employee in the department section
+                    // in selected month
+                    const result = await axioslogin.post('/attedancemarkSave/check', postDataCheck)
+                    const { success, dataa } = result.data
                     if (success === 1) {
-                        const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
-
-                        if (resultcalc.data.success === 1) {
-                            const result = await axioslogin.post("/attendCal", deptDetl);
-                            const { success, data } = result.data;
-                            if (success === 1) {
-                                if (data.length !== 0) {
-                                    setApiData(data)
-                                    setcount(count + 1)
-                                }
-                                else {
-                                    setApiData(data)
-                                    infoNofity("Please Do the Shift Marking")
-                                    setcount(count + 1)
-                                }
-
-                            }
-
-                            if (success === 0) {
-                                infoNofity("Please Do the Shift Marking")
-                            }
-
-                        } else {
-                            errorNofity('Please Contact')
+                        //if data any of the employee data is pressent in attendance marking save table annont process the shift
+                        if (dataa.length > 0) {
+                            warningNofity("Attendance Is Already Saved For This Month!!!Cannot Process Shift")
                         }
-                    } else {
-                        setcount(count + 1)
-                        errorNofity('Please Contact')
+                    }
+                    else {
+                        //if attendance marking is not saved then process th shift
+                        setApiData([])
+                        const result = await axioslogin.post("/attendCal/proc", deptDetl)
+                        // console.log(result)
+                        const { success } = result.data;
+                        if (success === 1) {
+                            const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
+                            // console.log(result)
+                            const { success } = result.data;
+                            if (success === 1) {
+                                const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
+                                // console.log(resultcalc)
+                                if (resultcalc.data.success === 1) {
+                                    const result = await axioslogin.post("/attendCal", deptDetl);
+                                    // console.log(result)
+                                    const { success, data } = result.data;
+                                    if (success === 1) {
+                                        if (data.length !== 0) {
+                                            setApiData(data)
+                                            setcount(count + 1)
+                                        }
+                                        else {
+                                            setApiData(data)
+                                            infoNofity("Please Do the Shift Marking")
+                                            setcount(count + 1)
+                                        }
+
+                                    }
+
+                                    if (success === 0) {
+                                        infoNofity("Please Do the Shift Marking")
+                                    }
+
+                                } else {
+                                    errorNofity('Please Contact')
+                                }
+                            } else {
+                                setcount(count + 1)
+                                errorNofity('Please Contact')
+                            }
+
+
+                        }
+
+                        if (success === 0) {
+                            setcount(count + 1)
+                            infoNofity("Please Do the Shift Marking")
+                        }
                     }
 
-
-                }
-
-                if (success === 0) {
-                    setcount(count + 1)
-                    infoNofity("Please Do the Shift Marking")
                 }
             }
 
-        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
+
+        } else if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0 && selectEmpName !== 0) {
             const deptDetl = {
                 startDate: startDate,
                 endDate: endDate,
                 department: selectedDept,
                 departmentSec: selectDeptSection,
                 empName: selectEmpName,
-                cmpCode: 1,
+                cmpCode: selectBranchMast,
                 emp_code: selectEmpName
             }
 
             if (Object.keys(deptDetl).length > 1) {
-
-                const result = await axioslogin.post("/attendCal/proc", deptDetl)
-
-                const { success } = result.data;
+                //checking whether attendance marking is saved for the selected month for the selected employee
+                const postDataCheck = {
+                    empId: selectEmpName,
+                    attenddate: moment(startDate).format('MMM-YYYY')
+                }
+                const result = await axioslogin.post('/attedancemarkSave/check', postDataCheck)
+                const { success, dataa } = result.data
                 if (success === 1) {
-                    const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
-
+                    //if attendance is saved for the selected month cannot process the shift
+                    if (dataa.length > 0) {
+                        warningNofity("Attendance Is Already Saved For This Month!!!Cannot Process Shift")
+                    }
+                }
+                else {
+                    setApiData([])
+                    const result = await axioslogin.post("/attendCal/proc", deptDetl)
+                    // console.log(result)
                     const { success } = result.data;
-
                     if (success === 1) {
-                        const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
+                        const result = await axioslogin.post("/attendCal/attendancecal", deptDetl)
+                        // console.log(result)
+                        const { success } = result.data;
+                        if (success === 1) {
+                            const resultcalc = await axioslogin.post("/attendCal/getdataupdatecal", deptDetl);
+                            // console.log(resultcalc)
+                            if (resultcalc.data.success === 1) {
+                                const result = await axioslogin.post("/attendCal", deptDetl);
+                                // console.log(result)
+                                const { success, data } = result.data;
+                                // console.log(data)
+                                if (success === 1) {
+                                    if (data.length !== 0) {
+                                        setApiData(data)
+                                        setcount(count + 1)
+                                    }
+                                    else {
+                                        setApiData(data)
+                                        infoNofity("Please Do the Shift Marking")
+                                        setcount(count + 1)
+                                    }
 
-                        if (resultcalc.data.success === 1) {
-                            const result = await axioslogin.post("/attendCal", deptDetl);
-                            const { success, data } = result.data;
-                            if (success === 1) {
-                                if (data.length !== 0) {
-                                    setApiData(data)
-                                    setcount(count + 1)
                                 }
-                                else {
-                                    setApiData(data)
+
+                                if (success === 0) {
                                     infoNofity("Please Do the Shift Marking")
-                                    setcount(count + 1)
                                 }
 
+                            } else {
+                                errorNofity('Please Contact')
                             }
 
-                            if (success === 0) {
-                                infoNofity("Please Do the Shift Marking")
-                            }
 
                         } else {
+                            setcount(count + 1)
                             errorNofity('Please Contact')
                         }
 
 
-                    } else {
-                        setcount(count + 1)
-                        errorNofity('Please Contact')
+
                     }
 
-
-
+                    if (success === 0) {
+                        infoNofity("Please Do the Shift Marking")
+                    }
                 }
 
-                if (success === 0) {
-                    infoNofity("Please Do the Shift Marking")
-                }
+
+
             }
-        } else {
+        }
+        else {
             setApiData([])
-            infoNofity("AtLeast Department & Section is Required");
+            infoNofity("AtLeast Brarnch&&Department & Section is Required");
         }
 
     }
@@ -348,7 +407,9 @@ const ShiftUpdation = () => {
                                 />
                             </div>
                         </div>
-
+                        <div className="col-md-2">
+                            <BrnachMastSelection select="Branch" style={SELECT_CMP_STYLE} />
+                        </div>
                         <div className="col-md-2">
                             <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
                         </div>
@@ -383,10 +444,11 @@ const ShiftUpdation = () => {
                                     </Tooltip>
                                 </div>
                                 <div>
-                                    <Tooltip title="Back To Home" placement="top" arrow>
+                                    <Tooltip title="Clear" placement="top" arrow>
                                         <IconButton
                                             aria-label="add"
                                             style={{ padding: '0rem' }}
+                                            onClick={ClearData}
                                         >
                                             <FcCancel className="text-info" size={30} />
                                         </IconButton>
@@ -412,6 +474,7 @@ const ShiftUpdation = () => {
                                     <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '4rem', }}>E-GO(min)</TableCell>
                                     <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
                                     <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
+                                    <TableCell align="center" rowSpan={2} className="p-0" style={{ width: '1rem', }}></TableCell>
                                 </TableRow>
                                 <TableRow style={{ backgroundColor: "#a2a3ac", height: '1rem' }} >
                                     {/* <TableCell>Date</TableCell> */}
@@ -428,7 +491,7 @@ const ShiftUpdation = () => {
                                         ? apiData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : apiData
                                     ).map((val, index) => {
-                                        return <ShiftTableDataRow val={val} key={index} count={count} />
+                                        return <ShiftTableDataRow val={val} key={index} count={count} setApiData={setApiData} />
                                     })
                                 }
 

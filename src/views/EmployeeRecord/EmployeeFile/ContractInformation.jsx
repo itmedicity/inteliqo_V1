@@ -313,12 +313,17 @@ const ContractInformation = () => {
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     const data = {
         emp_id: no,
+        em_no: id,
         start: moment(firstDay).format('YYYY-MM-DD'),
         end: moment(new Date()).format('YYYY-MM-DD'),
     }
+    //function for close contract renew model
+    const contractenewModelclose = async () => {
+        setOpenn(false)
+    }
     return (
         <Fragment>
-            {modelvalue !== 1 && modelrenew === 1 ? <ContractRenewModel data={data} open={openn} setOpenn={setOpenn} /> : null}
+            {modelvalue !== 1 && modelrenew === 1 ? <ContractRenewModel data={data} open={openn} setOpenn={setOpenn} contractenewModelclose={contractenewModelclose} /> : null}
             {modelcateg === 1 ? <ContractcategoryModel em_category={em_category}//old category
                 id={id}//employeenumber
                 setcategorysave={setcategorysave} //setcategory change

@@ -165,7 +165,8 @@ const PersonalInformation = () => {
                     em_license_no,
                     em_adhar_no,
                     em_pan_no,
-                    em_passport_no
+                    em_passport_no,
+                    em_maritalstatus
                 } = data[0]
 
 
@@ -185,7 +186,7 @@ const PersonalInformation = () => {
                     dob: em_dob,
                     age: em_age_year,
                     Selectgender: em_gender,
-                    maritalstatus: '0',
+                    maritalstatus: em_maritalstatus,
                     accountno: em_account_no,
                     ifc_code: em_ifsc,
                     panmum: em_pan_no,
@@ -247,6 +248,7 @@ const PersonalInformation = () => {
             hrm_region2: getregion2,
             create_user: employeeNumber()
         }
+        console.log(submitpersonal)
         const resetdata = {
             addressPermnt1: '',
             addressPermnt2: '',
@@ -368,12 +370,12 @@ const PersonalInformation = () => {
                                                         name="addressPermnt2"
                                                     />
                                                 </div>
-                                                <div className="col-md-8">
+                                                <div className="col-md-5">
                                                     <RegionSelect2
-                                                        style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
+                                                        style={{ minHeight: 10, maxHeight: 27, paddingTop: 2, paddingBottom: 4 }}
                                                     />
                                                 </div>
-                                                <div className="col-md-4" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                                <div className="col-md-7" data-tip="Pincode" data-for='toolTip1' data-place='top'>
                                                     <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"
@@ -416,12 +418,12 @@ const PersonalInformation = () => {
                                                         name="contactaddress2"
                                                     />
                                                 </div>
-                                                <div className="col-md-8">
+                                                <div className="col-md-5">
                                                     <RegionSelect
                                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                                     />
                                                 </div>
-                                                <div className="col-md-4" data-tip="Pincode" data-for='toolTip1' data-place='top'>
+                                                <div className="col-md-7" data-tip="Pincode" data-for='toolTip1' data-place='top'>
                                                     <ReactTooltip id="toolTip1" />
                                                     <TextInput
                                                         type="text"

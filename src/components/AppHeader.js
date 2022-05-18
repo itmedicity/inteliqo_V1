@@ -29,6 +29,7 @@ import { setAlertList } from '../redux/actions/Alert.Actions'
 import { setMsgList } from 'src/redux/actions/Message.actions'
 import { setAnnouncementList } from 'src/redux/actions/Announcement.action'
 import { setModuleRightsList } from 'src/redux/actions/ModuleRights.Action'
+import { setRegionList } from 'src/redux/actions/Region.Actions'
 
 
 const AppHeader = () => {
@@ -81,6 +82,7 @@ const AppHeader = () => {
     dispatch(setAnnouncementList())
     dispatch(setMsgList(empid))
     dispatch(setModuleRightsList(empid))
+    dispatch(setRegionList())
   }, [empid, dispatch])
 
   return (

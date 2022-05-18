@@ -3,8 +3,13 @@ import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
 import { deepOrange, deepPurple, green, brown } from '@mui/material/colors';
 import { blueGrey } from '@material-ui/core/colors';
 import Shiftfirstcol from './Shiftfirstcol';
-const ShiftUpdationTblRow = ({ val, count }) => {
-
+import CalendarViewDaySharpIcon from '@mui/icons-material/CalendarViewDaySharp';
+import ShiftUpdationModel from './ShiftUpdationModel';
+const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
+    const [state, setState] = useState(0)
+    const [dutyday, setdutyday] = useState(0)
+    const [empno, setempno] = useState(0)
+    const [open, setOpen] = useState(false)
     const [datapunch, setdatapunch] = useState({
         duty_day: '',
         early_out: '',
@@ -45,8 +50,19 @@ const ShiftUpdationTblRow = ({ val, count }) => {
         })
 
     }, [count])
+    const getpunchDetails = async (duty_day, em_no) => {
+        setState(1)
+        setOpen(true)
+        setempno(em_no)
+        setdutyday(duty_day)
+    }
+    //for Closing Model
+    const handleClose = () => {
+        setOpen(false);
+    };
     return (
         <Fragment>
+            {state === 1 ? <ShiftUpdationModel open={open} handleClose={handleClose} dutyday={dutyday} empno={empno} setApiData={setApiData} /> : null}
             <Suspense fallback={<LinearProgress />}>
                 <TableRow
                     hover={true}
@@ -63,9 +79,7 @@ const ShiftUpdationTblRow = ({ val, count }) => {
                     <TableCell align="center">{late_in}</TableCell>
                     <TableCell align="center">{early_out}</TableCell>
                     <TableCell align="center">
-
                         <Shiftfirstcol datapunch={datapunch} />
-
                     </TableCell>
                     <TableCell align="center">
                         <Avatar sx={{
@@ -73,10 +87,6 @@ const ShiftUpdationTblRow = ({ val, count }) => {
                                 (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
                                     duty_status === 0.5 ? deepPurple[500] :
                                         duty_status === 0 ? deepOrange[500] : lvreq_type !== null ? lvreq_type : green[500]
-
-
-
-
                             , width: 24, height: 24, fontSize: 10
                         }}>
                             {(late_in !== 0 || early_out !== 0) ? 'L/E' :
@@ -85,6 +95,14 @@ const ShiftUpdationTblRow = ({ val, count }) => {
                                         duty_status === 0 ? 'LOP' : lvreq_type !== null ? lvreq_type : 'P'
                             }
                         </Avatar>
+                    </TableCell>
+                    <TableCell>
+                        <CalendarViewDaySharpIcon
+                            // onClick={getpunchDetails}
+                            onClick={(e) => {
+                                getpunchDetails(duty_day, em_no)
+                            }}
+                        />
                     </TableCell>
                 </TableRow>
             </Suspense>
