@@ -6,10 +6,10 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import FineTypeSelection from 'src/views/CommonCode/FineTypeSelection'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
-import { employeeNumber, getFineSlno, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { getFineSlno, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelAddFineMaster from './EmpFileComponent/ModelAddFineMaster'
 import FineAndDeductionTable from './EmployeeFileTable/FineAndDeductionTable'
-import { differenceInMonths, format } from 'date-fns'
+import { eachMonthOfInterval, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import ReactTooltip from 'react-tooltip';
@@ -18,11 +18,12 @@ const FineorDeduction = () => {
     const history = useHistory()
     const [open, setOpen] = useState(false);
     const { id, no } = useParams();
-    const { selectFine, updateFine } = useContext(PayrolMasterContext)
+    const { selectFine, updateFine, employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
-    const [period, setPeriod] = useState(0)
+    const [period, setPeriod] = useState([])
     const [status, setStatus] = useState(0)
     const [serialno, getSerialno] = useState(0)
     const [fineDed, setFineDed] = useState({
@@ -31,6 +32,7 @@ const FineorDeduction = () => {
         fine_remark: '',
         fine_status: ''
     })
+    const [times, setTimes] = useState(0)
 
     //Destructuring
     const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
@@ -62,13 +64,15 @@ const FineorDeduction = () => {
     }
 
     useEffect(() => {
-        const setPerd = () => {
-            const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
-            setPeriod(fine_period)
+        if (finestart < fineend) {
+            var resultdates = eachMonthOfInterval({
+                start: new Date(finestart),
+                end: new Date(fineend)
+            })
+            setPeriod(resultdates)
+            setTimes(resultdates.length)
         }
-        setPerd()
-    }, [fineend, finestart, fine_status])
-
+    }, [fineend, finestart])
 
     //get serial no
     getFineSlno().then((val) => {
@@ -85,12 +89,11 @@ const FineorDeduction = () => {
         fine_amount: fine_amount,
         fine_start: finestart,
         fine_end: fineend,
-        fine_period: period,
+        fine_period: times,
         fine_remark: fine_remark,
-        fine_create_user: employeeNumber(),
+        fine_create_user: em_id,
         fine_status: '0'
     }
-
     const resetForm = {
         fine_descp: '',
         fine_amount: 0,
@@ -101,8 +104,23 @@ const FineorDeduction = () => {
     const reset = () => {
         updateFine(0);
         setPeriod(0);
+        setTimes(0)
         setMonthstart(format(new Date(), "yyyy-MM-dd"));
         setMonthend(format(new Date(), "yyyy-MM-dd"));
+    }
+    //datas mapp for fine detailed table
+
+    var finedetlmap = [];
+    for (var i = 0; i < period.length; i++) {
+        const postdata = {
+            fine_emp_no: id,
+            fine_emp_id: no,
+            fine_slno: serialno,
+            fine_amount: fine_amount / period.length,
+            fine_date: format(new Date(period[i]), "yyyy-MM-dd"),
+            create_user: em_id,
+        }
+        finedetlmap.push(postdata)
     }
 
     //Submit data
@@ -111,14 +129,18 @@ const FineorDeduction = () => {
         const result = await axioslogin.post('/empfinededuction', postData)
         const { message, success } = result.data;
         if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1)
-            setFineDed(resetForm);
-            reset()
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
-        } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/empfinededuction/detltable', finedetlmap)
+            const { success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setcount(count + 1)
+                setFineDed(resetForm);
+                reset()
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         }
     }
 
@@ -132,7 +154,6 @@ const FineorDeduction = () => {
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
-
 
     return (
         <Fragment>
@@ -187,9 +208,9 @@ const FineorDeduction = () => {
                                             classname="form-control form-control-sm"
                                             Placeholder="Period"
                                             disabled="disabled"
-                                            value={period}
-                                            name="period"
-                                            changeTextValue={(e) => updateFineDed(e)}
+                                            value={times}
+                                            name="times"
+                                        //changeTextValue={(e) => updateFineDed(e)}
                                         />
                                     </div>
                                     <div className="col-md-6 " data-tip="Fine Start Date" data-for='toolTip1' data-place='top'>
