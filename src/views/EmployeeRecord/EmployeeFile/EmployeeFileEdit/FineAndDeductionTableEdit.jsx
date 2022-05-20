@@ -3,8 +3,8 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import FineTypeSelection from 'src/views/CommonCode/FineTypeSelection'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
-import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { differenceInMonths, format } from 'date-fns'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { eachMonthOfInterval, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useHistory, useParams } from 'react-router'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
@@ -18,18 +18,18 @@ const FineAndDeductionTableEdit = () => {
     const history = useHistory()
     const [open, setOpen] = useState(false);
     const { slno, id, no } = useParams();
-    const { selectFine, updateFine } = useContext(PayrolMasterContext)
+    const { selectFine, updateFine, employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
-    const [period, setPeriod] = useState(0)
+    const [period, setPeriod] = useState([])
     const [status, setStatus] = useState(0)
-
+    const [times, setTimes] = useState(0)
     //initializing
     const [fineDed, setFineDed] = useState({
         fine_descp: '',
         fine_amount: 0,
         fine_remark: '',
-        fine_status: ''
     })
 
     //Destructuring
@@ -47,23 +47,22 @@ const FineAndDeductionTableEdit = () => {
         setStatus(0)
     }
 
-    //Get data
+    //Get data for setting form
     useEffect(() => {
         const getFineDed = async () => {
             const result = await axioslogin.get(`/empfinededuction/select/${slno}`);
             const { success, data } = result.data;
             if (success === 1) {
-                const { fine_type, fine_status, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark } = data[0]
+                const { fine_type, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark } = data[0]
                 const formdata = {
                     fine_descp: fine_descp,
                     fine_amount: fine_amount,
                     fine_remark: fine_remark,
-                    fine_status: fine_status
                 }
                 updateFine(fine_type)
                 setMonthstart(format(new Date(fine_start), "yyyy-MM-dd"))
                 setMonthend(format(new Date(fine_end), "yyyy-MM-dd"))
-                setPeriod(fine_period)
+                setTimes(fine_period)
                 setFineDed(formdata)
             }
             else {
@@ -73,23 +72,31 @@ const FineAndDeductionTableEdit = () => {
         updateFine(0)
     }, [slno, updateFine]);
 
-    //Month fformtating and period calculation
+    //Month formtating and period calculation
     const getstart = (e) => {
         var startfine = e.target.value
         var fine_start = format(new Date(startfine), "yyyy-MM-dd")
         setMonthstart(fine_start)
-        const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
-        setPeriod(fine_period)
         return (fine_start)
     }
     const getend = (e) => {
         var endfine = e.target.value
         var fine_end = format(new Date(endfine), "yyyy-MM-dd")
         setMonthend(fine_end)
-        const fine_period = differenceInMonths(new Date(fineend), new Date(finestart));
-        setPeriod(fine_period)
         return (fine_end)
     }
+    //month intervel between start date and end date
+    useEffect(() => {
+        if (finestart < fineend) {
+            var resultdates = eachMonthOfInterval({
+                start: new Date(finestart),
+                end: new Date(fineend)
+            })
+            setPeriod(resultdates)
+            setTimes(resultdates.length)
+        }
+    }, [fineend, finestart])
+
 
     //post Data
     const updateData = {
@@ -98,9 +105,9 @@ const FineAndDeductionTableEdit = () => {
         fine_amount: fine_amount,
         fine_start: finestart,
         fine_end: fineend,
-        fine_period: period,
+        fine_period: times,
         fine_remark: fine_remark,
-        fine_edit_user: employeeNumber(),
+        fine_edit_user: em_id,
         fine_slno: slno
     }
     const resetForm = {
@@ -113,24 +120,42 @@ const FineAndDeductionTableEdit = () => {
         updateFine(0);
         setPeriod(0);
         setStatus(0);
+        setTimes(0)
         setMonthstart(format(new Date(), "yyyy-MM-dd"));
         setMonthend(format(new Date(), "yyyy-MM-dd"));
     }
-
+    var finedetlmap = [];
+    for (var i = 0; i < period.length; i++) {
+        const postdata = {
+            fine_emp_no: id,
+            fine_emp_id: no,
+            fine_slno: slno,
+            fine_amount: fine_amount / period.length,
+            fine_date: format(new Date(period[i]), "yyyy-MM-dd"),
+            create_user: em_id,
+        }
+        finedetlmap.push(postdata)
+    }
     //Update data
     const submitFine = async (e) => {
         e.preventDefault();
         const result = await axioslogin.patch('/empfinededuction', updateData)
         const { message, success } = result.data;
         if (success === 2) {
-            setFineDed(resetForm);
-            history.push(`/Home/FineorDeduction/${id}/${no}`);
-            succesNofity(message);
-            reset()
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
-        } else {
-            infoNofity(message)
+            const result = await axioslogin.delete(`/empfinededuction/delete/${slno}`)
+            const { success } = result.data;
+            if (success === 1) {
+                const result = await axioslogin.post('/empfinededuction/detltable', finedetlmap)
+                const { success } = result.data;
+                if (success === 1) {
+                    setFineDed(resetForm);
+                    history.push(`/Home/FineorDeduction/${id}/${no}`);
+                    succesNofity(message);
+                    reset()
+                } else {
+                    infoNofity(message)
+                }
+            }
         }
     }
 
@@ -199,8 +224,8 @@ const FineAndDeductionTableEdit = () => {
                                             classname="form-control form-control-sm"
                                             Placeholder="Period"
                                             disabled="disabled"
-                                            value={period}
-                                            name="period"
+                                            value={times}
+                                            name="times"
                                             changeTextValue={(e) => updateFineDed(e)}
                                         />
                                     </div>

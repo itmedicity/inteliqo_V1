@@ -25,22 +25,33 @@ const CommonSettings = () => {
         carry_hl: false,
         carry_cl: false,
         carry_el: false,
-        carry_sl: false
+        carry_sl: false,
+        min_salary: '',
+        max_salary: '',
+        pf_age: '',
+        pf_employee: '',
+        pf_employer: '',
+        esi_limit: '',
+        esi_employee: '',
+        esi_employer: ''
     })
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
-        carry_hl, carry_el, carry_cl, carry_sl } = FormData
+        carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
+        pf_employee, pf_age, max_salary } = FormData
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...FormData, [e.target.name]: value })
     }
+    //setting data to form
     useEffect(() => {
         const getCommonSettings = async () => {
             const result = await axioslogin.get('/commonsettings')
             const { success, data } = result.data
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
-                    cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl } = data[0]
+                    cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -51,7 +62,15 @@ const CommonSettings = () => {
                     carry_hl: carry_hl === 1 ? true : false,
                     carry_cl: carry_cl === 1 ? true : false,
                     carry_el: carry_el === 1 ? true : false,
-                    carry_sl: carry_sl === 1 ? true : false
+                    carry_sl: carry_sl === 1 ? true : false,
+                    min_salary: min_salary,
+                    max_salary: max_salary,
+                    pf_age: pf_age,
+                    pf_employee: pf_employee,
+                    pf_employer: pf_employer,
+                    esi_limit: esi_limit,
+                    esi_employee: esi_employee,
+                    esi_employer: esi_employer
                 }
                 setFormData(frmData)
                 setValue(1)
@@ -76,6 +95,14 @@ const CommonSettings = () => {
         carry_cl: carry_cl === true ? 1 : 0,
         carry_el: carry_el === true ? 1 : 0,
         carry_sl: carry_sl === true ? 1 : 0,
+        min_salary: min_salary,
+        max_salary: max_salary,
+        pf_age: pf_age,
+        pf_employee: pf_employee,
+        pf_employer: pf_employer,
+        esi_limit: esi_limit,
+        esi_employee: esi_employee,
+        esi_employer: esi_employer,
         creat_user: em_id
     }
     //data to edit
@@ -89,9 +116,18 @@ const CommonSettings = () => {
         carry_cl: carry_cl === true ? 1 : 0,
         carry_el: carry_el === true ? 1 : 0,
         carry_sl: carry_sl === true ? 1 : 0,
+        min_salary: min_salary,
+        max_salary: max_salary,
+        pf_age: pf_age,
+        pf_employee: pf_employee,
+        pf_employer: pf_employer,
+        esi_limit: esi_limit,
+        esi_employee: esi_employee,
+        esi_employer: esi_employer,
         update_user: em_id,
         setting_slno: slno
     }
+
     //save
     const submitFormData = async (e) => {
         e.preventDefault();
@@ -241,13 +277,13 @@ const CommonSettings = () => {
                                 </div>
                             </div>
                         </div>
+                        {/* Carry forward setting design */}
                         <div className="col-md-5">
                             <div className="card">
                                 <div className="card-header pb-0 border  text-black">
                                     <h6>CarryForward Leave Setting</h6>
                                 </div>
                                 <div className="card-body">
-
                                     <div className="col-md-12">
                                         <div className="row">
                                             <div className="col-md-6">
@@ -317,6 +353,171 @@ const CommonSettings = () => {
                                                     }
                                                     label="Sick Leave"
                                                 />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* PF setting design */}
+                        <div className="col-md-12 pt-3" >
+                            <div className="row">
+                                <div className="col-md-1"></div>
+                                <div className="col-md-5">
+                                    <div className="card">
+                                        <div className="card-header pb-0 border  text-black">
+                                            <h6>PF Setting</h6>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Salary Limit</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="min_salary"
+                                                            value={min_salary}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-1 pt-1">
+                                                        <Typography>---</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="max_salary"
+                                                            value={max_salary}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>PF Age Limit</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="pf_age"
+                                                            value={pf_age}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>PF % Employee</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="pf_employee"
+                                                            value={pf_employee}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>PF % Employer</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="pf_employer"
+                                                            value={pf_employer}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* ESI setting design */}
+                                <div className="col-md-5">
+                                    <div className="card">
+                                        <div className="card-header pb-0 border  text-black">
+                                            <h6>ESI Setting</h6>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>ESI Limit</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="esi_limit"
+                                                            value={esi_limit}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>ESI % Employee</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="esi_employee"
+                                                            value={esi_employee}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>ESI % Employer</Typography>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <TextInput
+                                                            type="text"
+                                                            classname="form-control form-control-sm"
+                                                            Placeholder=""
+                                                            name="esi_employer"
+                                                            value={esi_employer}
+                                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

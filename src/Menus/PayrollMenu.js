@@ -64,7 +64,7 @@ const PayrollMenu = [
         men_slno: 46,
         component: CNavItem,
         name: 'Payroll Process',
-        to: '/homes',
+        to: '/Home/PayrollProcess',
     },
     {
         men_slno: 47,
