@@ -1,6 +1,12 @@
 import { CNavItem } from "@coreui/react";
 const Resignation = [
     {
+        men_slno: 153,
+        component: CNavItem,
+        name: 'Employee Inactive',
+        to: '/Home/EmployeeInactiveHR',
+    },
+    {
         men_slno: 61,
         component: CNavItem,
         name: 'Resignation Request',
