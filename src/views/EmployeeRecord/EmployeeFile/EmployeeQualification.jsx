@@ -112,8 +112,6 @@ const EmployeeQualification = () => {
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade: em_mark_grade,
-        em_reg_type: selectreg,
-        em_reg_no: em_reg_no,
         create_user: employeeNumber(),
     }
     const postData4 = {
@@ -126,8 +124,6 @@ const EmployeeQualification = () => {
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade: em_mark_grade,
-        em_reg_type: selectreg,
-        em_reg_no: em_reg_no,
         create_user: employeeNumber(),
     }
 
