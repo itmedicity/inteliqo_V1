@@ -95,6 +95,9 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
                     })
                     SetDueDept(duedeptdetl)
                 }
+                else {
+                    warningNofity("Please Map Due Clearence Department for this department Section ")
+                }
             }
 
         }

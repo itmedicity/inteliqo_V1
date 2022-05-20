@@ -213,7 +213,7 @@ const EmployeeRecord = () => {
         return (
             udateGrade(0),
             setEarnTypecontext(0),
-            udateregion(0),
+            udateregion(null),
             udatereligion(0),
             udateemployeecategory(0),
             updatebloodgroup(0),
@@ -224,7 +224,7 @@ const EmployeeRecord = () => {
             updateSalutSelected(0),
             updateBranchSelected(0),
             updateInstituteSeleted(0),
-            udateregion2(0)
+            udateregion2(null)
         )
 
     }, [setEarnTypecontext, udateGrade,
@@ -287,7 +287,7 @@ const EmployeeRecord = () => {
                 succesNofity('Save Successfully')
                 udateGrade(0)
                 setEarnTypecontext(0)
-                udateregion(0)
+                udateregion(null)
                 udatereligion(0)
                 udateemployeecategory(0)
                 updatebloodgroup(0)
@@ -298,7 +298,7 @@ const EmployeeRecord = () => {
                 updateSalutSelected(0)
                 updateBranchSelected(0)
                 updateInstituteSeleted(0)
-                udateregion2(0)
+                udateregion2(null)
                 // get serial number on reset
                 getSerialnumberempid().then((val) => {
                     const varid = {

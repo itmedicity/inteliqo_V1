@@ -149,7 +149,7 @@ const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMa
 const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
-
+const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -303,7 +303,8 @@ const routes = [
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
   { path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
-  { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange }
+  { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
+  { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR }
 ]
 
 export default routes
