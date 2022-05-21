@@ -105,394 +105,410 @@ const LeaveRequest = () => {
         emergencynumber: emergencynumber,
         noofleavetaken: noofleavetaken
     }
+    const checkattendnceSave = {
+        attenddate: moment(new Date(startDate)).format('MMM-YYYY'),
+        empId: em_id,
+    }
     const submitLeave = async () => {
-        if (levereqtype === 1) {
-
-            if ((leveda.length === 0) || (leveda.length !== leavdaystype)) {
-                warningNofity("Plese Select The Details")
+        //checking whether attendance marking saved for this month
+        const result = await axioslogin.post('/attedancemarkSave/check', checkattendnceSave)
+        const { success, dataa } = result.data
+        if (success === 1) {
+            //if employee data is pressent in attendance marking save table cannot save leave
+            if (dataa.length > 0) {
+                warningNofity("Attendance Is Already Saved For This Month!!!Cannot Save Attendance")
             }
-            else {
-                const leavedatadetl = leveda.map((val) => {
-                    const levedsata = {
-                        leaveid: leaveslno,
-                        caulmnth: val.caulmnth,
-                        index: val.index,
-                        leave: val.leave,
-                        levtypename: val.levtypename,
-                        lveDate: val.lveDate,
-                        lveType: val.lveType,
-                        incharge_level: incharge_level,
-                        hod_level: hod_level,
-                        ceo_level: ceo_level,
-                        nof_leave: singleselect === 1 ? val.noofdays : 1,
-                        singleleave: singleselect
-                    }
-                    return levedsata
-                })
-                if (resonforleave !== '') {
-                    const result = await axioslogin.post('/LeaveRequest', leavemastdata)
-                    const { success } = result.data
-                    if (success === 1) {
-                        const result2 = await axioslogin.post('/LeaveRequest/createdetlleave', leavedatadetl)
-                        if (result2.data.success === 1) {
+        }
+        else {
 
-                            getleaverequest().then((val) => {
-                                setleaveslno(val)
-                            })
-                            succesNofity(result2.data.message)
-                            updateleavereqtype(0)
-                            setleavereqtype(0)
-                            setleavedaystype(0)
-                            setsingleselect(0)
-                            sethalfday()
-                            setnopunch({})
-                            setcopensatoryoff()
-                            setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
-                                resonforleave: '',
-                                emergencynumber: '',
-                            })
-                            setLveData([])
-                            updateleavereqtype(0)
-                            getleaverequest().then((val) => {
-                                setleaveslno(val)
-                            })
+            if (levereqtype === 1) {
 
-                            history.push('/Home/LeaveRequest')
+                if ((leveda.length === 0) || (leveda.length !== leavdaystype)) {
+                    warningNofity("Plese Select The Details")
+                }
+                else {
+                    const leavedatadetl = leveda.map((val) => {
+                        const levedsata = {
+                            leaveid: leaveslno,
+                            caulmnth: val.caulmnth,
+                            index: val.index,
+                            leave: val.leave,
+                            levtypename: val.levtypename,
+                            lveDate: val.lveDate,
+                            lveType: val.lveType,
+                            incharge_level: incharge_level,
+                            hod_level: hod_level,
+                            ceo_level: ceo_level,
+                            nof_leave: singleselect === 1 ? val.noofdays : 1,
+                            singleleave: singleselect
                         }
-                        else if (result2.data.success === 2) {
+                        return levedsata
+                    })
+                    if (resonforleave !== '') {
+                        const result = await axioslogin.post('/LeaveRequest', leavemastdata)
+                        const { success } = result.data
+                        if (success === 1) {
+                            const result2 = await axioslogin.post('/LeaveRequest/createdetlleave', leavedatadetl)
+                            if (result2.data.success === 1) {
+
+                                getleaverequest().then((val) => {
+                                    setleaveslno(val)
+                                })
+                                succesNofity(result2.data.message)
+                                updateleavereqtype(0)
+                                setleavereqtype(0)
+                                setleavedaystype(0)
+                                setsingleselect(0)
+                                sethalfday()
+                                setnopunch({})
+                                setcopensatoryoff()
+                                setLeaveDetails({
+                                    fromDate: '',
+                                    noofleavetaken: '',
+                                    resonforleave: '',
+                                    emergencynumber: '',
+                                })
+                                setLveData([])
+                                updateleavereqtype(0)
+                                getleaverequest().then((val) => {
+                                    setleaveslno(val)
+                                })
+
+                                history.push('/Home/LeaveRequest')
+                            }
+                            else if (result2.data.success === 2) {
+                                warningNofity("There Is No Casual Leave Left For This Employee")
+                            }
+                            else {
+                                errorNofity("Error Occured!!!!Please Contact EDP6767")
+                            }
+                        }
+                        else if (success === 2) {
                             warningNofity("There Is No Casual Leave Left For This Employee")
                         }
                         else {
-                            errorNofity("Error Occured!!!!Please Contact EDP6767")
+                            errorNofity("Error Occured!!!!Please Contact EDPrty")
+
+                            updateleavereqtype(0)
+
+                            setleavereqtype(0)
+                            setleavedaystype(0)
+                            setsingleselect(0)
+                            sethalfday()
+                            setnopunch({})
+                            setcopensatoryoff()
+                            setLeaveDetails({
+                                fromDate: '',
+                                noofleavetaken: '',
+                                resonforleave: '',
+                                emergencynumber: '',
+                            })
+                            setLveData([])
+                            getleaverequest().then((val) => {
+                                setleaveslno(val)
+                            })
+                            history.push('/Home/LeaveRequest')
+                        }
+                    } else {
+                        warningNofity("Please Enter The Reason")
+                    }
+                }
+
+
+            }
+
+            else if (levereqtype === 2) {
+
+                if ((halfday.casullevemonth !== 0 && halfday.monthleave !== "" && halfday.planslno !== 0)) {
+                    const halfdaysavedata = {
+                        checkIn: format(halfday.checkIn, "yyyy-MM-dd HH:MM:SS"),
+                        checkOut: format(halfday.checkOut, "yyyy-MM-dd HH:MM:SS"),
+                        leavedate: halfday.startDate,
+                        planslno: halfday.casullevemonth,
+                        shiftid: halfday.planslno,
+                        month: halfday.monthleave,
+                        em_id: em_id,
+                        em_no: em_no,
+                        em_department: em_department,
+                        em_dept_section: em_dept_section,
+                        incharge_level: incharge_level,
+                        hod_level: hod_level,
+                        ceo_level: ceo_level,
+                        resonforleave: resonforleave,
+                    }
+                    if (resonforleave !== '') {
+                        const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            history.push('/Home/LeaveRequest')
+                            getleaverequest().then((val) => {
+                                setleaveslno(val)
+                            })
+                            succesNofity(result.data.message)
+                            updateleavereqtype(0)
+
+                            setleavereqtype(0)
+                            setleavedaystype(0)
+                            setsingleselect(0)
+                            sethalfday()
+                            setnopunch({})
+                            setcopensatoryoff()
+                            setLeaveDetails({
+                                fromDate: '',
+                                noofleavetaken: '',
+                                resonforleave: '',
+                                emergencynumber: '',
+                            })
+                            setLveData([])
+
+                            updateleavereqtype(0)
+
+                        } else {
+                            errorNofity(message)
                         }
                     }
-                    else if (success === 2) {
-                        warningNofity("There Is No Casual Leave Left For This Employee")
+                    else {
+                        warningNofity("Please Enter The Reason")
+                    }
+
+                } else {
+                    warningNofity("Please enter Complete Details")
+
+                    updateleavereqtype(0)
+
+                    setleavereqtype(0)
+                    setleavedaystype(0)
+                    setsingleselect(0)
+                    sethalfday()
+                    setnopunch({})
+                    setcopensatoryoff()
+                    setLeaveDetails({
+                        fromDate: '',
+                        noofleavetaken: '',
+                        resonforleave: '',
+                        emergencynumber: '',
+                    })
+                    setLveData([])
+                    getleaverequest().then((val) => {
+                        setleaveslno(val)
+                    })
+                    history.push('/Home/LeaveRequest')
+                }
+
+            }
+            else if (levereqtype === 3) {
+                if (mispunchflag === 0) {
+                    if (checkinflag === true || checkoutflag === true) {
+                        const lopdayreqst = {
+                            checkinflag: checkinflag === true ? 1 : 0,
+                            checkintime: checkinflag === true ? checkintime : '0000-00-00 00:00:00',
+                            checkoutflag: checkoutflag === true ? 1 : 0,
+                            checkouttime: checkoutflag === true ? checkouttime : '0000-00-00 00:00:00',
+                            nopunchdate: nopunchdate,
+                            plan_slno: plan_slno,
+                            shift_id: shift_id,
+                            crted_user: em_id,
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            punch_slno: punch_slno,
+                            incharge_level: incharge_level,
+                            hod_level: hod_level,
+                            ceo_level: ceo_level,
+                            resonforleave: resonforleave,
+
+                        }
+                        if (resonforleave !== '') {
+                            const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', lopdayreqst)
+                            const { success, message } = result.data
+                            if (success === 1) {
+                                history.push('/Home/LeaveRequest')
+                                getleaverequest().then((val) => {
+                                    setleaveslno(val)
+                                })
+                                succesNofity(message)
+                                updateleavereqtype(0)
+
+                                setleavereqtype(0)
+                                setleavedaystype(0)
+                                setsingleselect(0)
+                                sethalfday()
+                                setnopunch({})
+                                setcopensatoryoff()
+                                setLeaveDetails({
+                                    fromDate: '',
+                                    noofleavetaken: '',
+                                    resonforleave: '',
+                                    emergencynumber: '',
+                                })
+                                setLveData([])
+
+                            } else {
+                                errorNofity(message)
+                            }
+                        }
+                        else {
+
+                            warningNofity("Please Enter The Reason")
+                        }
                     }
                     else {
-                        errorNofity("Error Occured!!!!Please Contact EDPrty")
-
-                        updateleavereqtype(0)
-
-                        setleavereqtype(0)
-                        setleavedaystype(0)
-                        setsingleselect(0)
-                        sethalfday()
-                        setnopunch({})
-                        setcopensatoryoff()
-                        setLeaveDetails({
-                            fromDate: '',
-                            noofleavetaken: '',
-                            resonforleave: '',
-                            emergencynumber: '',
-                        })
-                        setLveData([])
-                        getleaverequest().then((val) => {
-                            setleaveslno(val)
-                        })
-                        history.push('/Home/LeaveRequest')
+                        warningNofity('Select A Punch')
                     }
                 } else {
-                    warningNofity("Please Enter The Reason")
+                    warningNofity('Already request Added')
                 }
             }
+            else if (levereqtype === 4) {
+                const { punchin, punchout, reqtype, selectshitid, shifturation, startdate } = compensatoryoff
 
+                if (compensatoryoff !== undefined) {
+                    if (reqtype === 1) {
+                        const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
+                        const puninfinal = moment(puin)
+                        const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
+                        const punoutfinal = moment(puout)
+                        const duration = getTotalShiftHours(puninfinal, punoutfinal)
+                        const constdatasave = {
+                            startdate: startdate,
+                            punchindata: punchin,
+                            punchoutdata: punchout,
+                            req_type: reqtype,
+                            reqtype_name: "Extra Time",
+                            durationpunch: duration,
+                            shiftduration: shifturation,
+                            extratime: shifturation > duration ? 0 : (duration - shifturation),
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            shift_id: selectshitid,
+                            incharge_level: incharge_level,
+                            hod_level: hod_level,
+                            ceo_level: ceo_level,
+                            resonforleave: resonforleave,
 
-        }
+                        }
+                        if (resonforleave !== '') {
+                            const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
+                            const { success, message } = result.data
+                            if (success === 1) {
+                                history.push('/Home/LeaveRequest')
+                                getleaverequest().then((val) => {
+                                    setleaveslno(val)
+                                })
+                                succesNofity(message)
+                                updateleavereqtype(0)
 
-        else if (levereqtype === 2) {
-
-            if ((halfday.casullevemonth !== 0 && halfday.monthleave !== "" && halfday.planslno !== 0)) {
-                const halfdaysavedata = {
-                    checkIn: format(halfday.checkIn, "yyyy-MM-dd HH:MM:SS"),
-                    checkOut: format(halfday.checkOut, "yyyy-MM-dd HH:MM:SS"),
-                    leavedate: halfday.startDate,
-                    planslno: halfday.casullevemonth,
-                    shiftid: halfday.planslno,
-                    month: halfday.monthleave,
-                    em_id: em_id,
-                    em_no: em_no,
-                    em_department: em_department,
-                    em_dept_section: em_dept_section,
-                    incharge_level: incharge_level,
-                    hod_level: hod_level,
-                    ceo_level: ceo_level,
-                    resonforleave: resonforleave,
-                }
-                if (resonforleave !== '') {
-                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        history.push('/Home/LeaveRequest')
-                        getleaverequest().then((val) => {
-                            setleaveslno(val)
-                        })
-                        succesNofity(result.data.message)
-                        updateleavereqtype(0)
-
-                        setleavereqtype(0)
-                        setleavedaystype(0)
-                        setsingleselect(0)
-                        sethalfday()
-                        setnopunch({})
-                        setcopensatoryoff()
-                        setLeaveDetails({
-                            fromDate: '',
-                            noofleavetaken: '',
-                            resonforleave: '',
-                            emergencynumber: '',
-                        })
-                        setLveData([])
-
-                        updateleavereqtype(0)
-
-                    } else {
-                        errorNofity(message)
+                                setleavereqtype(0)
+                                setleavedaystype(0)
+                                setsingleselect(0)
+                                sethalfday()
+                                setnopunch({})
+                                setcopensatoryoff()
+                                setLeaveDetails({
+                                    fromDate: '',
+                                    noofleavetaken: '',
+                                    resonforleave: '',
+                                    emergencynumber: '',
+                                })
+                                setLveData([])
+                                succesNofity(message)
+                                updateleavereqtype(0)
+                            } else {
+                                errorNofity(message)
+                            }
+                        }
+                        else {
+                            warningNofity("Please Enter The Reason")
+                        }
                     }
+                    if (reqtype === 2) {
+                        const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
+                        const puninfinal = moment(puin)
+                        const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
+                        const punoutfinal = moment(puout)
+                        const duration = getTotalShiftHours(puninfinal, punoutfinal)
+                        const constdatasave = {
+                            startdate: startdate,
+                            punchindata: punchin,
+                            punchoutdata: punchout,
+                            req_type: reqtype,
+                            reqtype_name: "Duty Off",
+                            durationpunch: duration,
+                            shiftduration: shifturation,
+                            extratime: duration,
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            incharge_level: incharge_level,
+                            hod_level: hod_level,
+                            ceo_level: ceo_level,
+                            resonforleave: resonforleave,
+                        }
+                        if (resonforleave !== '') {
+                            const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
+                            const { success, message } = result.data
+                            if (success === 1) {
+                                history.push('/Home/LeaveRequest')
+                                getleaverequest().then((val) => {
+                                    setleaveslno(val)
+                                })
+                                succesNofity(message)
+                                updateleavereqtype(0)
+
+                                setleavereqtype(0)
+                                setleavedaystype(0)
+                                setsingleselect(0)
+                                sethalfday()
+                                setnopunch({})
+                                setcopensatoryoff()
+                                setLeaveDetails({
+                                    fromDate: '',
+                                    noofleavetaken: '',
+                                    resonforleave: '',
+                                    emergencynumber: '',
+                                })
+                                setLveData([])
+                                updateleavereqtype(0)
+                                succesNofity(message)
+                            } else {
+                                errorNofity(message)
+                            }
+                        }
+                        else {
+                            warningNofity("Please Enter The Reason")
+                        }
+                    }
+
                 }
                 else {
-                    warningNofity("Please Enter The Reason")
-                }
+                    history.push('/Home/LeaveRequest')
+                    getleaverequest().then((val) => {
+                        setleaveslno(val)
+                    })
 
-            } else {
-                warningNofity("Please enter Complete Details")
+                    updateleavereqtype(0)
 
-                updateleavereqtype(0)
-
-                setleavereqtype(0)
-                setleavedaystype(0)
-                setsingleselect(0)
-                sethalfday()
-                setnopunch({})
-                setcopensatoryoff()
-                setLeaveDetails({
-                    fromDate: '',
-                    noofleavetaken: '',
-                    resonforleave: '',
-                    emergencynumber: '',
-                })
-                setLveData([])
-                getleaverequest().then((val) => {
-                    setleaveslno(val)
-                })
-                history.push('/Home/LeaveRequest')
-            }
-
-        }
-        else if (levereqtype === 3) {
-            if (mispunchflag === 0) {
-                if (checkinflag === true || checkoutflag === true) {
-                    const lopdayreqst = {
-                        checkinflag: checkinflag === true ? 1 : 0,
-                        checkintime: checkinflag === true ? checkintime : '0000-00-00 00:00:00',
-                        checkoutflag: checkoutflag === true ? 1 : 0,
-                        checkouttime: checkoutflag === true ? checkouttime : '0000-00-00 00:00:00',
-                        nopunchdate: nopunchdate,
-                        plan_slno: plan_slno,
-                        shift_id: shift_id,
-                        crted_user: em_id,
-                        em_id: em_id,
-                        em_no: em_no,
-                        em_department: em_department,
-                        em_dept_section: em_dept_section,
-                        punch_slno: punch_slno,
-                        incharge_level: incharge_level,
-                        hod_level: hod_level,
-                        ceo_level: ceo_level,
-                        resonforleave: resonforleave,
-
-                    }
-                    if (resonforleave !== '') {
-                        const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', lopdayreqst)
-                        const { success, message } = result.data
-                        if (success === 1) {
-                            history.push('/Home/LeaveRequest')
-                            getleaverequest().then((val) => {
-                                setleaveslno(val)
-                            })
-                            succesNofity(message)
-                            updateleavereqtype(0)
-
-                            setleavereqtype(0)
-                            setleavedaystype(0)
-                            setsingleselect(0)
-                            sethalfday()
-                            setnopunch({})
-                            setcopensatoryoff()
-                            setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
-                                resonforleave: '',
-                                emergencynumber: '',
-                            })
-                            setLveData([])
-
-                        } else {
-                            errorNofity(message)
-                        }
-                    }
-                    else {
-
-                        warningNofity("Please Enter The Reason")
-                    }
-                }
-                else {
-                    warningNofity('Select A Punch')
-                }
-            } else {
-                warningNofity('Already request Added')
-            }
-        }
-        else if (levereqtype === 4) {
-            const { punchin, punchout, reqtype, selectshitid, shifturation, startdate } = compensatoryoff
-
-            if (compensatoryoff !== undefined) {
-                if (reqtype === 1) {
-                    const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
-                    const puninfinal = moment(puin)
-                    const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
-                    const punoutfinal = moment(puout)
-                    const duration = getTotalShiftHours(puninfinal, punoutfinal)
-                    const constdatasave = {
-                        startdate: startdate,
-                        punchindata: punchin,
-                        punchoutdata: punchout,
-                        req_type: reqtype,
-                        reqtype_name: "Extra Time",
-                        durationpunch: duration,
-                        shiftduration: shifturation,
-                        extratime: shifturation > duration ? 0 : (duration - shifturation),
-                        em_id: em_id,
-                        em_no: em_no,
-                        em_department: em_department,
-                        em_dept_section: em_dept_section,
-                        shift_id: selectshitid,
-                        incharge_level: incharge_level,
-                        hod_level: hod_level,
-                        ceo_level: ceo_level,
-                        resonforleave: resonforleave,
-
-                    }
-                    if (resonforleave !== '') {
-                        const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
-                        const { success, message } = result.data
-                        if (success === 1) {
-                            history.push('/Home/LeaveRequest')
-                            getleaverequest().then((val) => {
-                                setleaveslno(val)
-                            })
-                            succesNofity(message)
-                            updateleavereqtype(0)
-
-                            setleavereqtype(0)
-                            setleavedaystype(0)
-                            setsingleselect(0)
-                            sethalfday()
-                            setnopunch({})
-                            setcopensatoryoff()
-                            setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
-                                resonforleave: '',
-                                emergencynumber: '',
-                            })
-                            setLveData([])
-                            succesNofity(message)
-                            updateleavereqtype(0)
-                        } else {
-                            errorNofity(message)
-                        }
-                    }
-                    else {
-                        warningNofity("Please Enter The Reason")
-                    }
-                }
-                if (reqtype === 2) {
-                    const puin = moment(punchin).format("YYYY-MM-DD HH:mm:ss")
-                    const puninfinal = moment(puin)
-                    const puout = moment(punchout).format("YYYY-MM-DD HH:mm:ss")
-                    const punoutfinal = moment(puout)
-                    const duration = getTotalShiftHours(puninfinal, punoutfinal)
-                    const constdatasave = {
-                        startdate: startdate,
-                        punchindata: punchin,
-                        punchoutdata: punchout,
-                        req_type: reqtype,
-                        reqtype_name: "Duty Off",
-                        durationpunch: duration,
-                        shiftduration: shifturation,
-                        extratime: duration,
-                        em_id: em_id,
-                        em_no: em_no,
-                        em_department: em_department,
-                        em_dept_section: em_dept_section,
-                        incharge_level: incharge_level,
-                        hod_level: hod_level,
-                        ceo_level: ceo_level,
-                        resonforleave: resonforleave,
-                    }
-                    if (resonforleave !== '') {
-                        const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', constdatasave)
-                        const { success, message } = result.data
-                        if (success === 1) {
-                            history.push('/Home/LeaveRequest')
-                            getleaverequest().then((val) => {
-                                setleaveslno(val)
-                            })
-                            succesNofity(message)
-                            updateleavereqtype(0)
-
-                            setleavereqtype(0)
-                            setleavedaystype(0)
-                            setsingleselect(0)
-                            sethalfday()
-                            setnopunch({})
-                            setcopensatoryoff()
-                            setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
-                                resonforleave: '',
-                                emergencynumber: '',
-                            })
-                            setLveData([])
-                            updateleavereqtype(0)
-                            succesNofity(message)
-                        } else {
-                            errorNofity(message)
-                        }
-                    }
-                    else {
-                        warningNofity("Please Enter The Reason")
-                    }
+                    setleavereqtype(0)
+                    setleavedaystype(0)
+                    setsingleselect(0)
+                    sethalfday()
+                    setnopunch({})
+                    setcopensatoryoff(0)
+                    setLeaveDetails({
+                        fromDate: '',
+                        noofleavetaken: '',
+                        resonforleave: '',
+                        emergencynumber: '',
+                    })
+                    setLveData([])
+                    warningNofity('Please enter complete detalis')
                 }
 
             }
-            else {
-                history.push('/Home/LeaveRequest')
-                getleaverequest().then((val) => {
-                    setleaveslno(val)
-                })
-
-                updateleavereqtype(0)
-
-                setleavereqtype(0)
-                setleavedaystype(0)
-                setsingleselect(0)
-                sethalfday()
-                setnopunch({})
-                setcopensatoryoff(0)
-                setLeaveDetails({
-                    fromDate: '',
-                    noofleavetaken: '',
-                    resonforleave: '',
-                    emergencynumber: '',
-                })
-                setLveData([])
-                warningNofity('Please enter complete detalis')
-            }
-
         }
     }
     return (

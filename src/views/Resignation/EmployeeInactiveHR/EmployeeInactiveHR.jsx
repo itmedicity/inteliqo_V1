@@ -10,23 +10,24 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import EmployeeInactiveTable from './EmployeeInactiveTable'
+import { useHistory } from 'react-router-dom';
+
 
 const EmployeeInactiveHR = () => {
+    const history = useHistory()
     const [count, setCount] = useState(0)
     const {
         selectedDept,
-        updateSelected,
         selectDeptSection,
-        updateDepartmentSection,
         selectBranchMast,
-        updateBranchSelected,
     } = useContext(PayrolMasterContext)
     useEffect(() => {
         const getempdetl = async () => {
-            if (selectedDept !== 0 && selectDeptSection !== 0) {
+            if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
                 const postData = {
                     em_department: selectedDept,
-                    em_dept_section: selectDeptSection
+                    em_dept_section: selectDeptSection,
+                    em_branch: selectBranchMast
                 }
                 const result = await axioslogin.post("/plan/create", postData);
                 const { success, data } = result.data
@@ -41,7 +42,7 @@ const EmployeeInactiveHR = () => {
             }
         }
         getempdetl()
-    }, [count, selectedDept, selectDeptSection])
+    }, [count, selectedDept, selectDeptSection, selectBranchMast])
 
     const [state, setState] = useState(0)
     const [empData, setempData] = useState([])
@@ -52,12 +53,15 @@ const EmployeeInactiveHR = () => {
         else {
             setState(1)
         }
-
+    }
+    const RedirectToProfilePage = async () => {
+        history.push(`/Home`)
     }
     return (
         <Fragment>
             <PageLayoutCloseOnly
                 heading="Employee InActive"
+                redirect={RedirectToProfilePage}
             >
                 <div className="card">
                     <div className="card-body">
