@@ -73,7 +73,7 @@ const EmployeeProfileCard = () => {
                         </Suspense>
                     </CardMedia>
                     <CardContent className="d-flex flex-column justify-content-center  align-items-center" >
-                        <Typography gutterBottom variant="h5" component="div" fontFamily='Raleway' fontWeight='400'>
+                        <Typography gutterBottom variant="h6" component="div" fontFamily='cursive' fontWeight='400'>
                             {state.em_name}
                         </Typography>
                         <Typography variant="button" display="block" gutterBottom>

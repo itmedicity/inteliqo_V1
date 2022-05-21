@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 
 const HomePage = React.lazy(() => import('./views/Home/Home'))
+const Profile = React.lazy(() => import('./views/Home/Profile'))
 const ManpowerRequest = React.lazy(() => import('./views/recruitment/manpowerRequest/ManpowerRequest'));
 const Vacancy = React.lazy(() => import('./views/recruitment/VacancyAnounce/Vacancy'));
 const Settings = React.lazy(() => import('./Menus/Settings'));
@@ -156,6 +157,7 @@ const PayrollProces = React.lazy(() => import('./views/Payroll/PayrollProcess/Pa
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/Home', exact: true, name: 'Home', component: HomePage },
+  { path: '/Profile', exact: true, name: 'Home', component: Profile },
   { path: '/Home/ManpowerRequest', exact: true, name: 'Manpower Request', component: ManpowerRequest },
   { path: '/Home/Vacancy', exact: true, name: 'Vacancy', component: Vacancy },
   { path: '/Home/Settings', exact: true, name: 'Settings', component: Settings },

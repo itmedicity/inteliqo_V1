@@ -19,12 +19,14 @@ import { useHistory } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
 import ShiftSelectModel from './ShiftSelectModel';
+import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 const moment = extendMoment(Moment);
 
 
 const DutyPlanning = () => {
   const history = useHistory()
-  const { selectedDept, selectDeptSection } = useContext(PayrolMasterContext)
+  const { selectedDept, selectDeptSection, selectBranchMast
+  } = useContext(PayrolMasterContext)
   //disptach function for updating store
   const dispatch = useDispatch()
   //use state for employee details
@@ -56,16 +58,17 @@ const DutyPlanning = () => {
   useEffect(() => {
     //dispatichng employee details of the selected department and department section
     const getempdetl = async () => {
-      if (selectedDept !== 0 && selectDeptSection !== 0) {
+      if (selectBranchMast === 0 && selectedDept !== 0 && selectDeptSection !== 0) {
         const postData = {
           em_department: selectedDept,
-          em_dept_section: selectDeptSection
+          em_dept_section: selectDeptSection,
+          em_branch: selectBranchMast
         }
         dispatch(getempdetails(postData))
       }
     }
     getempdetl()
-  }, [selectedDept, selectDeptSection])
+  }, [selectedDept, selectDeptSection, selectBranchMast])
 
   //getting employee details of selected department and department secion from redux
   const empdetl = useSelector((state) => {
@@ -83,7 +86,7 @@ const DutyPlanning = () => {
       //checking whether shift is assigned for this department and department section
       const postData = {
         em_department: selectedDept,
-        em_dept_section: selectDeptSection
+        em_dept_section: selectDeptSection,
       }
       const results = await axioslogin.post("/departmentshift/checkshift", postData);
       const { successs } = results.data
@@ -234,7 +237,10 @@ const DutyPlanning = () => {
                 changeTextValue={(e) => updateDutyPlanning(e)}
               />
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
+              <BrnachMastSelection style={SELECT_CMP_STYLE} />
+            </div>
+            <div className="col-md-2">
               <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
             </div>
             <div className="col-md-3">

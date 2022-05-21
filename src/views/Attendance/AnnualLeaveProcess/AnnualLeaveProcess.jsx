@@ -48,17 +48,7 @@ const AnnualLeaveProcess = () => {
             const { success, data } = result.data;
 
             if (success === 2) {
-
                 setname(data)
-
-
-
-
-
-
-
-
-
             }
 
         } else {
