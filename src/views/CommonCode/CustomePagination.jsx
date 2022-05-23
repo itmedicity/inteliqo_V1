@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
 import { styled } from '@mui/system';
 
@@ -81,6 +81,7 @@ const CustomTablePagination = styled(TablePaginationUnstyled)(
 );
 
 const CustomePagination = ({ data, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage }) => {
+
   return (
     <CustomTablePagination
       className='px-2 py-1'

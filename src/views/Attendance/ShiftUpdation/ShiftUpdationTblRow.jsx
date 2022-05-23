@@ -63,51 +63,51 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
     return (
         <Fragment>
             {state === 1 ? <ShiftUpdationModel open={open} handleClose={handleClose} dutyday={dutyday} empno={empno} setApiData={setApiData} /> : null}
-            <Suspense fallback={<LinearProgress />}>
-                <TableRow
-                    hover={true}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                    <TableCell align="center" component="th" scope="row">{duty_day}</TableCell>
-                    <TableCell align="center">{em_no}</TableCell>
-                    <TableCell align="center">{shift_in}</TableCell>
-                    <TableCell align="center">{shift_out}</TableCell>
-                    <TableCell align="center">{checkInTime}</TableCell>
-                    <TableCell align="center">{checkOutTime}</TableCell>
-                    <TableCell align="center">{hrs_worked}</TableCell>
-                    <TableCell align="center">{over_time}</TableCell>
-                    <TableCell align="center">{late_in}</TableCell>
-                    <TableCell align="center">{early_out}</TableCell>
-                    <TableCell align="center">
-                        <Shiftfirstcol datapunch={datapunch} />
-                    </TableCell>
-                    <TableCell align="center">
-                        <Avatar sx={{
-                            bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
-                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
-                                    duty_status === 0.5 ? deepPurple[500] :
-                                        duty_status === 0 ? deepOrange[500] : lvreq_type !== null ? lvreq_type : green[500]
-                            , width: 24, height: 24, fontSize: 10
-                        }}>
-                            {(late_in !== 0 || early_out !== 0) ? 'L/E' :
-                                (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 5 ? 'WOF' :
-                                    duty_status === 0.5 ? 'HLP' :
-                                        duty_status === 0 ? 'LOP' : lvreq_type !== null ? lvreq_type : 'P'
-                            }
-                        </Avatar>
-                    </TableCell>
-                    <TableCell>
-                        <CalendarViewDaySharpIcon
-                            // onClick={getpunchDetails}
-                            onClick={(e) => {
-                                getpunchDetails(duty_day, em_no)
-                            }}
-                        />
-                    </TableCell>
-                </TableRow>
-            </Suspense>
+            {/* <Suspense fallback={<LinearProgress />}> */}
+            <TableRow
+                hover={true}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+                <TableCell align="center" component="th" scope="row">{duty_day}</TableCell>
+                <TableCell align="center">{em_no}</TableCell>
+                <TableCell align="center">{shift_in}</TableCell>
+                <TableCell align="center">{shift_out}</TableCell>
+                <TableCell align="center">{checkInTime}</TableCell>
+                <TableCell align="center">{checkOutTime}</TableCell>
+                <TableCell align="center">{hrs_worked}</TableCell>
+                <TableCell align="center">{over_time}</TableCell>
+                <TableCell align="center">{late_in}</TableCell>
+                <TableCell align="center">{early_out}</TableCell>
+                <TableCell align="center">
+                    <Shiftfirstcol datapunch={datapunch} />
+                </TableCell>
+                <TableCell align="center">
+                    <Avatar sx={{
+                        bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
+                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
+                                duty_status === 0.5 ? deepPurple[500] :
+                                    duty_status === 0 ? deepOrange[500] : lvreq_type !== null ? lvreq_type : green[500]
+                        , width: 24, height: 24, fontSize: 10
+                    }}>
+                        {(late_in !== 0 || early_out !== 0) ? 'L/E' :
+                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 5 ? 'WOF' :
+                                duty_status === 0.5 ? 'HLP' :
+                                    duty_status === 0 ? 'LOP' : lvreq_type !== null ? lvreq_type : 'P'
+                        }
+                    </Avatar>
+                </TableCell>
+                <TableCell>
+                    <CalendarViewDaySharpIcon
+                        // onClick={getpunchDetails}
+                        onClick={(e) => {
+                            getpunchDetails(duty_day, em_no)
+                        }}
+                    />
+                </TableCell>
+            </TableRow>
+            {/* </Suspense> */}
         </Fragment>
     )
 }
 
-export default memo(ShiftUpdationTblRow)
+export default ShiftUpdationTblRow
