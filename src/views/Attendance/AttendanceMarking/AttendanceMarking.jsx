@@ -14,10 +14,11 @@ import AttendanceMarkingMainCard from './AttendanceMarkingMainCard'
 import { useHistory } from 'react-router'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useSelector } from 'react-redux';
+import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 
 const AttendanceMarking = () => {
     const history = useHistory()
-    const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected } = useContext(PayrolMasterContext)
+    const { selectedDept, selectDeptSection, updateDepartmentSection, updateSelected, selectBranchMast } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(new Date());
     const [rageset, setrange] = useState()
     const [count, setcount] = useState(0)
@@ -45,10 +46,11 @@ const AttendanceMarking = () => {
 
     useEffect(() => {
         const getempdetl = async () => {
-            if (selectedDept !== 0 && selectDeptSection !== 0) {
+            if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
                 const postData = {
                     em_department: selectedDept,
-                    em_dept_section: selectDeptSection
+                    em_dept_section: selectDeptSection,
+                    em_branch: selectBranchMast
                 }
                 const result = await axioslogin.post("/plan/create", postData);
                 const { success, data } = result.data
@@ -62,7 +64,7 @@ const AttendanceMarking = () => {
             }
         }
         getempdetl()
-    }, [selectedDept, selectDeptSection, dateFormat, updateDepartmentSection, updateSelected])
+    }, [selectedDept, selectBranchMast, selectDeptSection, dateFormat, updateDepartmentSection, updateSelected])
     //attendance marking function
     const attendanceMarking = () => {
         setValue(1)
@@ -154,6 +156,9 @@ const AttendanceMarking = () => {
                                 value={year}
                                 name="monthwise"
                             />
+                        </div>
+                        <div className="col-md-3">
+                            <BrnachMastSelection select="Branch" style={SELECT_CMP_STYLE} />
                         </div>
                         <div className="col-md-3">
                             <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />

@@ -342,7 +342,7 @@ const ShiftUpdation = () => {
                     const result = await axioslogin.post('/attedancemarkSave/check', postDataCheck)
                     const { success, dataa } = result.data
                     if (success === 1) {
-                        //if data any of the employee data is pressent in attendance marking save table annont process the shift
+                        //if  any of the employees data is pressent in attendance marking save table cannot process the shift
                         if (dataa.length > 0) {
                             warningNofity("Attendance Is Already Saved For This Month!!!Cannot Process Shift")
                         }

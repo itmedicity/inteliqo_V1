@@ -1,5 +1,5 @@
 import MaterialTable from 'material-table'
-import { Button } from '@material-ui/core'
+import { Button, Checkbox, FormControlLabel } from '@material-ui/core'
 import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-bootstrap'
 import SessionCheck from 'src/views/Axios/SessionCheck'
@@ -16,6 +16,7 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 
 const EmployeeRecord = () => {
     const classes = useStyles()
@@ -45,7 +46,14 @@ const EmployeeRecord = () => {
         sect_id: selectDeptSection,
         branch_slno: selectBranchMast
     }
-
+    const [active, updateactive] = useState({
+        activestatus: true
+    })
+    const { activestatus } = active
+    const updateFormData = async (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        updateactive({ ...active, [e.target.name]: value })
+    }
     //Material Table
     const title = [
         { title: '#', field: 'em_slno' },
@@ -110,14 +118,22 @@ const EmployeeRecord = () => {
     // Employee Record List
     const getEmployeeList = async (e) => {
         e.preventDefault()
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0) {
+        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
             const result = await axioslogin.post('/empmast/getEmpDet', postData)
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
                 dispatch(setEmployeeList(data))
             }
-        } else {
+        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
+            const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+        }
+        else {
             warningNofity("Choose All Option")
         }
 
@@ -131,7 +147,6 @@ const EmployeeRecord = () => {
     const getEmployeeEmpNumber = (data) => {
         const { em_no, em_id } = data
         history.push(`/Home/Profile/${em_no}/${em_id}`)
-        // console.log(data);
     }
 
     return (
@@ -147,14 +162,30 @@ const EmployeeRecord = () => {
                         <div className="col-md-12">
                             <form className={classes.root} onSubmit={getEmployeeList}  >
                                 <div className="row">
-                                    <div className="col-md-3 pb-2 pr-0">
-                                        <BrnachMastSelection />
+                                    <div className="col-md-3">
+                                        <BrnachMastSelection style={SELECT_CMP_STYLE} />
                                     </div>
-                                    <div className="col-md-3 pb-2  ">
-                                        <DepartmentSelect />
+                                    <div className="col-md-3">
+                                        <DepartmentSelect style={SELECT_CMP_STYLE} />
                                     </div>
-                                    <div className="col-md-3 pb-2 pr-0 ">
-                                        <DepartmentSectionSelect />
+                                    <div className="col-md-3">
+                                        <DepartmentSectionSelect style={SELECT_CMP_STYLE} />
+                                    </div>
+                                    <div className="col-md-1">
+                                        {/* <DepartmentSectionSelect /> */}
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="secondary"
+                                                    name="activestatus"
+                                                    value={activestatus}
+                                                    checked={activestatus}
+                                                    className="ml-2"
+                                                    onChange={(e) => { updateFormData(e) }}
+                                                />
+                                            }
+                                            label="Active"
+                                        />
                                     </div>
                                     <div className="col-md-1 pt-2">
                                         <Button
