@@ -125,7 +125,6 @@ const DirLeaveRequest = ({
                                         displayleave(e)
                                         leaveDays(e)
                                     }}
-
                                 >
                                     <MdOutlineAddCircleOutline className="text-info" size={30} />
                                 </IconButton>
@@ -154,6 +153,7 @@ const DirLeaveRequest = ({
                             </div>
                             {
                                 checkState === true ? <LeaveSingleSelection
+                                    em_id={emid}
                                     setLeveData={setLeveData}
                                     leavdaystype={leavdaystype}
                                     formData={formData}
@@ -166,6 +166,7 @@ const DirLeaveRequest = ({
                         checkState === false && display === 1 ?
                             date && date.map((val, index) => {
                                 return <LeaveDateSelection
+                                    emid={emid}
                                     casualLevee={casualLevestore}//array of object for leave data
                                     setCasualLevee={setCasualLevestore}//array of object for leave data set function
                                     // setholidayLevestore={setholidayLevestore}

@@ -6,9 +6,7 @@ import { useParams } from 'react-router';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const TestLeaveType = ({ name, style, onChange, leavetype }) => {
-    const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
+const TestLeaveType = ({ name, style, onChange, leavetype, em_id }) => {
     const [leaveType, setLeaveType] = useState([]);
     //  data based on employeee category
     const [leavestate, setleavestate] = useState({

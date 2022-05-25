@@ -18,8 +18,10 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import Compensatoryoff from './Component/Compensatoryoff'
 import moment from 'moment'
 import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getannualleave } from 'src/redux/actions/Profile.action'
+import LeaveRequestTable from './LeaveRequestTable'
+import InchargeLeaveReqEmp from './Component/InchargeLeaveReqEmp'
 const Input = styled('input')({
     display: 'none',
 });
@@ -30,24 +32,46 @@ const LeaveRequest = () => {
         updateleavereqtype, authorization } = useContext(PayrolMasterContext)
     const { incharge_level, hod_level, ceo_level, is_incharge, is_hod } = authorization
     // destructuring employee details
-    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
+    const { dept_name, em_department, em_dept_section, em_id, em_name, em_no, sect_name } = employeedetails
     const dispath = useDispatch()
     //for use history  
     const history = useHistory()
     // usestate for leaveslno
     const [leaveslno, setleaveslno] = useState()
+    const [emplId, SetEmpId] = useState(0)
+    const [inchargedeptSec, SetinchargedeptSec] = useState([])
     const [levereqtype, setleavereqtype] = useState(0)
     const [leavdaystype, setleavedaystype] = useState(0)
     const [singleselect, setsingleselect] = useState(0)
-
+    const [count, setCount] = useState(0)
     useEffect(() => {
         getleaverequest().then((val) => {
             setleaveslno(val)
         })
-        if (em_id !== '') {
+        if (em_id !== '' && is_incharge !== 1) {
             dispath(getannualleave(em_id))
         }
-    }, [getleaverequest, em_id])
+        else if (is_incharge === 1 && emplId !== 0) {
+            dispath(getannualleave(emplId))
+        }
+    }, [getleaverequest, em_id, emplId])
+    //if loggined user is incharge getting the department section under the incharge
+    useEffect(() => {
+        if (is_incharge === 1) {
+            const getInchargeDeptSect = async () => {
+                const result = await axioslogin.get(`/common/inchargedeptSect/${em_id}`)
+                const { success, data1 } = result.data
+                if (success === 1) {
+                    SetinchargedeptSec(data1)
+                }
+            }
+            getInchargeDeptSect()
+        }
+    }, [is_incharge, em_id])
+    //getting selected employee
+    const handleChange = async (e) => {
+        SetEmpId(e)
+    }
     // get haif day requested
     const [halfday, sethalfday] = useState()
     // no puch request details
@@ -72,13 +96,10 @@ const LeaveRequest = () => {
     const [leveda, setleavedata] = useState()
     // for main page details of leave 
     const [leaveDetails, setLeaveDetails] = useState({
-        fromDate: '',
-        noofleavetaken: '',
         resonforleave: '',
-        emergencynumber: '',
     })
     // destructuring of leave details
-    const { fromDate, noofleavetaken, resonforleave, emergencynumber } = leaveDetails
+    const { resonforleave } = leaveDetails
     // on change in main page 
     const updateLeaveDetails = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -89,7 +110,7 @@ const LeaveRequest = () => {
     const { startDate, endDate } = leavestartend
     const leavemastdata = {
         leaveid: leaveslno,
-        em_id: em_id,
+        em_id: is_incharge === 1 ? emplId : em_id,
         em_no: em_no,
         em_department: em_department,
         em_dept_section: em_dept_section,
@@ -102,12 +123,10 @@ const LeaveRequest = () => {
         ceo_level: ceo_level,
         leavdaystype: (leavdaystype >= 3) && (leavdaystype < 5) ? 1 : (leavdaystype >= 5) ? 2 : 0,
         resonforleave: resonforleave,
-        emergencynumber: emergencynumber,
-        noofleavetaken: noofleavetaken
     }
     const checkattendnceSave = {
         attenddate: moment(new Date(startDate)).format('MMM-YYYY'),
-        empId: em_id,
+        empId: is_incharge === 1 ? emplId : em_id,
     }
     const submitLeave = async () => {
         //checking whether attendance marking saved for this month
@@ -120,9 +139,7 @@ const LeaveRequest = () => {
             }
         }
         else {
-
             if (levereqtype === 1) {
-
                 if ((leveda.length === 0) || (leveda.length !== leavdaystype)) {
                     warningNofity("Plese Select The Details")
                 }
@@ -155,6 +172,7 @@ const LeaveRequest = () => {
                                     setleaveslno(val)
                                 })
                                 succesNofity(result2.data.message)
+                                setCount(count + 1)
                                 updateleavereqtype(0)
                                 setleavereqtype(0)
                                 setleavedaystype(0)
@@ -163,10 +181,7 @@ const LeaveRequest = () => {
                                 setnopunch({})
                                 setcopensatoryoff()
                                 setLeaveDetails({
-                                    fromDate: '',
-                                    noofleavetaken: '',
                                     resonforleave: '',
-                                    emergencynumber: '',
                                 })
                                 setLveData([])
                                 updateleavereqtype(0)
@@ -190,7 +205,6 @@ const LeaveRequest = () => {
                             errorNofity("Error Occured!!!!Please Contact EDPrty")
 
                             updateleavereqtype(0)
-
                             setleavereqtype(0)
                             setleavedaystype(0)
                             setsingleselect(0)
@@ -198,10 +212,7 @@ const LeaveRequest = () => {
                             setnopunch({})
                             setcopensatoryoff()
                             setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
-                                resonforleave: '',
-                                emergencynumber: '',
+                                resonforleave: ''
                             })
                             setLveData([])
                             getleaverequest().then((val) => {
@@ -227,7 +238,7 @@ const LeaveRequest = () => {
                         planslno: halfday.casullevemonth,
                         shiftid: halfday.planslno,
                         month: halfday.monthleave,
-                        em_id: em_id,
+                        em_id: is_incharge === 1 ? emplId : em_id,
                         em_no: em_no,
                         em_department: em_department,
                         em_dept_section: em_dept_section,
@@ -245,8 +256,8 @@ const LeaveRequest = () => {
                                 setleaveslno(val)
                             })
                             succesNofity(result.data.message)
+                            setCount(count + 1)
                             updateleavereqtype(0)
-
                             setleavereqtype(0)
                             setleavedaystype(0)
                             setsingleselect(0)
@@ -254,10 +265,7 @@ const LeaveRequest = () => {
                             setnopunch({})
                             setcopensatoryoff()
                             setLeaveDetails({
-                                fromDate: '',
-                                noofleavetaken: '',
                                 resonforleave: '',
-                                emergencynumber: '',
                             })
                             setLveData([])
 
@@ -275,7 +283,6 @@ const LeaveRequest = () => {
                     warningNofity("Please enter Complete Details")
 
                     updateleavereqtype(0)
-
                     setleavereqtype(0)
                     setleavedaystype(0)
                     setsingleselect(0)
@@ -283,10 +290,7 @@ const LeaveRequest = () => {
                     setnopunch({})
                     setcopensatoryoff()
                     setLeaveDetails({
-                        fromDate: '',
-                        noofleavetaken: '',
-                        resonforleave: '',
-                        emergencynumber: '',
+                        resonforleave: ''
                     })
                     setLveData([])
                     getleaverequest().then((val) => {
@@ -308,7 +312,7 @@ const LeaveRequest = () => {
                             plan_slno: plan_slno,
                             shift_id: shift_id,
                             crted_user: em_id,
-                            em_id: em_id,
+                            em_id: is_incharge === 1 ? emplId : em_id,
                             em_no: em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
@@ -328,8 +332,8 @@ const LeaveRequest = () => {
                                     setleaveslno(val)
                                 })
                                 succesNofity(message)
+                                setCount(count + 1)
                                 updateleavereqtype(0)
-
                                 setleavereqtype(0)
                                 setleavedaystype(0)
                                 setsingleselect(0)
@@ -337,10 +341,7 @@ const LeaveRequest = () => {
                                 setnopunch({})
                                 setcopensatoryoff()
                                 setLeaveDetails({
-                                    fromDate: '',
-                                    noofleavetaken: '',
                                     resonforleave: '',
-                                    emergencynumber: '',
                                 })
                                 setLveData([])
 
@@ -379,7 +380,7 @@ const LeaveRequest = () => {
                             durationpunch: duration,
                             shiftduration: shifturation,
                             extratime: shifturation > duration ? 0 : (duration - shifturation),
-                            em_id: em_id,
+                            em_id: is_incharge === 1 ? emplId : em_id,
                             em_no: em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
@@ -399,8 +400,8 @@ const LeaveRequest = () => {
                                     setleaveslno(val)
                                 })
                                 succesNofity(message)
+                                setCount(count + 1)
                                 updateleavereqtype(0)
-
                                 setleavereqtype(0)
                                 setleavedaystype(0)
                                 setsingleselect(0)
@@ -408,10 +409,7 @@ const LeaveRequest = () => {
                                 setnopunch({})
                                 setcopensatoryoff()
                                 setLeaveDetails({
-                                    fromDate: '',
-                                    noofleavetaken: '',
                                     resonforleave: '',
-                                    emergencynumber: '',
                                 })
                                 setLveData([])
                                 succesNofity(message)
@@ -439,7 +437,7 @@ const LeaveRequest = () => {
                             durationpunch: duration,
                             shiftduration: shifturation,
                             extratime: duration,
-                            em_id: em_id,
+                            em_id: is_incharge === 1 ? emplId : em_id,
                             em_no: em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
@@ -457,8 +455,8 @@ const LeaveRequest = () => {
                                     setleaveslno(val)
                                 })
                                 succesNofity(message)
+                                setCount(count + 1)
                                 updateleavereqtype(0)
-
                                 setleavereqtype(0)
                                 setleavedaystype(0)
                                 setsingleselect(0)
@@ -466,10 +464,7 @@ const LeaveRequest = () => {
                                 setnopunch({})
                                 setcopensatoryoff()
                                 setLeaveDetails({
-                                    fromDate: '',
-                                    noofleavetaken: '',
-                                    resonforleave: '',
-                                    emergencynumber: '',
+                                    resonforleave: ''
                                 })
                                 setLveData([])
                                 updateleavereqtype(0)
@@ -489,9 +484,7 @@ const LeaveRequest = () => {
                     getleaverequest().then((val) => {
                         setleaveslno(val)
                     })
-
                     updateleavereqtype(0)
-
                     setleavereqtype(0)
                     setleavedaystype(0)
                     setsingleselect(0)
@@ -499,10 +492,7 @@ const LeaveRequest = () => {
                     setnopunch({})
                     setcopensatoryoff(0)
                     setLeaveDetails({
-                        fromDate: '',
-                        noofleavetaken: '',
                         resonforleave: '',
-                        emergencynumber: '',
                     })
                     setLveData([])
                     warningNofity('Please enter complete detalis')
@@ -531,7 +521,7 @@ const LeaveRequest = () => {
                                     value={dept_name}
                                 />
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-2">
                                 <TextInput
                                     type="text"
                                     classname="form-control form-control-sm"
@@ -540,16 +530,7 @@ const LeaveRequest = () => {
                                     value={sect_name}
                                 />
                             </div>
-                            <div className="col-md-3">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Employee Name"
-                                    disabled="disabled"
-                                    value={em_name}
-                                />
-                            </div>
-                            <div className="col-md-3">
+                            <div className="col-md-2">
                                 <TextInput
                                     type="text"
                                     classname="form-control form-control-sm"
@@ -558,40 +539,24 @@ const LeaveRequest = () => {
                                     value={em_no}
                                 />
                             </div>
-                        </div>
-                        <div className="row g-1 mb-2">
+                            <div className="col-md-2">
+                                {
+                                    is_incharge === 1 ?
+                                        <InchargeLeaveReqEmp inchargedeptSec={inchargedeptSec}
+                                            onChange={handleChange}
+                                            style={SELECT_CMP_STYLE}
+                                        /> :
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder="Employee Name"
+                                            disabled="disabled"
+                                            value={em_name}
+                                        />
+                                }
+                            </div>
                             <div className="col-md-3">
                                 <LeaveRequestType style={SELECT_CMP_STYLE} select="Leave Request Type" setleavereqtype={setleavereqtype} />
-                            </div>
-                            <div className="col-md-3">
-                                <TextInput
-                                    type="date"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="From Date"
-                                    name="fromDate"
-                                    value={fromDate}
-                                    changeTextValue={(e) => updateLeaveDetails(e)}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="No of Leave Taken"
-                                    name="noofleavetaken"
-                                    value={noofleavetaken}
-                                    changeTextValue={(e) => updateLeaveDetails(e)}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Emergency Contact Number During Leave"
-                                    name="emergencynumber"
-                                    value={emergencynumber}
-                                    changeTextValue={(e) => updateLeaveDetails(e)}
-                                />
                             </div>
                         </div>
                         <div className="row g-1 mb-2">
@@ -621,7 +586,7 @@ const LeaveRequest = () => {
                     <div className="col-md-12 mb-2">
                         {
                             getleavereqtype === 1 ? <DirLeaveRequest
-                                emid={em_id}// employee id
+                                emid={is_incharge === 1 ? emplId : em_id}// employee id
                                 leaveDetails={leaveDetails} // for main page details of leave 
                                 leaveretypeid={getleavereqtype}////type of leave request half,leave,latecoming
                                 setLeveData={setLveData}
@@ -632,14 +597,24 @@ const LeaveRequest = () => {
                                 setsingleselect={setsingleselect}
                                 leavdaystype={leavdaystype}//no days leave
                             /> :
-                                getleavereqtype === 2 ? <HalfDayLeaveRequest sethalfday={sethalfday} /> :
-                                    getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch} /> :
-                                        getleavereqtype === 4 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff} /> : null
+                                getleavereqtype === 2 ? <HalfDayLeaveRequest sethalfday={sethalfday}
+                                    em_id={is_incharge === 1 ? emplId : em_id} /> :
+                                    getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch}
+                                        em_id={is_incharge === 1 ? emplId : em_id} /> :
+                                        getleavereqtype === 4 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff}
+                                            em_id={is_incharge === 1 ? emplId : em_id} /> : null
                         }
                     </div>
                     {/* Diplay the Allowed Leave Calender */}
-                    <div className="col-md-12">
-                        <LeaveCalender em_id={em_id} />
+                    <div className="card">
+                        <div className="row">
+                            <div className="col-md-5">
+                                <LeaveCalender em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
+                            </div>
+                            <div className="col-md-7">
+                                <LeaveRequestTable em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
+                            </div>
+                        </div>
                     </div>
                 </form>
             </PageLayoutSave >
