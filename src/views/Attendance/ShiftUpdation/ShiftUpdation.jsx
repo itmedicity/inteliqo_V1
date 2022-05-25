@@ -163,9 +163,6 @@ const ShiftUpdation = () => {
         })
     }
 
-
-    console.log(formData)
-
     const { startDate, endDate } = formData;
     // const maxdate = addDays(new Date(startDate), 30);
     // const maxdatee = moment(maxdate).format('YYYY-MM-DD');
@@ -216,10 +213,8 @@ const ShiftUpdation = () => {
                     if (data.length !== 0) {
                         setApiData(data)
                         setcount(count + 1)
-                        console.log(data)
                     }
                     else {
-                        console.log(data)
                         setApiData(data)
                         setcount(count + 1)
                         infoNofity("Please Do the Shift Marking")
@@ -321,12 +316,18 @@ const ShiftUpdation = () => {
             //department and department section
             const dept = {
                 em_department: selectedDept,
-                em_dept_section: selectDeptSection
+                em_dept_section: selectDeptSection,
+                em_branch: selectBranchMast
             }
 
             if (Object.keys(deptDetl).length > 1) {
-                //checking whether attendance marking is saved for the selected month
-                //getting the employees id of the  selected department section
+                /*
+                    1 --> Check , Attendance Marking is saved in the table or Not
+                    2 --> If attendace marking data is present in the table , then we cannot make the process 
+                    3 --> If attendace marking data is not present in the table then we can able do the process
+                */
+
+                // This API get the all employee ID from the datatbase using the 'dept' varible
                 const result = await axioslogin.post('/plan/create', dept)
                 const { success, data } = result.data
                 if (success === 1) {
@@ -337,8 +338,8 @@ const ShiftUpdation = () => {
                         empId: employId,
                         attenddate: moment(startDate).format('MMM-YYYY')
                     }
+
                     // checking that attendance marking is done for the any of the employee in the department section
-                    // in selected month
                     const result = await axioslogin.post('/attedancemarkSave/check', postDataCheck)
                     const { success, dataa } = result.data
                     if (success === 1) {
@@ -348,7 +349,7 @@ const ShiftUpdation = () => {
                         }
                     }
                     else {
-                        //if attendance marking is not saved then process th shift
+                        //if attendance marking is not saved then process the shift
                         setApiData([])
                         const result = await axioslogin.post("/attendCal/proc", deptDetl)
                         // console.log(result)
@@ -374,7 +375,6 @@ const ShiftUpdation = () => {
                                             infoNofity("Please Do the Shift Marking")
                                             setcount(count + 1)
                                         }
-
                                     }
 
                                     if (success === 0) {
