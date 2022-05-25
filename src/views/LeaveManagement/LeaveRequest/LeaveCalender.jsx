@@ -4,7 +4,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const LeaveCalender = ({ em_id }) => {
+const LeaveCalender = ({ count }) => {
     const [data, setData] = useState([])
     const [status, setstatus] = useState(false)
     const state = useSelector((state) => {
@@ -14,13 +14,13 @@ const LeaveCalender = ({ em_id }) => {
         const { leaveData, apiStatus } = state
         setData(leaveData)
         setstatus(apiStatus)
-    }, [state])
+    }, [state, count])
     return (
         <Fragment>
             {status === false ? <Skeleton animation="wave" variant="rectangular" /> :
                 <TableContainer component={Paper}>
 
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                    <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Allowed Leave Type</TableCell>

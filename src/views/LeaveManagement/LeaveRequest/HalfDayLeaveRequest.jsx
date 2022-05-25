@@ -11,9 +11,9 @@ import { useContext } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 
-const HalfDayLeaveRequest = ({ sethalfday }) => {
-    const { employeedetails, updateleavereqtype } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
+const HalfDayLeaveRequest = ({ sethalfday, em_id }) => {
+    console.log(em_id)
+    const { updateleavereqtype } = useContext(PayrolMasterContext)
     const [casualdata, setcasual] = useState(0)
     const [planslno, setplanslno] = useState(0)
     const [monthleave, setmonthleave] = useState('')
@@ -86,6 +86,7 @@ const HalfDayLeaveRequest = ({ sethalfday }) => {
         }
         const getcaual = async () => {
             const result1 = await axioslogin.get(`/yearleaveprocess/allwbleCL/${em_id}`)
+            console.log(result1)
             setcasual(1)
             if (result1.data.success === 1) {
                 setcasualleaveallowable(result1.data.data)

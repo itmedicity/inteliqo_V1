@@ -13,7 +13,7 @@ import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import Compenofflpundata from './Compenofflpundata'
 import moment from 'moment'
 
-const Compensatoryoff = ({ setcopensatoryoff }) => {
+const Compensatoryoff = ({ setcopensatoryoff, em_id }) => {
     const [punchtime, setmunctime] = useState([{
         desc: 'Select Punch',
         value: 0
@@ -27,7 +27,7 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
     const { employeedetails,//for employee details
     } = useContext(PayrolMasterContext)
     // destructuring employee details
-    const { em_department, em_dept_section, em_id, em_no, } = employeedetails
+    const { em_department, em_dept_section, em_no, } = employeedetails
     const [shiftdata, setshiftdata] = useState([{
         shift_id: 0,
         shft_desc: '',
@@ -130,23 +130,6 @@ const Compensatoryoff = ({ setcopensatoryoff }) => {
         }
     }
 
-    // // request type on change 
-    // const getrequestontype = async (e) => {
-    //     if (e.target.value === 1) {
-    //         const datagetpunch = {
-    //             emp_id: em_id,
-    //             duty_day: e.target.value
-    //         }
-    //         const result = await axioslogin.post('common/getShiftdetails/', datagetpunch)
-
-    //         const { success, data } = result.data
-    //         if (success === 1) {
-    //             const { punch_in, punch_out, punch_slno, mis_punch_flag, shft_slno } = data[0]
-    //         } else if (success === 2) {
-
-    //         }
-    //     }
-    // }
     const handleChnage = async (e) => {
         setselectedshiftid(e.target.value)
         const result = await axioslogin.get(`shift/${e.target.value}`)

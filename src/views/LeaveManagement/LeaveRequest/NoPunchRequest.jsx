@@ -10,14 +10,8 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { useContext } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 
-const NoPunchRequest = ({ setnopunch }) => {
-    // use conext data 
-    const { employeedetails,//for employee details
-        getleavereqtype,//type of leave request half,leave,latecoming
-        updateleavereqtype } = useContext(PayrolMasterContext)
+const NoPunchRequest = ({ setnopunch, em_id }) => {
 
-    // destructuring employee details
-    const { dept_name, desg_name, em_department, em_dept_section, em_designation, em_id, em_name, em_no, sect_name } = employeedetails
     // for shift based on the date selected
     const [shiftdata, setshiftdata] = useState([{
         shift_id: '',
