@@ -2,7 +2,7 @@ import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment, useState } from 'react'
 
 
-const TestCasulLeave = ({ name, select, style, onChange, CL, getcasleave, updatecasleaveusestate }) => {
+const TestCasulLeave = ({ name, select, style, onChange, CL, getcasleave }) => {
     const { dsname, getvalvalue } = getcasleave
 
     return (

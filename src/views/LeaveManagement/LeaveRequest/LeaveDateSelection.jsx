@@ -1,14 +1,11 @@
-import { IconButton, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import React, { Fragment, useContext, useState, memo } from 'react';
-import { useEffect } from 'react';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import TestCasulLeave from './Component/TestCasulLeave';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import TestLeaveType from './Component/TestLeaveType';
 import TestHalfday from './Component/TestHalfday'
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 import FestivalLeaveComponent from './Component/FestivalLeaveComponent';
 import { format } from 'date-fns';
@@ -26,11 +23,10 @@ const LeaveDateSelection = ({
     leaveretypeid,// type of request half,leave,latecoming
     // setholidayLevestore,
     // setfestivalholidayLevestore,//holiday leave set data
-    durationleave
+    durationleave,
+    emid
 }) => {
     // const { emergencynumber, fromDate, resonforleave } = leaveDetails
-    const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
     const [leavetype, settype] = useState(0)//set leave type wheather casual leave or other type
     // const [creditedleave, setcreditedleave] = useState(0)//credited leave
     const [casualLeve, setCasualLeve] = useState({})//array of object for leave
@@ -81,10 +77,6 @@ const LeaveDateSelection = ({
         })
         setCasualLevee(filtedLeavefirst)
         if (leavetype === 1) {
-
-
-
-
             updatecasleaveusestate({ ...getcasleave, dsname: name, getvalvalue: value })
             // setcreditedleave(value)
             setCasualLeve({
@@ -375,7 +367,7 @@ const LeaveDateSelection = ({
         settype(value)
         //   if casual leave 
         if (value === 1) {
-            const result = await axioslogin.get(`/yearleaveprocess/allwbleCL/${em_id}`)
+            const result = await axioslogin.get(`/yearleaveprocess/allwbleCL/${emid}`)
             const { success, data } = result.data
             if (success === 1) {
                 setcasualleaveallowable(data)
@@ -391,7 +383,7 @@ const LeaveDateSelection = ({
         else if (value === 2 || value === 5 || value === 6 || value === 7 || value === 9 || value === 10) {
             // setcreditedleave(value)
             const data1 = {
-                em_id: em_id,
+                em_id: emid,
                 value: value
             }
             const result = await axioslogin.post('/yearleaveprocess/allowablcommon/allowableconleave/data/', data1)
@@ -424,7 +416,7 @@ const LeaveDateSelection = ({
             }
         }
         else if (value === 3) {
-            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/${em_id}`)
+            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/${emid}`)
             const { success, data } = result.data
             if (success === 1) {
                 setavailholiday(data)
@@ -438,7 +430,7 @@ const LeaveDateSelection = ({
             }
         }
         else if (value === 11) {
-            const result = await axioslogin.get(`/common/getcoffDetl/${em_id}`)
+            const result = await axioslogin.get(`/common/getcoffDetl/${emid}`)
             const { success, data } = result.data
 
             if (success === 1) {
@@ -453,7 +445,7 @@ const LeaveDateSelection = ({
             }
         }
         else if (value === 4) {
-            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowablefesitval/${em_id}`)
+            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowablefesitval/${emid}`)
             const { success, data } = result.data
 
             if (success === 1) {
@@ -468,7 +460,7 @@ const LeaveDateSelection = ({
             }
         }
         else if (value === 8) {
-            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowableearnleave/data/${em_id}`)
+            const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowableearnleave/data/${emid}`)
             const { success, data } = result.data
             if (success === 1) {
                 setearnholiday(data)
@@ -482,24 +474,7 @@ const LeaveDateSelection = ({
             }
         }
     }
-    // useEffect(() => {
-    //     if (leavetype === 1 || leavetype === 3) {
-    //         setPostData(casualLeve)
-    //     } else {
-    //         setPostData(casualLeve2)
-    //     }
-    // }, [casualLeve, casualLeve2, leavetype])
-    // const validateSubmit = async () => {
-    //     const filtedLeave = leveData.filter((val) => {
-    //         return val.index !== postData.index
-    //     })
-    //     if (leavetype === 0 || leavetype === 0 && creditedleave === 0) {
-    //         warningNofity("Select The Leave Type")
-    //     } else {
-    //         setLeveData([...filtedLeave, postData])
-    //         setAppleBtn(1)
-    //     }
-    // }
+
     return (
         <Fragment>
             <ToastContainer />
@@ -516,7 +491,7 @@ const LeaveDateSelection = ({
                             name="type"
                             select="Leave Request Type"
                             onChange={handleLveType}//Leave Request Type on chnge
-                            em_id={em_id}
+                            em_id={emid}
                             leavetype={leavetype}
 
                         />
@@ -543,6 +518,7 @@ const LeaveDateSelection = ({
                                         className="mb-0"
                                         name={index}
                                         select="Holiday"
+                                        em_id={emid}
                                         onChange={handleChange}
                                         NL={allowableholiday}
                                         hldname={hldname}
@@ -555,6 +531,7 @@ const LeaveDateSelection = ({
                                             style={SELECT_CMP_STYLE}
                                             className="mb-0"
                                             name={index}
+                                            em_id={emid}
                                             select="Holiday"
                                             onChange={handleChange}
                                             FL={allowablefestivalholiday}
@@ -568,6 +545,7 @@ const LeaveDateSelection = ({
                                                 className="mb-0"
                                                 name={index}
                                                 select="Holiday"
+                                                em_id={emid}
                                                 onChange={handleChange}
                                                 eL={allowableearnholiday}
                                                 hldname={hldname}
@@ -580,6 +558,7 @@ const LeaveDateSelection = ({
                                                     className="mb-0"
                                                     name={index}
                                                     select="Holiday"
+                                                    em_id={emid}
                                                     onChange={handleChange}
                                                     coff={availablecomoff}
                                                     hldname={hldname}

@@ -1,17 +1,14 @@
 
 import React, { Fragment, useContext, useState } from 'react';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveTypeCommon from './LeaveTypeCommon';
 
-const LeaveSingleSelection = ({ setLeveData, leavdaystype, formData, setCasualLevee }) => {
+const LeaveSingleSelection = ({ leavdaystype, formData, setCasualLevee, em_id }) => {
     const { startDate } = formData
     const [sgleLeaveType, setSgleLeaveType] = useState(0)
-    const { employeedetails, } = useContext(PayrolMasterContext)
-    const { em_id, } = employeedetails
     const handleSingleLeave = async ({ target: { value }, nativeEvent }) => {
         setSgleLeaveType(value)
         const data1 = {
@@ -45,12 +42,6 @@ const LeaveSingleSelection = ({ setLeveData, leavdaystype, formData, setCasualLe
     return (
         <Fragment>
             <div className="col-md-3">
-                {/* <TestLeaveType style={SELECT_CMP_STYLE}
-                    name="type" select="Leave Request Type"
-                    onChange={handleSingleLeave}
-                    em_id={em_id}
-                    leavetype={sgleLeaveType}
-                /> */}
                 <LeaveTypeCommon
                     style={SELECT_CMP_STYLE}
                     name="type" select="Leave Request Type"
