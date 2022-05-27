@@ -185,8 +185,8 @@ const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, 
                             icon: () => <MdCheckCircle size={26} color="secondary" />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, leavereq) => handleClickOpen(leavereq),
-                            disabled: ((authority === 1 && leavereqtabledata.incaprv === 1) || (authority === 2 && leavereqtabledata.hodaprv === 1) ||
-                                ((authority === 4 || authority === 6) && leavereqtabledata.hr_apprv === 1) || (authority === 3 && leavereqtabledata.ceo_apprv === 1))
+                            disabled: ((authority === 1 && leavereqtabledata.incaprv == 1) || (authority === 2 && leavereqtabledata.hodaprv == 1) ||
+                                ((authority === 4 || authority === 6) && leavereqtabledata.hr_apprv == 1) || (authority === 3 && leavereqtabledata.ceo_apprv == 1))
                         }
                     )
                 ]}

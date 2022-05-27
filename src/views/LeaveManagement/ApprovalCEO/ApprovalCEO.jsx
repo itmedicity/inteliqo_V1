@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useState, } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
 import Tooltip from "@material-ui/core/Tooltip";
@@ -170,15 +170,15 @@ const ApprovalCEO = () => {
                         <div className="card-body">
                             <div className="col-md-12">
                                 <ApprovalInchargeTable leavereq={
-                                    levtpevalue === 1 ? leavereq :
-                                        levtpevalue === 2 ? halfday :
-                                            levtpevalue === 4 ? compensetory :
-                                                levtpevalue === 3 ? nopunch : []
+                                    levtpevalue == 1 ? leavereq :
+                                        levtpevalue == 2 ? halfday :
+                                            levtpevalue == 4 ? compensetory :
+                                                levtpevalue == 3 ? nopunch : []
                                 } levtpevalue={levtpevalue} authority={3}
-                                    setleavereq={levtpevalue === 1 ? setleavereqst :
-                                        levtpevalue === 2 ? sethalfday :
-                                            levtpevalue === 4 ? setcompensetory :
-                                                levtpevalue === 3 ? setnopunch : null}
+                                    setleavereq={levtpevalue == 1 ? setleavereqst :
+                                        levtpevalue == 2 ? sethalfday :
+                                            levtpevalue == 4 ? setcompensetory :
+                                                levtpevalue == 3 ? setnopunch : null}
 
                                 />
                             </div>
