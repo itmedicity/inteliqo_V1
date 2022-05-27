@@ -213,8 +213,10 @@ const ShiftUpdation = () => {
                     if (data.length !== 0) {
                         setApiData(data)
                         setcount(count + 1)
+                        // console.log(data)
                     }
                     else {
+                        // console.log(data)
                         setApiData(data)
                         setcount(count + 1)
                         infoNofity("Please Do the Shift Marking")
@@ -246,10 +248,10 @@ const ShiftUpdation = () => {
                     if (data.length !== 0) {
                         setApiData(data)
                         setcount(count + 1)
-                        console.log(data)
+                        // console.log(data)
                     }
                     else {
-                        console.log(data)
+                        // console.log(data)
                         setApiData(data)
                         infoNofity("Please Do the Shift Marking")
                         setcount(count + 1)
