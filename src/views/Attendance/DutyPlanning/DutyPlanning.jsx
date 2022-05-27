@@ -31,6 +31,7 @@ const DutyPlanning = () => {
   const dispatch = useDispatch()
   //use state for employee details
   const [empData, setempData] = useState([])
+  const [hldadata, sethldadata] = useState([])
   //use State for Date Format
   const [dateFormat, setdateFormat] = useState([])
   //states for rendering the components
@@ -58,7 +59,7 @@ const DutyPlanning = () => {
   useEffect(() => {
     //dispatichng employee details of the selected department and department section
     const getempdetl = async () => {
-      if (selectBranchMast === 0 && selectedDept !== 0 && selectDeptSection !== 0) {
+      if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
         const postData = {
           em_department: selectedDept,
           em_dept_section: selectDeptSection,
@@ -69,16 +70,30 @@ const DutyPlanning = () => {
     }
     getempdetl()
   }, [selectedDept, selectDeptSection, selectBranchMast])
-
+  useEffect(() => {
+    const getholidays = async () => {
+      //getting the holidays between start date and end date
+      const getholiday = {
+        start_date: moment(startDate).format('YYYY-MM-DD'),
+        end_date: moment(endDate).format('YYYY-MM-DD'),
+      }
+      const result = await axioslogin.post('/holidaylist/getholiday', getholiday)
+      const { success, data } = result.data
+      if (success === 2) {
+        sethldadata(data)
+      }
+    }
+    getholidays()
+  }, [startDate, endDate])
   //getting employee details of selected department and department secion from redux
   const empdetl = useSelector((state) => {
     return state.getEmployeedetailsDutyplan.EmpdetlInitialdata
 
   })
-
   //insert duty planning (click function of plus button in th duty planning page)
   const insertDutyPlanning = async () => {
     setCount(count + 1)
+
     //checking whether the selected department section have employees
     if (Object.keys(empdetl).length > 0) {
       //setting employee data to a use state
@@ -128,7 +143,6 @@ const DutyPlanning = () => {
             }).length === 0
           })
 
-          //inserting duty plan based on date of join
           const insertnewdutyplanarray = newdutyplanarray.map((val) => {
             return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
           })
@@ -144,6 +158,10 @@ const DutyPlanning = () => {
             if (success1 === 1) {
               setDuty(1)
               setDuty1(1)
+              if (hldadata.length > 0) {
+                const result = await axioslogin.patch("/plan/holiday", hldadata)
+
+              }
             }
             else {
               errorNofity("Error Occured!!Please Contact EDP")
@@ -169,6 +187,10 @@ const DutyPlanning = () => {
           if (success1 === 1) {
             setDuty(1)
             setDuty1(duty1 + 1)
+            if (hldadata.length > 0) {
+              const result = await axioslogin.patch("/plan/holiday", hldadata)
+            }
+
           }
           else {
             errorNofity("Error Occured!!Please Contact EDP")

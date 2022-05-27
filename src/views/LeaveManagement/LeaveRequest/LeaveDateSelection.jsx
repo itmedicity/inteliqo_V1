@@ -280,7 +280,6 @@ const LeaveDateSelection = ({
                     else {
                         warningNofity('Already selected')
                         updategetEarnleave({ ...getEarnleave, earnname: name, getEarnvalue: 0 })
-
                         const filtedLeave = casualLevee.filter((val) => {
                             return (val.caulmnth !== casualLevee.caulmnth && val.index !== casualLeve.index)
                         })
