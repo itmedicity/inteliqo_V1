@@ -2,8 +2,10 @@ import React, { Fragment, useEffect, useState, } from 'react'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { useHistory } from 'react-router'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { Checkbox, FormControlLabel, IconButton } from '@material-ui/core';
 import Tooltip from "@material-ui/core/Tooltip";
+import TextInput from 'src/views/Component/TextInput';
+import { ImSearch } from "react-icons/im";
 import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
 import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
 import HodSections from 'src/views/Resignation/ResignationApprovalHOD/HodSections';
@@ -161,15 +163,15 @@ const ApprovalHod = () => {
                     <div className="card ">
                         <div className="card-body">
                             <div className="col-md-12">
-                                <ApprovalInchargeTable leavereq={levtpevalue === 1 ? leavereq :
-                                    levtpevalue === 2 ? halfday :
-                                        levtpevalue === 4 ? compensetory :
-                                            levtpevalue === 3 ? nopunch : []
+                                <ApprovalInchargeTable leavereq={levtpevalue == 1 ? leavereq :
+                                    levtpevalue == 2 ? halfday :
+                                        levtpevalue == 4 ? compensetory :
+                                            levtpevalue == 3 ? nopunch : []
                                 } levtpevalue={levtpevalue} authority={2}
-                                    setleavereq={levtpevalue === 1 ? setleavereqst :
-                                        levtpevalue === 2 ? sethalfday :
-                                            levtpevalue === 4 ? setcompensetory :
-                                                levtpevalue === 3 ? setnopunch : null}
+                                    setleavereq={levtpevalue == 1 ? setleavereqst :
+                                        levtpevalue == 2 ? sethalfday :
+                                            levtpevalue == 4 ? setcompensetory :
+                                                levtpevalue == 3 ? setnopunch : null}
                                     DeptSect={DeptSect}
                                 />
                             </div>
