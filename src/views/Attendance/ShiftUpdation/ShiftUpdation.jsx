@@ -365,7 +365,7 @@ const ShiftUpdation = () => {
                                 // console.log(resultcalc)
                                 if (resultcalc.data.success === 1) {
                                     const result = await axioslogin.post("/attendCal", deptDetl);
-                                    // console.log(result)
+                                    console.log(result)
                                     const { success, data } = result.data;
                                     if (success === 1) {
                                         if (data.length !== 0) {
@@ -445,11 +445,46 @@ const ShiftUpdation = () => {
                                 const result = await axioslogin.post("/attendCal", deptDetl);
                                 // console.log(result)
                                 const { success, data } = result.data;
-                                // console.log(data)
                                 if (success === 1) {
                                     if (data.length !== 0) {
                                         setApiData(data)
                                         setcount(count + 1)
+                                        const holidaycredit = data.filter((val) => {
+                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary > 21000) {
+                                                return val
+                                            }
+                                            else {
+                                                return 0
+                                            }
+                                        })
+                                        const holidaytaken = data.filter((val) => {
+                                            if (val.holiday_flag === 1 && val.duty_worked === 0) {
+                                                return val
+                                            }
+                                            else {
+                                                return 0
+                                            }
+                                        })
+                                        const holidaytakendoublesalary = data.filter((val) => {
+                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary < 21000) {
+                                                return val
+                                            }
+                                            else {
+                                                return 0
+                                            }
+                                        })
+                                        //UPDATE HOLIDAY CREDITED IF EMPLOYEE SALARY IS GREATER THAN 21000 AND EMPLOYEE IS WORKED ON THAT DAY
+                                        if (holidaycredit.length > 0) {
+                                            const result = await axioslogin.patch("/attendCal/holidaycredit", holidaycredit)
+                                        }
+                                        //update holiday taken if employee is not presented on that day
+                                        if (holidaytaken.length > 0) {
+                                            const result = await axioslogin.patch("/attendCal/holidaytaken", holidaytaken)
+                                        }
+                                        //update holiday taken if employee is present on that day and gross salary is greater than 21000
+                                        if (holidaytakendoublesalary.length > 0) {
+                                            const result = await axioslogin.patch("/attendCal/holidaytaken", holidaytakendoublesalary)
+                                        }
                                     }
                                     else {
                                         setApiData(data)
