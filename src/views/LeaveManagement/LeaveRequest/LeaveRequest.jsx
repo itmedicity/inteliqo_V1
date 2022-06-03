@@ -39,6 +39,7 @@ const LeaveRequest = () => {
     // usestate for leaveslno
     const [leaveslno, setleaveslno] = useState()
     const [emplId, SetEmpId] = useState(0)
+    const [Emno, SetEmno] = useState(0)
     const [inchargedeptSec, SetinchargedeptSec] = useState([])
     const [levereqtype, setleavereqtype] = useState(0)
     const [leavdaystype, setleavedaystype] = useState(0)
@@ -72,6 +73,22 @@ const LeaveRequest = () => {
     const handleChange = async (e) => {
         SetEmpId(e)
     }
+    useEffect(() => {
+        const getEmpId = async () => {
+            if (emplId !== 0) {
+                const result = await axioslogin.get(`/common/getENameLeaveCarry/${emplId}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    SetEmno(data[0].em_no)
+                }
+                else {
+                    SetEmno(0)
+                }
+            }
+        }
+        getEmpId();
+    }, [emplId])
+
     // get haif day requested
     const [halfday, sethalfday] = useState()
     // no puch request details
@@ -111,7 +128,7 @@ const LeaveRequest = () => {
     const leavemastdata = {
         leaveid: leaveslno,
         em_id: is_incharge === 1 ? emplId : em_id,
-        em_no: em_no,
+        em_no: is_incharge === 1 ? Emno : em_no,
         em_department: em_department,
         em_dept_section: em_dept_section,
         leavefrom_date: startDate,
@@ -203,7 +220,6 @@ const LeaveRequest = () => {
                         }
                         else {
                             errorNofity("Error Occured!!!!Please Contact EDPrty")
-
                             updateleavereqtype(0)
                             setleavereqtype(0)
                             setleavedaystype(0)
@@ -239,7 +255,7 @@ const LeaveRequest = () => {
                         shiftid: halfday.planslno,
                         month: halfday.monthleave,
                         em_id: is_incharge === 1 ? emplId : em_id,
-                        em_no: em_no,
+                        em_no: is_incharge === 1 ? Emno : em_no,
                         em_department: em_department,
                         em_dept_section: em_dept_section,
                         incharge_level: is_incharge === 1 ? 0 : incharge_level,
@@ -313,7 +329,7 @@ const LeaveRequest = () => {
                             shift_id: shift_id,
                             crted_user: em_id,
                             em_id: is_incharge === 1 ? emplId : em_id,
-                            em_no: em_no,
+                            em_no: is_incharge === 1 ? Emno : em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
                             punch_slno: punch_slno,
@@ -381,7 +397,7 @@ const LeaveRequest = () => {
                             shiftduration: shifturation,
                             extratime: shifturation > duration ? 0 : (duration - shifturation),
                             em_id: is_incharge === 1 ? emplId : em_id,
-                            em_no: em_no,
+                            em_no: is_incharge === 1 ? Emno : em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
                             shift_id: selectshitid,
@@ -438,7 +454,7 @@ const LeaveRequest = () => {
                             shiftduration: shifturation,
                             extratime: duration,
                             em_id: is_incharge === 1 ? emplId : em_id,
-                            em_no: em_no,
+                            em_no: is_incharge === 1 ? Emno : em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
                             incharge_level: is_incharge === 1 ? 0 : incharge_level,

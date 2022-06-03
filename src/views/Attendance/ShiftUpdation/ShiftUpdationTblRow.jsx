@@ -1,11 +1,13 @@
 import { TableCell, TableRow, Avatar, LinearProgress } from '@mui/material'
 import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
-import { deepOrange, deepPurple, green, brown } from '@mui/material/colors';
+import { deepOrange, deepPurple, green, brown, pink } from '@mui/material/colors';
 import { blueGrey } from '@material-ui/core/colors';
 import Shiftfirstcol from './Shiftfirstcol';
 import CalendarViewDaySharpIcon from '@mui/icons-material/CalendarViewDaySharp';
 import ShiftUpdationModel from './ShiftUpdationModel';
 const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
+    // console.log(val)
+
     const [state, setState] = useState(0)
     const [dutyday, setdutyday] = useState(0)
     const [empno, setempno] = useState(0)
@@ -24,11 +26,12 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
         shift_in: 0,
         shift_out: 0,
         shift_id: 0,
+        holiday_flag: 0
     })
 
     const { duty_day, early_out, em_no, hrs_worked, late_in, duty_status,
         lvreq_type, over_time, punch_in, punch_out,
-        shift_in, shift_out, shift_id } = datapunch;
+        shift_in, shift_out, shift_id, holiday_flag } = datapunch;
     const checkInTime = punch_in !== null ? punch_in : '00:00';
     const checkOutTime = punch_out !== null ? punch_out : '00:00';
 
@@ -47,6 +50,7 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
             shift_in: val.shift_in,
             shift_out: val.shift_out,
             shift_id: val.shift_id,
+            holiday_flag: val.holiday_flag
         })
 
     }, [count])
@@ -60,6 +64,7 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
     const handleClose = () => {
         setOpen(false);
     };
+    // console.log(holiday_flag === 1 ? 'fgdfggf' : 'eerrr')
     return (
         <Fragment>
             {state === 1 ? <ShiftUpdationModel open={open} handleClose={handleClose} dutyday={dutyday} empno={empno} setApiData={setApiData} /> : null}
@@ -86,13 +91,13 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
                         bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
                             (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
                                 duty_status === 0.5 ? deepPurple[500] :
-                                    duty_status === 0 ? deepOrange[500] : lvreq_type !== null ? lvreq_type : green[500]
+                                    duty_status === 0 && holiday_flag === 0 ? deepOrange[500] : holiday_flag === 1 ? pink[500] : lvreq_type !== null ? lvreq_type : green[500]
                         , width: 24, height: 24, fontSize: 10
                     }}>
                         {(late_in !== 0 || early_out !== 0) ? 'L/E' :
                             (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 5 ? 'WOF' :
                                 duty_status === 0.5 ? 'HLP' :
-                                    duty_status === 0 ? 'LOP' : lvreq_type !== null ? lvreq_type : 'P'
+                                    duty_status === 0 && holiday_flag === 0 ? 'LOP' : holiday_flag === 1 ? 'H' : lvreq_type !== null ? lvreq_type : 'P'
                         }
                     </Avatar>
                 </TableCell>
