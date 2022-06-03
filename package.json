@@ -4,7 +4,7 @@
   "description": "Inteliqo HMS",
   "homepage": "http://localhost:8080/test",
   "license": "MIT",
-  "author": "Travancore Medicity EDP",
+  "author": "Travancore Medicity",
   "scripts": {
     "build": "react-scripts --max_old_space_size=8192 build",
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",

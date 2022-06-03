@@ -433,7 +433,7 @@ const DashAlertCmp = () => {
 
                         {constslno.map((val, index) => {
                             return val.menu_slno === 142 ?
-                                <div style={{ width: '24%' }}>
+                                <div style={{ width: '24%' }} key={index}>
                                     <Widjet avatarIcons={otuser} widgetName="Overtime Request User" count={otUserCount} key={index} />
                                 </div>
                                 : null
