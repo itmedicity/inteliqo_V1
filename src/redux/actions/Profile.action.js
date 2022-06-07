@@ -8,7 +8,8 @@ const {
     FETCH_ACADEMIC_DATA,
     FETCH_EXPERIENCE_DATA,
     FETCH_LEAVE_AVAIL_LIST,
-    FETCH_NOTIFYDETL
+    FETCH_NOTIFYDETL,
+    FETCH_JOB_DESCRIPTION
 } = Actiontypes;
 
 export const setProfileData = (id) => async (dispatch) => {
@@ -83,6 +84,15 @@ export const notify = (no) => {
     }
 }
 
+export const jondescription = (desg) => {
+    return async (dispatch) => {
+        const result = await axioslogin.get(`/jobdescription/${desg}`)
+        const { success, data } = result.data
+        if (success === 1) {
+            dispatch({ type: FETCH_JOB_DESCRIPTION, payload: data })
+        }
+    }
+}
 
 
 
