@@ -552,7 +552,7 @@ const LeaveRequest = () => {
                                     classname="form-control form-control-sm"
                                     Placeholder="Emplyee Number"
                                     disabled="disabled"
-                                    value={em_no}
+                                    value={is_incharge === 1 ? Emno : em_no}
                                 />
                             </div>
                             <div className="col-md-2">

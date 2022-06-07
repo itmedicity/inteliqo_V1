@@ -20,11 +20,26 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useState } from 'react';
 import { getMenuSlno } from 'src/views/Constant/Constant';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux'
+import {
+    setPersonalData,
+    setAccademicData,
+    setExperienceData,
+    getannualleave,
+    notify
+} from '../../../../redux/actions/Profile.action'
 
 const EmployeeProfileCardMenuList = (props) => {
     const { id, no } = props.empid;
+    const dispath = useDispatch()
+    useEffect(() => {
+        dispath(setPersonalData(no))
+        dispath(setAccademicData(id))
+        dispath(setExperienceData(id))
+        dispath(getannualleave(no))
+        dispath(notify(no))
+    }, [no, id])
     const history = useHistory();
-
     const [menuArray, setMenuarray] = useState([]);
     const [count, setCount] = useState(0)
 
@@ -91,7 +106,10 @@ const EmployeeProfileCardMenuList = (props) => {
     const endofservice = () => {
         // history.push(`/Home/EmployeeEndofService/${4516}`)
     }
-
+    //job description
+    const JobDescription = () => {
+        history.push(`/Home/JobDescriptionEmployee/${id}/${no}`)
+    }
     const listArray = [
         { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
         { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
@@ -301,6 +319,16 @@ const EmployeeProfileCardMenuList = (props) => {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary="Training Information"
+                                            primaryTypographyProps={{ noWrap: true }}
+                                        />
+                                    </ListItem>
+                                    <ListItem style={{ cursor: "pointer" }} onClick={JobDescription} >
+                                        <ListItemAvatar>
+                                            <Avatar sx={{ bgcolor: "#c5e1a5", boxShadow: 15 }} variant="circular" >
+                                                <ArticleIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary="Job Description"
                                             primaryTypographyProps={{ noWrap: true }}
                                         />
                                     </ListItem>
