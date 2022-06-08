@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
 import { useHistory } from 'react-router-dom'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const DepartmentSecChange = () => {

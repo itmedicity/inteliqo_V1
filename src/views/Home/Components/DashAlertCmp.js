@@ -21,7 +21,6 @@ import TextureIcon from '@mui/icons-material/Texture';
 import YardIcon from '@mui/icons-material/Yard';
 import WifiProtectedSetupIcon from '@mui/icons-material/WifiProtectedSetup';
 import TocIcon from '@mui/icons-material/Toc';
-import { getMenuSlno } from 'src/views/Constant/Constant';
 
 const DashAlertCmp = () => {
     const history = useHistory()
@@ -80,7 +79,9 @@ const DashAlertCmp = () => {
     const ResignCeo = () => {
         history.push(`/Home/ResignationApprovalCEO`)
     }
-
+    const RegistRenew = () => {
+        history.push(`/Home/RegistrationRenew`)
+    }
     const leaveCount = <DraftsIcon onClick={Leaverequest} />;
     const leaveUSER = <PersonOutlineIcon onClick={LeaveUser} />;
     const leaveInch = <AccessAlarmIcon onClick={LeaveIncharge} />;
@@ -98,7 +99,7 @@ const DashAlertCmp = () => {
     const resignInch = <YardIcon onClick={ResignInch} />;
     const resignHod = <WifiProtectedSetupIcon onClick={ResignHod} />;
     const resignCeo = <TocIcon onClick={ResignCeo} />;
-
+    const regrenew = <TocIcon onClick={RegistRenew} />;
 
     const [resigncount, setResigncount] = useState(0);
     const [contractcloseCount, setcontractcloseCount] = useState(0);
@@ -117,7 +118,7 @@ const DashAlertCmp = () => {
     const [resignCEOcount, setResignCEOcount] = useState(0);
     const [contractRenewal, setcontractRenewal] = useState(0);
     const [trainingConform, settrainingConform] = useState(0);
-
+    const [registrenew, setRegistRenew] = useState(0);
 
     useEffect(() => {
         const getResignCount = async () => {
@@ -291,6 +292,16 @@ const DashAlertCmp = () => {
         }
         getTrainingCount()
 
+        const getRegistRenew = async () => {
+            const result = await axioslogin.get('/Count/registration/pending')
+            const { success, data } = result.data
+            if (success === 1) {
+                const { RegistrationRenewCount } = data[0]
+                setRegistRenew(RegistrationRenewCount)
+            }
+        }
+        getRegistRenew()
+
     }, [])
 
     //get module rights
@@ -302,7 +313,7 @@ const DashAlertCmp = () => {
             val.menu_slno === 136 || val.menu_slno === 137 || val.menu_slno === 138 || val.menu_slno === 139
             || val.menu_slno === 140 || val.menu_slno === 141 || val.menu_slno === 142 || val.menu_slno === 143 ||
             val.menu_slno === 144 || val.menu_slno === 145 || val.menu_slno === 146 || val.menu_slno === 146 || val.menu_slno === 147
-            || val.menu_slno === 148 || val.menu_slno === 149
+            || val.menu_slno === 148 || val.menu_slno === 149 || val.menu_slno === 154
     })
 
     return (
@@ -491,6 +502,13 @@ const DashAlertCmp = () => {
                             return val.menu_slno === 149 ?
                                 <div style={{ width: '24%' }} key={index}>
                                     <Widjet avatarIcons={resignCeo} widgetName="Resignation Request CEO" count={resignCEOcount} />
+                                </div>
+                                : null
+                        })}
+                        {constslno.map((val, index) => {
+                            return val.menu_slno === 154 ?
+                                <div style={{ width: '24%' }} key={index}>
+                                    <Widjet avatarIcons={regrenew} widgetName="Registration Renew" count={registrenew} />
                                 </div>
                                 : null
                         })}
