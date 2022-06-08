@@ -152,9 +152,11 @@ const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalT
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
 const PayrollProces = React.lazy(() => import('./views/Payroll/PayrollProcess/PayrollProcess'))
+const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
 const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionEdit'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -312,6 +314,7 @@ const routes = [
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
   { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR },
   { path: '/Home/PayrollProcess', exact: true, name: 'Payroll Process', component: PayrollProces },
+  { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
   { path: '/Home/JobDescriptionEdit/:id', exact: true, name: 'JobDescription Edit', component: JobDescriptionEdit },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
