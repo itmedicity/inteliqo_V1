@@ -23,12 +23,13 @@ const ModuleGroupMast = () => {
         module_performanceApp: false,
         module_trainAndDevolp: false,
         module_resignation: false,
-        module_dashboard: false
+        module_dashboard: false,
+        module_reports: false
     })
 
     // destructuring the form element vlaues
     const { module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
-        module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, module_dashboard } = formData;
+        module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, module_dashboard, module_reports } = formData;
 
     // Get the value from the element to variables
     const getModuleGroupFormData = (e) => {
@@ -54,7 +55,8 @@ const ModuleGroupMast = () => {
             module_performanceApp: module_performanceApp === true ? 7 : 0,
             module_trainAndDevolp: module_trainAndDevolp === true ? 8 : 0,
             module_resignation: module_resignation === true ? 9 : 0,
-            module_dashboard: module_dashboard === true ? 10 : 0,
+            module_dashboard: module_dashboard === true ? 11 : 0,
+            module_reports: module_reports === true ? 12 : 0,
         },
     }
 
@@ -68,7 +70,8 @@ const ModuleGroupMast = () => {
         module_performanceApp: false,
         module_trainAndDevolp: false,
         module_resignation: false,
-        module_dashboard: false
+        module_dashboard: false,
+        module_reports: false
     }
 
     const submitModuleGroupMast = async (e) => {
@@ -254,6 +257,22 @@ const ModuleGroupMast = () => {
                                                 />
                                             }
                                             label="Dash Board"
+                                        />
+                                    </div>
+                                    <div className="col-md-12 pb-0 mb-0">
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
+                                            control={
+                                                <Checkbox
+                                                    name="module_reports"
+                                                    color="secondary"
+                                                    value={module_reports}
+                                                    checked={module_reports}
+                                                    className="ml-2"
+                                                    onChange={(e) => getModuleGroupFormData(e)}
+                                                />
+                                            }
+                                            label="Reports"
                                         />
                                     </div>
                                     <div className="row col-md-12 mt-2 ">
