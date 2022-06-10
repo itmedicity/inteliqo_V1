@@ -12,18 +12,20 @@ import PageLayout from 'src/views/CommonCode/PageLayout'
 import RegistrationTypeSelection from 'src/views/CommonCode/RegistrationTypeSelection'
 import SpecializationSelection from 'src/views/CommonCode/SpecializationSelection'
 import { UniversitySelection } from 'src/views/CommonCode/UniversitySelection'
-import { employeeNumber } from 'src/views/Constant/Constant'
 import moment from 'moment';
 import QualificationTable from './EmployeeFileTable/QualificationTable'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 import TextInput from 'src/views/Component/TextInput'
 import { TextField } from '@material-ui/core'
 import BoardMastSelection from 'src/views/CommonCode/BoardMastSelection'
-
+import { format } from 'date-fns'
+import ReactTooltip from 'react-tooltip';
 const EmployeeQualification = () => {
     const classes = useStyles();
     const history = useHistory();
     const { id, no } = useParams();
+    const { employeedetails } = useContext(PayrolMasterContext)
+    const { em_id } = employeedetails
     const [unidisable, setunidisable] = useState(false)
     const [boarddisable, setBoarddisable] = useState(false)
     const [coursedisable, setcoursedisable] = useState(false)
@@ -33,8 +35,9 @@ const EmployeeQualification = () => {
     const [count, setcount] = useState(0);
     const { selectEducation, selectCourse, selectSpec, selectUniversity, updateUniversity, updatereg,
         selectBoard, selectreg, updateBoard, updateSpec, updateEducation, updateCourse } = useContext(PayrolMasterContext)
-    const [year, setYear] = useState(null);
-
+    const [year, setYear] = useState(new Date());
+    const [expyear, setExpyear] = useState(new Date())
+    const [chellan, setChellan] = useState(new Date())
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
@@ -45,11 +48,12 @@ const EmployeeQualification = () => {
         em_year: '',
         em_mark_grade: '',
         em_reg_type: '',
-        em_reg_no: ''
+        em_reg_no: '',
+        em_chellan: ''
     })
 
     //destructuring
-    const { em_mark_grade, em_reg_no } = qualification
+    const { em_mark_grade, em_reg_no, em_chellan } = qualification
     const updateQualification = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })
@@ -59,6 +63,16 @@ const EmployeeQualification = () => {
     const updateYear = (val) => {
         setYear(val)
     }
+    const updateexpdate = (e) => {
+        var val = format(new Date(e.target.value), "yyyy-MM-dd")
+        setExpyear(val)
+    }
+
+    const updatechellandate = (e) => {
+        var val = format(new Date(e.target.value), "yyyy-MM-dd")
+        setChellan(val)
+    }
+
     const qual_year = moment(year).format('YYYY')
 
     useEffect(() => {
@@ -100,8 +114,12 @@ const EmployeeQualification = () => {
         em_mark_grade: em_mark_grade,
         em_reg_type: selectreg,
         em_reg_no: em_reg_no,
-        create_user: employeeNumber(),
+        create_user: em_id,
+        em_exp_date: em_reg_no === "" ? null : expyear,
+        em_chellan: em_chellan,
+        em_chellan_exp_date: em_chellan === "" ? null : chellan
     }
+
     const postData5 = {
         em_no: id,
         em_id: no,
@@ -112,7 +130,8 @@ const EmployeeQualification = () => {
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade: em_mark_grade,
-        create_user: employeeNumber(),
+        create_user: em_id,
+
     }
     const postData4 = {
         em_no: id,
@@ -124,7 +143,7 @@ const EmployeeQualification = () => {
         em_board: selectBoard,
         em_year: qual_year,
         em_mark_grade: em_mark_grade,
-        create_user: employeeNumber(),
+        create_user: em_id,
     }
 
     //Form reset
@@ -137,7 +156,8 @@ const EmployeeQualification = () => {
         em_year: '',
         em_mark_grade: '',
         em_reg_type: '',
-        em_reg_no: ''
+        em_reg_no: '',
+        em_chellan: ''
     }
 
     const reset = () => {
@@ -147,6 +167,9 @@ const EmployeeQualification = () => {
         updateCourse(0)
         updateUniversity(0)
         updatereg(0)
+        setExpyear(new Date())
+        setYear(new Date())
+        setChellan(new Date())
     }
 
     //Form Submitting
@@ -240,7 +263,7 @@ const EmployeeQualification = () => {
                                                 name="year"
                                                 value={year}
                                                 minDate={new Date('1990')}
-                                                maxDate={new Date('2021')}
+                                                maxDate={new Date('2022')}
                                                 onChange={(e) => { updateYear(e) }}
                                                 InputProps={{
                                                     className: classes.customInputFeild
@@ -271,15 +294,64 @@ const EmployeeQualification = () => {
                                             style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                     </div>
                                     <div className="col-md-12 pt-1">
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="Registration No"
-                                            disabled={regNodisable}
-                                            value={em_reg_no}
-                                            name="em_reg_no"
-                                            changeTextValue={(e) => updateQualification(e)}
-                                        />
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder="Registration No"
+                                                    disabled={regNodisable}
+                                                    value={em_reg_no}
+                                                    name="em_reg_no"
+                                                    changeTextValue={(e) => updateQualification(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-6 " data-tip="Expeiry Date" data-for='toolTip2' data-place='top'>
+                                                <ReactTooltip id="toolTip2" />
+                                                <TextInput
+                                                    type="date"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder="End Date"
+                                                    min={new Date()}
+                                                    disabled={regNodisable}
+                                                    value={expyear}
+                                                    name="expyear"
+                                                    changeTextValue={(e) => {
+                                                        updateexpdate(e)
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12 pt-1">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder="Chellan No"
+                                                    disabled={regNodisable}
+                                                    value={em_chellan}
+                                                    name="em_chellan"
+                                                    changeTextValue={(e) => updateQualification(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-6 " data-tip="chellan end Date" data-for='toolTip2' data-place='top'>
+                                                <ReactTooltip id="toolTip2" />
+                                                <TextInput
+                                                    type="date"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder="chellan end Date"
+                                                    min={new Date()}
+                                                    value={chellan}
+                                                    disabled={regNodisable}
+                                                    name="chellan"
+                                                    changeTextValue={(e) => {
+                                                        updatechellandate(e)
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

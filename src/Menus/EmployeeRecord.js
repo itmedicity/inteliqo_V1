@@ -14,6 +14,12 @@ const Employeerecord = [
         to: '/Home/EmployeeFile',
     },
     {
+        men_slno: 155,
+        component: CNavItem,
+        name: 'Job Description',
+        to: '/Home/JobDescription',
+    },
+    {
         men_slno: 21,
         component: CNavItem,
         name: 'Allowance/Deduction',
