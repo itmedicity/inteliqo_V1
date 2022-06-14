@@ -27,7 +27,6 @@ export const setEmployeeList = (emprecord) => {
 }
 
 export const setPersonalData = (id) => {
-
     return async (dispatch) => {
         const result = await axioslogin.get(`common/getEmpProfileInform/${id}`);
         const { data, success } = result.data;
@@ -38,7 +37,6 @@ export const setPersonalData = (id) => {
 }
 
 export const setAccademicData = (no) => {
-
     return async (dispatch) => {
         const result = await axioslogin.get(`qualify/${no}`);
         const { data, success } = result.data;
@@ -62,7 +60,6 @@ export const setExperienceData = (no) => {
     }
 }
 export const getannualleave = (no) => {
-
     return async (dispatch) => {
         const result = await axioslogin.get(`/leaveRequestType/leavesetdata/${no}`)
         const { success, data } = result.data
@@ -73,7 +70,6 @@ export const getannualleave = (no) => {
 }
 
 export const notify = (no) => {
-
     return async (dispatch) => {
         const result = await axioslogin.get(`/common/getnotifydata/${no}`)
         const { success, data } = result.data
