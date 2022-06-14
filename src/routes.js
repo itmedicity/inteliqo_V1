@@ -5,6 +5,7 @@ const Profile = React.lazy(() => import('./views/Home/Profile'))
 const ManpowerRequest = React.lazy(() => import('./views/recruitment/manpowerRequest/ManpowerRequest'));
 const Vacancy = React.lazy(() => import('./views/recruitment/VacancyAnounce/Vacancy'));
 const Settings = React.lazy(() => import('./Menus/Settings'));
+const Reports = React.lazy(() => import('./Menus/Reports'));
 const Departmentmaster = React.lazy(() => import('./views/Master/Departmentmaster'));
 const DepatmentEdit = React.lazy(() => import('./views/Master/DepartmentMaster/DeptEdit'));
 const DepartmentSectionMast = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSectionMast'));
@@ -130,8 +131,8 @@ const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/Co
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
-const EmployeeReport = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReport'))
-const EmployeeReportInactive = React.lazy(() => import('./views/Resignation/EmployeeReport/EmployeeReportInactive'))
+const EmployeeReport = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReport'))
+const EmployeeReportInactive = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReportInactive'))
 const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMast'))
 const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
 const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
@@ -165,6 +166,7 @@ const routes = [
   { path: '/Home/ManpowerRequest', exact: true, name: 'Manpower Request', component: ManpowerRequest },
   { path: '/Home/Vacancy', exact: true, name: 'Vacancy', component: Vacancy },
   { path: '/Home/Settings', exact: true, name: 'Settings', component: Settings },
+  { path: '/Home/Reports', exact: true, name: 'Reports', component: Reports },
   { path: '/Home/DepartmentMaster', exact: true, name: 'DeptMasrter', component: Departmentmaster },
   { path: '/Home/EditDepartment/:id', exact: true, name: 'EditDepartment', component: DepatmentEdit },
   { path: '/Home/DeptSection', exact: true, name: 'Department Section', component: DepartmentSectionMast },
