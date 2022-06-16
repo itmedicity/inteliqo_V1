@@ -122,9 +122,11 @@ const AppHeader = () => {
               </Tooltip>
             </CNavItem>
             <CNavItem>
-              <CNavLink to="#">
-                <IoPower className="text-danger" size={20} onClick={hrmLogout} cursor="pointer" />
-              </CNavLink>
+              <Tooltip title="Logout" >
+                <CNavLink to="#">
+                  <IoPower className="text-danger" size={20} onClick={hrmLogout} cursor="pointer" />
+                </CNavLink>
+              </Tooltip>
             </CNavItem>
           </CHeaderNav>
 
@@ -182,9 +184,8 @@ const AppHeader = () => {
                     }
                   }}
                 >
-                  <Tooltip title="Logout" >
-                    <NotificationsIcon color="primary" />
-                  </Tooltip>
+
+                  <NotificationsIcon color="primary" />
                 </Badge>
               </IconButton>
 
@@ -210,7 +211,7 @@ const AppHeader = () => {
       <MessageComponent anchorEl={anchorElMessage} open={openMessage} handleClose={handleMessageClose} setmsgcount={setmsgcount} />
       <NotificationComponent anchorEl={anchorEl} open={open} handleClose={handleClose} setalertcount={setalertcount} />
 
-    </Fragment>
+    </Fragment >
   )
 }
 
