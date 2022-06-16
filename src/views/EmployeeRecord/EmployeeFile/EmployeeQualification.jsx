@@ -111,7 +111,7 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity,
         em_board: selectBoard !== 0 ? selectBoard : null,
         em_year: qual_year,
-        em_mark_grade: em_mark_grade,
+        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
         em_reg_type: selectreg,
         em_reg_no: em_reg_no,
         create_user: em_id,
@@ -129,7 +129,7 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
-        em_mark_grade: em_mark_grade,
+        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
         create_user: em_id,
 
     }
@@ -142,7 +142,7 @@ const EmployeeQualification = () => {
         em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
         em_board: selectBoard,
         em_year: qual_year,
-        em_mark_grade: em_mark_grade,
+        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
         create_user: em_id,
     }
 

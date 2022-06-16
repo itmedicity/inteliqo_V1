@@ -11,27 +11,33 @@ import { TableContainer } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useHistory } from 'react-router'
 import JobDescriptionEdit from './JobDescriptionEdit';
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 
 const JobDescription = () => {
     const history = useHistory()
-    const { selectDesignation } = useContext(PayrolMasterContext);
+    const { selectDesignation, selectedDept } = useContext(PayrolMasterContext);
     const [JobDesc, setJobDesc] = useState([])
     const [count, setcount] = useState(0)
+    const [jobsumry, setjobsumry] = useState(0)
     const [jobslno, setjobslno] = useState(0)
     const [formData, setFormData] = useState({
-        job_description: ''
+        job_description: '',
+        job_summary: ''
     })
     const defaultState = {
         job_description: '',
+        job_summary: ''
     }
-    const { job_description } = formData
+    const { job_description, job_summary } = formData
     const updatejob_description = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
     }
     const postData = {
         designation: selectDesignation,
+        department: selectedDept,
         job_desription: job_description,
+        job_Summary: jobsumry === 1 ? null : job_summary
     }
     const InsertJobDescription = async () => {
         const result = await axioslogin.post('/jobdescription', postData)
@@ -46,12 +52,27 @@ const JobDescription = () => {
         }
     }
     useEffect(() => {
-        if (selectDesignation !== 0) {
+        const postData = {
+            designation: selectDesignation,
+            department: selectedDept
+        }
+        if (selectDesignation !== 0 && selectedDept !== 0) {
             const getjobdescription = async () => {
-                const result = await axioslogin.get(`/jobdescription/${selectDesignation}`)
+                const result = await axioslogin.post('/jobdescription/jobdesc', postData)
                 const { success, data } = result.data
                 if (success === 1) {
                     setJobDesc(data)
+                    const jobsummary = data.filter((val) => {
+                        if (val.job_Summary !== null) {
+                            return 1
+                        }
+                    })
+                    const frmdata = {
+                        job_summary: jobsummary[0].job_Summary
+                    }
+                    setFormData(frmdata)
+                    jobsummary.length === 0 ? setjobsumry(0) : setjobsumry(1)
+
                 }
                 else {
                     setJobDesc([])
@@ -60,7 +81,7 @@ const JobDescription = () => {
             getjobdescription()
         }
 
-    }, [selectDesignation, count])
+    }, [selectDesignation, count, selectedDept])
     //edit job description
     const getJobDescription = async (slno) => {
         setjobslno(slno)
@@ -82,15 +103,29 @@ const JobDescription = () => {
                             jobslno === 0 ?
                                 <div className="col-md-12">
                                     <div className="row g-1">
-                                        <div className="col-md-4 pt-2">
+                                        <div className="col-md-2 pt-2">
+                                            <DepartmentSelect style={SELECT_CMP_STYLE} />
+                                        </div>
+                                        <div className="col-md-2 pt-2">
                                             <DesignationMast style={SELECT_CMP_STYLE} />
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-3">
+                                            <TextareaAutosize
+                                                aria-label="minimum height"
+                                                minRows={3}
+                                                placeholder="Job Summary"
+                                                style={{ width: 380, height: 60 }}
+                                                name="job_summary"
+                                                value={job_summary}
+                                                onChange={(e) => updatejob_description(e)}
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
                                             <TextareaAutosize
                                                 aria-label="minimum height"
                                                 minRows={3}
                                                 placeholder="Job Description"
-                                                style={{ width: 770, height: 60 }}
+                                                style={{ width: 500, height: 60 }}
                                                 name="job_description"
                                                 value={job_description}
                                                 onChange={(e) => updatejob_description(e)}
@@ -111,7 +146,7 @@ const JobDescription = () => {
                         }
 
                         {
-                            selectDesignation !== 0 ?
+                            selectDesignation !== 0 && selectedDept !== 0 ?
                                 <div className="card">
                                     <div className="col-md-12">
                                         <TableContainer component={Paper}>
