@@ -26,7 +26,6 @@ const JobDescriptionEmployee = () => {
             const result = await axioslogin.post('/jobdescription/jobdesc', postData)
             const { success, data } = result.data
             if (success === 1) {
-                console.log(data)
                 setJobDesc(data)
                 const jobsummary = data.filter((val) => {
                     if (val.job_Summary !== null) {
@@ -41,7 +40,6 @@ const JobDescriptionEmployee = () => {
         }
         getjobdescription()
     }, [empdata.em_designation, empdata.em_department])
-    console.log(jobsummary)
     return (
         <Fragment>
             <PageLayoutCloseOnly
@@ -75,15 +73,18 @@ const JobDescriptionEmployee = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row">
-                                    <div className="col-md-1"></div>
-                                    <div className="col-md-2">
-                                        <Typography noWrap>Job Summary:</Typography>
-                                    </div>
-                                    <div className="col-md-6 p-0">
-                                        <Typography noWrap>{jobsummary.length === 0 ? '' : jobsummary[0].job_Summary}</Typography>
+                                <div className="card">
+                                    <div className="row">
+                                        <div className="col-md-1"></div>
+                                        <div className="col-md-2">
+                                            <Typography noWrap>Job Summary:</Typography>
+                                        </div>
+                                        <div className="col-md-6 p-0">
+                                            <Typography noWrap>{jobsummary.length === 0 ? '' : jobsummary[0].job_Summary}</Typography>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="card">

@@ -20,7 +20,7 @@ const RegionSelect2 = () => {
                     sx={{
                         display: "inline-block",
                         "& input": {
-                            width: 250,
+                            width: "100%",
                             bgcolor: "background.paper",
                             height: 28,
                             borderRadius: 0.9,

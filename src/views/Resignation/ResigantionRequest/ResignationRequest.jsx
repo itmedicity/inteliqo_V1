@@ -243,7 +243,7 @@ const ResignationRequest = () => {
                                             aria-label="minimum height"
                                             minRows={3}
                                             placeholder="Resignation Reason"
-                                            style={{ width: 570 }}
+                                            style={{ width: "100%" }}
                                             name="resignation_reason"
                                             value={resignation_reason}
                                             onChange={(e) => updateResignationRequest(e)}
