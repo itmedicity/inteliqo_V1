@@ -102,7 +102,8 @@ const JobDescription = () => {
                         {
                             jobslno === 0 ?
                                 <div className="col-md-12">
-                                    <div className="row g-1">
+
+                                    <div className="row d-flex justify-content-evenly">
                                         <div className="col-md-2 pt-2">
                                             <DepartmentSelect style={SELECT_CMP_STYLE} />
                                         </div>
@@ -114,7 +115,7 @@ const JobDescription = () => {
                                                 aria-label="minimum height"
                                                 minRows={3}
                                                 placeholder="Job Summary"
-                                                style={{ width: 380, height: 60 }}
+                                                style={{ width: "100%", height: 60 }}
                                                 name="job_summary"
                                                 value={job_summary}
                                                 onChange={(e) => updatejob_description(e)}
@@ -125,7 +126,7 @@ const JobDescription = () => {
                                                 aria-label="minimum height"
                                                 minRows={3}
                                                 placeholder="Job Description"
-                                                style={{ width: 500, height: 60 }}
+                                                style={{ width: "100%", height: 60 }}
                                                 name="job_description"
                                                 value={job_description}
                                                 onChange={(e) => updatejob_description(e)}
@@ -142,6 +143,8 @@ const JobDescription = () => {
                                         </div>
                                     </div>
                                 </div>
+
+
                                 : <JobDescriptionEdit jobslno={jobslno} count={count} setcount={setcount} setjobslno={setjobslno} />
                         }
 
@@ -195,7 +198,7 @@ const JobDescription = () => {
                     </div>
                 </div>
             </PageLayoutCloseOnly>
-        </Fragment>
+        </Fragment >
     )
 }
 
