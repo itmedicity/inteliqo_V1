@@ -11,13 +11,6 @@ const PageLayoutReports = (props) => {
                 <div className="card-header bg-dark pb-0 border border-dark text-white lead">
                     <h6>{props.heading}</h6>
                 </div>
-                <div className="card-body">
-                    <div className="card">
-                        <div className="card-body">
-                            {props.children}
-                        </div>
-                    </div>
-                </div>
             </div>
         </Fragment>
     )
