@@ -1,10 +1,11 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useEffect } from 'react'
+import { FormControl, Checkbox, FormControlLabel } from '@material-ui/core';
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux'
 import { setBloodgrp } from 'src/redux/actions/Bloodgrp.Action';
+import CustomCheckBox from 'src/views/Component/CustomCheckBox';
 
-const BloodgrpSelect = ({ name, style, onChange }) => {
+const BloodgrpSelect = ({ onChange }) => {
 
     const dispatch = useDispatch();
 
@@ -20,34 +21,47 @@ const BloodgrpSelect = ({ name, style, onChange }) => {
 
     return (
         <Fragment>
-            <FormControl
+
+            {
+                empBloodgrp && empBloodgrp.map((val, index) => {
+                    return <CustomCheckBox
+                        key={index}
+                        name={"sdsd"}
+                        color="secondary"
+                        value={false}
+                        label="AAAA"
+                        // onChange={}
+                        style={{}}
+                    />
+                })
+            }
+
+            {/* <FormControl
                 fullWidth
                 margin="dense"
                 className="mt-1 mb-2"
             >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name={name}
-                    onChange={(e) => onChange(e.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    className="ml-0"
-                    defaultValue={0}
-                    style={style}
-                >
-                    <MenuItem value='0'>
-                        Blood Group
-                    </MenuItem>
-                    {
-                        empBloodgrp && empBloodgrp.map((val, index) => {
-                            return <MenuItem key={index} value={val.group_slno}>{val.group_name}</MenuItem>
-                        })
-                    }
-                </Select>
-            </FormControl>
+                {
+                    empBloodgrp && empBloodgrp.map((val) => {
+                        return <div className="pt-0" key={val.group_slno}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name={val.group_name}
+                                        color="secondary"
+                                        value={val.group_slno}
+                                        onChange={(e) => onChange(e)}
+                                    />
 
-        </Fragment>
+                                }
+                                label={val.group_name}>
+
+                            </FormControlLabel>
+                        </div>
+                    })
+                }
+            </FormControl> */}
+        </Fragment >
     )
 }
 
