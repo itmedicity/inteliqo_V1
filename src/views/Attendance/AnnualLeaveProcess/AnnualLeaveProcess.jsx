@@ -35,22 +35,19 @@ const AnnualLeaveProcess = () => {
     const gettable = async () => {
         const postdata = {
             dp_sec: selectDeptSection,
-            startdate: moment(startOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
         //holdys of the year
         const result2 = await axioslogin.post('/yearleaveprocess/holidaylistyear', postdata)
-
         if (result2.data.success === 2) {
             setholidaycount((result2.data.data).length)
             // data based on the calculation of earn leave
-            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', name)
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', postdata)
             const { success, data } = result.data;
-
             if (success === 2) {
                 setname(data)
             }
-
         } else {
             warningNofity('Please Do Calender Setting')
         }
@@ -62,7 +59,6 @@ const AnnualLeaveProcess = () => {
     const redirect = () => {
         history.push('/Home');
     }
-
     return (
         <Fragment>
             <PageLayoutProcess
@@ -88,8 +84,8 @@ const AnnualLeaveProcess = () => {
                                     views={['year']}
                                     name="year"
                                     value={year}
-                                    minDate={new Date()}
-                                    maxDate={new Date()}
+                                    // minDate={new Date()}
+                                    // maxDate={new Date()}
                                     onChange={(e) => { updateYear(e) }}
                                     InputProps={{
                                         className: classes.customInputFeild
@@ -104,10 +100,6 @@ const AnnualLeaveProcess = () => {
                                 />
                             </LocalizationProvider>
                         </div>
-
-
-
-
                         <div className="col-md-1 text-center">
                             <IconButton
                                 aria-label="add"
@@ -122,11 +114,9 @@ const AnnualLeaveProcess = () => {
                     </div>
                 </div>
                 <div className="col-md-12">
-
                     <div className="row g-1 ">
                         <div className="card ">
                             <div className="col-md-12 pt-1">
-
                                 <TableContainer sx={{ maxHeight: 500 }}>
                                     <Table size="small"
                                         stickyHeader aria-label="sticky table">
@@ -147,6 +137,7 @@ const AnnualLeaveProcess = () => {
                                                 <Leavprccompnt
                                                     name={name}
                                                     holidaycount={holidaycount}
+                                                    year={year}
                                                 // postdata={postdata}
                                                 />
 
@@ -157,11 +148,8 @@ const AnnualLeaveProcess = () => {
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </PageLayoutProcess>
-
         </Fragment >
     )
 }

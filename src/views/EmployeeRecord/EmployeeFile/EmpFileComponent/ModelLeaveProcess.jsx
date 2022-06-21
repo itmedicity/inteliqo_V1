@@ -128,7 +128,6 @@ const ModelLeaveProcess = ({
     */
     const datayearsave = async (data) => {
         const result = await axioslogin.post('/yearleaveprocess/create', data)
-
         const { message, success } = result.data
         if (success === 1) {
             succesNofity(message)
