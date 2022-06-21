@@ -36,14 +36,18 @@ const HolidayLeaveList = ({ hldnodata, no }) => {
                             <div className="d-md-flex d-sm-flex justify-content-around"
                                 style={val.taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
                             >
-                                <div className="col-sm-4 py-0 text-start" >
-                                    <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.hld_desc}
+                                <div className="col-sm-4 py-0 text-start" style={{ width: "70%", }} >
+                                    <Typography variant="body2" gutterBottom className="my-0"
+                                        sx={{
+                                            textTransform: "capitalize"
+                                        }}
+                                    >
+                                        {val.hld_desc.toLowerCase()}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_allowed}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_credit}</div>
-                                <div className="col-sm-2 py-0 text-center">{val.hl_lv_taken}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_allowed}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_credit}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_taken}</div>
                             </div>
                         </li>;
                     })

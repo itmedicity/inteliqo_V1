@@ -86,47 +86,47 @@ const AnnualLeaveSettings = () => {
     const CasualLeave = {
         mainHeading: "Casual Leaves",
         headingOne: "Month",
-        headingTwo: "Allowed",
-        headingThee: "Credited",
-        headingFour: "Taken"
+        headingTwo: "C",
+        headingThee: "T",
+        headingFour: "B"
     }
     const Holidy = {
         mainHeading: "National & Festival Holiday",
-        headingOne: "Days",
-        headingTwo: "Allowed",
-        headingThee: "Credited",
-        headingFour: "Taken"
+        headingOne: "Holidays",
+        headingTwo: "C",
+        headingThee: "T",
+        headingFour: "B"
     }
     const EarnLeave = {
         mainHeading: "Privilage Leave",
         headingOne: "Month",
-        headingTwo: "Allowed",
-        headingThee: "Credited",
-        headingFour: "Taken"
+        headingTwo: "C",
+        headingThee: "T",
+        headingFour: "B"
     }
 
     const Carryfoward = {
         mainHeading: "Carry Forward Leave",
         headingOne: "Leave Name",
-        headingTwo: "Allowed",
-        headingThee: "Credited",
-        headingFour: "Taken"
+        headingTwo: "C",
+        headingThee: "T",
+        headingFour: "B"
     }
 
     const CalculatedLeave = {
         mainHeading: "Calculated Approved off Days",
         headingOne: "Off",
         headingTwo: "Date",
-        headingThee: "Credited",
-        headingFour: "Taken"
+        headingThee: "C",
+        headingFour: "B"
     }
 
     const FixedLeaves = {
         mainHeading: "Fixed Off Days Information",
         headingOne: "Leaves Name",
-        headingThee: "Allowed",
-        headingFour: "Taken",
-        headingFive: "balance"
+        headingThee: "A",
+        headingFour: "T",
+        headingFive: "B"
 
     }
     useEffect(() => {

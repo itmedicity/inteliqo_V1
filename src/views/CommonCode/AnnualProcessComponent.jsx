@@ -257,7 +257,6 @@ const AnnualProcessComponent = ({
             }
         }
 
-
         const contractStartEndDate = startEndDate_cont()
         const regularStartEndDate = startEndDate_regular()
 
@@ -274,7 +273,13 @@ const AnnualProcessComponent = ({
             //console.log(subMonths(new Date(), 1))
             //console.log(ecat_cont === 1 ? new Date(em_contract_end_date) : ecat_prob === 1 ? new Date(em_prob_end_date) : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'))
             // var dateresult = eachMonthOfInterval({ start: subMonths(new Date(), 1), end: ecat_cont === 1 ? new Date(em_contract_end_date) : ecat_prob === 1 ? new Date(em_prob_end_date) : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') })
-            var dateresult = eachMonthOfInterval({ start: new Date(dateStart), end: new Date(dateEnd) })
+            var dateresult = eachMonthOfInterval({ start: new Date(), end: new Date(dateEnd) })
+
+            // console.log(dateStart, dateEnd);
+            /*--- Casual Leave Start and End date 
+                Start Date --> Current date as start date Later need to check the current month total working 
+                Greater than 15 or not / If greater than 15 only need to add the Current month Casual Leave 
+            */
 
             var datacaual = dateresult && dateresult.map((val, index) => {
                 const datacasualleave = {
