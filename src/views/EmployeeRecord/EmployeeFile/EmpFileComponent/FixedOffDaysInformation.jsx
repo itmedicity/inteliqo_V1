@@ -35,14 +35,18 @@ const FixedOffDaysInformation = ({ hldnodata, no }) => {
                             <div className="d-md-flex d-sm-flex justify-content-around"
                                 style={val.taken === 1 ? { color: TEXT_MUTED } : { color: TEXT_DARK }}
                             >
-                                <div className="col-sm-3 py-0 text-start" >
-                                    <Typography variant="body2" gutterBottom className="my-0">
-                                        {val.lvetype_desc}
+                                <div className="col-sm-3 py-0 text-start" style={{ width: "70%", }}  >
+                                    <Typography variant="body2" gutterBottom className="my-0"
+                                        sx={{
+                                            textTransform: "capitalize"
+                                        }}
+                                    >
+                                        {val.lvetype_desc.toLowerCase()}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-start">{val.cmn_lv_allowed}</div>
-                                <div className="col-sm-1 py-0 text-start">{val.cmn_lv_taken}</div>
-                                <div className="col-sm-2 py-0 text-start">{val.cmn_lv_balance}</div>
+                                <div className="col-sm-2 py-0 text-start" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }} >{val.cmn_lv_allowed}</div>
+                                <div className="col-sm-1 py-0 text-start" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }} >{val.cmn_lv_taken}</div>
+                                <div className="col-sm-2 py-0 text-start" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }} >{val.cmn_lv_balance}</div>
                             </div>
                         </li>;
                     })
