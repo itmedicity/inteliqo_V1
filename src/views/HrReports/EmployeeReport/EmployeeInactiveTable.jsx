@@ -1,5 +1,6 @@
 import MaterialTable from 'material-table'
 import React, { Fragment, useEffect } from 'react'
+import Materialtable from 'src/views/Component/Materialtable'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const EmployeeInactiveTable = ({ tableData }) => {
@@ -23,7 +24,7 @@ const EmployeeInactiveTable = ({ tableData }) => {
             title: 'Department Section', field: 'sect_name', cellStyle: { minWidth: 300, maxWidth: 400 }
         },
         {
-            title: 'Emp Type', field: 'inst_emp_type', cellStyle: { minWidth: 200, maxWidth: 300 }
+            title: 'Emp Type', field: 'inst_emp_type', cellStyle: { minWidth: 300, maxWidth: 400 }
         },
         {
             title: 'Designation', field: 'desg_name', cellStyle: { minWidth: 300, maxWidth: 500 }
@@ -38,10 +39,10 @@ const EmployeeInactiveTable = ({ tableData }) => {
             title: 'DOB', field: 'em_dob', cellStyle: { minWidth: 200, maxWidth: 400 }
         },
         {
-            title: 'Permanent Address', field: 'addressPresent1', cellStyle: { minWidth: 900, maxWidth: 900 }
+            title: 'Permanent Address', field: 'addressPresent1', cellStyle: { minWidth: 700, maxWidth: 900 }
         },
         {
-            title: 'Permanent Address', field: 'addressPresent2', cellStyle: { minWidth: 900, maxWidth: 900 }
+            title: 'Permanent Address', field: 'addressPresent2', cellStyle: { minWidth: 700, maxWidth: 900 }
         },
         {
             title: 'Pin No', field: 'hrm_pin2', cellStyle: { minWidth: 200, maxWidth: 400 }
@@ -67,24 +68,8 @@ const EmployeeInactiveTable = ({ tableData }) => {
     ]
     return (
         <Fragment>
-            <MaterialTable title="Employee List With Status In Active"
-                data={tableData}
-                columns={title}
-                icons={tableIcons}
-                options={{
-                    paginationType: "stepped",
-                    showFirstLastPageButtons: false,
-                    padding: "dense",
-                    actionsColumnIndex: -1,
-                    exportButton: true,
-                    rowStyle: {
-                        backgroundColor: '#EEE',
-                    },
-                    headerStyle: {
-                        backgroundColor: '#01579b',
-                        color: '#FFF'
-                    }
-                }}
+            <Materialtable title="Employee List With Status In Active"
+                data={tableData} columns={title}
             />
         </Fragment>
     )
