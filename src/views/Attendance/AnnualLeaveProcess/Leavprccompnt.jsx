@@ -8,15 +8,11 @@ import { getProcessserialnum } from 'src/views/Constant/Constant';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment'
-const Leavprccompnt = ({ name, holidaycount }) => {
-
-
-
+const Leavprccompnt = ({ name, holidaycount, year }) => {
     // use sate for causltable rerender
     const [castable, setcastable] = useState(0)
     // use State foe serial number
     const [nameel, setname] = useState([])
-
     const [processslno, setprocessslno] = useState(0)
     // to check wheather data is present
     const [nodatacl, setnodatacl] = useState(0)
@@ -67,22 +63,14 @@ const Leavprccompnt = ({ name, holidaycount }) => {
         }
         )
         // data based on the calculation of earn leave
-
         const datatoselect = {
             emp_no: namee.em_id,
-            startdate: moment(startOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
-
-
-
-
-
-
         const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
         const { data, success } = result.data
         if (success === 1) {
-
             setleavestate(data[0])
             const { ecat_cont,
                 em_category
@@ -93,9 +81,8 @@ const Leavprccompnt = ({ name, holidaycount }) => {
                 em_id: namee.em_no
             }
             // check the table where data present if present get the details process table
-            const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+            const result = await axioslogin.post('/yearleaveprocess', postFormdata)
             const { success, message } = result.data;
-
             const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
                 lv_process_slno, next_updatedate } = message[0]
             const dataprvleave = {
@@ -109,7 +96,6 @@ const Leavprccompnt = ({ name, holidaycount }) => {
             }
             // if no data available
             if (success === 0) {
-
                 // if no data is present means new employee  set model
                 setmodelvalue(1)
                 setmodelmessage('Leave process is not done for the employee')
@@ -139,8 +125,6 @@ const Leavprccompnt = ({ name, holidaycount }) => {
                     setmodellist(true)
                 }
             }
-
-
             const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
             if (resultselect.data.success === 2) {
                 warningNofity('Yearly Process Already Done')
