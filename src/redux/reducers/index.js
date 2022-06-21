@@ -14,7 +14,11 @@ import { getAnnouncementList } from '../reducers/AnnouncementReducers'
 import { getModuleRightList } from '../reducers/GetModulerights'
 import { getEmployeeProcessRecord } from './LeaveProcessDetl.reducer';
 import { getRegionList } from '../reducers/RegionReducers'
-import { getProTaxList } from '../reducers/ProffessionalTaxReducer'
+import { getProTaxList } from '../reducers/ProffessionalTaxReducer';
+import { getEmployeeBloodgrp } from '../reducers/BloodgrpReducer';
+import { getEmployeeReligion } from '../reducers/ReligionReducer';
+import { getDistRegion } from '../reducers/DistRegionReducer';
+import { getDistrictList } from '../reducers/DistrictReducer'
 
 const reducer = combineReducers({
     changeState,
@@ -33,7 +37,11 @@ const reducer = combineReducers({
     getModuleRightList,
     getEmployeeProcessRecord,
     getRegionList,
-    getProTaxList
+    getProTaxList,
+    getEmployeeBloodgrp,
+    getEmployeeReligion,
+    getDistRegion,
+    getDistrictList
 })
 
 export default reducer;

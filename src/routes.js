@@ -157,6 +157,9 @@ const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/Em
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
 const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionEdit'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
+const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
+const ReligionReport = React.lazy(() => import('./views/HrReports/ReligionReports/ReligionReport '))
+const RegionReport = React.lazy(() => import('./views/HrReports/RegionReports/RegionReport '))
 
 
 const routes = [
@@ -320,6 +323,11 @@ const routes = [
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
   { path: '/Home/JobDescriptionEdit/:id', exact: true, name: 'JobDescription Edit', component: JobDescriptionEdit },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
+  { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
+  { path: '/Home/ReligionReport', exact: true, name: 'Employee Religion Report', component: ReligionReport },
+  { path: '/Home/RegionReport', exact: true, name: 'Employee Region Report', component: RegionReport },
+  { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
+
 ]
 
 export default routes
