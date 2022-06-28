@@ -109,7 +109,7 @@ const ContractCloseHrApprovalModel = ({ open, handleClose, slno, setCount, count
             setCount(count + 1)
             handleClose()
             if (approve === true) {
-                const result = await axioslogin.post('/dueclearence', dueDept)
+                await axioslogin.post('/dueclearence', dueDept)
             }
             else {
 

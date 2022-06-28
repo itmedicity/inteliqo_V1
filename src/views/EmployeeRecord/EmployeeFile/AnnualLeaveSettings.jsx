@@ -2,7 +2,7 @@ import { CircularProgress } from '@mui/material';
 import { compareAsc, lastDayOfYear, startOfYear } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { axioslogin } from 'src/views/Axios/Axios';

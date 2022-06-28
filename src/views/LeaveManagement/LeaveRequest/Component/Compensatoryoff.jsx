@@ -140,12 +140,12 @@ const Compensatoryoff = ({ setcopensatoryoff, em_id }) => {
         }
     }
     useEffect(() => {
-        if (punchoutdatamain != 0) {
+        if (punchoutdatamain !== 0) {
             const compensoffdata = {
                 startdate: startDate,
                 reqtype: reqtype,
                 shifturation: shifturation,
-                selectshitid: selectshitid,
+                // selectshitid: selectshitid,
                 punchin: punchindatamain,
                 punchout: punchoutdatamain,
                 selectshitid: selectshitid
@@ -246,4 +246,4 @@ const Compensatoryoff = ({ setcopensatoryoff, em_id }) => {
     )
 };
 
-export default Compensatoryoff;
+export default memo(Compensatoryoff);

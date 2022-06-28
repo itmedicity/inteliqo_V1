@@ -77,7 +77,7 @@ const StatutoryInformation = () => {
       }
     }
     getpfesi()
-  }, [UpdateGrade, id])
+  }, [UpdateGrade, id, Esiallowed])
 
   const reset = () => {
     Setenable(false)

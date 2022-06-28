@@ -26,6 +26,23 @@ const DepartmentSecEdit = () => {
 
     var { sect_name, authorization_incharge, authorization_hod, status } = setSecedetl;
     const { id } = useParams();
+    const [deptsubtype, setdeptsubtype] = useState({
+        general: true,
+        ot: false,
+        icu: false,
+        er: false,
+    })
+    const { general, ot, icu, er } = deptsubtype
+    const updateSectionStatus = async (e) => {
+        const ob1 = {
+            general: false,
+            ot: false,
+            icu: false,
+            er: false,
+        }
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setdeptsubtype({ ...ob1, [e.target.name]: value })
+    }
     useEffect(() => {
         const getSectionDetl = async () => {
             const result = await axioslogin.get(`/section/${id}`);
@@ -34,10 +51,11 @@ const DepartmentSecEdit = () => {
                 infoNofity('Somthing went wrong')
                 return;
             }
-            var { sect_name, dept_id, authorization_incharge, authorization_hod, status } = data[0];
+            var { sect_name, dept_id, authorization_incharge, authorization_hod, status, dept_sub_sect } = data[0];
             authorization_incharge = authorization_incharge === 1 ? true : false;
             authorization_hod = authorization_hod === 1 ? true : false;
             status = status === 1 ? true : false;
+
             const editsecData = {
                 sect_name,
                 authorization_incharge,
@@ -45,7 +63,14 @@ const DepartmentSecEdit = () => {
                 status,
                 dept_id: updateSelected(dept_id)
             }
+            const checkboxdata = {
+                general: dept_sub_sect === 1 ? true : false,
+                ot: dept_sub_sect === 2 ? true : false,
+                icu: dept_sub_sect === 3 ? true : false,
+                er: dept_sub_sect === 4 ? true : false
+            }
             updatesetSecedetl(editsecData);
+            setdeptsubtype(checkboxdata)
         }
         getSectionDetl();
     }, [id, updateSelected])
@@ -69,7 +94,8 @@ const DepartmentSecEdit = () => {
             sect_status: status,
             dept_id: selectedDept,
             edit_user: employeeNumber(),
-            sect_id: id
+            sect_id: id,
+            dept_sub_sect: general === true ? 1 : ot === true ? 2 : icu === true ? 3 : er === true ? 4 : 0
         }
         await axioslogin.patch('/section', updateData)
             .then((response) => {
@@ -146,6 +172,73 @@ const DepartmentSecEdit = () => {
                                     }
                                     label="Authorization for Leave and OT (HOD)"
                                 />
+                                {/* Departmentsubsection */}
+                                <div className="row" >
+                                    <div className=" col-md-12" >
+                                        <div className="row" >
+                                            <div className="col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="icu"
+                                                            value={icu}
+                                                            checked={icu}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="ICU"
+                                                />
+                                            </div>
+                                            <div className=" col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="er"
+                                                            value={er}
+                                                            checked={er}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="ER"
+                                                />
+                                            </div>
+                                            <div className=" col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="ot"
+                                                            value={ot}
+                                                            checked={ot}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="OT"
+                                                />
+                                            </div>
+                                            <div className="col-md-2">
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="general"
+                                                            value={general}
+                                                            checked={general}
+                                                            className="ml-0"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="General"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <FormControlLabel
                                     control={
                                         <Checkbox

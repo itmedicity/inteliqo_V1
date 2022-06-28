@@ -62,8 +62,8 @@ const HalfDayLeaveRequest = ({ sethalfday, em_id }) => {
         ecat_sl: 0,
         em_category: 0
     })
-    const { ecat_cl
-    } = leavestate
+    // const { ecat_cl
+    // } = leavestate
     useEffect(() => {
         const getshiftdata = async () => {
             const setformdataset = {
@@ -86,7 +86,6 @@ const HalfDayLeaveRequest = ({ sethalfday, em_id }) => {
         }
         const getcaual = async () => {
             const result1 = await axioslogin.get(`/yearleaveprocess/allwbleCL/${em_id}`)
-            console.log(result1)
             setcasual(1)
             if (result1.data.success === 1) {
                 setcasualleaveallowable(result1.data.data)
@@ -108,18 +107,18 @@ const HalfDayLeaveRequest = ({ sethalfday, em_id }) => {
         getcategorydata();
         getshiftdata()
         getcaual()
-    }, [formData])
+    }, [formData, em_id])
 
     const handeleonchange = async (e) => {
         setshifthalf(e.target.value)
         if (e.target.value === 1) {
             const result = await axioslogin.get(`/LeaveRequest/`)
-            const { success, data } = result.data
+            const { data } = result.data
             setCheckIn(new Date(data[0].first_half_in))
             setCheckOut(new Date(data[0].first_half_out))
         } else {
             const result = await axioslogin.get(`/LeaveRequest/getsecondhalf`)
-            const { success, data } = result.data
+            const { data } = result.data
             setCheckIn(new Date(data[0].second_half_in))
             setCheckOut(new Date(data[0].second_half_out))
         }

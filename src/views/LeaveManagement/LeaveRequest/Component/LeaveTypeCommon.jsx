@@ -52,7 +52,7 @@ const LeaveTypeCommon = ({ name, style, onChange, leavetype }) => {
             setleavestate(data[0])
         }
         getcategorydata();
-    }, [no])
+    }, [no, em_id])
     return (
 
         <Fragment>

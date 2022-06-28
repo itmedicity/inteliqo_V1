@@ -1,5 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react'
-
+import React, { Fragment, memo } from 'react'
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -13,16 +12,16 @@ import newYear from '../../../assets/images/newYear.jpg'
 import { useSelector } from 'react-redux';
 import AnnounceMentCmp from './AnnounceMentCmp';
 const Announcement = () => {
-    const [announcement, setannouncement] = useState([])
+    // const [announcement, setannouncement] = useState([])
     const Announcementlist = useSelector((state) => {
         return state.getAnnouncementList.AnnouncementList
     })
     // console.log(Announcementlist)
-    useEffect(() => {
-        if (Object.keys(Announcementlist).length > 0) {
-            setannouncement(Announcementlist)
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (Object.keys(Announcementlist).length > 0) {
+    //         setannouncement(Announcementlist)
+    //     }
+    // }, [])
     const annouStyle = {
         Width: '100%',
         height: 320,

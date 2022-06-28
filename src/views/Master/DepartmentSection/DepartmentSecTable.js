@@ -22,6 +22,9 @@ const DepartmentSecTable = ({ message }) => {
             title: 'Department', field: 'dept_name', align: 'left'
         },
         {
+            title: 'Sub Section', field: 'sub_sect_name', align: 'left', width: '10 % '
+        },
+        {
             title: 'Incharge Authorization', field: 'authorization_incharge', align: 'left'
         },
         {

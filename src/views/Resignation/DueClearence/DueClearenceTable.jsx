@@ -6,7 +6,6 @@ import AuthorizationDetails from 'src/views/CommonCode/AuthorizationDetails';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
-import id from 'date-fns/esm/locale/id/index.js';
 import { errorNofity } from 'src/views/CommonCode/Commonfunc';
 import DueClearenceApprovalModel from './DueClearenceApprovalModel';
 

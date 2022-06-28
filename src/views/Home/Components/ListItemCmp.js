@@ -1,5 +1,5 @@
-import { Avatar, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
-import React, { Fragment } from 'react'
+import { Avatar, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import React from 'react'
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 
 const ListItemCmp = ({ holidayName, allowed, credited, balance }) => {

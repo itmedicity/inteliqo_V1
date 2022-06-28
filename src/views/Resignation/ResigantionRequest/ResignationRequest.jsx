@@ -39,7 +39,7 @@ const ResignationRequest = () => {
             const getNoticePeriod = async () => {
                 const result = await axioslogin.get(`/designation/noticeperiod/${em_designation}`)
                 const { success, data } = result.data
-                if (success == 1) {
+                if (success === 1) {
                     const { desg_notice_prd } = data[0]
                     setNoticePeriod(desg_notice_prd)
                 }

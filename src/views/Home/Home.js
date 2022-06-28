@@ -1,28 +1,25 @@
 import React, { Fragment } from 'react'
-import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import ProfileComponent from './Components/ProfileComponent';
 import AppMenuBar from './Components/AppMenuBar';
-import { Grid, Paper } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Grid } from '@mui/material';
+// import { styled } from '@mui/material/styles';
 import Announcement from './Components/Announcement';
 import DashAlertCmp from './Components/DashAlertCmp';
 import HolidayList from './Components/HolidayList';
 import LeavesDashbod from './Components/LeavesDashbod';
+import CustomReport from '../Component/CustomReport';
 
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
+// const item = styled(Paper)(({ theme }) => ({
+//     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+//     ...theme.typography.body2,
+//     padding: theme.spacing(1),
+//     textAlign: 'center',
+//     color: theme.palette.text.secondary,
+// }));
 
 const Home = () => {
 
-    const login = useSelector((state) => {
-        // console.log(state)
-    })
 
     return (
         <Fragment>

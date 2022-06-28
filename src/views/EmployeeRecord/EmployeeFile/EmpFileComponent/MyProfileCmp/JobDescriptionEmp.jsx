@@ -1,4 +1,4 @@
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography } from '@mui/material'
+import { Avatar, Divider, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import React, { Fragment, memo } from 'react'
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
@@ -33,4 +33,4 @@ const JobDescriptionEmp = ({ data }) => {
     )
 }
 
-export default JobDescriptionEmp
+export default memo(JobDescriptionEmp)
