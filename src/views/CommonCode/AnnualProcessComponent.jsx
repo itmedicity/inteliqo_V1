@@ -1,5 +1,5 @@
 import { Button, Stack, Alert } from '@mui/material'
-import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, subYears, getYear } from 'date-fns'
+import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, getYear } from 'date-fns'
 import moment from 'moment'
 import React, { memo } from 'react'
 import { useSelector } from 'react-redux'
@@ -27,11 +27,11 @@ const AnnualProcessComponent = ({
 
     // destructuring  dataleave
     const {
-        ecat_cont,
+        // ecat_cont,
         ecat_esi_allow,
-        ecat_prob,
-        em_contract_end_date,
-        em_prob_end_date,
+        // ecat_prob,
+        // em_contract_end_date,
+        // em_prob_end_date,
         em_doj
     } = dataleave
 
@@ -67,18 +67,18 @@ const AnnualProcessComponent = ({
     const state = useSelector((state) => state.getEmployeeProcessRecord.ProcessRecord)
 
     const {
-        category_slno,
-        contract_end_date,
+        // category_slno,
+        // contract_end_date,
         date_of_join,
-        em_category,
+        // em_category,
         em_conf_end_date,
-        em_cont_close_date,
+        // em_cont_close_date,
         em_cont_end,
-        em_cont_renew,
+        // em_cont_renew,
         em_cont_start,
         is_under_contract,
         is_under_probation,
-        next_updatedate,
+        // next_updatedate,
         probation_end_date,
         em_gender
     } = state;
@@ -108,7 +108,7 @@ const AnnualProcessComponent = ({
 
             const startOfYears = moment(startOfYear(new Date())).format('YYYY-MM-DD'); // Current year First Day eg '01-01-YYYY'
             const endOfYears = moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'); // Current year Last Day eg '31-12-YYYY'
-            const dateOfjoin = moment(date_of_join).format('YYYY-MM-DD'); // Date Of joining
+            //const dateOfjoin = moment(date_of_join).format('YYYY-MM-DD'); // Date Of joining
             const contactStart = moment(em_cont_start).isValid() === true ? moment(em_cont_start).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract Start date
             const contractEnd = moment(em_cont_end).isValid() === true ? moment(em_cont_end).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract End date
             const confirmationDate = moment(em_conf_end_date).isValid() === true ? moment(em_conf_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
@@ -205,9 +205,9 @@ const AnnualProcessComponent = ({
             const startOfYears = moment(startOfYear(new Date())).format('YYYY-MM-DD'); // Current year First Day eg '01-01-YYYY'
             const endOfYears = moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'); // Current year Last Day eg '31-12-YYYY'
             const dateOfjoin = moment(date_of_join).format('YYYY-MM-DD'); // Date Of joining
-            const contactStart = moment(em_cont_start).isValid() === true ? moment(em_cont_start).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract Start date
-            const contractEnd = moment(em_cont_end).isValid() === true ? moment(em_cont_end).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract End date
-            const confirmationDate = moment(em_conf_end_date).isValid() === true ? moment(em_conf_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
+            //const contactStart = moment(em_cont_start).isValid() === true ? moment(em_cont_start).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract Start date
+            // const contractEnd = moment(em_cont_end).isValid() === true ? moment(em_cont_end).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract End date
+            //const confirmationDate = moment(em_conf_end_date).isValid() === true ? moment(em_conf_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
             const probationEndDate = moment(probation_end_date).isValid() === true ? moment(probation_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
 
             if (is_under_contract === 0 && is_under_probation === 0) {
@@ -265,7 +265,7 @@ const AnnualProcessComponent = ({
             contract: contractStartEndDate === undefined ? 1 : contractStartEndDate,
         }
         //Final Result for StartDate and EndDate
-        const dateStart = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.startDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.startDate : moment(new Date()).format('YYYY-MM-DD')
+        //const dateStart = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.startDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.startDate : moment(new Date()).format('YYYY-MM-DD')
         const dateEnd = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.endDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.endDate : moment(new Date()).format('YYYY-MM-DD')
 
         // function for casual leave

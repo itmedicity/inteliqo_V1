@@ -21,7 +21,7 @@ const DueClearenceApprovalModel = ({ open, handleClose, slno, setCount, count })
         em_department: '',
         em_dept_section: ''
     })
-    const { due_dept_code, due_emp_id, due_slno, em_department, em_dept_section } = approveData
+    const { due_dept_code, due_slno, em_department, em_dept_section } = approveData
     useEffect(() => {
         const getDueDetails = async () => {
             const result = await axioslogin.get(`/dueclearence/${slno}`)

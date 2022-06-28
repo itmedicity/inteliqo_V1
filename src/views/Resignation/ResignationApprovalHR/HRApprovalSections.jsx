@@ -1,6 +1,5 @@
 import { FormControl, MenuItem, Select } from "@material-ui/core";
-import { CommentSharp } from "@material-ui/icons";
-import React, { Fragment, useDebugValue, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { axioslogin } from "src/views/Axios/Axios";
 
 const HRApprovalSections = ({ name, select, style, onChange, DeptSect, updateDeptSect }) => {

@@ -80,9 +80,9 @@ export const notify = (no) => {
     }
 }
 
-export const jondescription = (desg) => {
+export const jondescription = (postData) => {
     return async (dispatch) => {
-        const result = await axioslogin.get(`/jobdescription/${desg}`)
+        const result = await axioslogin.post('/jobdescription/jobdesc', postData)
         const { success, data } = result.data
         if (success === 1) {
             dispatch({ type: FETCH_JOB_DESCRIPTION, payload: data })

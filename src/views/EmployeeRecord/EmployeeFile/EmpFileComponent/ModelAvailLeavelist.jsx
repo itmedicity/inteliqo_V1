@@ -46,7 +46,12 @@ const ModelAvailLeavelist = ({
         process_user: " "
     })
     const {
-        em_id, em_no, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld
+        em_id,
+        em_no,
+        hrm_clv,
+        hrm_cmn,
+        //hrm_ern_lv,
+        hrm_hld
     } = leaveproceedaata
 
     useEffect(() => {

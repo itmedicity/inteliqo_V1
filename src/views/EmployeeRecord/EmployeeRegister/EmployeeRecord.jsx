@@ -58,7 +58,7 @@ const EmployeeRecord = () => {
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
-    const [enable, setenable] = useState(true)
+    // const [enable, setenable] = useState(true)
     // usestate for age
     const [agestate, agesetstate] = useState({
         yearage: 0,

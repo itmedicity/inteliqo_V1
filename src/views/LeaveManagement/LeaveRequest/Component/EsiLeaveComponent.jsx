@@ -1,8 +1,8 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 
 const EsiLeaveComponent = ({ name, select, style, onChange, eL, getEarnleave }) => {
-    const { earnname, getEarnvalue } = getEarnleave
+    const { getEarnvalue } = getEarnleave
     return (
         <Fragment>
             <FormControl

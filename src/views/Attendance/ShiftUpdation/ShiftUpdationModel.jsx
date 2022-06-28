@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, formControlClasses } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import TextInput from 'src/views/Component/TextInput'
@@ -35,7 +35,7 @@ const ShiftUpdationModel = ({ open, handleClose, dutyday, empno, setApiData }) =
             const result = await axioslogin.post('/attendCal/attendanceshiftdetl', postData)
             const { success, data } = result.data
             if (success === 1) {
-                const { shift_id, shift_in, shift_out, shft_cross_day, punch_in, punch_out } = data[0]
+                const { shift_in, shift_out, shft_cross_day, punch_in, punch_out } = data[0]
                 const frmData = {
                     shift_in: shift_in,
                     shift_out: shift_out,
@@ -68,7 +68,7 @@ const ShiftUpdationModel = ({ open, handleClose, dutyday, empno, setApiData }) =
         const { success } = result.data
         if (success === 2) {
             const result = await axioslogin.patch('/attendCal/updateState', postDatapunchState)
-            const { success, message } = result.data
+            const { success } = result.data
             if (success === 2) {
                 succesNofity('Punch Updated Successfully')
                 setShift(defaultState)

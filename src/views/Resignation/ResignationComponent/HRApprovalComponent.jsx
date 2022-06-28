@@ -126,7 +126,7 @@ const HRApprovalComponent = ({ open, handleClose, slno, setCount, count }) => {
             setFormData(defaultState)
             handleClose()
             if (approve === true) {
-                const result = await axioslogin.post('/dueclearence', dueDept)
+                await axioslogin.post('/dueclearence', dueDept)
             }
             else {
 

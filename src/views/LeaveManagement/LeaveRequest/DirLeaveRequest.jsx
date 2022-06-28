@@ -71,7 +71,7 @@ const DirLeaveRequest = ({
                 const postdata = {
                     hrm_cl_slno: hrm_cl_slno
                 }
-                const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
+                await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
 
             }
         }
