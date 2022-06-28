@@ -302,7 +302,7 @@ const DashAlertCmp = () => {
         }
         getRegistRenew()
 
-    }, [])
+    }, [em_id])
 
     //get module rights
     const modulerights = useSelector((state) => {

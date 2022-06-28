@@ -1,10 +1,12 @@
 import { CircularProgress } from '@mui/material';
-import { compareAsc } from 'date-fns';
+import { compareAsc, lastDayOfYear, startOfYear } from 'date-fns';
+import moment from 'moment';
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
 import CalculatedOffDays from './EmpFileComponent/CalculatedOffDays';
@@ -157,78 +159,109 @@ const AnnualLeaveSettings = () => {
     }
     const submitprocess = () => {
         const getdata = async () => {
-            // check the table where data present if present get the details process table
-            /*
-                First check the "hrm_leave_process" table for any data if there
-                if success === 1 and if data {
-                    fetch the data from table and show in the "dataprvleave" variable
-                    values are 
-                        {category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld}
-                        hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld ==> value = 2 --> Not Applicable
-                                                                         ==> value = 1 --> Applicable
+            //CHECKING WHETHER THE DATA IS INSERTED INTO YEARLY LEAVE PROCESS TABLE
+            const datatoselect = {
+                emp_no: no,
+                startdate: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+                endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+            }
+            const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+            if (resultselect.data.success === 2) {
+                // check the table where data present if present get the details process table
+                /*
+                    First check the "hrm_leave_process" table for any data if there
+                    if success === 1 and if data {
+                        fetch the data from table and show in the "dataprvleave" variable
+                        values are 
+                            {category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld}
+                            hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld ==> value = 2 --> Not Applicable
+                                                                             ==> value = 1 --> Applicable
+                    }
+                */
+                const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+                const { success, message } = result.data;
+                const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                    lv_process_slno, next_updatedate } = message[0]
+                const dataprvleave = {
+                    hrm_calcu: hrm_calcu,
+                    hrm_clv: hrm_clv,
+                    hrm_cmn: hrm_cmn,
+                    hrm_ern_lv: hrm_ern_lv,
+                    hrm_hld: hrm_hld,
+                    category_slno: category_slno,
+                    lv_process_slno: lv_process_slno
                 }
-            */
-            const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
-            const { success, message } = result.data;
-            const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
-                lv_process_slno, next_updatedate } = message[0]
-            const dataprvleave = {
-                hrm_calcu: hrm_calcu,
-                hrm_clv: hrm_clv,
-                hrm_cmn: hrm_cmn,
-                hrm_ern_lv: hrm_ern_lv,
-                hrm_hld: hrm_hld,
-                category_slno: category_slno,
-                lv_process_slno: lv_process_slno
-            }
-            // if no data available
-            if (success === 0) {
-                /*
-                    If no data is present means new employee  set model
+                // if no data available
+                if (success === 0) {
+                    /*
+                        If no data is present means new employee  set model
+    
+                        success === 0 means --> No data available in the "hrm_leave_process" table 
+                        ie: New Employee , This is the initial process , after this leave process 
+                        one entry saved in "hrm_leave_process" table with next_updatedate and "hrm_process_status == A" (A -> Active) "N" --> Inactive
+                        Open the Model Component -->  <ModelLeaveProcess/>
+                    */
+                    setmodelvalue(1)
+                    setmodelmessage('Leave process is not done for the employee')
+                    setolddat(1)  // Updated the olddata === 1 for identify this is the new Process , default is 0 ,0 means not a new process
+                    setOpen(true)
+                }
+                else if (success === 1) {
+                    leaveprocessidupdate(dataprvleave)
+                    // if employee process date has over 
+                    /*
+                        If the current date "new Date()" > "next_updatedate" --> needed to open the model and needed to Leave Process again
+                        and "hrm_process_status == A" (A -> Active)
+                        Open the Model Component -->  <ModelLeaveProcess/>
+                    */
+                    if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                        setOpen(true)
+                        setmodelvalue(1)
+                        setmodelmessage('Date Exceeded do you Want To Process')
+                    }
+                    /*
+                        If any category change happens --> needed to open the model and needed to Leave Process again
+                        and "hrm_process_status == A" (A -> Active)
+                        Open the Model Component -->  <ModelLeaveProcess/>
+                    */
+                    else if (category_slno !== em_category) {
+                        setmodelvalue(1)
+                        setmodelmessage('Category Change Do You Want to  To Process')
+                        setOpen(true)
+                    }
+                    /*
+                        // if process contain data and pending leave process is present
+                            If "hrm_leave_process" table have the new row with "hrm_process_status" column have the 'A' status ( Active status ) 
+                            and following column is hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0
+                            then the <ModelAvailLeavelist/> model open for Process
+                    */
+                    else if (hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                        setmodellist(true)
+                    }
+                    else {
+                        warningNofity("Leave Process Is Already Done For This Employee")
+                    }
+                }
 
-                    success === 0 means --> No data available in the "hrm_leave_process" table 
-                    ie: New Employee , This is the initial process , after this leave process 
-                    one entry saved in "hrm_leave_process" table with next_updatedate and "hrm_process_status == A" (A -> Active) "N" --> Inactive
-                    Open the Model Component -->  <ModelLeaveProcess/>
-                */
-                setmodelvalue(1)
-                setmodelmessage('Leave process is not done for the employee')
-                setolddat(1)  // Updated the olddata === 1 for identify this is the new Process , default is 0 ,0 means not a new process
-                setOpen(true)
-            }
-            else if (success === 1) {
-                leaveprocessidupdate(dataprvleave)
-                // if employee process date has over 
-                /*
-                    If the current date "new Date()" > "next_updatedate" --> needed to open the model and needed to Leave Process again
-                    and "hrm_process_status == A" (A -> Active)
-                    Open the Model Component -->  <ModelLeaveProcess/>
-                */
-                if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+
+            } else if (resultselect.data.success === 1) {
+                const yearlyleavedata = {
+                    em_no: id,
+                    em_id: no,
+                    proceeuser: 1,
+                    year_of_process: moment(startOfYear(new Date())).format('YYYY-MM-DD')
+                }
+                const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
+                if (resultinsert.data.success === 1) {
                     setOpen(true)
                     setmodelvalue(1)
                     setmodelmessage('Date Exceeded do you Want To Process')
                 }
-                /*
-                    If any category change happens --> needed to open the model and needed to Leave Process again
-                    and "hrm_process_status == A" (A -> Active)
-                    Open the Model Component -->  <ModelLeaveProcess/>
-                */
-                else if (category_slno !== em_category) {
-                    setmodelvalue(1)
-                    setmodelmessage('Category Change Do You Want to  To Process')
-                    setOpen(true)
-                }
-                /*
-                    // if process contain data and pending leave process is present
-                        If "hrm_leave_process" table have the new row with "hrm_process_status" column have the 'A' status ( Active status ) 
-                        and following column is hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0
-                        then the <ModelAvailLeavelist/> model open for Process
-                */
-                else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
-                    setmodellist(true)
+                else {
+                    warningNofity('Please Contact Edp')
                 }
             }
+
         }
         getdata()
     }

@@ -38,12 +38,17 @@ const AnnualLeaveProcess = () => {
             startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
             endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
+        const postdata2 = {
+            dp_sec: selectDeptSection,
+            startdate: moment(startOfYear(new Date(year))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
+        }
         //holdys of the year
-        const result2 = await axioslogin.post('/yearleaveprocess/holidaylistyear', postdata)
+        const result2 = await axioslogin.post('/yearleaveprocess/holidaylistyear', postdata2)
         if (result2.data.success === 2) {
             setholidaycount((result2.data.data).length)
             // data based on the calculation of earn leave
-            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', postdata)
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', postdata2)
             const { success, data } = result.data;
             if (success === 2) {
                 setname(data)

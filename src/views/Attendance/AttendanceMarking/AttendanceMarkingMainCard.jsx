@@ -1,6 +1,6 @@
-import { LinearProgress, Typography } from '@mui/material'
+import { LinearProgress } from '@mui/material'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, memo, Suspense, useEffect } from 'react'
 import Paper from '@mui/material/Paper';
 import '../styleattnd.css'
 import AttandanceDatecmpont from './AttandanceDatecmpont';

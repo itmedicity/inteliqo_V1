@@ -1,5 +1,5 @@
 import {
-    Card, Badge, CardActionArea, CardContent, CardHeader, Grid, Avatar,
+    Card, CardActionArea, CardContent, CardHeader, Grid, Avatar,
     IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography,
     ListItemButton, ListItemIcon, Tooltip, Skeleton
 } from '@mui/material'
@@ -27,9 +27,6 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import ProfilePicDefault from '../../../../../assets/images/default.png'
 import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
-import MessageIcon from '@mui/icons-material/Message';
-import EmailIcon from '@mui/icons-material/Email';
 import MyProfileExpQualify from './MyProfileExpQualify';
 import MyProfleExperience from './MyProfleExperience';
 import MyProfileSalary from './MyProfileSalary';
@@ -43,9 +40,11 @@ import CategoryIcon from '@mui/icons-material/Category';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
+import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
+import ProfileVerificationModal from './ProfileVerificationModal';
 
 
-const MyProfilePersonalInform = ({ empid, redirect }) => {
+const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
 
     const [src, setSrc] = useState(ProfilePicDefault)
     const profilePic = `${PUBLIC_NAS_FOLDER + empid}/profilePic.jpg`;
@@ -78,7 +77,7 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
     }, [empid, profilePic])
 
     const {
-        addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name,
+        addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no
@@ -113,12 +112,22 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
         probEndDate: em_conf_end_date === null ? 'NOT UPATED' : em_conf_end_date,
         constractEnd: em_contract_end_date === null ? 'NOT UPATED' : em_contract_end_date,
         retirement: em_retirement_date === null ? 'NOT UPATED' : em_retirement_date,
+        verification_status: verification_status === null ? 'NOT UPDATED' : verification_status
     }
-
-
+    const [modeopen, setModelopen] = useState(0)
+    const [open, setOpen] = useState(false)
+    //function verifying the profile
+    const getVerification = async (empid) => {
+        setModelopen(empid)
+        setOpen(true)
+    }
+    const handleClose = async () => {
+        setOpen(false)
+    }
 
     return (
         <Fragment>
+            <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose} count={count} setCount={setCount} />
             <Card sx={{ borderRadius: 2, boxShadow: 5 }} >
                 <CardHeader
                     // sx={{ backgroundColor: '#b6b8c3' }}
@@ -159,23 +168,13 @@ const MyProfilePersonalInform = ({ empid, redirect }) => {
                     action={
                         <Fragment>
 
-                            <IconButton aria-label="settings">
-                                <Badge badgeContent={4} color="secondary">
-                                    <MessageIcon fontSize='large' sx={{ color: "#64b5f6" }} />
-                                </Badge>
+                            <IconButton aria-label="settings" sx={{ marginLeft: 10 }}
+                                onClick={() => getVerification(empid)}
+                                disabled={emp.verification_status === 1 ? true : false}
+                            >
+                                <VerifiedSharpIcon fontSize='large' color={emp.verification_status === 1 ? 'success' : 'error'} />
                             </IconButton>
-                            <IconButton aria-label="settings">
-                                <Badge badgeContent={4} color="secondary">
-                                    <NotificationImportantIcon fontSize='large' sx={{ color: "#f44336" }} />
-                                </Badge>
-                            </IconButton>
-                            <IconButton aria-label="settings">
-                                <Badge badgeContent={4} color="secondary">
-                                    <EmailIcon fontSize='large' sx={{ color: "#81c784" }} />
-                                </Badge>
-                            </IconButton>
-
-                            <IconButton aria-label="settings" sx={{ marginLeft: 10 }} onClick={() => redirect()} >
+                            <IconButton aria-label="settings" sx={{ marginLeft: 3 }} onClick={() => redirect()} >
                                 <CloseIcon fontSize='large' sx={{ color: "#212121" }} />
                             </IconButton>
                         </Fragment>

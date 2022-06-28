@@ -1,14 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Actiontypes } from '../redux/constants/action.type'
-
 import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
-
 import { AppSidebarNav } from './AppSidebarNav'
-
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
-
 import { axioslogin } from 'src/views/Axios/Axios'
 
 //NAV BAR IMPORT

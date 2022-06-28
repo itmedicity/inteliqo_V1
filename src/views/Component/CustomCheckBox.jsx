@@ -7,32 +7,28 @@ const CustomCheckBox = ({
 
     const customStyle = {
         paddingLeft: 2,
-        paddingY: 0.3,
-        paddingTop: 0,
-        paddingBottom: 0,
-        marginTop: 0,
-        marginBottom: 0
+        paddingY: 0.3
     }
+
     return (
-        // <FormControl
-        //     fullWidth
-        //     margin='dense'
-        // >
-        <FormControlLabel
-            sx={{ ...customStyle, ...style }}
-            control={
-                <Checkbox
-                    name={name}
-                    color={color}
-                    value={value}
-                    onChange={(e) => onChange(e)}
-                    sx={{ padding: '0.2rem' }}
-                />
-            }
-            label={label}
+        <FormControl
+            fullWidth
+            margin='dense'
         >
-        </FormControlLabel>
-        // </FormControl>
+            <FormControlLabel
+                sx={{ ...customStyle, ...style }}
+                control={
+                    <Checkbox
+                        name={name}
+                        color={color}
+                        value={value}
+                    // onChange={(e) => onChange(e)}
+                    />
+                }
+                label={label}
+            >
+            </FormControlLabel>
+        </FormControl>
     )
 }
 

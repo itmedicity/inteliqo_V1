@@ -6,8 +6,6 @@ import ShiftHalfdayComponent from './Component/ShiftHalfdayComponent'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { format } from 'date-fns'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { useContext } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 
 const NoPunchRequest = ({ setnopunch, em_id }) => {
@@ -21,7 +19,7 @@ const NoPunchRequest = ({ setnopunch, em_id }) => {
         plan_slno: ''
     }])
     const { shift_id,
-        shft_desc,
+        // shft_desc,
         shft_chkin_time,
         shft_chkout_time, plan_slno } = shiftdata[0]
 

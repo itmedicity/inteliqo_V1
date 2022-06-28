@@ -5,7 +5,6 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import ResignationApproveModel from '../ResignationComponent/ResignationApproveModel';
 import HodResignationApproval from '../ResignationComponent/HodResignationApproval';
 
 const HodApprovalTableSection = ({ DeptSect }) => {
@@ -76,7 +75,7 @@ const HodApprovalTableSection = ({ DeptSect }) => {
                             icon: () => <AddTaskRoundedIcon color='success' />,
                             tooltip: "Click Here to Approve/Reject",
                             onClick: (e, data) => handleClickOpen(data.resig_slno),
-                            disabled: tableData.inch_app_status == 'Approved'
+                            disabled: tableData.inch_app_status === 'Approved'
 
                         }
                     )

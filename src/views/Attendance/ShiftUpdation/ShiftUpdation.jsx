@@ -1,8 +1,7 @@
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from '@mui/material'
-import React, { Fragment, useContext, useEffect, memo } from 'react'
+import React, { Fragment, useContext, useEffect } from 'react'
 import Paper from '@mui/material/Paper';
 import { useHistory } from 'react-router'
-import CustomePagination from 'src/views/CommonCode/CustomePagination';
 import TextInput from 'src/views/Component/TextInput'
 import { FcPlus, FcCancel, FcProcess } from "react-icons/fc";
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -22,26 +21,6 @@ import { styled } from '@mui/system';
 const ShiftTableDataRow = React.lazy(() => import('./ShiftUpdationTblRow'))
 
 const ShiftUpdation = () => {
-
-    function createData(name, calories, fat) {
-        return { name, calories, fat };
-    }
-
-    const rows = [
-        createData('Cupcake', 305, 3.7),
-        createData('Donut', 452, 25.0),
-        createData('Eclair', 262, 16.0),
-        createData('Frozen yoghurt', 159, 6.0),
-        createData('Gingerbread', 356, 16.0),
-        createData('Honeycomb', 408, 3.2),
-        createData('Ice cream sandwich', 237, 9.0),
-        createData('Jelly Bean', 375, 0.0),
-        createData('KitKat', 518, 26.0),
-        createData('Lollipop', 392, 0.2),
-        createData('Marshmallow', 318, 0),
-        createData('Nougat', 360, 19.0),
-        createData('Oreo', 437, 18.0),
-    ].sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
 
     const blue = {
@@ -298,7 +277,7 @@ const ShiftUpdation = () => {
                 const postdata = {
                     hrm_cl_slno: hrm_cl_slno
                 }
-                const result = await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
+                await axioslogin.patch('/yearleaveprocess/creditcasual', postdata)
             }
         }
     }
@@ -475,15 +454,15 @@ const ShiftUpdation = () => {
                                         })
                                         //UPDATE HOLIDAY CREDITED IF EMPLOYEE SALARY IS GREATER THAN 21000 AND EMPLOYEE IS WORKED ON THAT DAY
                                         if (holidaycredit.length > 0) {
-                                            const result = await axioslogin.patch("/attendCal/holidaycredit", holidaycredit)
+                                            await axioslogin.patch("/attendCal/holidaycredit", holidaycredit)
                                         }
                                         //update holiday taken if employee is not presented on that day
                                         if (holidaytaken.length > 0) {
-                                            const result = await axioslogin.patch("/attendCal/holidaytaken", holidaytaken)
+                                            await axioslogin.patch("/attendCal/holidaytaken", holidaytaken)
                                         }
                                         //update holiday taken if employee is present on that day and gross salary is greater than 21000
                                         if (holidaytakendoublesalary.length > 0) {
-                                            const result = await axioslogin.patch("/attendCal/holidaytaken", holidaytakendoublesalary)
+                                            await axioslogin.patch("/attendCal/holidaytaken", holidaytakendoublesalary)
                                         }
                                     }
                                     else {

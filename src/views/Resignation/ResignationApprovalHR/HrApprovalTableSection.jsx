@@ -85,4 +85,4 @@ const HrApprovalTableSection = ({ DeptSect }) => {
     )
 };
 
-export default HrApprovalTableSection;
+export default memo(HrApprovalTableSection);

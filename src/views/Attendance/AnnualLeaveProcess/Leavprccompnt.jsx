@@ -6,8 +6,9 @@ import { compareAsc } from 'date-fns';
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { lastDayOfYear, startOfYear, sub } from 'date-fns';
+import { lastDayOfYear, startOfYear } from 'date-fns';
 import moment from 'moment'
+import ModelAvailLeavelist from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelAvailLeavelist';
 const Leavprccompnt = ({ name, holidaycount, year }) => {
     // use sate for causltable rerender
     const [castable, setcastable] = useState(0)
@@ -52,6 +53,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
         lv_process_slno: 0,
         category_slno: 0
     });
+    const { lv_process_slno } = leaveprocessid
     const getempldata = async (namee) => {
         setname(namee)
         setemnoid({
@@ -65,96 +67,95 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
         // data based on the calculation of earn leave
         const datatoselect = {
             emp_no: namee.em_id,
-            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(new Date(year))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
         }
-        const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
-        const { data, success } = result.data
-        if (success === 1) {
-            setleavestate(data[0])
-            const { ecat_cont,
-                em_category
-            } = data[0]
-            const postFormdata =
-            {
-                em_no: namee.em_id,
-                em_id: namee.em_no
-            }
-            // check the table where data present if present get the details process table
-            const result = await axioslogin.post('/yearleaveprocess', postFormdata)
-            const { success, message } = result.data;
-            const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
-                lv_process_slno, next_updatedate } = message[0]
-            const dataprvleave = {
-                hrm_calcu: hrm_calcu,
-                hrm_clv: hrm_clv,
-                hrm_cmn: hrm_cmn,
-                hrm_ern_lv: hrm_ern_lv,
-                hrm_hld: hrm_hld,
-                category_slno: category_slno,
-                lv_process_slno: lv_process_slno
-            }
-            // if no data available
-            if (success === 0) {
-                // if no data is present means new employee  set model
-                setmodelvalue(1)
-                setmodelmessage('Leave process is not done for the employee')
-                setolddat(1)
-                setOpen(true)
-            }
-            else if (success === 1) {
-                leaveprocessidupdate(dataprvleave)
-                // if employee process date has over 
-                if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
-                    if (ecat_cont === 1 && (new Date(next_updatedate) >= new Date())) {
-                        setOpen(true)
+        const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+        if (resultselect.data.success === 2) {
+
+
+            const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
+            const { data, success } = result.data
+            if (success === 1) {
+                setleavestate(data[0])
+                const { ecat_cont,
+                    em_category
+                } = data[0]
+                const postFormdata =
+                {
+                    em_no: namee.em_id,
+                    em_id: namee.em_no
+                }
+                // check the table where data present if present get the details process table
+                const result = await axioslogin.post('/yearleaveprocess', postFormdata)
+                const { success, message } = result.data;
+                const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                    lv_process_slno, next_updatedate } = message[0]
+                const dataprvleave = {
+                    hrm_calcu: hrm_calcu,
+                    hrm_clv: hrm_clv,
+                    hrm_cmn: hrm_cmn,
+                    hrm_ern_lv: hrm_ern_lv,
+                    hrm_hld: hrm_hld,
+                    category_slno: category_slno,
+                    lv_process_slno: lv_process_slno
+                }
+                // if no data available
+                if (success === 0) {
+                    // if no data is present means new employee  set model
+                    setmodelvalue(1)
+                    setmodelmessage('Leave process is not done for the employee')
+                    setolddat(1)
+                    setOpen(true)
+                }
+                else if (success === 1) {
+                    leaveprocessidupdate(dataprvleave)
+                    // if employee process date has over 
+                    if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                        if (ecat_cont === 1 && (new Date(next_updatedate) >= new Date())) {
+                            setOpen(true)
+                            setmodelvalue(1)
+                            setmodelmessage('Date Exceeded do you Want To Process')
+                        }
+                        else {
+                            warningNofity('Please do contract renewal')
+                        }
+                    }
+                    else if (category_slno !== em_category) {
                         setmodelvalue(1)
-                        setmodelmessage('Date Exceeded do you Want To Process')
+                        setmodelmessage('Category Change Do You Want to  To Process')
+                        setOpen(true)
                     }
-                    else {
-                        warningNofity('Please do contract renewal')
+                    // if process contain data and pending leave process is present
+                    else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                        setmodellist(true)
                     }
-                }
-                else if (category_slno !== em_category) {
-                    setmodelvalue(1)
-                    setmodelmessage('Category Change Do You Want to  To Process')
-                    setOpen(true)
-                }
-                // if process contain data and pending leave process is present
-                else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
-                    setmodellist(true)
                 }
             }
-            const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
-            if (resultselect.data.success === 2) {
-                warningNofity('Yearly Process Already Done')
 
-            } else if (resultselect.data.success === 1) {
-                const yearlyleavedata = {
-                    em_no: id,
-                    em_id: no,
-                    proceeuser: 1,
-                    year_of_process: moment(startOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD')
-                }
-                const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
-
-
-                if (resultinsert.data.success === 1) {
-                    setOpen(true)
-                    setmodelvalue(1)
-                    setmodelmessage('Date Exceeded do you Want To Process')
-                }
-                else {
-                    warningNofity('Please Contact Edp')
-                }
+        } else if (resultselect.data.success === 1) {
+            const yearlyleavedata = {
+                em_no: namee.em_no,
+                em_id: namee.em_id,
+                proceeuser: 1,
+                year_of_process: moment(startOfYear(new Date(year))).format('YYYY-MM-DD')
+            }
+            const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
+            if (resultinsert.data.success === 1) {
+                setOpen(true)
+                setmodelvalue(1)
+                setmodelmessage('Date Exceeded do you Want To Process')
+            }
+            else {
+                warningNofity('Please Contact Edp')
             }
         }
+
     }
 
     const handleClose = () => {
         setmodellist(false)
     }
-
     return (
         <Fragment>
 
@@ -182,6 +183,18 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                 setmodelvalue={setmodelvalue}
                 modellist={modellist}
                 nameel={nameel}
+            /> : null}
+            {modellist === true ? <ModelAvailLeavelist
+                open={modellist} //for open model
+                handleClose={handleClose}
+                dataleave={leavestate} // {leaves available based on category}
+                lv_process_slnocurrent={lv_process_slno}//previous process data
+                setcastable={setcastable}//casual leave table rerender
+                setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
+                setnodatael={setnodatael} //dataset render  for rerendering the earnleave
+                setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
+                setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
+                nodatafixed={nodatafixed}
             /> : null}
             {name && name.map((val, index) => {
                 return <TableRow key={val.em_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

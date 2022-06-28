@@ -7,7 +7,7 @@ import { MdDelete } from "react-icons/md"
 
 const HodMarkingTable = ({ update }) => {
     const [data, setData] = useState();
-    const [count, setcount] = useState(0)
+    const [count, setcount] = useState(0);
 
     const title = [
         {

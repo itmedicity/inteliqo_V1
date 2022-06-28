@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
 import { styled } from '@mui/system';
 

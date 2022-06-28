@@ -159,7 +159,7 @@ const DutyPlanning = () => {
               setDuty(1)
               setDuty1(1)
               if (hldadata.length > 0) {
-                const result = await axioslogin.patch("/plan/holiday", hldadata)
+                await axioslogin.patch("/plan/holiday", hldadata)
 
               }
             }
@@ -188,7 +188,7 @@ const DutyPlanning = () => {
             setDuty(1)
             setDuty1(duty1 + 1)
             if (hldadata.length > 0) {
-              const result = await axioslogin.patch("/plan/holiday", hldadata)
+              await axioslogin.patch("/plan/holiday", hldadata)
             }
 
           }

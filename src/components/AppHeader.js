@@ -30,7 +30,6 @@ import { setMsgList } from 'src/redux/actions/Message.actions'
 import { setAnnouncementList } from 'src/redux/actions/Announcement.action'
 import { setModuleRightsList } from 'src/redux/actions/ModuleRights.Action'
 import { setRegionList } from 'src/redux/actions/Region.Actions'
-import ReactTooltip from 'react-tooltip'
 
 
 const AppHeader = () => {

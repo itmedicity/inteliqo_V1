@@ -31,8 +31,8 @@ const RegionSelect2 = () => {
                             paddingLeft: 1.5,
                             color: "#898a8c",
                             borderColor: '#b1b7c1',
-                            color: (theme) =>
-                                theme.palette.getContrastText(theme.palette.background.paper),
+                            // color: (theme) =>
+                            //     theme.palette.getContrastText(theme.palette.background.paper),
                         }
                     }}
                     value={input}

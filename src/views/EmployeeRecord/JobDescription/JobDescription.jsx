@@ -81,6 +81,7 @@ const JobDescription = () => {
             getjobdescription()
         }
 
+
     }, [selectDesignation, count, selectedDept])
     //edit job description
     const getJobDescription = async (slno) => {
