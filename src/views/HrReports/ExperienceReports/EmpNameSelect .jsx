@@ -2,7 +2,8 @@ import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { setEmployeeName } from 'src/redux/actions/Empname.Action';
+import { setEmployeeName } from 'src/redux/actions/EmpName.Action';
+
 
 
 const EmpNameSelect = ({ name, style, onChange, sect }) => {

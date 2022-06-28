@@ -5,12 +5,12 @@ import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import { IconButton } from '@material-ui/core'
 import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
-import DeptSectionSelect from './DeptSectionSelect'
 import EmployeeExperienceTable from './EmployeeExperienceTable'
-import DepartmentSelect from './DepartmentSelect';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
-import EmpNameSelect from './EmpNameSelect'
 import SearchIcon from '@mui/icons-material/Search';
+import DepartmentSelect from './DepartmentSelect '
+import DeptSectionSelect from './DeptSectionSelect '
+import EmpNameSelect from './EmpNameSelect '
 
 
 const ExperienceReport = () => {
