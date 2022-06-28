@@ -1,7 +1,5 @@
-import MaterialTable from 'material-table'
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 import Materialtable from 'src/views/Component/Materialtable'
-import { tableIcons } from 'src/views/Constant/MaterialIcon'
 
 const EmployeeReportTable = ({ tableData }) => {
     const title = [

@@ -3,7 +3,7 @@ import React from 'react'
 import { CARD_HEADER_COLOR, CARD_SUB_HEADER_COLOR } from 'src/views/Constant/Constant'
 
 const CardLeaveContainerTwo = ({ children, title }) => {
-    const { mainHeading, headingOne, headingThee, headingFour, headingFive } = title
+    const { mainHeading, headingOne } = title
     return (
         <div className="card">
             <div className="card-header py-0 d-flex justify-content-between" style={CARD_HEADER_COLOR} >

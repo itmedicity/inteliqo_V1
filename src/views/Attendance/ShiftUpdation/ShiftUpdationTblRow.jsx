@@ -1,5 +1,5 @@
-import { TableCell, TableRow, Avatar, LinearProgress } from '@mui/material'
-import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
+import { TableCell, TableRow, Avatar } from '@mui/material'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { deepOrange, deepPurple, green, brown, pink } from '@mui/material/colors';
 import { blueGrey } from '@material-ui/core/colors';
 import Shiftfirstcol from './Shiftfirstcol';
@@ -115,4 +115,4 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
     )
 }
 
-export default ShiftUpdationTblRow
+export default memo(ShiftUpdationTblRow)

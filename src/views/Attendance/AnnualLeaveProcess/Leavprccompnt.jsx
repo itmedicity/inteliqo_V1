@@ -6,7 +6,7 @@ import { compareAsc } from 'date-fns';
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { lastDayOfYear, startOfYear, sub } from 'date-fns';
+import { lastDayOfYear, startOfYear } from 'date-fns';
 import moment from 'moment'
 import ModelAvailLeavelist from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelAvailLeavelist';
 const Leavprccompnt = ({ name, holidaycount, year }) => {
@@ -53,7 +53,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
         lv_process_slno: 0,
         category_slno: 0
     });
-    const { lv_process_slno, category_slno } = leaveprocessid
+    const { lv_process_slno } = leaveprocessid
     const getempldata = async (namee) => {
         setname(namee)
         setemnoid({

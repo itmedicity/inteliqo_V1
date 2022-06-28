@@ -22,7 +22,7 @@ const MyProfileSalary = () => {
     return (
         <Fragment>
             {status === false ? <CardHeader
-                title="Professional Experience"
+                title="Job Description"
                 titleTypographyProps={{
                     variant: 'button',
                 }}

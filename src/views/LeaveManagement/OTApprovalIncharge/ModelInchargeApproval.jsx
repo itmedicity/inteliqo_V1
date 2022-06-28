@@ -155,7 +155,7 @@ const ModelInchargeApproval = ({ open, handleClose, otno, setCount, count }) => 
             setdays(othr)
             setFlag(2)
         } else { }
-    }, [otAdd.totalot])
+    }, [otAdd.totalot, otslno.length])
 
     const patchData = {
         ot_inch_status: approve === true ? 1 : reject === true ? 2 : 0,

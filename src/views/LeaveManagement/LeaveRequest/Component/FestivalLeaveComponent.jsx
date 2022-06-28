@@ -1,8 +1,8 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 
 const FestivalLeaveComponent = ({ name, select, style, onChange, FL, gethldleave }) => {
-    const { festivalname, getfestivalvalue } = gethldleave
+    const { getfestivalvalue } = gethldleave
     return (
         <Fragment>
             <FormControl

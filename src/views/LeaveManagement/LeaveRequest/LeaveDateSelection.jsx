@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import React, { Fragment, useContext, useState, memo } from 'react';
+import React, { Fragment, useState, memo } from 'react';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import TestCasulLeave from './Component/TestCasulLeave';
 import TestLeaveType from './Component/TestLeaveType';
@@ -45,7 +45,7 @@ const LeaveDateSelection = ({
         dsname: '',
         getvalvalue: 0
     });
-    const { dsname, getvalvalue } = getcasleave
+    // const { dsname, getvalvalue } = getcasleave
     const [gethldleave, updategethldleave] = useState({
         hldname: '',
         gethldvalvalue: 0
@@ -68,7 +68,7 @@ const LeaveDateSelection = ({
         coffname: '',
         getcoffvalvalue: 0
     });
-    const { hldname, gethldvalvalue } = gethldleave
+    const { hldname } = gethldleave
 
     // on change of allowable leave 
     const handleChange = ({ target: { name, value }, nativeEvent }) => {

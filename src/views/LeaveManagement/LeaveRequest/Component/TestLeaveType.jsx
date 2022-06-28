@@ -1,9 +1,7 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment, useEffect } from 'react'
-import { useContext } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
 
 const TestLeaveType = ({ name, style, onChange, leavetype, em_id }) => {
@@ -31,7 +29,7 @@ const TestLeaveType = ({ name, style, onChange, leavetype, em_id }) => {
     } = leavestate
 
     // get id and number of logged user
-    const { id, no } = useParams()
+    const { no } = useParams()
     useEffect(() => {
         const getleaveTypeData = async () => {
             const result = await axioslogin.get('/leaveType/select')
@@ -48,7 +46,7 @@ const TestLeaveType = ({ name, style, onChange, leavetype, em_id }) => {
             setleavestate(data[0])
         }
         getcategorydata();
-    }, [no])
+    }, [no, em_id])
 
     return (
         <Fragment>

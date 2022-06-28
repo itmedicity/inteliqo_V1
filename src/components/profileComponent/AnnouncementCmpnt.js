@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect } from 'react'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-const AnnouncementContent = ({ handleClose, alerts }) => {
+const AnnouncementContent = ({ alerts }) => {
     return (
         <Fragment>
             <MenuItem >

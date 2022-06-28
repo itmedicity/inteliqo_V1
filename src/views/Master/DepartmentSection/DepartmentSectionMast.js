@@ -11,6 +11,7 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import DepartmentSecTable from './DepartmentSecTable'
 
+
 const DepartmentSectionMast = () => {
     const history = useHistory();
     // Material Class Call
@@ -27,13 +28,34 @@ const DepartmentSectionMast = () => {
     const sectionStatus = septSectionStatus === true ? 1 : 0;
     const [count, setCount] = useState(0);
 
+
+    const [deptsubtype, setdeptsubtype] = useState({
+        general: true,
+        ot: false,
+        icu: false,
+        er: false,
+    })
+    const { general, ot, icu, er } = deptsubtype
+    const updateSectionStatus = async (e) => {
+        const ob1 = {
+            general: false,
+            ot: false,
+            icu: false,
+            er: false,
+        }
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setdeptsubtype({ ...ob1, [e.target.name]: value })
+    }
+    //department sub sectionvalue
+    //general-1,ot-2,icu-3,er-4
     const deptSectValus = {
         sect_name: deptSectionName,
         dept_id: selectedDept,
         authorization_incharge: inchargestatus,
         authorization_hod: hodstatus,
         sect_status: sectionStatus,
-        create_user: employeeNumber()
+        create_user: employeeNumber(),
+        dept_sub_sect: general === true ? 1 : ot === true ? 2 : icu === true ? 3 : er === true ? 4 : 0
     }
     // reset from fn
     const resetSectionDept = () => {
@@ -118,6 +140,73 @@ const DepartmentSectionMast = () => {
                                     }
                                     label="Authorization for Leave and OT (HOD)"
                                 />
+                                {/* Departmentsubsection */}
+                                <div className="row" >
+                                    <div className=" col-md-12" >
+                                        <div className="row" >
+                                            <div className="col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="icu"
+                                                            value={icu}
+                                                            checked={icu}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="ICU"
+                                                />
+                                            </div>
+                                            <div className=" col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="er"
+                                                            value={er}
+                                                            checked={er}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="ER"
+                                                />
+                                            </div>
+                                            <div className=" col-md-2" >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="ot"
+                                                            value={ot}
+                                                            checked={ot}
+                                                            className="ml-2"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="OT"
+                                                />
+                                            </div>
+                                            <div className="col-md-2">
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            color="secondary"
+                                                            name="general"
+                                                            value={general}
+                                                            checked={general}
+                                                            className="ml-0"
+                                                            onChange={(e) => { updateSectionStatus(e) }}
+                                                        />
+                                                    }
+                                                    label="General"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
