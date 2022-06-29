@@ -5,33 +5,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
-const CustomAgGridMenuSelection = () => {
-    //Table
-    const [columnDefs] = useState([
-        {
-            headerName: 'Department Name',
-            field: 'name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-        // { headerName: "Mobile", field: 'mobile' },
-        // { headerName: "Gender ", field: 'gender' },
-    ])
-
-    const tableData = [
-        { slno: 12, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-        { slno: 22, name: 'Ajith', mobile: 9846009616, gender: 'male' },
-    ]
+const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }) => {
 
     const rowHeight = 25
     const headerHeight = 30
@@ -41,17 +15,11 @@ const CustomAgGridMenuSelection = () => {
         // filter: true,
         // floatingFilter: true
     }
-
     let gridApi
     const onGridReady = (params) => {
         gridApi = params.api
         gridApi.sizeColumnsToFit()
     }
-
-    const onSelectionChanged = (event) => {
-        console.log(event.api.getSelectedRows())
-    }
-
     const rowStyle = {
         fontFamily: [
             '-apple-system',

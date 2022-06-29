@@ -1,295 +1,13 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
 
-const CustomAgGridRptFormatOne = () => {
+const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
+
     //Table
-    const [columnDefs] = useState([
-        {
-            headerName: '#',
-            field: 'slno',
-            // filter: true,
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
-            width: 30,
-        },
-        { headerName: 'Name', field: 'name' },
-        { headerName: 'mobile ', field: 'mobile' },
-        { headerName: 'City ', field: 'city' },
-        { headerName: 'Age ', field: 'age' },
-        { headerName: 'Place ', field: 'place' },
-        { headerName: 'Gender ', field: 'gender' },
-        { headerName: 'State ', field: 'state' },
-        { headerName: 'Nation ', field: 'nation' },
-    ])
-
-    const tableData = [
-        {
-            slno: 12,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-    ]
-
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {
@@ -300,16 +18,18 @@ const CustomAgGridRptFormatOne = () => {
         filter: 'agTextColumnFilter',
     }
 
+    // //--- For Get the Selected Row Values
+    // const onSelectionChanged = (event) => {
+    //     console.log(event.api.getSelectedRows())
+    // }
     let gridApi
     const onGridReady = (params) => {
         gridApi = params.api
         // gridApi.sizeColumnsToFit()
     }
-    //--- For Get the Selected Row Values
-    const onSelectionChanged = (event) => {
-        console.log(event.api.getSelectedRows())
-    }
-
+    const onExportData = useCallback(() => {
+        gridApi.exportDataAsCsv();
+    })
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -324,6 +44,7 @@ const CustomAgGridRptFormatOne = () => {
             '"Segoe UI Symbol"',
         ].join(','),
     }
+
     return (
         <Fragment>
             <Paper elevation={0}>
@@ -335,8 +56,8 @@ const CustomAgGridRptFormatOne = () => {
                     }}
                 >
                     <AgGridReact
-                        columnDefs={columnDefs}
-                        rowData={tableData}
+                        columnDefs={columnDefMain}
+                        rowData={tableDataMain}
                         defaultColDef={defaultColDef}
                         rowHeight={rowHeight}
                         headerHeight={headerHeight}
@@ -344,7 +65,6 @@ const CustomAgGridRptFormatOne = () => {
                         animateRows={true}
                         onGridReady={onGridReady}
                         rowSelection="multiple"
-                        onSelectionChanged={onSelectionChanged}
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}
                         suppressRowVirtualisation={true}
@@ -354,6 +74,10 @@ const CustomAgGridRptFormatOne = () => {
                         rowGroupPanelShow={'always'}
                         pivotPanelShow={'always'}
                         enableRangeSelection={true}
+                        //alwaysShowHorizontalScroll={false}
+                        suppressHorizontalScroll={true}
+                        scrollbarWidth={0}
+
                     // pagination={true}
                     ></AgGridReact>
                 </Box>

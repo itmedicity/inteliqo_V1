@@ -1865,17 +1865,10 @@
     "react-transition-group" "^4.4.2"
     "rifm" "^0.12.0"
 
-<<<<<<< HEAD
 "@mui/material@^5.0.6":
-  "integrity" "sha512-1NmLel2Q+PnSfhFhdrhTbZFLfGpGKcPbu8onwGJu+vbD3YMTjr8gXvQ/sYZC0Motfu8jLnQdlq4FD4fRhqndnw=="
-  "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.0.6.tgz"
-  "version" "5.0.6"
-=======
-"@mui/material@^5.0.0", "@mui/material@^5.0.6":
   "integrity" "sha512-wngPXlOI9BurLSGlObQM/2L0QFFaIcvJnDK5A+ALxuUyuQnPviVWfC1l/r8rPlxQ4PCbSYpq3gzLlgnLoWcO/g=="
   "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.8.5.tgz"
   "version" "5.8.5"
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
   dependencies:
     "@babel/runtime" "^7.17.2"
     "@mui/base" "5.0.0-alpha.86"
@@ -2029,17 +2022,10 @@
     "schema-utils" "^2.6.5"
     "source-map" "^0.7.3"
 
-<<<<<<< HEAD
-"@popperjs/core@^2.10.1", "@popperjs/core@^2.11.3", "@popperjs/core@^2.4.4":
-  "integrity" "sha512-q/ytXxO5NKvyT37pmisQAItCFqA7FD/vNb8dgaJy3/630Fsc+Mz9/9f2SziBoIZ30TJooXyTwZmhi1zjXmObYg=="
-  "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.11.4.tgz"
-  "version" "2.11.4"
-=======
-"@popperjs/core@^2.10.1", "@popperjs/core@^2.11.3", "@popperjs/core@^2.11.5", "@popperjs/core@^2.4.4", "@popperjs/core@^2.9.2":
+"@popperjs/core@^2.10.1", "@popperjs/core@^2.11.3", "@popperjs/core@^2.11.5", "@popperjs/core@^2.4.4":
   "integrity" "sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw=="
   "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.11.5.tgz"
   "version" "2.11.5"
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
 
 "@react-aria/ssr@^3.0.1":
   "integrity" "sha512-RxqQKmE8sO7TGdrcSlHTcVzMP450hqowtBSd2bBS9oPlcokVkaGq28c3Rwa8ty5ctw4EBCjXqjP7xdcKMGDzug=="
@@ -2852,9 +2838,14 @@
     "loader-utils" "^2.0.0"
     "regex-parser" "^2.2.11"
 
-"ag-grid-community@^27.3.0", "ag-grid-community@~27.3.0":
+"ag-grid-community@^27.3.0":
   "integrity" "sha512-R5oZMXEHXnOLrmhn91J8lR0bv6IAnRcU6maO+wKLMJxffRWaAYFAuw1jt7bdmcKCv8c65F6LEBx4ykSOALa9vA=="
   "resolved" "https://registry.npmjs.org/ag-grid-community/-/ag-grid-community-27.3.0.tgz"
+  "version" "27.3.0"
+
+"ag-grid-enterprise@^27.3.0":
+  "integrity" "sha512-l95eH5cT1D/iOf0ROEpQ8G7RINg2UQ4E1rve4OGveN33Cg0/FFAyja0sraJ4DKgwLBPbPXtFksKq4nSlw0CEeA=="
+  "resolved" "https://registry.npmjs.org/ag-grid-enterprise/-/ag-grid-enterprise-27.3.0.tgz"
   "version" "27.3.0"
 
 "ag-grid-react@^27.3.0":
@@ -8558,17 +8549,10 @@
   dependencies:
     "es6-symbol" "^3.1.0"
 
-<<<<<<< HEAD
 "moment@^2.29.1":
-  "integrity" "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ=="
-  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
-  "version" "2.29.1"
-=======
-"moment@^2.24.0", "moment@^2.29.1", "moment@>= 2":
   "integrity" "sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw=="
   "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.3.tgz"
   "version" "2.29.3"
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
 
 "moo@^0.5.0":
   "integrity" "sha512-I1mnb5xn4fO80BH9BLcF0yLypy2UKl+Cb01Fu0hJRkJjlCRtxZMWkTdAtDd5ZqCOxtCkhmRwyI57vWT+1iZ67w=="
@@ -10153,17 +10137,10 @@
     "react-is" "^16.3.2"
     "warning" "^4.0.0"
 
-<<<<<<< HEAD
-"prop-types@^15.6.1", "prop-types@^15.6.2", "prop-types@^15.7.0", "prop-types@^15.7.2":
-  "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
-  "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
-  "version" "15.7.2"
-=======
-"prop-types@^15.0.0", "prop-types@^15.6.0", "prop-types@^15.6.1", "prop-types@^15.6.2", "prop-types@^15.7.0", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@^15.6.1", "prop-types@^15.6.2", "prop-types@^15.7.0", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
   dependencies:
     "loose-envify" "^1.4.0"
     "object-assign" "^4.1.1"
@@ -10428,11 +10405,7 @@
   "resolved" "https://registry.npmjs.org/react-digital-clock/-/react-digital-clock-0.1.2.tgz"
   "version" "0.1.2"
 
-<<<<<<< HEAD
 "react-dom@^17.0.2":
-=======
-"react-dom@^0.14 || ^15.0.0-0 || ^16.0.0-0 || ^17.0.0-0", "react-dom@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0", "react-dom@^16.0.0", "react-dom@^16.3.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8.0 || ^17.0.0", "react-dom@^16.8.4", "react-dom@^16.8.4 || ^17.0.0", "react-dom@^16.8.5", "react-dom@^17", "react-dom@^17.0.0", "react-dom@^17.0.0 || ^18.0.0", "react-dom@^17.0.0-0", "react-dom@^17.0.2", "react-dom@>=16", "react-dom@>=16.0.0", "react-dom@>=16.14.0", "react-dom@>=16.6.0", "react-dom@>=17.0.0":
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -10648,11 +10621,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-<<<<<<< HEAD
 "react@^17.0.2":
-=======
-"react@*", "react@^0.14 || ^15.0.0-0 || ^16.0.0-0 || ^17.0.0-0", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0", "react@^16.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.3.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.3 || ^17", "react@^16.8.4", "react@^16.8.4 || ^17.0.0", "react@^16.8.5", "react@^17", "react@^17.0.0", "react@^17.0.0 || ^18.0.0", "react@^17.0.0-0", "react@^17.0.2", "react@>= 0.14.7", "react@>= 16", "react@>=0.14.0", "react@>=15", "react@>=15.0.0", "react@>=16", "react@>=16.0.0", "react@>=16.14.0", "react@>=16.3.2", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@>=17.0.0", "react@17.0.2":
->>>>>>> 6a2f947917adace9b732733c13d2afce884092d4
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

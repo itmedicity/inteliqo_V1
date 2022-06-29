@@ -8,7 +8,6 @@ import Announcement from './Components/Announcement';
 import DashAlertCmp from './Components/DashAlertCmp';
 import HolidayList from './Components/HolidayList';
 import LeavesDashbod from './Components/LeavesDashbod';
-import CustomReport from '../Component/CustomReport';
 
 // const item = styled(Paper)(({ theme }) => ({
 //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

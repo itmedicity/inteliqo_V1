@@ -1,6 +1,6 @@
 import { Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useCallback } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -9,8 +9,15 @@ import CustomeToolTip from './CustomeToolTip'
 import DownloadIcon from '@mui/icons-material/Download'
 import CustomAgGridMenuSelection from './CustomAgGridMenuSelection'
 import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
+import { useHistory } from 'react-router-dom'
 
-const CustomReport = () => {
+const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain, tableDataMain, onClick, onExportData }) => {
+    const history = useHistory()
+
+    const RedirectToProfilePage = async () => {
+        history.push(`/Home/Reports`)
+    }
+
     return (
         <Box>
             <Paper
@@ -48,7 +55,7 @@ const CustomReport = () => {
                                 p: 0.3,
                             }}
                         >
-                            <CusIconButton variant="outlined" size="sm" color="success">
+                            <CusIconButton variant="outlined" size="sm" color="success" onClick={onClick}>
                                 <SearchIcon />
                             </CusIconButton>
                             <CustomeToolTip title="Department Name" placement="bottom">
@@ -74,7 +81,11 @@ const CustomReport = () => {
                             </CustomeToolTip>
                         </Paper>
                         {/* Table Component */}
-                        <CustomAgGridMenuSelection />
+                        <CustomAgGridMenuSelection
+                            tableData={tableData}
+                            columnDefs={columnDefs}
+                            onSelectionChanged={onSelectionChanged}
+                        />
                         {/* Top Left Menu Section End */}
                     </Paper>
                     {/* Left Side Section End */}
@@ -106,7 +117,7 @@ const CustomReport = () => {
                             <CustomeToolTip title="Close" placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
-                                        <CloseIcon />
+                                        <CloseIcon onClick={RedirectToProfilePage} />
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
@@ -114,7 +125,7 @@ const CustomReport = () => {
                             <CustomeToolTip title="Download" placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
-                                        <DownloadIcon />
+                                        <DownloadIcon onClick={onExportData} />
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
@@ -126,7 +137,12 @@ const CustomReport = () => {
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne />
+                            <CustomAgGridRptFormatOne
+                                columnDefMain={columnDefMain}
+                                tableDataMain={tableDataMain}
+                                onClick={onClick}
+                                onExportData={onExportData}
+                            />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>

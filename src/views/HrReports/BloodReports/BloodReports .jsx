@@ -1,139 +1,125 @@
-import { IconButton, Button, Box, Paper } from '@mui/material'
-import React, { useState } from 'react'
-import PageLayoutReports from 'src/views/CommonCode/PageLayoutReports'
-import BloodgrpTable from './BloodgrpTable'
-import { axioslogin } from 'src/views/Axios/Axios'
-import BloodCheckboxTable from './BloodCheckboxTable'
-import SearchIcon from '@mui/icons-material/Search';
-import Blood from './Blood'
+import React, { Fragment, useCallback } from 'react'
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
+import { setBloodgrp } from 'src/redux/actions/Bloodgrp.Action';
+import { axioslogin } from 'src/views/Axios/Axios';
+import CustomReport from 'src/views/Component/CustomReport'
+import 'ag-grid-community/dist/styles/ag-grid.css'
+import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 
 const BloodReports = () => {
 
-    const [bloodgrp, setbloodgrp] = useState([]);
-    const [tableData, setTableData] = useState([]);
-    const [data, setData] = useState(0);
+    const dispatch = useDispatch();
 
-    const getCheckedValue = (row) => {
-        setbloodgrp(row)
+    useEffect(() => {
+        dispatch(setBloodgrp());
+    }, [])
+
+    const empBloodgrp = useSelector((state) => {
+        return state.getEmployeeBloodgrp.empBlood
+    })
+
+    //initialize values
+    const [bloodgrp, setbloodgrp] = useState(0);
+    const [TableData, setTableData] = useState([]);
+    const [data, setData] = useState(0);
+    const [value, setValue] = useState(0);
+
+
+
+    //Leftside Selection Checkbox
+    const [columnDefs] = useState([
+        {
+            headerName: 'Blood Group',
+            field: 'group_name',
+            checkboxSelection: true,
+            headerCheckboxSelectionFilteredOnly: true,
+            headerCheckboxSelection: true,
+            resizable: true,
+
+        },
+
+    ])
+    //Report coloumn heading
+    const [columnDefMain] = useState([
+        {
+            headerName: '#',
+            //field: 'slno',
+            // filter: true,
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                debounceMs: 200,
+            },
+            // filter: 'agTextColumnFilter',
+            // filter: 'agNumberColumnFilter',
+            // checkboxSelection: true,
+            // headerCheckboxSelectionFilteredOnly: true,
+            // headerCheckboxSelection: true,
+            // resizable: false,
+            width: 30,
+        },
+        { headerName: 'ID', field: 'em_no' },
+        { headerName: 'Name ', field: 'em_name' },
+        { headerName: 'Age ', field: 'em_age_year' },
+        { headerName: 'Mobile ', field: 'em_mobile' },
+        { headerName: 'Blood_group ', field: 'group_name' },
+        { headerName: 'Dept Name ', field: 'dept_name' },
+        { headerName: 'Dept Section ', field: 'sect_name' },
+        { headerName: 'Branch ', field: 'branch_name' },
+        { headerName: 'Technical/Non technical ', field: 'inst_emp_type' },
+        { headerName: 'Designation ', field: 'desg_name' },
+        { headerName: 'Date of joining ', field: 'em_doj' },
+        { headerName: 'Category ', field: 'ecat_name' },
+    ])
+
+    const onSelectionChanged = (event) => {
+        //console.log(event.api.getSelectedRows())
+        //return event.api.getSelectedRows()
+        setValue(event.api.getSelectedRows())
     }
-    console.log(bloodgrp)
-    const getEmployeeBlood = async () => {
-        const result = await axioslogin.post('/reports/bloodgroup/byid', bloodgrp)
-        console.log(result);
-        const { success, data } = result.data
-        if (success === 1) {
-            setTableData(data)
-            setData(1)
+    const [slno, setslno] = useState([])
+
+    useEffect(() => {
+        const arr = value && value.map((val, index) => {
+            return val.group_slno
+        })
+        setslno(arr)
+    }, [value])
+
+    //console.log(slno);
+    //selected bloodgroup employees to the table
+    const getEmployeeBloodgrp = async () => {
+        console.log(slno !== []);
+        if (slno.length > 0) {
+            const result = await axioslogin.post('/reports/bloodgroup/byid', slno)
+            const { success, data } = result.data;
+            console.log(data);
+            if (success === 1) {
+                setTableData(data)
+                setData(1)
+            }
+            else {
+                setTableData([])
+                setData(1)
+            }
         }
     }
 
     return (
-        < PageLayoutReports
-            heading="Employee Bloodgroup Report"
-        >
-            <Box
-                sx={{
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: "row",
-                    height: 600,
-                    boxShadow: 0
-                }}
-            >
-                <Paper sx={{ width: '20%', boxShadow: 0, }}>
-                    <Blood onSelectionChange={getCheckedValue}
-                        getEmployeeBlood={getEmployeeBlood} />
-                </Paper>
-                <Paper sx={{ width: '80%', boxShadow: 0, ml: 1 }}>
-
-                    {
-                        data === 1 ? <BloodgrpTable
-                            tableData={tableData}
-                        /> : null
-                    }
-                </Paper>
-            </Box>
-        </PageLayoutReports >
+        <Fragment>
+            <CustomReport
+                tableData={empBloodgrp}
+                columnDefs={columnDefs}
+                onSelectionChanged={onSelectionChanged}
+                columnDefMain={columnDefMain}
+                tableDataMain={TableData}
+                onClick={getEmployeeBloodgrp}
+            />
+        </Fragment>
     )
 }
-
-// const [bloodgrp, Setbloodgrp] = useState([]);
-
-// //console.log(bloodgrp)
-// const getDetails = async (e) => {
-//     if (e.target.checked === true) {
-//         Setbloodgrp([...bloodgrp, e.target.value])
-//     }
-//     else {
-//         const arr = bloodgrp.filter((val) => {
-//             return val !== e.target.value
-//         })
-//         //console.log(arr)
-//         Setbloodgrp(arr)
-//     }
-// }
-// // const getDetails = async (e) => {
-// //     Setbloodgrp([...bloodgrp, e.target.value])
-// // }
-// console.log(bloodgrp);
-
-// const postdata = {
-//     bloodgrp: bloodgrp
-// }
-
-// const [data, setData] = useState(0);
-// const [tableData, setTableData] = useState([]);
-
-// const getEmployeeBloodgrp = async () => {
-//     const result = await axioslogin.post('/reports/bloodgroup/byid', postdata)
-//     const { success, data } = result.data
-//     if (success === 1) {
-//         setTableData(data)
-//         setData(1)
-//     }
-// }
-
-// return (
-//     <PageLayoutReports
-//         heading="Employee BloodGroup Report">
-//         {/* <div className="card"> */}
-//         <div className="col-md-12 p-0">
-//             <div className="row">
-//                 <div className="col-md-2 p-0">
-//                     <div className="card">
-//                         <div className="card-header ">
-//                             <div className="row">
-//                                 <div className="d-flex justify-content-between">
-//                                     <div className="col-md-1">
-//                                         <IconButton
-//                                             aria-label="add"
-//                                             onClick={getEmployeeBloodgrp}
-//                                             sx={{ color: "#37575f", padding: '0rem' }}
-//                                             size='small'
-//                                         >
-//                                             <SearchIcon className="text-info" size='inherit' />
-//                                         </IconButton>
-//                                         {/* <Button color="primary" onClick={getEmployeeBloodgrp} >Submit</Button> */}
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         </div>
-//                         {/* <BloodCheckboxTable onChange={getDetails} /> */}
-//                         <Blood />
-//                     </div>
-//                 </div>
-//                 <div className="col-md-10 p-0">
-//                     {
-//                         data === 1 ? <BloodgrpTable
-//                             tableData={tableData}
-//                         /> : null
-//                     }
-//                 </div>
-//             </div>
-//         </div>
-//         {/* </div> */}
-//     </PageLayoutReports >
-// )
 
 export default BloodReports
