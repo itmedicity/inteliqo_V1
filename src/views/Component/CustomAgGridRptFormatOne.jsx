@@ -1,11 +1,20 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = () => {
+    const apiRef = useRef();
+
+    const exportState = useSelector((state) => {
+        return state.changeStateAggrid.aggridstate
+    })
+    if (exportState > 0) {
+        apiRef.current.api.exportDataAsCsv();
+    }
     //Table
     const [columnDefs] = useState([
         {
@@ -309,7 +318,6 @@ const CustomAgGridRptFormatOne = () => {
     const onSelectionChanged = (event) => {
         console.log(event.api.getSelectedRows())
     }
-
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -335,6 +343,7 @@ const CustomAgGridRptFormatOne = () => {
                     }}
                 >
                     <AgGridReact
+                        ref={apiRef}
                         columnDefs={columnDefs}
                         rowData={tableData}
                         defaultColDef={defaultColDef}
@@ -344,7 +353,7 @@ const CustomAgGridRptFormatOne = () => {
                         animateRows={true}
                         onGridReady={onGridReady}
                         rowSelection="multiple"
-                        onSelectionChanged={onSelectionChanged}
+                        // onSelectionChanged={onSelectionChanged}
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}
                         suppressRowVirtualisation={true}

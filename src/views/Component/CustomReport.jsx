@@ -9,8 +9,18 @@ import CustomeToolTip from './CustomeToolTip'
 import DownloadIcon from '@mui/icons-material/Download'
 import CustomAgGridMenuSelection from './CustomAgGridMenuSelection'
 import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
+import { useDispatch, useSelector } from 'react-redux'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const CustomReport = () => {
+    const dispatch = useDispatch()
+
+    const onExportClick = () => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
+    }
+    const CloseReport = () => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+    }
     return (
         <Box>
             <Paper
@@ -51,7 +61,7 @@ const CustomReport = () => {
                             <CusIconButton variant="outlined" size="sm" color="success">
                                 <SearchIcon />
                             </CusIconButton>
-                            <CustomeToolTip title="Department Name" placement="bottom">
+                            {/* <CustomeToolTip title="Department Name" placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
                                         <ContentPasteSearchIcon />
@@ -71,7 +81,7 @@ const CustomReport = () => {
                                         <ContentPasteSearchIcon />
                                     </CusIconButton>
                                 </Box>
-                            </CustomeToolTip>
+                            </CustomeToolTip> */}
                         </Paper>
                         {/* Table Component */}
                         <CustomAgGridMenuSelection />
@@ -105,7 +115,7 @@ const CustomReport = () => {
                         >
                             <CustomeToolTip title="Close" placement="bottom">
                                 <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
+                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={CloseReport}>
                                         <CloseIcon />
                                     </CusIconButton>
                                 </Box>
@@ -113,7 +123,7 @@ const CustomReport = () => {
 
                             <CustomeToolTip title="Download" placement="bottom">
                                 <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
+                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
                                         <DownloadIcon />
                                     </CusIconButton>
                                 </Box>
