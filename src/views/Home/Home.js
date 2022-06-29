@@ -50,6 +50,7 @@ const Home = () => {
                     </Grid>
                 </Grid>
                 {/* <ProfileComponent /> */}
+                <CustomReport />
             </Box>
         </Fragment>
     )

@@ -1,6 +1,6 @@
 import { Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useCallback } from 'react'
+import React from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -9,15 +9,18 @@ import CustomeToolTip from './CustomeToolTip'
 import DownloadIcon from '@mui/icons-material/Download'
 import CustomAgGridMenuSelection from './CustomAgGridMenuSelection'
 import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
-import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
-const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain, tableDataMain, onClick, onExportData }) => {
-    const history = useHistory()
+const CustomReport = () => {
+    const dispatch = useDispatch()
 
-    const RedirectToProfilePage = async () => {
-        history.push(`/Home/Reports`)
+    const onExportClick = () => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
     }
-
+    const CloseReport = () => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+    }
     return (
         <Box>
             <Paper
@@ -55,10 +58,10 @@ const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain
                                 p: 0.3,
                             }}
                         >
-                            <CusIconButton variant="outlined" size="sm" color="success" onClick={onClick}>
+                            <CusIconButton variant="outlined" size="sm" color="success">
                                 <SearchIcon />
                             </CusIconButton>
-                            <CustomeToolTip title="Department Name" placement="bottom">
+                            {/* <CustomeToolTip title="Department Name" placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
                                         <ContentPasteSearchIcon />
@@ -78,14 +81,10 @@ const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain
                                         <ContentPasteSearchIcon />
                                     </CusIconButton>
                                 </Box>
-                            </CustomeToolTip>
+                            </CustomeToolTip> */}
                         </Paper>
                         {/* Table Component */}
-                        <CustomAgGridMenuSelection
-                            tableData={tableData}
-                            columnDefs={columnDefs}
-                            onSelectionChanged={onSelectionChanged}
-                        />
+                        <CustomAgGridMenuSelection />
                         {/* Top Left Menu Section End */}
                     </Paper>
                     {/* Left Side Section End */}
@@ -116,16 +115,16 @@ const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain
                         >
                             <CustomeToolTip title="Close" placement="bottom">
                                 <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <CloseIcon onClick={RedirectToProfilePage} />
+                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={CloseReport}>
+                                        <CloseIcon />
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
 
                             <CustomeToolTip title="Download" placement="bottom">
                                 <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <DownloadIcon onClick={onExportData} />
+                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
+                                        <DownloadIcon />
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
@@ -137,12 +136,7 @@ const CustomReport = ({ tableData, columnDefs, onSelectionChanged, columnDefMain
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne
-                                columnDefMain={columnDefMain}
-                                tableDataMain={tableDataMain}
-                                onClick={onClick}
-                                onExportData={onExportData}
-                            />
+                            <CustomAgGridRptFormatOne />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>
