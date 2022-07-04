@@ -15,7 +15,7 @@ import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { employeeNumber, PUBLIC_NAS_FOLDER } from 'src/views/Constant/Constant'
 import BankNameSelect from 'src/views/CommonCode/BankNameSelect'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ProfilePic from '../../../assets/images/default.png'
 import { Avatar, Stack } from '@mui/material'
 import ReactTooltip from 'react-tooltip';
@@ -287,14 +287,14 @@ const PersonalInformation = () => {
                 succesNofity(message)
 
             } else if (success === 0) {
-                errorNofity(message.sqlMessage)
+                warningNofity(message.sqlMessage)
             } else {
-                infoNofity(message)
+                errorNofity(message)
             }
 
 
         } else if (success === 0) {
-            errorNofity(message.sqlMessage)
+            warningNofity(message.sqlMessage)
         } else if (success === 2) {
             infoNofity(message)
         }

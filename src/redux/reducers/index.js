@@ -15,6 +15,7 @@ import { getModuleRightList } from '../reducers/GetModulerights'
 import { getEmployeeProcessRecord } from './LeaveProcessDetl.reducer';
 import { getRegionList } from '../reducers/RegionReducers'
 import { getProTaxList } from '../reducers/ProffessionalTaxReducer'
+import { changeStateAggrid } from '../reducers/StatechangeAgGrid'
 
 const reducer = combineReducers({
     changeState,
@@ -33,7 +34,8 @@ const reducer = combineReducers({
     getModuleRightList,
     getEmployeeProcessRecord,
     getRegionList,
-    getProTaxList
+    getProTaxList,
+    changeStateAggrid
 })
 
 export default reducer;

@@ -49,7 +49,6 @@ const Home = () => {
                     </Grid>
                 </Grid>
                 {/* <ProfileComponent /> */}
-
             </Box>
         </Fragment>
     )

@@ -1,12 +1,28 @@
+<<<<<<< HEAD
 import React, { Fragment, useCallback, useRef, useState } from 'react'
+=======
+import React, { Fragment, useRef, useState } from 'react'
+>>>>>>> 6ba6e1c585eff9a34982a0744b734083e19324b4
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = () => {
+<<<<<<< HEAD
 
+=======
+    const apiRef = useRef();
+
+    const exportState = useSelector((state) => {
+        return state.changeStateAggrid.aggridstate
+    })
+    if (exportState > 0) {
+        apiRef.current.api.exportDataAsCsv();
+    }
+>>>>>>> 6ba6e1c585eff9a34982a0744b734083e19324b4
     //Table
     const [columnDefs] = useState([
         {
@@ -310,13 +326,6 @@ const CustomAgGridRptFormatOne = () => {
     const onSelectionChanged = (event) => {
         console.log(event.api.getSelectedRows())
     }
-
-
-    // --- Data Export to the csv excel format function
-    // const csvExport = useCallback(() => {
-    //     gridApi.exportDataAsCsv();
-    // }, [])
-
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -342,6 +351,7 @@ const CustomAgGridRptFormatOne = () => {
                     }}
                 >
                     <AgGridReact
+                        ref={apiRef}
                         columnDefs={columnDefs}
                         rowData={tableData}
                         defaultColDef={defaultColDef}
@@ -351,7 +361,7 @@ const CustomAgGridRptFormatOne = () => {
                         animateRows={true}
                         onGridReady={onGridReady}
                         rowSelection="multiple"
-                        onSelectionChanged={onSelectionChanged}
+                        // onSelectionChanged={onSelectionChanged}
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}
                         suppressRowVirtualisation={true}
