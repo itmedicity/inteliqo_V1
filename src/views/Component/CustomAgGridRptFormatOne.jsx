@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -6,6 +6,7 @@ import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
 
 const CustomAgGridRptFormatOne = () => {
+
     //Table
     const [columnDefs] = useState([
         {
@@ -309,6 +310,12 @@ const CustomAgGridRptFormatOne = () => {
     const onSelectionChanged = (event) => {
         console.log(event.api.getSelectedRows())
     }
+
+
+    // --- Data Export to the csv excel format function
+    // const csvExport = useCallback(() => {
+    //     gridApi.exportDataAsCsv();
+    // }, [])
 
     const rowStyle = {
         fontFamily: [

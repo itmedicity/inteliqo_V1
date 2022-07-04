@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Paper } from '@mui/material'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -6,6 +6,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
 const CustomAgGridMenuSelection = () => {
+
     //Table
     const [columnDefs] = useState([
         {
@@ -41,16 +42,19 @@ const CustomAgGridMenuSelection = () => {
         // filter: true,
         // floatingFilter: true
     }
-
+    // --- On Grid Ready Function ---
     let gridApi
     const onGridReady = (params) => {
         gridApi = params.api
         gridApi.sizeColumnsToFit()
     }
 
+    // --- Onselection Row function for retriving the data from the table
     const onSelectionChanged = (event) => {
-        console.log(event.api.getSelectedRows())
+        // console.log(event.api.getSelectedRows())
     }
+
+
 
     const rowStyle = {
         fontFamily: [

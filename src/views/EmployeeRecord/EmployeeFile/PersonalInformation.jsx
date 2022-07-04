@@ -49,7 +49,7 @@ const PersonalInformation = () => {
         contactaddress2: '',
         contactpin1: '',
         mobile: '',
-        land_no: '',
+        land_no: 0,
         passp_no: '',
         license: '',
         adhar_no: '',
@@ -247,7 +247,6 @@ const PersonalInformation = () => {
             hrm_region2: getregion2,
             create_user: employeeNumber()
         }
-        console.log(submitpersonal)
         const resetdata = {
             addressPermnt1: '',
             addressPermnt2: '',
@@ -256,7 +255,7 @@ const PersonalInformation = () => {
             contactaddress2: '',
             contactpin1: '',
             mobile: '',
-            land_no: '',
+            land_no: 0,
             passp_no: '',
             license: '',
             adhar_no: '',
