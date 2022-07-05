@@ -80,6 +80,7 @@ const BloodReports = () => {
         //return event.api.getSelectedRows()
         setValue(event.api.getSelectedRows())
     }
+    // console.log(value);
     const [slno, setslno] = useState([])
 
     useEffect(() => {
@@ -89,14 +90,15 @@ const BloodReports = () => {
         setslno(arr)
     }, [value])
 
-    //console.log(slno);
+
+
     //selected bloodgroup employees to the table
     const getEmployeeBloodgrp = async () => {
-        console.log(slno !== []);
-        if (slno.length > 0) {
+        //console.log(slno);
+        if (slno !== []) {
             const result = await axioslogin.post('/reports/bloodgroup/byid', slno)
             const { success, data } = result.data;
-            console.log(data);
+            //console.log(data);
             if (success === 1) {
                 setTableData(data)
                 setData(1)
@@ -111,12 +113,12 @@ const BloodReports = () => {
     return (
         <Fragment>
             <CustomReport
+                onSelectionChanged={onSelectionChanged}
+                onClick={getEmployeeBloodgrp}
+                columnDefMain={columnDefMain}
                 tableData={empBloodgrp}
                 columnDefs={columnDefs}
-                onSelectionChanged={onSelectionChanged}
-                columnDefMain={columnDefMain}
                 tableDataMain={TableData}
-                onClick={getEmployeeBloodgrp}
             />
         </Fragment>
     )

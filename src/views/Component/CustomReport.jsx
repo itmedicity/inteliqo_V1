@@ -12,7 +12,7 @@ import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
 import { useDispatch, useSelector } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 
-const CustomReport = () => {
+const CustomReport = ({ columnDefs, tableData, onSelectionChanged, tableDataMain, columnDefMain, onClick }) => {
     const dispatch = useDispatch()
 
     const onExportClick = () => {
@@ -58,7 +58,7 @@ const CustomReport = () => {
                                 p: 0.3,
                             }}
                         >
-                            <CusIconButton variant="outlined" size="sm" color="success">
+                            <CusIconButton variant="outlined" size="sm" color="success" onClick={onClick}>
                                 <SearchIcon />
                             </CusIconButton>
                             {/* <CustomeToolTip title="Department Name" placement="bottom">
@@ -84,7 +84,7 @@ const CustomReport = () => {
                             </CustomeToolTip> */}
                         </Paper>
                         {/* Table Component */}
-                        <CustomAgGridMenuSelection />
+                        <CustomAgGridMenuSelection columnDefs={columnDefs} onSelectionChanged={onSelectionChanged} tableData={tableData} />
                         {/* Top Left Menu Section End */}
                     </Paper>
                     {/* Left Side Section End */}
@@ -136,15 +136,15 @@ const CustomReport = () => {
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne />
+                            <CustomAgGridRptFormatOne tableDataMain={tableDataMain} columnDefMain={columnDefMain} />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>
                     {/* Rigth Side Section End */}
                 </Box>
                 {/* <Paper square sx={{ backgroundColor: "lightpink" }}  >sdfsdfsdf</Paper> */}
-            </Paper>
-        </Box>
+            </Paper >
+        </Box >
     )
 }
 

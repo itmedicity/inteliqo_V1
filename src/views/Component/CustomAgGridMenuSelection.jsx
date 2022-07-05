@@ -6,7 +6,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
 const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }) => {
-
+    //Table
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {
@@ -15,11 +15,13 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }
         // filter: true,
         // floatingFilter: true
     }
+
     let gridApi
     const onGridReady = (params) => {
         gridApi = params.api
         gridApi.sizeColumnsToFit()
     }
+
     const rowStyle = {
         fontFamily: [
             '-apple-system',
