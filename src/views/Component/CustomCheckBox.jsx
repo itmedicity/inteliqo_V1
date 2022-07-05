@@ -1,9 +1,10 @@
-import { FormControl, FormControlLabel } from '@mui/material'
+import { Checkbox, FormControl, FormControlLabel } from '@mui/material'
 import React from 'react'
 
 const CustomCheckBox = ({
     name, color, value, onChange, label, style
 }) => {
+
     const customStyle = {
         paddingLeft: 2,
         paddingY: 0.3

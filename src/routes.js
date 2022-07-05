@@ -158,9 +158,10 @@ const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescri
 const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionEdit'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeRecordVerification/EmployeeRecordVerification'))
-
+const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
 
 const routes = [
+
   { path: '/', exact: true, name: 'Home' },
   { path: '/Home', exact: true, name: 'Home', component: HomePage },
   { path: '/Profile', exact: true, name: 'Home', component: Profile },
@@ -322,6 +323,8 @@ const routes = [
   { path: '/Home/JobDescriptionEdit/:id', exact: true, name: 'JobDescription Edit', component: JobDescriptionEdit },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
   { path: '/Home/EmployeeRecordVerification', exact: true, name: 'Employee Record Verification', component: EmployeeRecordVerification },
+  { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
+
 ]
 
 export default routes
