@@ -1,5 +1,4 @@
-
-import React, { Fragment, useRef, useState } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -7,7 +6,7 @@ import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
 
-const CustomAgGridRptFormatOne = () => {
+const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
 
 
     const apiRef = useRef();
@@ -15,292 +14,10 @@ const CustomAgGridRptFormatOne = () => {
     const exportState = useSelector((state) => {
         return state.changeStateAggrid.aggridstate
     })
+
     if (exportState > 0) {
         apiRef.current.api.exportDataAsCsv();
     }
-    //Table
-    const [columnDefs] = useState([
-        {
-            headerName: '#',
-            field: 'slno',
-            // filter: true,
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
-            width: 30,
-        },
-        { headerName: 'Name', field: 'name' },
-        { headerName: 'mobile ', field: 'mobile' },
-        { headerName: 'City ', field: 'city' },
-        { headerName: 'Age ', field: 'age' },
-        { headerName: 'Place ', field: 'place' },
-        { headerName: 'Gender ', field: 'gender' },
-        { headerName: 'State ', field: 'state' },
-        { headerName: 'Nation ', field: 'nation' },
-    ])
-
-    const tableData = [
-        {
-            slno: 12,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-        {
-            slno: 22,
-            name: 'Ajith',
-            mobile: 9846009616,
-            city: 'kottiyam',
-            age: 32,
-            place: 'kollam',
-            gender: 'male',
-            state: 'kerala',
-            nation: 'indian',
-        },
-    ]
 
     const rowHeight = 25
     const headerHeight = 30
@@ -347,8 +64,8 @@ const CustomAgGridRptFormatOne = () => {
                 >
                     <AgGridReact
                         ref={apiRef}
-                        columnDefs={columnDefs}
-                        rowData={tableData}
+                        columnDefs={columnDefMain}
+                        rowData={tableDataMain}
                         defaultColDef={defaultColDef}
                         rowHeight={rowHeight}
                         headerHeight={headerHeight}

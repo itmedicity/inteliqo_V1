@@ -7,7 +7,7 @@ const Materialtable = (props) => {
     return (
         <Fragment>
             <MaterialTable
-                title={title}
+                title={''}
                 data={data}
                 columns={columns}
                 icons={tableIcons}
@@ -15,7 +15,7 @@ const Materialtable = (props) => {
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,
                     padding: "dense",
-                    actionsColumnIndex: -1,
+                    actionsColumnIndex: 0,
                     exportButton: true,
                     rowStyle: {
                         backgroundColor: '#EEE',

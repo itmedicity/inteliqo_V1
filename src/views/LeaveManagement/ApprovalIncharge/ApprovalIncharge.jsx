@@ -10,6 +10,7 @@ import { compensatory, getleaverequest, getleaverequestget, getnopunchrequst, ha
 import ResignationApprovalSection from '../../Resignation/ResignationApproval/ResignationApprovalSection'
 import { useDispatch } from 'react-redux'
 import { getlevedata } from '../../../redux/actions/LeaveReqst.action'
+
 const ApprovalIncharge = () => {
     const history = useHistory()
     const dispatch = useDispatch()
