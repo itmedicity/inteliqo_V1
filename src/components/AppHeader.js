@@ -73,8 +73,10 @@ const AppHeader = () => {
     const status = state.getProfileData.lodingStatus
     if (status === false) {
       hrmLogout()
+    } else {
+      return state.getProfileData.ProfileData[0].em_id
     }
-    return state.getProfileData.ProfileData[0].em_id
+
   })
   //getting alert list
   useEffect(() => {
