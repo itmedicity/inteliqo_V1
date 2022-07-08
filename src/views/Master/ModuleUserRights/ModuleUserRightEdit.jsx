@@ -11,17 +11,20 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import GroupSelection from 'src/views/CommonCode/GroupSelection'
+import DeptSecSelectAuth from 'src/views/CommonCode/DeptSecSelectAuth'
+import EmpNameDepartmentSec from 'src/views/CommonCode/EmpNameDepartmentSec'
 
 const ModuleUserRightEdit = () => {
     const classes = useStyles()
     const history = useHistory()
     const {
-        selectedEmployee,
-        updateSelectedEmployee,
+        selectEmpDeptSec,
+        updateselectEmpDeptSec,
         selectModuleGroup,
         updateSelectedModuleGroup,
         selectGroupName,
-        updateGroupNameList
+        updateGroupNameList,
+        updateDeptSec
     } = useContext(PayrolMasterContext);
 
     const [moduleUserStatus, setmoduleUserStatus] = useState(false)
@@ -30,32 +33,25 @@ const ModuleUserRightEdit = () => {
         history.push('/Home/Settings');
     }
     const { id } = useParams();
-
     useEffect(() => {
         const getModuleEditUserDetl = async () => {
             const result = await axioslogin.get(`/moduleRights/${id}`)
             const { success, data } = result.data;
             if (success === 1) {
-                const { emp_slno, mdgrp_slno, status, user_grp_slno } = data[0]
+                const { emp_slno, mdgrp_slno, status, user_grp_slno, em_dept_section } = data[0]
                 const mdlStatsus = status === 1 ? true : false;
                 setmoduleUserStatus(mdlStatsus)
-                updateSelectedEmployee(emp_slno)
+                updateselectEmpDeptSec(emp_slno)
+                updateDeptSec(em_dept_section)
                 updateSelectedModuleGroup(mdgrp_slno)
                 updateGroupNameList(user_grp_slno)
             }
         }
         getModuleEditUserDetl()
-        return (
-            <>
-                updateSelectedEmployee(0)
-                updateSelectedModuleGroup(0)
-                updateGroupNameList(0)
-            </>
-        )
-    }, [id, updateSelectedEmployee, updateSelectedModuleGroup, updateGroupNameList])
+    }, [id, updateselectEmpDeptSec, updateSelectedModuleGroup, updateGroupNameList, updateDeptSec])
 
     const postEditedData = {
-        emp_slno: selectedEmployee,
+        emp_slno: selectEmpDeptSec,
         mdgrp_slno: selectModuleGroup,
         mdlstatus: moduleUserStatus === true ? 1 : 0,
         mdrte_slno: id,
@@ -88,7 +84,10 @@ const ModuleUserRightEdit = () => {
                         <div className="col-md-4">
                             <form className={classes.root} onSubmit={submitModuleRightEdit} >
                                 <div className="col-md-12 row">
-                                    <EmployeeSelect />
+                                    <DeptSecSelectAuth />
+                                </div>
+                                <div className="col-md-12 row">
+                                    <EmpNameDepartmentSec />
                                 </div>
                                 <div className="col-md-12 row">
                                     <ModuleSelection />

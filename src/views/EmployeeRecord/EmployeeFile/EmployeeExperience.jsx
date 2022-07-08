@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useHistory, useParams } from 'react-router'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, getDayDiffrence, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import EmployeeExperienceTable from './EmployeeFileTable/EmployeeExperienceTable'
@@ -53,6 +53,7 @@ const EmployeeExperience = () => {
         const enddate = getYear(new Date(workenddate))
         const expyear = enddate - startdate
         settotyear(expyear)
+
     }
     //postData
     const postData = {

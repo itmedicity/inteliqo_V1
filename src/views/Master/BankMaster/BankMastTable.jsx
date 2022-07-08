@@ -14,7 +14,10 @@ const BankMastTable = ({ update }) => {
             title: 'Sl No', field: 'bank_slno'
         },
         {
-            title: 'Bank Name', field: 'bank_name'
+            title: 'Bank Name', field: 'bankmast_name'
+        },
+        {
+            title: 'Branch Name', field: 'bank_name'
         },
         {
             title: 'IFSC', field: 'bank_ifsc'

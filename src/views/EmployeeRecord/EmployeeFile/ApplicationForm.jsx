@@ -51,7 +51,7 @@ const ApplicationForm = () => {
         if (designation !== 'NOT UPDATED' && em_department !== 'NOT UPDATED') {
             dispath(jondescription(postData))
         }
-    }, [no, id, designation, em_department, count])
+    }, [no, id, designation, em_department, count, dispath])
 
     return (
         <Fragment>
