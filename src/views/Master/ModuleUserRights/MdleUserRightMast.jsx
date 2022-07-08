@@ -6,7 +6,8 @@ import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import EmployeeSelect from 'src/views/CommonCode/EmployeeSelect'
+import DeptSecSelectAuth from 'src/views/CommonCode/DeptSecSelectAuth'
+import EmpNameDepartmentSec from 'src/views/CommonCode/EmpNameDepartmentSec'
 import GroupSelection from 'src/views/CommonCode/GroupSelection'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import ModuleSelection from 'src/views/CommonCode/ModuleSelection'
@@ -16,8 +17,8 @@ const MdleUserRightMast = () => {
     const classes = useStyles()
     const history = useHistory()
     const {
-        selectedEmployee,
-        updateSelectedEmployee,
+        selectEmpDeptSec,
+        updateselectEmpDeptSec,
         selectModuleGroup,
         updateSelectedModuleGroup,
         selectGroupName,
@@ -29,7 +30,7 @@ const MdleUserRightMast = () => {
     const [count, setCount] = useState(0)
 
     const formData = {
-        emp_slno: selectedEmployee,
+        emp_slno: selectEmpDeptSec,
         mdgrp_slno: selectModuleGroup,
         mdlstatus: mdlstatus,
         user_grp_slno: selectGroupName
@@ -41,7 +42,7 @@ const MdleUserRightMast = () => {
         const { success, message } = result.data;
         if (success === 1) {
             succesNofity(message);
-            updateSelectedEmployee(0)
+            updateselectEmpDeptSec(0)
             updateSelectedModuleGroup(0)
             updateGroupNameList(0)
             setmdlstatus(false)
@@ -73,7 +74,10 @@ const MdleUserRightMast = () => {
                         <div className="col-md-4">
                             <form className={classes.root} onSubmit={submitUserModuleGroup} >
                                 <div className="col-md-12 row">
-                                    <EmployeeSelect />
+                                    <DeptSecSelectAuth />
+                                </div>
+                                <div className="col-md-12 row">
+                                    <EmpNameDepartmentSec />
                                 </div>
                                 <div className="col-md-12 row">
                                     <ModuleSelection />

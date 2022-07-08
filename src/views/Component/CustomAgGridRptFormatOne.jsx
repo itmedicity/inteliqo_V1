@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import React, { Fragment, useCallback, useRef, useState } from 'react'
-=======
+
 import React, { Fragment, useRef, useState } from 'react'
->>>>>>> 6ba6e1c585eff9a34982a0744b734083e19324b4
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -11,9 +8,8 @@ import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = () => {
-<<<<<<< HEAD
 
-=======
+
     const apiRef = useRef();
 
     const exportState = useSelector((state) => {
@@ -22,7 +18,6 @@ const CustomAgGridRptFormatOne = () => {
     if (exportState > 0) {
         apiRef.current.api.exportDataAsCsv();
     }
->>>>>>> 6ba6e1c585eff9a34982a0744b734083e19324b4
     //Table
     const [columnDefs] = useState([
         {

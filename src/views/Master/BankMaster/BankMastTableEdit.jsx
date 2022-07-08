@@ -8,12 +8,17 @@ import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import BankMastTable from './BankMastTable'
+import BankSelection from './BankSelection'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 
 const BankMastTableEdit = () => {
     const classes = useStyles();
     const { id } = useParams();
     const history = useHistory();
-
+    const [bankmast, setbankmast] = useState(0)
+    const handlechange = (e) => {
+        setbankmast(e)
+    }
     //Initialization
     const [bankData, setFormdata] = useState({
         bank_name: '',
@@ -34,7 +39,8 @@ const BankMastTableEdit = () => {
             const result = await axioslogin.get(`/bank/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { bank_name, bank_ifsc, bank_address, bank_status } = data[0]
+                const { bank_name, bank_ifsc, bank_address, bank_status, bank_mastname } = data[0]
+                console.log(bank_mastname)
                 const frmdata = {
                     bank_name: bank_name,
                     bank_ifsc: bank_ifsc,
@@ -42,6 +48,7 @@ const BankMastTableEdit = () => {
                     bank_status: bank_status === 1 ? true : false
                 }
                 setFormdata(frmdata)
+                setbankmast(bank_mastname)
             }
         }
         getBank()
@@ -50,6 +57,7 @@ const BankMastTableEdit = () => {
 
     const postBank = {
         bank_name,
+        bank_mastname: bankmast,
         bank_ifsc,
         bank_address,
         bank_status: bank_status === true ? 1 : 0,
@@ -73,6 +81,7 @@ const BankMastTableEdit = () => {
             setFormdata(resetForm);
             history.push('/Home/Bank');
             succesNofity(message);
+            setbankmast(0)
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
@@ -97,9 +106,13 @@ const BankMastTableEdit = () => {
                     <div className="row">
                         <div className="col-md-4">
                             <form className={classes.root} onSubmit={submitFormUpdate}  >
-                                <div className="row">
+                                <div className="row g-2">
+                                    <div className="col-md-12 ">
+                                        <BankSelection style={SELECT_CMP_STYLE} onChange={handlechange} value={bankmast} />
+                                    </div>
                                     <div className="col-md-12">
                                         <TextField
+                                            style={{ paddingLeft: 0, marginLeft: 1 }}
                                             label="Bank Name"
                                             fullWidth
                                             size="small"
@@ -113,6 +126,7 @@ const BankMastTableEdit = () => {
                                     </div>
                                     <div className="col-md-12">
                                         <TextField
+                                            style={{ paddingLeft: 0, marginLeft: 1 }}
                                             label="Bank IFSC Code"
                                             fullWidth
                                             size="small"
@@ -126,6 +140,7 @@ const BankMastTableEdit = () => {
                                     </div>
                                     <div className="col-md-12">
                                         <TextField
+                                            style={{ paddingLeft: 0, marginLeft: 1 }}
                                             label="Address"
                                             fullWidth
                                             size="small"
