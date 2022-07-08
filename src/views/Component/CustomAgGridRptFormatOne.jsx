@@ -1,4 +1,3 @@
-
 import React, { Fragment, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -9,6 +8,7 @@ import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
 
+
     const apiRef = useRef();
 
     const exportState = useSelector((state) => {
@@ -18,7 +18,7 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
     if (exportState > 0) {
         apiRef.current.api.exportDataAsCsv();
     }
-   
+
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {

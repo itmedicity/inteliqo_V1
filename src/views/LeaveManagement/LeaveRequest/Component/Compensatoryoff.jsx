@@ -201,7 +201,7 @@ const Compensatoryoff = ({ setcopensatoryoff, em_id }) => {
                                                     style={SELECT_CMP_STYLE}
                                                 >
                                                     <MenuItem value={0} disabled selected >Type of request</MenuItem>
-                                                    <MenuItem value={1}  >Extra Time</MenuItem>
+                                                    {/* <MenuItem value={1}  >Extra Time</MenuItem> */}
                                                     <MenuItem value={2}  >OFF Day</MenuItem>
                                                 </Select>
                                             </FormControl>

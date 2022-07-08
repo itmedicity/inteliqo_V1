@@ -178,11 +178,9 @@ const EmploymentTypeMast = () => {
         ecat_cont: cont_renw === true ? 1 : 0,
         ecat_cont_period: contract_perd,
         cont_grace: contractgrace_perd,
-
         ecat_prob: trapro === true ? 1 : 0,
         ecat_prob_period: train_perd,
         cont_period: traingrace_perd,
-
         ecat_cl: lvetype_slno_cl === true ? 1 : 0,
         ecat_cl_max: max_allowed_count_cl,
         ecat_el: lvetype_slno_previlage === true ? 1 : 0,

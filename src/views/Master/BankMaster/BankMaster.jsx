@@ -9,11 +9,17 @@ import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import BankMastTable from './BankMastTable'
+import BankSelection from './BankSelection'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 
 const BankMaster = () => {
   const classes = useStyles()
   const [count, setCount] = useState(0)
+  const [bankmast, setbankmast] = useState(0)
   const history = useHistory()
+  const handlechange = (e) => {
+    setbankmast(e)
+  }
   const [bankData, getFormdata] = useState({
     bank_name: '',
     bank_ifsc: '',
@@ -33,6 +39,7 @@ const BankMaster = () => {
   }
   const postData = {
     ...bankData,
+    bank_mastname: bankmast,
     bank_status: bank_status === true ? 1 : 0,
     create_user: employeeNumber()
   }
@@ -43,6 +50,7 @@ const BankMaster = () => {
     if (success === 1) {
       succesNofity(message)
       setCount(count + 1)
+      setbankmast(0)
       getFormdata(resetFrom)
     } else if (success === 0) {
       infoNofity(message)
@@ -66,10 +74,14 @@ const BankMaster = () => {
           <div className="row">
             <div className="col-md-4">
               <form className={classes.root} onSubmit={postFormData} >
-                <div className="row">
-                  <div className="col-md-12">
+                <div className="row g-2">
+                  <div className="col-md-12 ">
+                    <BankSelection style={SELECT_CMP_STYLE} onChange={handlechange} value={bankmast} />
+                  </div>
+                  <div className="col-md-12 ">
                     <TextField
-                      label="Bank Name"
+                      style={{ paddingLeft: 0, marginLeft: 1 }}
+                      label="Branch Name"
                       fullWidth
                       size="small"
                       autoComplete="off"
@@ -82,7 +94,8 @@ const BankMaster = () => {
                   </div>
                   <div className="col-md-12">
                     <TextField
-                      label="Bank IFSC Code"
+                      style={{ paddingLeft: 0, marginLeft: 1 }}
+                      label="Branch IFSC Code"
                       fullWidth
                       size="small"
                       autoComplete="off"
@@ -95,6 +108,7 @@ const BankMaster = () => {
                   </div>
                   <div className="col-md-12">
                     <TextField
+                      style={{ paddingLeft: 0, marginLeft: 1 }}
                       label="Address"
                       fullWidth
                       size="small"

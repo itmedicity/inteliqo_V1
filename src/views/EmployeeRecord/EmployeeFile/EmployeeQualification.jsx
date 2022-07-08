@@ -35,9 +35,9 @@ const EmployeeQualification = () => {
     const [count, setcount] = useState(0);
     const { selectEducation, selectCourse, selectSpec, selectUniversity, updateUniversity, updatereg,
         selectBoard, selectreg, updateBoard, updateSpec, updateEducation, updateCourse } = useContext(PayrolMasterContext)
-    const [year, setYear] = useState(new Date());
-    const [expyear, setExpyear] = useState(new Date())
-    const [chellan, setChellan] = useState(new Date())
+    const [year, setYear] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [expyear, setExpyear] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [chellan, setChellan] = useState(format(new Date(), "yyyy-MM-dd"));
     //Initializing
     const [qualification, setQualification] = useState({
         em_education: '',
