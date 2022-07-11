@@ -1,62 +1,67 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomReport from 'src/views/Component/CustomReport'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
-import { ToastContainer } from 'react-toastify'
-import { setDepartment } from 'src/redux/actions/Department.action'
+import { ToastContainer } from 'react-toastify';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
+const InstitutionTypeReport = () => {
+    /** To get stored institution type values from redux */
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setInstitution());
+    }, [dispatch])
 
-const ExperienceReport = () => {
+    const InstitutionType = useSelector((state) => {
+        return state.getInstitutionType.InstitutionList || 0
+    })
 
     /** Initiliazing values */
     const [TableData, setTableData] = useState([]);
     const [value, setValue] = useState(0);
 
-    /** To get stored department values from redux */
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setDepartment());
-    }, [])
-
-    const empDepartment = useSelector((state) => {
-        return state.getDepartmentList.empDepartmentList
-    })
-
-    /** Selction checkbox for department name  */
+    /** Selction checkbox for institution type  */
     const [columnDefs] = useState([
         {
-            headerName: 'Department',
-            field: 'dept_name',
+            headerName: 'Institution Type',
+            field: 'inst_emp_type',
             checkboxSelection: true,
             headerCheckboxSelectionFilteredOnly: true,
             headerCheckboxSelection: true,
             resizable: true,
         },
     ])
-    /** to get checked department slno from selection checkbox  */
+    /** to get selected checkbox as array */
     const onSelectionChanged = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setValue(event.api.getSelectedRows())
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        } else {
+            setValue(event.api.getSelectedRows())
+        }
     }
 
-    /** Intializing slno for getting checked department slno */
+    /** Intializing slno for getting checked institution slno */
     const [slno, setslno] = useState([])
     useEffect(() => {
         const arr = value && value.map((val, index) => {
-            return val.dept_id
+            return val.inst_slno
         })
         setslno(arr)
     }, [value])
 
+    const serailno = useMemo(() => slno, [slno]);
 
-    /** Selected religion slno sumbit to get corresponding data from databse */
-    const getEmployeeDepartment = async (e) => {
+    /** Selected institution type slno sumbit to get corresponding data from databse */
+    const getEmployeeInstitutiontype = useCallback((e) => {
         e.preventDefault();
-        if (slno !== []) {
-            const result = await axioslogin.post('/reports/expemployee', slno)
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+        const getdatafromtable = async (serailno) => {
+            const result = await axioslogin.post('/reports/instiution', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -65,9 +70,15 @@ const ExperienceReport = () => {
                 setTableData([])
             }
         }
-    }
+        if (serailno !== 0) {
+            getdatafromtable(serailno)
+        }
+        else {
+            warningNofity("Please Select Any Institution Type!")
+        }
+    }, [serailno])
 
-    /** Department wise report ag grid table heading */
+    /** Institution Type wise report ag grid table column heading */
     const [columnDefMain] = useState([
         {
             headerName: '#',
@@ -79,28 +90,25 @@ const ExperienceReport = () => {
         },
         { headerName: 'ID', field: 'em_no' },
         { headerName: 'Name ', field: 'em_name' },
-        { headerName: 'Age ', field: 'em_age_year' },
-        { headerName: 'Mobile ', field: 'em_mobile' },
-        { headerName: 'Blood_group ', field: 'group_name' },
-        { headerName: 'Religion', field: 'relg_name' },
         { headerName: 'Dept Name ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
         { headerName: 'Branch ', field: 'branch_name' },
         { headerName: 'Technical/Non technical ', field: 'inst_emp_type' },
         { headerName: 'Designation ', field: 'desg_name' },
         { headerName: 'Date of joining ', field: 'em_doj' },
-        { headerName: 'Category ', field: 'ecat_name' },
     ])
 
     return (
         <Fragment>
             <ToastContainer />
             <CustomReport
+                /** To display left side institution type selection checkboxlist */
                 columnDefs={columnDefs}
-                tableData={empDepartment}
                 onSelectionChanged={onSelectionChanged}
-                onClick={getEmployeeDepartment}
+                tableData={InstitutionType}
 
+                /** To display selected Institution type database list */
+                onClick={getEmployeeInstitutiontype}
                 columnDefMain={columnDefMain}
                 tableDataMain={TableData}
             />
@@ -108,4 +116,4 @@ const ExperienceReport = () => {
     )
 }
 
-export default ExperienceReport
+export default InstitutionTypeReport

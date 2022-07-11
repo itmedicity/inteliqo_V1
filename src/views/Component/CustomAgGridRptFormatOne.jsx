@@ -1,4 +1,5 @@
-import React, { Fragment, useRef } from 'react'
+
+import React, { Fragment, memo, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -7,37 +8,29 @@ import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
-
-
     const apiRef = useRef();
-
+    /** useSelector is used for get aggrid download button state */
     const exportState = useSelector((state) => {
         return state.changeStateAggrid.aggridstate
     })
-
-    if (exportState > 0) {
+    /** To download report as excel */
+    if (exportState > 0 && tableDataMain.length > 0) {
         apiRef.current.api.exportDataAsCsv();
     }
 
+    /** Ag grid report row and column formatting */
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {
-        // resizable: true,
         sortable: true,
-        filter: true,
-        // floatingFilter: true
         filter: 'agTextColumnFilter',
     }
 
     let gridApi
     const onGridReady = (params) => {
         gridApi = params.api
-        // gridApi.sizeColumnsToFit()
     }
-    //--- For Get the Selected Row Values
-    const onSelectionChanged = (event) => {
-        console.log(event.api.getSelectedRows())
-    }
+
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -73,17 +66,14 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
                         animateRows={true}
                         onGridReady={onGridReady}
                         rowSelection="multiple"
-                        // onSelectionChanged={onSelectionChanged}
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}
                         suppressRowVirtualisation={true}
-                        // autoGroupColumnDef={autoGroupColumnDef}
                         suppressRowClickSelection={true}
                         groupSelectsChildren={true}
                         rowGroupPanelShow={'always'}
                         pivotPanelShow={'always'}
                         enableRangeSelection={true}
-                    // pagination={true}
                     ></AgGridReact>
                 </Box>
             </Paper>
@@ -91,4 +81,4 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
     )
 }
 
-export default CustomAgGridRptFormatOne
+export default memo(CustomAgGridRptFormatOne)

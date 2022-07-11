@@ -21,7 +21,8 @@ import { getDistRegion } from '../reducers/DistRegionReducer';
 import { getDistrictList } from '../reducers/DistrictReducer';
 import { getDeptSectList } from '../reducers/DepartSectionReducer'
 import { getEmpNameList } from '../reducers/EmpnameReducer';
-import { changeStateAggrid } from '../reducers/StatechangeAgGrid'
+import { changeStateAggrid } from '../reducers/StatechangeAgGrid';
+import { getInstitutionType } from '../reducers/InstitutionTypeReducer';
 
 const reducer = combineReducers({
     changeState,
@@ -47,7 +48,8 @@ const reducer = combineReducers({
     getDistrictList,
     getDeptSectList,
     getEmpNameList,
-    changeStateAggrid
+    changeStateAggrid,
+    getInstitutionType
 })
 
 export default reducer;
