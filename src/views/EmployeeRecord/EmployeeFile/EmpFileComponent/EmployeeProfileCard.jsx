@@ -1,6 +1,6 @@
 // import { PhotoCamera } from '@material-ui/icons'
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from '../../../../assets/images/default.png'
@@ -22,13 +22,19 @@ const EmployeeProfileCard = () => {
     // const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
     const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
 
-    const empiddata = {
-        em_id: no
-    }
+
+    // const empidd = {
+    //     em_id: no
+    // }
+
+    const empiddata = useMemo(() => {
+        return { em_id: no }
+    }, [no])
+
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(setPersonalData(no))
-    }, [no])
+    }, [no, dispatch])
 
     const state = useSelector((state) => {
         // console.log(state.getPrifileDateEachEmp.empPersonalData.personalData)
