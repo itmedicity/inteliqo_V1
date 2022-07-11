@@ -8,23 +8,20 @@ import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
-
     const apiRef = useRef();
-
     const exportState = useSelector((state) => {
         return state.changeStateAggrid.aggridstate
     })
-
-    if (exportState > 0) {
+    if (exportState > 0 && tableDataMain.length > 0) {
         apiRef.current.api.exportDataAsCsv();
     }
-   
+
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {
         // resizable: true,
         sortable: true,
-        filter: true,
+        // filter: true,
         // floatingFilter: true
         filter: 'agTextColumnFilter',
     }
@@ -34,10 +31,7 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
         gridApi = params.api
         // gridApi.sizeColumnsToFit()
     }
-    //--- For Get the Selected Row Values
-    const onSelectionChanged = (event) => {
-        console.log(event.api.getSelectedRows())
-    }
+
     const rowStyle = {
         fontFamily: [
             '-apple-system',
