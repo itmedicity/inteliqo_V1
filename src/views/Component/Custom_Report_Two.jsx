@@ -1,6 +1,6 @@
-import { Paper, TextField, Typography } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import React, { memo, useCallback } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -14,19 +14,23 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { useHistory } from 'react-router-dom'
-import RegionSelect from '../CommonCode/RegionSelect'
 
 const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableData, onSelectionChanged, tableDataMain, columnDefMain, onClick, columnDefMenu2, tableDataMenu2, onSelectionChangedMenu2, onChange }) => {
+
     const dispatch = useDispatch()
     const history = useHistory()
-
-    const onExportClick = () => {
+    /** To download ag grid report list, if there is no value or not clicked on the search button it shows warning. otherwise it dispatch */
+    const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
         }
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
-    }
+        else {
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
+        }
+    }, [tableDataMain.length])
+
     /** To close the report page and back to the report list */
+
     const CloseReport = async () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         history.push(`/Home/Reports`)
@@ -89,6 +93,7 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                         {/* Top Left Menu Section End */}
                     </Paper>
                     {/* Left Side Section End */}
+
                     {/* Second Left Menu Section start */}
                     {secondMenu === 1 ?
                         <Paper
@@ -111,27 +116,10 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                                     p: 0.3,
                                 }}
                             >
-
                                 <CusIconButton variant="outlined" size="sm" color="success" >
                                     <SearchIcon />
                                 </CusIconButton>
-                                {/* <CustomeToolTip title={menu1} placement="bottom">
-                                    <Box>
-                                        <CusIconButton variant="outlined" size="sm" color="success">
-                                            <ContentPasteSearchIcon />
-                                        </CusIconButton>
-                                    </Box>
-                                </CustomeToolTip>
-                                <CustomeToolTip title={menu2} placement="bottom">
-                                    <Box>
-                                        <CusIconButton variant="outlined" size="sm" color="success">
-                                            <ContentPasteSearchIcon />
-                                        </CusIconButton>
-                                    </Box>
-                                </CustomeToolTip> */}
-
                             </Paper>
-
                             <CustomAgGridMenuSelection columnDefs={columnDefMenu2} onSelectionChanged={onSelectionChangedMenu2} tableData={tableDataMenu2} />
                         </Paper>
                         : null}
@@ -190,10 +178,9 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                     </Paper>
                     {/* Rigth Side Section End */}
                 </Box>
-                {/* <Paper square sx={{ backgroundColor: "lightpink" }}  >sdfsdfsdf</Paper> */}
             </Paper >
         </Box >
     )
 }
 
-export default Custom_Report_Two
+export default memo(Custom_Report_Two)

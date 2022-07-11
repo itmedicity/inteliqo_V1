@@ -30,12 +30,18 @@ export const Actiontypes = {
     FETCH_REGION_DATA: "FETCH_REGION_DATA",
     FETCH_PROFFESSIONAL_TAX: "FETCH_PROFFESSIONAL_TAX",
     FETCH_JOB_DESCRIPTION: "FETCH_JOB_DESCRIPTION",
+    //for getting employee bloodgroup
     FETCH_EMP_BLOODGROUP: "FETCH_EMP_BLOODGROUP ",
     FETCH_EMP_DEPTSECT: "FETCH_EMP_DEPTSECT ",
+    //for getting employee district wise region
     FETCH_EMP_DISTREGION: "FETCH_EMP_DISTREGION",
+    //to get employee district
     FETCH_EMP_DISTRICT: "FETCH_EMP_DISTRICT",
+    //to get employee name
     FETCH_EMP_NAME: "FETCH_EMP_NAME",
+    //to get employee religion
     FETCH_EMP_RELIGION: "FETCH_EMP_RELIGION",
     FETCH_CHANGE_STATE: "FETCH_CHANGE_STATE",
+    // to get employee institution type
     FETCH_EMP_INSTITUTION: "FETCH_EMP_INSTITUTION"
 }

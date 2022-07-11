@@ -1,10 +1,6 @@
-import React, { Fragment, useMemo } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux'
+import React, { Fragment, useCallback, useMemo, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { axioslogin } from 'src/views/Axios/Axios';
-// import CustomReport from 'src/views/Component/CustomReport'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
@@ -13,7 +9,6 @@ import { setDistrict } from 'src/redux/actions/District.Action'
 import Custom_Report_Two from 'src/views/Component/Custom_Report_Two';
 import { setDistRegion } from 'src/redux/actions/DistRegion.Action';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import RegionSelect from 'src/views/CommonCode/RegionSelect';
 
 const RegionReport = () => {
     /** Initiliazing values for tabale data*/
@@ -22,23 +17,21 @@ const RegionReport = () => {
     const [secondvalue, setSecondvalue] = useState(0)
     const [secondMenu, setsecondmenu] = useState(0)
     const [slno, setslno] = useState([])
-    const [text, SetText] = useState(0);
 
     /** To get stored  values from redux */
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setDistrict());
-    }, [])
+    }, [dispatch])
 
-    /** For district list */
-    const empDistrict = useSelector((state) => {
-        return state.getDistrictList.DidtrictList
-    })
+    /** useSelector for getting district list and district wise region list */
+    const state = useSelector((state) => {
+        return { empDistrict: state.getDistrictList.DidtrictList || 0, empDistRegion: state.getDistRegion.empDistReg || 0 }
 
-    /** For district wise region */
-    const empDistRegion = useSelector((state) => {
-        return state.getDistRegion.empDistReg
     })
+    /** destructuring the state */
+    const { empDistrict, empDistRegion } = state
+
 
     /** Left side selction checkbox for district list */
     const [columnDefs] = useState([
@@ -54,7 +47,6 @@ const RegionReport = () => {
 
     /** Selction checkbox for district wise region  */
     const [columnDefRegionMenu] = useState([
-
         {
             headerName: 'Region',
             field: 'reg_name', filter: true,
@@ -83,8 +75,14 @@ const RegionReport = () => {
     /** to get checked district slno from selection checkbox  */
     const onSelectionChanged = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setValue(event.api.getSelectedRows())
-        setsecondmenu(0)
+
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        }
+        else {
+            setValue(event.api.getSelectedRows())
+            setsecondmenu(0)
+        }
     }
 
     /** Intializing slno for getting checked district slno. ie, return value object is mapped to single data  */
@@ -98,7 +96,12 @@ const RegionReport = () => {
     /**to get checked region slno from selection checkbox*/
     const onSelectionChangedMenu2 = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setSecondvalue(event.api.getSelectedRows())
+        if (event.api.getSelectedRows() === 0) {
+            setSecondvalue([])
+        }
+        else {
+            setSecondvalue(event.api.getSelectedRows())
+        }
     }
 
     /** Intializing slno for getting checked region slno. ie, object mapped to data */
@@ -118,11 +121,12 @@ const RegionReport = () => {
         }
     }, [regslno, slno])
 
-    const getEmployeeDistrict = async (e) => {
+
+    const getEmployeeDistrict = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** Selected district slno sumbit, to get corresponding data from databse */
-        if (slno !== 0 && regslno === 0) {
+        const getdistrictdatafromtable = async (slno) => {
             const result = await axioslogin.post('/reports/district/byid', slno)
             const { success, data } = result.data;
             if (success === 1) {
@@ -134,7 +138,7 @@ const RegionReport = () => {
         }
 
         /** Selected district slno and region slno sumbit, to get corresponding data from databse */
-        else if (slno !== 0 && regslno !== 0) {
+        const getDistrictRegionData = async (postData) => {
             const result = await axioslogin.post('/reports/distreg/byregion', postData)
             const { success, data } = result.data;
             if (success === 1) {
@@ -143,27 +147,25 @@ const RegionReport = () => {
             else {
                 setTableData([])
             }
+        }
+        if (slno !== 0 && regslno === 0) {
+            getdistrictdatafromtable(slno)
+        }
+        else if (slno !== 0 && regslno !== 0) {
+            getDistrictRegionData(postData)
         } else {
             warningNofity("Please Select Any DIstrict!")
         }
-    }
+    }, [slno, postData])
 
     /** District wise report ag grid table heading */
     const [columnDefMain] = useState([
         {
             headerName: '#',
-            //field: 'slno',
-            // filter: true,
             filterParams: {
                 buttons: ['reset', 'apply'],
                 debounceMs: 200,
             },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
@@ -182,13 +184,6 @@ const RegionReport = () => {
         { headerName: 'District ', field: 'dist_name' },
         { headerName: 'Region ', field: 'reg_name' },
     ])
-    /** Textfield search */
-    const onChange = (event) => {
-        //console.log(event.target.value);
-        SetText(event.target.value)
-    }
-
-
     return (
         <Fragment>
             <ToastContainer />
@@ -211,8 +206,6 @@ const RegionReport = () => {
                 columnDefMenu2={columnDefRegionMenu}
                 tableDataMenu2={empDistRegion}
                 onSelectionChangedMenu2={onSelectionChangedMenu2}
-
-                onChange={onChange}
             />
         </Fragment>
     )

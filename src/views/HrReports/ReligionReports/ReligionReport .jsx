@@ -1,8 +1,5 @@
-import React, { Fragment } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux'
+import React, { Fragment, useCallback, useState, useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomReport from 'src/views/Component/CustomReport'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -13,8 +10,6 @@ import { setReligion } from 'src/redux/actions/Religion.Action';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const ReligionReport = () => {
-
-
     /** Initiliazing values */
     const [TableData, setTableData] = useState([]);
     const [value, setValue] = useState(0);
@@ -23,10 +18,10 @@ const ReligionReport = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setReligion());
-    }, [])
+    }, [dispatch])
 
     const empReligions = useSelector((state) => {
-        return state.getEmployeeReligion.empRel
+        return state.getEmployeeReligion.empRel || 0
     })
 
     /** Selction checkbox for religion  */
@@ -38,18 +33,20 @@ const ReligionReport = () => {
             headerCheckboxSelectionFilteredOnly: true,
             headerCheckboxSelection: true,
             resizable: true,
-
         },
-
     ])
 
     /** to get checked religion slno from selection checkbox  */
     const onSelectionChanged = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setValue(event.api.getSelectedRows())
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        } else {
+            setValue(event.api.getSelectedRows())
+        }
     }
 
-    /** Intializing slno for getting checked religion slno */
+    /** Intializing and store slno for getting checked religion slno */
     const [slno, setslno] = useState([])
     useEffect(() => {
         const arr = value && value.map((val, index) => {
@@ -58,12 +55,13 @@ const ReligionReport = () => {
         setslno(arr)
     }, [value])
 
-    /** Selected religion slno sumbit to get corresponding data from databse */
-    const getEmployeeReligion = async (e) => {
+    const serailno = useMemo(() => slno, [slno]);
+    /** Selected religion slno sumbit, to get corresponding data from databse */
+    const getEmployeeReligion = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (slno !== 0) {
-            const result = await axioslogin.post('/reports/religion/byid', slno)
+        const getdatafromtable = async (serailno) => {
+            const result = await axioslogin.post('/reports/religion/byid', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -72,27 +70,22 @@ const ReligionReport = () => {
                 setTableData([])
             }
         }
+        if (serailno !== 0) {
+            getdatafromtable(serailno)
+        }
         else {
             warningNofity("Please Select Any Religion!")
         }
-    }
+    }, [serailno])
 
     /** Religion wise report ag grid table heading */
     const [columnDefMain] = useState([
         {
             headerName: '#',
-            //field: 'slno',
-            // filter: true,
             filterParams: {
                 buttons: ['reset', 'apply'],
                 debounceMs: 200,
             },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
@@ -116,11 +109,13 @@ const ReligionReport = () => {
         <Fragment>
             <ToastContainer />
             <CustomReport
+                /**To display left side checkbox selection list */
+                columnDefs={columnDefs}
+                tableData={empReligions}
                 onSelectionChanged={onSelectionChanged}
+                /** To display religion wise report table */
                 onClick={getEmployeeReligion}
                 columnDefMain={columnDefMain}
-                tableData={empReligions}
-                columnDefs={columnDefs}
                 tableDataMain={TableData}
             />
         </Fragment>

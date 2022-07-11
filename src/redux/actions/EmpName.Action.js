@@ -9,4 +9,7 @@ export const setEmployeeName = (sect) => async (dispatch) => {
     if (success === 1) {
         dispatch({ type: FETCH_EMP_NAME, payload: data })
     }
+    else {
+        dispatch({ type: FETCH_EMP_NAME, payload: [] })
+    }
 }

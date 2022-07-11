@@ -1,8 +1,5 @@
-import React, { Fragment } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux'
+import React, { Fragment, useState, useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { setBloodgrp } from 'src/redux/actions/Bloodgrp.Action';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomReport from 'src/views/Component/CustomReport'
@@ -11,7 +8,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-
+import { useCallback } from 'react';
 
 const BloodReports = () => {
 
@@ -23,10 +20,10 @@ const BloodReports = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setBloodgrp());
-    }, [])
+    }, [dispatch])
 
     const empBloodgrp = useSelector((state) => {
-        return state.getEmployeeBloodgrp.empBlood
+        return state.getEmployeeBloodgrp.empBlood || 0
     })
 
     /** Selction checkbox for bloodgroup  */
@@ -44,7 +41,12 @@ const BloodReports = () => {
     /** to get checked bloodgroup slno from selection checkbox  */
     const onSelectionChanged = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setValue(event.api.getSelectedRows())
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        }
+        else {
+            setValue(event.api.getSelectedRows())
+        }
     }
 
     /** Intializing slno for getting checked bloodgroup slno */
@@ -57,11 +59,13 @@ const BloodReports = () => {
     }, [value])
 
     /** Selected bloodgroup slno sumbit to get corresponding data from databse */
-    const getEmployeeBloodgrp = async (e) => {
+    const serailno = useMemo(() => slno, [slno]);
+
+    const getEmployeeBloodgrp = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (slno !== 0) {
-            const result = await axioslogin.post('/reports/bloodgroup/byid', slno)
+        const getdatafromtable = async (serailno) => {
+            const result = await axioslogin.post('/reports/bloodgroup/byid', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -70,27 +74,23 @@ const BloodReports = () => {
                 setTableData([])
             }
         }
+        if (serailno !== 0) {
+            getdatafromtable(serailno)
+        }
         else {
             warningNofity("Please Select Any Bloodgroup!")
         }
-    }
+
+    }, [serailno])
 
     /** Bloodgroup wise report ag grid table heading */
     const [columnDefMain] = useState([
         {
             headerName: '#',
-            //field: 'slno',
-            // filter: true,
             filterParams: {
                 buttons: ['reset', 'apply'],
                 debounceMs: 200,
             },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
@@ -112,12 +112,15 @@ const BloodReports = () => {
         <Fragment>
             <ToastContainer />
             <CustomReport
-                onSelectionChanged={onSelectionChanged}
-                onClick={getEmployeeBloodgrp}
-                columnDefMain={columnDefMain}
-                tableData={empBloodgrp}
+                /** To display left side checkbox selection list */
                 columnDefs={columnDefs}
+                tableData={empBloodgrp}
+                onSelectionChanged={onSelectionChanged}
+
+                /** To display blood group wise report table */
+                columnDefMain={columnDefMain}
                 tableDataMain={TableData}
+                onClick={getEmployeeBloodgrp}
             />
         </Fragment>
     )

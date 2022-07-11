@@ -1,8 +1,5 @@
-import React, { Fragment } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux'
+import React, { Fragment, useState, useEffect, useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomReport from 'src/views/Component/CustomReport'
@@ -17,10 +14,10 @@ const InstitutionTypeReport = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setInstitution());
-    }, [])
+    }, [dispatch])
 
     const InstitutionType = useSelector((state) => {
-        return state.getInstitutionType.InstitutionList
+        return state.getInstitutionType.InstitutionList || 0
     })
 
     /** Initiliazing values */
@@ -38,10 +35,14 @@ const InstitutionTypeReport = () => {
             resizable: true,
         },
     ])
-
+    /** to get selected checkbox as array */
     const onSelectionChanged = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        setValue(event.api.getSelectedRows())
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        } else {
+            setValue(event.api.getSelectedRows())
+        }
     }
 
     /** Intializing slno for getting checked institution slno */
@@ -53,12 +54,14 @@ const InstitutionTypeReport = () => {
         setslno(arr)
     }, [value])
 
+    const serailno = useMemo(() => slno, [slno]);
+
     /** Selected institution type slno sumbit to get corresponding data from databse */
-    const getEmployeeInstitutiontype = async (e) => {
+    const getEmployeeInstitutiontype = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (slno !== 0) {
-            const result = await axioslogin.post('/reports/instiution', slno)
+        const getdatafromtable = async (serailno) => {
+            const result = await axioslogin.post('/reports/instiution', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -66,29 +69,23 @@ const InstitutionTypeReport = () => {
             else {
                 setTableData([])
             }
-
+        }
+        if (serailno !== 0) {
+            getdatafromtable(serailno)
         }
         else {
             warningNofity("Please Select Any Institution Type!")
         }
-    }
+    }, [serailno])
 
     /** Institution Type wise report ag grid table column heading */
     const [columnDefMain] = useState([
         {
             headerName: '#',
-            //field: 'slno',
-            // filter: true,
             filterParams: {
                 buttons: ['reset', 'apply'],
                 debounceMs: 200,
             },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },

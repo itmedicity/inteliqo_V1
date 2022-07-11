@@ -1,8 +1,5 @@
-import React, { Fragment } from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux'
+import React, { Fragment, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomReport from 'src/views/Component/CustomReport'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -74,18 +71,10 @@ const ExperienceReport = () => {
     const [columnDefMain] = useState([
         {
             headerName: '#',
-            //field: 'slno',
-            // filter: true,
             filterParams: {
                 buttons: ['reset', 'apply'],
                 debounceMs: 200,
             },
-            // filter: 'agTextColumnFilter',
-            // filter: 'agNumberColumnFilter',
-            // checkboxSelection: true,
-            // headerCheckboxSelectionFilteredOnly: true,
-            // headerCheckboxSelection: true,
-            // resizable: false,
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
