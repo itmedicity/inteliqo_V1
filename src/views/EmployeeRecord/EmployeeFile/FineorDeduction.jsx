@@ -23,7 +23,7 @@ const FineorDeduction = () => {
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
-    const [period, setPeriod] = useState([])
+    const [period, setPeriod] = useState(0)
     const [status, setStatus] = useState(0)
     const [serialno, getSerialno] = useState(0)
     const [fineDed, setFineDed] = useState({

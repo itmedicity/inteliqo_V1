@@ -120,7 +120,7 @@ const AppSidebar = () => {
     //MENU RIGHTS FROM HERE
     getMenuSlno().then((val) => {
 
-      const resultLength = Object.keys(val[0]).length
+      const resultLength = Object.keys(val[0]).length ?? 0
 
       if (resultLength > 0) {
 

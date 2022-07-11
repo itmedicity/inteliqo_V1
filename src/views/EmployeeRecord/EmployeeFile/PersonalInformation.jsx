@@ -36,6 +36,21 @@ const PersonalInformation = () => {
         getregion2,
         udateregion2
     } = useContext(PayrolMasterContext);
+    const [ifsc, setIfsc] = useState(0)
+    //getting banl serial number for finding ifsc code
+    useEffect(() => {
+        if (selectBank !== 0) {
+            const getbankIfsc = async (e) => {
+                const result = await axioslogin.get(`/bank/${selectBank}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setIfsc(data[0].bank_ifsc)
+                }
+            }
+            getbankIfsc()
+        }
+    }, [selectBank])
+
 
     // reload page
     const RedirectToProfilePage = () => {
@@ -59,7 +74,6 @@ const PersonalInformation = () => {
         age: 0,
         maritalstatus: '0',
         accountno: '',
-        ifc_code: '',
         panmum: '',
         em_id: '0',
         em_no: '0'
@@ -82,7 +96,6 @@ const PersonalInformation = () => {
         Selectgender,
         maritalstatus,
         accountno,
-        ifc_code,
         panmum,
         em_id,
         em_no
@@ -187,7 +200,6 @@ const PersonalInformation = () => {
                     Selectgender: em_gender,
                     maritalstatus: em_maritalstatus,
                     accountno: em_account_no,
-                    ifc_code: em_ifsc,
                     panmum: em_pan_no,
                     em_id: em_id,
                     em_no: em_no
@@ -195,6 +207,7 @@ const PersonalInformation = () => {
                 }
 
                 setpersonaldata(peonsubmitdata)
+                setIfsc(em_ifsc)
                 udatereligion(hrm_religion)
                 updatebloodgroup(blood_slno)
                 udateregion(em_region)
@@ -239,7 +252,7 @@ const PersonalInformation = () => {
             em_cont_phone: land_no,
             em_bank: selectBank,
             em_account_no: accountno,
-            em_ifsc: ifc_code,
+            em_ifsc: ifsc,
             emp_dob: dob,
             em_email: email,
             emp_yeargae: age,
@@ -265,7 +278,6 @@ const PersonalInformation = () => {
             age: 0,
             maritalstatus: '0',
             accountno: '',
-            ifc_code: '',
             panmum: '',
             em_id: '0',
             em_no: '0'
@@ -279,6 +291,7 @@ const PersonalInformation = () => {
             if (success === 2) {
 
                 setpersonaldata(resetdata)
+                setIfsc(0)
                 udatereligion(0)
                 updatebloodgroup(0)
                 udateregion(0)
@@ -633,9 +646,8 @@ const PersonalInformation = () => {
                                                         type="text"
                                                         classname="form-control form-control-sm"
                                                         Placeholder="IFC CODE"
-                                                        changeTextValue={(e) => updateFormData(e)}
-                                                        value={ifc_code}
-                                                        name="ifc_code"
+                                                        value={ifsc}
+                                                        disabled={true}
                                                     />
                                                 </div>
                                                 <div className="col-md-3" data-tip="Pan No." data-for='toolTip1' data-place='top'>

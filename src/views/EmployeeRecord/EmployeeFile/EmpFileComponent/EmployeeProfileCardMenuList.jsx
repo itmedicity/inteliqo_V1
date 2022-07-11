@@ -38,7 +38,7 @@ const EmployeeProfileCardMenuList = (props) => {
         dispath(setExperienceData(id))
         dispath(getannualleave(no))
         dispath(notify(no))
-    }, [no, id])
+    }, [no, id, dispath])
     const history = useHistory();
     const [menuArray, setMenuarray] = useState([]);
     const [count, setCount] = useState(0)
@@ -121,7 +121,7 @@ const EmployeeProfileCardMenuList = (props) => {
     ]
 
     useEffect(() => {
-        const menuRights = getMenuSlno().then((val) => {
+        getMenuSlno().then((val) => {
 
             const resultLength = Object.keys(val[0]).length
             if (resultLength > 0) {
@@ -137,7 +137,7 @@ const EmployeeProfileCardMenuList = (props) => {
             }
         })
 
-    }, [count])
+    }, [count, listArray])
 
     return (
         < Fragment >
