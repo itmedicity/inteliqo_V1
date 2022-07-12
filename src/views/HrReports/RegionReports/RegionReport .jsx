@@ -156,7 +156,7 @@ const RegionReport = () => {
         } else {
             warningNofity("Please Select Any DIstrict!")
         }
-    }, [slno, postData])
+    }, [slno, postData, dispatch])
 
     /** District wise report ag grid table heading */
     const [columnDefMain] = useState([
