@@ -13,14 +13,13 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useMemo } from 'react';
 import { ToastContainer } from 'react-toastify';
 
-
 const CategoryReports = () => {
 
     /** to get stored category values from redux */
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setCategory());
-    }, [])
+    }, [dispatch])
 
     /** to get employee category details from redux */
     const empCate = useSelector((state) => {
@@ -29,7 +28,6 @@ const CategoryReports = () => {
 
     //initialize values
     const [TableData, setTableData] = useState([]);
-    const [data, setData] = useState(0);
     const [value, setValue] = useState(0);
 
     /** Selction checkbox for category  */
@@ -110,7 +108,7 @@ const CategoryReports = () => {
         else {
             warningNofity(" please select any category")
         }
-    }, [serialslno])
+    }, [serialslno, dispatch])
 
 
 

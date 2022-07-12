@@ -20,7 +20,7 @@ const DesignationReport = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setDesignation());
-    }, [])
+    }, [dispatch])
 
     /** to get employee designation from redux */
     const empDesignation = useSelector((state) => {
@@ -29,7 +29,6 @@ const DesignationReport = () => {
 
     //initialize values
     const [TableData, setTableData] = useState([]);
-    const [data, setData] = useState(0);
     const [value, setValue] = useState(0);
 
     /** Selction checkbox for designation  */
@@ -112,7 +111,7 @@ const DesignationReport = () => {
         else {
             warningNofity(" please select any designation")
         }
-    }, [serialslno])
+    }, [serialslno, dispatch])
 
 
 

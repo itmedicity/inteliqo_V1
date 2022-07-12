@@ -21,7 +21,10 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, 
         gridApi = params.api
         gridApi.sizeColumnsToFit()
     }
-
+    const style = {
+        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+        width: '100%',
+    }
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -41,7 +44,8 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, 
             <Paper elevation={0}>
                 <Box
                     className="ag-theme-material ListItemScrol"
-                    sx={sx}
+                    sx={{ ...style, ...sx }}
+
                 >
                     <AgGridReact
                         columnDefs={columnDefs}

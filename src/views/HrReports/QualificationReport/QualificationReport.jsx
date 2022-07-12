@@ -15,11 +15,7 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { setSpecialization } from 'src/redux/actions/Specilization.Action';
 import { ToastContainer } from 'react-toastify';
 
-
-
-
 const QualificationReport = () => {
-
     //initialize values
     const [value, setValue] = useState(0);
     const [TableData, setTableData] = useState([]);
@@ -35,7 +31,7 @@ const QualificationReport = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setEducation());
-    }, [])
+    }, [dispatch])
 
     /**Leftside Selection Checkbox for Education*/
     const [columnDefs] = useState([
@@ -79,7 +75,7 @@ const QualificationReport = () => {
         if (secondMenu === 1) {
             dispatch(setCourse(slno));
         }
-    }, [secondMenu, slno])
+    }, [secondMenu, slno, dispatch])
 
     /** to get checked course slno  from selection slno */
     const onSelectionChanged2 = (event) => {
@@ -100,9 +96,10 @@ const QualificationReport = () => {
         setCourseslno(arr2)
     }, [secondvalue])
 
-    const ShowthirdMenu = async (e) => {
+    const ShowthirdMenu = useCallback((e) => {
         setThirdmenu(1)
-    }
+    }, [])
+
 
     /** Selction checkbox for course  */
     const [columnDefCourse] = useState([
@@ -117,14 +114,20 @@ const QualificationReport = () => {
         },
     ])
     /** Course end */
-    console.log(coursslno);
+
     /** Specilization start */
     /** to get stored specilization values from redux */
     useEffect(() => {
         if (thirdmenu === 1) {
-            dispatch(setSpecialization(coursslno));
+            if (coursslno !== 0) {
+                dispatch(setSpecialization(coursslno));
+            }
+            else {
+                warningNofity("please select any qualification")
+            }
         }
-    }, [thirdmenu, coursslno])
+
+    }, [thirdmenu, coursslno, dispatch])
 
 
     /** to get checked course slno  from selection slno */
@@ -166,6 +169,7 @@ const QualificationReport = () => {
         }
 
     })
+
 
     /** destructuring the state */
     const { empEducation, empCourse, empSpecilization } = state
@@ -227,7 +231,7 @@ const QualificationReport = () => {
         else {
             warningNofity("please select any qualification")
         }
-    }, [slno, coursslno, specSlno])
+    }, [slno, coursslno, specSlno, postData, dispatch])
     //Report coloumn heading
     const [columnDefMain] = useState([
         {

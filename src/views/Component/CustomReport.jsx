@@ -1,6 +1,6 @@
 import { Paper, Tooltip } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import CusIconButton from './CusIconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
@@ -10,6 +10,8 @@ import CustomAgGridMenuSelection from './CustomAgGridMenuSelection'
 import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
 import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import { warningNofity } from '../CommonCode/Commonfunc'
+import { useHistory } from 'react-router-dom'
 
 const CustomReport = ({ columnDefs,
     tableData,
@@ -18,13 +20,23 @@ const CustomReport = ({ columnDefs,
     columnDefMain,
     onClick }) => {
     const dispatch = useDispatch()
+    const history = useHistory()
 
-    const onExportClick = () => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
-    }
-    const CloseReport = () => {
+    const onExportClick = useCallback(() => {
+        if (tableDataMain.length === 0) {
+            warningNofity("Please Click The Search Button After Selecting the Options")
+        }
+        else {
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
+        }
+    }, [tableDataMain.length])
+
+    /** To close the report page and back to the report list */
+    const CloseReport = async () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+        history.push(`/Home/Reports`)
     }
+
     return (
         <Box>
             <Paper
@@ -159,4 +171,4 @@ const CustomReport = ({ columnDefs,
     )
 }
 
-export default CustomReport
+export default memo(CustomReport)
