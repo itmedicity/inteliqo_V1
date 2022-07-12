@@ -1,16 +1,20 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Paper } from '@mui/material'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
-const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }) => {
-
-    /** Ag grid checkbox row and column formatting */
+const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, sx }) => {
+    //Table
     const rowHeight = 25
     const headerHeight = 30
-
+    const defaultColDef = {
+        // resizable: true,
+        // sortable: true,
+        // filter: true,
+        // floatingFilter: true
+    }
     // --- On Grid Ready Function ---
     let gridApi
     const onGridReady = (params) => {
@@ -37,14 +41,12 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }
             <Paper elevation={0}>
                 <Box
                     className="ag-theme-material ListItemScrol"
-                    sx={{
-                        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                        width: '100%',
-                    }}
+                    sx={sx}
                 >
                     <AgGridReact
                         columnDefs={columnDefs}
                         rowData={tableData}
+                        defaultColDef={defaultColDef}
                         rowHeight={rowHeight}
                         headerHeight={headerHeight}
                         rowDragManaged={true}
@@ -60,4 +62,4 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }
     )
 }
 
-export default memo(CustomAgGridMenuSelection)
+export default CustomAgGridMenuSelection

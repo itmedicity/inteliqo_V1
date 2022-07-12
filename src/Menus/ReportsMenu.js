@@ -5,6 +5,9 @@ export const hr_report_one = [
     { to: '/Home/ReligionReport', name: 'Employee Religion Report', slno: 162 },
     { to: '/Home/RegionReport', name: 'Employee Region Report', slno: 163 },
     { to: '/Home/ExperienceReport', name: 'Employee Experience Report', slno: 166 },
-    { to: '/Home/InstitutionTypeReport', name: 'Employee Institution Type Report', slno: 169 }
+    { to: '/Home/InstitutionTypeReport', name: 'Employee Institution Type Report', slno: 169 },
+    { to: '/Home/CategoryReport', name: 'Employee Category Report', slno: 159 },
+    { to: '/Home/DesignationReport', name: 'Employee Designation Report', slno: 161 },
+    { to: '/Home/QualificationReport', name: 'Employee Qualification Report', slno: 164 }
 
 ]
