@@ -21,7 +21,13 @@ import { getDistRegion } from '../reducers/DistRegionReducer';
 import { getDistrictList } from '../reducers/DistrictReducer';
 import { getDeptSectList } from '../reducers/DepartSectionReducer'
 import { getEmpNameList } from '../reducers/EmpnameReducer';
-import { changeStateAggrid } from '../reducers/StatechangeAgGrid'
+import { changeStateAggrid } from '../reducers/StatechangeAgGrid';
+import { getInstitutionType } from '../reducers/InstitutionTypeReducer';
+import { getEmployeeCategory } from '../reducers/CategoryReducers'
+import { getEmployeeDesignation } from '../reducers/DesignationReducers';
+import { getEmployeeEducation } from '../reducers/EducationReducers';
+import { getEmployeeCourse } from '../reducers/CourseReducers'
+import { getEmployeeSpeclization } from '../reducers/SpeciliozationReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -47,7 +53,14 @@ const reducer = combineReducers({
     getDistrictList,
     getDeptSectList,
     getEmpNameList,
-    changeStateAggrid
+    changeStateAggrid,
+    getInstitutionType,
+    getEmployeeCategory,
+    getEmployeeDesignation,
+    getEmployeeEducation,
+    getEmployeeCourse,
+    getEmployeeSpeclization
+
 })
 
 export default reducer;

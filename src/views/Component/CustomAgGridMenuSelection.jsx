@@ -5,7 +5,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
-const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }) => {
+const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, sx }) => {
     //Table
     const rowHeight = 25
     const headerHeight = 30
@@ -21,7 +21,10 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }
         gridApi = params.api
         gridApi.sizeColumnsToFit()
     }
-
+    const style = {
+        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+        width: '100%',
+    }
     const rowStyle = {
         fontFamily: [
             '-apple-system',
@@ -41,10 +44,8 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged }
             <Paper elevation={0}>
                 <Box
                     className="ag-theme-material ListItemScrol"
-                    sx={{
-                        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                        width: '100%',
-                    }}
+                    sx={{ ...style, ...sx }}
+
                 >
                     <AgGridReact
                         columnDefs={columnDefs}

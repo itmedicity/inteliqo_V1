@@ -159,6 +159,13 @@ const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDe
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeRecordVerification/EmployeeRecordVerification'))
 const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
+const ReligionReport = React.lazy(() => import('./views/HrReports/ReligionReports/ReligionReport '))
+const RegionReport = React.lazy(() => import('./views/HrReports/RegionReports/RegionReport '))
+//const ExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceReport '))
+const InstitutionTypeReport = React.lazy(() => import('./views/HrReports/InstitutionTypeReports/InstitutionTypeReport'))
+const CategoryReports = React.lazy(() => import('./views/HrReports/CategoryReport/CategoryReports'))
+const DesignationReport = React.lazy(() => import('./views/HrReports/DesignationReport/DesignationReport'))
+const QualificationReport = React.lazy(() => import('./views/HrReports/QualificationReport/QualificationReport'))
 
 const routes = [
 
@@ -324,6 +331,15 @@ const routes = [
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
   { path: '/Home/EmployeeRecordVerification', exact: true, name: 'Employee Record Verification', component: EmployeeRecordVerification },
   { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
+  { path: '/Home/ReligionReport', exact: true, name: 'Employee Religion Report', component: ReligionReport },
+  { path: '/Home/RegionReport', exact: true, name: 'Employee district Report', component: RegionReport },
+  //{ path: '/Home/ExperienceReport', exact: true, name: 'Employee Department Report', component: ExperienceReport },
+  { path: '/Home/InstitutionTypeReport', exact: true, name: 'Employee InstitutionType Report', component: InstitutionTypeReport },
+  { path: '/Home/CategoryReport', exact: true, name: 'Employee Category Report', component: CategoryReports },
+  { path: '/Home/DesignationReport', exact: true, name: 'Employee Designation Report', component: DesignationReport },
+  { path: '/Home/QualificationReport', exact: true, name: 'Employee Qualification Report', component: QualificationReport }
+
+
 
 ]
 

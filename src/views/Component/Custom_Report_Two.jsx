@@ -1,7 +1,8 @@
-import { Paper, Tooltip } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback } from 'react'
 import CusIconButton from './CusIconButton'
+import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import CustomeToolTip from './CustomeToolTip'
@@ -11,17 +12,14 @@ import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
 import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
+import { ToastContainer } from 'react-toastify'
 import { useHistory } from 'react-router-dom'
 
-const CustomReport = ({ columnDefs,
-    tableData,
-    onSelectionChanged,
-    tableDataMain,
-    columnDefMain,
-    onClick }) => {
+const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableData, onSelectionChanged, tableDataMain, columnDefMain, onClick, columnDefMenu2, tableDataMenu2, onSelectionChangedMenu2, onChange }) => {
+
     const dispatch = useDispatch()
     const history = useHistory()
-
+    /** To download ag grid report list, if there is no value or not clicked on the search button it shows warning. otherwise it dispatch */
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
@@ -32,6 +30,7 @@ const CustomReport = ({ columnDefs,
     }, [tableDataMain.length])
 
     /** To close the report page and back to the report list */
+
     const CloseReport = async () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         history.push(`/Home/Reports`)
@@ -39,6 +38,7 @@ const CustomReport = ({ columnDefs,
 
     return (
         <Box>
+            <ToastContainer />
             <Paper
                 square
                 sx={{
@@ -77,41 +77,53 @@ const CustomReport = ({ columnDefs,
                             <CusIconButton variant="outlined" size="sm" color="success" onClick={onClick}>
                                 <SearchIcon />
                             </CusIconButton>
-                            {/* <CustomeToolTip title="Department Name" placement="bottom">
+                            <CustomeToolTip title={menu2} placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
-                                        <ContentPasteSearchIcon />
+                                        <ContentPasteSearchIcon onClick={ShowSecondMenu} />
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
-                            <CustomeToolTip title="Department Section" placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <ContentPasteSearchIcon />
-                                    </CusIconButton>
-                                </Box>
-                            </CustomeToolTip>
-                            <CustomeToolTip title="Department Master" placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <ContentPasteSearchIcon />
-                                    </CusIconButton>
-                                </Box>
-                            </CustomeToolTip> */}
                         </Paper>
+
+                        <CustomAgGridMenuSelection columnDefs={columnDefs} onSelectionChanged={onSelectionChanged} tableData={tableData} />
+
                         {/* Table Component */}
-                        <CustomAgGridMenuSelection
-                            columnDefs={columnDefs}
-                            onSelectionChanged={onSelectionChanged}
-                            tableData={tableData}
-                            sx={{
-                                height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                                width: '100%',
-                            }}
-                        />
+
                         {/* Top Left Menu Section End */}
                     </Paper>
                     {/* Left Side Section End */}
+
+                    {/* Second Left Menu Section start */}
+                    {secondMenu === 1 ?
+                        <Paper
+                            square
+                            sx={{
+                                backgroundColor: 'lightBlue',
+                                width: { md: '30%', lg: '20%', xl: '15%' },
+                                height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            }}
+                        >
+                            <Paper
+                                square
+                                sx={{
+                                    backgroundColor: '#f0f3f5',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    flexDirection: 'row',
+                                    alignItems: 'flex-start',
+                                    gap: 0.1,
+                                    p: 0.3,
+                                }}
+                            >
+                                <CusIconButton variant="outlined" size="sm" color="success" >
+                                    <SearchIcon />
+                                </CusIconButton>
+                            </Paper>
+                            <CustomAgGridMenuSelection columnDefs={columnDefMenu2} onSelectionChanged={onSelectionChangedMenu2} tableData={tableDataMenu2} />
+                        </Paper>
+                        : null}
+                    {/* Second Left Menu Section End */}
 
                     {/* Rigth Side Section Start */}
                     <Paper
@@ -160,7 +172,7 @@ const CustomReport = ({ columnDefs,
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne tableDataMain={tableDataMain} columnDefMain={columnDefMain} />
+                            <CustomAgGridRptFormatOne tableDataMain={tableDataMain} columnDefMain={columnDefMain} onSelectionChanged={onSelectionChangedMenu2} />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>
@@ -171,4 +183,4 @@ const CustomReport = ({ columnDefs,
     )
 }
 
-export default memo(CustomReport)
+export default memo(Custom_Report_Two)
