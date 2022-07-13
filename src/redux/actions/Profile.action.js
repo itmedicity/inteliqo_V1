@@ -9,7 +9,9 @@ const {
     FETCH_EXPERIENCE_DATA,
     FETCH_LEAVE_AVAIL_LIST,
     FETCH_NOTIFYDETL,
-    FETCH_JOB_DESCRIPTION
+    FETCH_JOB_DESCRIPTION,
+    FETCH_CONTRACT_DETL,
+    FETCH_SALARY_DETL
 } = Actiontypes;
 
 export const setProfileData = (id) => async (dispatch) => {
@@ -90,5 +92,23 @@ export const jondescription = (postData) => {
     }
 }
 
+export const getContractDetlEmp = (id) => {
+    return async (dispatch) => {
+        const result = await axioslogin.get(`/common/getcontract/detl/${id}`)
+        const { success, data } = result.data
+        if (success === 1) {
+            dispatch({ type: FETCH_CONTRACT_DETL, payload: data })
+        }
+    }
+}
 
+export const getSalaryInformation = (postData2) => {
+    return async (dispatch) => {
+        const result = await axioslogin.post('/empearndeduction/getwage', postData2)
+        const { success, data } = result.data
+        if (success === 1) {
+            dispatch({ type: FETCH_SALARY_DETL, payload: data[0] })
+        }
+    }
+}
 

@@ -29,7 +29,7 @@ import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import MyProfileExpQualify from './MyProfileExpQualify';
 import MyProfleExperience from './MyProfleExperience';
-import MyProfileSalary from './MyProfileSalary';
+import MyProfileJobDescription from './MyProfileJobDescription';
 import AnualLeave from './AnualLeave';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
@@ -42,6 +42,8 @@ import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from './ProfileVerificationModal';
+import ContractDetl from './ContractDetl';
+import SalaryEmp from './SalaryEmp';
 
 
 const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
@@ -563,11 +565,14 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
                     <Grid item container xs={12} md={12} direction="row" spacing={2} >
                         <Grid item xs={12} md={6} >
                             <MyProfileExpQualify />
-                            <MyProfileSalary />
+                            <MyProfileJobDescription />
                         </Grid>
                         <Grid item xs={12} md={6} >
                             <MyProfleExperience />
-                            <AnualLeave />
+                            <AnualLeave empid={empid} />
+                            <ContractDetl />
+                            <SalaryEmp />
+
                         </Grid>
                         {/* <Grid item xs={12} md={6} >
 

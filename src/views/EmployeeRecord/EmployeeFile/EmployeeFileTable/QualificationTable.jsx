@@ -3,10 +3,11 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useHistory, useParams } from 'react-router';
+import { DeleteForever, DeleteOutlineOutlined } from '@material-ui/icons';
 
-const QualificationTable = ({ update }) => {
+const QualificationTable = ({ update, setcount }) => {
     const history = useHistory();
     const [data, setTableData] = useState();
     const { id, no } = useParams()
@@ -48,6 +49,18 @@ const QualificationTable = ({ update }) => {
         const { emqual_slno } = data
         history.push(`/Home/QualificationTableEdit/${emqual_slno}/${id}/${no}`)
     }
+    const InactiveData = async (data) => {
+        const result = await axioslogin.delete(`/qualify/${data.emqual_slno}`)
+        const { success, message } = result.data
+        if (success === 1) {
+            succesNofity(message)
+            setcount(update + 1)
+        }
+        else {
+            errorNofity("Error Occured!!!Please Contact EDP")
+        }
+
+    }
 
     return (
         <Fragment>
@@ -61,8 +74,15 @@ const QualificationTable = ({ update }) => {
                         icon: () => <EditOutlinedIcon />,
                         tooltip: "Click here to Edit",
                         onClick: (e, data) => getDataTable(data)
+                    },
+                    {
+                        icon: () => <DeleteOutlineOutlined />,
+                        tooltip: "Click here to Delete",
+                        onClick: (e, data) => InactiveData(data)
                     }
+
                 ]}
+
                 options={{
                     paginationType: "stepped",
                     showFirstLastPageButtons: false,

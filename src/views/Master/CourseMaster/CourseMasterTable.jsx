@@ -24,9 +24,7 @@ const CourseMasterTable = ({ update }) => {
         {
             title: "Status", field: "cour_status", cellStyle: { minWidth: 1, maxWidth: 2 }
         },
-        {
-            title: "User ID", field: "cour_created"
-        },
+
     ]
 
     //Get Data

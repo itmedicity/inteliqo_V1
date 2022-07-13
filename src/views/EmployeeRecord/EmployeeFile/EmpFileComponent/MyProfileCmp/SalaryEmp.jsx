@@ -1,39 +1,39 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment, memo, useEffect, useState } from 'react'
-import AcademicQualCmp from './AcademicQualCmp';
+import React, { Fragment, useEffect, useState } from 'react'
 import PushPinIcon from '@mui/icons-material/PushPin';
-import SchoolIcon from '@mui/icons-material/School';
 import { useSelector } from 'react-redux';
+import SalaryDetlEmp from './SalaryDetlEmp';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-const MyProfileExpQualify = () => {
+const SalaryEmp = () => {
+    const [SalaryData, setSalaryData] = useState([])
+    const [status, setstatus] = useState(false)
 
-    const [accedData, setaccedemicData] = useState([])
-    const [accedStatus, setaccedemicstatus] = useState([])
     const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp.empAcademicData;
+        return state.getPrifileDateEachEmp.empSalaryInformation
     })
     useEffect(() => {
-        const { academicData, academicDataStatus } = state;
-        setaccedemicData(academicData)
-        setaccedemicstatus(academicDataStatus)
+        const { empSalary, empSalaryStatus } = state;
+        setSalaryData(empSalary)
+        setstatus(empSalaryStatus)
     }, [state])
 
     return (
         <Fragment>{
-            accedStatus === true ?
+            SalaryData.length === 0 || status === false ? null :
                 <Card sx={{ borderRadius: 2, boxShadow: 2 }} className="mt-1" >
                     <CardHeader
-                        title="Academic Qualification"
+                        title="Salary Information"
                         titleTypographyProps={{
                             variant: 'button',
                         }}
                         avatar={
                             <Avatar sx={{ bgcolor: '#49599a' }} aria-label="recipe">
-                                <SchoolIcon />
+                                <MonetizationOnIcon />
                             </Avatar>
                         }
                         action={
-                            <IconButton aria-label="settings">
+                            <IconButton aria-label="settings" >
                                 <PushPinIcon color="warning" />
                             </IconButton>
                         }
@@ -42,15 +42,15 @@ const MyProfileExpQualify = () => {
                     <CardContent className='pt-0' >
                         <List className='p-0' >
                             {
-                                accedData && accedData.map((val, index) => <AcademicQualCmp key={index} data={val} />)
+                                SalaryData && SalaryData.map((val, index) => <SalaryDetlEmp key={index} data={val} />)
                             }
                         </List>
                     </CardContent>
-                </Card> : null
+                </Card>
         }
 
         </Fragment>
     )
 }
 
-export default memo(MyProfileExpQualify)
+export default SalaryEmp
