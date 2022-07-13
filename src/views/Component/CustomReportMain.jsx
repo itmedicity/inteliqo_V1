@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useEffect } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -14,6 +14,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { memo } from 'react'
+import { useHistory } from 'react-router-dom'
 
 
 const CustomReportMain = ({
@@ -37,16 +38,22 @@ const CustomReportMain = ({
     columnDefMenu3 }) => {
 
     const dispatch = useDispatch()
+    const history = useHistory()
     const onExportClick = () => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
         }
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
     }
-    const CloseReport = () => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+    const CloseReport = async () => {
+        history.push(`/Home/Reports`)
     }
-
+    //setting the state to default
+    useEffect(() => {
+        return (
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+        )
+    }, [dispatch])
     return (
         <Box>
             <ToastContainer />
@@ -150,6 +157,7 @@ const CustomReportMain = ({
                                     alignItems: 'flex-start',
                                     gap: 0.1,
                                     p: 0.3,
+
                                 }}
                             >
                             </Paper>
