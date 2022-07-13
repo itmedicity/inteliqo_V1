@@ -22,24 +22,7 @@ const MyProfleExperience = () => {
 
     return (
         <Fragment>
-            {status === false ? <CardHeader
-                title="Professional Experience"
-                titleTypographyProps={{
-                    variant: 'button',
-                }}
-                avatar={
-                    <Avatar sx={{ bgcolor: '#49599a' }} aria-label="recipe">
-                        <PersonPinIcon />
-                    </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings" >
-                        <PushPinIcon color="warning" />
-                    </IconButton>
-                }
-                className="pb-0"
-            /> :
-
+            {status === false || expData.length === 0 ? null :
                 <Card sx={{ borderRadius: 2, boxShadow: 2 }} className="mt-1" >
                     <CardHeader
                         title="Professional Experience"
