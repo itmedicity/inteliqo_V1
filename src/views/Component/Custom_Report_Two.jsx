@@ -99,8 +99,8 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                         <Paper
                             square
                             sx={{
-                                backgroundColor: 'lightBlue',
-                                width: { md: '30%', lg: '20%', xl: '15%' },
+                                backgroundColor: 'white',
+                                width: { md: '20%', lg: '20%', xl: '15%' },
                                 height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
                             }}
                         >
@@ -116,11 +116,9 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                                     p: 0.3,
                                 }}
                             >
-                                <CusIconButton variant="outlined" size="sm" color="success" >
-                                    <SearchIcon />
-                                </CusIconButton>
                             </Paper>
-                            <CustomAgGridMenuSelection columnDefs={columnDefMenu2} onSelectionChanged={onSelectionChangedMenu2} tableData={tableDataMenu2} />
+                            <CustomAgGridMenuSelection
+                                columnDefs={columnDefMenu2} onSelectionChanged={onSelectionChangedMenu2} tableData={tableDataMenu2} />
                         </Paper>
                         : null}
                     {/* Second Left Menu Section End */}
