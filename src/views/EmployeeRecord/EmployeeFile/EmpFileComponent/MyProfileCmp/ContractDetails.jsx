@@ -1,5 +1,5 @@
 import { ListItem, ListItemText, Typography } from '@mui/material';
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState,memo } from 'react'
 
 
 const ContractDetails = ({ ContractDetail }) => {
@@ -49,4 +49,4 @@ const ContractDetails = ({ ContractDetail }) => {
     )
 }
 
-export default ContractDetails
+export default memo(ContractDetails)
