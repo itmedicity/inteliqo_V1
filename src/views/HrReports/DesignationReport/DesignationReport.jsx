@@ -35,7 +35,7 @@ const DesignationReport = () => {
     const [columnDefs] = useState([
         {
             headerName: 'Designation',
-            field: 'desg_name',
+            field: 'desg_name', filter: true,
             checkboxSelection: true,
             headerCheckboxSelectionFilteredOnly: true,
             headerCheckboxSelection: true,
@@ -44,9 +44,16 @@ const DesignationReport = () => {
         },
 
     ])
+
+    /** to get employee name in ascending order */
+    const sortingOrder = useMemo(() => {
+        return ['asc'];
+    }, []);
+
     /** designation wise report ag grid table heading */
     const [columnDefMain] = useState([
         {
+            sortable: true,
             headerName: '#',
             filterParams: {
                 buttons: ['reset', 'apply'],
@@ -55,7 +62,7 @@ const DesignationReport = () => {
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
-        { headerName: 'Name ', field: 'em_name' },
+        { headerName: 'Name ', field: 'em_name', sortingOrder: ['asc'] },
         { headerName: 'Age ', field: 'em_age_year' },
         { headerName: 'Designation ', field: 'desg_name' },
         { headerName: 'Mobile ', field: 'em_mobile' },
@@ -129,6 +136,10 @@ const DesignationReport = () => {
                 /** to display right side table */
                 columnDefMain={columnDefMain}
                 tableDataMain={TableData}
+                sortingOrder={sortingOrder}
+
+
+
             />
         </Fragment>
     )
