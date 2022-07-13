@@ -1,5 +1,5 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState,memo } from 'react'
 import PushPinIcon from '@mui/icons-material/PushPin';
 import { useSelector } from 'react-redux';
 import SalaryDetlEmp from './SalaryDetlEmp';
@@ -53,4 +53,4 @@ const SalaryEmp = () => {
     )
 }
 
-export default SalaryEmp
+export default memo(SalaryEmp)
