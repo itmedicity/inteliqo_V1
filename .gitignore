@@ -11,6 +11,9 @@ yarn.lock
 # production
 /build
 
+#API Link File
+/src/views/Constant/ApiLink.jsx
+
 # misc
 #.eslintcache
 #.DS_Store
