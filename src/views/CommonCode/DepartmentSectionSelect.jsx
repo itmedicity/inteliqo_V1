@@ -47,6 +47,7 @@ const DepartmentSectionSelect = (props) => {
                     className="ml-1"
                     defaultValue={0}
                     style={props.style}
+                    disabled={props.disabled}
                 >
                     <MenuItem value='0' disabled>
                         Select Department Section

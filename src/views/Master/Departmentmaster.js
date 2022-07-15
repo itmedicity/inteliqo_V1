@@ -62,6 +62,10 @@ const Departmentmaster = () => {
             errorNofity(resResult.message);
 
         }
+        else if (resResult.success === 7) {
+            infoNofity(resResult.message);
+
+        }
     }
 
     const columns = useMemo(() => [
