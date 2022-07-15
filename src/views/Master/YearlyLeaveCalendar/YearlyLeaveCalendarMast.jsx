@@ -147,6 +147,7 @@ const YearlyLeaveCalendarMast = () => {
                                                 label="Year"
                                                 name="year"
                                                 value={year}
+                                                minDate={new Date()}
                                                 onChange={(e) => {
                                                     setHolidayYear(e)
                                                 }}
