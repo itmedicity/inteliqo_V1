@@ -43,7 +43,7 @@ const EmployeeTypeMast = () => {
         e.preventDefault();
         const result = await axioslogin.post('/emptype', empUpdatedData);
         const { success, message } = result.data;
-        if (success === 2 || success === 0) {
+        if (success === 2 || success === 0 || success === 7) {
             infoNofity(message);
         } else {
             succesNofity(message);

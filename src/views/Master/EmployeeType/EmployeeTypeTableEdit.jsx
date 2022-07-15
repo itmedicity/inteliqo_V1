@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router'
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
 import SessionCheck from 'src/views/Axios/SessionCheck';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import EmployeeTypeTable from 'src/views/Master/EmployeeType/EmployeeTypeTable';
@@ -18,13 +18,11 @@ const EmployeeTypeTableEdit = () => {
     //state declaration
     const [formData, setFormData] = useState({
         empType: "",
-
         elApplicable: false
     })
 
     const defaultState = {
         empType: "",
-
         elApplicable: false
     }
 
@@ -45,6 +43,7 @@ const EmployeeTypeTableEdit = () => {
             }
         }
         getEmployeeTypeData()
+
     }, [id])
 
     //update Edit details
@@ -67,6 +66,11 @@ const EmployeeTypeTableEdit = () => {
             succesNofity(message)
             setFormData(defaultState)
             setCount(count + 1)
+            history.push('/Home/EmployeeType')
+
+        }
+        else if (success === 7) {
+            infoNofity(message)
         }
         else {
             errorNofity("Error Occured Please Contact EDP")

@@ -14,6 +14,7 @@ import ReactTooltip from 'react-tooltip'
 import { format } from 'date-fns'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const EmployeeExperience = () => {
     const classes = useStyles()
@@ -33,17 +34,19 @@ const EmployeeExperience = () => {
         institution_name: "",
         gross_salary: "",
         workstartdate: format(new Date(), "yyyy-MM-dd"),
-        workenddate: format(new Date(), "yyyy-MM-dd")
+        workenddate: format(new Date(), "yyyy-MM-dd"),
+        tmch_exp: false
     })
     //defaultState
     const defaultState = {
         institution_name: "",
         gross_salary: "",
         workstartdate: format(new Date(), "yyyy-MM-dd"),
-        workenddate: format(new Date(), "yyyy-MM-dd")
+        workenddate: format(new Date(), "yyyy-MM-dd"),
+        tmch_exp: false
     }
     //Destructuring
-    const { institution_name, gross_salary, workstartdate, workenddate } = formData
+    const { institution_name, gross_salary, workstartdate, workenddate, tmch_exp } = formData
     //getting form data
     const updateEmployeeExpFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -65,7 +68,8 @@ const EmployeeExperience = () => {
         em_to: moment(workenddate).format('YYYY-MM-DD'),
         em_total_year: totyear,
         em_salary: gross_salary,
-        create_user: no
+        create_user: no,
+        tmch_exp: tmch_exp === true ? 1 : 0
     }
     //saving formdata
     const submitFormData = async (e) => {
@@ -101,7 +105,7 @@ const EmployeeExperience = () => {
                                     <div className="card">
                                         <div className="card-body">
                                             <div className="row g-1">
-                                                <div className="col-md-12">
+                                                <div className="col-md-11">
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -109,6 +113,24 @@ const EmployeeExperience = () => {
                                                         changeTextValue={(e) => updateEmployeeExpFormData(e)}
                                                         value={institution_name}
                                                         name="institution_name"
+                                                    />
+                                                </div>
+                                                <div className="col-md-1 " data-tip="Medicity Experience" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
+                                                    <FormControlLabel
+                                                        className=""
+                                                        control={
+                                                            <Checkbox
+                                                                name="tmch_exp"
+                                                                color="secondary"
+                                                                value={tmch_exp}
+                                                                checked={tmch_exp}
+                                                                className="pl-2 pt-1 pb-1"
+                                                                onChange={(e) => {
+                                                                    updateEmployeeExpFormData(e)
+                                                                }}
+                                                            />
+                                                        }
                                                     />
                                                 </div>
                                                 <div className="col-md-12">
