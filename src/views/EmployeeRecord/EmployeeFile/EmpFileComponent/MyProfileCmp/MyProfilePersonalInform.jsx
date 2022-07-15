@@ -42,9 +42,9 @@ import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from './ProfileVerificationModal';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink';
 import ContractDetl from './ContractDetl';
 import SalaryEmp from './SalaryEmp';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
 

@@ -19,7 +19,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import ProfilePic from '../../../assets/images/default.png'
 import { Avatar, Stack } from '@mui/material'
 import ReactTooltip from 'react-tooltip';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const PersonalInformation = () => {
     const history = useHistory()

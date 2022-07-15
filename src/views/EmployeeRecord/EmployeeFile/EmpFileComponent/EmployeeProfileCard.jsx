@@ -14,7 +14,7 @@ import CallIcon from '@mui/icons-material/Call';
 import MailRoundedIcon from '@mui/icons-material/MailRounded';
 import GridGoldenratioIcon from '@mui/icons-material/GridGoldenratio';
 import { indigo } from '@mui/material/colors';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink'
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 
 const EmployeeProfileCard = () => {

@@ -1,6 +1,5 @@
 import { axioslogin } from "../Axios/Axios";
-import { API_URL } from "./ApiLink";
-import { PUBLIC_NAS_FOLDER } from "./ApiLink";
+import { API_URL, PUBLIC_NAS_FOLDER } from "./Static";
 
 // export const API_URL = 'http://192.168.10.132:5000/api';
 

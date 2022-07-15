@@ -17,7 +17,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { employeeNumber, urlExist } from 'src/views/Constant/Constant'
 import { useState } from 'react'
 import { Avatar } from '@mui/material'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink'
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 
 const AppHeaderDropdown = () => {
 

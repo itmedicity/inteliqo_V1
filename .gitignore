@@ -12,7 +12,7 @@ yarn.lock
 /build
 
 #API Link File
-src/views/Constant
+src/**/**/Static.jsx
 # misc
 #.eslintcache
 #.DS_Store
