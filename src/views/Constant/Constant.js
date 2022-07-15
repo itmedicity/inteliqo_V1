@@ -1,7 +1,10 @@
 import { axioslogin } from "../Axios/Axios";
+import { API_URL } from "./ApiLink";
+import { PUBLIC_NAS_FOLDER } from "./ApiLink";
 
-export const API_URL = 'http://192.168.10.132:5000/api';
-// export const API_URL = 'http://localhost:5000/api';
+// export const API_URL = 'http://192.168.10.132:5000/api';
+
+// export const API_URL = 'http://192.168.10.170:5000/api';
 
 export const employeeNumber = () => {
 
@@ -71,7 +74,7 @@ export const getleaverequest = async () => {
     }
 }
 
-export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
+// export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
 
 
 //GET ASSINED MENU LIST
@@ -90,8 +93,18 @@ export const getMenuSlno = async () => {
 //URL EXSIT CHECK FUNCTION
 
 export const urlExist = (url, callBack) => {
-    fetch(url)
-        .then((status) => {
-            callBack(status.status)
-        })
+    const img = new Image();
+    img.src = JSON.parse(url);
+
+    if (img.complete) {
+        callBack(true);
+    } else {
+        img.onload = () => {
+            callBack(true);
+        };
+
+        img.onerror = () => {
+            callBack(false);
+        };
+    }
 }

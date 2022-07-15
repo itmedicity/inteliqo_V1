@@ -1,5 +1,6 @@
 import Axios from 'axios';
-import { API_URL } from '../Constant/Constant';
+// import { API_URL } from '../Constant/Constant';
+import { API_URL } from '../Constant/ApiLink';
 // import { token } from '../Constant/Constant';
 
 // const accessToken = token();

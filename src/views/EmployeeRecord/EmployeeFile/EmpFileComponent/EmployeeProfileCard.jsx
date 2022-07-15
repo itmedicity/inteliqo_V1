@@ -2,7 +2,7 @@
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant'
+import { urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'
@@ -14,6 +14,7 @@ import CallIcon from '@mui/icons-material/Call';
 import MailRoundedIcon from '@mui/icons-material/MailRounded';
 import GridGoldenratioIcon from '@mui/icons-material/GridGoldenratio';
 import { indigo } from '@mui/material/colors';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink'
 
 
 const EmployeeProfileCard = () => {

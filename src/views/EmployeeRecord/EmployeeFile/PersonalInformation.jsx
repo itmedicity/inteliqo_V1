@@ -13,12 +13,13 @@ import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md'
 import { axioslogin } from 'src/views/Axios/Axios'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { employeeNumber, PUBLIC_NAS_FOLDER } from 'src/views/Constant/Constant'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import BankNameSelect from 'src/views/CommonCode/BankNameSelect'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ProfilePic from '../../../assets/images/default.png'
 import { Avatar, Stack } from '@mui/material'
 import ReactTooltip from 'react-tooltip';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink';
 
 const PersonalInformation = () => {
     const history = useHistory()

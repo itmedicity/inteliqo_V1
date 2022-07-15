@@ -25,7 +25,7 @@ import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import ProfilePicDefault from '../../../../../assets/images/default.png'
-import { PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant';
+import { urlExist } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import MyProfileExpQualify from './MyProfileExpQualify';
 import MyProfleExperience from './MyProfleExperience';
@@ -42,7 +42,7 @@ import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from './ProfileVerificationModal';
-
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/ApiLink';
 
 const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
 
