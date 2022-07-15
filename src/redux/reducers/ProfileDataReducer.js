@@ -7,7 +7,9 @@ const {
     FETCH_EXPERIENCE_DATA,
     FETCH_LEAVE_AVAIL_LIST,
     FETCH_NOTIFYDETL,
-    FETCH_JOB_DESCRIPTION
+    FETCH_JOB_DESCRIPTION,
+    FETCH_CONTRACT_DETL,
+    FETCH_SALARY_DETL
 } = Actiontypes;
 
 const Profile_inititalData = {
@@ -99,6 +101,14 @@ const profileData = {
         jobdescdata: {},
         jobdescdataStatus: false
     },
+    empContractDetl: {
+        empContract: [],
+        empContractStatus: false
+    },
+    empSalaryInformation: {
+        empSalary: [],
+        empSalaryStatus: false
+    },
 }
 
 export const getPrifileDateEachEmp = (state = profileData, { type, payload }) => {
@@ -137,6 +147,24 @@ export const getPrifileDateEachEmp = (state = profileData, { type, payload }) =>
                     ...state.empJobDesc,
                     jobdescdata: payload,
                     jobdescdataStatus: true
+                }
+            }
+        case FETCH_CONTRACT_DETL:
+            return {
+                ...state,
+                empContractDetl: {
+                    ...state.empContractDetl,
+                    empContract: payload,
+                    empContractStatus: true
+                }
+            }
+        case FETCH_SALARY_DETL:
+            return {
+                ...state,
+                empSalaryInformation: {
+                    ...state.empSalaryInformation,
+                    empSalary: payload,
+                    empSalaryStatus: true
                 }
             }
 

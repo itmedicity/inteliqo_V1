@@ -30,6 +30,11 @@ const CategoryReports = () => {
     const [TableData, setTableData] = useState([]);
     const [value, setValue] = useState(0);
 
+    /** to get employee name in ascending */
+    const sortingOrder = useMemo(() => {
+        return ['asc'];
+    }, []);
+
     /** Selction checkbox for category  */
     const [columnDefs] = useState([
         {
@@ -53,7 +58,7 @@ const CategoryReports = () => {
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
-        { headerName: 'Name ', field: 'em_name' },
+        { headerName: 'Name ', field: 'em_name', sortingOrder: ['asc'] },
         { headerName: 'Category ', field: 'ecat_name' },
         { headerName: 'Age ', field: 'em_age_year' },
         { headerName: 'Mobile ', field: 'em_mobile' },
@@ -126,6 +131,7 @@ const CategoryReports = () => {
                 /** to display right side table */
                 columnDefMain={columnDefMain}
                 tableDataMain={TableData}
+                sortingOrder={sortingOrder}
             />
 
         </Fragment>

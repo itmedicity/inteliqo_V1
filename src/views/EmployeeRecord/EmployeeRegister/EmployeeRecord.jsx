@@ -89,8 +89,8 @@ const EmployeeRecord = () => {
         else {
             monthage = today.getMonth() - birthDate.getMonth();
         }
-        var retireyear = 56 - parseInt(age_now)
-        var retirementyear = addYears(today, retireyear)
+
+        var retirementyear = addYears(birthDate, 56)
         setretirementyear(retirementyear)
 
         const agefromnaw = {

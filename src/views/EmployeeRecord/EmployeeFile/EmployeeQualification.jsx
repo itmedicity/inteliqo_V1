@@ -356,7 +356,7 @@ const EmployeeQualification = () => {
                                 </div>
                             </div>
                             <div className="col-md-8">
-                                <QualificationTable update={count} />
+                                <QualificationTable update={count} setcount={setcount} />
                             </div>
                             <div className="col-md-12 pt-1">
                                 <div className="card-footer  text-muted ">

@@ -152,7 +152,7 @@ const QualificationReport = () => {
     const [columnDefSpecialization] = useState([
         {
             headerName: 'Specialization',
-            field: 'spec_desc',
+            field: 'spec_desc', filter: true,
             checkboxSelection: true,
             headerCheckboxSelectionFilteredOnly: true,
             headerCheckboxSelection: true,

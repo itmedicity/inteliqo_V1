@@ -74,7 +74,7 @@ const AppHeader = () => {
     if (status === false) {
       hrmLogout()
     } else {
-      return state.getProfileData.ProfileData[0].em_id
+      return state?.getProfileData?.ProfileData[0]?.em_id ?? 0
     }
 
   })

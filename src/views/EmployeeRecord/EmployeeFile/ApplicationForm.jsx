@@ -11,7 +11,9 @@ import {
     setExperienceData,
     getannualleave,
     notify,
-    jondescription
+    jondescription,
+    getContractDetlEmp,
+    getSalaryInformation
 } from '../../../redux/actions/Profile.action'
 
 const ApplicationForm = () => {
@@ -30,7 +32,7 @@ const ApplicationForm = () => {
 
         }
 
-    })
+    }, [slno, id, no])
     const designation = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData.em_designation
     })
@@ -43,11 +45,16 @@ const ApplicationForm = () => {
             designation: designation,
             department: em_department
         }
+        const postData2 = {
+            em_no: id
+        }
         dispath(setPersonalData(no))
         dispath(setAccademicData(id))
         dispath(setExperienceData(id))
         dispath(getannualleave(no))
         dispath(notify(no))
+        dispath(getContractDetlEmp(no))
+        dispath(getSalaryInformation(postData2))
         if (designation !== 'NOT UPDATED' && em_department !== 'NOT UPDATED') {
             dispath(jondescription(postData))
         }

@@ -57,8 +57,7 @@ const BloodReports = () => {
         })
         setslno(arr)
     }, [value])
-
-    /** Selected bloodgroup slno sumbit to get corresponding data from databse */
+    /** Selected bloodgroup slno sumbit to get corresponding data from database */
     const serailno = useMemo(() => slno, [slno]);
 
     const getEmployeeBloodgrp = useCallback((e) => {
@@ -81,7 +80,7 @@ const BloodReports = () => {
             warningNofity("Please Select Any Bloodgroup!")
         }
 
-    }, [serailno])
+    }, [serailno, dispatch])
 
     /** Bloodgroup wise report ag grid table heading */
     const [columnDefMain] = useState([

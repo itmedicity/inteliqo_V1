@@ -76,7 +76,7 @@ const InstitutionTypeReport = () => {
         else {
             warningNofity("Please Select Any Institution Type!")
         }
-    }, [serailno])
+    }, [serailno, dispatch])
 
     /** Institution Type wise report ag grid table column heading */
     const [columnDefMain] = useState([

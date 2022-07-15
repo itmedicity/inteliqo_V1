@@ -76,7 +76,7 @@ const ReligionReport = () => {
         else {
             warningNofity("Please Select Any Religion!")
         }
-    }, [serailno])
+    }, [serailno, dispatch])
 
     /** Religion wise report ag grid table heading */
     const [columnDefMain] = useState([

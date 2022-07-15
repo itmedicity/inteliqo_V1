@@ -591,6 +591,7 @@ const PersonalInformation = () => {
                                                             <MenuItem value="1">Married</MenuItem>
                                                             <MenuItem value="2">UnMarried</MenuItem>
                                                             <MenuItem value="3">Widow</MenuItem>
+                                                            <MenuItem value="4">Divorcee</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 </div>
