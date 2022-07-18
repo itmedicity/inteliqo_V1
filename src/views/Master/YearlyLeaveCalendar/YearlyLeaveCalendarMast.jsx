@@ -14,6 +14,7 @@ import { axioslogin } from "src/views/Axios/Axios"
 import YearlyLeaveCalendarTable from "./YearlyLeaveCalendarTable"
 import { useHistory } from "react-router"
 import { employeeNumber } from "src/views/Constant/Constant"
+import { lastDayOfYear, startOfYear } from "date-fns"
 
 const YearlyLeaveCalendarMast = () => {
     const classes = useStyles()
@@ -92,6 +93,10 @@ const YearlyLeaveCalendarMast = () => {
     const toSettings = () => {
         history.push('/Home/Settings')
     }
+    //DATEVALIDATION
+    const startyear = startOfYear(new Date())
+    const endofyear = lastDayOfYear(new Date())
+
 
     return (
         <Fragment>
@@ -115,6 +120,8 @@ const YearlyLeaveCalendarMast = () => {
                                                 label="Holiday Date"
                                                 name="holidaydate"
                                                 type="date"
+                                                minDate={startyear}
+                                                maxDate={endofyear}
                                                 value={holidaydate}
                                                 onChange={(e) => {
                                                     setHolidaydate(e)
