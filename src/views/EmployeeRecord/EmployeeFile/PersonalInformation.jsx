@@ -39,6 +39,7 @@ const PersonalInformation = () => {
     } = useContext(PayrolMasterContext);
     const [ifsc, setIfsc] = useState(0)
     //getting banl serial number for finding ifsc code
+
     useEffect(() => {
         if (selectBank !== 0) {
             const getbankIfsc = async (e) => {
@@ -251,8 +252,8 @@ const PersonalInformation = () => {
             em_maritalstatus: maritalstatus,
             em_cont_mobile: mobile,
             em_cont_phone: land_no,
-            em_bank: selectBank,
-            em_account_no: accountno,
+            em_bank: selectBank === 0 ? null : selectBank,
+            em_account_no: accountno === '' ? 0 : accountno,
             em_ifsc: ifsc,
             emp_dob: dob,
             em_email: email,
