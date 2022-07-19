@@ -144,7 +144,6 @@ const EmploymentTypeEdit = () => {
                 ecat_status,
                 ecat_woff_allow,
                 emp_type, empstat_period, cont_period, cont_grace } = data[0]
-
             const formdata = {
                 emt_name: ecat_name,
                 lvetype_slno_cl: ecat_cl === 1 ? true : false,
@@ -158,7 +157,7 @@ const EmploymentTypeEdit = () => {
                 lvetype_slno_maternity: ecat_mate === 1 ? true : false,
                 max_allowed_count_maternity: ecat_mate_max,
                 lvetype_slno_previlage: ecat_el === 1 ? true : false,
-                max_allowed_count_previlage: ecat_el_max,
+                max_allowed_count_previlage: ecat_el_max === null ? 0 : ecat_el_max,
                 cont_renw: ecat_cont === 1 ? true : false,
                 contract_perd: ecat_cont_period,
                 train_perd: ecat_prob_period,
@@ -229,7 +228,7 @@ const EmploymentTypeEdit = () => {
         ecat_prob_period: train_perd,
         ecat_prob_type: 'M',
         ecat_cl: lvetype_slno_cl === true ? 1 : 0,
-        ecat_cl_max: max_allowed_count_cl,
+        ecat_cl_max: max_allowed_count_cl === null ? 0 : max_allowed_count_cl,
         ecat_el: lvetype_slno_previlage === true ? 1 : 0,
         ecat_el_max: max_allowed_count_previlage,
         ecat_sl: lvetype_slno_sick === true ? 1 : 0,
@@ -317,24 +316,24 @@ const EmploymentTypeEdit = () => {
                                             classname="form-control form-control-sm"
                                             Placeholder="Employment Type Name"
                                             changeTextValue={(e) => getEmploymentFormData(e)}
-                                            value={emt_name}
+                                            value={emt_name === undefined ? '' : emt_name}
                                             name="emt_name"
                                         />
                                         <TextField
                                             name="cont_period"
                                             fullWidth
-                                            value={cont_period}
+                                            value={cont_period === undefined ? 0 : cont_period}
                                             hidden
                                         />
                                         <TextField
                                             name="cont_grace"
                                             fullWidth
-                                            value={cont_grace}
+                                            value={cont_grace === undefined ? 0 : cont_grace}
                                             hidden
                                         />
                                         <TextField
                                             name="desiggperiod"
-                                            value={desiggperiod}
+                                            value={desiggperiod === undefined ? 0 : desiggperiod}
                                             hidden
                                         />
                                     </div>
@@ -716,12 +715,7 @@ const EmploymentTypeEdit = () => {
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
                                     </div>
-
-
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
