@@ -21,15 +21,12 @@ const EmploymentTypeEdit = () => {
     const [desiggperiod, setdesiggperiod] = useState(0)
     // to get parameter 
     const { id } = useParams()
-    const [data, setdata] = useState('')
     const classes = useStyles();
     const {
         selectEmployeeType,
         selectDesignationType,
         updateEmployeetype,
-        updateDesignationType,
-        earntypename,
-        designattypename
+        updateDesignationType
     } = useContext(PayrolMasterContext);
 
 
@@ -62,6 +59,59 @@ const EmploymentTypeEdit = () => {
         workoff: false,
         emp_status: false
     })
+    // destructuring employeedata
+    const {
+        emt_name,
+        lvetype_slno_cl,
+        max_allowed_count_cl,
+        lvetype_slno_sick,
+        max_allowed_count_sick,
+        lvetype_slno_conference,
+        max_allowed_count_conference,
+        lvetype_slno_lop,
+        max_allowed_count_lop,
+        lvetype_slno_maternity,
+        max_allowed_count_maternity,
+        lvetype_slno_previlage,
+        max_allowed_count_previlage,
+        cont_renw,
+        contract_perd,
+        train_perd,
+        trapro,
+        esi_yes,
+        nahl_yes,
+        fest_leav,
+        dayoff,
+        workoff,
+        emp_status } = employmentData;
+
+    const rest = {
+        emt_name: '',
+        emp_type: selectEmployeeType,
+        des_type: selectDesignationType,
+        lvetype_slno_cl: false,
+        max_allowed_count_cl: 0,
+        lvetype_slno_sick: false,
+        max_allowed_count_sick: 0,
+        lvetype_slno_conference: false,
+        max_allowed_count_conference: 0,
+        lvetype_slno_lop: false,
+        max_allowed_count_lop: 0,
+        lvetype_slno_maternity: false,
+        max_allowed_count_maternity: 0,
+        lvetype_slno_previlage: false,
+        max_allowed_count_previlage: 0,
+        cont_renw: false,
+        contract_perd: 0,
+        train_perd: 0,
+        trapro: false,
+        esi_yes: false,
+        nahl_yes: false,
+        fest_leav: false,
+        dayoff: false,
+        workoff: false,
+        emp_status: false
+    }
 
     // use effect for append
     useEffect(() => {
@@ -96,6 +146,7 @@ const EmploymentTypeEdit = () => {
                 emp_type, empstat_period, cont_period, cont_grace } = data[0]
 
             const formdata = {
+                emt_name: ecat_name,
                 lvetype_slno_cl: ecat_cl === 1 ? true : false,
                 max_allowed_count_cl: ecat_cl_max,
                 lvetype_slno_sick: ecat_sl === 1 ? true : false,
@@ -123,14 +174,18 @@ const EmploymentTypeEdit = () => {
             setEmploymentData(formdata)
             updateEmployeetype(emp_type)
             updateDesignationType(des_type)
-            setdata(ecat_name)
-            setcont_period(cont_period);
-            setcont_grace(cont_grace);
+            setcont_period(cont_period === null ? 0 : cont_period);
+            setcont_grace(cont_grace === null ? 0 : cont_grace);
             setdesiggperiod(empstat_period)
         }
         getyearlysettings();
+
+
+    }, [id, updateDesignationType, updateEmployeetype])
+
+
+    useEffect(() => {
         if (selectEmployeeType !== 0) {
-            setdata(earntypename + '+' + designattypename)
             const getcontractdayrenew = async () => {
                 // api for contract
                 const result = await axioslogin.get(`/emptype/${selectEmployeeType}`)
@@ -141,8 +196,6 @@ const EmploymentTypeEdit = () => {
             getcontractdayrenew()
         }
         if (selectDesignationType !== 0) {
-            setdata(earntypename + '+' + designattypename)
-
             const getdesignationperiod = async () => {
                 const result = await axioslogin.get(`/empstat/${selectDesignationType}`)
                 const period = result.data.data[0]
@@ -151,38 +204,7 @@ const EmploymentTypeEdit = () => {
             }
             getdesignationperiod();
         }
-
-    }, [id, updateDesignationType, updateEmployeetype, selectDesignationType, selectEmployeeType, designattypename, earntypename])
-
-
-    // destructuring employeedata
-    const {
-        lvetype_slno_cl,
-        max_allowed_count_cl,
-        lvetype_slno_sick,
-        max_allowed_count_sick,
-        lvetype_slno_conference,
-        max_allowed_count_conference,
-        lvetype_slno_lop,
-        max_allowed_count_lop,
-        lvetype_slno_maternity,
-        max_allowed_count_maternity,
-        lvetype_slno_previlage,
-        max_allowed_count_previlage,
-        cont_renw,
-        contract_perd,
-        train_perd,
-        trapro,
-        esi_yes,
-        nahl_yes,
-        fest_leav,
-        dayoff,
-        workoff,
-        emp_status } = employmentData;
-
-
-
-
+    }, [selectDesignationType, selectEmployeeType])
 
     const getEmploymentFormData = (e) => {
 
@@ -197,7 +219,7 @@ const EmploymentTypeEdit = () => {
 
     // for submission data
     const postFormdata = {
-        ecat_name: data,
+        ecat_name: emt_name,
         emp_type: selectEmployeeType,
         des_type: selectDesignationType,
         ecat_cont: cont_renw === true ? 1 : 0,
@@ -232,36 +254,6 @@ const EmploymentTypeEdit = () => {
 
     }
 
-    const rest = {
-        emt_name: '',
-        emp_type: selectEmployeeType,
-        des_type: selectDesignationType,
-        lvetype_slno_cl: false,
-        max_allowed_count_cl: 0,
-        lvetype_slno_sick: false,
-        max_allowed_count_sick: 0,
-        lvetype_slno_conference: false,
-        max_allowed_count_conference: 0,
-        lvetype_slno_lop: false,
-        max_allowed_count_lop: 0,
-        lvetype_slno_maternity: false,
-        max_allowed_count_maternity: 0,
-        lvetype_slno_previlage: false,
-        max_allowed_count_previlage: 0,
-        cont_renw: false,
-        contract_perd: 0,
-        train_perd: 0,
-        trapro: false,
-        esi_yes: false,
-        nahl_yes: false,
-        fest_leav: false,
-        dayoff: false,
-        workoff: false,
-        emp_status: false
-    }
-
-
-
     // for submission
     const submitEmploymentForm = async (e) => {
 
@@ -275,12 +267,11 @@ const EmploymentTypeEdit = () => {
         } else {
             const result = await axioslogin.patch('/empcat', postFormdata);
             const { success, message } = result.data;
-
-
             if (success === 2) {
                 succesNofity(message)
-                setdata('')
                 setEmploymentData(rest)
+                updateDesignationType(0)
+                updateEmployeetype(0)
                 // history.push('/Home/EmploymentType')
             } else if (success === 0) {
                 errorNofity(message)
@@ -322,21 +313,11 @@ const EmploymentTypeEdit = () => {
                                     </div>
                                     <div className="col-md-4">
                                         <Textinput
-                                            // label="Employment Type Name"
-                                            // fullWidth
-                                            // disabled
-                                            // size="small"
-                                            // autoComplete="off"
-                                            // variant="outlined"
-                                            // required
-                                            // name="emt_name"
-                                            // value={data}
-                                            // onChange={(e) => getEmploymentFormData(e)}
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Employment Type Name"
                                             changeTextValue={(e) => getEmploymentFormData(e)}
-                                            value={data}
+                                            value={emt_name}
                                             name="emt_name"
                                         />
                                         <TextField

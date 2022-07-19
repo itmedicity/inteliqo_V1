@@ -16,7 +16,6 @@ import { employeeNumber } from 'src/views/Constant/Constant'
 const EmploymentTypeMast = () => {
     const [cont_period, setcont_period] = useState(0)
     const [disable, setdisable] = useState(true)
-    const [data, setdata] = useState('')
     const classes = useStyles();
     const {
         selectEmployeeType,
@@ -28,21 +27,14 @@ const EmploymentTypeMast = () => {
     } = useContext(PayrolMasterContext);
     // use effect employee cateroy
     useEffect(() => {
-        // on employeetype change
-        if (selectEmployeeType !== 0) {
-            setdata(earntypename + '+' + designattypename)
-        }
-        // on Designation change
-        if (selectDesignationType !== 0) {
-
-            setdata(earntypename + '+' + designattypename)
-        }
         if (selectEmployeeType === 2) {
             setdisable(false)
         }
         else {
             setdisable(true)
         }
+
+
     }, [selectDesignationType, selectEmployeeType, designattypename, earntypename])
     // use effect for append
     useEffect(() => {
@@ -98,6 +90,8 @@ const EmploymentTypeMast = () => {
             }
         }
         getyearlysettings();
+
+
     }, [])
 
     // use history
@@ -133,7 +127,7 @@ const EmploymentTypeMast = () => {
         desiggperiod: 0
     })
     const {
-
+        emt_name,
         lvetype_slno_cl,
         max_allowed_count_cl,
         lvetype_slno_sick,
@@ -156,9 +150,9 @@ const EmploymentTypeMast = () => {
         dayoff, contractgrace_perd, traingrace_perd,
         workoff,
         emp_status } = employmentData;
-    useEffect(() => {
-        setEmploymentData(employmentData)
-    }, [employmentData])
+    // useEffect(() => {
+    //     setEmploymentData(employmentData)
+    // }, [employmentData])
 
     const getEmploymentFormData = (e) => {
         if (selectEmployeeType === 0 && selectDesignationType === 0) {
@@ -172,7 +166,7 @@ const EmploymentTypeMast = () => {
 
     // for submission data
     const postFormdata = {
-        ecat_name: data,
+        ecat_name: emt_name,
         emp_type: selectEmployeeType,
         des_type: selectDesignationType,
         ecat_cont: cont_renw === true ? 1 : 0,
@@ -250,7 +244,6 @@ const EmploymentTypeMast = () => {
                 setEmploymentData(resetForm)
                 updateEmployeetype(0)
                 updateDesignationType(0)
-                setdata('')
                 setcont_period(0);
                 // setcont_grace(0);
             } else if (success === 0) {
@@ -295,13 +288,12 @@ const EmploymentTypeMast = () => {
                                         <TextField
                                             label="Employment Type Name"
                                             fullWidth
-                                            disabled
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
                                             required
                                             name="emt_name"
-                                            value={data}
+                                            value={emt_name}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
 
