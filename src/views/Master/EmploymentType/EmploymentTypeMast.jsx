@@ -42,7 +42,6 @@ const EmploymentTypeMast = () => {
         const getyearlysettings = async () => {
             const result = await axioslogin.get('/yearlyleaves')
             const { successleave, messageleave, message } = result.data;
-
             if (successleave === 0) {
                 warningNofity(message)
             }
@@ -85,6 +84,7 @@ const EmploymentTypeMast = () => {
                     cont_period: 0,
                     cont_grace: 0,
                     desiggperiod: 0,
+                    emt_name: ''
                 }
                 setEmploymentData(frmdata)
             }
@@ -226,7 +226,7 @@ const EmploymentTypeMast = () => {
         cont_grace: 0,
         desiggperiod: 0,
         contractgrace_perd: 0,
-        traingrace_perd: 0
+        traingrace_perd: 0,
     }
 
     // for submission
@@ -264,13 +264,14 @@ const EmploymentTypeMast = () => {
     const employmentTypeTable = () => {
         history.push('/Home/EmploymentTypeList');
     }
+
     return (
         <Fragment>
             <SessionCheck />
             <ToastContainer />
             <div className="card">
                 <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Employment Type</h5>
+                    <h5>Employee Category</h5>
                 </div>
                 <form className={classes.root} onSubmit={submitEmploymentForm}>
                     <div className="card-body">
@@ -291,13 +292,10 @@ const EmploymentTypeMast = () => {
                                             size="small"
                                             autoComplete="off"
                                             variant="outlined"
-                                            required
                                             name="emt_name"
                                             value={emt_name}
                                             onChange={(e) => getEmploymentFormData(e)}
                                         />
-
-
                                     </div>
 
                                 </div>

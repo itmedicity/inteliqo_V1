@@ -24,7 +24,7 @@ const JobDescription = () => {
                         sx={{ padding: 2 }}
                     >
                         <Grid container spacing={1}>
-                            <Typography variant='inherit' p-1>Job Summary:</Typography>
+                            <Typography variant='inherit' >Job Summary:</Typography>
                         </Grid>
                         <Grid container spacing={1}>
                             <Grid item xs={12} lg={12} xl={12} md={12}>
