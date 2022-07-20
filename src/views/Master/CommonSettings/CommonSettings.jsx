@@ -176,6 +176,9 @@ const CommonSettings = () => {
                         <div className="col-md-1"></div>
                         <div className="col-md-5">
                             <div className="card">
+                                <div className="card-header pb-0 border  text-black">
+                                    <h6>Common Setting</h6>
+                                </div>
                                 <div className="card-body">
                                     <div className="col-md-12">
                                         <div className="row g-2 pt-2">
