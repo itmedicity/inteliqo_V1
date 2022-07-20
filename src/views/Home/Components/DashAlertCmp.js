@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, } from '@mui/material'
+import { Card, CardContent, Grid, Paper, } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import ApiIcon from '@mui/icons-material/Api';
@@ -21,6 +21,7 @@ import TextureIcon from '@mui/icons-material/Texture';
 import YardIcon from '@mui/icons-material/Yard';
 import WifiProtectedSetupIcon from '@mui/icons-material/WifiProtectedSetup';
 import TocIcon from '@mui/icons-material/Toc';
+import TestCmp from './TestCmp';
 
 const DashAlertCmp = () => {
     const history = useHistory()
@@ -316,208 +317,205 @@ const DashAlertCmp = () => {
             || val.menu_slno === 148 || val.menu_slno === 149 || val.menu_slno === 154
     })
 
+
+    const arrayData = [
+        { name: 'Leave Request', count: 10 },
+        { name: 'Leave Request User', count: 36 },
+        { name: 'Probation Pending List', count: 55 },
+        { name: 'Training Completion List', count: 20 },
+        { name: 'Resignation Pending List', count: 0 },
+        { name: 'Leave Request HOD', count: 8 },
+        { name: 'Leave Request CEO', count: 112 },
+        { name: 'Leave Request Incharge', count: 98 },
+        { name: 'Leave Request Manger', count: 10 },
+        { name: 'Training Confirmation', count: 16 },
+        { name: 'Training Confirmation HOD', count: 136 },
+        { name: 'Training Confirmation Incharge', count: 25 },
+        { name: 'Training Completion List', count: 20 },
+        { name: 'Resignation Pending List', count: 0 },
+        { name: 'Leave Request HOD', count: 8 },
+        { name: 'Leave Request CEO', count: 112 },
+        { name: 'Leave Request Incharge', count: 98 },
+        { name: 'Leave Request Manger', count: 10 },
+        { name: 'Training Confirmation', count: 16 },
+        { name: 'Training Confirmation HOD', count: 136 },
+        { name: 'Training Confirmation Incharge', count: 25 },
+        { name: 'Training Completion List', count: 20 },
+        { name: 'Resignation Pending List', count: 0 },
+        { name: 'Leave Request HOD', count: 8 },
+        { name: 'Leave Request CEO', count: 112 },
+        { name: 'Leave Request Incharge', count: 98 },
+        { name: 'Leave Request Manger', count: 10 },
+        { name: 'Training Confirmation', count: 16 },
+        { name: 'Training Confirmation HOD', count: 136 },
+        { name: 'Training Confirmation Incharge', count: 25 },
+    ]
+
     return (
         <Fragment>
-            <Card sx={{ marginTop: 1 }} >
-                <CardContent>
-                    <Grid container direction={'row'} justifyContent="space-between" alignItems="center" spacing={1} sx={{ width: '100%', marginX: 0.01 }} >
-
-                        <div style={{ width: '24%', }} >
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        {/* <div style={{ width: '24%', }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div>
-                        <div style={{ width: '24%' }}>
-                            {
-                                constslno.map((val, index) => {
-                                    return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
-                                })}
-                        </div> */}
+            <Paper square sx={{ p: 1, width: '100%', display: "flex" }} elevation={3}>
+                <Grid
+                    container
+                    spacing={{ xs: 1, md: 1, md: 1, lg: 0.8, xl: 0.8 }}
+                    columns={{ xs: 1, sm: 8, md: 8, lg: 8, xl: 12 }}
+                    sx={{ width: '100%' }} >
 
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 134 ?
-                                <div style={{ width: '24%' }} key={index} >
-                                    <Widjet avatarIcons={leaveUSER} widgetName="Leave Request User" count={leaveUserCount} />
-                                </div>
-                                : null
-                        })}
+                    {arrayData.map((val, index) => (
+                        <Grid item xs={2} sm={4} md={4} lg={2} xl={3} key={index}>
+                            <TestCmp widgetName={val.name} count={10} status={true} />
+                            {/* <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={0} /> */}
+                        </Grid>
+                    ))}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 135 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={leaveInch} widgetName="Leave Request Incharge" count={leaveInchargeCount} />
-                                </div>
-                                : null
-                        })}
+                    {/* <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={0} /> */}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 136 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={leaveHOd} widgetName="Leave Request HOD" count={leaveHODCount} />
-                                </div>
-                                : null
-                        })}
+                    {/* <div style={{ width: '24%', }} >
+                        {
+                            constslno.map((val, index) => {
+                                return val.menu_slno === 133 ? <Widjet avatarIcons={leaveCount} widgetName="Leave Request" count={leaveHRCount} key={index} /> : null
+                            })}
+                    </div>
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 137 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={leaveCeo} widgetName="Leave Request CEO" count={leaveCEOCount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 134 ?
+                            <div style={{ width: '24%' }} key={index} >
+                                <Widjet avatarIcons={leaveUSER} widgetName="Leave Request User" count={leaveUserCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 138 ?
-                                <div style={{ width: '24%' }} key={index} >
-                                    <Widjet avatarIcons={contractRenew} widgetName="Contract Renewal" count={contractRenewal} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 135 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={leaveInch} widgetName="Leave Request Incharge" count={leaveInchargeCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 139 ?
-                                <div style={{ width: '24%' }} key={index} >
-                                    <Widjet avatarIcons={training} widgetName="Training Confirmation" count={trainingConform} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 136 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={leaveHOd} widgetName="Leave Request HOD" count={leaveHODCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 140 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={contractclose} widgetName="Contract Closed" count={contractcloseCount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 137 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={leaveCeo} widgetName="Leave Request CEO" count={leaveCEOCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 141 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={otrequest} widgetName="Overtime Request" count={otCount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 138 ?
+                            <div style={{ width: '24%' }} key={index} >
+                                <Widjet avatarIcons={contractRenew} widgetName="Contract Renewal" count={contractRenewal} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 142 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={otuser} widgetName="Overtime Request User" count={otUserCount} key={index} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 139 ?
+                            <div style={{ width: '24%' }} key={index} >
+                                <Widjet avatarIcons={training} widgetName="Training Confirmation" count={trainingConform} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 143 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={otinch} widgetName="Overtime Request Incharge" count={otCountIncharge} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 140 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={contractclose} widgetName="Contract Closed" count={contractcloseCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 144 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={othod} widgetName="Overtime Request HOD" count={otHODCount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 141 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={otrequest} widgetName="Overtime Request" count={otCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 145 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={otceo} widgetName="Overtime Request CEO" count={otCEOCount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 142 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={otuser} widgetName="Overtime Request User" count={otUserCount} key={index} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 146 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={resign} widgetName="Resignation Request" count={resigncount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 143 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={otinch} widgetName="Overtime Request Incharge" count={otCountIncharge} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 147 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={resignInch} widgetName="Resignation Request Incharge" count={resignInchargecount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 144 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={othod} widgetName="Overtime Request HOD" count={otHODCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 148 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={resignHod} widgetName="Resignation Request HOD" count={resignHODcount} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 145 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={otceo} widgetName="Overtime Request CEO" count={otCEOCount} />
+                            </div>
+                            : null
+                    })}
 
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 149 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={resignCeo} widgetName="Resignation Request CEO" count={resignCEOcount} />
-                                </div>
-                                : null
-                        })}
-                        {constslno.map((val, index) => {
-                            return val.menu_slno === 154 ?
-                                <div style={{ width: '24%' }} key={index}>
-                                    <Widjet avatarIcons={regrenew} widgetName="Registration Renew" count={registrenew} />
-                                </div>
-                                : null
-                        })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 146 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={resign} widgetName="Resignation Request" count={resigncount} />
+                            </div>
+                            : null
+                    })}
+
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 147 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={resignInch} widgetName="Resignation Request Incharge" count={resignInchargecount} />
+                            </div>
+                            : null
+                    })}
+
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 148 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={resignHod} widgetName="Resignation Request HOD" count={resignHODcount} />
+                            </div>
+                            : null
+                    })}
+
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 149 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={resignCeo} widgetName="Resignation Request CEO" count={resignCEOcount} />
+                            </div>
+                            : null
+                    })}
+                    {constslno.map((val, index) => {
+                        return val.menu_slno === 154 ?
+                            <div style={{ width: '24%' }} key={index}>
+                                <Widjet avatarIcons={regrenew} widgetName="Registration Renew" count={registrenew} />
+                            </div>
+                            : null
+                    })} */}
 
 
 
-                    </Grid>
-                </CardContent>
-            </Card>
+                </Grid>
+            </Paper>
         </Fragment >
     )
 }

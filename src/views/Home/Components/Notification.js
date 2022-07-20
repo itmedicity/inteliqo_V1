@@ -39,7 +39,7 @@ const Notification = () => {
                         </Badge>
                     </IconButton>
                 }
-                label="Notification"
+                // label="Notification"
                 labelPlacement='end'
                 disableTypography={true}
             />

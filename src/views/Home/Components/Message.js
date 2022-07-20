@@ -40,7 +40,7 @@ const Message = () => {
                         </Badge>
                     </IconButton>
                 }
-                label="Messages"
+                // label="Messages"
                 labelPlacement='end'
                 disableTypography={true}
             />

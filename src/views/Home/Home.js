@@ -1,24 +1,14 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import Box from '@mui/material/Box';
 import ProfileComponent from './Components/ProfileComponent';
 import AppMenuBar from './Components/AppMenuBar';
-import { Grid } from '@mui/material';
-// import { styled } from '@mui/material/styles';
 import Announcement from './Components/Announcement';
 import DashAlertCmp from './Components/DashAlertCmp';
 import HolidayList from './Components/HolidayList';
 import LeavesDashbod from './Components/LeavesDashbod';
-
-// const item = styled(Paper)(({ theme }) => ({
-//     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//     ...theme.typography.body2,
-//     padding: theme.spacing(1),
-//     textAlign: 'center',
-//     color: theme.palette.text.secondary,
-// }));
+import { Paper } from '@mui/material';
 
 const Home = () => {
-
     return (
         <Fragment>
             <AppMenuBar />
@@ -28,30 +18,69 @@ const Home = () => {
                     paddingY: 0.5
                 }}
             >
-                <Grid container spacing={1} >
-                    <Grid item xs={8} md={8}>
-                        <Grid container columnSpacing={1} item xs={12} md={12}>
-                            <Grid item md={12} xs={6}  >
+                <Paper elevation={5} square >
+                    {/* Outer Main Box */}
+                    <Box sx={{
+                        display: 'flex',
+                        width: "100%",
+                        flexDirection: { xl: "row", lg: "row", md: "row", sm: "column", xs: "column" },
+                    }} >
+                        {/* Left Side Box */}
+                        <Box sx={{
+                            display: "flex",
+                            width: { xl: "75%", lg: "70%", md: "60%", sm: "100%", xs: "100%" },
+                            flexDirection: "column",
+                        }} >
+                            {/* Dash Board Box */}
+                            <Box sx={{
+                                display: "flex",
+                                width: "100%",
+                                padding: 0.5
+                                // height: 300
+                            }} >
                                 <DashAlertCmp />
-                            </Grid>
-                            {/* <Grid item md={6} > */}
-                            <HolidayList />
-                            {/* </Grid> */}
-                            {/* <Grid item md={6}> */}
-                            {/* <HolidayList /> */}
-                            <LeavesDashbod />
-                            {/* </Grid> */}
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={4} >
-                        <ProfileComponent />
-                        <Announcement />
-                    </Grid>
-                </Grid>
-                {/* <ProfileComponent /> */}
+                            </Box>
+                            {/* Dash Board Box End */}
+                            {/* Table List Box */}
+                            <Box sx={{
+                                display: "flex",
+                                width: "100%",
+                                flexDirection: { xl: "row", lg: "row", md: "column", sm: "column", xs: "column" },
+                            }} >
+                                <Box sx={{
+                                    display: "flex",
+                                    width: { xl: "50%", lg: "50%", md: "100%", sm: "100%" },
+                                    padding: 0.5
+                                }} >
+                                    <HolidayList />
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    width: { xl: "50%", lg: "50%", md: "100%", sm: "100%" },
+                                    padding: 0.5
+                                }}>
+                                    <LeavesDashbod />
+                                </Box>
+                            </Box>
+                            {/* Table List Box End */}
+                        </Box>
+                        {/* Left Side Box End */}
+                        {/* Right Side Box */}
+                        <Box sx={{
+                            display: "flex",
+                            width: { xl: "25%", lg: "30%", md: "60%", sm: "100%" },
+                            flexDirection: { xl: "column", lg: "column", md: "column", sm: "row" },
+                            padding: 0.5,
+                        }} >
+                            {/* <ProfileComponent /> */}
+                            <Announcement />
+                        </Box>
+                        {/* Right Side Box End */}
+                    </Box>
+                </Paper>
             </Box>
         </Fragment>
     )
 }
 
-export default Home
+export default memo(Home)

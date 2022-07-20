@@ -1,6 +1,6 @@
+import { CircularProgress } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { Suspense } from 'react'
-import FullPageloader from 'src/components/FullPageloader'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 
@@ -32,7 +32,7 @@ const FixedWageSalary = ({ emno, sumoffixedwage, fixedwagestate }) => {
     return (
         <Fragment>
             <ul className="list-group list-group-flush">
-                <Suspense fallback={<FullPageloader />} >
+                <Suspense fallback={<CircularProgress />} >
                     {
                         fixedwage && fixedwage.map((val) => {
                             return <li className="list-group-item py-0" key={val.ernded_slno}>

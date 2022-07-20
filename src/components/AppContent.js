@@ -4,15 +4,17 @@ import { CContainer } from '@coreui/react'
 import routes from '../routes'
 import MasterContext from 'src/Context/MasterContext'
 import TokenAuth from 'src/Context/TokenAuth'
-import FullPageloader from './FullPageloader'
 import Employeedetails from 'src/views/CommonCode/Employeedetails'
+import BackDrop from 'src/views/Component/BackDrop'
+
+
 const AppContent = () => {
   return (
     <TokenAuth>
       <MasterContext>
         <CContainer fluid>
           <Employeedetails />
-          <Suspense fallback={<FullPageloader />}>
+          <Suspense fallback={<BackDrop />}>
             <Switch>
               {routes.map((route, idx) => {
                 return (
