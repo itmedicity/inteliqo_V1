@@ -344,8 +344,8 @@ const EmployeeRecordEdit = () => {
                 updateBranchSelected(0)
                 updateInstituteSeleted(0)
                 udateregion2(null)
-                succesNofity("Updated Successfully")
                 history.push('/Home/EmployeeRecord')
+                succesNofity("Updated Successfully")
 
             }
             else {
@@ -353,7 +353,7 @@ const EmployeeRecordEdit = () => {
             }
 
         } else if (success === 0) {
-            warningNofity(message)
+            infoNofity(message.sqlMessage)
         } else if (success === 2) {
             infoNofity(message)
         }
