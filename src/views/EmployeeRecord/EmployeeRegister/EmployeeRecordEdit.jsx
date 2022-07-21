@@ -1,7 +1,6 @@
 import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import { addDays, addYears } from 'date-fns'
 import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ToastContainer } from 'react-bootstrap'
 import { useHistory, useParams } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -26,6 +25,7 @@ import TextInput from 'src/views/Component/TextInput'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
+import { ToastContainer } from 'react-toastify'
 
 const EmployeeRecordEdit = () => {
 
@@ -328,7 +328,6 @@ const EmployeeRecordEdit = () => {
             const result = await axioslogin.get(`/empmast/${empNo}`)
             const { success, data } = result.data
             if (success === 1) {
-                succesNofity("Updated Successfully")
                 getFormdata(defaultstate)
                 agesetstate(defaultage)
                 udateGrade(0)
@@ -345,7 +344,9 @@ const EmployeeRecordEdit = () => {
                 updateBranchSelected(0)
                 updateInstituteSeleted(0)
                 udateregion2(null)
+                succesNofity("Updated Successfully")
                 history.push('/Home/EmployeeRecord')
+
             }
             else {
                 errorNofity("Error Occured!!Please Contact EDP")

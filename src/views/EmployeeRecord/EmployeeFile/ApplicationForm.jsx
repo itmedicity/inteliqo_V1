@@ -28,6 +28,9 @@ const ApplicationForm = () => {
         else if (slno === '1') {
             history.push('/Home/EmployeeRecordVerification')
         }
+        else if (slno === '2') {
+            history.push('/Home/EmpfileFinalVerification')
+        }
         else {
 
         }
@@ -64,7 +67,7 @@ const ApplicationForm = () => {
         <Fragment>
             <SessionCheck />
             <ToastContainer />
-            <MyProfilePersonalInform empid={no} redirect={RedirectToProfilePage} count={count} setCount={setCount} />
+            <MyProfilePersonalInform empid={no} redirect={RedirectToProfilePage} count={count} setCount={setCount} slno={slno} />
         </Fragment>
     )
 }

@@ -5,8 +5,9 @@ import Modal from '@mui/material/Modal';
 import { TextareaAutosize } from '@material-ui/core';
 import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useHistory } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 const style = {
     position: 'absolute',
@@ -23,7 +24,7 @@ const style = {
     pr: 2
 };
 
-const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen }) => {
+const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
     const history = useHistory()
     const [formdata, setFormdata] = useState({
         notverfied_reason: ''
@@ -43,20 +44,41 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen }) => {
     }
     const updateVerify = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.patch('/empmast/empmaster/updateverification', postData)
-        const { success, message } = result.data
-        if (success === 2) {
-            succesNofity(message)
-            setFormdata(defaultState)
-            handlClose2()
-            history.push('/Home/EmployeeRecordVerification')
+        if (notverfied_reason !== '') {
+            if (slno === 1) {
+                const result = await axioslogin.patch('/empVerification', postData)
+                const { success, message } = result.data
+                if (success === 2) {
+                    setFormdata(defaultState)
+                    history.push('/Home/EmployeeRecordVerification')
+                    succesNofity(message)
+                }
+                else {
+                    errorNofity("Error Occured!!!Please Contact EDP")
+                }
+            }
+            else {
+                const result = await axioslogin.patch('/empVerification/secondverification', postData)
+                const { success, message } = result.data
+                if (success === 2) {
+                    setFormdata(defaultState)
+                    history.push('/Home/EmpfileFinalVerification')
+                    succesNofity(message)
+                }
+                else {
+                    errorNofity("Error Occured!!!Please Contact EDP")
+                }
+            }
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            infoNofity("Please Enter The Remark")
         }
+
     }
+
     return (
         <Fragment>
+            <ToastContainer />
             <Modal
                 open={open1}
                 onClose={handlClose2}

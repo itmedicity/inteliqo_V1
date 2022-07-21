@@ -168,6 +168,8 @@ const DesignationReport = React.lazy(() => import('./views/HrReports/Designation
 const QualificationReport = React.lazy(() => import('./views/HrReports/QualificationReport/QualificationReport'))
 const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordTable'))
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
+const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
+
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -340,8 +342,8 @@ const routes = [
   { path: '/Home/DesignationReport', exact: true, name: 'Employee Designation Report', component: DesignationReport },
   { path: '/Home/QualificationReport', exact: true, name: 'Employee Qualification Report', component: QualificationReport },
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
-  { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit }
-
+  { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
+  { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification }
 
 
 ]

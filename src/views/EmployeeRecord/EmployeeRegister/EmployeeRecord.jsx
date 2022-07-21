@@ -1,7 +1,6 @@
 import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import { addDays, addYears } from 'date-fns'
 import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { ToastContainer } from 'react-bootstrap'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -26,10 +25,9 @@ import TextInput from 'src/views/Component/TextInput'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
+import { ToastContainer } from 'react-toastify'
 
 const EmployeeRecord = () => {
-
-
     // use state intialization
     const [employeerecord, getFormdata] = useState({
         empName: '',
@@ -75,8 +73,6 @@ const EmployeeRecord = () => {
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
-
-
     // const [enable, setenable] = useState(true)
     // usestate for age
     const [agestate, agesetstate] = useState({
@@ -84,10 +80,8 @@ const EmployeeRecord = () => {
         mnthage: 0,
         dayge: 0
     })
-
     // destructure age
     const { yearage, mnthage, dayge } = agestate
-
     // function for age calculation
     const getage = (e) => {
         var dateofbirth = e.target.value
@@ -153,7 +147,6 @@ const EmployeeRecord = () => {
     const { empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
         addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
     // data for sumbimssion
-
     const submitdata = useMemo(() => {
         return {
             em_no: empNo,
@@ -192,8 +185,6 @@ const EmployeeRecord = () => {
             em_age_day: dayge,
             hrm_religion: getreligion,
             contractflag: contractflag
-
-
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
@@ -267,7 +258,22 @@ const EmployeeRecord = () => {
         }
 
     }, [getemployeecategory])
-
+    //useEffect for getting Verification level
+    const [verification, setverificationlevel] = useState(0)
+    useEffect(() => {
+        const getverificationlevel = async () => {
+            const result = await axioslogin.get('/commonsettings')
+            const { success, data } = result.data
+            if (success === 1) {
+                const { verification_level } = data[0]
+                setverificationlevel(verification_level)
+            }
+            else {
+                setverificationlevel(0)
+            }
+        }
+        getverificationlevel()
+    }, [])
     // for submition
     const submitemployeerecord = async (e) => {
         e.preventDefault();
@@ -289,24 +295,37 @@ const EmployeeRecord = () => {
                 }
                 // update hrm_employee table
                 const resultemployee = await axioslogin.post('/employee', submitemployee);
-                const { success, message } = resultemployee.data;
+                const { success } = resultemployee.data;
                 if (success === 1) {
-                    succesNofity('Save Successfully')
-                    getFormdata(defaultstate)
-                    udateGrade(0)
-                    setEarnTypecontext(0)
-                    udateregion(null)
-                    udatereligion(0)
-                    udateemployeecategory(0)
-                    updatebloodgroup(0)
-                    updatedoctortype(0)
-                    updateSelected(0)
-                    updateDesignationType(0)
-                    updateDesignation(0)
-                    updateSalutSelected(0)
-                    updateBranchSelected(0)
-                    updateInstituteSeleted(0)
-                    udateregion2(null)
+                    const postdataverify = {
+                        em_id: em_id,
+                        verification_required: verification === 1 || verification === 2 ? 1 : 0,
+                        second_level_required: verification === 2 ? 1 : 0
+                    }
+                    const result = await axioslogin.post('/empVerification', postdataverify)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        succesNofity(message)
+                        getFormdata(defaultstate)
+                        udateGrade(0)
+                        setEarnTypecontext(0)
+                        udateregion(null)
+                        udatereligion(0)
+                        udateemployeecategory(0)
+                        updatebloodgroup(0)
+                        updatedoctortype(0)
+                        updateSelected(0)
+                        updateDesignationType(0)
+                        updateDesignation(0)
+                        updateSalutSelected(0)
+                        updateBranchSelected(0)
+                        updateInstituteSeleted(0)
+                        udateregion2(null)
+                    }
+                    else {
+                        errorNofity("Error Occured!!Please Contact ED")
+                    }
+
                 } else if (success === 0) {
                     errorNofity(message)
                 } else if (success === 2) {
@@ -351,6 +370,7 @@ const EmployeeRecord = () => {
     const toTable = useCallback(() => {
         history.push('/Home/EmployeeRecordTable')
     })
+
     return (
         <Fragment>
             <SessionCheck />
