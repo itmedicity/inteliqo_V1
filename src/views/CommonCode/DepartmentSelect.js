@@ -4,7 +4,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { setDepartment } from '../../redux/actions/Department.action';
 import { useDispatch, useSelector } from 'react-redux';
 
-const DepartmentSelect = (props) => {
+const DepartmentSelect = ({ style, disabled }) => {
     const dispatch = useDispatch()
     const [deptData, setdeptData] = useState([]);
     const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
@@ -34,7 +34,9 @@ const DepartmentSelect = (props) => {
             <FormControl
                 fullWidth
                 margin="dense"
-                className="mt-1"
+                size='small'
+            // className="mt-1"
+            // style={{ backgroundColor: "yellow" }}
             >
                 <Select
                     labelId="demo-simple-select-label"
@@ -44,10 +46,10 @@ const DepartmentSelect = (props) => {
                     onChange={(e) => updateSelected(e.target.value)}
                     fullWidth
                     variant="outlined"
-                    className="ml-3"
+                    // className="ml-3"
                     defaultValue={0}
-                    style={props.style}
-                    disabled={props.disabled}
+                    style={{ ...style }}
+                    disabled={disabled}
                 >
                     <MenuItem value='0' disabled>
                         Select Department
