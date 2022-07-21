@@ -45,6 +45,8 @@ import ProfileVerificationModal from './ProfileVerificationModal';
 import ContractDetl from './ContractDetl';
 import SalaryEmp from './SalaryEmp';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+
 
 const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
 
@@ -56,7 +58,6 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
     })
 
     const { personalData, personalDataStatus } = loginDetl.empPersonalData;
-
     useEffect(() => {
 
         const empiddata = {
@@ -82,7 +83,8 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
         addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
-        sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no
+        sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
+        em_esi_no, em_pf_no, em_uan_no
     } = personalData
 
     const emp = {
@@ -98,6 +100,9 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
         designation: desg_name === '' ? 'NOT UPDATED' : desg_name,
         account: em_account_no === null ? 'NOT UPDATED' : em_account_no,
         bank: bank_name === null ? 'NOT UPDATED' : bank_name,
+        em_esi_no: em_esi_no === null ? 'NOT UPDATED' : em_esi_no,
+        em_pf_no: em_pf_no === null ? 'NOT UPDATED' : em_pf_no,
+        em_uan_no: em_uan_no === null ? 'NOT UPDATED' : em_uan_no,
         gender: em_gender === 2 ? 'Female' : 'Male',
         ismarried: em_maritalstatus === '2' ? 'Not Married' : em_maritalstatus === null ? 'NOT UPDATED' : 'Married',
         religion: relg_name === null ? 'NOT UPDATED' : relg_name,
@@ -557,6 +562,34 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
+
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12} >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Esi Number" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <MonitorHeartIcon />
+                                                    </ListItemIcon>
+                                                    {/* Retirement Date*/}
+                                                    <ListItemText primary={emp.em_esi_no} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="PF Number" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <SavingsIcon />
+                                                    </ListItemIcon>
+                                                    {/* Contract End Date*/}
+                                                    <ListItemText primary={emp.em_pf_no} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+
                                     </ListItem>
                                 </Grid>
                             </List>

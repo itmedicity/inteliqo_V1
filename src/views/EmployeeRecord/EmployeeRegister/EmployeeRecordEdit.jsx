@@ -2,7 +2,7 @@ import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } 
 import { addDays, addYears } from 'date-fns'
 import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-bootstrap'
-import { useHistory } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -27,9 +27,37 @@ import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
 
-const EmployeeRecord = () => {
+const EmployeeRecordEdit = () => {
 
-
+    const { id, no } = useParams();
+    const classes = useStyles();
+    const history = useHistory()
+    // Context API
+    const { selectedDept,
+        updateSelected,
+        udateGrade,
+        setEarnTypecontext,
+        getregion,
+        udateregion,
+        udatereligion, getreligion,
+        getemployeecategory,
+        udateemployeecategory,
+        updatebloodgroup,
+        getDoctype,
+        updatedoctortype,
+        selectDesignation,
+        updateDesignation,
+        updateDesignationType,
+        selectSalutation,
+        updateSalutSelected,
+        selectBranchMast,
+        updateBranchSelected,
+        selectDeptSection,
+        selectInstiType,
+        updateInstituteSeleted,
+        getbloodgroup, getregion2, udateregion2,
+        updateDepartmentSection
+    } = useContext(PayrolMasterContext);
     // use state intialization
     const [employeerecord, getFormdata] = useState({
         empName: '',
@@ -50,6 +78,9 @@ const EmployeeRecord = () => {
         empstatus: false,
         presPincode: ''
     });
+    // destructuring employeerecord
+    const { empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
+        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
     const defaultstate = {
         empName: '',
         empNo: '',
@@ -69,24 +100,80 @@ const EmployeeRecord = () => {
         empstatus: false,
         presPincode: ''
     }
-    // usestare
-    const [cont_perioddate, setcont_perioddate] = useState(0)
-    const [contractflag, setcontractflag] = useState(0)
-    const [cont_gracedate, setcont_gracedate] = useState(0)
-    const [probationendate, setdesiggperioddate] = useState(0)
-    const [retirementyear, setretirementyear] = useState(0)
-
-
-    // const [enable, setenable] = useState(true)
     // usestate for age
     const [agestate, agesetstate] = useState({
         yearage: 0,
         mnthage: 0,
         dayge: 0
     })
-
+    const defaultage = {
+        yearage: 0,
+        mnthage: 0,
+        dayge: 0
+    }
     // destructure age
     const { yearage, mnthage, dayge } = agestate
+    //useEffect for getting details of the employee for edit
+    useEffect(() => {
+        const getEmployeedetails = async () => {
+            const result = await axioslogin.get(`/empmast/${id}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, hrm_pin1,
+                    em_phone, em_mobile, em_email, em_no, em_name, em_doc_type, em_gender, em_dob, em_doj,
+                    hrm_pin2, em_department, em_region, em_category, blood_slno, hrm_religion, em_age_month,
+                    em_age_year, em_age_day, em_salutation, em_branch, em_dept_section, em_institution_type,
+                    em_designation, hrm_region2 } = data[0]
+                const frmdata = {
+                    empName: em_name,
+                    empNo: em_no,
+                    addressPermnt1: addressPermnt1,
+                    addressPermnt2: addressPermnt2,
+                    perPincode: hrm_pin1,
+                    addressPresent1: addressPresent1,
+                    addressPresent2: addressPresent2,
+                    prePincode: hrm_pin2,
+                    mobileNo: em_mobile,
+                    landPhone: em_phone,
+                    email: em_email,
+                    Selectgender: em_gender,
+                    doctortype: em_doc_type === null ? false : true,
+                    dateofbirth: em_dob,
+                    dateofjoining: em_doj,
+                    empstatus: true,
+                    presPincode: hrm_pin2
+                }
+                const age = {
+                    yearage: em_age_year,
+                    mnthage: em_age_month,
+                    dayge: em_age_day
+                }
+                getFormdata(frmdata)
+                agesetstate(age)
+                updateSelected(em_department)
+                udateregion(em_region)
+                udateemployeecategory(em_category)
+                updatebloodgroup(blood_slno)
+                updatedoctortype(em_doc_type === null ? 0 : em_doc_type)
+                updateSalutSelected(em_salutation)
+                updateBranchSelected(em_branch)
+                updateDepartmentSection(em_dept_section)
+                updateInstituteSeleted(em_institution_type)
+                updateDesignation(em_designation)
+                udatereligion(hrm_religion)
+                udateregion2(hrm_region2)
+            }
+
+        }
+        getEmployeedetails()
+    }, [id])
+
+    // usestare
+    const [cont_perioddate, setcont_perioddate] = useState(0)
+    const [contractflag, setcontractflag] = useState(0)
+    const [cont_gracedate, setcont_gracedate] = useState(0)
+    const [probationendate, setdesiggperioddate] = useState(0)
+    const [retirementyear, setretirementyear] = useState(0)
 
     // function for age calculation
     const getage = (e) => {
@@ -121,42 +208,10 @@ const EmployeeRecord = () => {
         agesetstate(agefromnaw)
     }
 
-    const classes = useStyles();
-    const history = useHistory()
-    // Context API
-    const { selectedDept,
-        updateSelected,
-        udateGrade,
-        setEarnTypecontext,
-        getregion,
-        udateregion,
-        udatereligion, getreligion,
-        getemployeecategory,
-        udateemployeecategory,
-        updatebloodgroup,
-        getDoctype,
-        updatedoctortype,
-        selectDesignation,
-        updateDesignation,
-        updateDesignationType,
-        selectSalutation,
-        updateSalutSelected,
-        selectBranchMast,
-        updateBranchSelected,
-        selectDeptSection,
-        selectInstiType,
-        updateInstituteSeleted,
-        getbloodgroup, getregion2, udateregion2
-    } = useContext(PayrolMasterContext);
-
-    // destructuring employeerecord
-    const { empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
-        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
     // data for sumbimssion
-
     const submitdata = useMemo(() => {
         return {
-            em_no: empNo,
+            em_no: id,
             em_salutation: selectSalutation,
             em_name: empName,
             em_gender: Selectgender,
@@ -178,7 +233,7 @@ const EmployeeRecord = () => {
             em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
             em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
-            create_user: employeeNumber(),
+            edit_user: employeeNumber(),
             addressPermnt1: addressPermnt1,
             addressPermnt2: addressPermnt2,
             perPincode: perPincode,
@@ -191,9 +246,7 @@ const EmployeeRecord = () => {
             em_age_month: mnthage,
             em_age_day: dayge,
             hrm_religion: getreligion,
-            contractflag: contractflag
-
-
+            contractflag: contractflag,
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
@@ -201,7 +254,6 @@ const EmployeeRecord = () => {
         getDoctype, getemployeecategory, probationendate, cont_gracedate, retirementyear, cont_perioddate, empstatus,
         addressPermnt1, addressPermnt2, perPincode, getregion, addressPresent1, addressPresent2, presPincode,
         getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag])
-
     useEffect(() => {
         return (
             udateGrade(0),
@@ -229,7 +281,6 @@ const EmployeeRecord = () => {
         updatedoctortype, udateemployeecategory])
 
     useEffect(() => {
-
         // employee category on change
         if (getemployeecategory !== 0) {
             const getcategorydata = async () => {
@@ -244,8 +295,8 @@ const EmployeeRecord = () => {
                     setcontractflag(1)
                 }
                 else {
-
                     setcont_perioddate(new Date('0000:00:00'))
+                    setcontractflag(0)
                 }
                 if (cont_grace > 0) {
 
@@ -271,47 +322,30 @@ const EmployeeRecord = () => {
     // for submition
     const submitemployeerecord = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/empmast', submitdata);
+        const result = await axioslogin.patch('/empmast/empregister/Edit', submitdata);
         const { success, message } = result.data;
         if (success === 1) {
             const result = await axioslogin.get(`/empmast/${empNo}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_id } = data[0]
-                const submitemployee = {
-                    emp_no: empNo,
-                    emp_id: em_id,
-                    emp_status: empstatus === true ? 1 : 0,
-                    emp_email: email,
-                    emp_username: empNo,
-                    emp_password: empNo,
-                    create_user: employeeNumber()
-                }
-                // update hrm_employee table
-                const resultemployee = await axioslogin.post('/employee', submitemployee);
-                const { success, message } = resultemployee.data;
-                if (success === 1) {
-                    succesNofity('Save Successfully')
-                    getFormdata(defaultstate)
-                    udateGrade(0)
-                    setEarnTypecontext(0)
-                    udateregion(null)
-                    udatereligion(0)
-                    udateemployeecategory(0)
-                    updatebloodgroup(0)
-                    updatedoctortype(0)
-                    updateSelected(0)
-                    updateDesignationType(0)
-                    updateDesignation(0)
-                    updateSalutSelected(0)
-                    updateBranchSelected(0)
-                    updateInstituteSeleted(0)
-                    udateregion2(null)
-                } else if (success === 0) {
-                    errorNofity(message)
-                } else if (success === 2) {
-                    infoNofity(message)
-                }
+                succesNofity("Updated Successfully")
+                getFormdata(defaultstate)
+                agesetstate(defaultage)
+                udateGrade(0)
+                setEarnTypecontext(0)
+                udateregion(null)
+                udatereligion(0)
+                udateemployeecategory(0)
+                updatebloodgroup(0)
+                updatedoctortype(0)
+                updateSelected(0)
+                updateDesignationType(0)
+                updateDesignation(0)
+                updateSalutSelected(0)
+                updateBranchSelected(0)
+                updateInstituteSeleted(0)
+                udateregion2(null)
+                history.push('/Home/EmployeeRecord')
             }
             else {
                 errorNofity("Error Occured!!Please Contact EDP")
@@ -386,6 +420,7 @@ const EmployeeRecord = () => {
                                                 Placeholder="Employee No"
                                                 changeTextValue={(e) => updateFormData(e)}
                                                 value={empNo}
+                                                disabled={true}
                                                 name="empNo"
                                             />
                                         </div>
@@ -709,4 +744,4 @@ const EmployeeRecord = () => {
     )
 }
 
-export default EmployeeRecord
+export default EmployeeRecordEdit
