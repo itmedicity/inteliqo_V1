@@ -42,8 +42,9 @@ const StatutoryInformation = () => {
       const result = await axioslogin.get(`/empesipf/esiallow/${no}`)
       const { success, data } = result.data
       if (success === 1) {
-        setEsiallowed(data[0].ecat_esi_allow)
+        setEsiallowed(data[0].ecat_esi_allow === 0 ? 2 : data[0].ecat_esi_allow)
       }
+
     }
     getesiallowed()
   }, [no])
@@ -71,8 +72,11 @@ const StatutoryInformation = () => {
           setValue(0)
         }
       }
-      else {
+      else if (Esiallowed === 2) {
         infoNofity("Esi Is Not Allowed For This Employee")
+        Setenable(true)
+      }
+      else {
         Setenable(true)
       }
     }
@@ -232,7 +236,7 @@ const StatutoryInformation = () => {
             <div className="card-footer text-muted">
               <FooterSaveEditClosebtn
                 edit={reset}
-                disable={Esiallowed === 0 ? true : false}
+                disable={Esiallowed === 2 ? true : false}
                 redirect={RedirectToProfilePage}
                 value={value}
               />
