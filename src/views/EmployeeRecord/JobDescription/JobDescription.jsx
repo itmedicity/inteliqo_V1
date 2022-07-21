@@ -1,107 +1,130 @@
-import { Box, Card, Grid, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-import DesignationMast from 'src/views/CommonCode/DesignationMast'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextInput from 'src/views/Component/TextInput'
-import TextFieldCustom from 'src/views/Component/TextFieldCustom'
+import { CssVarsProvider } from '@mui/joy'
+import Typography from '@mui/joy/Typography';
+import { Box, CircularProgress, Paper } from '@mui/material'
+import React, { Fragment, Suspense } from 'react'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+import IconButton from '@mui/joy/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+
+const JobSummary = React.lazy(() => import('./JobSummary'));
+const DutyRespos = React.lazy(() => import('./DutyRespos'));
+const Performance = React.lazy(() => import('./Performance'));
+const Generic = React.lazy(() => import('./Generic'));
+
+const Progress = () => {
+    return (
+        <Box sx={{ display: "flex", justifyContent: "center" }} >
+            <CircularProgress color="secondary" size={30} />
+        </Box>)
+};
 
 const JobDescription = () => {
-    function createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
-    }
-
 
     return (
         <Fragment>
-            <PageLayoutSave
-                heading="Job Description"
-            >
-                <Box>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6} lg={6} xl={6} md={6}>
-                            <DepartmentSelect style={SELECT_CMP_STYLE} />
-                        </Grid>
-                        <Grid item xs={6} lg={6} xl={6} md={6}>
-                            <DesignationMast style={SELECT_CMP_STYLE} />
-                        </Grid>
-                    </Grid>
-                    <Box
-                        sx={{ padding: 2 }}
-                    >
-                        <Grid container spacing={1}>
-                            <Typography variant='inherit' sx={{ paddingLeft: 1 }}>Job Summary:</Typography>
-                        </Grid>
-                        <Grid container spacing={1}>
-                            <Grid item xs={12} lg={12} xl={12} md={12}>
-                                <Card sx={{ fontFamily: 'monospace', borderStyle: 'inherit', backgroundColor: 'InfoBackground' }}>
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 500 }} aria-label="simple table">
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell component="th" scope="row" style={{ padding: 2, width: '5rem', height: '2rem' }}>
-                                                        Objective
-                                                    </TableCell>
-                                                    <TableCell align="right" style={{ padding: 2, width: '20rem', height: '2rem' }}>
-                                                        <TextFieldCustom
-                                                            size={'md'}
-                                                        // placeholder={placeholder}
-                                                        // type={type}
-                                                        // startDecorator={startDecorator}
-                                                        // endDecorator={endDecorator}
-                                                        // sx={{ ...textStyle, ...style }}
-                                                        // onChange={(e) => onChange(e)}
-                                                        // value={value}
-                                                        // defaultValue={defaultValue}
-                                                        // name={name}
-                                                        // autoComplete="off"
-                                                        // disabled={disabled ?? false}
-                                                        />
+            <Box sx={{ width: "100%" }} >
+                {/* Outer Main Box */}
+                <Paper square elevation={2} sx={{ p: 0.5, }}   >
 
-                                                    </TableCell>
+                    {/* Main Heading Section Box */}
 
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell component="th" scope="row" style={{ padding: 2, width: '5rem', height: '2rem' }}>
-                                                        Scope
-                                                    </TableCell>
-                                                    <TableCell align="right" style={{ padding: 2, width: '20rem', height: '2rem' }}>
-                                                        <TextFieldCustom
-                                                            size={'md'}
-                                                        // placeholder={placeholder}
-                                                        // type={type}
-                                                        // startDecorator={startDecorator}
-                                                        // endDecorator={endDecorator}
-                                                        // sx={{ ...textStyle, ...style }}
-                                                        // onChange={(e) => onChange(e)}
-                                                        // value={value}
-                                                        // defaultValue={defaultValue}
-                                                        // name={name}
-                                                        // autoComplete="off"
-                                                        // disabled={disabled ?? false}
-                                                        />
+                    <Paper square elevation={0} sx={{
+                        display: "flex",
+                        p: 1,
+                        alignItems: "center",
+                    }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                    Job Description
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box >
+                            <IconButton variant="outlined" size='sm' >
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    </Paper>
 
-                                                    </TableCell>
+                    {/* Depertment Selection Box */}
 
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Card>
-                            </Grid>
-                        </Grid>
+                    <Paper square elevation={3} sx={{
+                        p: 0.5,
+                        mt: 0.5,
+                        display: 'flex',
+                        alignItems: "center",
+                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
+                        // backgroundColor: "lightcyan"
+                    }} >
+                        <Box sx={{ flex: 1, px: 0.5 }} >
+                            <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5 }}  >
+                            <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                        </Box>
+                        <Box sx={{ flex: 0, px: 0.5 }} >
+                            <IconButton variant="outlined" size='sm' >
+                                <AddToPhotosIcon />
+                            </IconButton>
+                        </Box>
+                    </Paper>
+
+                    {/* Job Summary */}
+                    <Suspense fallback={<Progress />} >
+                        <JobSummary />
+                    </Suspense>
+
+                    {/* Dutieds And Responsibilities */}
+                    <Suspense fallback={<Progress />} >
+                        <DutyRespos />
+                    </Suspense>
+
+                    {/* Job Specification : Performance & Competency */}
+                    <Suspense fallback={<Progress />} >
+                        <Performance />
+                    </Suspense>
+
+                    {/* Generic */}
+                    <Suspense fallback={<Progress />} >
+                        <Generic />
+                    </Suspense>
+
+
+                    <Box sx={{ display: "flex", flexDirection: "row", flex: 1, mt: 1, alignItems: "center" }} >
+                        <Paper square sx={{
+                            display: "flex",
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }} elevation={0} >
+
+                            <Box sx={{ display: "flex", flex: 3, px: 1, alignItems: "center" }} >
+                                <Box sx={{ px: 0.3 }} >
+                                    <IconButton variant="outlined" size='sm'>
+                                        <AddToPhotosIcon />
+                                    </IconButton>
+                                </Box>
+                                <Box sx={{ px: 0.3 }}>
+                                    <IconButton variant="outlined" size='sm'>
+                                        <ViewCompactAltOutlinedIcon />
+                                    </IconButton>
+                                </Box>
+                                <Box sx={{ px: 0.3 }}>
+                                    <IconButton variant="outlined" size='sm'>
+                                        <CancelOutlinedIcon />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        </Paper>
                     </Box>
-                </Box>
 
-            </PageLayoutSave>
+                </Paper>
+            </Box>
         </Fragment >
     )
 }
