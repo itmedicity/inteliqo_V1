@@ -23,7 +23,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 const Items = () => {
     return (
-        <Box sx={{ display: "flex", alignItems: "center", py: 0.3, }} >
+        <Box sx={{ display: "flex", alignItems: "center", py: 0.1, }} >
             <Box sx={{ display: "flex", flex: 1, pr: 1, flexDirection: "row" }}>
                 <Paper
                     square
@@ -56,10 +56,8 @@ const Items = () => {
                     </CssVarsProvider>
                 </Paper>
             </Box>
-            <Box sx={{ flex: 0, }} >
-                <IconButton variant="outlined" size='sm' >
-                    <DeleteOutlinedIcon />
-                </IconButton>
+            <Box sx={{ flex: 0, justifyItems: "center" }} >
+                <DeleteOutlinedIcon color='error' />
             </Box>
         </Box>
     )

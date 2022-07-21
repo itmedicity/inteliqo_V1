@@ -20,6 +20,7 @@ import SelectMult from 'src/views/Component/SelectMult';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { InputUnstyled } from '@mui/base';
 import Items from './Items';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 const JobDescription = () => {
     return (
@@ -226,7 +227,7 @@ const JobDescription = () => {
                     </Box>
                     {/* Dutieds And Responsibilities */}
                     <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
-                        <Box sx={{ display: "flex", alignItems: "center" }} >
+                        <Box sx={{ display: "flex", alignItems: "center", pb: 0.5 }} >
                             <Box sx={{ flex: 1, pr: 1 }}>
                                 <TextareaAutosize
                                     style={{ width: "100%", display: "flex" }}
@@ -261,6 +262,73 @@ const JobDescription = () => {
                             </IconButton>
                         </Box>
                     </Box>
+                    {/* Prformance & Competency descriptive table */}
+                    <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+                        <Box sx={{ display: "flex", alignItems: "center" }} >
+                            <Box sx={{ flex: 1 }} >
+                                <SelectBasic label="Key Result Areas (KRA)" />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 2 }} >
+                                <IconButton variant="outlined" size='sm' >
+                                    <AddToPhotosIcon />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "center", py: 0.1 }} >
+                            <Box sx={{ flex: 3 }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder="Key Performance Indicators (KPI's) "
+                                />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder="KPI Score"
+                                />
+                            </Box>
+                            <Box sx={{ flex: 3, }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder="Competency"
+                                />
+                            </Box>
+                            <Box sx={{ flex: 0, px: 1 }} >
+                                <IconButton variant="outlined" size='sm' >
+                                    <AddToPhotosIcon />
+                                </IconButton>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "center", py: 0.1 }} >
+                            <Box sx={{ flex: 2 }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder="Sourcing"
+                                />
+                            </Box>
+                            <Box sx={{ flex: 3, px: 0.5 }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder=""
+                                />
+                            </Box>
+                            <Box sx={{ flex: 3, }} >
+                                <TextareaAutosize
+                                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                    minRows={1}
+                                    placeholder=""
+                                />
+                            </Box>
+                            <Box sx={{ flex: 0, px: 1 }} >
+                                <DeleteOutlinedIcon color='error' />
+                            </Box>
+                        </Box>
+                    </Paper>
                 </Paper>
             </Box>
         </Fragment >
