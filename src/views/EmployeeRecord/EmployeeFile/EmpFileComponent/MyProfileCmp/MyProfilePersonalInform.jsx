@@ -45,8 +45,10 @@ import ProfileVerificationModal from './ProfileVerificationModal';
 import ContractDetl from './ContractDetl';
 import SalaryEmp from './SalaryEmp';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 
-const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
+
+const MyProfilePersonalInform = ({ empid, redirect, count, setCount, slno }) => {
 
     const [src, setSrc] = useState(ProfilePicDefault)
     const profilePic = `${PUBLIC_NAS_FOLDER + empid}/profilePic.jpg`;
@@ -80,9 +82,10 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
 
     const {
         addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
-        desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email,
+        desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
-        sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no
+        sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
+        em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required
     } = personalData
 
     const emp = {
@@ -98,10 +101,13 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
         designation: desg_name === '' ? 'NOT UPDATED' : desg_name,
         account: em_account_no === null ? 'NOT UPDATED' : em_account_no,
         bank: bank_name === null ? 'NOT UPDATED' : bank_name,
+        em_esi_no: em_esi_no === null ? 'NOT UPDATED' : em_esi_no,
+        em_pf_no: em_pf_no === null ? 'NOT UPDATED' : em_pf_no,
+        em_uan_no: em_uan_no === null ? 'NOT UPDATED' : em_uan_no,
         gender: em_gender === 2 ? 'Female' : 'Male',
         ismarried: em_maritalstatus === '2' ? 'Not Married' : em_maritalstatus === null ? 'NOT UPDATED' : 'Married',
         religion: relg_name === null ? 'NOT UPDATED' : relg_name,
-        age: em_dob === null ? 'NOT UPDATED' : em_dob,
+        age: em_age_year === null ? 'NOT UPDATED' : em_age_year,
         dob: em_dob === null ? 'NOT UPDATED' : em_dob,
         bloodgroup: group_name === null ? 'NOT UPDATED' : group_name,
         ifcscode: em_ifsc === null ? 'NOT UPDATED' : em_ifsc,
@@ -114,7 +120,10 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
         probEndDate: em_conf_end_date === null ? 'NOT UPATED' : em_conf_end_date,
         constractEnd: em_contract_end_date === null ? 'NOT UPATED' : em_contract_end_date,
         retirement: em_retirement_date === null ? 'NOT UPATED' : em_retirement_date,
-        verification_status: verification_status === null ? 'NOT UPDATED' : verification_status
+        verification_required: verification_required,
+        verification_status: verification_status === null ? 'NOT UPDATED' : verification_status,
+        second_level_required: second_level_required,
+        second_level_verification: second_level_verification
     }
     const [modeopen, setModelopen] = useState(0)
     const [open, setOpen] = useState(false)
@@ -126,10 +135,12 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
     const handleClose = async () => {
         setOpen(false)
     }
-
     return (
         <Fragment>
-            <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose} count={count} setCount={setCount} />
+            <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose}
+                count={count} setCount={setCount}
+                slno={slno}
+            />
             <Card sx={{ borderRadius: 2, boxShadow: 5 }} >
                 <CardHeader
                     // sx={{ backgroundColor: '#b6b8c3' }}
@@ -166,15 +177,14 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
                             <PersonPinIcon />
                         </Avatar>
                     }
-
                     action={
                         <Fragment>
 
                             <IconButton aria-label="settings" sx={{ marginLeft: 10 }}
                                 onClick={() => getVerification(empid)}
-                                disabled={emp.verification_status === 1 ? true : false}
+                                disabled={emp.verification_status === 1 && emp.second_level_required === 0 && emp.second_level_verification === 1 || verification_required === 0 ? true : false}
                             >
-                                <VerifiedSharpIcon fontSize='large' color={emp.verification_status === 1 ? 'success' : 'error'} />
+                                <VerifiedSharpIcon fontSize='large' color={emp.verification_status === 1 ? 'success' : emp.second_level_required && emp.second_level_verification === 1 ? 'success' : 'error'} />
                             </IconButton>
                             <IconButton aria-label="settings" sx={{ marginLeft: 3 }} onClick={() => redirect()} >
                                 <CloseIcon fontSize='large' sx={{ color: "#212121" }} />
@@ -557,6 +567,34 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount }) => {
                                                 </ListItemButton>
                                             </Tooltip>
                                         </Grid>
+
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} md={12} >
+                                    <ListItem disablePadding>
+                                        <Grid item xs={12} md={6} >
+                                            <Tooltip title="Esi Number" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <MonitorHeartIcon />
+                                                    </ListItemIcon>
+                                                    {/* Retirement Date*/}
+                                                    <ListItemText primary={emp.em_esi_no} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Tooltip title="PF Number" followCursor placement='top' arrow >
+                                                <ListItemButton className='py-1'>
+                                                    <ListItemIcon>
+                                                        <SavingsIcon />
+                                                    </ListItemIcon>
+                                                    {/* Contract End Date*/}
+                                                    <ListItemText primary={emp.em_pf_no} />
+                                                </ListItemButton>
+                                            </Tooltip>
+                                        </Grid>
+
                                     </ListItem>
                                 </Grid>
                             </List>

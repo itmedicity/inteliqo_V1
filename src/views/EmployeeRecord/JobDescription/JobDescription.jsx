@@ -2,7 +2,7 @@ import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
 import React, { Fragment, Suspense } from 'react'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
@@ -23,6 +23,7 @@ const Progress = () => {
 };
 
 const JobDescription = () => {
+
     return (
         <Fragment>
             <Box sx={{ width: "100%" }} >

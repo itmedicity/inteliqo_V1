@@ -7,11 +7,12 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
 import { useHistory } from 'react-router-dom'
 
-const EmployeeRecordVerification = () => {
+
+const EmpfileFinalVerification = () => {
     const [data, setdata] = useState([])
     useEffect(() => {
         const getempverification = async () => {
-            const result = await axioslogin.get('/empVerification')
+            const result = await axioslogin.get('/empVerification/secondlevelverify')
             const { success, data } = result.data
             if (success === 1) {
                 setdata(data)
@@ -42,18 +43,21 @@ const EmployeeRecordVerification = () => {
             title: 'Date of Join', field: 'em_doj', cellStyle: { minWidth: 200, maxWidth: 350 }
         },
         {
-            title: 'Verification Remark', field: 'verification_Remark', cellStyle: { minWidth: 200, maxWidth: 350 }
+            title: 'First Level Verification', field: 'verify_remark', cellStyle: { minWidth: 300, maxWidth: 400 }
+        },
+        {
+            title: 'Remarks', field: 'verification_Remark', cellStyle: { minWidth: 300, maxWidth: 400 }
         },
     ]
     const history = useHistory()
     const ToProfile = async (data) => {
         const { em_id, em_no } = data
-        history.push(`/Home/ApplicationForm/${em_no}/${em_id}/${1}`)
+        history.push(`/Home/ApplicationForm/${em_no}/${em_id}/${2}`)
     }
     return (
         <Fragment>
             <PageLayoutCloseOnly
-                heading="Employee Record Verification"
+                heading="Employee Record Final Verification"
             >
                 <MaterialTable
                     title={"Employee Verification Table"}
@@ -61,19 +65,22 @@ const EmployeeRecordVerification = () => {
                     columns={title}
                     icons={tableIcons}
                     actions={[
-                        {
-                            icon: () => <CheckCircleRoundedIcon />,
-                            tooltip: "Click Here to Verify",
-                            onClick: (e, data) => ToProfile(data)
+                        data => (
+                            {
+                                icon: () => <CheckCircleRoundedIcon />,
+                                disabled: data.verification_status === 2 || data.verification_status === 0,
+                                tooltip: "Click Here to Verify",
+                                onClick: (e, data) => ToProfile(data)
 
-                        }
+                            }
+                        )
                     ]}
                     options={{
                         paginationType: "stepped",
                         showFirstLastPageButtons: false,
                         padding: "dense",
                         actionsColumnIndex: -1,
-                        rowStyle: (data, index) => data.verification_status === 2 ? { background: "#ef9a9a" } : null
+                        rowStyle: (data, index) => data.second_level_verification === 2 ? { background: "#ef9a9a" } : null
                     }}
                 />
             </PageLayoutCloseOnly>
@@ -81,4 +88,4 @@ const EmployeeRecordVerification = () => {
     )
 }
 
-export default EmployeeRecordVerification
+export default EmpfileFinalVerification
