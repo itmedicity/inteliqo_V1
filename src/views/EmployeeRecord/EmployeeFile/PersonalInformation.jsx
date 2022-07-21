@@ -39,7 +39,6 @@ const PersonalInformation = () => {
     } = useContext(PayrolMasterContext);
     const [ifsc, setIfsc] = useState(0)
     //getting banl serial number for finding ifsc code
-
     useEffect(() => {
         if (selectBank !== 0) {
             const getbankIfsc = async (e) => {
@@ -47,6 +46,9 @@ const PersonalInformation = () => {
                 const { success, data } = result.data
                 if (success === 1) {
                     setIfsc(data[0].bank_ifsc)
+                }
+                else {
+                    setIfsc(0)
                 }
             }
             getbankIfsc()
@@ -184,6 +186,7 @@ const PersonalInformation = () => {
                 } = data[0]
 
 
+
                 const peonsubmitdata = {
                     addressPermnt1: addressPermnt1,
                     addressPermnt2: addressPermnt2,
@@ -291,7 +294,6 @@ const PersonalInformation = () => {
             const updateempmast = await axioslogin.patch('/empmast', submitpersonal);
             const { success, message } = updateempmast.data;
             if (success === 2) {
-
                 setpersonaldata(resetdata)
                 setIfsc(0)
                 udatereligion(0)
@@ -627,9 +629,9 @@ const PersonalInformation = () => {
                                                         type="text"
                                                         classname="form-control form-control-sm"
                                                         Placeholder="Date Of Birth"
-                                                        changeTextValue={(e) => updateFormData(e)}
                                                         value={dob}
                                                         name="dob"
+                                                        disabled={true}
                                                     />
                                                 </div>
                                                 <div className="col-md-2" data-tip="Age" data-for='toolTip1' data-place='top'>
@@ -638,9 +640,9 @@ const PersonalInformation = () => {
                                                         type="text"
                                                         classname="form-control form-control-sm"
                                                         Placeholder="Age as of Now"
-                                                        changeTextValue={(e) => updateFormData(e)}
                                                         value={age}
                                                         name="age"
+                                                        disabled={true}
                                                     />
                                                 </div>
                                                 <div className="col-md-3" data-tip="IFSC" data-for='toolTip1' data-place='top'>

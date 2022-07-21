@@ -1,78 +1,119 @@
-import MaterialTable from 'material-table'
-import React, { Fragment, useEffect } from 'react'
-import { useState } from 'react'
-import { axioslogin } from 'src/views/Axios/Axios'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
+import { PayrolMasterContext } from 'src/Context/MasterContext'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import { tableIcons } from 'src/views/Constant/MaterialIcon'
-import { useHistory } from 'react-router-dom'
-
+import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
+import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { IconButton } from '@mui/material'
+import { FcPlus } from 'react-icons/fc'
+import { setEmployeeList } from '../../../redux/actions/Profile.action'
+import { useDispatch, useSelector } from 'react-redux'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { useHistory } from 'react-router'
+import EmployeeRecordTableView from './EmployeeRecordTableView'
 const EmployeeRecordTable = () => {
-    const [data, setdata] = useState([])
+    const history = useHistory()
+    const [tableData, setTableData] = useState([])
+    const [data, setdata] = useState(0)
+    const dispatch = useDispatch()
+    const employeeRecordList = useSelector((state) => {
+        return state.getEmployeeRecordList.empRecordData;
+    })
     useEffect(() => {
-        const getempverification = async () => {
-            const result = await axioslogin.get('/empmast/empverify/verification')
+        // set the table data from reducx store to material table data
+        if (Object.keys(employeeRecordList).length > 0) {
+            setTableData(employeeRecordList)
+        }
+    }, [employeeRecordList])
+
+    const {
+        selectedDept,
+        selectDeptSection,
+        selectBranchMast,
+    } = useContext(PayrolMasterContext)
+    const postData = {
+        dept_id: selectedDept,
+        sect_id: selectDeptSection,
+        branch_slno: selectBranchMast
+    }
+    const postDataBranch = {
+        branch_slno: selectBranchMast
+    }
+    const postDataDept = {
+        branch_slno: selectBranchMast,
+        dept_id: selectedDept,
+    }
+    // Employee Record List
+    const getEmployeeList = async (e) => {
+        e.preventDefault()
+        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0) {
+            const result = await axioslogin.post('/empmast/getEmpDet', postData)
             const { success, data } = result.data
             if (success === 1) {
-                setdata(data)
-            }
-            else {
-                setdata([])
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+                setdata(1)
             }
         }
-        getempverification()
-    }, [])
-    const title = [
-        {
-            title: 'Emp Id', field: 'em_no', cellStyle: { minWidth: 1, maxWidth: 50 }
-        },
-        {
-            title: 'Emp Name', field: 'em_name', cellStyle: { minWidth: 200, maxWidth: 300 }
-        },
-        {
-            title: 'Branch', field: 'branch_name', cellStyle: { minWidth: 200, maxWidth: 300 }
-        },
-        {
-            title: 'Department', field: 'dept_name', cellStyle: { minWidth: 200, maxWidth: 300 }
-        },
-        {
-            title: 'Department Section', field: 'sect_name', cellStyle: { minWidth: 150, maxWidth: 200 }
-        },
-        {
-            title: 'Date of Join', field: 'em_doj', cellStyle: { minWidth: 200, maxWidth: 350 }
-        },
-
-    ]
-    const history = useHistory()
-    const ToProfile = async (data) => {
-        const { em_id, em_no } = data
-        history.push(`/Home/EmployeeRecordEdit/${em_no}/${em_id}`)
+        else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0) {
+            const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+                setdata(1)
+            }
+        }
+        else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0) {
+            const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+                setdata(1)
+            }
+        }
+        else {
+            warningNofity("Choose All Option")
+        }
+    }
+    const backtoEmployeeRegister = () => {
+        history.push('/Home/EmployeeRecord')
     }
     return (
         <Fragment>
             <PageLayoutCloseOnly
                 heading="Employee Record Edit"
+                redirect={backtoEmployeeRegister}
             >
-                <MaterialTable
-                    title={"Employee Verification Table"}
-                    data={data}
-                    columns={title}
-                    icons={tableIcons}
-                    actions={[
-                        {
-                            icon: () => <ModeEditOutlineIcon color='success' />,
-                            tooltip: "Click Here to Verify",
-                            onClick: (e, data) => ToProfile(data)
-
-                        }
-                    ]}
-                    options={{
-                        paginationType: "stepped",
-                        showFirstLastPageButtons: false,
-                        padding: "dense",
-                        actionsColumnIndex: -1
-                    }}
-                />
+                <div className="col-md-12">
+                    <div className="row g-1">
+                        <div className="col-md-3">
+                            <BrnachMastSelection style={SELECT_CMP_STYLE} />
+                        </div>
+                        <div className="col-md-3">
+                            <DepartmentSelect style={SELECT_CMP_STYLE} />
+                        </div>
+                        <div className="col-md-3">
+                            <DepartmentSectionSelect style={SELECT_CMP_STYLE} />
+                        </div>
+                        <div className="col-md-3">
+                            <IconButton
+                                aria-label="add"
+                                style={{ padding: '0rem' }}
+                                onClick={getEmployeeList}
+                            >
+                                <FcPlus className="text-info" size={30} />
+                            </IconButton>
+                        </div>
+                    </div>
+                    <div className="row">{
+                        data === 1 ? <EmployeeRecordTableView tableData={tableData} /> : null
+                    }
+                    </div>
+                </div>
             </PageLayoutCloseOnly>
         </Fragment>
     )
