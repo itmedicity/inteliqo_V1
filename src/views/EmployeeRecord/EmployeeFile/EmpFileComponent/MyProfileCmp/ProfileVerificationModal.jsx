@@ -9,8 +9,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count, setCount }) => {
-
+const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count, setCount, slno }) => {
     const [open1, setOpen1] = useState(false)
     const OpenNotVerified = async () => {
         setOpen1(true)
@@ -24,23 +23,39 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
         verification_Remark: '',
         em_id: modeopen
     }
+
     const updateVerify = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.patch('/empmast/empmaster/updateverification', postData)
-        const { success, message } = result.data
-        if (success === 2) {
-            succesNofity(message)
-            setCount(count + 1)
-            handleClose()
+        if (slno === 1) {
+            const result = await axioslogin.patch('/empVerification', postData)
+            const { success, message } = result.data
+            if (success === 2) {
+                succesNofity(message)
+                setCount(count + 1)
+                handleClose()
+            }
+            else {
+                errorNofity("Error Occured!!!Please Contact EDP")
+            }
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            const result = await axioslogin.patch('/empVerification/secondverification', postData)
+            const { success, message } = result.data
+            if (success === 2) {
+                succesNofity(message)
+                setCount(count + 1)
+                handleClose()
+            }
+            else {
+                errorNofity("Error Occured!!!Please Contact EDP")
+            }
         }
+
     }
     return (
         <Fragment>
-            <ProfileNotverifiedModal open1={open1} handlClose2={handlClose2}
-                modeopen={modeopen} />
+            {open1 === true ? <ProfileNotverifiedModal open1={open1} handlClose2={handlClose2}
+                modeopen={modeopen} slno={slno} /> : null}
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -49,16 +64,15 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
                 aria-describedby="alert-dialog-slide-descriptiona"
             >
                 <DialogTitle>
-                    {"Employee Record Verification"}
+                    {"Employee File Verification"}
                 </DialogTitle>
                 <DialogContent sx={{
                     minWidth: 800,
                     maxWidth: 800,
                     width: 800,
                 }}>
-                    <DialogContentText id="alert-dialog-description"
-                    >
-                        Do you Want To Verify This Employee Record
+                    <DialogContentText id="alert-dialog-description" color='textPrimary' >
+                        Do you want to verify This Employee File
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

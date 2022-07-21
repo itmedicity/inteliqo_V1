@@ -33,11 +33,12 @@ const CommonSettings = () => {
         pf_employer: '',
         esi_limit: '',
         esi_employee: '',
-        esi_employer: ''
+        esi_employer: '',
+        verification_level: 0
     })
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
-        pf_employee, pf_age, max_salary } = FormData
+        pf_employee, pf_age, max_salary, verification_level } = FormData
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -51,7 +52,7 @@ const CommonSettings = () => {
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
-                    pf_employer, min_salary, pf_age, pf_employee, max_salary } = data[0]
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -70,7 +71,8 @@ const CommonSettings = () => {
                     pf_employer: pf_employer,
                     esi_limit: esi_limit,
                     esi_employee: esi_employee,
-                    esi_employer: esi_employer
+                    esi_employer: esi_employer,
+                    verification_level: verification_level
                 }
                 setFormData(frmData)
                 setValue(1)
@@ -103,7 +105,8 @@ const CommonSettings = () => {
         esi_limit: esi_limit,
         esi_employee: esi_employee,
         esi_employer: esi_employer,
-        creat_user: em_id
+        creat_user: em_id,
+        verification_level: verification_level
     }
     //data to edit
     const postDataEdit = {
@@ -125,7 +128,8 @@ const CommonSettings = () => {
         esi_employee: esi_employee,
         esi_employer: esi_employer,
         update_user: em_id,
-        setting_slno: slno
+        setting_slno: slno,
+        verification_level: verification_level
     }
 
     //save
@@ -274,6 +278,25 @@ const CommonSettings = () => {
                                             </div>
                                             <div className="col-md-4 pt-1">
                                                 <Typography>In Minutes</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Verification Level</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="verification_level"
+                                                    value={verification_level}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Numbers</Typography>
                                             </div>
                                         </div>
                                     </div>
