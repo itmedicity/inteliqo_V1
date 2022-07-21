@@ -19,7 +19,6 @@ const TextInput = (props) => {
                 disabled={disabled}
                 max={max}
                 min={min}
-
             />
         </div>
     )
