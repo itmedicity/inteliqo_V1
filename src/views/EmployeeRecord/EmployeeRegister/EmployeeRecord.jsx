@@ -226,7 +226,7 @@ const EmployeeRecord = () => {
             const getcategorydata = async () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { data } = result.data;
-                var today = new Date();
+                var today = new Date(dateofjoining);
                 var cont_grace = data[0].cont_grace;
                 var ecat_cont_period = data[0].ecat_cont_period;
                 var ecat_prob_period = data[0].ecat_prob_period;
@@ -257,7 +257,7 @@ const EmployeeRecord = () => {
             getcategorydata();
         }
 
-    }, [getemployeecategory])
+    }, [getemployeecategory, dateofjoining])
     //useEffect for getting Verification level
     const [verification, setverificationlevel] = useState(0)
     useEffect(() => {

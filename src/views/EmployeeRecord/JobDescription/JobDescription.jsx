@@ -9,6 +9,7 @@ import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import DesignationMast from 'src/views/CommonCode/DesignationMast';
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
@@ -65,7 +66,7 @@ const JobDescription = () => {
                             <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}  >
-                            <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                            <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
                         <Box sx={{ flex: 0, px: 0.5 }} >
                             <IconButton variant="outlined" size='sm' >
