@@ -3,9 +3,9 @@ import React, { useContext, memo, useEffect, Fragment, useState } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from '../Axios/Axios';
 
-const CourseSelectionMast = () => {
+const CourseSelectionMast = ({ style, disable }) => {
     const [course, setCourse] = useState([]);
-    const { selectCourse, updateCourse } = useContext(PayrolMasterContext)
+    const { selectCourse, updateCourse, courseName, setCourseName } = useContext(PayrolMasterContext)
 
     useEffect(() => {
         const getCourse = async () => {
@@ -15,10 +15,16 @@ const CourseSelectionMast = () => {
         }
         getCourse()
         return (
-            updateCourse(0)
+            updateCourse(0),
+            setCourseName('')
         )
     }, [updateCourse]);
+    // labeldata 
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        setCourseName(selectedText)
 
+    }
     return (
         <Fragment>
             <FormControl
@@ -33,8 +39,13 @@ const CourseSelectionMast = () => {
                     variant="outlined"
                     className="ml-1"
                     value={selectCourse}
-                    onChange={(e) => updateCourse(e.target.value)}
+                    onChange={(e) => {
+                        updateCourse(e.target.value)
+                        getlaeldat(e)
+                    }}
                     defaultValue={0}
+                    disabled={disable}
+                    style={style}
                 >
                     <MenuItem value='0' disabled>
                         Select Course

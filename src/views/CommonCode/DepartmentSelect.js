@@ -7,7 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 const DepartmentSelect = ({ style, disabled }) => {
     const dispatch = useDispatch()
     const [deptData, setdeptData] = useState([]);
-    const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
+    useEffect(() => {
+        dispatch(setDepartment())
+    }, [])
+
+    const { selectedDept, updateSelected, updateSelectedName } = useContext(PayrolMasterContext);
     const departments = useSelector((state) => {
         return state.getDepartmentList.empDepartmentList
     })
@@ -23,11 +27,13 @@ const DepartmentSelect = ({ style, disabled }) => {
             updateSelected(0)
         )
     }, [updateSelected, departments]);
+    // labeldata 
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        updateSelectedName(selectedText)
 
+    }
 
-    useEffect(() => {
-        dispatch(setDepartment())
-    }, [])
 
     return (
         <Fragment>
@@ -43,7 +49,10 @@ const DepartmentSelect = ({ style, disabled }) => {
                     id="demo-simple-select"
                     name="selectedDept"
                     value={selectedDept}
-                    onChange={(e) => updateSelected(e.target.value)}
+                    onChange={(e) => {
+                        updateSelected(e.target.value)
+                        getlaeldat(e)
+                    }}
                     fullWidth
                     variant="outlined"
                     // className="ml-3"

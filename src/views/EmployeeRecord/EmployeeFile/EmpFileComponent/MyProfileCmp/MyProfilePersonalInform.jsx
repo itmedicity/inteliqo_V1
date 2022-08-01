@@ -160,7 +160,7 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount, slno }) => 
                                 personalDataStatus === true ? emp.designation : <Skeleton />
                             }
                             <Typography variant="subtitle2" component="div" gutterBottom>
-                                Information Technology
+                                {emp.department}
                             </Typography>
                         </Fragment>
                     }

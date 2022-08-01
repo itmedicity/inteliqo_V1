@@ -5,7 +5,7 @@ import { axioslogin } from '../Axios/Axios';
 
 const DesignationMast = (props) => {
     const [designation, setDesignation] = useState([]);
-    const { selectDesignation, updateDesignation } = useContext(PayrolMasterContext);
+    const { selectDesignation, updateDesignation, updateDesignationName } = useContext(PayrolMasterContext);
     useEffect(() => {
         const getDesignation = async () => {
             const result = await axioslogin.get('/designation');
@@ -19,6 +19,13 @@ const DesignationMast = (props) => {
             updateDesignation(0)
         )
     }, [updateDesignation]);
+    // labeldata 
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        updateDesignationName(selectedText)
+
+    }
+
     return (
         <Fragment>
             <FormControl
@@ -31,7 +38,10 @@ const DesignationMast = (props) => {
                     id="demo-simple-select"
                     name="selectedSalutation"
                     value={selectDesignation}
-                    onChange={(e) => updateDesignation(e.target.value)}
+                    onChange={(e) => {
+                        updateDesignation(e.target.value)
+                        getlaeldat(e)
+                    }}
                     fullWidth
                     variant="outlined"
                     defaultValue={0}

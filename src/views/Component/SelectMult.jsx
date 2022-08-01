@@ -6,8 +6,8 @@ import { InputLabel } from '@mui/material';
 import { NearMeTwoTone } from '@material-ui/icons';
 
 const SelectMult = ({ style, label }) => {
-    const [age, setAge] = React.useState("");
-
+    const [age, setAge] = React.useState([]);
+    console.log(age)
     const handleChange = (event) => {
         setAge(event.target.value);
     };
@@ -27,9 +27,9 @@ const SelectMult = ({ style, label }) => {
             },
         }} >
             <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={names}
+                labelId="demo-multiple-name-label"
+                id="demo-multiple-name"
+                value={age}
                 onChange={handleChange}
                 multiple
                 fullWidth

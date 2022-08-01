@@ -169,7 +169,7 @@ const QualificationReport = React.lazy(() => import('./views/HrReports/Qualifica
 const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordTable'))
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
-
+const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -343,7 +343,8 @@ const routes = [
   { path: '/Home/QualificationReport', exact: true, name: 'Employee Qualification Report', component: QualificationReport },
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
-  { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification }
+  { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
+  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA }
 
 
 ]
