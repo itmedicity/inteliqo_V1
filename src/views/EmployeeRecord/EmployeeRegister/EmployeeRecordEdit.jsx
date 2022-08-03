@@ -58,6 +58,13 @@ const EmployeeRecordEdit = () => {
         getbloodgroup, getregion2, udateregion2,
         updateDepartmentSection
     } = useContext(PayrolMasterContext);
+    // usestare
+    const [cont_perioddate, setcont_perioddate] = useState(0)
+    const [contractflag, setcontractflag] = useState(0)
+    const [cont_gracedate, setcont_gracedate] = useState(0)
+    const [probationendate, setdesiggperioddate] = useState(0)
+    const [retirementyear, setretirementyear] = useState(0)
+
     // use state intialization
     const [employeerecord, getFormdata] = useState({
         empName: '',
@@ -123,7 +130,7 @@ const EmployeeRecordEdit = () => {
                     em_phone, em_mobile, em_email, em_no, em_name, em_doc_type, em_gender, em_dob, em_doj,
                     hrm_pin2, em_department, em_region, em_category, blood_slno, hrm_religion, em_age_month,
                     em_age_year, em_age_day, em_salutation, em_branch, em_dept_section, em_institution_type,
-                    em_designation, hrm_region2 } = data[0]
+                    em_designation, hrm_region2, em_conf_end_date, em_contract_end_date, em_prob_end_date, em_retirement_date } = data[0]
                 const frmdata = {
                     empName: em_name,
                     empNo: em_no,
@@ -162,18 +169,16 @@ const EmployeeRecordEdit = () => {
                 updateDesignation(em_designation)
                 udatereligion(hrm_religion)
                 udateregion2(hrm_region2)
+                setcont_perioddate(em_contract_end_date)
+                setdesiggperioddate(em_prob_end_date)
+                setretirementyear(em_retirement_date)
+                setcont_gracedate(em_conf_end_date)
             }
 
         }
         getEmployeedetails()
     }, [id])
 
-    // usestare
-    const [cont_perioddate, setcont_perioddate] = useState(0)
-    const [contractflag, setcontractflag] = useState(0)
-    const [cont_gracedate, setcont_gracedate] = useState(0)
-    const [probationendate, setdesiggperioddate] = useState(0)
-    const [retirementyear, setretirementyear] = useState(0)
 
     // function for age calculation
     const getage = (e) => {
@@ -286,7 +291,7 @@ const EmployeeRecordEdit = () => {
             const getcategorydata = async () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { data } = result.data;
-                var today = new Date();
+                var today = new Date(dateofjoining);
                 var cont_grace = data[0].cont_grace;
                 var ecat_cont_period = data[0].ecat_cont_period;
                 var ecat_prob_period = data[0].ecat_prob_period;
@@ -317,7 +322,7 @@ const EmployeeRecordEdit = () => {
             getcategorydata();
         }
 
-    }, [getemployeecategory])
+    }, [getemployeecategory, dateofjoining])
 
     // for submition
     const submitemployeerecord = async (e) => {

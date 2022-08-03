@@ -26,6 +26,9 @@ const QualificationTable = ({ update, setcount }) => {
         {
             title: "Specialization", field: "spec_desc"
         },
+        {
+            title: "Pass/Fail", field: "pass_fail"
+        },
     ]
 
     //Get Data

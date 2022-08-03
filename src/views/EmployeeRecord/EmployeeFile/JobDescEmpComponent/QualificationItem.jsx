@@ -5,11 +5,7 @@ import React from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-
-const ExperienceItem = ({ val, setDeleteItem }) => {
-    const deleteexperience = (id) => {
-        setDeleteItem(id)
-    }
+const QualificationItem = ({ val }) => {
     return (
         <Box sx={{ display: "flex", width: "100%", alignItems: "center", px: 0.1 }} >
             <Box sx={{ flex: 3, px: 0.2 }} >
@@ -18,7 +14,7 @@ const ExperienceItem = ({ val, setDeleteItem }) => {
                         <Typography
                             level="body1"
                         >
-                            {val.course}
+                            {val.cour_desc}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -29,18 +25,13 @@ const ExperienceItem = ({ val, setDeleteItem }) => {
                         <Typography
                             level="body1"
                         >
-                            {val.specialization}
+                            {val.spec_desc}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
-            </Box>
-            <Box sx={{ flex: 0, px: 0.2 }} >
-                <IconButton variant="outlined" size='xs' onClick={(e) => deleteexperience(val.id)}>
-                    <DeleteOutlinedIcon color='error' />
-                </IconButton>
             </Box>
         </Box>
     )
 }
 
-export default ExperienceItem
+export default QualificationItem

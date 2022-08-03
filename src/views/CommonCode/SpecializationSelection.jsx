@@ -5,7 +5,8 @@ import { axioslogin } from '../Axios/Axios';
 
 const SpecializationSelection = (props) => {
     const [spec, setSpec] = useState([]);
-    const { selectSpec, updateSpec, selectCourse } = useContext(PayrolMasterContext)
+    const { selectSpec, updateSpec, selectCourse, specName,
+        setSpecName } = useContext(PayrolMasterContext)
 
     useEffect(() => {
         const getSpec = async () => {
@@ -15,11 +16,17 @@ const SpecializationSelection = (props) => {
         }
         getSpec()
         return (
-            updateSpec(0)
+            updateSpec(0),
+            setSpecName('')
         )
 
     }, [updateSpec, selectCourse]);
+    // labeldata 
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        setSpecName(selectedText)
 
+    }
     return (
         <Fragment>
             <FormControl
@@ -35,7 +42,10 @@ const SpecializationSelection = (props) => {
                     variant="outlined"
                     className="ml-1"
                     value={selectSpec}
-                    onChange={(e) => updateSpec(e.target.value)}
+                    onChange={(e) => {
+                        updateSpec(e.target.value)
+                        getlaeldat(e)
+                    }}
                     defaultValue={0}
                     style={props.style}
                     disabled={props.disable}
@@ -51,7 +61,7 @@ const SpecializationSelection = (props) => {
                     }
                 </Select>
             </FormControl>
-        </Fragment>
+        </Fragment >
     )
 }
 
