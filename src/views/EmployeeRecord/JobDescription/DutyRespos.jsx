@@ -86,7 +86,7 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
             }
             else {
                 const saveDuties = duty && duty.map((val) => {
-                    return { jobdescid: summary_slno, dutiesandres: val.dutiess }
+                    return { jobdescid: summary_slno, dutiesandres: val.dutiess, dept_id: selectedDept, designation: selectDesignation }
                 })
                 const result = await axioslogin.post('/jobsummary/jobduties', saveDuties)
                 const { success, message } = result.data

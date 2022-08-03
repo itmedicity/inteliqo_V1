@@ -113,7 +113,17 @@ const Performance = ({ selectDesignation, selectedDept }) => {
             }
             else {
                 const saveDuties = perfomance && perfomance.map((val) => {
-                    return { job_id: summary_slno, kra: val.kras, kpi: val.kpiindicator, kpi_score: val.kpiscore, competency: val.kpicompetency }
+                    return {
+                        job_id: summary_slno,
+                        kra: val.kras,
+                        kpi: val.kpiindicator,
+                        kpi_score: val.kpiscore,
+                        competency: val.kpicompetency,
+                        dept_id: selectedDept,
+                        designation: selectDesignation
+
+
+                    }
                 })
                 const result = await axioslogin.post('/jobsummary/jobspecification', saveDuties)
                 const { success, message } = result.data

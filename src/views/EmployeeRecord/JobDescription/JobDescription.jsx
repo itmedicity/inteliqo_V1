@@ -14,6 +14,7 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
@@ -41,15 +42,17 @@ const JobDescription = () => {
             infoNofity("Choose All Option")
         }
     }
+    const history = useHistory()
+    const Redirect = async () => {
+        history.push(`/Home`)
+    }
     return (
         <Fragment>
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 {/* Outer Main Box */}
                 <Paper square elevation={2} sx={{ p: 0.5, }}   >
-
                     {/* Main Heading Section Box */}
-
                     <Paper square elevation={0} sx={{
                         display: "flex",
                         p: 1,
@@ -63,7 +66,7 @@ const JobDescription = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box >
-                            <IconButton variant="outlined" size='sm' >
+                            <IconButton variant="outlined" size='sm' onClick={Redirect}>
                                 <CloseIcon />
                             </IconButton>
                         </Box>
@@ -126,33 +129,6 @@ const JobDescription = () => {
                     </Suspense>
 
 
-                    <Box sx={{ display: "flex", flexDirection: "row", flex: 1, mt: 1, alignItems: "center" }} >
-                        <Paper square sx={{
-                            display: "flex",
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }} elevation={0} >
-
-                            <Box sx={{ display: "flex", flex: 3, px: 1, alignItems: "center" }} >
-                                <Box sx={{ px: 0.3 }} >
-                                    <IconButton variant="outlined" size='sm'>
-                                        <AddToPhotosIcon />
-                                    </IconButton>
-                                </Box>
-                                <Box sx={{ px: 0.3 }}>
-                                    <IconButton variant="outlined" size='sm'>
-                                        <ViewCompactAltOutlinedIcon />
-                                    </IconButton>
-                                </Box>
-                                <Box sx={{ px: 0.3 }}>
-                                    <IconButton variant="outlined" size='sm'>
-                                        <CancelOutlinedIcon />
-                                    </IconButton>
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Box>
 
                 </Paper>
             </Box>

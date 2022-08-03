@@ -284,6 +284,7 @@ const EmployeeRecord = () => {
             const { success, data } = result.data
             if (success === 1) {
                 const { em_id } = data[0]
+
                 const submitemployee = {
                     emp_no: empNo,
                     emp_id: em_id,
@@ -305,7 +306,6 @@ const EmployeeRecord = () => {
                     const result = await axioslogin.post('/empVerification', postdataverify)
                     const { success, message } = result.data
                     if (success === 1) {
-                        succesNofity(message)
                         getFormdata(defaultstate)
                         udateGrade(0)
                         setEarnTypecontext(0)
@@ -321,6 +321,8 @@ const EmployeeRecord = () => {
                         updateBranchSelected(0)
                         updateInstituteSeleted(0)
                         udateregion2(null)
+                        history.push(`/Home/Profile/${empNo}/${em_id}`)
+                        succesNofity(message)
                     }
                     else {
                         errorNofity("Error Occured!!Please Contact ED")

@@ -79,7 +79,6 @@ const MyProfilePersonalInform = ({ empid, redirect, count, setCount, slno }) => 
         }
         getProfilePicInform()
     }, [empid, profilePic])
-
     const {
         addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,

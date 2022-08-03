@@ -20,6 +20,7 @@ import TextInput from 'src/views/Component/TextInput'
 import BoardMastSelection from 'src/views/CommonCode/BoardMastSelection'
 import { format } from 'date-fns'
 import ReactTooltip from 'react-tooltip';
+import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 const QualificationTableEdit = () => {
     const history = useHistory()
     const classes = useStyles()
@@ -53,13 +54,14 @@ const QualificationTableEdit = () => {
         em_mark_grade: '',
         em_reg_type: '0',
         em_reg_no: '',
-        em_chellan: ''
+        em_chellan: '',
+        pass_fail: true
     })
 
     //destructuring
-    const { em_mark_grade, em_reg_no, em_chellan } = qualification
+    const { em_mark_grade, em_reg_no, em_chellan, pass_fail } = qualification
     const updateQualification = (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })
     }
 
@@ -71,20 +73,21 @@ const QualificationTableEdit = () => {
             if (success === 1) {
                 const { em_education, em_course, em_specialization, em_univ_institute,
                     em_board, em_year, em_mark_grade, em_reg_type, em_reg_no, em_exp_date,
-                    em_chellan, em_chellan_exp_date } = data[0]
+                    em_chellan, em_chellan_exp_date, pass_fail } = data[0]
                 const frmdata = {
                     em_year: em_year,
                     em_mark_grade: em_mark_grade,
                     em_reg_no: em_reg_no,
-                    em_chellan: em_chellan
+                    em_chellan: em_chellan,
+                    pass_fail: pass_fail === 0 ? true : false
                 }
                 updateEducation(em_education)
                 updatereg(em_reg_type)
                 setQualification(frmdata)
                 const year = new Date(em_year, 6, 2)
                 setYear(year)
-                setExpyear(format(new Date(em_exp_date), "yyyy-MM-dd"))
-                setChellan(format(new Date(em_chellan_exp_date), "yyyy-MM-dd"))
+                em_exp_date === null ? setExpyear(new Date()) : setExpyear(format(new Date(em_exp_date), "yyyy-MM-dd"))
+                em_chellan_exp_date === null ? setChellan(new Date()) : setChellan(format(new Date(em_chellan_exp_date), "yyyy-MM-dd"))
                 updateBoard(em_board === null ? 0 : em_board)
                 updateUniversity(em_univ_institute === null ? 0 : em_univ_institute)
                 updateCourse(em_course === null ? 0 : em_course)
@@ -118,7 +121,6 @@ const QualificationTableEdit = () => {
             setregNodisable(false)
         }
     }, [slno, updateEducation, updateCourse, updateSpec, updateUniversity, updatereg, updateBoard, selectEducation])
-
     //Year update function
     const updateYear = (val) => {
         setYear(val)
@@ -150,7 +152,8 @@ const QualificationTableEdit = () => {
         em_exp_date: em_reg_no === "" ? null : expyear,
         em_chellan: em_chellan,
         em_chellan_exp_date: em_chellan === "" ? null : chellan,
-        emqual_slno: slno
+        emqual_slno: slno,
+        pass_fail: pass_fail === true ? 0 : 1
     }
 
     const postData5 = {
@@ -166,7 +169,8 @@ const QualificationTableEdit = () => {
         em_reg_type: selectreg,
         em_reg_no,
         edit_user: em_id,
-        emqual_slno: slno
+        emqual_slno: slno,
+        pass_fail: pass_fail === true ? 0 : 1
     }
     const postData4 = {
         em_no: id,
@@ -181,7 +185,8 @@ const QualificationTableEdit = () => {
         em_reg_type: selectreg,
         em_reg_no,
         edit_user: em_id,
-        emqual_slno: slno
+        emqual_slno: slno,
+        pass_fail: pass_fail === true ? 0 : 1
     }
 
     //Form reset
@@ -195,7 +200,8 @@ const QualificationTableEdit = () => {
         em_mark_grade: '',
         em_reg_type: '0',
         em_reg_no: '',
-        em_chellan: ''
+        em_chellan: '',
+        pass_fail: true
     }
     const reset = () => {
         setYear(new Date())
@@ -295,7 +301,7 @@ const QualificationTableEdit = () => {
                                                 views={['year']}
                                                 name="year"
                                                 value={year}
-                                                minDate={new Date('1950')}
+                                                minDate={new Date('1990')}
                                                 maxDate={new Date('2022')}
                                                 onChange={(e) => { updateYear(e) }}
                                                 InputProps={{
@@ -307,19 +313,27 @@ const QualificationTableEdit = () => {
                                                     name="datepick"
                                                     autoComplete="off"
                                                     variant="outlined"
-                                                    helperText={null}
-                                                />}
+                                                    helperText={null} />}
                                             />
                                         </LocalizationProvider>
                                     </div>
-                                    <div className="col-md-6 pt-1">
+                                    <div className="col-md-1 pt-2 " data-tip="Pass/Fail" data-for='toolTip2' data-place='top'>
+                                        <ReactTooltip id="toolTip2" />
+                                        <CommonCheckBox
+                                            name="pass_fail"
+                                            value={pass_fail}
+                                            checked={pass_fail}
+                                            onChange={(e) => updateQualification(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-5 pt-1">
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Mark/Grade"
-                                            changeTextValue={(e) => updateQualification(e)}
                                             value={em_mark_grade}
                                             name="em_mark_grade"
+                                            changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
                                     <div className="col-md-12">

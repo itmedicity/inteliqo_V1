@@ -7,7 +7,6 @@ import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import TextInput from 'src/views/Component/TextInput';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import ExperienceItem from './ExperienceItem';
 import FemaleOutlinedIcon from '@mui/icons-material/FemaleOutlined';
 import MaleOutlinedIcon from '@mui/icons-material/MaleOutlined';
 import CourseSelectionMast from 'src/views/CommonCode/CourseSelectionMast';
@@ -18,123 +17,71 @@ import { useState } from 'react';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
+import QualificationItem from './QualificationItem';
 
-
-const Generic = ({ selectDesignation, selectedDept }) => {
-    const { selectCourse, updateCourse, selectSpec, updateSpec, courseName, setCourseName,
-        specName, setSpecName } = useContext(PayrolMasterContext)
-    const [experience, setExperience] = useState([])
-    const [deleteitem, setDeleteItem] = useState(0)
-    //adding experience to tbale
-    const addExperienceItem = () => {
-        if (selectCourse > 0 && selectSpec > 0) {
-
-            const frmData = {
-                id: Math.ceil(Math.random() * 1000),
-                course: courseName,
-                specialization: specName,
-                courseslno: selectCourse,
-                specializationslno: selectSpec
-            }
-            setExperience([...experience, frmData])
-            updateCourse(0)
-            updateSpec(0)
-            setCourseName('')
-            setSpecName('')
-        }
-        else {
-            infoNofity('Select Course And Specialization ')
-        }
-    }
-    //deleteing qualiification
-    useEffect(() => {
-        if (deleteitem > 0) {
-            const newexp = experience.filter((val) => {
-                if (val.id !== deleteitem) {
-                    return val
-                }
-            })
-            setExperience(newexp)
-        }
-
-    }, [deleteitem])
-    //save
+const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
     const [formData, setFormData] = useState({
-        experincedetl: '',
-        expYear: '',
-        specialcomment: '',
-        ageFrom: '',
-        ageTo: '',
-        female: false,
-        male: false
+        experience: '',
+        experience_year: '',
+        age_from: '',
+        age_to: '',
+        is_female: false,
+        is_male: false,
+        special_comment: ''
     })
-    const { experincedetl, expYear, specialcomment, ageFrom, ageTo, female, male } = formData
-
-    const updateGeneric = async (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
-        setFormData({ ...formData, [e.target.name]: value })
-    }
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept
-    }
-    const SaveJobGeneric = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.post('/jobsummary/check', checkData)
-        const { data, success } = result.data
-        if (success === 1) {
-            const { summary_slno } = data[0]
-            if (experience.length === 0) {
-                infoNofity("Please Add Qaulification")
+    const { experience, experience_year, age_from, age_to, is_female, is_male, special_comment } = formData
+    const [jobQualification, setjobQualification] = useState([])
+    useEffect(() => {
+        if (selectDesignation !== 0 && selectedDept !== 0) {
+            const postData = {
+                dept_id: selectedDept,
+                designation: selectDesignation
             }
-            else {
-                const saveQualification = experience && experience.map((val) => {
-                    return {
-                        job_id: summary_slno,
-                        course: val.courseslno,
-                        specialization: val.specializationslno,
-                        dept_id: selectedDept,
-                        designation: selectDesignation
-                    }
-                })
-                const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
-                const { success } = result.data
+            const getjobQualification = async () => {
+                const result = await axioslogin.post('/jobsummary/getjobQual', postData)
+                const { success, data } = result.data
                 if (success === 1) {
-                    const postData = {
-                        job_id: summary_slno,
-                        experience: experincedetl,
-                        experience_year: expYear,
-                        age_from: ageFrom,
-                        age_to: ageTo,
-                        is_female: female,
-                        is_male: male,
-                        special_comment: specialcomment,
-                        dept_id: selectedDept,
-                        designation: selectDesignation
-
-                    }
-                    const result = await axioslogin.post('/jobsummary/jobGeneric', postData)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        succesNofity(message)
-                    }
-                    else {
-                        errorNofity("Error Occured!!!Please Contact EDP")
-                    }
+                    setjobQualification(data)
                 }
                 else {
-                    errorNofity("Error Occured!!!Please Contact EDP")
+                    setjobQualification([])
                 }
 
             }
+            getjobQualification()
         }
-        else if (success === 0) {
-            infoNofity("Please Save Job Specification Before Saving Job Generic")
+
+    }, [selectDesignation, selectedDept])
+    //useEffect for getting job generic
+    useEffect(() => {
+        if (selectDesignation !== 0 && selectedDept !== 0) {
+            const postData = {
+                dept_id: selectedDept,
+                designation: selectDesignation
+            }
+            const getjobQualification = async () => {
+                const result = await axioslogin.post('/jobsummary/getjobgeneric', postData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    const { experience, experience_year, age_from, age_to, is_female, is_male, special_comment } = data[0]
+                    const frmData = {
+                        experience: experience,
+                        experience_year: experience_year,
+                        age_from: age_from,
+                        age_to: age_to,
+                        is_female: is_female === 0 ? false : true,
+                        is_male: is_male === 0 ? false : true,
+                        special_comment: special_comment
+                    }
+                    setFormData(frmData)
+                }
+
+
+            }
+            getjobQualification()
         }
-        else {
-            errorNofity("Error Occured!!!Please Contact EDP")
-        }
-    }
+
+    }, [selectDesignation, selectedDept])
     return (
         <Fragment>
             {/* Generic */}
@@ -148,11 +95,6 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                         Job Specification : Generic
                     </Typography>
                 </CssVarsProvider>
-                <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={SaveJobGeneric}>
-                        <LibraryAddCheckOutlinedIcon />
-                    </IconButton>
-                </Box>
             </Box>
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", width: "100%" }} >
@@ -170,18 +112,18 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                         <TextInput
                             style={{ width: "100%", paddingLeft: 13, }}
                             Placeholder="Experience In Handling Recruitment Activities"
-                            name="experincedetl"
-                            value={experincedetl}
-                            changeTextValue={(e) => updateGeneric(e)}
+                            name="experience"
+                            value={experience}
+                            disabled={true}
                         />
                     </Box>
                     <Box sx={{ flex: 1, }} >
                         <TextInput
                             style={{ width: "100%", paddingLeft: 13, }}
                             Placeholder="Min Exp In Year"
-                            name="expYear"
-                            value={expYear}
-                            changeTextValue={(e) => updateGeneric(e)}
+                            name="experience_year"
+                            value={experience_year}
+                            disabled={true}
                         />
                     </Box>
                 </Box>
@@ -204,37 +146,13 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                         <Paper square sx={{
                             display: "flex",
                             flex: 3,
-                            px: 0.5,
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }} variant="outlined" >
-                            <Box sx={{ flex: 3, }} >
-                                <Box sx={{ flex: 2 }} >
-                                    <CourseSelectionMast style={SELECT_CMP_STYLE} />
-                                </Box>
-                            </Box>
-                            <Box sx={{ flex: 3, }} >
-                                <Box sx={{ flex: 2, paddingTop: 0.5 }} >
-                                    <SpecializationSelection label="Specialization" style={SELECT_CMP_STYLE} />
-                                </Box>
-                            </Box>
-                            <Box sx={{ flex: 0 }} >
-                                <IconButton variant="outlined" size='sm' onClick={addExperienceItem}>
-                                    <AddToPhotosIcon />
-                                </IconButton>
-                            </Box>
-                        </Paper>
-                        {/* Exp - Header Add + */}
-                        <Paper square sx={{
-                            display: "flex",
-                            flex: 3,
                             p: 0.3,
                             justifyContent: "center",
                             alignItems: "center",
                             flexDirection: "column"
                         }} variant="outlined" >
                             {
-                                experience && experience.map((val, index) => <ExperienceItem key={index} val={val} setDeleteItem={setDeleteItem} />)
+                                jobQualification && jobQualification.map((val, index) => <QualificationItem key={index} val={val} />)
                             }
                         </Paper>
                     </Box>
@@ -245,9 +163,9 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                             style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                             minRows={2}
                             placeholder="Special Comments"
-                            name="specialcomment"
-                            value={specialcomment}
-                            onChange={(e) => updateGeneric(e)}
+                            name="special_comment"
+                            value={special_comment}
+                            disabled={true}
                         />
                     </Box>
                     <Paper square sx={{
@@ -269,9 +187,9 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                                     style={{ width: "100%", paddingLeft: 3, }}
                                     Placeholder="From"
                                     type="number"
-                                    name="ageFrom"
-                                    value={ageFrom}
-                                    changeTextValue={(e) => updateGeneric(e)}
+                                    name="age_from"
+                                    value={age_from}
+                                    disabled={true}
                                 />
                             </Box>
                             <Box sx={{ px: 1 }}  >
@@ -279,9 +197,9 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                                     style={{ width: "100%", paddingLeft: 3, }}
                                     Placeholder="To"
                                     type="number"
-                                    name="ageTo"
-                                    value={ageTo}
-                                    changeTextValue={(e) => updateGeneric(e)}
+                                    name="age_to"
+                                    value={age_to}
+                                    disabled={true}
                                 />
                             </Box>
                         </Box>
@@ -295,9 +213,8 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                                         variant="outlined"
                                         uncheckedIcon={<FemaleOutlinedIcon />}
                                         name="female"
-                                        value={female}
-                                        checked={female}
-                                        onChange={(e) => updateGeneric(e)}
+                                        value={is_female}
+                                        checked={is_female}
                                     />
                                 </CssVarsProvider>
                             </Box>
@@ -308,10 +225,9 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                                         size="lg"
                                         variant="outlined"
                                         uncheckedIcon={<MaleOutlinedIcon />}
-                                        name="male"
-                                        value={male}
-                                        checked={male}
-                                        onChange={(e) => updateGeneric(e)}
+                                        name="is_male"
+                                        value={is_male}
+                                        checked={is_male}
                                     />
                                 </CssVarsProvider>
                             </Box>
@@ -323,4 +239,4 @@ const Generic = ({ selectDesignation, selectedDept }) => {
     )
 }
 
-export default Generic
+export default JobGenericEmp

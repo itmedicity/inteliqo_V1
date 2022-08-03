@@ -1,124 +1,185 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Typography } from '@mui/material'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { useHistory, useParams } from 'react-router'
-import { useSelector } from 'react-redux'
-import { axioslogin } from 'src/views/Axios/Axios'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { CssVarsProvider } from '@mui/joy'
+import Typography from '@mui/joy/Typography';
+import { Box, CircularProgress, Paper } from '@mui/material'
+import React, { Fragment, Suspense, useContext } from 'react'
+import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+import IconButton from '@mui/joy/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import DesignationMast from 'src/views/CommonCode/DesignationMast';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { ToastContainer } from 'react-toastify';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import TextInput from 'src/views/Component/TextInput';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setPersonalData } from 'src/redux/actions/Profile.action';
+import { useHistory } from 'react-router-dom';
+import { axioslogin } from 'src/views/Axios/Axios';
+
+const JobSummary = React.lazy(() => import('./JobDescEmpComponent/JobSummaryEmp'));
+const DutyRespos = React.lazy(() => import('./JobDescEmpComponent/DutiesEmp'));
+const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
+const Generic = React.lazy(() => import('./JobDescEmpComponent/JobGenericEmp'));
+
+const Progress = () => {
+    return (
+        <Box sx={{ display: "flex", justifyContent: "center" }} >
+            <CircularProgress color="secondary" size={30} />
+        </Box>)
+};
 const JobDescriptionEmployee = () => {
-    const { id, no } = useParams();
-    const history = useHistory();
-    //redirecting to home page
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
-    const [JobDesc, setJobDesc] = useState([])
-    const [jobsummary, setjobsummary] = useState([])
-    const empdata = useSelector((state) => {
+    const [jobdescview, setJobdescView] = useState(0)
+    const { id, no } = useParams()
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(setPersonalData(no))
+    }, [no])
+    const getempData = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
+    const history = useHistory()
+    const Redirect = () => {
+        history.push(`/Home/Profile/${id}/${no}`)
+    }
     useEffect(() => {
-        const postData = {
-            designation: empdata.em_designation,
-            department: empdata.em_department
-        }
-        const getjobdescription = async () => {
-            const result = await axioslogin.post('/jobdescription/jobdesc', postData)
-            const { success, data } = result.data
+        const checkJobDesc = async () => {
+            const checkData = {
+                designation: getempData.em_designation,
+                dept_id: getempData.em_department
+            }
+            const result = await axioslogin.post('/jobsummary/check', checkData)
+            const { data, success } = result.data
             if (success === 1) {
-                setJobDesc(data)
-                const jobsummary = data.filter((val) => {
-                    if (val.job_Summary !== null) {
-                        return 1
-                    }
-                })
-                setjobsummary(jobsummary)
+                setJobdescView(1)
             }
             else {
-                setJobDesc([])
+                setJobdescView(0)
             }
+
         }
-        getjobdescription()
-    }, [empdata.em_designation, empdata.em_department])
+        checkJobDesc(0)
+    }, [getempData.em_designation, getempData.em_department])
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Job Description"
-                redirect={RedirectToProfilePage}
-            >
-                <div className="card">
-                    <div className="card-body">
-                        <div className="card">
-                            <div className="col-md-12">
-                                <div className="row">
-                                    <div className="col-md-1"></div>
-                                    <div className="col-md-4">
-                                        <div className="row p-2">
-                                            <div className="col-md-4">
-                                                <Typography noWrap>Job Description</Typography>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <Typography noWrap>{empdata.dept_name}</Typography>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="row pt-2">
-                                            <div className="col-md-4">
-                                                <Typography noWrap>Job Title</Typography>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <Typography noWrap>{empdata.desg_name}</Typography>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card">
-                                    <div className="row">
-                                        <div className="col-md-1"></div>
-                                        <div className="col-md-2">
-                                            <Typography noWrap>Job Summary:</Typography>
-                                        </div>
-                                        <div className="col-md-6 p-0">
-                                            <Typography noWrap>{jobsummary.length === 0 ? '' : jobsummary[0].job_Summary}</Typography>
-                                        </div>
-                                    </div>
-                                </div>
+            <Fragment>
+                <ToastContainer />
+                <Box sx={{ width: "100%" }} >
+                    {/* Outer Main Box */}
+                    <Paper square elevation={2} sx={{ p: 0.5, }}   >
 
-                            </div>
-                        </div>
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="col-md-12">
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                                            <TableHead>
-                                                <TableRow style={{ backgroundColor: "#a2a3ac", height: '1rem' }} >
-                                                    <TableCell align="left" className="p-0" style={{ width: '2rem', }}></TableCell>
-                                                    <TableCell align="left" className="p-0" style={{ width: '20rem', }}>Job Description</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {
-                                                    JobDesc && JobDesc.map((val) => {
-                                                        return <TableRow key={val.description_slno}>
-                                                            <TableCell align="left" className="p-0" style={{ width: '2rem', }}>{val.description_slno}</TableCell>
-                                                            <TableCell align="left" className="p-0" style={{ width: '20rem', }}>{val.job_desription}</TableCell>
-                                                        </TableRow>
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
+                        {/* Main Heading Section Box */}
 
-                                    </TableContainer>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <Paper square elevation={0} sx={{
+                            display: "flex",
+                            p: 1,
+                            alignItems: "center",
+                        }}  >
+                            <Box sx={{ flex: 1 }} >
+                                <CssVarsProvider>
+                                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                        Job Description
+                                    </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box >
+                                <IconButton variant="outlined" size='sm' onClick={Redirect}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </Box>
+                        </Paper>
 
-                </div>
-            </PageLayoutCloseOnly>
+                        {/* Depertment Selection Box */}
+                        <Paper square elevation={3} sx={{
+                            p: 0.5,
+                            mt: 0.5,
+                            display: 'flex',
+                            alignItems: "center",
+                            flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
+                            // backgroundColor: "lightcyan"
+                        }} >
+                            <Box sx={{ flex: 1, px: 0.5 }} >
+                                <TextInput
+                                    style={{ width: "100%", paddingLeft: 13 }}
+                                    name="department"
+                                    disabled={true}
+                                    value={getempData.dept_name}
+                                />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }}  >
+                                <TextInput
+                                    style={{ width: "100%", paddingLeft: 13 }}
+                                    name="designation"
+                                    disabled={true}
+                                    value={getempData.desg_name}
+                                />
+                            </Box>
+                        </Paper>
+                        {/* Job Summary */}
+                        {
+                            jobdescview > 0 ?
+                                <Suspense fallback={<Progress />} >
+                                    <JobSummary
+                                        selectDesignation={getempData.em_designation}
+                                        selectedDept={getempData.em_department}
+                                        selectDesignationName={getempData.desg_name}
+                                        selectedDeptName={getempData.dept_name}
+                                        setJobdescView={setJobdescView}
+                                    />
+                                </Suspense>
 
+                                : null
+                        }
+                        {/* Duties And Responsiblities */}
+                        {
+                            jobdescview > 0 ?
+                                <Suspense fallback={<Progress />} >
+                                    <DutyRespos
+                                        selectDesignation={getempData.em_designation}
+                                        selectedDept={getempData.em_department}
+                                    />
+
+                                </Suspense>
+                                : null
+
+                        }
+
+                        {/* Job Specification : Performance & Competency */}
+                        {
+
+                            jobdescview > 0 ?
+                                <Suspense fallback={<Progress />} >
+                                    <Performance
+                                        selectDesignation={getempData.em_designation}
+                                        selectedDept={getempData.em_department}
+                                    />
+                                </Suspense>
+                                : null
+                        }
+
+
+                        {/* Generic */}
+                        {
+                            jobdescview > 0 ?
+                                <Suspense fallback={<Progress />} >
+                                    <Generic
+                                        selectDesignation={getempData.em_designation}
+                                        selectedDept={getempData.em_department}
+                                    />
+                                </Suspense>
+                                : null
+                        }
+
+
+                    </Paper>
+                </Box>
+            </Fragment >
         </Fragment>
     )
 }

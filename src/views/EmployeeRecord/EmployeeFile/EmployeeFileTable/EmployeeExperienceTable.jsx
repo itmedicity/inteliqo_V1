@@ -48,7 +48,19 @@ const EmployeeExperienceTable = ({ update }) => {
             }
         },
         {
-            title: 'Total Year', field: 'em_total_year', cellStyle: {
+            title: 'Total Year', field: 'year', cellStyle: {
+                minWidth: 150,
+                maxWidth: 200
+            }
+        },
+        {
+            title: 'Total Month', field: 'month', cellStyle: {
+                minWidth: 150,
+                maxWidth: 200
+            }
+        },
+        {
+            title: 'Total Days', field: 'day', cellStyle: {
                 minWidth: 150,
                 maxWidth: 200
             }
