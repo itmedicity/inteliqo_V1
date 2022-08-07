@@ -61,6 +61,7 @@
     "react-digital-clock": "^0.1.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-live-clock": "^6.0.6",
     "react-number-format": "^4.7.3",
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",

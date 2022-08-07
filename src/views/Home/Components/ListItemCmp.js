@@ -14,18 +14,18 @@ const ListItemCmp = ({ holidayName, allowed, credited, balance }) => {
             <ListItemButton dense sx={{ paddingY: 0 }}>
                 <ListItemIcon>
                     <IconButton edge="start" aria-label='comment'  >
-                        <DonutSmallIcon sx={{ fontSize: 15, color: "#26418f" }} />
+                        <DonutSmallIcon sx={{ fontSize: 15, color: "#1B3440" }} />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemText primary={holidayName} />
                 <ListItemIcon>
-                    <Avatar sx={{ ...avatarStyle, bgcolor: "#725b53" }}>{allowed}</Avatar>
+                    <Avatar sx={{ ...avatarStyle, bgcolor: "#F2845C", color: '#6A1B00' }}>{allowed}</Avatar>
                 </ListItemIcon>
                 <ListItemIcon>
-                    <Avatar sx={{ ...avatarStyle, bgcolor: "#725b53" }}>{credited}</Avatar>
+                    <Avatar sx={{ ...avatarStyle, bgcolor: "#F2845C", color: '#6A1B00' }}>{credited}</Avatar>
                 </ListItemIcon>
                 <ListItemIcon>
-                    <Avatar sx={{ ...avatarStyle, bgcolor: "#725b53" }}>{balance}</Avatar>
+                    <Avatar sx={{ ...avatarStyle, bgcolor: "#F2845C", color: '#6A1B00' }}>{balance}</Avatar>
                 </ListItemIcon>
             </ListItemButton>
         </ListItem>

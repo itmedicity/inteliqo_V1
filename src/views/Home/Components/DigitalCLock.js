@@ -1,31 +1,14 @@
-import { Chip } from '@mui/material'
 import React, { Fragment } from 'react'
-import Clock from 'react-digital-clock'
-import './CmpStyle.scss'
+import Clock from 'react-live-clock';
 
 const DigitalCLock = () => {
     return (
         <Fragment>
-            {/* <div className='time' >
-                <Clock />
-            </div> */}
-            <Chip
-                className='time'
-                sx={{
-                    backgroundColor: '#90CAF9'
-                }}
-                label={
-                    <>
-                        <Clock />
-                    </>
-                }
+            <Clock
+                format={'hh:mm:ss A'}
+                style={{ fontSize: '1.5em' }}
+                ticking={true}
             />
-            {/* <p className="date">asdas</p> */}
-            {/* <p className="time" style={{ color: "black" }} > */}
-
-            {/* </p> */}
-
-
         </Fragment>
     )
 }

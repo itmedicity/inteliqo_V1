@@ -1,16 +1,16 @@
 import React, { Fragment, memo } from 'react'
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import { red } from '@mui/material/colors';
-import List from '@mui/material/List';
-import image from '../../../assets/images/Anmnt.png'
 import newYear from '../../../assets/images/newYear.jpg'
 import { useSelector } from 'react-redux';
-import AnnounceMentCmp from './AnnounceMentCmp';
+import { Paper } from '@mui/material';
+import AnnouncementList from './AnnouncementList';
+import { CssVarsProvider } from '@mui/joy';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import Box from '@mui/joy/Box';
+import Chip from '@mui/joy/Chip';
+
 const Announcement = () => {
     // const [announcement, setannouncement] = useState([])
     const Announcementlist = useSelector((state) => {
@@ -33,41 +33,36 @@ const Announcement = () => {
     }
     return (
         <Fragment>
-            <Card sx={{ maxWidth: '100%', maxHeight: '100%', marginTop: '2%', }} >
-                <CardHeader
-                    sx={{ paddingBottom: 0 }}
-                    avatar={
-                        <Avatar sx={{ bgcolor: red[500] }} src={image} />
-                    }
-                    action={
-                        <IconButton aria-label="settings">
-                            {/* <MoreVertIcon /> */}
-                        </IconButton>
-                    }
-                    title="Announcement"
-                    titleTypographyProps={{ variant: "h5" }}
-                />
-                <CardMedia
-                    component="img"
-                    height="194"
-                    image={newYear}
-                    alt="Paella dish"
-                    className='img-fluid rounded'
-                    sx={{
-                        height: 200, width: '100%', objectFit: "cover",
-                        // height: "auto", width: "auto", maxHeight: 200, maxWidth: '100%', backgroundSize: "cover",
-                    }}
-                />
-                <CardContent>
-                    <List sx={annouStyle}>
-                        {
-                            Announcementlist && Announcementlist.map((val, index) => {
-                                return <AnnounceMentCmp key={index} val={val} />
-                            })
-                        }
-                    </List>
-                </CardContent>
-            </Card>
+            <Paper square elevation={3} sx={{ width: '100%', height: { xl: 795, lg: 600, md: 500, sm: 500 } }} >
+                <Card sx={{ width: '100%', height: "100%", borderRadius: 0 }} >
+                    <CssVarsProvider>
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', px: 1, pt: 1 }}>
+                            <Chip
+                                variant="outlined"
+                                color="success"
+                                size="lg"
+                                sx={{ width: '100%', "--Chip-radius": "10px", color: "#808066" }}
+                                startDecorator={<CampaignOutlinedIcon sx={{ fontSize: 25, color: "black" }} variant="plain" />}
+                            // endDecorator={<CheckIcon fontSize="md" />}
+                            >
+                                Announcement
+                            </Chip>
+                        </Box>
+                    </CssVarsProvider>
+                    <CardMedia
+                        component="img"
+                        image={newYear}
+                        alt="Paella dish"
+                        // className='img-fluid rounded'
+                        sx={{
+                            height: '30%', width: '100%', objectFit: "cover", borderRadius: 3, p: 1,
+                        }}
+                    />
+                    <CardContent sx={{ width: "100%", p: 1 }} >
+                        <AnnouncementList />
+                    </CardContent>
+                </Card>
+            </Paper>
         </Fragment>
     )
 }

@@ -9,8 +9,10 @@ import LeavesDashbod from './Components/LeavesDashbod';
 import { Paper } from '@mui/material';
 
 const Home = () => {
+    console.log('home')
     return (
         <Fragment>
+            {/* Top Time Display and Notification Icon Bar */}
             <AppMenuBar />
             <Box
                 sx={{
@@ -18,7 +20,7 @@ const Home = () => {
                     paddingY: 0.5
                 }}
             >
-                <Paper elevation={5} square >
+                <Paper elevation={5} square   >
                     {/* Outer Main Box */}
                     <Box sx={{
                         display: 'flex',

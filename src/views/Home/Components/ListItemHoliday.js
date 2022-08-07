@@ -10,11 +10,11 @@ const ListItemHoliday = ({ holidayName, holidayDesc }) => {
     //     fontWeight: 700
     // }
     return (
-        <ListItem dense disableGutters disablePadding sx={{ padding: 0 }} >
+        <ListItem dense disableGutters disablePadding sx={{ padding: 0, }} >
             <ListItemButton dense sx={{ paddingY: 0, width: '100%' }}>
                 <ListItemIcon>
                     <IconButton edge="start" aria-label='comment'  >
-                        <DataSaverOffIcon sx={{ fontSize: 15, color: "#26418f" }} />
+                        <DataSaverOffIcon sx={{ fontSize: 15, color: "#1B3440" }} />
                     </IconButton>
                 </ListItemIcon>
                 <ListItemText primary={holidayName} sx={{ width: '40%' }} />
