@@ -23,7 +23,6 @@ const TextInput = (props) => {
                 max={max}
                 min={min}
                 style={{ ...textStyle, ...style }}
-
             />
         </div>
     )

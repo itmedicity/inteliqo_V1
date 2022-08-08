@@ -17,7 +17,7 @@ const FooterClosebtn = (props) => {
             </div>
             <div style={{ marginRight: "0.5rem" }} data-tip="View" data-for='toolTip1' data-place='top'>
                 <ReactTooltip id="toolTip1" />
-                <IconButton className="p-1" clickable="true">
+                <IconButton className="p-1" clickable="true" onClick={props.view}>
                     <PreviewIcon size={22} sx={{ color: "#37575f" }} />
                 </IconButton>
             </div>

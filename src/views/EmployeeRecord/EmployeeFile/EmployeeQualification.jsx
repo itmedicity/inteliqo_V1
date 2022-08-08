@@ -20,6 +20,7 @@ import { TextField } from '@material-ui/core'
 import BoardMastSelection from 'src/views/CommonCode/BoardMastSelection'
 import { format } from 'date-fns'
 import ReactTooltip from 'react-tooltip';
+import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 const EmployeeQualification = () => {
     const classes = useStyles();
     const history = useHistory();
@@ -49,13 +50,14 @@ const EmployeeQualification = () => {
         em_mark_grade: '',
         em_reg_type: '',
         em_reg_no: '',
-        em_chellan: ''
+        em_chellan: '',
+        pass_fail: true
     })
 
     //destructuring
-    const { em_mark_grade, em_reg_no, em_chellan } = qualification
+    const { em_mark_grade, em_reg_no, em_chellan, pass_fail } = qualification
     const updateQualification = (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })
     }
 
@@ -117,7 +119,8 @@ const EmployeeQualification = () => {
         create_user: em_id,
         em_exp_date: em_reg_no === "" ? null : expyear,
         em_chellan: em_chellan,
-        em_chellan_exp_date: em_chellan === "" ? null : chellan
+        em_chellan_exp_date: em_chellan === "" ? null : chellan,
+        pass_fail: pass_fail === true ? 0 : 1
     }
 
     const postData5 = {
@@ -131,6 +134,7 @@ const EmployeeQualification = () => {
         em_year: qual_year,
         em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
         create_user: em_id,
+        pass_fail: pass_fail === true ? 0 : 1
 
     }
     const postData4 = {
@@ -144,6 +148,7 @@ const EmployeeQualification = () => {
         em_year: qual_year,
         em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
         create_user: em_id,
+        pass_fail: pass_fail === true ? 0 : 1
     }
 
     //Form reset
@@ -157,7 +162,8 @@ const EmployeeQualification = () => {
         em_mark_grade: '',
         em_reg_type: '',
         em_reg_no: '',
-        em_chellan: ''
+        em_chellan: '',
+        pass_fail: true
     }
 
     const reset = () => {
@@ -278,7 +284,16 @@ const EmployeeQualification = () => {
                                             />
                                         </LocalizationProvider>
                                     </div>
-                                    <div className="col-md-6 pt-1">
+                                    <div className="col-md-1 pt-2 " data-tip="Pass/Fail" data-for='toolTip2' data-place='top'>
+                                        <ReactTooltip id="toolTip2" />
+                                        <CommonCheckBox
+                                            name="pass_fail"
+                                            value={pass_fail}
+                                            checked={pass_fail}
+                                            onChange={(e) => updateQualification(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-5 pt-1">
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
@@ -288,7 +303,7 @@ const EmployeeQualification = () => {
                                             changeTextValue={(e) => updateQualification(e)}
                                         />
                                     </div>
-                                    <div className="col-md-12 pt-1">
+                                    <div className="col-md-12">
                                         <RegistrationTypeSelection
                                             disable={regTypedisable}
                                             style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />

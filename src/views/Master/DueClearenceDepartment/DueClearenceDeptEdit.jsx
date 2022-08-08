@@ -61,7 +61,7 @@ const DueClearenceDeptEdit = () => {
             }
         }
         getdeuDepartment()
-    }, [selectedDept, updateDepartmentSection, updateDepartmentSection])
+    }, [selectedDept, updateDepartmentSection, updateDepartmentSection, id])
     //post Data
     const PostData = {
         dept_id: selectedDept,
@@ -80,6 +80,7 @@ const DueClearenceDeptEdit = () => {
             updateDepartmentSection(0)
             updateDeptSec(0)
             arraydataset([])
+            history.push('/Home/DueClearenceDepartment')
         }
         else {
             errorNofity("Error Occured!!!!Please Contact EDP")
@@ -95,10 +96,10 @@ const DueClearenceDeptEdit = () => {
                 <div className="row g-1">
                     <div className="col-md-5">
                         <div className="col-md-12">
-                            <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
+                            <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} disabled={true} />
                         </div>
                         <div className="col-md-12">
-                            <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} />
+                            <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} disabled={true} />
                         </div>
                         <div className="row g-1">
                             <div className="col-md-11">

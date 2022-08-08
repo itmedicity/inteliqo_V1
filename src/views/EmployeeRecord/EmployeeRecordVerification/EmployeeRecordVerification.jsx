@@ -11,7 +11,7 @@ const EmployeeRecordVerification = () => {
     const [data, setdata] = useState([])
     useEffect(() => {
         const getempverification = async () => {
-            const result = await axioslogin.get('/empmast/empverify/verification')
+            const result = await axioslogin.get('/empVerification')
             const { success, data } = result.data
             if (success === 1) {
                 setdata(data)
@@ -24,7 +24,7 @@ const EmployeeRecordVerification = () => {
     }, [])
     const title = [
         {
-            title: 'Emp Id', field: 'em_no', cellStyle: { minWidth: 1, maxWidth: 50 }
+            title: 'ID', field: 'em_no', cellStyle: { minWidth: 3, maxWidth: 100 }
         },
         {
             title: 'Emp Name', field: 'em_name', cellStyle: { minWidth: 200, maxWidth: 300 }
@@ -36,7 +36,7 @@ const EmployeeRecordVerification = () => {
             title: 'Department', field: 'dept_name', cellStyle: { minWidth: 200, maxWidth: 300 }
         },
         {
-            title: 'Department Section', field: 'sect_name', cellStyle: { minWidth: 150, maxWidth: 200 }
+            title: 'Dept Section', field: 'sect_name', cellStyle: { minWidth: 150, maxWidth: 200 }
         },
         {
             title: 'Date of Join', field: 'em_doj', cellStyle: { minWidth: 200, maxWidth: 350 }
@@ -62,7 +62,7 @@ const EmployeeRecordVerification = () => {
                     icons={tableIcons}
                     actions={[
                         {
-                            icon: () => <CheckCircleRoundedIcon color='success' />,
+                            icon: () => <CheckCircleRoundedIcon />,
                             tooltip: "Click Here to Verify",
                             onClick: (e, data) => ToProfile(data)
 

@@ -6,6 +6,8 @@ const MasterContext = ({ children }) => {
 
     // For Department Selection
     const [selectedDept, updateSelected] = useState(0);
+    // For Department Selection Name
+    const [selectedDeptName, updateSelectedName] = useState('');
     // District Selection State
     const [selectDistrict, updateDisSelected] = useState(0);
     // Salutation Selection
@@ -18,6 +20,8 @@ const MasterContext = ({ children }) => {
     const [selectInstiType, updateInstituteSeleted] = useState(0);
     // Designation
     const [selectDesignation, updateDesignation] = useState(0);
+    // Designation name
+    const [selectDesignationName, updateDesignationName] = useState('');
     // Employee Type Master
     const [selectEmployeeType, updateEmployeetype] = useState(0);
     // Designation Type Master / Employee  Status
@@ -127,8 +131,10 @@ const MasterContext = ({ children }) => {
     const [selectempName, updateEmpName] = useState(0)
     //Dept Section selection form authorization of HOD/Incharge
     const [selectDeptSec, updateDeptSec] = useState(0)
-
-
+    //course name
+    const [courseName, setCourseName] = useState('')
+    //specialization name
+    const [specName, setSpecName] = useState('')
     const value = {
         selectedDept,
         updateSelected,
@@ -221,7 +227,9 @@ const MasterContext = ({ children }) => {
         categorycontract,
         updatecategorycontract,
         DepartmentShiftselec,
-        updateDepartmentShiftSelect, employeedetails, updateemployeedetails,
+        updateDepartmentShiftSelect,
+        employeedetails,
+        updateemployeedetails,
         selectBoard,
         updateBoard,
         getleavereqtype,
@@ -237,7 +245,16 @@ const MasterContext = ({ children }) => {
         deptname,
         updatedeptname,
         selectEmpDeptSec,
-        updateselectEmpDeptSec
+        updateselectEmpDeptSec,
+        selectDesignationName,
+        updateDesignationName,
+        selectedDeptName,
+        updateSelectedName,
+        courseName,
+        setCourseName,
+        specName,
+        setSpecName
+
 
     }
     return <PayrolMasterContext.Provider value={value} >

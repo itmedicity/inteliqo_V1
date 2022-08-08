@@ -1,7 +1,6 @@
 import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import { addDays, addYears } from 'date-fns'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { ToastContainer } from 'react-bootstrap'
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -20,19 +19,17 @@ import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import RegionSelect from 'src/views/CommonCode/RegionSelect'
 import ReligionSelect from 'src/views/CommonCode/ReligionSelect'
 import Salutation from 'src/views/CommonCode/Salutation'
-import { employeeNumber, getSerialnumberempid } from 'src/views/Constant/Constant'
+import { employeeNumber } from 'src/views/Constant/Constant'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import TextInput from 'src/views/Component/TextInput'
 import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
+import { ToastContainer } from 'react-toastify'
 
 const EmployeeRecord = () => {
-
-
     // use state intialization
     const [employeerecord, getFormdata] = useState({
-        empID: '',
         empName: '',
         empNo: '',
         addressPermnt1: '',
@@ -51,7 +48,25 @@ const EmployeeRecord = () => {
         empstatus: false,
         presPincode: ''
     });
-
+    const defaultstate = {
+        empName: '',
+        empNo: '',
+        addressPermnt1: '',
+        addressPermnt2: '',
+        perPincode: '',
+        addressPresent1: '',
+        addressPresent2: '',
+        prePincode: '',
+        mobileNo: '',
+        landPhone: '',
+        email: '',
+        Selectgender: '0',
+        doctortype: false,
+        dateofbirth: '',
+        dateofjoining: '',
+        empstatus: false,
+        presPincode: ''
+    }
     // usestare
     const [cont_perioddate, setcont_perioddate] = useState(0)
     const [contractflag, setcontractflag] = useState(0)
@@ -65,10 +80,8 @@ const EmployeeRecord = () => {
         mnthage: 0,
         dayge: 0
     })
-
     // destructure age
     const { yearage, mnthage, dayge } = agestate
-
     // function for age calculation
     const getage = (e) => {
         var dateofbirth = e.target.value
@@ -131,85 +144,56 @@ const EmployeeRecord = () => {
     } = useContext(PayrolMasterContext);
 
     // destructuring employeerecord
-    const { empID, empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
+    const { empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
         addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
     // data for sumbimssion
-    const submitdata = {
-        em_no: empNo,
-        em_id: empID,
-        em_salutation: selectSalutation,
-        em_name: empName,
-        em_gender: Selectgender,
-        em_dob: dateofbirth,
-        em_age_year: yearage,
-        em_doj: dateofjoining,
-        em_mobile: mobileNo,
-        em_phone: landPhone,
-        em_email: email,
-        em_branch: selectBranchMast,
-        em_department: selectedDept,
-        em_dept_section: selectDeptSection,
-        em_institution_type: selectInstiType,
-        em_designation: selectDesignation,
-        em_doc_type: doctortype === true ? getDoctype : null,
-        em_category: getemployeecategory,
-        em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
-        em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
-        em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
-        em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
-        em_status: empstatus === true ? 1 : 0,
-        create_user: employeeNumber(),
-        addressPermnt1: addressPermnt1,
-        addressPermnt2: addressPermnt2,
-        perPincode: perPincode,
-        em_region: getregion,
-        addressPresent1: addressPresent1,
-        addressPresent2: addressPresent2,
-        presPincode: presPincode,
-        hrm_region2: getregion2,
-        blood_slno: getbloodgroup,
-        em_age_month: mnthage,
-        em_age_day: dayge,
-        hrm_religion: getreligion,
-        contractflag: contractflag
+    const submitdata = useMemo(() => {
+        return {
+            em_no: empNo,
+            em_salutation: selectSalutation,
+            em_name: empName,
+            em_gender: Selectgender,
+            em_dob: dateofbirth,
+            em_age_year: yearage,
+            em_doj: dateofjoining,
+            em_mobile: mobileNo,
+            em_phone: landPhone,
+            em_email: email,
+            em_branch: selectBranchMast,
+            em_department: selectedDept,
+            em_dept_section: selectDeptSection,
+            em_institution_type: selectInstiType,
+            em_designation: selectDesignation,
+            em_doc_type: doctortype === true ? getDoctype : null,
+            em_category: getemployeecategory,
+            em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
+            em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+            em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
+            em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
+            em_status: empstatus === true ? 1 : 0,
+            create_user: employeeNumber(),
+            addressPermnt1: addressPermnt1,
+            addressPermnt2: addressPermnt2,
+            perPincode: perPincode,
+            em_region: getregion,
+            addressPresent1: addressPresent1,
+            addressPresent2: addressPresent2,
+            presPincode: presPincode,
+            hrm_region2: getregion2,
+            blood_slno: getbloodgroup,
+            em_age_month: mnthage,
+            em_age_day: dayge,
+            hrm_religion: getreligion,
+            contractflag: contractflag
+        }
 
-    }
+    }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
+        email, selectBranchMast, selectedDept, selectDeptSection, selectInstiType, selectDesignation, doctortype,
+        getDoctype, getemployeecategory, probationendate, cont_gracedate, retirementyear, cont_perioddate, empstatus,
+        addressPermnt1, addressPermnt2, perPincode, getregion, addressPresent1, addressPresent2, presPincode,
+        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag])
 
-    const submitemployee = {
-        emp_no: empNo,
-        em_id: empID,
-        emp_status: empstatus === true ? 1 : 0,
-        emp_email: email,
-        emp_password: empNo,
-        create_user: employeeNumber()
-    }
-
-    // serialnum function
     useEffect(() => {
-        getSerialnumberempid().then((val) => {
-            const varid = {
-                empID: val,
-                empName: '',
-                empNo: '',
-                addressPermnt1: '',
-                addressPermnt2: '',
-                perPincode: '',
-                addressPresent1: '',
-                addressPresent2: '',
-                prePincode: '',
-                mobileNo: '',
-                landPhone: '',
-                email: '',
-                Selectgender: '0',
-                dateofbirth: '',
-                dateofjoining: '',
-                empstatus: false,
-                doctortype: false,
-                presPincode: ''
-            }
-            getFormdata(varid)
-        })
-
         return (
             udateGrade(0),
             setEarnTypecontext(0),
@@ -232,7 +216,8 @@ const EmployeeRecord = () => {
         udateregion2, udatereligion,
         updateBranchSelected, updateDesignation,
         updateDesignationType, updateInstituteSeleted,
-        updateSalutSelected, updateSelected, updatebloodgroup, updatedoctortype, udateemployeecategory])
+        updateSalutSelected, updateSelected, updatebloodgroup,
+        updatedoctortype, udateemployeecategory])
 
     useEffect(() => {
 
@@ -241,7 +226,7 @@ const EmployeeRecord = () => {
             const getcategorydata = async () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { data } = result.data;
-                var today = new Date();
+                var today = new Date(dateofjoining);
                 var cont_grace = data[0].cont_grace;
                 var ecat_cont_period = data[0].ecat_cont_period;
                 var ecat_prob_period = data[0].ecat_prob_period;
@@ -272,64 +257,89 @@ const EmployeeRecord = () => {
             getcategorydata();
         }
 
-    }, [getemployeecategory])
-
+    }, [getemployeecategory, dateofjoining])
+    //useEffect for getting Verification level
+    const [verification, setverificationlevel] = useState(0)
+    useEffect(() => {
+        const getverificationlevel = async () => {
+            const result = await axioslogin.get('/commonsettings')
+            const { success, data } = result.data
+            if (success === 1) {
+                const { verification_level } = data[0]
+                setverificationlevel(verification_level)
+            }
+            else {
+                setverificationlevel(0)
+            }
+        }
+        getverificationlevel()
+    }, [])
     // for submition
     const submitemployeerecord = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/empmast', submitdata);
         const { success, message } = result.data;
         if (success === 1) {
-            // update hrm_employee table
-            const resultemployee = await axioslogin.post('/employee', submitemployee);
-            const { success, message } = resultemployee.data;
+            const result = await axioslogin.get(`/empmast/${empNo}`)
+            const { success, data } = result.data
             if (success === 1) {
-                succesNofity('Save Successfully')
-                udateGrade(0)
-                setEarnTypecontext(0)
-                udateregion(null)
-                udatereligion(0)
-                udateemployeecategory(0)
-                updatebloodgroup(0)
-                updatedoctortype(0)
-                updateSelected(0)
-                updateDesignationType(0)
-                updateDesignation(0)
-                updateSalutSelected(0)
-                updateBranchSelected(0)
-                updateInstituteSeleted(0)
-                udateregion2(null)
-                // get serial number on reset
-                getSerialnumberempid().then((val) => {
-                    const varid = {
-                        empID: val,
-                        empName: '',
-                        empNo: '',
-                        addressPermnt1: '',
-                        addressPermnt2: '',
-                        perPincode: '',
-                        addressPresent1: '',
-                        addressPresent2: '',
-                        prePincode: '',
-                        mobileNo: '',
-                        landPhone: '',
-                        email: '',
-                        Selectgender: '0',
-                        doctortype: false,
-                        dateofbirth: '',
-                        dateofjoining: '',
-                        empstatus: false,
-                        presPincode: ''
+                const { em_id } = data[0]
+
+                const submitemployee = {
+                    emp_no: empNo,
+                    emp_id: em_id,
+                    emp_status: empstatus === true ? 1 : 0,
+                    emp_email: email,
+                    emp_username: empNo,
+                    emp_password: empNo,
+                    create_user: employeeNumber()
+                }
+                // update hrm_employee table
+                const resultemployee = await axioslogin.post('/employee', submitemployee);
+                const { success } = resultemployee.data;
+                if (success === 1) {
+                    const postdataverify = {
+                        em_id: em_id,
+                        verification_required: verification === 1 || verification === 2 ? 1 : 0,
+                        second_level_required: verification === 2 ? 1 : 0
                     }
-                    getFormdata(varid)
-                })
-            } else if (success === 0) {
-                errorNofity(message)
-            } else if (success === 2) {
-                infoNofity(message)
+                    const result = await axioslogin.post('/empVerification', postdataverify)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        getFormdata(defaultstate)
+                        udateGrade(0)
+                        setEarnTypecontext(0)
+                        udateregion(null)
+                        udatereligion(0)
+                        udateemployeecategory(0)
+                        updatebloodgroup(0)
+                        updatedoctortype(0)
+                        updateSelected(0)
+                        updateDesignationType(0)
+                        updateDesignation(0)
+                        updateSalutSelected(0)
+                        updateBranchSelected(0)
+                        updateInstituteSeleted(0)
+                        udateregion2(null)
+                        history.push(`/Home/Profile/${empNo}/${em_id}`)
+                        succesNofity(message)
+                    }
+                    else {
+                        errorNofity("Error Occured!!Please Contact ED")
+                    }
+
+                } else if (success === 0) {
+                    errorNofity(message)
+                } else if (success === 2) {
+                    infoNofity(message)
+                }
             }
+            else {
+                errorNofity("Error Occured!!Please Contact EDP")
+            }
+
         } else if (success === 0) {
-            warningNofity(message.sqlMessage)
+            warningNofity(message)
         } else if (success === 2) {
             infoNofity(message)
         }
@@ -341,6 +351,7 @@ const EmployeeRecord = () => {
     // toSetting
     const toSettings = (e) => {
         history.push('/Home');
+        getFormdata(defaultstate)
         udateGrade(0)
         setEarnTypecontext(0)
         udateregion(0)
@@ -358,9 +369,9 @@ const EmployeeRecord = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getFormdata({ ...employeerecord, [e.target.name]: value })
     }
-
-
-
+    const toTable = useCallback(() => {
+        history.push('/Home/EmployeeRecordTable')
+    })
 
     return (
         <Fragment>
@@ -379,18 +390,7 @@ const EmployeeRecord = () => {
                                         <div className="col-md-2">
                                             <Salutation style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                         </div>
-                                        <div className="col-md-2">
-                                            <TextInput
-                                                type="text"
-                                                classname="form-control form-control-sm"
-                                                Placeholder="Employee ID"
-                                                changeTextValue={(e) => updateFormData(e)}
-                                                value={empID}
-                                                name="empID"
-                                                disabled="disabled"
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-7">
                                             <TextInput
                                                 type="text"
                                                 classname="form-control form-control-sm"
@@ -400,7 +400,7 @@ const EmployeeRecord = () => {
                                                 name="empName"
                                             />
                                         </div>
-                                        <div className="col-md-2" data-tip="Emp No" data-for='toolTip1' data-place='top'>
+                                        <div className="col-md-3" data-tip="Emp No" data-for='toolTip1' data-place='top'>
                                             <ReactTooltip id="toolTip1" />
                                             <TextInput
                                                 type="text"
@@ -721,6 +721,7 @@ const EmployeeRecord = () => {
                     <div className="card-footer">
                         <FooterClosebtn
                             redirect={toSettings}
+                            view={toTable}
                         />
                     </div>
                 </form>

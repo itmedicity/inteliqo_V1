@@ -1,204 +1,137 @@
-import { IconButton, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextareaAutosize } from '@material-ui/core'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
-import DesignationMast from 'src/views/CommonCode/DesignationMast'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { FcPlus } from "react-icons/fc";
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { TableContainer } from '@mui/material';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useHistory } from 'react-router'
-import JobDescriptionEdit from './JobDescriptionEdit';
+import { CssVarsProvider } from '@mui/joy'
+import Typography from '@mui/joy/Typography';
+import { Box, CircularProgress, Paper } from '@mui/material'
+import React, { Fragment, Suspense, useContext } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+import IconButton from '@mui/joy/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import DesignationMast from 'src/views/CommonCode/DesignationMast';
+import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { ToastContainer } from 'react-toastify';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+
+const JobSummary = React.lazy(() => import('./JobSummary'));
+const DutyRespos = React.lazy(() => import('./DutyRespos'));
+const Performance = React.lazy(() => import('./Performance'));
+const Generic = React.lazy(() => import('./Generic'));
+
+const Progress = () => {
+    return (
+        <Box sx={{ display: "flex", justifyContent: "center" }} >
+            <CircularProgress color="secondary" size={30} />
+        </Box>)
+};
 
 const JobDescription = () => {
-    const history = useHistory()
-    const { selectDesignation, selectedDept } = useContext(PayrolMasterContext);
-    const [JobDesc, setJobDesc] = useState([])
-    const [count, setcount] = useState(0)
-    const [jobsumry, setjobsumry] = useState(0)
-    const [jobslno, setjobslno] = useState(0)
-    const [formData, setFormData] = useState({
-        job_description: '',
-        job_summary: ''
-    })
-    const defaultState = {
-        job_description: '',
-        job_summary: ''
-    }
-    const { job_description, job_summary } = formData
-    const updatejob_description = async (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setFormData({ ...formData, [e.target.name]: value })
-    }
-    const postData = {
-        designation: selectDesignation,
-        department: selectedDept,
-        job_desription: job_description,
-        job_Summary: jobsumry === 1 ? null : job_summary
-    }
-    const InsertJobDescription = async () => {
-        const result = await axioslogin.post('/jobdescription', postData)
-        const { success, message } = result.data
-        if (success === 1) {
-            setcount(count + 1)
-            succesNofity("Job Description Added")
-            setFormData(defaultState)
+    const { selectDesignation, updateDesignation,
+        selectedDept, updateSelected, selectDesignationName, selectedDeptName
+    } = useContext(PayrolMasterContext)
+    const [jobview, setjobview] = useState(0)
+    const addtojobSummary = async () => {
+        if (selectDesignation !== 0 && selectedDept !== 0) {
+            setjobview(1)
         }
         else {
-            warningNofity(message)
+
+            infoNofity("Choose All Option")
         }
     }
-    useEffect(() => {
-        const postData = {
-            designation: selectDesignation,
-            department: selectedDept
-        }
-        if (selectDesignation !== 0 && selectedDept !== 0) {
-            const getjobdescription = async () => {
-                const result = await axioslogin.post('/jobdescription/jobdesc', postData)
-                const { success, data } = result.data
-                if (success === 1) {
-                    setJobDesc(data)
-                    const jobsummary = data.filter((val) => {
-                        if (val.job_Summary !== null) {
-                            return 1
-                        }
-                    })
-                    const frmdata = {
-                        job_summary: jobsummary[0].job_Summary
-                    }
-                    setFormData(frmdata)
-                    jobsummary.length === 0 ? setjobsumry(0) : setjobsumry(1)
-
-                }
-                else {
-                    setJobDesc([])
-                }
-            }
-            getjobdescription()
-        }
-
-
-    }, [selectDesignation, count, selectedDept])
-    //edit job description
-    const getJobDescription = async (slno) => {
-        setjobslno(slno)
-
-    }
-    const RedirectToProfilePage = () => {
+    const history = useHistory()
+    const Redirect = async () => {
         history.push(`/Home`)
     }
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Job Description"
-                redirect={RedirectToProfilePage}
-            >
+            <ToastContainer />
+            <Box sx={{ width: "100%" }} >
+                {/* Outer Main Box */}
+                <Paper square elevation={2} sx={{ p: 0.5, }}   >
+                    {/* Main Heading Section Box */}
+                    <Paper square elevation={0} sx={{
+                        display: "flex",
+                        p: 1,
+                        alignItems: "center",
+                    }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                    Job Description
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box >
+                            <IconButton variant="outlined" size='sm' onClick={Redirect}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    </Paper>
 
-                <div className="card">
-                    <div className="card-body">
-                        {
-                            jobslno === 0 ?
-                                <div className="col-md-12">
+                    {/* Depertment Selection Box */}
+                    <Paper square elevation={3} sx={{
+                        p: 0.5,
+                        mt: 0.5,
+                        display: 'flex',
+                        alignItems: "center",
+                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
+                        // backgroundColor: "lightcyan"
+                    }} >
+                        <Box sx={{ flex: 1, px: 0.5 }} >
+                            <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5 }}  >
+                            <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                        </Box>
+                        <Box sx={{ flex: 0, px: 0.5 }} >
+                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary}>
+                                <AddToPhotosIcon />
+                            </IconButton>
+                        </Box>
+                    </Paper>
+                    {/* Job Summary */}
+                    <Suspense fallback={<Progress />} >
+                        <JobSummary
+                            jobview={jobview}
+                            selectDesignationName={selectDesignationName}
+                            selectedDeptName={selectedDeptName}
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                        />
+                    </Suspense>
+                    {/* Dutieds And Responsibilities */}
+                    <Suspense fallback={<Progress />} >
+                        <DutyRespos
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                        />
 
-                                    <div className="row d-flex justify-content-evenly">
-                                        <div className="col-md-2 pt-2">
-                                            <DepartmentSelect style={SELECT_CMP_STYLE} />
-                                        </div>
-                                        <div className="col-md-2 pt-2">
-                                            <DesignationMast style={SELECT_CMP_STYLE} />
-                                        </div>
-                                        <div className="col-md-3">
-                                            <TextareaAutosize
-                                                aria-label="minimum height"
-                                                minRows={3}
-                                                placeholder="Job Summary"
-                                                style={{ width: "100%", height: 60 }}
-                                                name="job_summary"
-                                                value={job_summary}
-                                                onChange={(e) => updatejob_description(e)}
-                                            />
-                                        </div>
-                                        <div className="col-md-4">
-                                            <TextareaAutosize
-                                                aria-label="minimum height"
-                                                minRows={3}
-                                                placeholder="Job Description"
-                                                style={{ width: "100%", height: 60 }}
-                                                name="job_description"
-                                                value={job_description}
-                                                onChange={(e) => updatejob_description(e)}
-                                            />
-                                        </div>
-                                        <div className="col-md-1">
-                                            <IconButton
-                                                aria-label="add"
-                                                style={{ padding: '0.9rem' }}
-                                                onClick={InsertJobDescription}
-                                            >
-                                                <FcPlus className="text-info" size={30} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
+                    </Suspense>
+
+                    {/* Job Specification : Performance & Competency */}
+                    <Suspense fallback={<Progress />} >
+                        <Performance
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                        />
+                    </Suspense>
+
+                    {/* Generic */}
+                    <Suspense fallback={<Progress />} >
+                        <Generic
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                        />
+                    </Suspense>
 
 
-                                : <JobDescriptionEdit jobslno={jobslno} count={count} setcount={setcount} setjobslno={setjobslno} />
-                        }
 
-                        {
-                            selectDesignation !== 0 && selectedDept !== 0 ?
-                                <div className="card">
-                                    <div className="col-md-12">
-                                        <TableContainer component={Paper}>
-                                            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                                                <TableHead>
-                                                    <TableRow style={{ backgroundColor: "#a2a3ac", height: '1rem' }} >
-                                                        <TableCell align="left" className="p-0" style={{ width: '1rem', }}>Sl No</TableCell>
-                                                        <TableCell align="left" className="p-0" style={{ width: '20rem', }}>Job Description</TableCell>
-                                                        <TableCell align="center" className="p-0" style={{ width: '0.5rem', }}>
-                                                            <IconButton
-                                                                aria-label="add"
-                                                                disabled={true}
-                                                                color="primary"
-                                                            >
-                                                                <EditOutlinedIcon size={10} color="primary" />
-                                                            </IconButton></TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {
-                                                        JobDesc && JobDesc.map((val) => {
-                                                            return <TableRow key={val.description_slno}>
-                                                                <TableCell align="left">{val.description_slno}</TableCell>
-                                                                <TableCell align="left">{val.job_desription}</TableCell>
-                                                                <TableCell align="center" >
-                                                                    <IconButton
-                                                                        aria-label="add"
-                                                                        color="primary"
-                                                                        onClick={(e) => {
-                                                                            getJobDescription(val.description_slno)
-                                                                        }}
-                                                                    >
-                                                                        <EditOutlinedIcon size={30} color="primary" />
-                                                                    </IconButton>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        })
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </div>
-                                </div>
-                                : null
-                        }
-                    </div>
-                </div>
-            </PageLayoutCloseOnly>
+                </Paper>
+            </Box>
         </Fragment >
     )
 }
