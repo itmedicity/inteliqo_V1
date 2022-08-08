@@ -27,11 +27,25 @@ const QualificationReport = () => {
     const [secondMenu, setsecondmenu] = useState(0)
     const [thirdmenu, setThirdmenu] = useState([])
 
+
+
     /** to get stored education values from redux */
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setEducation());
+        dispatch(setCourse());
+        dispatch(setSpecialization());
     }, [dispatch])
+
+    /** useSelector for getting education , course and specilization wise list grom redux  */
+    const state = useSelector((state) => {
+        return {
+            empEducation: state.getEmployeeEducation.EducationList || 0,
+            empCourse: state.getEmployeeCourse.CourseList || 0,
+            empSpecilization: state.getEmployeeSpeclization.SpecilizationList || 0
+        }
+
+    })
 
     /**Leftside Selection Checkbox for Education*/
     const [columnDefs] = useState([
@@ -53,7 +67,7 @@ const QualificationReport = () => {
         }
         else {
             setValue(event.api.getSelectedRows())
-        }
+        } setsecondmenu(0)
     }
     /** mapping education slno into education name */
     useEffect(() => {
@@ -68,14 +82,19 @@ const QualificationReport = () => {
     }
     /** Education end */
 
-
     /** Course menu selection*/
-    /** to get stored course values from redux */
+    const [data1, setdata1] = useState(0);
+
     useEffect(() => {
         if (secondMenu === 1) {
-            dispatch(setCourse(slno));
+            if (slno !== 0) {
+                const filtered = empCourse.filter(val => slno.includes(val.edu_slno))
+                setdata1(filtered)
+                // return setSpecialization
+            }
+            return setCourse
         }
-    }, [secondMenu, slno, dispatch])
+    }, [secondMenu, slno])
 
     /** to get checked course slno  from selection slno */
     const onSelectionChanged2 = (event) => {
@@ -100,7 +119,6 @@ const QualificationReport = () => {
         setThirdmenu(1)
     }, [])
 
-
     /** Selction checkbox for course  */
     const [columnDefCourse] = useState([
         {
@@ -117,10 +135,14 @@ const QualificationReport = () => {
 
     /** Specilization start */
     /** to get stored specilization values from redux */
+
+    const [data, setdata] = useState(0)
     useEffect(() => {
         if (thirdmenu === 1) {
             if (coursslno !== 0) {
-                dispatch(setSpecialization(coursslno));
+                const filtered1 = empSpecilization.filter(val => coursslno.includes(val.cour_slno))
+                setdata(filtered1)
+                // return setSpecialization
             }
             else {
                 warningNofity("please select any qualification")
@@ -128,7 +150,6 @@ const QualificationReport = () => {
         }
 
     }, [thirdmenu, coursslno, dispatch])
-
 
     /** to get checked course slno  from selection slno */
     const onSelectionChanged3 = (event) => {
@@ -160,15 +181,6 @@ const QualificationReport = () => {
         },
     ])
 
-    /** useSelector for getting education , course and specilization wise list grom redux  */
-    const state = useSelector((state) => {
-        return {
-            empEducation: state.getEmployeeEducation.EducationList || 0,
-            empCourse: state.getEmployeeCourse.CourseList || 0,
-            empSpecilization: state.getEmployeeSpeclization.SpecilizationList || 0
-        }
-
-    })
 
 
     /** destructuring the state */
@@ -187,7 +199,7 @@ const QualificationReport = () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** Selected education slno  to get corresponding data from databse */
         const geteducationDatafromTable = async (slno) => {
-            const result = await axioslogin.post('/reports/education/ById', slno)
+            const result = await axioslogin.post('/QualificationReport/education/ById', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -198,7 +210,7 @@ const QualificationReport = () => {
         }
         /** Selected education slno and course slno sumbit, to get corresponding data from databse */
         const getEducationCourseData = async (postData) => {
-            const result = await axioslogin.post('/reports/education/course', postData)
+            const result = await axioslogin.post('/QualificationReport/education/course', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -209,7 +221,7 @@ const QualificationReport = () => {
         }
         /** Selected education slno, course slno and speclization slno sumbit, to get corresponding data from databse */
         const getcoursepeclztnData = async (postData) => {
-            const result = await axioslogin.post('/reports/course/specialization', postData)
+            const result = await axioslogin.post('/QualificationReport/course/specialization', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -279,13 +291,13 @@ const QualificationReport = () => {
                 menu2={"course"}
                 menu3={"specialization"}
                 columnDefMenu2={columnDefCourse}
-                tableDataMenu2={empCourse}
+                tableDataMenu2={data1}
 
                 /** To display left side second selection checkbox when clicking first checkboxes */
                 ShowSecondMenu={ShowSecondMenu}
                 thirdmenu={thirdmenu}
                 columnDefMenu3={columnDefSpecialization}
-                tableDataMenu3={empSpecilization}
+                tableDataMenu3={data}
                 ShowthirdMenu={ShowthirdMenu}
                 onSelectionChanged3={onSelectionChanged3}
             />
