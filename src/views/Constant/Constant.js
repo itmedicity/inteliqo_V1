@@ -1,5 +1,5 @@
 import { axioslogin } from "../Axios/Axios";
-export const API_URL = 'http://192.168.10.206:5000/api';
+export const API_URL = 'http://192.168.10.132:5000/api';
 
 export const employeeNumber = () => {
 
