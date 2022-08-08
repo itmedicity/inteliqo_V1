@@ -30,7 +30,6 @@ import { getEmployeeCourse } from '../reducers/CourseReducers'
 import { getEmployeeSpeclization } from '../reducers/SpeciliozationReducers';
 import { getEmpRegistrationType } from '../reducers/RegistrationTypeReducer';
 import { getBranchList } from '../reducers/BranchReducer';
-import { getEmployeeSpeclization } from '../reducers/SpeciliozationReducers'
 import { getDashboardNotification } from './Dashboard.Reducer';
 import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
