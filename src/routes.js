@@ -366,7 +366,7 @@ const routes = [
   { path: '/Home/ResignedEmpReport', exact: true, name: 'Resigned Report', component: ResignedEmpReport },
   { path: '/Home/DesignationExpReport', exact: true, name: 'Employee Designation wise Experience Report', component: DesignationExpReport },
   { path: '/Home/DeptSubSectionReport', exact: true, name: 'Employee Dept subSection Report', component: DeptSubSectionReport },
-  { path: '/Home/TraningProbaReport', exact: true, name: 'Training and probation report', component: TraningProbaReport }
+  { path: '/Home/TraningProbaReport', exact: true, name: 'Training and probation report', component: TraningProbaReport },
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
   { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },

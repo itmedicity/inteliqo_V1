@@ -23,7 +23,7 @@ export const hr_report_third = [
     { to: '/Home/ContractRenewReport', name: 'Employee Contract Renew Report', slno: 180 },
     { to: '/Home/ContractCurrentRunningReport', name: 'Employee Contract Current Running Report', slno: 181 },
     { to: '/Home/ContractOneYear+CurrentReport', name: 'Employee Contract 1 year + Current Running Report', slno: 182 },
-    { to: '/Home/ResignedEmpReport', name: 'Resigned Employee Report', slno: 183 }
+    { to: '/Home/ResignedEmpReport', name: 'Resigned Employee Report', slno: 183 },
     { to: '/Home/DesignationExpReport', name: 'Employee Designation Wise Experience Report', slno: 170 },
     { to: '/Home/DeptSubSectionReport', name: 'Employee Department Type Report', slno: 171 },
     { to: '/Home/TraningProbaReport', name: 'Training and probation report', slno: 179 }
