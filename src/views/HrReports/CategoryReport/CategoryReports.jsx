@@ -98,7 +98,7 @@ const CategoryReports = () => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const getdatafromTable = async (serialslno) => {
-            const result = await axioslogin.post('/reports/getcategory', serialslno)
+            const result = await axioslogin.post('/CategoryReport/getcategory', serialslno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)

@@ -64,7 +64,7 @@ const BloodReports = () => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const getdatafromtable = async (serailno) => {
-            const result = await axioslogin.post('/reports/bloodgroup/byid', serailno)
+            const result = await axioslogin.post('/bloodgrpReport/bloodgroup/byid', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)

@@ -4,7 +4,7 @@ const { FETCH_EMP_CATEGORY } = Actiontypes;
 
 /** to get category id,name from database  */
 export const setCategory = () => async (dispatch) => {
-    const result = await axioslogin.get('/reports/category');
+    const result = await axioslogin.get('/CategoryReport/category');
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_EMP_CATEGORY, payload: data, loadingStatus: true })

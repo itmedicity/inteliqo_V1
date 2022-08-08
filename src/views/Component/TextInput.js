@@ -4,6 +4,15 @@ const TextInput = (props) => {
 
     const { type, id, Placeholder, value, classname, changeTextValue, name, disabled, max, min, style } = props;
 
+    const textStyle = {
+
+    }
+
+    // console.log(style)
+    //style
+    const textStyle = {
+    }
+
     return (
         <div>
             <input
@@ -19,7 +28,7 @@ const TextInput = (props) => {
                 disabled={disabled}
                 max={max}
                 min={min}
-                style={{ ...style }}
+                style={{ ...textStyle, ...style }}
             />
         </div>
     )

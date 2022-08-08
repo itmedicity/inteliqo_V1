@@ -1,19 +1,20 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Paper } from '@mui/material'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
-const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, sx }) => {
+const CustomAgGridMenuSelection = ({
+    tableData,
+    columnDefs,
+    onSelectionChanged,
+    sx
+}) => {
     //Table
     const rowHeight = 25
     const headerHeight = 30
     const defaultColDef = {
-        // resizable: true,
-        // sortable: true,
-        // filter: true,
-        // floatingFilter: true
     }
     // --- On Grid Ready Function ---
     let gridApi

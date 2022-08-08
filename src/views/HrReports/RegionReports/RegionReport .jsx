@@ -32,7 +32,6 @@ const RegionReport = () => {
     /** destructuring the state */
     const { empDistrict, empDistRegion } = state
 
-
     /** Left side selction checkbox for district list */
     const [columnDefs] = useState([
         {
@@ -66,7 +65,7 @@ const RegionReport = () => {
                 warningNofity("Please Select Any DIstrict!")
             }
         }
-    }, [secondMenu, slno])
+    }, [secondMenu, slno, dispatch])
 
     const ShowSecondMenu = async (e) => {
         setsecondmenu(1)
@@ -106,6 +105,7 @@ const RegionReport = () => {
 
     /** Intializing slno for getting checked region slno. ie, object mapped to data */
     const [regslno, setregslno] = useState([])
+
     useEffect(() => {
         const reg_arr = secondvalue && secondvalue.map((val, index) => {
             return val.reg_slno
@@ -121,13 +121,12 @@ const RegionReport = () => {
         }
     }, [regslno, slno])
 
-
     const getEmployeeDistrict = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** Selected district slno sumbit, to get corresponding data from databse */
         const getdistrictdatafromtable = async (slno) => {
-            const result = await axioslogin.post('/reports/district/byid', slno)
+            const result = await axioslogin.post('/RegionReport/district/byid', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -139,7 +138,7 @@ const RegionReport = () => {
 
         /** Selected district slno and region slno sumbit, to get corresponding data from databse */
         const getDistrictRegionData = async (postData) => {
-            const result = await axioslogin.post('/reports/distreg/byregion', postData)
+            const result = await axioslogin.post('/RegionReport/distreg/byregion', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -156,7 +155,7 @@ const RegionReport = () => {
         } else {
             warningNofity("Please Select Any DIstrict!")
         }
-    }, [slno, postData, dispatch])
+    }, [slno, postData, dispatch, regslno])
 
     /** District wise report ag grid table heading */
     const [columnDefMain] = useState([
