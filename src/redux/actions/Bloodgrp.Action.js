@@ -4,7 +4,7 @@ const { FETCH_EMP_BLOODGROUP } = Actiontypes;
 
 export const setBloodgrp = () => async (dispatch) => {
     /** To get bloodgroup slno, name */
-    const result = await axioslogin.get('/reports/bloodgroup');
+    const result = await axioslogin.get('/bloodgrpReport/bloodgroup');
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_EMP_BLOODGROUP, payload: data, loadingStatus: true })

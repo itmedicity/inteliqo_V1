@@ -27,7 +27,9 @@ import { getEmployeeCategory } from '../reducers/CategoryReducers'
 import { getEmployeeDesignation } from '../reducers/DesignationReducers';
 import { getEmployeeEducation } from '../reducers/EducationReducers';
 import { getEmployeeCourse } from '../reducers/CourseReducers'
-import { getEmployeeSpeclization } from '../reducers/SpeciliozationReducers'
+import { getEmployeeSpeclization } from '../reducers/SpeciliozationReducers';
+import { getEmpRegistrationType } from '../reducers/RegistrationTypeReducer';
+import { getBranchList } from '../reducers/BranchReducer';
 
 const reducer = combineReducers({
     changeState,
@@ -59,7 +61,9 @@ const reducer = combineReducers({
     getEmployeeDesignation,
     getEmployeeEducation,
     getEmployeeCourse,
-    getEmployeeSpeclization
+    getEmployeeSpeclization,
+    getEmpRegistrationType,
+    getBranchList
 
 })
 

@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { hr_report_one } from './ReportsMenu'
+import { hr_report_one, hr_report_two, hr_report_third } from './ReportsMenu'
 import { getMenuSlno } from '../views/Constant/Constant'
 import { Link } from 'react-router-dom'
 
 const Reports = () => {
     const [report_one, setreport_one] = useState();
+    const [report_two, setreport_two] = useState();
+    const [report_three, setreport_three] = useState();
     const [count, setCount] = useState(0)
     useEffect(() => {
         getMenuSlno().then((val) => {
@@ -13,6 +15,10 @@ const Reports = () => {
             })
             const settings_report_one = hr_report_one.filter(val => menuSlnoArray.includes(val.slno));
             setreport_one(settings_report_one)
+            const settings_report_two = hr_report_two.filter(val => menuSlnoArray.includes(val.slno));
+            setreport_two(settings_report_two)
+            const settings_report_three = hr_report_third.filter(val => menuSlnoArray.includes(val.slno));
+            setreport_three(settings_report_three)
             setCount(1)
         })
     }, [count])
@@ -28,6 +34,24 @@ const Reports = () => {
                             <ul className="list-group list-group-flush">
                                 {
                                     report_one && report_one.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
+                            </ul>
+                        </div>
+                        <div className="col-4">
+                            <ul className="list-group list-group-flush">
+                                {
+                                    report_two && report_two.map((val) => {
+                                        return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
+                                    })
+                                }
+                            </ul>
+                        </div>
+                        <div className="col-4">
+                            <ul className="list-group list-group-flush">
+                                {
+                                    report_three && report_three.map((val) => {
                                         return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
                                     })
                                 }

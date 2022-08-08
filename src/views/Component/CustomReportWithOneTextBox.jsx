@@ -1,67 +1,47 @@
-import { Paper } from '@mui/material'
+import { Paper, Backdrop, CircularProgress, } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useCallback, useEffect } from 'react'
+import React, { memo, useCallback } from 'react'
 import CusIconButton from './CusIconButton'
-import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import CustomeToolTip from './CustomeToolTip'
 import DownloadIcon from '@mui/icons-material/Download'
-import CustomAgGridMenuSelection from './CustomAgGridMenuSelection'
 import CustomAgGridRptFormatOne from './CustomAgGridRptFormatOne'
 import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
-import { ToastContainer } from 'react-toastify'
-import { memo } from 'react'
 import { useHistory } from 'react-router-dom'
+import AgGridWithTextInput from './AgGridWithTextInput'
+import AgGridWithLoading from './AgGridWithLoading'
 
-const CustomReportMain = ({
-    secondMenu,
-    ShowSecondMenu,
-    ShowthirdMenu,
-    menu3,
-    menu2,
-    columnDefs,
+const CustomReportWithOneTextBox = ({ columnDefs,
     tableData,
+    onSelectionChanged,
     tableDataMain,
     columnDefMain,
     onClick,
-    columnDefMenu2,
-    tableDataMenu2,
-    onSelectionChanged,
-    onSelectionChanged2,
-    onSelectionChanged3,
-    thirdmenu,
-    tableDataMenu3,
-    columnDefMenu3 }) => {
-
+    setExpiry
+}) => {
     const dispatch = useDispatch()
     const history = useHistory()
 
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
-        } else {
-
+        }
+        else {
             dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
         }
     }, [tableDataMain.length, dispatch])
 
+    /** To close the report page and back to the report list */
     const CloseReport = async () => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         history.push(`/Home/Reports`)
     }
-    //setting the state to default
-    useEffect(() => {
-        return (
-            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        )
-    }, [dispatch])
 
     return (
         <Box>
-            <ToastContainer />
             <Paper
                 square
                 sx={{
@@ -75,14 +55,13 @@ const CustomReportMain = ({
                         flexDirection: 'row',
                     }}
                 >
-                    {/* first menu selection */}
+                    {/* Left Side Section Start */}
                     <Paper
                         square
                         sx={{
                             backgroundColor: 'white',
                             width: { md: '20%', lg: '20%', xl: '15%' },
                             height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
-                            flexDirection: 'row'
                         }}
                     >
                         {/* Top Left Menu Section Start */}
@@ -98,85 +77,30 @@ const CustomReportMain = ({
                                 p: 0.3,
                             }}
                         >
-                            <CusIconButton variant="outlined" size="sm" color="success" onClick={onClick}>
+                            <CusIconButton
+                                variant="outlined"
+                                size="sm"
+                                color="success"
+                                onClick={onClick}
+                            >
                                 <SearchIcon />
                             </CusIconButton>
-                            <CustomeToolTip title={menu2} placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <ContentPasteSearchIcon onClick={ShowSecondMenu} />
-                                    </CusIconButton>
-                                </Box>
-                            </CustomeToolTip>
-                            <CustomeToolTip title={menu3} placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success">
-                                        <ContentPasteSearchIcon onClick={ShowthirdMenu} />
-                                    </CusIconButton>
-                                </Box>
-                            </CustomeToolTip>
                         </Paper>
-                        <CustomAgGridMenuSelection
-                            sx={{
-                                height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
-                                width: '100%',
-                            }}
+                        {/* Table Component */}
+                        <AgGridWithTextInput
                             columnDefs={columnDefs}
                             onSelectionChanged={onSelectionChanged}
                             tableData={tableData}
-                        />
-
-                        {/* second menu selection */}
-                        {secondMenu === 1 ?
-                            <CustomAgGridMenuSelection
-                                sx={{
-                                    width: '100%',
-                                    height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
-
-                                }}
-                                columnDefs={columnDefMenu2}
-                                onSelectionChanged={onSelectionChanged2}
-                                tableData={tableDataMenu2}>
-
-                            </CustomAgGridMenuSelection>
-                            : null}
-                    </Paper>
-
-                    {/* third menu selection */}
-                    {thirdmenu === 1 ?
-                        <Paper
-                            square
+                            setExpiry={setExpiry}
                             sx={{
-                                backgroundColor: 'white',
-                                width: { md: '20%', lg: '20%', xl: '15%' },
-                                height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                                height: { xs: 200, sm: 200, md: 200, lg: 250, xl: 380 },
+                                width: '100%',
                             }}
-                        >
-                            <Paper
-                                square
-                                sx={{
-                                    backgroundColor: '#f0f3f5',
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    flexDirection: 'row',
-                                    alignItems: 'flex-start',
-                                    gap: 0.1,
-                                    p: 0.3,
+                        />
+                        {/* Top Left Menu Section End */}
+                    </Paper>
+                    {/* Left Side Section End */}
 
-                                }}
-                            >
-                            </Paper>
-                            <CustomAgGridMenuSelection
-                                sx={{
-                                    width: '100%',
-                                    height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                                }}
-                                columnDefs={columnDefMenu3}
-                                onSelectionChanged={onSelectionChanged3}
-                                tableData={tableDataMenu3}
-                            />
-                        </Paper>
-                        : null}
                     {/* Rigth Side Section Start */}
                     <Paper
                         square
@@ -211,7 +135,12 @@ const CustomReportMain = ({
 
                             <CustomeToolTip title="Download" placement="bottom">
                                 <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
+                                    <CusIconButton
+                                        variant="outlined"
+                                        size="sm"
+                                        color="success"
+                                        onClick={onExportClick}
+                                    >
                                         <DownloadIcon />
                                     </CusIconButton>
                                 </Box>
@@ -224,20 +153,25 @@ const CustomReportMain = ({
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne
+                            <AgGridWithLoading
                                 tableDataMain={tableDataMain}
                                 columnDefMain={columnDefMain}
-                                onSelectionChanged={onSelectionChanged2}
                             />
+
+                            {/* <Backdrop
+                                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                open
+                            >
+                                <CircularProgress color="inherit" />
+                            </Backdrop> */}
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>
                     {/* Rigth Side Section End */}
                 </Box>
-                {/* <Paper square sx={{ backgroundColor: "lightpink" }}  >sdfsdfsdf</Paper> */}
             </Paper >
         </Box >
     )
 }
 
-export default memo(CustomReportMain)
+export default memo(CustomReportWithOneTextBox)

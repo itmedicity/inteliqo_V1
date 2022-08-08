@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, memo } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -13,14 +13,12 @@ import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
-import { memo } from 'react'
 import { useHistory } from 'react-router-dom'
+import AgGridWithTextInput from './AgGridWithTextInput'
 
-const CustomReportMain = ({
+const CustomCheckboxNew = ({
     secondMenu,
     ShowSecondMenu,
-    ShowthirdMenu,
-    menu3,
     menu2,
     columnDefs,
     tableData,
@@ -31,10 +29,11 @@ const CustomReportMain = ({
     tableDataMenu2,
     onSelectionChanged,
     onSelectionChanged2,
-    onSelectionChanged3,
-    thirdmenu,
-    tableDataMenu3,
-    columnDefMenu3 }) => {
+    value,
+    name,
+    label,
+    setExpiry
+}) => {
 
     const dispatch = useDispatch()
     const history = useHistory()
@@ -108,17 +107,17 @@ const CustomReportMain = ({
                                     </CusIconButton>
                                 </Box>
                             </CustomeToolTip>
-                            <CustomeToolTip title={menu3} placement="bottom">
+                            {/* <CustomeToolTip title={menu3} placement="bottom">
                                 <Box>
                                     <CusIconButton variant="outlined" size="sm" color="success">
                                         <ContentPasteSearchIcon onClick={ShowthirdMenu} />
                                     </CusIconButton>
                                 </Box>
-                            </CustomeToolTip>
+                            </CustomeToolTip> */}
                         </Paper>
                         <CustomAgGridMenuSelection
                             sx={{
-                                height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
+                                height: { xs: 180, sm: 180, md: 180, lg: 183, xl: 280 },
                                 width: '100%',
                             }}
                             columnDefs={columnDefs}
@@ -128,55 +127,27 @@ const CustomReportMain = ({
 
                         {/* second menu selection */}
                         {secondMenu === 1 ?
-                            <CustomAgGridMenuSelection
+                            <AgGridWithTextInput
                                 sx={{
                                     width: '100%',
-                                    height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
+                                    height: { xs: 180, sm: 180, md: 180, lg: 183, xl: 280 },
 
                                 }}
                                 columnDefs={columnDefMenu2}
                                 onSelectionChanged={onSelectionChanged2}
-                                tableData={tableDataMenu2}>
-
-                            </CustomAgGridMenuSelection>
-                            : null}
-                    </Paper>
-
-                    {/* third menu selection */}
-                    {thirdmenu === 1 ?
-                        <Paper
-                            square
-                            sx={{
-                                backgroundColor: 'white',
-                                width: { md: '20%', lg: '20%', xl: '15%' },
-                                height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
-                            }}
-                        >
-                            <Paper
-                                square
-                                sx={{
-                                    backgroundColor: '#f0f3f5',
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    flexDirection: 'row',
-                                    alignItems: 'flex-start',
-                                    gap: 0.1,
-                                    p: 0.3,
-
-                                }}
+                                tableData={tableDataMenu2}
+                                //changeText={changeText}
+                                value={value}
+                                name={name}
+                                label={label}
+                                setExpiry={setExpiry}
                             >
-                            </Paper>
-                            <CustomAgGridMenuSelection
-                                sx={{
-                                    width: '100%',
-                                    height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                                }}
-                                columnDefs={columnDefMenu3}
-                                onSelectionChanged={onSelectionChanged3}
-                                tableData={tableDataMenu3}
-                            />
-                        </Paper>
-                        : null}
+
+                            </AgGridWithTextInput>
+
+                            : null}
+
+                    </Paper>
                     {/* Rigth Side Section Start */}
                     <Paper
                         square
@@ -224,10 +195,10 @@ const CustomReportMain = ({
                             }}
                         >
                             {/* Table Component */}
+                            {/* <AgGridReportDynamic */}
                             <CustomAgGridRptFormatOne
                                 tableDataMain={tableDataMain}
                                 columnDefMain={columnDefMain}
-                                onSelectionChanged={onSelectionChanged2}
                             />
                         </Box>
                         {/* Rigth Side Menu  */}
@@ -240,4 +211,4 @@ const CustomReportMain = ({
     )
 }
 
-export default memo(CustomReportMain)
+export default memo(CustomCheckboxNew)

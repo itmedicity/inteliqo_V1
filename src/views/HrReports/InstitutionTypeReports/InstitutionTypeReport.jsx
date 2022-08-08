@@ -61,7 +61,7 @@ const InstitutionTypeReport = () => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const getdatafromtable = async (serailno) => {
-            const result = await axioslogin.post('/reports/instiution', serailno)
+            const result = await axioslogin.post('/institutionReport/instiution', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)

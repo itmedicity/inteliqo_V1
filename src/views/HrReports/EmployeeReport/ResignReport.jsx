@@ -8,10 +8,10 @@ import { ToastContainer } from 'react-toastify'
 import { setBranch } from 'src/redux/actions/Branch.Action'
 import { setDepartment } from 'src/redux/actions/Department.action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
-import CustomReportWithDateField from 'src/views/Component/CustomReportWithDateField';
+import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const EmployeeReport = () => {
+const ResignReport = () => {
 
     /** Initiliazing values */
     const [TableData, setTableData] = useState([]);
@@ -105,7 +105,7 @@ const EmployeeReport = () => {
 
     /** to get checked department slno  from selection slno */
     const onSelectionChanged2 = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+
         if (event.api.getSelectedRows() === 0) {
             setsecondValue([])
             setThirdmenu(0)
@@ -130,6 +130,7 @@ const EmployeeReport = () => {
     }, [])
 
     const [data, setdata] = useState(deptslno)
+
     /** to get deaprtment wise department section from redux */
     useEffect(() => {
         if (thirdmenu === 1) {
@@ -155,7 +156,7 @@ const EmployeeReport = () => {
         },
     ])
 
-    /** to get checked department section wise Active employee  from selection slno */
+    /** to get checked department section wise resigned employee  from selection slno */
     const onSelectionChanged3 = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         if (event.api.getSelectedRows() === 0) {
@@ -183,6 +184,7 @@ const EmployeeReport = () => {
     }, [deptslno, slno])
 
     /** stored department slno, department section slno, ebranch slno as postDataemp for API Call */
+
     const postDataemp = useMemo(() => {
         return {
             branch_slno: slno,
@@ -220,52 +222,16 @@ const EmployeeReport = () => {
         { headerName: 'Address1 ', field: 'addressPresent1' },
         { headerName: 'Address2 ', field: 'addressPresent2' },
         { headerName: 'Pin', field: 'hrm_pin2' },
-
+        { headerName: 'Status', field: 'status' }
     ])
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */
 
-    const [firsdate, setfirstdate] = useState(0);
-    const onChange = (e) => {
-        setfirstdate(e.target.value)
-    }
-
-    const [secondadte, setseconddate] = useState(0)
-    const onChange2 = (e) => {
-        setseconddate(e.target.value)
-    }
-
-    const postDataDate = useMemo(() => {
-        return {
-            branch_slno: slno,
-            dept_id: deptslno,
-            sect_id: sectslno,
-            date_of_join_start: firsdate,
-            date_of_join_end: secondadte
-        }
-    }, [deptslno, slno, sectslno, firsdate, secondadte])
-    const postData1 = useMemo(() => {
-        return {
-            branch_slno: slno,
-            date_of_join_start: firsdate,
-            date_of_join_end: secondadte
-        }
-    }, [slno, firsdate, secondadte])
-
-    const postData2 = useMemo(() => {
-        return {
-            branch_slno: slno,
-            dept_id: deptslno,
-            date_of_join_start: firsdate,
-            date_of_join_end: secondadte
-        }
-    }, [deptslno, slno, firsdate, secondadte])
-
-    const getActiveEmpList = useCallback((e) => {
+    const getResignedList = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        /** branch wise Active Employee report  */
-        const getBranchActiveEmp = async (slno) => {
-            const result = await axioslogin.post('/employeeReport/branchactiveemp', slno)
+        /** branch wise resigned employee report  */
+        const getBranchResigned = async (slno) => {
+            const result = await axioslogin.post('/employeeReport/branchresigned', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -274,9 +240,9 @@ const EmployeeReport = () => {
                 setTableData([])
             }
         }
-        /** Department  wise Active Employee report  */
-        const getDeptActiveEmp = async (postData) => {
-            const result = await axioslogin.post('/employeeReport/deptactiveemp', postData)
+        /** Department  wise resigned employee report  */
+        const getDeptResigned = async (postData) => {
+            const result = await axioslogin.post('/employeeReport/deptresigned', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -285,9 +251,9 @@ const EmployeeReport = () => {
                 setTableData([])
             }
         }
-        /** Selected branch, department, dept section Active Employee report  */
-        const getACtiveEmp = async (postDataemp) => {
-            const result = await axioslogin.post('/employeeReport/activeemp', postDataemp)
+        /** Selected branch, department, dept section resigned employee report  */
+        const getResigned = async (postDataemp) => {
+            const result = await axioslogin.post('/employeeReport/resigned', postDataemp)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -296,61 +262,21 @@ const EmployeeReport = () => {
                 setTableData([])
             }
         }
-        /** to get active employees between date */
-        const getACtiveEmpDate = async (postDataDate) => {
-            const result = await axioslogin.post('/employeeReport/activeempdate', postDataDate)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
+        if (slno !== 0 && deptslno === 0 && sectslno === 0) {
+            getBranchResigned(slno)
         }
-        const getBranchActiveEmpDate = async (postData1) => {
-            const result = await axioslogin.post('/employeeReport/branchactviedate', postData1)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
+        else if (slno !== 0 && deptslno !== 0 && sectslno === 0) {
+            getDeptResigned(postData)
         }
-        const getDeptActiveEmpDate = async (postData2) => {
-            const result = await axioslogin.post('/employeeReport/deptactivedate', postData2)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
+        else if (slno !== 0 && deptslno !== 0 && sectslno !== 0) {
+            getResigned(postDataemp)
         }
-        if (slno !== 0 && deptslno === 0 && sectslno === 0 && firsdate === 0 && secondadte === 0) {
-            getBranchActiveEmp(slno)
-        }
-        else if (slno !== 0 && deptslno !== 0 && sectslno === 0 && firsdate === 0 && secondadte === 0) {
-            getDeptActiveEmp(postData)
-        }
-        else if (slno !== 0 && deptslno !== 0 && sectslno !== 0 && firsdate === 0 && secondadte === 0) {
-            getACtiveEmp(postDataemp)
-        }
-        else if (slno !== 0 && deptslno === 0 && sectslno === 0 && firsdate !== 0 && secondadte !== 0) {
-            getBranchActiveEmpDate(postData1)
-        }
-        else if (slno !== 0 && deptslno !== 0 && sectslno === 0 && firsdate !== "" && secondadte !== "") {
-            getDeptActiveEmpDate(postData2)
-        }
-        else if (slno !== 0 && deptslno !== 0 && sectslno !== 0 && firsdate !== "" && secondadte !== "") {
-            getACtiveEmpDate(postDataDate)
-        }
-    }, [slno, dispatch, deptslno, sectslno, postData, postDataemp, postDataDate, firsdate, secondadte, postData1, postData2])
+    }, [slno, dispatch, deptslno, sectslno, postData, postDataemp])
 
     return (
         <Fragment>
             <ToastContainer />
-            <CustomReportWithDateField
+            <CustomReportMain
                 /** Department checkbox */
                 columnDefs={columnDefs}
                 tableData={empBranch}
@@ -358,9 +284,9 @@ const EmployeeReport = () => {
                 //menu1={"Department"}
                 secondMenu={secondMenu}
 
-                /** contract Active Employee List */
+                /** Resigned Employeereport List */
                 columnDefMain={columnDefMain}
-                onClick={getActiveEmpList}
+                onClick={getResignedList}
                 tableDataMain={TableData}
                 onSelectionChanged2={onSelectionChanged2}
                 menu2={"Department"}
@@ -377,13 +303,10 @@ const EmployeeReport = () => {
                 columnDefMenu3={columnDefDeptSect}
                 tableDataMenu3={data}
                 ShowthirdMenu={ShowthirdMenu}
-
-                onChange={onChange}
-                onChange2={onChange2}
             />
         </Fragment>
     )
 }
 
-export default EmployeeReport
+export default ResignReport
 
