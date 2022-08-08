@@ -1,16 +1,23 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import { Paper } from '@mui/material'
+import { FormLabel, Paper, TextField, Typography } from '@mui/material'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
+import TextInput from './TextInput'
 
-const CustomAgGridMenuSelection = ({
+
+const AgGridWithTextInput = ({
     tableData,
     columnDefs,
     onSelectionChanged,
-    sx
+    sx,
+    value,
+    name,
+    label,
+    setExpiry
 }) => {
+
     //Table
     const rowHeight = 25
     const headerHeight = 30
@@ -40,13 +47,24 @@ const CustomAgGridMenuSelection = ({
             '"Segoe UI Symbol"',
         ].join(','),
     }
+
+    const changeText = (e) => {
+        setExpiry(e.target.value)
+    };
     return (
         <Fragment>
-            <Paper elevation={0}>
+            <Paper
+                elevation={0}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    //alignItems: 'flex-start'
+                    //justifyContent: 'space-evenly'
+                }}
+            >
                 <Box
                     className="ag-theme-material ListItemScrol"
                     sx={{ ...style, ...sx }}
-
                 >
                     <AgGridReact
                         columnDefs={columnDefs}
@@ -62,9 +80,36 @@ const CustomAgGridMenuSelection = ({
                         rowStyle={rowStyle}
                     ></AgGridReact>
                 </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flex: 1,
+                        justifyContent: 'space-evenly'
+                    }}
+                >
+                    <Typography
+                        variant='h8'
+                    >{'Expiry Days'}
+                    </Typography>
+                    <TextInput
+                        id="outlined-basic"
+                        type="number"
+                        //label={label}
+                        // variant="outlined"
+                        // size='small'
+                        value={value}
+                        name={name}
+                        fullWidth
+                        changeTextValue={(e) => changeText(e)}
+                        style={{
+                            width: 50,
+                        }}
+                    />
+                </Box>
             </Paper>
-        </Fragment>
+        </Fragment >
     )
 }
 
-export default CustomAgGridMenuSelection
+export default memo(AgGridWithTextInput)

@@ -61,7 +61,7 @@ const ReligionReport = () => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const getdatafromtable = async (serailno) => {
-            const result = await axioslogin.post('/reports/religion/byid', serailno)
+            const result = await axioslogin.post('/religionReport/religion/byid', serailno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -113,6 +113,7 @@ const ReligionReport = () => {
                 columnDefs={columnDefs}
                 tableData={empReligions}
                 onSelectionChanged={onSelectionChanged}
+
                 /** To display religion wise report table */
                 onClick={getEmployeeReligion}
                 columnDefMain={columnDefMain}

@@ -3,10 +3,16 @@ import React from 'react'
 const TextInput = (props) => {
 
     const { type, id, Placeholder, value, classname, changeTextValue, name, disabled, max, min, style } = props;
+
+    const textStyle = {
+
+    }
+
     // console.log(style)
     //style
     const textStyle = {
     }
+
     return (
         <div>
             <input

@@ -5,13 +5,14 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
+import { setBranch } from 'src/redux/actions/Branch.Action'
 import { setDepartment } from 'src/redux/actions/Department.action'
-import { setEmployeeName } from 'src/redux/actions/EmpName.Action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const ExperienceReport = () => {
+
+const PermanentEmployeeReport = () => {
 
     /** Initiliazing values */
     const [TableData, setTableData] = useState([]);
@@ -21,30 +22,79 @@ const ExperienceReport = () => {
     const [secondMenu, setsecondmenu] = useState(0)
     const [thirdmenu, setThirdmenu] = useState([])
     const [thirdvalue, setThirdValue] = useState(0);
-    const [sectslno, setdeptslno] = useState([]);
-    const [empslno, setempslno] = useState([]);
+    const [deptslno, setdeptslno] = useState([]);
+    const [sectslno, setsectslno] = useState([]);
     const dispatch = useDispatch();
 
-    /** To get stored department values from redux */
+    /** To get stored branch values from redux */
     useEffect(() => {
+        dispatch(setBranch());
         dispatch(setDepartment());
         dispatch(setDeptWiseSection());
-        dispatch(setEmployeeName());
     }, [dispatch])
 
-    /** useSelector for getting depatment, department section, employee name wise list from redux */
+
+    /** useSelector for getting depatment, department section, branch wise list from redux */
     const state = useSelector((state) => {
         return {
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            empBranch: state.getBranchList.branchList || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
-            empName: state.getEmpNameList.empNameList || 0
+            empDepartment: state.getDepartmentList.empDepartmentList || 0,
         }
     })
     /** Destructuring state into values... */
-    const { empDepartment, deptSection, empName } = state
+    const { empBranch, deptSection, empDepartment } = state
 
-    /** Selction checkbox for department name  */
+    /** Selction checkbox for branch name  */
     const [columnDefs] = useState([
+        {
+            headerName: 'Branch',
+            field: 'branch_name',
+            checkboxSelection: true,
+            headerCheckboxSelectionFilteredOnly: true,
+            headerCheckboxSelection: true,
+            resizable: true,
+        },
+    ])
+
+    /** to get checked branch slno from selection checkbox  */
+    const onSelectionChanged = (event) => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+        if (event.api.getSelectedRows() === 0) {
+            setValue([])
+        }
+        else {
+            setValue(event.api.getSelectedRows())
+        }
+        setsecondmenu(0)
+    }
+
+    /** Intializing slno for getting checked branch slno */
+    useEffect(() => {
+        const arr = value && value.map((val, index) => {
+            return val.branch_slno
+        })
+        setslno(arr)
+    }, [value])
+
+    /** To activate department  search icon */
+    const ShowSecondMenu = useCallback((e) => {
+        setsecondmenu(1)
+    }, [])
+
+    /** code for second menu selection, department list */
+    useEffect(() => {
+        if (secondMenu === 1) {
+            if (slno !== 0) {
+                return empDepartment
+            } else {
+                warningNofity("Please Select Any Branch!")
+            }
+        }
+    }, [secondMenu, slno, empDepartment])
+
+    /** Selection check box for department */
+    const [columnDefDept] = useState([
         {
             headerName: 'Department',
             field: 'dept_name',
@@ -54,69 +104,8 @@ const ExperienceReport = () => {
             resizable: true,
         },
     ])
-    /** Selection check box for department section */
-    const [columnDefDeptSect] = useState([
-        {
-            headerName: 'Department Section',
-            field: 'sect_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-    /** Selection check box for employee name */
-    const [columnDefEmployee] = useState([
-        {
-            headerName: 'Employee Name',
-            field: 'em_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-    /** to get checked department slno from selection checkbox  */
-    const onSelectionChanged = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setValue([])
-        }
-        else {
-            setValue(event.api.getSelectedRows())
-            setsecondmenu(0)
-        }
-        setsecondmenu(0)
-    }
 
-    /** Intializing slno for getting checked department slno */
-
-    useEffect(() => {
-        const arr = value && value.map((val, index) => {
-            return val.dept_id
-        })
-        setslno(arr)
-    }, [value])
-
-    /** To activate department section search icon */
-    const ShowSecondMenu = useCallback((e) => {
-        setsecondmenu(1)
-    }, [])
-
-    const [data, setdata] = useState(slno)
-    /** code for second menu selection, department section list */
-    useEffect(() => {
-        if (secondMenu === 1) {
-            if (slno !== 0) {
-                const filtered = deptSection.filter(val => slno.includes(val.dept_id))
-                setdata(filtered)
-            } else {
-                warningNofity("Please Select Any DIstrict!")
-            }
-        }
-    }, [secondMenu, slno, deptSection])
-
-    /** to get checked department section slno  from selection slno */
+    /** to get checked department slno  from selection slno */
     const onSelectionChanged2 = (event) => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         if (event.api.getSelectedRows() === 0) {
@@ -129,18 +118,44 @@ const ExperienceReport = () => {
         setThirdmenu(0)
     }
 
-    /** to get department section slno by mapping second value */
+    /** to get department slno by mapping second value */
     useEffect(() => {
         const arr2 = secondvalue && secondvalue.map((val, index) => {
-            return val.sect_id
+            return val.dept_id
         })
         setdeptslno(arr2)
     }, [secondvalue])
 
-    /** to activate employee name search icon */
+    /** to activate department sectionicon */
     const ShowthirdMenu = useCallback((e) => {
         setThirdmenu(1)
     }, [])
+
+    const [data, setdata] = useState(deptslno)
+    /** to get deaprtment wise department section from redux */
+    useEffect(() => {
+        if (thirdmenu === 1) {
+            if (deptslno !== 0) {
+                const filtered = deptSection.filter(val => deptslno.includes(val.dept_id))
+                setdata(filtered)
+            }
+            else {
+                warningNofity("please select any Department")
+            }
+        }
+    }, [thirdmenu, deptslno, deptSection])
+
+    /** Selection check box for department */
+    const [columnDefDeptSect] = useState([
+        {
+            headerName: 'Department Section',
+            field: 'sect_name',
+            checkboxSelection: true,
+            headerCheckboxSelectionFilteredOnly: true,
+            headerCheckboxSelection: true,
+            resizable: true,
+        },
+    ])
 
     /** to get checked department section wise employee  from selection slno */
     const onSelectionChanged3 = (event) => {
@@ -153,47 +168,31 @@ const ExperienceReport = () => {
         }
     }
 
-    const [data2, setdata2] = useState(sectslno)
-    /** to get deaprtment section wise employee name from redux */
-    useEffect(() => {
-        if (thirdmenu === 1) {
-            if (sectslno !== 0) {
-                const filter = empName.filter(val => slno.includes(val.em_dept_section))
-                setdata2(filter)
-            }
-            else {
-                warningNofity("please select any Department section")
-            }
-        }
-
-    }, [thirdmenu, sectslno, empName, slno])
-
-    /** to get employee id by mapping thirdvalue */
+    /** to get department section slno by mapping thirdvalue */
     useEffect(() => {
         const arr3 = thirdvalue && thirdvalue.map((val, index) => {
-            return val.em_id
+            return val.sect_id
         })
-        setempslno(arr3)
+        setsectslno(arr3)
     }, [thirdvalue])
 
-    /** stored department slno, department section slno as postData for API Call */
-
+    /** stored department slno, branch slno as postData for API Call */
     const postData = useMemo(() => {
         return {
-            dept_id: slno,
-            sect_id: sectslno
+            branch_slno: slno,
+            dept_id: deptslno
         }
-    }, [sectslno, slno])
+    }, [deptslno, slno])
 
-    /** stored department slno, department section slno, employee id as postDataemp for API Call */
+    /** stored department slno, department section slno, ebranch slno as postDataemp for API Call */
 
     const postDataemp = useMemo(() => {
         return {
-            dept_id: slno,
-            sect_id: sectslno,
-            em_id: empslno
+            branch_slno: slno,
+            dept_id: deptslno,
+            sect_id: sectslno
         }
-    }, [sectslno, slno, empslno])
+    }, [deptslno, slno, sectslno])
 
     /** report ag grid table heading */
     const [columnDefMain] = useState([
@@ -209,23 +208,19 @@ const ExperienceReport = () => {
         { headerName: 'Name ', field: 'em_name' },
         { headerName: 'Dept Name ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
-        { headerName: 'Institution ', field: 'em_institution' },
-        { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'Exp From ', field: 'em_from' },
-        { headerName: 'Exp To ', field: 'em_to' },
-        { headerName: 'Year ', field: 'year' },
-        { headerName: 'Month ', field: 'month' },
-        { headerName: 'Days ', field: 'day' },
+        { headerName: 'Branch ', field: 'branch_name' },
+        { headerName: 'Category ', field: 'ecat_name' },
+        { headerName: 'Date of Joining ', field: 'em_doj' },
 
     ])
-
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */
+
     const getEmployeeExperience = useCallback((e) => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        /** Department wise employee experience */
-        const getEmployeeDepartment = async (slno) => {
-            const result = await axioslogin.post('/experienceReport/expemployee', slno)
+        /** branch wise permanent employee  */
+        const getBranchPermanentEmp = async (slno) => {
+            const result = await axioslogin.post('/PermanentEmpReport/branchwisepermanent', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -234,9 +229,9 @@ const ExperienceReport = () => {
                 setTableData([])
             }
         }
-        /** Department section wise employee experience list */
-        const getEmpDeptSect = async (postData) => {
-            const result = await axioslogin.post('/experienceReport/deptsect', postData)
+        /** Department  wise permanent employee list */
+        const getBranchDeptPermanentEmp = async (postData) => {
+            const result = await axioslogin.post('/PermanentEmpReport/branchdeptwisepermanent', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -245,9 +240,9 @@ const ExperienceReport = () => {
                 setTableData([])
             }
         }
-        /** Selected employee experience list */
-        const getEmployee = async (postDataemp) => {
-            const result = await axioslogin.post('/experienceReport/sectempname', postDataemp)
+        /** Selected branch, department, dept section employee list */
+        const getPermanentEmployee = async (postDataemp) => {
+            const result = await axioslogin.post('/PermanentEmpReport/permanentdetails', postDataemp)
 
             const { success, data } = result.data;
             if (success === 1) {
@@ -257,19 +252,19 @@ const ExperienceReport = () => {
                 setTableData([])
             }
         }
-        if (slno !== 0 && sectslno === 0 && empslno === 0) {
-            getEmployeeDepartment(slno)
+        if (slno !== 0 && deptslno === 0 && sectslno === 0) {
+            getBranchPermanentEmp(slno)
         }
-        else if (slno !== 0 && sectslno !== 0 && empslno === 0) {
-            getEmpDeptSect(postData)
+        else if (slno !== 0 && deptslno !== 0 && sectslno === 0) {
+            getBranchDeptPermanentEmp(postData)
         }
-        else if (slno !== 0 && sectslno !== 0 && empslno !== 0) {
-            getEmployee(postDataemp)
+        else if (slno !== 0 && deptslno !== 0 && sectslno !== 0) {
+            getPermanentEmployee(postDataemp)
         }
         else {
             warningNofity("Please Select Any Checkbox!!")
         }
-    }, [slno, dispatch, sectslno, empslno, postData, postDataemp])
+    }, [slno, dispatch, deptslno, sectslno, postData, postDataemp])
 
     return (
         <Fragment>
@@ -277,30 +272,33 @@ const ExperienceReport = () => {
             <CustomReportMain
                 /** Department checkbox */
                 columnDefs={columnDefs}
-                tableData={empDepartment}
+                tableData={empBranch}
                 onSelectionChanged={onSelectionChanged}
-                menu1={"Department"}
+                //menu1={"Department"}
                 secondMenu={secondMenu}
-                /** Department wise table data */
+
+                /** Permanent Employee List */
                 columnDefMain={columnDefMain}
                 onClick={getEmployeeExperience}
                 tableDataMain={TableData}
                 onSelectionChanged2={onSelectionChanged2}
-                menu2={"Department Section"}
-                menu3={"Employee Name"}
+                menu2={"Department"}
+                menu3={"Department Section"}
                 ShowSecondMenu={ShowSecondMenu}
-                /** Department section checkbox list */
-                columnDefMenu2={columnDefDeptSect}
-                tableDataMenu2={data}
+
+                /** Department checkbox list */
+                columnDefMenu2={columnDefDept}
+                tableDataMenu2={empDepartment}
                 thirdmenu={thirdmenu}
                 onSelectionChanged3={onSelectionChanged3}
+
                 /** Department section wise employee checkbox list */
-                columnDefMenu3={columnDefEmployee}
-                tableDataMenu3={data2}
+                columnDefMenu3={columnDefDeptSect}
+                tableDataMenu3={data}
                 ShowthirdMenu={ShowthirdMenu}
             />
         </Fragment>
     )
 }
 
-export default ExperienceReport
+export default PermanentEmployeeReport

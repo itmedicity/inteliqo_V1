@@ -1,6 +1,6 @@
-import { Paper, Tooltip } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback } from 'react'
 import CusIconButton from './CusIconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
@@ -29,7 +29,7 @@ const CustomReport = ({ columnDefs,
         else {
             dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
         }
-    }, [tableDataMain.length])
+    }, [tableDataMain.length, dispatch])
 
     /** To close the report page and back to the report list */
     const CloseReport = async () => {

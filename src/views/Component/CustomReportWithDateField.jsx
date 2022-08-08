@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material'
+import { Paper, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useCallback, useEffect } from 'react'
 import CusIconButton from './CusIconButton'
@@ -15,8 +15,9 @@ import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { memo } from 'react'
 import { useHistory } from 'react-router-dom'
+import TextInput from './TextInput'
 
-const CustomReportMain = ({
+const CustomReportWithDateField = ({
     secondMenu,
     ShowSecondMenu,
     ShowthirdMenu,
@@ -34,7 +35,9 @@ const CustomReportMain = ({
     onSelectionChanged3,
     thirdmenu,
     tableDataMenu3,
-    columnDefMenu3 }) => {
+    columnDefMenu3,
+    onChange,
+    onChange2 }) => {
 
     const dispatch = useDispatch()
     const history = useHistory()
@@ -137,6 +140,7 @@ const CustomReportMain = ({
                                 columnDefs={columnDefMenu2}
                                 onSelectionChanged={onSelectionChanged2}
                                 tableData={tableDataMenu2}>
+
                             </CustomAgGridMenuSelection>
                             : null}
                     </Paper>
@@ -154,21 +158,22 @@ const CustomReportMain = ({
                             <Paper
                                 square
                                 sx={{
-                                    backgroundColor: '#f0f3f5',
+                                    //backgroundColor: '#f0f3f5',
                                     display: 'flex',
                                     flexWrap: 'wrap',
                                     flexDirection: 'row',
                                     alignItems: 'flex-start',
-                                    p: 2.3,
+                                    gap: 0.1,
+                                    p: 0.3,
 
                                 }}
                             >
+
                             </Paper>
                             <CustomAgGridMenuSelection
                                 sx={{
                                     width: '100%',
                                     height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-
                                 }}
                                 columnDefs={columnDefMenu3}
                                 onSelectionChanged={onSelectionChanged3}
@@ -183,7 +188,6 @@ const CustomReportMain = ({
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
                             height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
-
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -191,30 +195,69 @@ const CustomReportMain = ({
                             square
                             sx={{
                                 backgroundColor: '#f0f3f5',
+                                //backgroundColor: 'red',
                                 display: 'flex',
                                 flexWrap: 'wrap',
-                                flexDirection: 'row-reverse',
+                                flexDirection: 'row',
+                                // alignItems: "",
                                 gap: 0.1,
                                 p: 0.3,
                                 borderLeft: 2,
                                 borderColor: '#d3d3d3',
                             }}
                         >
-                            <CustomeToolTip title="Close" placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={CloseReport}>
-                                        <CloseIcon />
-                                    </CusIconButton>
+                            {/* from text input */}
+                            <Box sx={{ display: "flex", flex: 0, flexDirection: "row", flexWrap: 'nowrap' }} >
+                                <Box sx={{ display: "flex", flex: 1, flexDirection: "row-reverse", }}  >
+                                    <Typography variant="h8">
+                                        {"From"}
+                                    </Typography>
                                 </Box>
-                            </CustomeToolTip>
+                                <Box sx={{ display: "flex", flex: 0, pl: 2 }}>
+                                    <TextInput style={{ width: 150, display: "flex" }} type="date"
+                                        changeTextValue={onChange}
+                                    />
+                                </Box>
+                            </Box>
 
-                            <CustomeToolTip title="Download" placement="bottom">
-                                <Box>
-                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
-                                        <DownloadIcon />
-                                    </CusIconButton>
+                            <Box sx={{
+                                display: "flex", flex: 0, flexDirection: "row", flexWrap: 'nowrap', pl: 2
+                            }}>
+                                <Box sx={{ display: "flex", flex: 2, flexDirection: "row-reverse", }}>
+                                    <Typography variant="h8">
+                                        {"To"}
+                                    </Typography>
                                 </Box>
-                            </CustomeToolTip>
+                                <Box sx={{ display: "flex", flex: 2, pl: 2 }}>
+                                    <TextInput style={{ width: 150, pl: 100 }} type="date"
+                                        changeTextValue={onChange2}
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    flex: 1
+                                }}
+                            >
+                                <CustomeToolTip title="Download" placement="bottom">
+                                    <Box>
+                                        <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
+                                            <DownloadIcon />
+                                        </CusIconButton>
+                                    </Box>
+                                </CustomeToolTip>
+                                <CustomeToolTip title="Close" placement="bottom">
+                                    <Box>
+                                        <CusIconButton variant="outlined" size="sm" color="success" onClick={CloseReport}>
+                                            <CloseIcon />
+                                        </CusIconButton>
+                                    </Box>
+                                </CustomeToolTip>
+                            </Box>
                         </Paper>
                         <Box
                             sx={{
@@ -233,10 +276,10 @@ const CustomReportMain = ({
                     </Paper>
                     {/* Rigth Side Section End */}
                 </Box>
-
+                {/* <Paper square sx={{ backgroundColor: "lightpink" }}  >sdfsdfsdf</Paper> */}
             </Paper >
         </Box >
     )
 }
 
-export default memo(CustomReportMain)
+export default memo(CustomReportWithDateField)
