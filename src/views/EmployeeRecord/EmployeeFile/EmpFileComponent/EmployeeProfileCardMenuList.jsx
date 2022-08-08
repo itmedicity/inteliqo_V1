@@ -110,17 +110,18 @@ const EmployeeProfileCardMenuList = (props) => {
     const JobDescription = () => {
         history.push(`/Home/JobDescriptionEmployee/${id}/${no}`)
     }
-    const listArray = [
-        { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
-        { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
-        { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: AnnualLeaveSettings, slno: 113 },
-        { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: fineorotherdeduction, slno: 114 },
-        { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: SalaryIncrementSettings, slno: 115 },
-        { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: Employeedocumentchecklist, slno: 116 },
-        { color: '#e1bee7', name: 'Vaccination Information', Icon: <EnhancedEncryptionIcon />, funName: Vaccinationinformation, slno: 117 },
-    ]
 
     useEffect(() => {
+        const listArray = [
+            { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
+            { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
+            { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: AnnualLeaveSettings, slno: 113 },
+            { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: fineorotherdeduction, slno: 114 },
+            { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: SalaryIncrementSettings, slno: 115 },
+            { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: Employeedocumentchecklist, slno: 116 },
+            { color: '#e1bee7', name: 'Vaccination Information', Icon: <EnhancedEncryptionIcon />, funName: Vaccinationinformation, slno: 117 },
+        ]
+
         getMenuSlno().then((val) => {
 
             const resultLength = Object.keys(val[0]).length
@@ -137,7 +138,7 @@ const EmployeeProfileCardMenuList = (props) => {
             }
         })
 
-    }, [count, listArray])
+    }, [count])
 
     return (
         < Fragment >

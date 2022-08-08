@@ -1,5 +1,4 @@
 import { axioslogin } from "../Axios/Axios";
-export const API_URL = 'http://192.168.10.179:5000/api';
 
 export const employeeNumber = () => {
 
@@ -34,7 +33,15 @@ export const getProcessserialnum = async () => {
         return serial_current.serial_current
     }
 }
-
+//generating jobid
+export const getJobid = async () => {
+    const result = await axioslogin.get('/jobsummary')
+    const { success } = result.data;
+    const [serial_current] = result.data.data
+    if (success === 1) {
+        return serial_current.serial_current
+    }
+}
 export const SELECT_CMP_STYLE = {
     minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4
 }
@@ -69,7 +76,7 @@ export const getleaverequest = async () => {
     }
 }
 
-export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
+// export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
 
 
 //GET ASSINED MENU LIST
@@ -88,8 +95,18 @@ export const getMenuSlno = async () => {
 //URL EXSIT CHECK FUNCTION
 
 export const urlExist = (url, callBack) => {
-    fetch(url)
-        .then((status) => {
-            callBack(status.status)
-        })
+    const img = new Image();
+    img.src = JSON.parse(url);
+
+    if (img.complete) {
+        callBack(true);
+    } else {
+        img.onload = () => {
+            callBack(true);
+        };
+
+        img.onerror = () => {
+            callBack(false);
+        };
+    }
 }

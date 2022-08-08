@@ -11,6 +11,8 @@ yarn.lock
 # production
 /build
 
+#API Link File
+src/**/**/Static.jsx
 # misc
 #.eslintcache
 #.DS_Store
@@ -26,3 +28,5 @@ yarn.lock
 
 package-lock.json
 yarn.lock
+ApiLink.jsx
+#/test

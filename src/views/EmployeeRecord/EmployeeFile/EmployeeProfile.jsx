@@ -13,7 +13,6 @@ import SessionCheck from 'src/views/Axios/SessionCheck';
 import { ToastContainer } from 'react-toastify';
 
 const EmployeeProfile = () => {
-
     const empCredential = useParams()
     return (
         <Fragment>

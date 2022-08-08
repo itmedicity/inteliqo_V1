@@ -1,7 +1,5 @@
 import Axios from 'axios';
-import { API_URL } from '../Constant/Constant';
-// import { token } from '../Constant/Constant';
-
+import { API_URL } from '../Constant/Static';
 // const accessToken = token();
 
 export const axioslogin = Axios.create({

@@ -137,7 +137,6 @@ const CustomReportMain = ({
                                 columnDefs={columnDefMenu2}
                                 onSelectionChanged={onSelectionChanged2}
                                 tableData={tableDataMenu2}>
-
                             </CustomAgGridMenuSelection>
                             : null}
                     </Paper>
@@ -160,8 +159,7 @@ const CustomReportMain = ({
                                     flexWrap: 'wrap',
                                     flexDirection: 'row',
                                     alignItems: 'flex-start',
-                                    gap: 0.1,
-                                    p: 0.3,
+                                    p: 2.3,
 
                                 }}
                             >
@@ -170,6 +168,7 @@ const CustomReportMain = ({
                                 sx={{
                                     width: '100%',
                                     height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+
                                 }}
                                 columnDefs={columnDefMenu3}
                                 onSelectionChanged={onSelectionChanged3}
@@ -184,6 +183,7 @@ const CustomReportMain = ({
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
                             height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -194,7 +194,6 @@ const CustomReportMain = ({
                                 display: 'flex',
                                 flexWrap: 'wrap',
                                 flexDirection: 'row-reverse',
-                                // alignItems: "",
                                 gap: 0.1,
                                 p: 0.3,
                                 borderLeft: 2,
@@ -234,7 +233,7 @@ const CustomReportMain = ({
                     </Paper>
                     {/* Rigth Side Section End */}
                 </Box>
-                {/* <Paper square sx={{ backgroundColor: "lightpink" }}  >sdfsdfsdf</Paper> */}
+
             </Paper >
         </Box >
     )

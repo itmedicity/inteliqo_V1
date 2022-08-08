@@ -4,7 +4,7 @@ const { FETCH_EMP_EDUCATION } = Actiontypes;
 
 /** to get education id,name from database */
 export const setEducation = () => async (dispatch) => {
-    const result = await axioslogin.get('/reports/education');
+    const result = await axioslogin.get('/QualificationReport/education');
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_EMP_EDUCATION, payload: data, loadingStatus: true })

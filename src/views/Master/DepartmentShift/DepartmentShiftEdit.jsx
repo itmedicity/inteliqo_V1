@@ -39,6 +39,7 @@ const DepartmentShiftEdit = () => {
             }
         }
         getdepartmentShiftData()
+
     }, [selectedDept, updateDepartmentSection, updateSelected, id])
     const postData = {
         dept_id: selectedDept,
@@ -75,6 +76,8 @@ const DepartmentShiftEdit = () => {
             updateDepartmentSection(0)
             updateShifts(0)
             arraydataset([])
+            history.push('/Home/DepartmentShift')
+
         }
         else {
             errorNofity("Error Occured!!!Please Contact EDP")

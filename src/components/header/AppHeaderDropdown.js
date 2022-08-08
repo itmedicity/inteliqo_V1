@@ -14,9 +14,10 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { useHistory } from 'react-router-dom'
 import ProfilePicDefault from './../../assets/images/default.png'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { employeeNumber, PUBLIC_NAS_FOLDER, urlExist } from 'src/views/Constant/Constant'
+import { employeeNumber, urlExist } from 'src/views/Constant/Constant'
 import { useState } from 'react'
 import { Avatar } from '@mui/material'
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 
 const AppHeaderDropdown = () => {
 
@@ -40,11 +41,14 @@ const AppHeaderDropdown = () => {
         // const empiddata = {
         //   em_id: emp_id
         // }
-        const profilePic = `${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`;
+        const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`);
 
         urlExist(profilePic, (status) => {
-          if (status === 200) {
-            setSrc(profilePic)
+
+          if (status === true) {
+            console.log(status)
+            const picUrl = JSON.parse(profilePic)
+            setSrc(picUrl)
           }
         })
       }

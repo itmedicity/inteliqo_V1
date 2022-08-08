@@ -46,6 +46,13 @@ const EmployeeRecord = () => {
         sect_id: selectDeptSection,
         branch_slno: selectBranchMast
     }
+    const postDataBranch = {
+        branch_slno: selectBranchMast
+    }
+    const postDataDept = {
+        branch_slno: selectBranchMast,
+        dept_id: selectedDept,
+    }
     const [active, updateactive] = useState({
         activestatus: true
     })
@@ -127,6 +134,22 @@ const EmployeeRecord = () => {
             }
         } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
             const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+        }
+        else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+            const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+        }
+        else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+            const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)

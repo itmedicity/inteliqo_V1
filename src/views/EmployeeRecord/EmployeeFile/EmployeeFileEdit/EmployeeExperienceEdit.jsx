@@ -14,6 +14,7 @@ import TextInput from 'src/views/Component/TextInput'
 import FooterSaveClosebtn from 'src/views/CommonCode/FooterSaveClosebtn'
 import ReactTooltip from 'react-tooltip'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const EmployeeExperienceEdit = () => {
 
@@ -33,7 +34,8 @@ const EmployeeExperienceEdit = () => {
         total_year: "",
         gross_salary: "",
         workstartdate: format(new Date(), "yyyy-MM-dd"),
-        workenddate: format(new Date(), "yyyy-MM-dd")
+        workenddate: format(new Date(), "yyyy-MM-dd"),
+        tmch_exp: false
     })
     //defaultState
     const defaultState = {
@@ -42,11 +44,12 @@ const EmployeeExperienceEdit = () => {
         total_year: 0,
         gross_salary: "",
         workstartdate: format(new Date(), "yyyy-MM-dd"),
-        workenddate: format(new Date(), "yyyy-MM-dd")
+        workenddate: format(new Date(), "yyyy-MM-dd"),
+        tmch_exp: false
     }
 
     //destructuring
-    const { institution_name, workstartdate, workenddate, gross_salary } = formData
+    const { institution_name, workstartdate, workenddate, gross_salary, tmch_exp } = formData
     //getting data to be edited
     useEffect(() => {
         const getemployeexperience = async () => {
@@ -54,12 +57,13 @@ const EmployeeExperienceEdit = () => {
             const { success, data } = result.data
             if (success === 1) {
                 const { em_institution, em_designation,
-                    em_from, em_to, em_total_year, em_salary } = data[0]
+                    em_from, em_to, em_total_year, em_salary, is_tmch } = data[0]
                 const frmData = {
                     institution_name: em_institution,
                     gross_salary: em_salary,
                     workstartdate: em_from,
                     workenddate: em_to,
+                    tmch_exp: is_tmch
                 }
                 updateDesignation(em_designation)
                 setFormData(frmData)
@@ -86,6 +90,7 @@ const EmployeeExperienceEdit = () => {
         em_id: no,
         emexp_slno: slno,
         em_institution: institution_name,
+        tmch_exp: tmch_exp === false ? 0 : 1,
         em_designation: selectDesignation,
         em_from: moment(workstartdate).format('YYYY-MM-DD'),
         em_to: moment(workenddate).format('YYYY-MM-DD'),
@@ -127,7 +132,7 @@ const EmployeeExperienceEdit = () => {
                                     <div className="card">
                                         <div className="card-body">
                                             <div className="row g-1">
-                                                <div className="col-md-12">
+                                                <div className="col-md-11">
                                                     <TextInput
                                                         type="text"
                                                         classname="form-control form-control-sm"
@@ -135,6 +140,24 @@ const EmployeeExperienceEdit = () => {
                                                         changeTextValue={(e) => updateEmployeeExpFormData(e)}
                                                         value={institution_name}
                                                         name="institution_name"
+                                                    />
+                                                </div>
+                                                <div className="col-md-1 " data-tip="Medicity Experience" data-for='toolTip1' data-place='top'>
+                                                    <ReactTooltip id="toolTip1" />
+                                                    <FormControlLabel
+                                                        className=""
+                                                        control={
+                                                            <Checkbox
+                                                                name="tmch_exp"
+                                                                color="secondary"
+                                                                value={tmch_exp}
+                                                                checked={tmch_exp}
+                                                                className="pl-2 pt-1 pb-1"
+                                                                onChange={(e) => {
+                                                                    updateEmployeeExpFormData(e)
+                                                                }}
+                                                            />
+                                                        }
                                                     />
                                                 </div>
                                                 <div className="col-md-12">

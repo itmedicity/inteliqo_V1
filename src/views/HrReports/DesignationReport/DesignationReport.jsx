@@ -13,7 +13,6 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useMemo } from 'react';
 import { ToastContainer } from 'react-toastify';
 
-
 const DesignationReport = () => {
 
     /** to get stored designation values from redux */
@@ -103,7 +102,7 @@ const DesignationReport = () => {
         e.preventDefault();
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const getdatafromTable = async (serialslno) => {
-            const result = await axioslogin.post('/reports/designation/ById', serialslno)
+            const result = await axioslogin.post('/DesignationReport/designation/ById', serialslno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -120,9 +119,6 @@ const DesignationReport = () => {
         }
     }, [serialslno, dispatch])
 
-
-
-
     return (
         <Fragment>
             <ToastContainer />
@@ -137,9 +133,6 @@ const DesignationReport = () => {
                 columnDefMain={columnDefMain}
                 tableDataMain={TableData}
                 sortingOrder={sortingOrder}
-
-
-
             />
         </Fragment>
     )

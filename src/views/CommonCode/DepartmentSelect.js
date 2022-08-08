@@ -4,10 +4,14 @@ import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { setDepartment } from '../../redux/actions/Department.action';
 import { useDispatch, useSelector } from 'react-redux';
 
-const DepartmentSelect = (props) => {
+const DepartmentSelect = ({ style, disabled }) => {
     const dispatch = useDispatch()
     const [deptData, setdeptData] = useState([]);
-    const { selectedDept, updateSelected } = useContext(PayrolMasterContext);
+    useEffect(() => {
+        dispatch(setDepartment())
+    }, [])
+
+    const { selectedDept, updateSelected, updateSelectedName } = useContext(PayrolMasterContext);
     const departments = useSelector((state) => {
         return state.getDepartmentList.empDepartmentList
     })
@@ -23,30 +27,38 @@ const DepartmentSelect = (props) => {
             updateSelected(0)
         )
     }, [updateSelected, departments]);
+    // labeldata 
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        updateSelectedName(selectedText)
 
+    }
 
-    useEffect(() => {
-        dispatch(setDepartment())
-    }, [])
 
     return (
         <Fragment>
             <FormControl
                 fullWidth
                 margin="dense"
-                className="mt-1"
+                size='small'
+            // className="mt-1"
+            // style={{ backgroundColor: "yellow" }}
             >
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="selectedDept"
                     value={selectedDept}
-                    onChange={(e) => updateSelected(e.target.value)}
+                    onChange={(e) => {
+                        updateSelected(e.target.value)
+                        getlaeldat(e)
+                    }}
                     fullWidth
                     variant="outlined"
-                    className="ml-3"
+                    // className="ml-3"
                     defaultValue={0}
-                    style={props.style}
+                    style={{ ...style }}
+                    disabled={disabled}
                 >
                     <MenuItem value='0' disabled>
                         Select Department

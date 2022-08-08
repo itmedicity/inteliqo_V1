@@ -175,6 +175,13 @@ const ContractRenewReport = React.lazy(() => import('./views/HrReports/ContractR
 const ContractCurrentRunningReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractCurrentRunningReport'))
 const OneYearCurrentRunning = React.lazy(() => import('./views/HrReports/ContractReports/OneYearCurrentRunning'))
 const ResignedEmpReport = React.lazy(() => import('./views/HrReports/EmployeeReport/ResignReport'))
+const DesignationExpReport = React.lazy(() => import('./views/HrReports/DesignatiopnExpeReport/DesignationExpReport'))
+const DeptSubSectionReport = React.lazy(() => import('./views/HrReports/DeptSubSectionReport/DeptSubSectionReport'))
+const TraningProbaReport = React.lazy(() => import('./views/HrReports/TrainingProbaReport/TraningProbaReport'))
+const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordTable'))
+const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
+const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
+const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
 
 
 const routes = [
@@ -356,9 +363,14 @@ const routes = [
   { path: '/Home/ContractRenewReport', exact: true, name: 'Contract Closed Report', component: ContractRenewReport },
   { path: '/Home/ContractCurrentRunningReport', exact: true, name: 'Contract Current Running Report', component: ContractCurrentRunningReport },
   { path: '/Home/ContractOneYear+CurrentReport', exact: true, name: 'Contract One Year + Current Running Report', component: OneYearCurrentRunning },
-  { path: '/Home/ResignedEmpReport', exact: true, name: 'Resigned Report', component: ResignedEmpReport }
-
-
+  { path: '/Home/ResignedEmpReport', exact: true, name: 'Resigned Report', component: ResignedEmpReport },
+  { path: '/Home/DesignationExpReport', exact: true, name: 'Employee Designation wise Experience Report', component: DesignationExpReport },
+  { path: '/Home/DeptSubSectionReport', exact: true, name: 'Employee Dept subSection Report', component: DeptSubSectionReport },
+  { path: '/Home/TraningProbaReport', exact: true, name: 'Training and probation report', component: TraningProbaReport }
+  { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
+  { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
+  { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
+  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA }
 
 ]
 
