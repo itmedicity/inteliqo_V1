@@ -4,7 +4,7 @@ const PerformanceApproval = [
         men_slno: 49,
         component: CNavItem,
         name: 'Performance Appraisal List',
-        to: '/homes',
+        to: '/Home/PerformanceAppraisal',
     },
     {
         men_slno: 50,

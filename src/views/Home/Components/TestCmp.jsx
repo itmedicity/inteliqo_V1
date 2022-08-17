@@ -64,6 +64,12 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const RegistRenew = () => {
         history.push(`/Home/RegistrationRenew`)
     }
+    const ProbationEnd = () => {
+        history.push(`/Home/LeaveUser`)
+    }
+    const Annual = () => {
+        history.push(`/Home/LeaveUser`)
+    }
 
     const notificationListWindow = (slno) => {
         return slno === 133 && Leaverequest ||
@@ -83,7 +89,9 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 147 && ResignInch ||
             slno === 148 && ResignHod ||
             slno === 149 && ResignCeo ||
-            slno === 154 && RegistRenew
+            slno === 154 && RegistRenew ||
+            slno === 187 && ProbationEnd ||
+            slno === 188 && Annual
     }
 
     return (

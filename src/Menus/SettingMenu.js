@@ -12,6 +12,7 @@ export const py_setting_one = [
     { to: '/Home/DueClearenceDepartment', name: 'Due Clearence Department', slno: 121 },
     { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
     { to: '/Home/KRA', name: 'Key Result Areas', slno: 177 },
+    { to: '/Home/PerformanceGradeMaster', name: 'Performance Grade', slno: 184 },
 
 ]
 
@@ -42,7 +43,10 @@ export const py_setting_three = [
     { to: '/Home/RegistrationType', name: 'Registration Type', slno: 103 },
     { to: '/Home/BoardEdu', name: 'Board Master', slno: 104 },
     { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
-    { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 }
+    { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 },
+
+
+
 ]
 
 export const userManagement_one = [

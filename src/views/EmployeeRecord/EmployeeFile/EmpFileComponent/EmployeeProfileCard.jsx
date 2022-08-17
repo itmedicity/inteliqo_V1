@@ -2,7 +2,7 @@
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { urlExist } from 'src/views/Constant/Constant'
+import { employeeNumber, urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'
@@ -19,9 +19,9 @@ import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const EmployeeProfileCard = () => {
     const { no } = useParams()
-    const [src, setSrc] = useState(ProfilePicDefault)
+    //const [src, setSrc] = useState(ProfilePicDefault)
     // const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
-    const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
+    //const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
 
 
     // const empidd = {
@@ -32,6 +32,7 @@ const EmployeeProfileCard = () => {
         return { em_id: no }
     }, [no])
 
+    const { em_id } = empiddata
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(setPersonalData(no))
@@ -42,22 +43,49 @@ const EmployeeProfileCard = () => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
 
+    // useEffect(() => {
+    //     const getProfilePicInform = async () => {
+    //         const result = await axioslogin.post('/upload', empiddata);
+    //         const { data } = result.data;
+    //         var { hrm_profile } = data[0];
+    //         if (hrm_profile === 1) {
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === 200) {
+    //                     setSrc(profilePic)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     getProfilePicInform()
+    //     //getting the personal details
+    // }, [empiddata, profilePic])
+
+
+    const [src, setSrc] = useState(ProfilePicDefault)
+
     useEffect(() => {
-        const getProfilePicInform = async () => {
-            const result = await axioslogin.post('/upload', empiddata);
-            const { data } = result.data;
-            var { hrm_profile } = data[0];
-            if (hrm_profile === 1) {
+        const getEmpIdforProfilePic = async () => {
+            // const result = await axioslogin.get(`/common/getempid/${employeeNumber()}`)
+            // const { success, data } = result.data
+            if (em_id > 0) {
+
+                //const { emp_id } = data[0]
+                // const empiddata = {
+                //   em_id: emp_id
+                // }
+                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + em_id}/profilePic.jpg`);
+
                 urlExist(profilePic, (status) => {
-                    if (status === 200) {
-                        setSrc(profilePic)
+
+                    if (status === true) {
+                        const picUrl = JSON.parse(profilePic)
+                        setSrc(picUrl)
                     }
                 })
             }
         }
-        getProfilePicInform()
-        //getting the personal details
-    }, [empiddata, profilePic])
+        getEmpIdforProfilePic()
+    }, [])
 
     return (
         <Fragment>

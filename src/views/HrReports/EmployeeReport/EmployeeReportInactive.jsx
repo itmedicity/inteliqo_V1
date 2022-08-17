@@ -178,17 +178,17 @@ const EmployeeReportInactive = () => {
     /** stored department slno, branch slno as postData for API Call */
     const postData = useMemo(() => {
         return {
-            branch_slno: slno,
-            dept_id: deptslno
+            em_branch: slno,
+            em_department: deptslno
         }
     }, [deptslno, slno])
 
     /** stored department slno, department section slno, ebranch slno as postDataemp for API Call */
     const postDataemp = useMemo(() => {
         return {
-            branch_slno: slno,
-            dept_id: deptslno,
-            sect_id: sectslno
+            em_branch: slno,
+            em_department: deptslno,
+            em_dept_section: sectslno
         }
     }, [deptslno, slno, sectslno])
 

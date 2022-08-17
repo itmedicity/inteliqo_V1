@@ -1,45 +1,26 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import Avatar from '@mui/joy/Avatar';
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { ListDivider, ListItemContent, ListItemDecorator } from '@mui/joy';
-import image1 from '../../../assets/images/avatars/1.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { colorList } from 'src/views/Constant/Constant';
-import { setBirthdayAlert } from 'src/redux/actions/Birthday.Action';
+import { setBirthdayAlert } from 'src/redux/actions/Birthday.Action'
 import CustomAvatar from './CustomAvatar';
-import { CircularProgress } from '@mui/material';
+import CakeIcon from '@mui/icons-material/Cake';
 
-const AnnouncementList = () => {
+const BirthdayList = () => {
+
     const dispatch = useDispatch();
-    const [flag, setflag] = useState(false)
-
     useEffect(() => {
         dispatch(setBirthdayAlert());
-        setflag(true)
     }, [dispatch])
-    /** get announcement list from redux */
-    const Announcementlist = useSelector((state) => {
-        return state.getAnnouncementList.AnnouncementList
-    })
 
-    /**get birthday employee details*/
     const empBirthday = useSelector((state) => {
         return state.getBirthdayList.empBirthdayList
     })
-    Announcementlist.push(...empBirthday)
-    // const [List, setList] = useState(Announcementlist)
-    // useEffect(() => {
-    //     if (empBirthday.length !== 0) {
-    //         setList([...List, ...empBirthday])
-    //     }
-    // }, [empBirthday])
-    // console.log(List);
-    const msg = "Happy Birthday!!"
-
 
     return (
         <Sheet
@@ -48,7 +29,7 @@ const AnnouncementList = () => {
                 p: 1,
                 borderRadius: 'sm',
                 Width: '100%',
-                height: 470,
+                height: 250,
 
             }}
         >
@@ -63,7 +44,7 @@ const AnnouncementList = () => {
                     mb: 2,
                 }}
             >
-                Today &apos; s Announcement
+                Today &apos; s Birthday
             </Typography>
             <Box role="group" aria-labelledby="member" >
                 <List
@@ -72,22 +53,17 @@ const AnnouncementList = () => {
                 >
                     <Box sx={{ height: 410, overflowY: "auto" }} className="ListItemScrol" >
                         {
-                            Announcementlist && Announcementlist.map((val, ind) => {
+                            empBirthday && empBirthday.map((val, ind) => {
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-                                            {/* <Avatar src={image1} /> */}
-
-                                            <Suspense fallback={<CircularProgress />} >
-                                                <CustomAvatar id={val.em_id} />
-                                            </Suspense>
-
-                                            {/* <CustomAvatar id={val.em_id} src={image1} /> */}
+                                            <CustomAvatar id={val.em_id} />
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography>{val.Announcementheading || val.em_name}</Typography>
+                                            <Typography>{val.em_name}</Typography>
                                             <Typography level="body2" noWrap sx={{ color: "white" }} >
-                                                {val.Announcement || msg}
+                                                Happy Birthday!!!
+                                                <CakeIcon fontSize='small' />
                                             </Typography>
                                         </ListItemContent>
                                     </ListItem>
@@ -102,4 +78,4 @@ const AnnouncementList = () => {
     )
 }
 
-export default AnnouncementList
+export default BirthdayList

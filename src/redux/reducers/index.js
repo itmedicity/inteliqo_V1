@@ -33,6 +33,8 @@ import { getBranchList } from '../reducers/BranchReducer';
 import { getDashboardNotification } from './Dashboard.Reducer';
 import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
+import { getBirthdayList } from '../reducers/Birthday.Reducer'
+import { getGradeList } from '../reducers/Grade.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -70,6 +72,8 @@ const reducer = combineReducers({
     getBranchList,
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
+    getBirthdayList,
+    getGradeList,
 })
 
 export default reducer;

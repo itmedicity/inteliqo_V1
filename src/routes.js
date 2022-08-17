@@ -182,6 +182,9 @@ const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/Empl
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
 const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
+const PerformanceGrade = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGrade'))
+const PerformanceGradeEdit = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGradeEdit'))
+const PerformanceAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/PerformanceAppraisalList')))
 
 
 const routes = [
@@ -370,7 +373,12 @@ const routes = [
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
   { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
-  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA }
+  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA },
+  { path: '/Home/PerformanceGradeMaster', exact: true, name: 'Performance Grade', component: PerformanceGrade },
+  { path: '/Home/PerformanceGradeEdit/:id', exact: true, name: 'Performance Grade', component: PerformanceGradeEdit },
+  { path: '/Home/PerformanceAppraisal', exact: true, name: 'Performance Appraisal', component: PerformanceAppraisalList },
+
+
 
 ]
 
