@@ -23,6 +23,7 @@ import { setPersonalData } from 'src/redux/actions/Profile.action';
 import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 
+
 const JobSummary = React.lazy(() => import('./JobDescEmpComponent/JobSummaryEmp'));
 const DutyRespos = React.lazy(() => import('./JobDescEmpComponent/DutiesEmp'));
 const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
@@ -48,6 +49,7 @@ const JobDescriptionEmployee = () => {
     const Redirect = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
+
     useEffect(() => {
         const checkJobDesc = async () => {
             const checkData = {
@@ -93,6 +95,7 @@ const JobDescriptionEmployee = () => {
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
+
                         </Paper>
 
                         {/* Depertment Selection Box */}

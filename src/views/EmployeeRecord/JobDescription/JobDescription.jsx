@@ -15,6 +15,9 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import Competency from './Competency';
+import PreviewIcon from '@mui/icons-material/Preview';
+import { useCallback } from 'react';
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
@@ -46,6 +49,10 @@ const JobDescription = () => {
     const Redirect = async () => {
         history.push(`/Home`)
     }
+
+    const toTable = useCallback(() => {
+        history.push('/Home/JobDescriptionTable')
+    })
     return (
         <Fragment>
             <ToastContainer />
@@ -64,6 +71,11 @@ const JobDescription = () => {
                                     Job Description
                                 </Typography>
                             </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ px: 1 }}>
+                            <IconButton variant="outlined" size='sm'>
+                                <PreviewIcon size={22} sx={{ color: "#37575f" }} onClick={toTable} />
+                            </IconButton>
                         </Box>
                         <Box >
                             <IconButton variant="outlined" size='sm' onClick={Redirect}>
@@ -112,12 +124,24 @@ const JobDescription = () => {
 
                     </Suspense>
 
-                    {/* Job Specification : Performance & Competency */}
+                    {/* Job Specification : Performance */}
                     <Suspense fallback={<Progress />} >
                         <Performance
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                         />
+                        {/* <Competency /> */}
+                    </Suspense>
+
+
+                    <Suspense fallback={<Progress />} >
+                        <Competency
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                        />
+
+
+                        {/* <Competency /> */}
                     </Suspense>
 
                     {/* Generic */}

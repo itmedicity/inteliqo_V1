@@ -58,6 +58,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
         setPerformance([...perfomance, keyperformance])
         setFormData(defaultState)
     }
+
     //function for editing kra details
     useEffect(() => {
         if (editKra > 0) {
@@ -146,7 +147,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
     return (
         <Fragment>
             <ToastContainer />
-            {/* Job Specification : Performance & Competency */}
+            {/* Job Specification : Performance  */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
                     <Typography
@@ -154,7 +155,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                         level="body2"
                         sx={{ flex: 2 }}
                     >
-                        Job Specification : Performance & Competency
+                        Job Specification : Performance
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
@@ -200,7 +201,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                                 onChange={(e) => updatKeyPerformance(e)}
                             />
                         </Box>
-                        <Box sx={{ flex: 2 }} >
+                        {/* <Box sx={{ flex: 2 }} >
                             <TextareaAutosize
                                 style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                                 minRows={1}
@@ -209,7 +210,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                                 value={competency}
                                 onChange={(e) => updatKeyPerformance(e)}
                             />
-                        </Box>
+                        </Box> */}
                         <Box sx={{ flex: 0, px: 1 }} >
                             <IconButton variant="outlined" size='sm' onClick={AddKraDataToTable} >
                                 <AddToPhotosIcon />
