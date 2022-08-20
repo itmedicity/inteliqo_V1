@@ -19,6 +19,7 @@ import Competency from './Competency';
 import PreviewIcon from '@mui/icons-material/Preview';
 import { useCallback } from 'react';
 
+
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
 const Performance = React.lazy(() => import('./Performance'));
@@ -51,7 +52,7 @@ const JobDescription = () => {
     }
 
     const toTable = useCallback(() => {
-        history.push('/Home/JobDescriptionTable')
+        history.push('/Home/JobDescriptionCmpEdit')
     })
     return (
         <Fragment>

@@ -155,7 +155,6 @@ const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/Employee
 const PayrollProces = React.lazy(() => import('./views/Payroll/PayrollProcess/PayrollProcess'))
 const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
-const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionEdit'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeRecordVerification/EmployeeRecordVerification'))
 const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
@@ -182,8 +181,7 @@ const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/Empl
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
 const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
-const JobDescriptionTable = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionTable'))
-
+const JobDescriptionCmpEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionCmpEdit'))
 
 const routes = [
 
@@ -345,7 +343,6 @@ const routes = [
   { path: '/Home/PayrollProcess', exact: true, name: 'Payroll Process', component: PayrollProces },
   { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
-  { path: '/Home/JobDescriptionEdit/:id', exact: true, name: 'JobDescription Edit', component: JobDescriptionEdit },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
   { path: '/Home/EmployeeRecordVerification', exact: true, name: 'Employee Record Verification', component: EmployeeRecordVerification },
   { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
@@ -372,7 +369,7 @@ const routes = [
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
   { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
   { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA },
-  { path: '/Home/JobDescriptionTable', exact: true, name: 'JobDescriptionTable', component: JobDescriptionTable }
+  { path: '/Home/JobDescriptionCmpEdit', exact: true, name: 'JobDescriptionCmpEdit', component: JobDescriptionCmpEdit }
 ]
 
 export default routes

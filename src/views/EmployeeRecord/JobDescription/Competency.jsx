@@ -119,6 +119,7 @@ const Competency = ({ selectDesignation, selectedDept }) => {
 
                     }
                 })
+                // console.log(saveDuties);
                 const result = await axioslogin.post('/jobsummary/jobcompetency', saveDuties)
                 const { success, message } = result.data
                 if (success === 1) {
