@@ -182,6 +182,7 @@ const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/Empl
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
 const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
+const EmpProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/Profile'))
 
 
 const routes = [
@@ -370,8 +371,8 @@ const routes = [
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
   { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
-  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA }
-
+  { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA },
+  { path: '/Home/Prfle/:id/:no', exact: true, name: 'Employee Profile', component: EmpProfile }
 ]
 
 export default routes

@@ -43,21 +43,23 @@ const EmployeeProfileCard = () => {
     })
 
     useEffect(() => {
-        const getProfilePicInform = async () => {
-            const result = await axioslogin.post('/upload', empiddata);
-            const { data } = result.data;
-            var { hrm_profile } = data[0];
-            if (hrm_profile === 1) {
+        const getEmpIdforProfilePic = async () => {
+            if (no > 0) {
+                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`);
+
                 urlExist(profilePic, (status) => {
-                    if (status === 200) {
-                        setSrc(profilePic)
+
+                    if (status === true) {
+                        console.log(status)
+                        const picUrl = JSON.parse(profilePic)
+                        setSrc(picUrl)
                     }
                 })
             }
         }
-        getProfilePicInform()
-        //getting the personal details
-    }, [empiddata, profilePic])
+        getEmpIdforProfilePic()
+    }, [no])
+
 
     return (
         <Fragment>

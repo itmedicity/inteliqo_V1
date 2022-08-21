@@ -33,6 +33,7 @@ import { getBranchList } from '../reducers/BranchReducer';
 import { getDashboardNotification } from './Dashboard.Reducer';
 import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
+import { getMenuRenderCompRights } from './CardMenuSlnoRender';
 
 const reducer = combineReducers({
     changeState,
@@ -70,6 +71,7 @@ const reducer = combineReducers({
     getBranchList,
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
+    getMenuRenderCompRights
 })
 
 export default reducer;
