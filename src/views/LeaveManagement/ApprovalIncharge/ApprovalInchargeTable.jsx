@@ -10,6 +10,7 @@ import ModelNopunch from '../LeaveCommonComponent/ModelNopunch';
 import ModelCompenOff from '../LeaveCommonComponent/ModelCompenOff';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 const ApprovalInchargeTable = ({ leavereq, levtpevalue, authority, setleavereq, DeptSect }) => {
+    console.log(leavereq)
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     // get leave mast data

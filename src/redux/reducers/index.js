@@ -34,6 +34,10 @@ import { getDashboardNotification } from './Dashboard.Reducer';
 import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
 import { getMenuRenderCompRights } from './CardMenuSlnoRender';
+import { getBirthdayList } from '../reducers/Birthday.Reducer'
+import { getGradeList } from '../reducers/Grade.Reducer'
+import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
+import { getContractClosedata } from '../reducers/ContractRenewalReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -71,7 +75,11 @@ const reducer = combineReducers({
     getBranchList,
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
-    getMenuRenderCompRights
+    getMenuRenderCompRights,
+    getBirthdayList,
+    getGradeList,
+    getHODInchargeNameList,
+    getContractClosedata,
 })
 
 export default reducer;
