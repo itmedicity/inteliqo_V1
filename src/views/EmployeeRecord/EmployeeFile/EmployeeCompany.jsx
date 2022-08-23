@@ -120,6 +120,7 @@ const EmployeeCompany = () => {
         if ((getemployeecategory !== cat.catemp) && (getemployeecategory !== 0)) {
             const getEmpType = async () => {
                 const result = await axioslogin.get(`/empmast/getEmpTypeDesg/${getemployeecategory}`)
+                console.log(result)
                 const { success, data } = result.data
                 if (success === 1) {
                     const { emp_type, des_type } = data[0]

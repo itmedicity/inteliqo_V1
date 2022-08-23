@@ -27,7 +27,7 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
         else {
             dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
         }
-    }, [tableDataMain.length, dispatch])
+    }, [tableDataMain.length])
 
     /** To close the report page and back to the report list */
 
@@ -113,7 +113,7 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
                                     flexDirection: 'row',
                                     alignItems: 'flex-start',
                                     gap: 0.1,
-                                    p: 2.4,
+                                    p: 0.3,
                                 }}
                             >
                             </Paper>

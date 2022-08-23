@@ -45,9 +45,9 @@ const HolidayLeaveList = ({ hldnodata, no }) => {
                                         {val.hld_desc.toLowerCase()}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_allowed}</div>
                                 <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_credit}</div>
                                 <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.hl_lv_taken}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{parseInt(val.hl_lv_credit) - parseInt(val.hl_lv_taken)}</div>
                             </div>
                         </li>;
                     })

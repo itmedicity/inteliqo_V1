@@ -7,14 +7,12 @@ import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DesignationMast from 'src/views/CommonCode/DesignationMast';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom';
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
@@ -127,9 +125,6 @@ const JobDescription = () => {
                             selectedDept={selectedDept}
                         />
                     </Suspense>
-
-
-
                 </Paper>
             </Box>
         </Fragment >

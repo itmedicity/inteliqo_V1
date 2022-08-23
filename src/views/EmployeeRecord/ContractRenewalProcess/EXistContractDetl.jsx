@@ -1,19 +1,17 @@
 import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
-import { Box, IconButton, Paper } from '@mui/material'
-import { differenceInDays } from 'date-fns'
+import { Box, Chip, IconButton, Paper } from '@mui/material'
+import { differenceInDays, eachDayOfInterval } from 'date-fns'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
-import { useHistory, useParams } from 'react-router-dom';
-import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useDispatch, useSelector } from 'react-redux';
+import { Actiontypes } from 'src/redux/constants/action.type'
+import moment from 'moment';
 
 
-
-const ContractInformation = () => {
-    const { id, no } = useParams()
-    const history = useHistory()
+const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setgraceperiod, setattendanceDays, setOldctaegory }) => {
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -50,19 +48,48 @@ const ContractInformation = () => {
                     sect_name: sect_name
                 }
                 setFormData(frmData)
-            }
-            else if (success === 0) {
-                warningNofity("There Is No Contract Against This Employee")
-            }
-            else {
-                errorNofity("Error Occured!!Please Contact EDP")
+                setContractEnd(em_cont_end)
+                setgraceperiod(cont_grace)
+                setOldctaegory(em_category)
+                const date = new Date(em_cont_end)
+                var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                const length = differenceInDays(new Date(em_cont_end), new Date(firstDay))
+                setattendanceDays(length)
             }
         }
         getcontractInformation()
     }, [no])
-    const redirect = async () => {
-        history.push('/Home')
+    //useEffect for getting fine Deatails
+    useEffect(() => {
+        const getFinedetl = async () => {
+            const result = await axioslogin.get(`/empfinededuction/totalfine/byemid/${no}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                setFine(data[0].fine_sum)
+            }
+            else {
+                setFine(0)
+            }
+        }
+        getFinedetl()
+
+    }, [id])
+
+    //function for Closing first contract
+    const dispatch = useDispatch()
+    const ContractClose = async () => {
+        dispatch({
+            type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
+                em_cont_close: 'C',
+                em_cont_compl_status: 'C',
+                em_cont_renew: 'R',
+                em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+                em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+                em_no: id
+            }
+        })
     }
+
     return (
         <Fragment>
             <Paper square elevation={0} sx={{
@@ -73,14 +100,21 @@ const ContractInformation = () => {
                 <Box sx={{ flex: 1 }}>
                     <CssVarsProvider>
                         <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                            Contract Information
+                            Existing Contract Details
                         </Typography>
                     </CssVarsProvider>
                 </Box>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton className="p-1" onClick={redirect}>
-                        <WrongLocationRoundedIcon className="text-info" size={22} />
-                    </IconButton>
+                    <Chip
+                        icon={
+                            <IconButton className="p-1" >
+                                <WrongLocationRoundedIcon className="text-info" size={22} />
+                            </IconButton>
+                        }
+                        label="Contract Close"
+                        onClick={ContractClose}
+                        clickable={true}
+                    />
                 </Box>
             </Paper>
             <Paper sx={{
@@ -222,11 +256,11 @@ const ContractInformation = () => {
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
-                                <Typography level="body1">{em_cont_end === '' ? 0 : differenceInDays(new Date(em_cont_end), new Date())}</Typography>
+                                <Typography level="body1">{differenceInDays(new Date(em_cont_end), new Date())}</Typography>
                             </CssVarsProvider>
                         </Box>
                     </Box>
-                    {/* <Box sx={{ display: "flex", width: "100%" }} >
+                    <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
                                 <Typography level="body1">Fine Amount</Typography>
@@ -237,11 +271,11 @@ const ContractInformation = () => {
                                 <Typography level="body1">{fine}</Typography>
                             </CssVarsProvider>
                         </Box>
-                    </Box> */}
+                    </Box>
                 </Paper>
             </Paper>
         </Fragment>
     )
 }
 
-export default ContractInformation
+export default EXistContractDetl
