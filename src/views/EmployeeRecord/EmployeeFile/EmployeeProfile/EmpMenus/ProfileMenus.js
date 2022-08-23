@@ -53,6 +53,11 @@ const ProfileMenus = () => {
                             startDecorator={
                                 <LanOutlinedIcon fontSize='md' color='primary' />
                             }
+                            endDecorator={
+                                <Typography>
+                                    |
+                                </Typography>
+                            }
                             px={1}
                         >
                             Information Technology

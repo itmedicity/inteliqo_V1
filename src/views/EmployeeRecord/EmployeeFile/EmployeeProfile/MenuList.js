@@ -29,74 +29,6 @@ const MenuList = ({ id, no }) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    // const appplicationform = () => {
-    //     history.push(`/Home/ApplicationForm/${id}/${no}/${0}`)
-    // }
-    // // Personal Information
-    // const personalInformation = () => {
-    //     history.push(`/Home/PersonalInformation/${id}/${no}`)
-    // }
-    // //Employee Qualification
-    // const EmpQualification = () => {
-    //     history.push(`/Home/EmployeeQualification/${id}/${no}`)
-    // }
-    // //Employee Experience
-    // const Employeexperience = () => {
-    //     history.push(`/Home/EmployeeExperience/${id}/${no}`)
-    // }
-    // //Statutory Informnation
-    // const StatutoryInformation = () => {
-    //     history.push(`/Home/StatutoryInformation/${id}/${no}`)
-    // }
-    // //Contract Informnation
-    // const ContractInformation = () => {
-    //     history.push(`/Home/ContractInformation/${id}/${no}`)
-    // }
-    // //Employee Company
-    // const EmployeeCompany = () => {
-    //     history.push(`/Home/EmployeeCompany/${id}/${no}`)
-    // }
-    // //Salary Information
-    // const SalaryInformation = () => {
-    //     history.push(`/Home/SalaryInformation/${id}/${no}`)
-    // }
-    // //Allownace Information
-    // const allowance = () => {
-    //     history.push(`/Home/EmployeeAllowance/${id}/${no}`)
-    // }
-    // //Annual Leave Settngs
-    // const AnnualLeaveSettings = () => {
-    //     history.push(`/Home/AnnualLeaveSettings/${id}/${no}`)
-    // }
-    // //Employee Training
-    // const EmployeeTrainingInformation = () => {
-    //     // history.push(`/Home/EmployeeTraining/${4516}`)
-    // }
-    // //Salary Increment Settings
-    // const SalaryIncrementSettings = () => {
-    //     history.push(`/Home/SalaryIncrement/${id}/${no}`)
-    // }
-    // //Employee document checklist
-    // const Employeedocumentchecklist = () => {
-    //     history.push(`/Home/EmployeeDocumentChecklist/${id}/${no}`)
-    // }
-    // //Vaccination Information
-    // const Vaccinationinformation = () => {
-    //     // history.push(`/Home/VaccinationInformation/${4516}`)
-    // }
-    // //fine or other deduction
-    // const fineorotherdeduction = () => {
-    //     history.push(`/Home/FineorDeduction/${id}/${no}`)
-    // }
-    // //employee end of service
-    // const endofservice = () => {
-    //     // history.push(`/Home/EmployeeEndofService/${4516}`)
-    // }
-    // //job description
-    // const JobDescription = () => {
-    //     history.push(`/Home/JobDescriptionEmployee/${id}/${no}`)
-    // }
-
     //get module rights
     const modulerights = useSelector((state) => {
         return state?.getModuleRightList?.modulerightsList.map(ele => ele.menu_slno) || []
@@ -138,23 +70,6 @@ const MenuList = ({ id, no }) => {
             height: { xxl: 520, xl: 375, lg: 230, md: 200, sm: 100, xs: 100 }
         }} >
             <CssVarsProvider>
-                {/* <Box sx={{ py: 0.5 }} >
-                    <Chip
-                        disabled
-                        variant="solid"
-                        color="neutral"
-                        onClick={() => alert('You clicked the chip!')}
-                        // startDecorator={<Wifi />}
-                        // endDecorator={<KeyboardArrowRight />}
-                        sx={{ display: 'flex', flex: 1 }}
-                        size="md"
-                    >
-                        <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
-                            Employee File Menus
-                        </Typography>
-                    </Chip>
-                </Box> */}
-
                 <Box sx={{ overflowY: "auto", paddingY: 0, '::-webkit-scrollbar': { display: "none" } }} >
                     {
                         newMenu.map((val, index) => {

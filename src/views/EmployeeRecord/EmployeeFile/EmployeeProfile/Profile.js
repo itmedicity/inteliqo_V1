@@ -1,5 +1,5 @@
 import { Box, createTheme, ThemeProvider, Paper, Card, CardMedia, CardContent, CardActionArea } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Chip, CssVarsProvider, Typography } from '@mui/joy';
 import AspectRatio from '@mui/joy/AspectRatio';
 import ImageIcon from '@mui/icons-material/Image';
@@ -18,6 +18,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import ProfileCard from './ProfileCard';
 import { useHistory, useParams } from 'react-router-dom';
 import MenuRenderWind from './MenuRenderWind';
+import { useDispatch } from 'react-redux';
+import {
+    getannualleave,
+    getContractDetlEmp,
+    notify,
+    setAccademicData,
+    setExperienceData,
+    setPersonalData
+} from 'src/redux/actions/Profile.action';
 
 const theme = createTheme({
     breakpoints: {
@@ -36,10 +45,22 @@ const theme = createTheme({
 const Profile = () => {
     const empCredential = useParams()
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const toRedirectToHome = () => {
         history.push(`/Home/EmployeeFile`)
     }
+
+    const { id, no } = empCredential;
+
+    useEffect(() => {
+        dispatch(setPersonalData(no))
+        dispatch(setAccademicData(id))
+        dispatch(setExperienceData(id))
+        dispatch(getannualleave(no))
+        dispatch(notify(no))
+        dispatch(getContractDetlEmp(no))
+    }, [id, no])
 
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }
