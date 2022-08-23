@@ -45,6 +45,10 @@ const LeaveRequest = () => {
     const [leavdaystype, setleavedaystype] = useState(0)
     const [singleselect, setsingleselect] = useState(0)
     const [count, setCount] = useState(0)
+    const [inchragelevel, setInchargelevel] = useState(0)
+    const [hodlevel, sethodlevel] = useState(0)
+    const [ceolevel, setceolevel] = useState(0)
+    console.log(inchragelevel, hodlevel, ceolevel)
     useEffect(() => {
         getleaverequest().then((val) => {
             setleaveslno(val)
@@ -87,6 +91,22 @@ const LeaveRequest = () => {
             }
         }
         getEmpId();
+        const getApprovalLevels = async () => {
+            if (emplId !== 0) {
+                const result = await axioslogin.get(`/common/getapproval/levels/${emplId}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    const { authorization_hod, authorization_incharge, co_assign, hod, incharge } = data[0]
+                    incharge === 1 || hod === 1 ? setInchargelevel(0) : setInchargelevel(authorization_incharge)
+                    hod === 1 ? sethodlevel(0) : sethodlevel(authorization_hod)
+                    setceolevel(co_assign)
+                }
+                else {
+                    errorNofity("Error Occured!!Please Contact EDP")
+                }
+            }
+        }
+        getApprovalLevels();
     }, [emplId])
 
     // get haif day requested
@@ -135,9 +155,9 @@ const LeaveRequest = () => {
         leavetodate: endDate,
         rejoin_date: format(add(new Date(endDate), { days: 1 }), "yyyy-MM-dd"),
         request_status: 1,
-        incharge_level: is_incharge === 1 ? 0 : incharge_level,
-        hod_level: is_hod === 1 ? 0 : hod_level,
-        ceo_level: ceo_level,
+        incharge_level: inchragelevel,
+        hod_level: hodlevel,
+        ceo_level: ceolevel,
         leavdaystype: (leavdaystype >= 3) && (leavdaystype < 5) ? 1 : (leavdaystype >= 5) ? 2 : 0,
         resonforleave: resonforleave,
     }
@@ -170,9 +190,9 @@ const LeaveRequest = () => {
                             levtypename: val.levtypename,
                             lveDate: val.lveDate,
                             lveType: val.lveType,
-                            incharge_level: incharge_level,
-                            hod_level: hod_level,
-                            ceo_level: ceo_level,
+                            incharge_level: inchragelevel,
+                            hod_level: hodlevel,
+                            ceo_level: ceolevel,
                             nof_leave: singleselect === 1 ? val.noofdays : 1,
                             singleleave: singleselect
                         }
@@ -258,9 +278,9 @@ const LeaveRequest = () => {
                         em_no: is_incharge === 1 ? Emno : em_no,
                         em_department: em_department,
                         em_dept_section: em_dept_section,
-                        incharge_level: is_incharge === 1 ? 0 : incharge_level,
-                        hod_level: is_hod === 1 ? 0 : hod_level,
-                        ceo_level: ceo_level,
+                        incharge_level: inchragelevel,
+                        hod_level: hodlevel,
+                        ceo_level: ceolevel,
                         resonforleave: resonforleave,
                     }
                     if (resonforleave !== '') {
@@ -333,9 +353,9 @@ const LeaveRequest = () => {
                             em_department: em_department,
                             em_dept_section: em_dept_section,
                             punch_slno: punch_slno,
-                            incharge_level: is_incharge === 1 ? 0 : incharge_level,
-                            hod_level: is_hod === 1 ? 0 : hod_level,
-                            ceo_level: ceo_level,
+                            incharge_level: inchragelevel,
+                            hod_level: hodlevel,
+                            ceo_level: ceolevel,
                             resonforleave: resonforleave,
 
                         }
@@ -401,9 +421,9 @@ const LeaveRequest = () => {
                             em_department: em_department,
                             em_dept_section: em_dept_section,
                             shift_id: selectshitid,
-                            incharge_level: is_incharge === 1 ? 0 : incharge_level,
-                            hod_level: is_hod === 1 ? 0 : hod_level,
-                            ceo_level: ceo_level,
+                            incharge_level: inchragelevel,
+                            hod_level: hodlevel,
+                            ceo_level: ceolevel,
                             resonforleave: resonforleave,
 
                         }
@@ -457,9 +477,9 @@ const LeaveRequest = () => {
                             em_no: is_incharge === 1 ? Emno : em_no,
                             em_department: em_department,
                             em_dept_section: em_dept_section,
-                            incharge_level: is_incharge === 1 ? 0 : incharge_level,
-                            hod_level: is_hod === 1 ? 0 : hod_level,
-                            ceo_level: ceo_level,
+                            incharge_level: inchragelevel,
+                            hod_level: hodlevel,
+                            ceo_level: ceolevel,
                             resonforleave: resonforleave,
                         }
                         if (resonforleave !== '') {

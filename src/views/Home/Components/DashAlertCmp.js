@@ -21,7 +21,9 @@ import {
     getresignreqCountCEO,
     getContractRenewalCount,
     getTrainingCount,
-    getRegistRenew
+    getRegistRenew,
+    getProbation,
+    getAnnual
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
@@ -63,6 +65,8 @@ const DashAlertCmp = () => {
         dispatch(getContractRenewalCount())
         dispatch(getTrainingCount())
         dispatch(getRegistRenew())
+        dispatch(getProbation())
+        dispatch(getAnnual())
     }, [em_id])
 
     const data = Object.values(notificationNewState);

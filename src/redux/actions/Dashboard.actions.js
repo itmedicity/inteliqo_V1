@@ -18,7 +18,9 @@ const {
     FETCH_RESIGN_REQ_COUNT_CEO,
     FETCH_CONTRACT_RENEW_COUNT,
     FETCH_TRAIN_COUNT,
-    FETCH_REGISTER_RENEW
+    FETCH_REGISTER_RENEW,
+    FETCH_PROBATION,
+    FETCH_ANNUAL
 } = Actiontypes;
 
 export const getResignCount = () => async (dispatch) => {
@@ -188,22 +190,22 @@ export const getresignreqCountCEO = () => async (dispatch) => {
 }
 
 export const getContractRenewalCount = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/contractrenewalCount')
+    const result = await axioslogin.get('/Count/contractcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { Contractendcount } = data[0]
-        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: Contractendcount, status: false })
+        const { contractcount } = data[0]
+        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: contractcount, status: false })
     } else {
         dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: 0, status: false })
     }
 }
 
 export const getTrainingCount = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/trainingconformationCount')
+    const result = await axioslogin.get('/Count/trainingcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { ProbationEndCount } = data[0]
-        dispatch({ type: FETCH_TRAIN_COUNT, payload: ProbationEndCount, status: false })
+        const { trainingcount } = data[0]
+        dispatch({ type: FETCH_TRAIN_COUNT, payload: trainingcount, status: false })
     } else {
         dispatch({ type: FETCH_TRAIN_COUNT, payload: 0, status: false })
     }
@@ -217,5 +219,27 @@ export const getRegistRenew = () => async (dispatch) => {
         dispatch({ type: FETCH_REGISTER_RENEW, payload: RegistrationRenewCount, status: false })
     } else {
         dispatch({ type: FETCH_REGISTER_RENEW, payload: 0, status: false })
+    }
+}
+
+export const getProbation = () => async (dispatch) => {
+    const result = await axioslogin.get('/Count/probCount/list')
+    const { success, data } = result.data
+    if (success === 1) {
+        const { probationcount } = data[0]
+        dispatch({ type: FETCH_PROBATION, payload: probationcount, status: false })
+    } else {
+        dispatch({ type: FETCH_PROBATION, payload: 0, status: false })
+    }
+}
+
+export const getAnnual = () => async (dispatch) => {
+    const result = await axioslogin.get('/Count/annualempcount/list')
+    const { success, data } = result.data
+    if (success === 1) {
+        const { annualcount } = data[0]
+        dispatch({ type: FETCH_ANNUAL, payload: annualcount, status: false })
+    } else {
+        dispatch({ type: FETCH_ANNUAL, payload: 0, status: false })
     }
 }
