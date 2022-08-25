@@ -9,7 +9,6 @@ const MenuRenderWind = () => {
     const state = useSelector((state) => {
         return state.getMenuRenderCompRights.slno;
     })
-    console.log(state)
 
     return (
         <Suspense fallback={<CircularProgress />} >
