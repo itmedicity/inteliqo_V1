@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
-import { Box, Paper } from '@mui/material';
+import { Box, Grid, Paper, Tooltip, } from '@mui/material';
 import React from 'react'
 import { useSelector } from 'react-redux'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
@@ -8,6 +8,8 @@ import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
 import { InfoOutlined } from '@material-ui/icons';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined';
 
 const ProfileMenus = () => {
 
@@ -134,42 +136,282 @@ const ProfileMenus = () => {
                 <Paper variant="outlined" sx={{
                     px: 1, mt: 0.3
                 }}>
-                    <CssVarsProvider>
-                        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }} >
-                            <Box sx={{ display: 'flex', width: '20%' }}>
+                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
                                 <Typography textColor="text.secondary">
                                     Permanent Address
                                 </Typography>
-                            </Box>
+
+                            </CssVarsProvider>
+                        </Box>
+                        <CssVarsProvider>
                             <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
-                            <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
-                                {emp.presAddress.toLowerCase()}
-                            </Box>
+                        </CssVarsProvider>
+                        <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
+                            {emp.presAddress.toLowerCase()}{emp.pincode === 'NOT UPDATED' ? '' :
+                                <Box sx={{ display: 'flex', px: 1 }}>
+                                    <Box sx={{ display: 'flex', textTransform: "capitalize", alignItems: "center" }}>
+                                        <MyLocationOutlinedIcon color='primary' fontSize="small" />
+                                    </Box>
+                                    <Tooltip title="Postal Pincode" followCursor placement='top' arrow >
+                                        <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                            {emp.pincode}
+                                        </Box>
+                                    </Tooltip>
+                                </Box>
+                            }
                         </Box>
-
-                        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }} >
-                            <Box sx={{ display: 'flex', width: '20%' }}></Box>
-                            <Typography endDecorator={<ArrowRightOutlinedIcon />}  ></Typography>
-                            <Box sx={{ display: 'flex', width: '10%', textTransform: "capitalize" }}>
-                                <Typography variant="outlined" color="danger" level='body3' > Pin Code</Typography>
+                        <Tooltip title="Region Name" followCursor placement='top' arrow >
+                            <Box sx={{ display: 'flex', width: '30%', textTransform: "capitalize", alignItems: "center" }}>
+                                <LocationOnOutlinedIcon color='primary' fontSize="small" />
+                                {emp.region.toLowerCase()}
                             </Box>
-                            <Box sx={{ display: 'flex', width: '70%', textTransform: "capitalize", justifyContent: "flex-start" }}>
-                                sdsdsdsa
-                            </Box>
-                        </Box>
+                        </Tooltip>
+                    </Box>
 
-                        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }} >
-                            <Box sx={{ display: 'flex', width: '20%' }}>
+                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
                                 <Typography textColor="text.secondary">
                                     Present Address
                                 </Typography>
-                            </Box>
-                            <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
-                            <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
-                                {emp.permAddress.toLowerCase()}
-                            </Box>
+                            </CssVarsProvider>
                         </Box>
-                    </CssVarsProvider>
+                        <CssVarsProvider>
+                            <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                        </CssVarsProvider>
+                        <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
+                            {emp.permAddress.toLowerCase()}{emp.pincode === 'NOT UPDATED' ? '' :
+                                <Box sx={{ display: 'flex', px: 1 }}>
+                                    <Box sx={{ display: 'flex', textTransform: "capitalize", alignItems: "center" }}>
+                                        <MyLocationOutlinedIcon color='primary' fontSize="small" />
+                                    </Box>
+                                    <Tooltip title="Postal Pincode" followCursor placement='top' arrow >
+                                        <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                            {emp.pincode}
+                                        </Box>
+                                    </Tooltip>
+                                </Box>
+                            }
+                        </Box>
+                        <Tooltip title="Region Name" followCursor placement='top' arrow >
+                            <Box sx={{ display: 'flex', width: '30%', textTransform: "capitalize", alignItems: "center" }}>
+                                <LocationOnOutlinedIcon color='primary' fontSize="small" />
+                                {emp.region.toLowerCase()}
+                            </Box>
+                        </Tooltip>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', py: 0.5 }}>
+                        <Box sx={{ display: 'flex', width: '25%', alignItems: 'center', }} >
+                            <Tooltip title="Mobile Number" followCursor placement='top' arrow >
+                                <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />}>
+                                            {emp.mobile}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '25%', alignItems: 'center', }} >
+                            <Tooltip title="Phone Number" followCursor placement='top' arrow >
+                                <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />}>
+                                            {emp.phone}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '25%', alignItems: 'center', }} >
+                            <Tooltip title="Gender" followCursor placement='top' arrow >
+                                <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />}>
+                                            {emp.gender}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '25%', alignItems: 'center', }} >
+                            <Tooltip title="Age & Date Of Birth" followCursor placement='top' arrow >
+                                <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />}>
+                                            {emp.dob} | {emp.age} <Typography level="body4" > &nbsp; Years</Typography>
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                        </Box>
+                    </Box>
+                </Paper>
+            </Box>
+
+            {/* Box 2 */}
+            <Box>
+                <CssVarsProvider>
+                    <Typography textColor="text.secondary" sx={{ fontStyle: "oblique" }} startDecorator={<ArrowRightOutlinedIcon />} >
+                        General Information
+                    </Typography>
+                </CssVarsProvider>
+                <Paper variant="outlined" sx={{
+                    px: 1, mt: 0.3
+                }}>
+                    <Grid container item xl={12} lg={12} md={12} sm={12} xs={12} direction="row" >
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Mobile Number
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.mobile}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Telephone
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.phone}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Gender
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.gender}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Age
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >
+                                    <CssVarsProvider>
+                                        {emp.age} <Typography level="body4" > &nbsp; Years</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Date of Birth
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.dob}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Marital Status
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.ismarried}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Marital Status
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.ismarried}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Religion
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", textTransform: "capitalize" }} >{emp.religion.toLowerCase()}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            @email
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.email.toLowerCase()}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Adhar #
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.adhar}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Blood Group
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.bloodgroup}</Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
+                            <Box sx={{ display: 'flex', width: "100%", }} >
+                                <Box sx={{ display: 'flex', width: "40%", }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
+                                            Pan Number
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', width: "60%", }} >{emp.panNo}</Box>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Paper>
             </Box>
         </Box>
