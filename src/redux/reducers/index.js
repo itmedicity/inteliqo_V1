@@ -35,6 +35,8 @@ import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
+import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
+import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -74,6 +76,8 @@ const reducer = combineReducers({
     getEmployeeTrainingProbation,
     getBirthdayList,
     getGradeList,
+    getHODInchargeNameList,
+    getUserRights
 })
 
 export default reducer;

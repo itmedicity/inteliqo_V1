@@ -1,6 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@mui/material'
-import React, { Fragment, useEffect } from 'react'
-import { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
@@ -57,6 +56,7 @@ const PerformanceGrade = () => {
 
     const SubmitFormData = async (e) => {
         e.preventDefault();
+        /** submitting performance grade to databse */
         const result = await axioslogin.post('/performanceGrade/submit', postData)
         const { success, message } = result.data
         if (success === 1) {

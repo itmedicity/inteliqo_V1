@@ -39,7 +39,6 @@ const EmployeeProfileCard = () => {
     }, [no, dispatch])
 
     const state = useSelector((state) => {
-        // console.log(state.getPrifileDateEachEmp.empPersonalData.personalData)
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
 

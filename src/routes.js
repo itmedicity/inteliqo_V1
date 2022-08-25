@@ -185,6 +185,14 @@ const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
 const PerformanceGrade = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGrade'))
 const PerformanceGradeEdit = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGradeEdit'))
 const PerformanceAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/PerformanceAppraisalList')))
+const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
+const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
+const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
+const PerformanceAppraisalRights = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRights')))
+const PerformanceAppraisalRightsEdit = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRightsEdit')))
+const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/TrainingEnd'))
+const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
+const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
 
 
 const routes = [
@@ -377,6 +385,16 @@ const routes = [
   { path: '/Home/PerformanceGradeMaster', exact: true, name: 'Performance Grade', component: PerformanceGrade },
   { path: '/Home/PerformanceGradeEdit/:id', exact: true, name: 'Performance Grade', component: PerformanceGradeEdit },
   { path: '/Home/PerformanceAppraisal', exact: true, name: 'Performance Appraisal', component: PerformanceAppraisalList },
+  { path: '/Home/ProbationEnd', exact: true, name: 'Probation End List', component: ProbationEnd },
+  { path: '/Home/AnnualAppraisalList', exact: true, name: 'Annual Appraisal List', component: AnnualAppraisalList },
+  { path: '/Home/ContractEnd', exact: true, name: 'Contract End List', component: ContractEnd },
+  { path: '/Home/PerformanceAppraisalRights', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRights },
+  { path: '/Home/PerformanceAppraisalRightsEdit/:id', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRightsEdit },
+  { path: '/Home/TrainingEnd', exact: true, name: 'Training End List', component: TrainingEnd },
+  { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
+  { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
+
+
 
 
 

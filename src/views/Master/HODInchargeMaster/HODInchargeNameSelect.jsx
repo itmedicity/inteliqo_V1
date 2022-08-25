@@ -1,21 +1,21 @@
-import React, { Fragment, memo, useEffect } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { FormControl, MenuItem, Select } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux';
-import { setGradeList } from 'src/redux/actions/Grade.Action';
+import { setHODInchargeNameList } from 'src/redux/actions/HodIncharge.Action';
 
-const GradeSelect = ({ value, setValue, style, label }) => {
+const HODInchargeNameSelect = ({ value, setValue, style, label }) => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setGradeList());
+        dispatch(setHODInchargeNameList());
     }, [dispatch])
 
-    /** get Garde list from redux */
-    const grade = useSelector((state) => {
-        return state.getGradeList.gradeList || 0
+    /** get names list from redux */
+    const names = useSelector((state) => {
+        return state.getHODInchargeNameList.nameList || 0
     })
 
-    /** get selected grade from select list */
+    /** get selected names from select list */
     const handleChange = (event) => {
         setValue(event.target.value);
     };
@@ -47,8 +47,8 @@ const GradeSelect = ({ value, setValue, style, label }) => {
                         {label}
                     </MenuItem>
                     {
-                        grade && grade.map((val, index) => {
-                            return <MenuItem key={index} value={val.grade_slno}>{val.grade_desc}</MenuItem>
+                        names && names.map((val, index) => {
+                            return <MenuItem key={index} value={val.em_id}>{val.em_name}</MenuItem>
                         })
                     }
                 </Select>
@@ -57,4 +57,5 @@ const GradeSelect = ({ value, setValue, style, label }) => {
     )
 }
 
-export default memo(GradeSelect)
+export default HODInchargeNameSelect
+

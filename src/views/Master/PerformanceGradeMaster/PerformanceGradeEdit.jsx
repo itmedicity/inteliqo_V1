@@ -1,13 +1,11 @@
-import { Box, Card, Grid, Paper, Typography } from '@mui/material'
+import { Box, Grid, Paper, Typography } from '@mui/material'
 import { reset } from 'enzyme/build/configuration'
 import React, { Fragment, useEffect } from 'react'
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
-import { setGradeList } from 'src/redux/actions/Grade.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import TextInput from 'src/views/Component/TextInput'
@@ -18,11 +16,8 @@ import PerformanceGradeTable from './PerformanceGradeTable'
 const PerformanceGradeEdit = () => {
     const history = useHistory()
     const { id } = useParams()
-
     const [grade, setGrade] = useState(0)
     const [desc, setDesc] = useState(0)
-    const [count, setCount] = useState(0)
-    const [perGrade, setPerGrade] = useState(0)
 
     const handlechange = (e) => {
         setGrade(e)
@@ -57,6 +52,7 @@ const PerformanceGradeEdit = () => {
         setFormData({ ...formData, [e.target.name]: value })
     }
 
+    /** get coreesponding details about id */
     useEffect(() => {
         const getPerformanceGrade = async () => {
             const result = await axioslogin.get(`performanceGrade/dataById/${id}`)
@@ -69,7 +65,6 @@ const PerformanceGradeEdit = () => {
                     variablepay: variable_pay_inc,
                     pgradestatus: p_status === 1 ? true : false
                 }
-                console.log(frmdata);
                 setFormData(frmdata)
                 setGrade(p_grade)
                 setDesc(p_descrption)
@@ -99,7 +94,7 @@ const PerformanceGradeEdit = () => {
 
     const SubmitFormData = async (e) => {
         e.preventDefault();
-        const result = await axioslogin.patch('performanceGrade/update', postEditData)
+        const result = await axioslogin.patch('/performanceGrade/update', postEditData)
         const { message, success } = result.data;
         if (success === 2) {
             setFormData(resetForm);
@@ -246,7 +241,7 @@ const PerformanceGradeEdit = () => {
                                 </Grid>
                                 <Grid item xs={9} lg={9} xl={9} md={9}>
                                     {/* <KraTable count={count} /> */}
-                                    <PerformanceGradeTable count={count} />
+                                    <PerformanceGradeTable />
                                 </Grid>
                             </Grid>
                         </Box>

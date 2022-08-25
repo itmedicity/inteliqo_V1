@@ -57,4 +57,6 @@ export const userManagement_one = [
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
     // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
+    { to: '/Home/PerformanceAppraisalRights', name: 'Performance Appraisal Rights', slno: 189 },
+    { to: '/Home/HODInchargeMaster', name: 'HOD/Incharge Appraisal Rights', slno: 190 },
 ]

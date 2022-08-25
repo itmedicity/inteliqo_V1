@@ -229,7 +229,7 @@ const EmployeeReportInactive = () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** branch wise Inactive employees report  */
         const getBranchActiveEmp = async (slno) => {
-            const result = await axioslogin.post('/employeeReport/branchInActive', slno)
+            const result = await axioslogin.post('/ActiveEmpReport/branchInActive', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -240,7 +240,7 @@ const EmployeeReportInactive = () => {
         }
         /** Department  wise Inactive employees report  */
         const getDeptActiveEmp = async (postData) => {
-            const result = await axioslogin.post('/employeeReport/deptInactive', postData)
+            const result = await axioslogin.post('/ActiveEmpReport/deptInactive', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -251,7 +251,7 @@ const EmployeeReportInactive = () => {
         }
         /** Selected branch, department, dept section Inactive employees report  */
         const getACtiveEmp = async (postDataemp) => {
-            const result = await axioslogin.post('/employeeReport/inactive', postDataemp)
+            const result = await axioslogin.post('/ActiveEmpReport/inactive', postDataemp)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)

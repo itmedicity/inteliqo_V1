@@ -37,7 +37,6 @@ const AnnouncementList = () => {
     //         setList([...List, ...empBirthday])
     //     }
     // }, [empBirthday])
-    // console.log(List);
     const msg = "Happy Birthday!!"
 
 
