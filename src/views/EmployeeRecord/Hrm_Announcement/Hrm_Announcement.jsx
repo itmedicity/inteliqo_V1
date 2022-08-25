@@ -20,13 +20,15 @@ const Hrm_Announcement = () => {
     })
     const [formData, setFormData] = useState({
         announcement: '',
-        announcemntexprdays: ''
+        announcemntexprdays: '',
+        announcemnthead: ''
 
     })
-    const { announcement, announcemntexprdays } = formData
+    const { announcement, announcemntexprdays, announcemnthead } = formData
     const defaultState = {
         announcement: '',
-        announcemntexprdays: ''
+        announcemntexprdays: '',
+        announcemnthead: ''
     }
     const updateannouncement = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -40,6 +42,7 @@ const Hrm_Announcement = () => {
         Announcement: announcement,
         expr_days: moment(addDays(new Date(), announcemntexprdays)).format('YYYY-MM-DD'),
         created_user: em_id,
+        Announcementheading: announcemnthead
     }
     //save
     const submitFormData = async () => {
@@ -90,16 +93,31 @@ const Hrm_Announcement = () => {
                                 </div>
 
                             </div>
-                            <div className="col-md-3">
-                                <TextareaAutosize
-                                    aria-label="minimum height"
-                                    minRows={3}
-                                    placeholder="Announcement"
-                                    style={{ width: 600, height: 73 }}
-                                    name="announcement"
-                                    value={announcement}
-                                    onChange={(e) => updateannouncement(e)}
-                                />
+                            <div className="col-md-4">
+                                <div className="row g-1">
+                                    <div className="col-md-12">
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            style={{ width: 600 }}
+                                            Placeholder="Announcement Titile"
+                                            name="announcemnthead"
+                                            value={announcemnthead}
+                                            changeTextValue={(e) => updateannouncement(e)}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <TextareaAutosize
+                                            aria-label="minimum height"
+                                            minRows={3}
+                                            placeholder="Announcement"
+                                            style={{ width: 600, height: 73 }}
+                                            name="announcement"
+                                            value={announcement}
+                                            onChange={(e) => updateannouncement(e)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

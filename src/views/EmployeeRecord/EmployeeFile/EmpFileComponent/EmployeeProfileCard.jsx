@@ -2,7 +2,7 @@
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { urlExist } from 'src/views/Constant/Constant'
+import { employeeNumber, urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'
@@ -43,23 +43,21 @@ const EmployeeProfileCard = () => {
     })
 
     useEffect(() => {
-        const getEmpIdforProfilePic = async () => {
-            if (no > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`);
-
+        const getProfilePicInform = async () => {
+            const result = await axioslogin.post('/upload', empiddata);
+            const { data } = result.data;
+            var { hrm_profile } = data[0];
+            if (hrm_profile === 1) {
                 urlExist(profilePic, (status) => {
-
-                    if (status === true) {
-                        console.log(status)
-                        const picUrl = JSON.parse(profilePic)
-                        setSrc(picUrl)
+                    if (status === 200) {
+                        setSrc(profilePic)
                     }
                 })
             }
         }
-        getEmpIdforProfilePic()
-    }, [no])
-
+        getProfilePicInform()
+        //getting the personal details
+    }, [empiddata, profilePic])
 
     return (
         <Fragment>

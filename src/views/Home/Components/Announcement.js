@@ -1,27 +1,33 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, Suspense } from 'react'
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import newYear from '../../../assets/images/newYear.jpg'
 import { useSelector } from 'react-redux';
-import { Paper } from '@mui/material';
-import AnnouncementList from './AnnouncementList';
+import { CircularProgress, Paper } from '@mui/material';
+//import AnnouncementList from './AnnouncementList';
 import { CssVarsProvider } from '@mui/joy';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
+//import BirthdayList from './BirthdayList';
+
+const Birthlist = React.lazy(() => import('./BirthdayList'))
+const AnnList = React.lazy(() => import('./AnnouncementList'))
+
 
 const Announcement = () => {
     // const [announcement, setannouncement] = useState([])
     const Announcementlist = useSelector((state) => {
         return state.getAnnouncementList.AnnouncementList
     })
-    // console.log(Announcementlist)
+
     // useEffect(() => {
     //     if (Object.keys(Announcementlist).length > 0) {
     //         setannouncement(Announcementlist)
     //     }
     // }, [])
+
     const annouStyle = {
         Width: '100%',
         height: 320,
@@ -59,7 +65,15 @@ const Announcement = () => {
                         }}
                     />
                     <CardContent sx={{ width: "100%", p: 1 }} >
-                        <AnnouncementList />
+                        {/* <AnnouncementList /> */}
+                        {/* <Suspense fallback={<CircularProgress />} >
+                            <Birthlist />
+                        </Suspense> */}
+
+                        <Suspense fallback={<CircularProgress />} >
+                            <AnnList />
+                        </Suspense>
+
                     </CardContent>
                 </Card>
             </Paper>

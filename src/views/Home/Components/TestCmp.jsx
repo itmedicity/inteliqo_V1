@@ -26,10 +26,10 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
         history.push(`/Home/ApprovalCEO`)
     }
     const ContractRenew = () => {
-        history.push(`/Home/Contract_end_details`)
+        history.push(`/Home/ContractEnd`)
     }
     const Training = () => {
-        history.push(`/Home/Probation_end_details`)
+        history.push(`/Home/TrainingEnd`)
     }
     const Contractclose = () => {
         history.push(`/Home/Contract_end_details`)
@@ -64,6 +64,12 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const RegistRenew = () => {
         history.push(`/Home/RegistrationRenew`)
     }
+    const ProbationEnd = () => {
+        history.push(`/Home/ProbationEnd`)
+    }
+    const Annual = () => {
+        history.push(`/Home/AnnualAppraisalList`)
+    }
 
     const notificationListWindow = (slno) => {
         return slno === 133 && Leaverequest ||
@@ -83,7 +89,9 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 147 && ResignInch ||
             slno === 148 && ResignHod ||
             slno === 149 && ResignCeo ||
-            slno === 154 && RegistRenew
+            slno === 154 && RegistRenew ||
+            slno === 187 && ProbationEnd ||
+            slno === 188 && Annual
     }
 
     return (

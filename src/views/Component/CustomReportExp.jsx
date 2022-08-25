@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom'
 import TextInput from './TextInput'
 import MenuSelection from '../HrReports/DesignatiopnExpeReport/MenuSelection'
 import { DragHandle, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons'
+import CelebrationIcon from '@mui/icons-material/Celebration';
 
 const CustomReportExp = ({ columnDefs,
     tableData,
