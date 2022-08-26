@@ -166,6 +166,7 @@ const AnnualLeaveSettings = () => {
                 endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
             }
             const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+            console.log(resultselect)
             if (resultselect.data.success === 2) {
                 // check the table where data present if present get the details process table
                 /*
@@ -255,7 +256,7 @@ const AnnualLeaveSettings = () => {
                 if (resultinsert.data.success === 1) {
                     setOpen(true)
                     setmodelvalue(1)
-                    setmodelmessage('Date Exceeded do you Want To Process')
+                    setmodelmessage('Do You Want To Process Leave For The Employee')
                 }
                 else {
                     warningNofity('Please Contact Edp')

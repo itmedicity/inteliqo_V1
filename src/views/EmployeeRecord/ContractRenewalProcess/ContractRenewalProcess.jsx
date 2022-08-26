@@ -169,9 +169,9 @@ const ContractRenewalProcess = () => {
         else if (fine > 0) {
             warningNofity("Please Clear Fine Before Renewing the Contract")
         }
-        // else if (addDays(new Date(contractend), graceperiod) < new Date()) {
-        //     warningNofity("Grace Period Not Completed")
-        // }
+        else if (addDays(new Date(contractend), graceperiod) > new Date()) {
+            warningNofity("Grace Period Not Completed")
+        }
         else {
             const result = await axioslogin.post('/empmast/checkEmno/contracterenew', checkemid)
             const { data } = result.data
@@ -215,9 +215,9 @@ const ContractRenewalProcess = () => {
                                             const resultemployee = await axioslogin.post('/employee', submitemployee);
                                             const { success } = resultemployee.data;
                                             if (success === 1) {
+                                                setDisable(true)
                                                 if (oldCategory !== newcategory) {
                                                     setmodelvalue(1)
-                                                    setDisable(true)
                                                     setOpenModel(true)
                                                 }
                                                 else {

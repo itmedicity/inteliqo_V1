@@ -1,11 +1,12 @@
 import { Button, Stack, Alert } from '@mui/material'
 import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, getYear } from 'date-fns'
 import moment from 'moment'
-import React, { memo } from 'react'
-import { useSelector } from 'react-redux'
+import React, { memo, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { axioslogin } from '../Axios/Axios'
 import { employeeNumber } from '../Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from './Commonfunc'
+import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 
 const AnnualProcessComponent = ({
     name,
@@ -24,7 +25,7 @@ const AnnualProcessComponent = ({
     categorychge,
     nameel
 }) => {
-
+    const dispatch = useDispatch();
     // destructuring  dataleave
     const {
         // ecat_cont,
@@ -34,7 +35,16 @@ const AnnualProcessComponent = ({
         // em_prob_end_date,
         em_doj
     } = dataleave
+    useEffect(() => {
+        if (em_no !== '') {
+            dispatch(setEmployeeProcessDetail(em_no))
 
+            // Get the Employee Joinng / Contract / category Details ( All Date Detail )
+            return (
+                dispatch(setEmployeeProcessDetail(em_no))
+            )
+        }
+    }, [em_no])
     // useState for common leave data
     // const [commonleave, setcommonleave] = useState({
     //     com_slno: 0,
@@ -65,7 +75,6 @@ const AnnualProcessComponent = ({
     // } = commonleave
 
     const state = useSelector((state) => state.getEmployeeProcessRecord.ProcessRecord)
-
     const {
         // category_slno,
         // contract_end_date,
@@ -113,10 +122,7 @@ const AnnualProcessComponent = ({
             const contractEnd = moment(em_cont_end).isValid() === true ? moment(em_cont_end).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract End date
             const confirmationDate = moment(em_conf_end_date).isValid() === true ? moment(em_conf_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
             const probationEndDate = moment(probation_end_date).isValid() === true ? moment(probation_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
-
-
             if (is_under_contract === 1 && is_under_probation === 0) {
-
                 // if the Employee is under Contact and Not under Probation Or trainging
                 // Function For Getiing Leave process Start Date for the Contract employee not under Probation / training
 
@@ -157,11 +163,10 @@ const AnnualProcessComponent = ({
                 return { startDate: processStartDate, endDate: processEndDate }
 
             } else if (is_under_contract === 1 && is_under_probation === 1) {
-
                 // if the Employee is under Contact and under Probation Or trainging
                 const newYearDate = startOfYear(new Date());
                 const endYearDate = lastDayOfYear(new Date());
-
+                // console.log(compareAsc(new Date(probationEndDate), new Date()))
                 if (compareAsc(new Date(probationEndDate), new Date()) === -1) {
 
                     return { message: 0 }
@@ -259,7 +264,7 @@ const AnnualProcessComponent = ({
 
         const contractStartEndDate = startEndDate_cont()
         const regularStartEndDate = startEndDate_regular()
-
+        // console.log(contractStartEndDate)
         const calculatedDate = {
             regular: regularStartEndDate === undefined ? 1 : regularStartEndDate,
             contract: contractStartEndDate === undefined ? 1 : contractStartEndDate,
@@ -267,7 +272,6 @@ const AnnualProcessComponent = ({
         //Final Result for StartDate and EndDate
         //const dateStart = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.startDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.startDate : moment(new Date()).format('YYYY-MM-DD')
         const dateEnd = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.endDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.endDate : moment(new Date()).format('YYYY-MM-DD')
-
         // function for casual leave
         const setcasleave = async () => {
             //console.log(subMonths(new Date(), 1))

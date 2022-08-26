@@ -71,9 +71,8 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
             endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
         }
         const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+        console.log(resultselect)
         if (resultselect.data.success === 2) {
-
-
             const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
             const { data, success } = result.data
             if (success === 1) {
