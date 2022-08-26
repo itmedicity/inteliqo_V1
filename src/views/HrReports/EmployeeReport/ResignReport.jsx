@@ -231,7 +231,7 @@ const ResignReport = () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** branch wise resigned employee report  */
         const getBranchResigned = async (slno) => {
-            const result = await axioslogin.post('/employeeReport/branchresigned', slno)
+            const result = await axioslogin.post('/ActiveEmpReport/branchresigned', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -242,7 +242,7 @@ const ResignReport = () => {
         }
         /** Department  wise resigned employee report  */
         const getDeptResigned = async (postData) => {
-            const result = await axioslogin.post('/employeeReport/deptresigned', postData)
+            const result = await axioslogin.post('/ActiveEmpReport/deptresigned', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -253,7 +253,7 @@ const ResignReport = () => {
         }
         /** Selected branch, department, dept section resigned employee report  */
         const getResigned = async (postDataemp) => {
-            const result = await axioslogin.post('/employeeReport/resigned', postDataemp)
+            const result = await axioslogin.post('/ActiveEmpReport/resigned', postDataemp)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
