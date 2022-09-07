@@ -38,10 +38,11 @@ import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getContractClosedata } from '../reducers/ContractRenewalReducers'
-import { getBirthdayList } from '../reducers/Birthday.Reducer'
-import { getGradeList } from '../reducers/Grade.Reducer'
-import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
+// import { getBirthdayList } from '../reducers/Birthday.Reducer'
+// import { getGradeList } from '../reducers/Grade.Reducer'
+// import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getUserRights } from '../reducers/EmpUserRights.Reducer'
+import { getHighLevelData } from '../reducers/HighLevel.Reducer'
 
 
 const reducer = combineReducers({
@@ -88,7 +89,8 @@ const reducer = combineReducers({
     getBirthdayList,
     getGradeList,
     getHODInchargeNameList,
-    getUserRights
+    getUserRights,
+    getHighLevelData
 })
 
 export default reducer;
