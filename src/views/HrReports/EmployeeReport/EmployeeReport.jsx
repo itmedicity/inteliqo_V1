@@ -265,7 +265,7 @@ const EmployeeReport = () => {
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** branch wise Active Employee report  */
         const getBranchActiveEmp = async (slno) => {
-            const result = await axioslogin.post('/employeeReport/branchactiveemp', slno)
+            const result = await axioslogin.post('/ActiveEmpReport/branchactiveemp', slno)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -276,7 +276,7 @@ const EmployeeReport = () => {
         }
         /** Department  wise Active Employee report  */
         const getDeptActiveEmp = async (postData) => {
-            const result = await axioslogin.post('/employeeReport/deptactiveemp', postData)
+            const result = await axioslogin.post('/ActiveEmpReport/deptactiveemp', postData)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -287,7 +287,7 @@ const EmployeeReport = () => {
         }
         /** Selected branch, department, dept section Active Employee report  */
         const getACtiveEmp = async (postDataemp) => {
-            const result = await axioslogin.post('/employeeReport/activeemp', postDataemp)
+            const result = await axioslogin.post('/ActiveEmpReport/activeemp', postDataemp)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -298,7 +298,7 @@ const EmployeeReport = () => {
         }
         /** to get active employees between date */
         const getACtiveEmpDate = async (postDataDate) => {
-            const result = await axioslogin.post('/employeeReport/activeempdate', postDataDate)
+            const result = await axioslogin.post('/ActiveEmpReport/activeempdate', postDataDate)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -308,7 +308,7 @@ const EmployeeReport = () => {
             }
         }
         const getBranchActiveEmpDate = async (postData1) => {
-            const result = await axioslogin.post('/employeeReport/branchactviedate', postData1)
+            const result = await axioslogin.post('/ActiveEmpReport/branchactviedate', postData1)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
@@ -318,7 +318,7 @@ const EmployeeReport = () => {
             }
         }
         const getDeptActiveEmpDate = async (postData2) => {
-            const result = await axioslogin.post('/employeeReport/deptactivedate', postData2)
+            const result = await axioslogin.post('/ActiveEmpReport/deptactivedate', postData2)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data)
