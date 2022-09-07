@@ -1,20 +1,10 @@
-import { Box, createTheme, ThemeProvider, Paper, Card, CardMedia, CardContent, CardActionArea } from '@mui/material'
+import { Box, Card, CardMedia, CardContent } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { Button, Chip, CssVarsProvider, Typography } from '@mui/joy';
-import AspectRatio from '@mui/joy/AspectRatio';
-import ImageIcon from '@mui/icons-material/Image';
+import { CssVarsProvider, Typography } from '@mui/joy';
 import Avatar from '@mui/joy/Avatar'
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import BadgeIcon from '@mui/icons-material/Badge';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LensIcon from '@mui/icons-material/Lens';
 import IconButton from '@mui/joy/IconButton';
-import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import UploadIcon from '@mui/icons-material/Upload';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
-import MenuList from './MenuList';
-import CloseIcon from '@mui/icons-material/Close';
 import { useParams } from 'react-router-dom';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import ProfilePicDefault from '../../../../assets/images/default.png'

@@ -1,8 +1,8 @@
 import { CircularProgress } from '@mui/material'
-import React, { Suspense } from 'react'
+import React, { memo, Suspense, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-const ProfileMenus = React.lazy(() => import('./EmpMenus/ProfileMenus'));
-const SecondMenu = React.lazy(() => import('./EmpMenus/SecondMenu'));
+const ProfileMenus = React.lazy(() => import('./EmpMenus/Profile/ProfileMenus'));
+const PersonalInformation = React.lazy(() => import('./EmpMenus/PersonalInformation/PersonalInfrom'));
 
 const MenuRenderWind = () => {
 
@@ -10,13 +10,18 @@ const MenuRenderWind = () => {
         return state.getMenuRenderCompRights.slno;
     })
 
+    const displayComp = (state) => {
+        return state === 105 ? <PersonalInformation /> : <ProfileMenus />
+    }
+
     return (
         <Suspense fallback={<CircularProgress />} >
             {
-                state === 105 ? <SecondMenu /> : <ProfileMenus />
+                // state === 105 ? <SecondMenu /> : <ProfileMenus />
+                displayComp(state)
             }
         </Suspense>
     )
 }
 
-export default MenuRenderWind
+export default memo(MenuRenderWind)
