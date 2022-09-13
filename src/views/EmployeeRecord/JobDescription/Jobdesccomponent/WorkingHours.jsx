@@ -27,11 +27,10 @@ const WorkingHours = ({ value, setValue, style, label }) => {
         },
       }} >
         <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={value}
           onChange={handleChange}
-          multiple
           fullWidth
           displayEmpty
           variant='outlined'

@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useMemo, useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,8 +14,52 @@ import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import GroupRemoveOutlinedIcon from '@mui/icons-material/GroupRemoveOutlined';
+import { useSelector } from 'react-redux';
+import { setActiveempCount } from 'src/redux/actions/CountActiveEmp.Action'
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setPunchCount } from 'src/redux/actions/PunchdataCount.Action';
 
 const AppMenuBar = () => {
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setActiveempCount());
+        dispatch(setPunchCount());
+    }, [dispatch])
+
+    /** useSelector for getting active employee count and punching employee count  wise list from redux  */
+    const state = useSelector((state) => {
+        return {
+            empActiveCount: state.getActiveCountemp.empActiveCountList || 0,
+            empPunchCount: state.getPunchCount.empPunchCountList
+        }
+    })
+
+    /** destructuring the state */
+    const { empActiveCount, empPunchCount } = state
+    /** to get active employee count */
+    const [count1, setcount1] = useState(0)
+    useEffect(() => {
+        const arr = empActiveCount && empActiveCount.map((val, index) => {
+            return val.ActiveEmpCount
+        })
+        setcount1(arr)
+    }, [empActiveCount])
+
+    /** to get employee punch count */
+    const [count2, setcount2] = useState(0)
+    useEffect(() => {
+        const arr2 = empPunchCount && empPunchCount.map((val, index) => {
+            return val.punchcount
+        })
+        setcount2(arr2)
+    }, [empPunchCount])
+
+    /** to get nin punching count */
+    const count3 = count1 - count2
+    let string = count3.toString().padStart(4, '0')
+
     return (
         <Fragment>
             <AppBar position="static" color="inherit" >
@@ -46,7 +90,7 @@ const AppMenuBar = () => {
                                             size="md"
                                             sx={{ "--Chip-radius": "8px", color: "#808066", }}
                                             startDecorator={<GroupRemoveOutlinedIcon />}
-                                            endDecorator={0}
+                                            endDecorator={string}
                                         ></Chip>
                                     </Box>
                                     <Box sx={{ display: "flex", px: 0.5 }} >
@@ -55,7 +99,7 @@ const AppMenuBar = () => {
                                             size="md"
                                             sx={{ "--Chip-radius": "8px", color: "#808066", }}
                                             startDecorator={<GroupAddOutlinedIcon />}
-                                            endDecorator={0}
+                                            endDecorator={count2}
                                         ></Chip>
                                     </Box>
                                     <Box sx={{ display: "flex", px: 0.5 }} >
@@ -64,7 +108,8 @@ const AppMenuBar = () => {
                                             size="md"
                                             sx={{ "--Chip-radius": "8px", color: "#808066", }}
                                             startDecorator={<GroupOutlinedIcon />}
-                                            endDecorator={0}
+                                            endDecorator={count1}
+
                                         ></Chip>
                                     </Box>
                                 </Box>

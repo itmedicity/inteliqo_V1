@@ -20,12 +20,18 @@ import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 
 
-const Generic = ({ selectDesignation, selectedDept }) => {
+const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
+
     const { selectCourse, updateCourse, selectSpec, updateSpec, courseName, setCourseName,
         specName, setSpecName } = useContext(PayrolMasterContext)
-    const [experience, setExperience] = useState([])
+    const [experiencee, setExperience] = useState([])
     const [deleteitem, setDeleteItem] = useState(0)
+    const [editKra, setEditKra] = useState(0)
+    const [qual, setqual] = useState(0)
+    const [course, setcourse] = useState(0)
+
     //adding experience to tbale
+
     const addExperienceItem = () => {
         if (selectCourse > 0 && selectSpec > 0) {
 
@@ -36,7 +42,7 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                 courseslno: selectCourse,
                 specializationslno: selectSpec
             }
-            setExperience([...experience, frmData])
+            setExperience([...experiencee, frmData])
             updateCourse(0)
             updateSpec(0)
             setCourseName('')
@@ -49,7 +55,7 @@ const Generic = ({ selectDesignation, selectedDept }) => {
     //deleteing qualiification
     useEffect(() => {
         if (deleteitem > 0) {
-            const newexp = experience.filter((val) => {
+            const newexp = experiencee.filter((val) => {
                 if (val.id !== deleteitem) {
                     return val
                 }
@@ -69,6 +75,25 @@ const Generic = ({ selectDesignation, selectedDept }) => {
         male: false
     })
     const { experincedetl, expYear, specialcomment, ageFrom, ageTo, female, male } = formData
+    useEffect(() => {
+        if (editKra > 0) {
+            const editdata = experiencee.filter((val) => {
+                if (val.id === editKra) {
+                    return val
+                }
+
+            })
+
+            const newKra = experiencee.filter((val) => {
+                if (val.id !== editKra) {
+                    return val
+                }
+
+            })
+            setExperience(newKra)
+        }
+    }, [editKra])
+
 
     const updateGeneric = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -78,17 +103,59 @@ const Generic = ({ selectDesignation, selectedDept }) => {
         designation: selectDesignation,
         dept_id: selectedDept
     }
+    const [editdata, setEditdata] = useState([])
+    //use effect for getting job generic to edit
+    useEffect(() => {
+        if (jobedit > 0) {
+            const getJoGeneric = async () => {
+                const result = await axioslogin.post('/jobsummary/getjobgeneric', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    const { experience, experience_year, special_comment, age_from, age_to, is_female, is_male } = data[0]
+
+                    const frmdata = {
+                        experincedetl: experience,
+                        expYear: experience_year,
+                        specialcomment: special_comment,
+                        ageFrom: age_from,
+                        ageTo: age_to,
+                        female: is_female,
+                        male: is_male
+
+                    }
+                    setFormData(frmdata)
+                    setEditdata(data)
+
+                }
+            }
+            getJoGeneric()
+        }
+    }, [jobedit])
+    useEffect(() => {
+        if (jobedit > 0) {
+            const getJobqualification = async () => {
+                const result = await axioslogin.post('/jobsummary/getjobQual', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setExperience(data)
+                }
+            }
+            getJobqualification()
+        }
+    }, [jobedit])
+
+
     const SaveJobGeneric = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/jobsummary/check', checkData)
         const { data, success } = result.data
         if (success === 1) {
             const { summary_slno } = data[0]
-            if (experience.length === 0) {
+            if (experiencee.length === 0) {
                 infoNofity("Please Add Qaulification")
             }
             else {
-                const saveQualification = experience && experience.map((val) => {
+                const saveQualification = experiencee && experiencee.map((val) => {
                     return {
                         job_id: summary_slno,
                         course: val.courseslno,
@@ -106,8 +173,8 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                         experience_year: expYear,
                         age_from: ageFrom,
                         age_to: ageTo,
-                        is_female: female,
-                        is_male: male,
+                        is_female: female === 1 ? true : false,
+                        is_male: male === 1 ? true : false,
                         special_comment: specialcomment,
                         dept_id: selectedDept,
                         designation: selectDesignation
@@ -234,7 +301,7 @@ const Generic = ({ selectDesignation, selectedDept }) => {
                             flexDirection: "column"
                         }} variant="outlined" >
                             {
-                                experience && experience.map((val, index) => <ExperienceItem key={index} val={val} setDeleteItem={setDeleteItem} />)
+                                experiencee && experiencee.map((val, index) => <ExperienceItem key={index} val={val} setDeleteItem={setDeleteItem} />)
                             }
                         </Paper>
                     </Box>

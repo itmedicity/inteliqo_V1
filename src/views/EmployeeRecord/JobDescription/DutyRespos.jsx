@@ -13,8 +13,7 @@ import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Comm
 import { ToastContainer } from 'react-toastify';
 
 
-const DutyRespos = ({ selectDesignation, selectedDept }) => {
-
+const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
     const [duty, setDuty] = useState([])
     const [formData, setFormData] = useState({
         duties: ''
@@ -28,11 +27,10 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
         setFormData({ ...formData, [e.target.name]: value })
     }
 
-
     const addDuties = () => {
         const newduties = {
             id: Math.ceil(Math.random() * 1000),
-            dutiess: duties
+            duties_and_resp: duties
         }
         setDuty([...duty, newduties])
         setFormData(defaultstate)
@@ -47,9 +45,9 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
                     return val
                 }
             })
-            const { dutiess } = editdata[0]
+            const { duties_and_resp } = editdata[0]
             const frmdata = {
-                duties: dutiess
+                duties: duties_and_resp
             }
             setFormData(frmdata)
             const newdata = duty.filter((val) => {
@@ -75,6 +73,21 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
         designation: selectDesignation,
         dept_id: selectedDept
     }
+    //use effect for getting data for edit
+    useEffect(() => {
+        if (jobedit > 0) {
+            const getdutiesandResp = async () => {
+                const result = await axioslogin.post('jobsummary/getJobDuties', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setDuty(data)
+                }
+            }
+            getdutiesandResp()
+        }
+    }, [jobedit])
+
+
     //function for saving duties and responsiblities
     const SubmitFormData = async () => {
         const result = await axioslogin.post('/jobsummary/check', checkData)
@@ -86,7 +99,7 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
             }
             else {
                 const saveDuties = duty && duty.map((val) => {
-                    return { jobdescid: summary_slno, dutiesandres: val.dutiess, dept_id: selectedDept, designation: selectDesignation }
+                    return { jobdescid: summary_slno, dutiesandres: val.duties_and_resp, dept_id: selectedDept, designation: selectDesignation }
                 })
                 const result = await axioslogin.post('/jobsummary/jobduties', saveDuties)
                 const { success, message } = result.data
@@ -149,7 +162,7 @@ const DutyRespos = ({ selectDesignation, selectedDept }) => {
                 </Box>
                 {
                     duty && duty.map((val, index) =>
-                        <Items key={index} val={val} setEdit={setEdit} setDelete={setDelete} />
+                        < Items key={index} val={val} setEdit={setEdit} setDelete={setDelete} />
                     )
                 }
             </Paper>
