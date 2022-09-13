@@ -24,10 +24,10 @@ const ModelAvailLeavelist = ({
     setnodatafixed, categorychge, nodatafixed, nameel
 
 }) => {
-
+    console.log(nameel)
     const [processCount, setProcessCount] = useState(0)
     const {
-        ecat_cl, ecat_lop, ecat_esi_allow,
+        ecat_cl, ecat_lop, ecat_esi_allow, ecat_el,
         ecat_fh, ecat_mate, ecat_nh, ecat_sl } = dataleave;
     const [leaveproceedaata, setleaveprocedata] = useState({
         category_slno: "",
@@ -50,10 +50,10 @@ const ModelAvailLeavelist = ({
         em_no,
         hrm_clv,
         hrm_cmn,
-        //hrm_ern_lv,
+        hrm_ern_lv,
         hrm_hld
     } = leaveproceedaata
-
+    console.log(leaveproceedaata)
     useEffect(() => {
         const getleaveprocessdata = async () => {
             //Get The Process Details from the "hrm_leave_process" table using the current process Serial Nulber (lv_process_slnocurrent)
@@ -129,7 +129,7 @@ const ModelAvailLeavelist = ({
                                 /> : (hrm_cmn === 1) ?
                                     <AnnualLeaveProcessComplete name={'Common Leave'} /> : null
                         }
-                        {/* 
+
                         {
 
                             (ecat_el === 1 && hrm_ern_lv === 0) ? <AnnualProcessComponent
@@ -145,7 +145,7 @@ const ModelAvailLeavelist = ({
                                 categorychge={categorychge}
                                 nameel={nameel}
                             /> : hrm_ern_lv === 1 ? <AnnualLeaveProcessComplete name={'Earn Leave'} /> : null
-                        } */}
+                        }
 
 
                     </DialogContent>

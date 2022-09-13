@@ -8,7 +8,6 @@ import DepartmentShiftSelect from 'src/views/Attendance/DutyPlanning/DepartmentS
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
 const DropDownList = ({ data, duty, count, selectedDept, selectDeptSection, duty1, update, setstate, state }) => {
-    // console.log(update, duty)
     const { emp_id, start, end } = data;
     const [dutyplan, setDutyplan] = useState();
     const [change, setChange] = useState(0)

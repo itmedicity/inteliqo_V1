@@ -48,7 +48,6 @@ const LeaveRequest = () => {
     const [inchragelevel, setInchargelevel] = useState(0)
     const [hodlevel, sethodlevel] = useState(0)
     const [ceolevel, setceolevel] = useState(0)
-    console.log(inchragelevel, hodlevel, ceolevel)
     useEffect(() => {
         getleaverequest().then((val) => {
             setleaveslno(val)
