@@ -337,7 +337,6 @@ const PersonalInformation = () => {
         getProfilePicInform()
     }, [empiddata, profilePic])
 
-
     return (
         <Fragment>
             <PageLayout heading="Personal Information">

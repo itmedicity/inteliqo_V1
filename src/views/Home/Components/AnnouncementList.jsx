@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
@@ -7,13 +7,38 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { ListDivider, ListItemContent, ListItemDecorator } from '@mui/joy';
 import image1 from '../../../assets/images/avatars/1.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { colorList } from 'src/views/Constant/Constant';
-const AnnouncementList = () => {
+import { setBirthdayAlert } from 'src/redux/actions/Birthday.Action';
+import CustomAvatar from './CustomAvatar';
+import { CircularProgress } from '@mui/material';
 
+const AnnouncementList = () => {
+    const dispatch = useDispatch();
+    const [flag, setflag] = useState(false)
+
+    useEffect(() => {
+        dispatch(setBirthdayAlert());
+        setflag(true)
+    }, [dispatch])
+    /** get announcement list from redux */
     const Announcementlist = useSelector((state) => {
         return state.getAnnouncementList.AnnouncementList
     })
+
+    /**get birthday employee details*/
+    const empBirthday = useSelector((state) => {
+        return state.getBirthdayList.empBirthdayList
+    })
+    Announcementlist.push(...empBirthday)
+    // const [List, setList] = useState(Announcementlist)
+    // useEffect(() => {
+    //     if (empBirthday.length !== 0) {
+    //         setList([...List, ...empBirthday])
+    //     }
+    // }, [empBirthday])
+    const msg = "Happy Birthday!!"
+
 
     return (
         <Sheet
@@ -50,12 +75,18 @@ const AnnouncementList = () => {
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-                                            <Avatar src={image1} />
+                                            {/* <Avatar src={image1} /> */}
+
+                                            <Suspense fallback={<CircularProgress />} >
+                                                <CustomAvatar id={val.em_id} />
+                                            </Suspense>
+
+                                            {/* <CustomAvatar id={val.em_id} src={image1} /> */}
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography>Brunch this weekend?</Typography>
+                                            <Typography>{val.Announcementheading || val.em_name}</Typography>
                                             <Typography level="body2" noWrap sx={{ color: "white" }} >
-                                                {val.Announcement}
+                                                {val.Announcement || msg}
                                             </Typography>
                                         </ListItemContent>
                                     </ListItem>

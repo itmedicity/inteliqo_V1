@@ -89,13 +89,13 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
                 <TableCell align="center">
                     <Avatar sx={{
                         bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
-                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 5 ? blueGrey[200] :
+                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 1002 ? blueGrey[200] :
                                 duty_status === 0.5 ? deepPurple[500] :
                                     duty_status === 0 && holiday_flag === 0 ? deepOrange[500] : holiday_flag === 1 ? pink[500] : lvreq_type !== null ? lvreq_type : green[500]
                         , width: 24, height: 24, fontSize: 10
                     }}>
                         {(late_in !== 0 || early_out !== 0) ? 'L/E' :
-                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 5 ? 'WOF' :
+                            (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 1002 ? 'WOF' :
                                 duty_status === 0.5 ? 'HLP' :
                                     duty_status === 0 && holiday_flag === 0 ? 'LOP' : holiday_flag === 1 ? 'H' : lvreq_type !== null ? lvreq_type : 'P'
                         }

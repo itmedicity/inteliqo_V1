@@ -18,7 +18,9 @@ const {
     FETCH_RESIGN_REQ_COUNT_CEO,
     FETCH_CONTRACT_RENEW_COUNT,
     FETCH_TRAIN_COUNT,
-    FETCH_REGISTER_RENEW
+    FETCH_REGISTER_RENEW,
+    FETCH_PROBATION,
+    FETCH_ANNUAL
 } = Actiontypes;
 
 
@@ -41,6 +43,8 @@ const dashBoadNotify = {
     148: { slno: 148, name: "Resignation Request HOD", count: 0, status: true },
     149: { slno: 149, name: "Resignation Request CEO", count: 0, status: true },
     154: { slno: 154, name: "Registration Renew", count: 0, status: true },
+    187: { slno: 187, name: "Probation End", count: 0, status: true },
+    188: { slno: 188, name: "Annual Appraisal", count: 0, status: true },
 }
 
 export const getDashboardNotification = (state = dashBoadNotify, { type, payload, status }) => {
@@ -82,7 +86,12 @@ export const getDashboardNotification = (state = dashBoadNotify, { type, payload
             return { ...state, 139: { slno: 139, name: "Training Confirmation", count: payload, status: false } }
         case FETCH_REGISTER_RENEW:
             return { ...state, 154: { slno: 154, name: "Registration Renew", count: payload, status: false } }
+        case FETCH_PROBATION:
+            return { ...state, 187: { slno: 187, name: "Probation End", count: payload, status: false } }
+        case FETCH_ANNUAL:
+            return { ...state, 188: { slno: 188, name: "Annual Appraisal", count: payload, status: false } }
         default:
             return state;
     }
-} 
+}
+

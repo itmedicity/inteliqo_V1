@@ -54,14 +54,15 @@
     "material-table": "^1.69.3",
     "moment": "^2.29.1",
     "moment-range": "^4.0.2",
+    "moment-timezone": "^0.5.34",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
     "react-bootstrap": "^2.0.2",
-    "react-digital-clock": "^0.1.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
     "react-live-clock": "^6.0.6",
+    "react-moment": "^1.1.2",
     "react-number-format": "^4.7.3",
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
@@ -69,7 +70,8 @@
     "react-tooltip": "^4.2.21",
     "redux": "4.1.1",
     "redux-thunk": "^2.4.1",
-    "simplebar-react": "^2.3.6"
+    "simplebar-react": "^2.3.6",
+    "uninstall-all-modules": "^1.0.5"
   },
   "devDependencies": {
     "auto-changelog": "~2.3.0",

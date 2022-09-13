@@ -21,7 +21,9 @@ import {
     getresignreqCountCEO,
     getContractRenewalCount,
     getTrainingCount,
-    getRegistRenew
+    getRegistRenew,
+    getProbation,
+    getAnnual
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
@@ -42,8 +44,6 @@ const DashAlertCmp = () => {
         return state?.getDashboardNotification
     }, shallowEqual)
 
-
-
     useEffect(() => {
         dispatch(getResignCount())
         dispatch(getcontractCloseCount())
@@ -63,12 +63,14 @@ const DashAlertCmp = () => {
         dispatch(getContractRenewalCount())
         dispatch(getTrainingCount())
         dispatch(getRegistRenew())
+        dispatch(getProbation())
+        dispatch(getAnnual())
     }, [em_id])
 
     const data = Object.values(notificationNewState);
-    const entries = useMemo(() => data, [data])
-    const newDashMenu = entries.filter(val => modulerights.includes(val.slno) === true ? val.slno : null)
-    const notification = useMemo(() => newDashMenu, [newDashMenu])
+    const entries = useMemo(() => data, [data]);
+    const newDashMenu = entries.filter(val => modulerights.includes(val.slno) === true ? val.slno : null);
+    const notification = useMemo(() => newDashMenu, [newDashMenu]);
 
     return (
         <Fragment>

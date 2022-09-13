@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useContext } from 'react'
+import React, { Fragment, Suspense, useContext,memo } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -162,13 +162,10 @@ const JobDescription = () => {
 
                         />
                     </Suspense>
-
-
-
                 </Paper>
             </Box>
         </Fragment >
     )
 }
 
-export default JobDescription
+export default memo(JobDescription)

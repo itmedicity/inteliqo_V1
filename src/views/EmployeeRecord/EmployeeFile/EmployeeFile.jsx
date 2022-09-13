@@ -170,6 +170,7 @@ const EmployeeRecord = () => {
     const getEmployeeEmpNumber = (data) => {
         const { em_no, em_id } = data
         history.push(`/Home/Profile/${em_no}/${em_id}`)
+        // history.push(`/Home/Prfle/${em_no}/${em_id}`)
     }
 
     return (

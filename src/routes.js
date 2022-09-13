@@ -160,28 +160,30 @@ const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeReco
 const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
 const ReligionReport = React.lazy(() => import('./views/HrReports/ReligionReports/ReligionReport '))
 const RegionReport = React.lazy(() => import('./views/HrReports/RegionReports/RegionReport '))
-const ExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceReport '))
+//const ExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceReport '))
 const InstitutionTypeReport = React.lazy(() => import('./views/HrReports/InstitutionTypeReports/InstitutionTypeReport'))
 const CategoryReports = React.lazy(() => import('./views/HrReports/CategoryReport/CategoryReports'))
 const DesignationReport = React.lazy(() => import('./views/HrReports/DesignationReport/DesignationReport'))
 const QualificationReport = React.lazy(() => import('./views/HrReports/QualificationReport/QualificationReport'))
-const RegistrationTypeReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/RegistrationTypeReport'))
-const EmpRegisteration = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
-const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
-const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
-const ContractClosedReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractClosedReport'))
-const ContractRenewReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractRenewReport'))
-const ContractCurrentRunningReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractCurrentRunningReport'))
-const OneYearCurrentRunning = React.lazy(() => import('./views/HrReports/ContractReports/OneYearCurrentRunning'))
-const ResignedEmpReport = React.lazy(() => import('./views/HrReports/EmployeeReport/ResignReport'))
-const DesignationExpReport = React.lazy(() => import('./views/HrReports/DesignatiopnExpeReport/DesignationExpReport'))
-const DeptSubSectionReport = React.lazy(() => import('./views/HrReports/DeptSubSectionReport/DeptSubSectionReport'))
-const TraningProbaReport = React.lazy(() => import('./views/HrReports/TrainingProbaReport/TraningProbaReport'))
 const EmployeeRecordTable = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordTable'))
 const EmployeeRecordEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecordEdit'))
 const EmpfileFinalVerification = React.lazy(() => import('./views/EmployeeRecord/EmpfileFinalVerification/EmpfileFinalVerification'))
 const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
-
+const EmpProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/Profile'))
+const ContractRenewalProcess = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/ContractRenewalProcess'))
+const Direct_Contract_Close = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/Direct_Contract_Close'))
+const ContractRenewApprovalList = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractRenewApprovalList'))
+const PerformanceGrade = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGrade'))
+const PerformanceGradeEdit = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGradeEdit'))
+const PerformanceAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/PerformanceAppraisalList')))
+const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
+const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
+const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
+const PerformanceAppraisalRights = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRights')))
+const PerformanceAppraisalRightsEdit = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRightsEdit')))
+const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/TrainingEnd'))
+const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
+const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
 
 const routes = [
 
@@ -348,28 +350,30 @@ const routes = [
   { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
   { path: '/Home/ReligionReport', exact: true, name: 'Employee Religion Report', component: ReligionReport },
   { path: '/Home/RegionReport', exact: true, name: 'Employee district Report', component: RegionReport },
-  { path: '/Home/ExperienceReport', exact: true, name: 'Employee Department Report', component: ExperienceReport },
+  //{ path: '/Home/ExperienceReport', exact: true, name: 'Employee Department Report', component: ExperienceReport },
   { path: '/Home/InstitutionTypeReport', exact: true, name: 'Employee InstitutionType Report', component: InstitutionTypeReport },
   { path: '/Home/CategoryReport', exact: true, name: 'Employee Category Report', component: CategoryReports },
   { path: '/Home/DesignationReport', exact: true, name: 'Employee Designation Report', component: DesignationReport },
   { path: '/Home/QualificationReport', exact: true, name: 'Employee Qualification Report', component: QualificationReport },
-  { path: '/Home/RegistrationTypeReport', exact: true, name: 'Department Registration Report', component: RegistrationTypeReport },
-  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmpRegisteration },
-  { path: '/Home/ContractReport', exact: true, name: 'Contarct Details Report', component: ContractReport },
-  { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Details Report', component: PermanentEmployeeReport },
-  { path: '/Home/ContractClosedReport', exact: true, name: 'Contract Closed Report', component: ContractClosedReport },
-  { path: '/Home/ContractRenewReport', exact: true, name: 'Contract Closed Report', component: ContractRenewReport },
-  { path: '/Home/ContractCurrentRunningReport', exact: true, name: 'Contract Current Running Report', component: ContractCurrentRunningReport },
-  { path: '/Home/ContractOneYear+CurrentReport', exact: true, name: 'Contract One Year + Current Running Report', component: OneYearCurrentRunning },
-  { path: '/Home/ResignedEmpReport', exact: true, name: 'Resigned Report', component: ResignedEmpReport },
-  { path: '/Home/DesignationExpReport', exact: true, name: 'Employee Designation wise Experience Report', component: DesignationExpReport },
-  { path: '/Home/DeptSubSectionReport', exact: true, name: 'Employee Dept subSection Report', component: DeptSubSectionReport },
-  { path: '/Home/TraningProbaReport', exact: true, name: 'Training and probation report', component: TraningProbaReport },
   { path: '/Home/EmployeeRecordTable', exact: true, name: 'Employee Record Table', component: EmployeeRecordTable },
   { path: '/Home/EmployeeRecordEdit/:id/:no', exact: true, name: 'Employee Record Table', component: EmployeeRecordEdit },
   { path: '/Home/EmpfileFinalVerification', exact: true, name: 'Empfile Final Verification', component: EmpfileFinalVerification },
   { path: '/Home/KRA', exact: true, name: 'Key Result Areas', component: KRA },
-
+  { path: '/Home/Prfle/:id/:no', exact: true, name: 'Employee Profile', component: EmpProfile },
+  { path: '/Home/ContractRenewalProcess/:id/:no', exact: true, name: 'Contract Renewal Process', component: ContractRenewalProcess },
+  { path: '/Home/Direct_Contract_Close/:id/:no', exact: true, name: 'Direct Contract Close', component: Direct_Contract_Close },
+  { path: '/Home/ContractRenewApprovalList', exact: true, name: 'Contract Renew Approval List', component: ContractRenewApprovalList },
+  { path: '/Home/PerformanceGradeMaster', exact: true, name: 'Performance Grade', component: PerformanceGrade },
+  { path: '/Home/PerformanceGradeEdit/:id', exact: true, name: 'Performance Grade', component: PerformanceGradeEdit },
+  { path: '/Home/PerformanceAppraisal', exact: true, name: 'Performance Appraisal', component: PerformanceAppraisalList },
+  { path: '/Home/ProbationEnd', exact: true, name: 'Probation End List', component: ProbationEnd },
+  { path: '/Home/AnnualAppraisalList', exact: true, name: 'Annual Appraisal List', component: AnnualAppraisalList },
+  { path: '/Home/ContractEnd', exact: true, name: 'Contract End List', component: ContractEnd },
+  { path: '/Home/PerformanceAppraisalRights', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRights },
+  { path: '/Home/PerformanceAppraisalRightsEdit/:id', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRightsEdit },
+  { path: '/Home/TrainingEnd', exact: true, name: 'Training End List', component: TrainingEnd },
+  { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
+  { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
 
 ]
 

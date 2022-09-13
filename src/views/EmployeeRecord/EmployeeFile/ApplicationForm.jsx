@@ -34,7 +34,6 @@ const ApplicationForm = () => {
         else {
 
         }
-
     }, [slno, id, no])
     const designation = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData.em_designation
