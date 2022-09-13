@@ -26,6 +26,7 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
                             <TableCell>Work Days </TableCell>
                             <TableCell>Present</TableCell>
                             <TableCell>Leave</TableCell>
+                            <TableCell>Woff</TableCell>
                             <TableCell>Lop</TableCell>
                             <TableCell>Total Days</TableCell>
                         </TableRow>

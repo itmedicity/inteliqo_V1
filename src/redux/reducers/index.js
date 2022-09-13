@@ -78,13 +78,13 @@ const reducer = combineReducers({
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
     getMenuRenderCompRights,
-    getBirthdayList,
+    // getBirthdayList,
     getGradeList,
-    getHODInchargeNameList,
+    // getHODInchargeNameList,
     getContractClosedata,
     getBirthdayList,
-    getGradeList,
-    getHODInchargeNameList,
+    // getGradeList,
+    // getHODInchargeNameList,
     getUserRights
 })
 
