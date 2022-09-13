@@ -7,19 +7,14 @@ import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DesignationMast from 'src/views/CommonCode/DesignationMast';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom';
 import Competency from './Competency';
-import PreviewIcon from '@mui/icons-material/Preview';
-import { useCallback } from 'react';
-
-
+import { axioslogin } from 'src/views/Axios/Axios';
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
 const Performance = React.lazy(() => import('./Performance'));
@@ -36,10 +31,26 @@ const JobDescription = () => {
     const { selectDesignation, updateDesignation,
         selectedDept, updateSelected, selectDesignationName, selectedDeptName
     } = useContext(PayrolMasterContext)
-    const [jobview, setjobview] = useState(0)
+    const [jobview, setjobview] = useState(0)//use sate job description view
+    const [jobedit, setjobEdit] = useState(0)
+    const checkData = {
+        designation: selectDesignation,
+        dept_id: selectedDept
+    }
     const addtojobSummary = async () => {
         if (selectDesignation !== 0 && selectedDept !== 0) {
-            setjobview(1)
+            const result = await axioslogin.post('/jobsummary/check', checkData)
+            const { data, success } = result.data
+            if (success === 1) {
+                const { summary_slno } = data[0]
+                infoNofity("Job Description Already Added for This Designation and Department")
+                setjobEdit(summary_slno)
+            }
+            else {
+                setjobview(1)
+                setjobEdit(0)
+            }
+
         }
         else {
 
@@ -51,9 +62,7 @@ const JobDescription = () => {
         history.push(`/Home`)
     }
 
-    const toTable = useCallback(() => {
-        history.push('/Home/JobDescriptionCmpEdit')
-    })
+
     return (
         <Fragment>
             <ToastContainer />
@@ -72,11 +81,6 @@ const JobDescription = () => {
                                     Job Description
                                 </Typography>
                             </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ px: 1 }}>
-                            <IconButton variant="outlined" size='sm'>
-                                <PreviewIcon size={22} sx={{ color: "#37575f" }} onClick={toTable} />
-                            </IconButton>
                         </Box>
                         <Box >
                             <IconButton variant="outlined" size='sm' onClick={Redirect}>
@@ -110,6 +114,7 @@ const JobDescription = () => {
                     <Suspense fallback={<Progress />} >
                         <JobSummary
                             jobview={jobview}
+                            jobedit={jobedit}
                             selectDesignationName={selectDesignationName}
                             selectedDeptName={selectedDeptName}
                             selectDesignation={selectDesignation}
@@ -121,6 +126,7 @@ const JobDescription = () => {
                         <DutyRespos
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
                         />
 
                     </Suspense>
@@ -130,6 +136,7 @@ const JobDescription = () => {
                         <Performance
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
                         />
                         {/* <Competency /> */}
                     </Suspense>
@@ -139,6 +146,7 @@ const JobDescription = () => {
                         <Competency
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
                         />
 
 
@@ -150,6 +158,8 @@ const JobDescription = () => {
                         <Generic
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
+
                         />
                     </Suspense>
 

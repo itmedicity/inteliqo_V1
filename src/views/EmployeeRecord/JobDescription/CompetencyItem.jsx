@@ -23,27 +23,28 @@ const CompetencyItem = ({ val, setDeleteComp, setEditComp }) => {
                     <DriveFileRenameOutlineOutlinedIcon color='primary' size="inherit" />
                 </IconButton>
             </Box>
+            <Box sx={{ flex: 3, px: 0.5 }} >
+                <TextareaAutosize
+                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                    minRows={1}
+                    placeholder="kra"
+                    value={val.kra_desc}
+                />
+            </Box>
             <Box sx={{ flex: 2 }} >
                 <TextareaAutosize
                     style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                     minRows={1}
                     placeholder="Sourcing"
-                    value={val.kraname}
+                    value={val.competency_desc}
                 />
             </Box>
-            <Box sx={{ flex: 3, px: 0.5 }} >
-                <TextareaAutosize
-                    style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
-                    minRows={1}
-                    placeholder=""
-                    value={val.kpicompetency}
-                />
-            </Box>
+
             {/* <Box sx={{ flex: 1, px: 0.5 }} >
                 <TextareaAutosize
                     style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                     minRows={1}
-                    placeholder=""
+                    placeholder="hhhhhhhhhhh"
                 //value={val.kpiscore}
                 />
             </Box> */}

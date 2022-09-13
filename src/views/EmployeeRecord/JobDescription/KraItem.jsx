@@ -23,7 +23,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                     minRows={1}
                     placeholder="Sourcing"
-                    value={val.kraname}
+                    value={val.kra_desc}
                 />
             </Box>
             <Box sx={{ flex: 3, px: 0.5 }} >
@@ -31,7 +31,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                     minRows={1}
                     placeholder=""
-                    value={val.kpiindicator}
+                    value={val.kpi}
                 />
             </Box>
             <Box sx={{ flex: 1, px: 0.5 }} >
@@ -39,7 +39,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                     minRows={1}
                     placeholder=""
-                    value={val.kpiscore}
+                    value={val.kpi_score}
                 />
             </Box>
             {/* <Box sx={{ flex: 3, }} >

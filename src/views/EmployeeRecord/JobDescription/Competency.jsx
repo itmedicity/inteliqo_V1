@@ -15,8 +15,9 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import CompetencyItem from './CompetencyItem';
 
-const Competency = ({ selectDesignation, selectedDept }) => {
 
+
+const Competency = ({ selectDesignation, selectedDept, jobedit }) => {
     const [Kra, setKra] = useState(0)
     const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
@@ -24,35 +25,67 @@ const Competency = ({ selectDesignation, selectedDept }) => {
     const [deletecomp, setDeleteComp] = useState(0)
     const [Compete, setCompete] = useState([])
 
-    const [formData, setFormData] = useState({
-        Kra: '',
-        competency: ''
-    })
+    const AddKra = () => {
+        if (Kra === 0) {
+            infoNofity("Select Key Result Area")
+        }
+        else {
+            setKraview(1)
+        }
 
-    const { competency } = formData
-    const defaultState = {
-        competency: ''
     }
 
-    //get values from the page
+    const [formData, setFormData] = useState({
+        competency_desc: ''
+    })
+
+    const { competency_desc } = formData
+    const defaultState = {
+        competency_desc: ''
+    }
+
+    //getting form data
     const updatKeyPerformance = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
     }
-
-    /** setting keyCompetency for display the enterd list */
+    // const [perfomance, setPerformance] = useState([])
     const AddCompetencyToTable = () => {
         const keyCompetency = {
             id: Math.ceil(Math.random() * 1000),
-            kras: Kra,
-            kraname: KraName,
-            kpicompetency: competency
+            key_result_area: Kra,
+            kra_desc: KraName,
+            competency_desc: competency_desc
+
         }
+
         setCompete([...Compete, keyCompetency])
         setFormData(defaultState)
     }
 
-    /** to delete the entered competency list */
+    //function for editing kra details
+    useEffect(() => {
+        if (EditComp > 0) {
+            const editdata = Compete.filter((val) => {
+                if (val.id === EditComp) {
+                    return val
+                }
+            })
+            const { competency_desc, key_result_area } = editdata[0]
+            const frmData = {
+                competency_desc: competency_desc,
+            }
+            setFormData(frmData)
+            setKra(key_result_area)
+            const newKra = Compete.filter((val) => {
+                if (val.id !== EditComp) {
+                    return val
+                }
+            })
+            setCompete(newKra)
+        }
+    }, [EditComp])
+    //function for deleting kra details
     useEffect(() => {
         if (deletecomp > 0) {
             const deletee = Compete.filter((val) => {
@@ -64,41 +97,29 @@ const Competency = ({ selectDesignation, selectedDept }) => {
         }
     }, [deletecomp])
 
-    //function for editing competency details
     useEffect(() => {
-        if (EditComp > 0) {
-            const editdata = Compete.filter((val) => {
-                if (val.id === EditComp) {
-                    return val
-                }
+        if (jobedit > 0) {
+            const getCompetency = async () => {
+                const result = await axioslogin.post('/jobsummary/get/jobcompetency', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setCompete(data)
 
-            })
-            const { kras, kpicompetency } = editdata[0]
-            const frmData = {
-                competency: kpicompetency,
-                kras: Kra,
+                }
             }
-            setFormData(frmData)
-            setKra(kras)
-
-            const newKra = Compete.filter((val) => {
-                if (val.id !== EditComp) {
-                    return val
-                }
-
-            })
-            setCompete(newKra)
+            getCompetency()
         }
-    }, [EditComp])
+    }, [jobedit])
+
+
 
     const checkData = {
-        dept_id: selectedDept,
-        designation: selectDesignation
-
+        designation: selectDesignation,
+        dept_id: selectedDept
     }
 
-    //function for saving job Competency
-    const saveJobCompetency = async (e) => {
+    // function for saving job competency
+    const saveJobSpecification = async (e) => {
         e.preventDefault();
         const result = await axioslogin.post('/jobsummary/check', checkData)
         const { data, success } = result.data
@@ -109,17 +130,16 @@ const Competency = ({ selectDesignation, selectedDept }) => {
             }
             else {
                 const saveDuties = Compete && Compete.map((val) => {
+
                     return {
                         job_id: summary_slno,
-                        key_result_area: val.kras,
-                        competency_desc: val.kpicompetency,
+                        key_result_area: val.key_result_area,
+                        competency_desc: val.competency_desc,
                         dept_id: selectedDept,
                         designation: selectDesignation
 
-
                     }
                 })
-                // console.log(saveDuties);
                 const result = await axioslogin.post('/jobsummary/jobcompetency', saveDuties)
                 const { success, message } = result.data
                 if (success === 1) {
@@ -138,10 +158,12 @@ const Competency = ({ selectDesignation, selectedDept }) => {
             errorNofity("Error Occured!!!Please Contact EDP")
         }
     }
+
     return (
+
         <Fragment>
             <ToastContainer />
-            {/* Job Specification : Performance & Competency */}
+            {/* Job Specification : Performance  */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
                     <Typography
@@ -149,54 +171,58 @@ const Competency = ({ selectDesignation, selectedDept }) => {
                         level="body2"
                         sx={{ flex: 2 }}
                     >
-                        Job Specification : Competency
+                        Job Specification : competency
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm'
-                        onClick={saveJobCompetency}
-                    >
+                    <IconButton variant="outlined" size='sm' onClick={saveJobSpecification}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
             </Box>
 
-            {/* Prformance & Competency descriptive table */}
+            {/* Peformance & Competency descriptive table */}
 
-            <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column", p: 1 }} >
-                <Box sx={{ display: "flex", alignItems: "center", flex: 2 }} >
-                    <Box sx={{ flex: 20, width: 1500 }} >
+            <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column", width: "100%" }} >
+                <Box sx={{ display: "flex", alignItems: "center", }} >
+                    <Box sx={{ flex: 3, width: "40%" }} >
                         <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE} setKraName={setKraName} />
                     </Box>
-                    <Box sx={{ flex: 0, pb: 0.5, pl: 1 }} >
+                    {/* <Box sx={{ display: "flex", alignItems: "center", py: 0.1, flexDirection: "row" }} > */}
+                    <Box sx={{ flex: 4, p: 1, width: "60%", }}
+                    // style={{ p: 0, height: 20, lineHeight: 2, m: 0 }}
+                    >
                         <TextareaAutosize
-                            style={{ width: 1150, display: "flex", borderRadius: 4, borderColor: "#c4c4c4" }}
+                            style={{ width: 800, pt: 1, height: 33, display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13, pt: 4 }}
                             minRows={1}
-                            placeholder="Competency "
-                            name="competency"
-                            value={competency}
+                            placeholder="Competency"
+                            name="competency_desc"
+                            value={competency_desc}
                             onChange={(e) => updatKeyPerformance(e)}
-
                         />
                     </Box>
-                    <Box sx={{ flex: 0, px: 0.5, pl: 1 }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={AddCompetencyToTable}
-                        >
+                    <Box sx={{ flex: 1, px: 2 }} >
+                        <IconButton variant="outlined" size='sm' onClick={AddCompetencyToTable} onChange={AddKra}  >
                             <AddToPhotosIcon />
                         </IconButton>
                     </Box>
+
                 </Box>
+                {/* </Box> */}
+
                 {
                     Compete.length > 0 ? Compete && Compete.map((val, index) =>
                         <CompetencyItem key={index} val={val} setDeleteComp={setDeleteComp} setEditComp={setEditComp} />
-                    )
-                        : null
+                    ) : null
                 }
 
             </Paper>
 
         </Fragment >
+
+
+
+
     )
 }
 

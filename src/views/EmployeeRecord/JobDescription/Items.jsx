@@ -37,7 +37,7 @@ const Items = ({ val, id, setEdit, setDelete }) => {
                 <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "center", alignItems: "center", width: "100%" }} variant="outlined" >
                     <CssVarsProvider>
                         <Typography level="body1">
-                            {val.dutiess}
+                            {val.duties_and_resp}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
