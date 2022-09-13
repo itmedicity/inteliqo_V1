@@ -38,9 +38,6 @@ import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getContractClosedata } from '../reducers/ContractRenewalReducers'
-import { getBirthdayList } from '../reducers/Birthday.Reducer'
-import { getGradeList } from '../reducers/Grade.Reducer'
-import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 
 
@@ -85,9 +82,6 @@ const reducer = combineReducers({
     getGradeList,
     getHODInchargeNameList,
     getContractClosedata,
-    getBirthdayList,
-    getGradeList,
-    getHODInchargeNameList,
     getUserRights
 })
 
