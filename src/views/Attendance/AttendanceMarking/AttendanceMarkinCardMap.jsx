@@ -62,7 +62,7 @@ const AttendanceMarkinCardMap = ({ val, key, data, count, dateformat, rageset, e
                 </TableCell>
                 <TableCell align="center" style={{ padding: 0, width: '8rem', backgroundColor: "#a2a3ac", height: '3rem' }}>
                     <Typography variant="subtitle2">
-                        {val.em_id}
+                        {val.em_no}
                     </Typography>
                 </TableCell>
 

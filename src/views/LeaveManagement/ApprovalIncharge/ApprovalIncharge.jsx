@@ -37,8 +37,6 @@ const ApprovalIncharge = () => {
     const [halfdaymast, setmasthalfday] = useState([])
     const [compensetorymast, setmastcompensetory] = useState([])
     const [compensetory, setcompensetory] = useState([])
-    console.log(leavereq)
-    console.log(levtpevalue)
     const handleChange = async (e) => {
         // depsection change filter based on dept section leave request
         const filterleavereq = leavereqmast.filter((val) => {
