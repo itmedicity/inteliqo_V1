@@ -47,6 +47,7 @@ const AnnualLeaveSettings = () => {
     const [processslno, setprocessslno] = useState(0)
     // set open model 
     const [open, setOpen] = useState(false);
+    const [attendanceata, setAttendanceData] = useState([])
     // current process details
     const [leaveprocessid, leaveprocessidupdate] = useState({
         hrm_calcu: 0,
@@ -151,7 +152,32 @@ const AnnualLeaveSettings = () => {
         )
 
     }, [no, modelvalue, id])
+    //useEffect for getting attendancde details to process earn leave
+    useEffect(() => {
+        // const postdata = {
+        //     emp_id: id,
+        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        // }
+        const postdata = {
+            emp_id: no,
+            startdate: '2022-01-01',
+            endate: '2022-12-30'
+        }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
 
+    }, [id])
     const postFormdata =
     {
         em_no: no,
@@ -166,7 +192,6 @@ const AnnualLeaveSettings = () => {
                 endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
             }
             const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
-            console.log(resultselect)
             if (resultselect.data.success === 2) {
                 // check the table where data present if present get the details process table
                 /*
@@ -295,6 +320,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     setmodelvalue={setmodelvalue}
+                    nameel={attendanceata}
                 /> : null}
                 {/* if new process pending */}
                 {modellist === true ? <ModelAvailLeavelist
@@ -308,6 +334,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     nodatafixed={nodatafixed}
+                    nameel={attendanceata}
                 /> : null}
                 <div className="row g-1 pb-1">
                     <div className="col-md-4">

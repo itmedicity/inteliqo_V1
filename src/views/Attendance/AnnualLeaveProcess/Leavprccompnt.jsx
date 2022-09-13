@@ -5,7 +5,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { compareAsc } from 'date-fns';
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { lastDayOfYear, startOfYear } from 'date-fns';
 import moment from 'moment'
 import ModelAvailLeavelist from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelAvailLeavelist';
@@ -70,16 +70,15 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
             startdate: moment(startOfYear(new Date(year))).format('YYYY-MM-DD'),
             endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
         }
-        const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
-        console.log(resultselect)
-        if (resultselect.data.success === 2) {
-            const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
-            const { data, success } = result.data
-            if (success === 1) {
-                setleavestate(data[0])
-                const { ecat_cont,
-                    em_category
-                } = data[0]
+        const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
+        const { data, success } = result.data
+        if (success === 1) {
+            setleavestate(data[0])
+            const { ecat_cont,
+                em_category
+            } = data[0]
+            const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+            if (resultselect.data.success === 2) {
                 const postFormdata =
                 {
                     em_no: namee.em_id,
@@ -130,24 +129,27 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                         setmodellist(true)
                     }
                 }
+            } else if (resultselect.data.success === 1) {
+                const yearlyleavedata = {
+                    em_no: namee.em_no,
+                    em_id: namee.em_id,
+                    proceeuser: 1,
+                    year_of_process: moment(startOfYear(new Date(year))).format('YYYY-MM-DD')
+                }
+                const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
+                if (resultinsert.data.success === 1) {
+                    setOpen(true)
+                    setmodelvalue(1)
+                    setmodelmessage('Date Exceeded do you Want To Process')
+                }
+                else {
+                    warningNofity('Please Contact Edp')
+                }
             }
 
-        } else if (resultselect.data.success === 1) {
-            const yearlyleavedata = {
-                em_no: namee.em_no,
-                em_id: namee.em_id,
-                proceeuser: 1,
-                year_of_process: moment(startOfYear(new Date(year))).format('YYYY-MM-DD')
-            }
-            const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
-            if (resultinsert.data.success === 1) {
-                setOpen(true)
-                setmodelvalue(1)
-                setmodelmessage('Date Exceeded do you Want To Process')
-            }
-            else {
-                warningNofity('Please Contact Edp')
-            }
+        }
+        else {
+            errorNofity("Error Occured!!!Please Contact EDP")
         }
 
     }
@@ -194,6 +196,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 nodatafixed={nodatafixed}
+                nameel={nameel}
             /> : null}
             {name && name.map((val, index) => {
                 return <TableRow key={val.em_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

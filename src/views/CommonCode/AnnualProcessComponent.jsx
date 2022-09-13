@@ -448,24 +448,24 @@ const AnnualProcessComponent = ({
                     lv_proce: lv_process_slnocurrent
                 }
 
-                // insert casual leave
-                const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dataearnlv)
-                const { success, message } = result.data
-                if (success === 1) {
-                    // if updated casula leave table update process table
-                    const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updateearnleave', lv_process)
+                // insert earn leave
+                // const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dataearnlv)
+                // const { success, message } = result.data
+                // if (success === 1) {
+                //     // if updated casula leave table update process table
+                //     const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updateearnleave', lv_process)
 
-                    if (resultupdatcasualleave.data.success === 2) {
-                        succesNofity(resultupdatcasualleave.data.message)
-                        if (categorychge !== 1) {
-                            setnodatael(0)
-                        }
-                        count(countdata + 1)
-                    }
-                }
-                else {
-                    infoNofity(message)
-                }
+                //     if (resultupdatcasualleave.data.success === 2) {
+                //         succesNofity(resultupdatcasualleave.data.message)
+                //         if (categorychge !== 1) {
+                //             setnodatael(0)
+                //         }
+                //         count(countdata + 1)
+                //     }
+                // }
+                // else {
+                //     infoNofity(message)
+                // }
             }
             else {
                 warningNofity('one Year Not Completed')

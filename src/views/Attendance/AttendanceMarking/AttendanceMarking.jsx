@@ -110,7 +110,8 @@ const AttendanceMarking = () => {
                     tot_days_present: val.duty_status,
                     total_leave: val.leave_type,
                     total_lop: parseFloat(dateFormat.length) - (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
-                    total_days: (parseFloat(val.duty_status) + parseFloat(val.leave_type)), updated_user: loggineduser,
+                    total_days: (parseFloat(val.duty_status) + parseFloat(val.leave_type)),
+                    updated_user: loggineduser,
                     attnd_mark_startdate: moment(firstdate).format('YYYY-MM-DD'),
                     attnd_mark_enddate: moment(endodate).format('YYYY-MM-DD'),
 
