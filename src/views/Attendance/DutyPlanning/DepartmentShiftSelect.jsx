@@ -8,8 +8,9 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
     const handleChange = (e) => {
         // const planDate = moment(duty_day).format('YYYY-MM-DD');
         const shiftId = e.target.value;
+        const offday = e.target.value === '1002' ? 1 : 0
         const planSlno = plan_slno;
-        const newShift = { shiftSlno: planSlno, shiftId: shiftId }
+        const newShift = { shiftSlno: planSlno, shiftId: shiftId, offday: offday }
         setShift(shiftId)
         const sortPlan = planArray.filter((val) => {
             return val.shiftSlno !== planSlno
@@ -36,7 +37,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
                 disabled={attendance_update_flag === 1 ? true : false}
 
             >
-                <option defaultValue="0">Choose...</option>
+                <option defaultValue={0}>Choose...</option>
                 {
                     DepartmentShift && DepartmentShift.map((val, index) => {
                         return <option key={index} value={val.shiftcode}>{val.shiftDescription}</option>

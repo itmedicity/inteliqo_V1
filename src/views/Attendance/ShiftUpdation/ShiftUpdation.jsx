@@ -265,7 +265,6 @@ const ShiftUpdation = () => {
 
         })
         const result2 = await axioslogin.post('/common/getCasualeavearry/', empdata)
-
         if (result2.data.success === 1) {
             const leaveMonth = getMonth(new Date())
             const casual = result2.data.data.filter((val) => {

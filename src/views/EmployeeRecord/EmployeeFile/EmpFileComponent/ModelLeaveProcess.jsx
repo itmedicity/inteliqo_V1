@@ -41,7 +41,7 @@ const ModelLeaveProcess = ({
     const { ecat_cl, ecat_cont, ecat_el, ecat_esi_allow,
         ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl,
         em_category, em_contract_end_date, em_prob_end_date } = dataleave
-
+    console.log(dataleave)
     // destructuring  leaveprocessid --> Data From the "hrm_leave_process" table if status is "A"
     const {
         hrm_calcu,
@@ -156,10 +156,12 @@ const ModelLeaveProcess = ({
         if (success === 2) {
             // Success === 2 means "hrm_process_status" coulumn status successfully updated as "N" in the table "<ModelAvailLeavelist/>"
             if (olddata === 1) {
+                console.log('nj')
                 // New Process || initial Process
                 datayearsave(processdatanew)
             }
             else {
+                console.log('dfg')
                 datayearsave(funprocessdata(em_category, category_slno))
             }
 
