@@ -36,6 +36,9 @@ import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
 import { getMenuRenderCompRights } from './CardMenuSlnoRender';
 import { getContractClosedata } from '../reducers/ContractRenewalReducers'
 import { getUserRights } from '../reducers/EmpUserRights.Reducer'
+import { getBirthdayList } from '../reducers/Birthday.Reducer'
+import { getGradeList } from '../reducers/Grade.Reducer'
+import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 
 
 const reducer = combineReducers({
@@ -75,10 +78,10 @@ const reducer = combineReducers({
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
     getMenuRenderCompRights,
-    // getBirthdayList,
-    // getGradeList,
-    // getHODInchargeNameList,
+    getHODInchargeNameList,
+    getGradeList,
     getContractClosedata,
+    getBirthdayList,
     getUserRights
 })
 
