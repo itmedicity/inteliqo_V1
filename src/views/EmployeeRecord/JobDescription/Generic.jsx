@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { memo } from 'react';
 
 
 const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
@@ -74,6 +75,15 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
         female: false,
         male: false
     })
+    const defaultState = {
+        experincedetl: '',
+        expYear: '',
+        specialcomment: '',
+        ageFrom: '',
+        ageTo: '',
+        female: false,
+        male: false
+    }
     const { experincedetl, expYear, specialcomment, ageFrom, ageTo, female, male } = formData
     useEffect(() => {
         if (editKra > 0) {
@@ -112,15 +122,14 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
                 const { success, data } = result.data
                 if (success === 1) {
                     const { experience, experience_year, special_comment, age_from, age_to, is_female, is_male } = data[0]
-
                     const frmdata = {
                         experincedetl: experience,
                         expYear: experience_year,
                         specialcomment: special_comment,
                         ageFrom: age_from,
                         ageTo: age_to,
-                        female: is_female,
-                        male: is_male
+                        female: is_female === 1 ? true : false,
+                        male: is_male === 1 ? true : false,
 
                     }
                     setFormData(frmdata)
@@ -129,6 +138,9 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
                 }
             }
             getJoGeneric()
+        }
+        else {
+            setFormData(defaultState)
         }
     }, [jobedit])
     useEffect(() => {
@@ -141,6 +153,9 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
                 }
             }
             getJobqualification()
+        }
+        else {
+            setExperience([])
         }
     }, [jobedit])
 
@@ -301,8 +316,13 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
                             flexDirection: "column"
                         }} variant="outlined" >
                             {
-                                experiencee && experiencee.map((val, index) => <ExperienceItem key={index} val={val} setDeleteItem={setDeleteItem} />)
-                            }
+                                experiencee && experiencee.map((val, index) =>
+                                    <ExperienceItem key={index}
+                                        val={val}
+                                        setDeleteItem={setDeleteItem}
+                                        jobedit={jobedit}
+                                    />
+                                )}
                         </Paper>
                     </Box>
                 </Box>
@@ -390,4 +410,4 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
     )
 }
 
-export default Generic
+export default memo(Generic) 

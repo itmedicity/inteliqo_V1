@@ -12,6 +12,7 @@ import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Comm
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
+import { memo } from 'react';
 
 const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
     const [Kra, setKra] = useState(0)
@@ -111,6 +112,10 @@ const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
                 }
             }
             getPerformace()
+        }
+        else {
+            setPerformance([])
+            setEditdata([])
         }
     }, [jobedit])
     //function for saving job Specification
@@ -230,4 +235,4 @@ const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
     )
 }
 
-export default Performance
+export default memo(Performance) 

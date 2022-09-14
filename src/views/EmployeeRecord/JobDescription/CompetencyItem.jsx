@@ -3,6 +3,7 @@ import React from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import { memo } from 'react';
 
 const CompetencyItem = ({ val, setDeleteComp, setEditComp }) => {
 
@@ -65,4 +66,4 @@ const CompetencyItem = ({ val, setDeleteComp, setEditComp }) => {
     )
 }
 
-export default CompetencyItem
+export default memo(CompetencyItem) 

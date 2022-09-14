@@ -4,6 +4,7 @@ import { Box, Paper } from '@mui/material'
 import React from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { memo } from 'react';
 
 const QualificationItem = ({ val }) => {
     return (
@@ -34,4 +35,4 @@ const QualificationItem = ({ val }) => {
     )
 }
 
-export default QualificationItem
+export default memo(QualificationItem) 
