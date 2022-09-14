@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-bootstrap'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { tableIcons } from 'src/views/Constant/MaterialIcon'
-// import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import { axioslogin } from 'src/views/Axios/Axios'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
@@ -17,6 +16,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const EmployeeRecord = () => {
     const classes = useStyles()
@@ -163,6 +163,7 @@ const EmployeeRecord = () => {
     }
 
     const toSettings = () => {
+        dispatch({ type: Actiontypes.FETCH_EMP_RECORD_LIST, payload: [] })
         history.push('/Home')
     }
 

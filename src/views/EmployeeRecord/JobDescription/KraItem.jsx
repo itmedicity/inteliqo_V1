@@ -3,6 +3,7 @@ import React from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import { memo } from 'react';
 
 const KraItem = ({ val, setEditKra, setDeleteKra }) => {
     const EditKraItem = (id) => {
@@ -61,4 +62,4 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
     )
 }
 
-export default KraItem
+export default memo(KraItem) 

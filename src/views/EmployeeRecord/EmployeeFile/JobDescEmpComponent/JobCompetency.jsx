@@ -1,39 +1,39 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useState } from 'react'
+import { Box, Paper } from '@mui/material'
+import React, { Fragment, useEffect, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-import DutiesAndresp from './DutiesAndresp';
+import CompetencyDetl from './CompetencyDetl';
 import { memo } from 'react';
 
 
-const DutiesEmp = ({ selectDesignation, selectedDept }) => {
-    const [jobDuties, setJobduties] = useState([])
+const JobCompetency = ({ selectedDept, selectDesignation }) => {
+    const [competency, setcompetency] = useState([])
     useEffect(() => {
         if (selectDesignation !== 0 && selectedDept !== 0) {
             const postData = {
                 dept_id: selectedDept,
                 designation: selectDesignation
             }
-            const getjobDuties = async () => {
-                const result = await axioslogin.post('/jobsummary/getjobduties', postData)
+            const getjobCompetency = async () => {
+                const result = await axioslogin.post('/jobsummary/get/jobcompetency', postData)
                 const { success, data } = result.data
                 if (success === 1) {
-                    setJobduties(data)
+                    setcompetency(data)
                 }
                 else {
-                    setJobduties([])
+                    setcompetency([])
                 }
 
             }
-            getjobDuties()
+            getjobCompetency()
         }
 
-    }, [selectDesignation, selectedDept])
+    }, [selectedDept, selectDesignation])
     return (
         <Fragment>
+            {/* Prformance & Competency descriptive table */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
                     <Typography
@@ -41,22 +41,23 @@ const DutiesEmp = ({ selectDesignation, selectedDept }) => {
                         level="body2"
                         sx={{ flex: 2 }}
                     >
-                        Duties & Responsibilities
+                        Job  Competency
                     </Typography>
                 </CssVarsProvider>
             </Box>
 
-            {/* Dutieds And Responsibilities */}
-
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+
                 {
-                    jobDuties && jobDuties.map((val, index) =>
-                        <DutiesAndresp key={index} val={val} />
+                    competency && competency.map((val, index) =>
+                        <CompetencyDetl key={index} val={val} />
                     )
+
                 }
+
             </Paper>
         </Fragment>
     )
 }
 
-export default memo(DutiesEmp) 
+export default memo(JobCompetency)

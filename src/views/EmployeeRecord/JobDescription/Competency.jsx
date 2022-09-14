@@ -5,15 +5,14 @@ import React, { Fragment, useEffect, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import SelectBasic from 'src/views/Component/SelectBasic';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import KraItem from './KraItem';
 import KraSelect from './Jobdesccomponent/KraSelect';
 import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import CompetencyItem from './CompetencyItem';
+import { memo } from 'react';
 
 
 
@@ -108,6 +107,9 @@ const Competency = ({ selectDesignation, selectedDept, jobedit }) => {
                 }
             }
             getCompetency()
+        }
+        else {
+            setCompete([])
         }
     }, [jobedit])
 
@@ -226,4 +228,4 @@ const Competency = ({ selectDesignation, selectedDept, jobedit }) => {
     )
 }
 
-export default Competency
+export default memo(Competency) 

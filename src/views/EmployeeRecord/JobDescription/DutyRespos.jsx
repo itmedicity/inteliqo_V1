@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
+import { memo } from 'react';
 
 
 const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
@@ -84,6 +85,9 @@ const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
                 }
             }
             getdutiesandResp()
+        }
+        else {
+            setDuty([])
         }
     }, [jobedit])
 
@@ -170,4 +174,4 @@ const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
     )
 }
 
-export default DutyRespos
+export default memo(DutyRespos) 
