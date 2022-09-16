@@ -38,8 +38,6 @@ const AnnouncementList = () => {
     //     }
     // }, [empBirthday])
     const msg = "Happy Birthday!!"
-
-
     return (
         <Sheet
             variant="outlined"
