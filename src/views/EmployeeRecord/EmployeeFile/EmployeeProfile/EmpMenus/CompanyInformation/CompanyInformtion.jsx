@@ -1,10 +1,10 @@
-import { compareAsc } from 'date-fns'
+import { addDays, compareAsc } from 'date-fns'
 import React, { Fragment, useContext, useState, useEffect, memo } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
-import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
@@ -21,6 +21,7 @@ import CompanyInformationTable from './CompanyInformationTable'
 import CloseIcon from '@mui/icons-material/Close';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
+import moment from 'moment'
 
 const CompanyInformtion = () => {
     const history = useHistory()
@@ -85,11 +86,7 @@ const CompanyInformtion = () => {
     //Employee Type and Designation Type Set
     const [empstatus, setempStatus] = useState(0)
     const [probsataus, setProbstatus] = useState(0)
-
-    //UseState for Date Feild disabled 
-    const [dis, setDis] = useState(true)
-
-    const [probenddate, setProbenddate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [probationperiod, setProbationPeriod] = useState(0);
     //Get data
     useEffect(() => {
         const getCompany = async () => {
@@ -101,7 +98,7 @@ const CompanyInformtion = () => {
                     catemp: em_category
                 }
                 setCat(frm)
-                setProbenddate(em_prob_end_date)
+                setProbationPeriod(em_prob_end_date)
                 updateBranchSelected(em_branch)
                 updateSelected(em_department)
                 updateDepartmentSection(em_dept_section)
@@ -113,40 +110,25 @@ const CompanyInformtion = () => {
         getCompany()
     }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateInstituteSeleted, udateemployeecategory])
 
-    const [enddate, setenddate] = useState(format(new Date(), "yyyy-MM-dd"));
-
-    const getenddate = (e) => {
-        var enddate = e.target.value
-        var end = format(new Date(enddate), "yyyy-MM-dd")
-        setenddate(end)
-        return (end)
-    }
 
     useEffect(() => {
         if ((getemployeecategory !== cat.catemp) && (getemployeecategory !== 0)) {
             const getEmpType = async () => {
-                const result = await axioslogin.get(`/empmast/getEmpTypeDesg/${getemployeecategory}`)
-                console.log(result)
+                const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { emp_type, des_type } = data[0]
-                    if ((des_type === 1) || (des_type === 2)) {
-                        setDis(false)
-                        setProbstatus(1)
-                    } else if (des_type === 3) {
-                        setDis(true)
-                        setProbstatus(0)
-                    }
-                    else {
-                        setDis(true)
-                        setProbstatus(0)
-                    }
-                    if (emp_type === 2) {
+                    const { ecat_cont_period, ecat_prob_period } = data[0]
+                    setProbationPeriod(addDays(new Date, ecat_prob_period))
+                    if (ecat_cont_period > 0) {
                         setempStatus(1)
                     }
-                    else if (emp_type === 1) {
-                        setempStatus(0)
+                    if (ecat_prob_period > 1) {
+                        setProbstatus(1)
                     }
+                }
+
+                else {
+                    errorNofity("Error Occured!!!Please Contact EDP")
                 }
             }
             getEmpType()
@@ -162,7 +144,7 @@ const CompanyInformtion = () => {
         com_category: company,
         com_category_new: getemployeecategory,
         em_category: getemployeecategory,
-        em_conf_end_date: enddate,
+        em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
         contract_status: empstatus === 1 ? 1 : 0,
         probation_status: probsataus === 1 ? 1 : 0,
         create_user: employeeNumber(),
@@ -250,7 +232,36 @@ const CompanyInformtion = () => {
             infoNofity(message)
         }
     }
+    //useEffect for getting attendancde details to process earn leave
+    const [attendanceata, setAttendanceData] = useState([])
+    useEffect(() => {
+        // const postdata = {
+        //     emp_id: id,
+        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        // }
+        const postdata = {
+            emp_id: no,
+            startdate: '2022-01-01',
+            endate: '2022-12-30'
+        }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
 
+    }, [id])
     //Redirect
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
@@ -316,7 +327,7 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 30
                             }}>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <BrnachMastSelection
@@ -335,7 +346,7 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 30
                             }}>
                                 <Box sx={{ flex: 1, }} >
                                     <DepartmentSectionSelect
@@ -354,26 +365,12 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20,
+                                px: 30,
                                 pb: 0.5
                             }}>
                                 <Box sx={{ flex: 1 }}>
                                     <EmployeeCategory
                                         style={SELECT_CMP_STYLE}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
-                                    <TextInput
-                                        type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="End Date"
-                                        disabled={dis}
-                                        value={enddate}
-                                        min={probenddate}
-                                        name="enddate"
-                                        changeTextValue={(e) => {
-                                            getenddate(e)
-                                        }}
                                     />
                                 </Box>
                             </Box>

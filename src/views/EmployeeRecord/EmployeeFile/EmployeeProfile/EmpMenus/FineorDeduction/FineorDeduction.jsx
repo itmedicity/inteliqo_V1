@@ -151,13 +151,13 @@ const FineorDeduction = () => {
 
     const handleClickOpen = () => {
         setOpen(true);
-        history.push(`/Home/FineorDeduction/${id}/${no}`);
+        //history.push(`/Home/FineorDeduction/${id}/${no}`);
     };
     const handleClose = () => {
         setOpen(false);
     };
     const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
+        //history.push(`/Home/Profile/${id}/${no}`)
     }
 
 
@@ -165,6 +165,7 @@ const FineorDeduction = () => {
         <Fragment>
             <ModelAddFineMaster open={open} handleClose={handleClose} />
             <Box sx={{ width: "100%" }} >
+
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     <Paper square elevation={3} sx={{
                         display: "flex",
