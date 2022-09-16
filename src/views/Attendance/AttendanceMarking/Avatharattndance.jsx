@@ -4,7 +4,6 @@ import '../avathar.css'
 import { cyan, deepPurple } from '@material-ui/core/colors';
 const Avatharattndance = ({ val }) => {
 
-
     return (
 
         <Fragment>

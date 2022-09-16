@@ -2,9 +2,10 @@ import { CssVarsProvider } from '@mui/joy'
 import IconButton from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import { memo } from 'react';
 
 const Items = ({ val, id, setEdit, setDelete }) => {
     const EditItem = (id) => {
@@ -34,10 +35,10 @@ const Items = ({ val, id, setEdit, setDelete }) => {
                         </IconButton>
                     </Box>
                 </Paper>
-                <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "center", alignItems: "center", width: "100%" }} variant="outlined" >
+                <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "left", alignItems: "center", width: "100%" }} variant="outlined" >
                     <CssVarsProvider>
-                        <Typography level="body1">
-                            {val.dutiess}
+                        <Typography className="text-capitalize" level="body1" >
+                            {val.duties_and_resp}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -51,4 +52,4 @@ const Items = ({ val, id, setEdit, setDelete }) => {
     )
 }
 
-export default Items
+export default memo(Items) 

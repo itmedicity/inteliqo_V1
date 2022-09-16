@@ -19,6 +19,7 @@ const SalaryIncrement = React.lazy(() => import('./EmpMenus/SalaryIncrementProce
 const JobDescription = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const ContrtInfrmtion = React.lazy(() => import('./EmpMenus/ContractInformation/ContractInformation'))
 const JobDcrptn = React.lazy(() => import('./EmpMenus/JobDescription/JobDescriptionList'))
+const DocumentList = React.lazy(() => import('./EmpMenus/DocumentScanned/ScannedDoc'));
 
 const MenuRenderWind = () => {
 

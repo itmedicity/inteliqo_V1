@@ -6,6 +6,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import TextInput from 'src/views/Component/TextInput';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
+import { memo } from 'react';
 
 
 const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignation, selectedDept, setJobdescView }) => {
@@ -187,4 +188,4 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
     )
 }
 
-export default JobSummaryEmp
+export default memo(JobSummaryEmp) 

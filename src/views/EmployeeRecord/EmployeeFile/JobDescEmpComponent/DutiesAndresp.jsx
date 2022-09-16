@@ -4,6 +4,7 @@ import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, useState } from 'react'
 import AdjustIcon from '@mui/icons-material/Adjust';
+import { memo } from 'react';
 
 const DutiesAndresp = ({ val }) => {
     return (
@@ -28,9 +29,9 @@ const DutiesAndresp = ({ val }) => {
                             </IconButton>
                         </Box>
                     </Paper>
-                    <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "center", alignItems: "center", width: "100%" }} variant="outlined" >
+                    <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "left", alignItems: "center", width: "100%" }} variant="outlined" >
                         <CssVarsProvider>
-                            <Typography level="body1">
+                            <Typography level="body1" className="text-capitalize">
                                 {val.duties_and_resp}
                             </Typography>
                         </CssVarsProvider>
@@ -41,4 +42,4 @@ const DutiesAndresp = ({ val }) => {
     )
 }
 
-export default DutiesAndresp
+export default memo(DutiesAndresp) 
