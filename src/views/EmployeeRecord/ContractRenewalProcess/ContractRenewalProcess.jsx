@@ -33,6 +33,7 @@ const ContractRenewalProcess = () => {
     const [probationperiod, setProbationPeriod] = useState(0)
     const [fine, setFine] = useState(0)
     const [disable, setDisable] = useState(false)
+    const [contractstart, setContractStart] = useState(0)
     const [contractend, setContractEnd] = useState(0)
     const [graceperiod, setgraceperiod] = useState(0)
     const [attendanceDays, setattendanceDays] = useState(0)
@@ -154,16 +155,16 @@ const ContractRenewalProcess = () => {
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
     useEffect(() => {
-        // const postdata = {
-        //     emp_id: id,
-        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        // }
         const postdata = {
             emp_id: no,
-            startdate: '2022-01-01',
-            endate: '2022-12-30'
+            startdate: moment(new Date(contractstart)).format('YYYY-MM-DD'),
+            endate: moment(new Date(contractend)).format('YYYY-MM-DD'),
         }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
         // data based on the calculation of earn leave
         const getattendanceData = async () => {
             const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
@@ -180,7 +181,7 @@ const ContractRenewalProcess = () => {
         }
         getattendanceData()
 
-    }, [id])
+    }, [no])
     //function for saving new contract
     const RenewOldContract = async (e) => {
         e.preventDefault();
@@ -300,6 +301,7 @@ const ContractRenewalProcess = () => {
                         fine={fine}
                         setFine={setFine}
                         setContractEnd={setContractEnd}
+                        setContractStart={setContractStart}
                         setgraceperiod={setgraceperiod}
                         setattendanceDays={setattendanceDays}
                         setOldctaegory={setOldctaegory}

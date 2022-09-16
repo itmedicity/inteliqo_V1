@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material';
-import { compareAsc, lastDayOfYear, startOfYear } from 'date-fns';
+import { compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -152,18 +152,19 @@ const AnnualLeaveSettings = () => {
         )
 
     }, [no, modelvalue, id])
+    const year = moment(new Date()).format('YYYY')
     //useEffect for getting attendancde details to process earn leave
     useEffect(() => {
-        // const postdata = {
-        //     emp_id: id,
-        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        // }
         const postdata = {
             emp_id: no,
-            startdate: '2022-01-01',
-            endate: '2022-12-30'
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
         // data based on the calculation of earn leave
         const getattendanceData = async () => {
             const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
@@ -180,7 +181,7 @@ const AnnualLeaveSettings = () => {
         }
         getattendanceData()
 
-    }, [id])
+    }, [no])
     const postFormdata =
     {
         em_no: no,
