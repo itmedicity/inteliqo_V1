@@ -24,7 +24,6 @@ const ModelAvailLeavelist = ({
     setnodatafixed, categorychge, nodatafixed, nameel
 
 }) => {
-    console.log(nameel)
     const [processCount, setProcessCount] = useState(0)
     const {
         ecat_cl, ecat_lop, ecat_esi_allow, ecat_el,
@@ -53,7 +52,6 @@ const ModelAvailLeavelist = ({
         hrm_ern_lv,
         hrm_hld
     } = leaveproceedaata
-    console.log(leaveproceedaata)
     useEffect(() => {
         const getleaveprocessdata = async () => {
             //Get The Process Details from the "hrm_leave_process" table using the current process Serial Nulber (lv_process_slnocurrent)

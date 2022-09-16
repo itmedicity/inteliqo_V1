@@ -13,8 +13,7 @@ import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess'
 import EmpCompanyTable from './EmployeeFileTable/EmpCompanyTable'
-import TextInput from 'src/views/Component/TextInput'
-import { format } from 'date-fns'
+import { lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment'
 
 const EmployeeCompany = () => {
@@ -228,17 +227,18 @@ const EmployeeCompany = () => {
     }
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
+    const year = moment(new Date()).format('YYYY')
     useEffect(() => {
-        // const postdata = {
-        //     emp_id: id,
-        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        // }
         const postdata = {
             emp_id: no,
-            startdate: '2022-01-01',
-            endate: '2022-12-30'
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
         // data based on the calculation of earn leave
         const getattendanceData = async () => {
             const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
@@ -255,7 +255,7 @@ const EmployeeCompany = () => {
         }
         getattendanceData()
 
-    }, [id])
+    }, [no])
     //Redirect
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
