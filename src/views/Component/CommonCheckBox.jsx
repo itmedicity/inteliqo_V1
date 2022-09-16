@@ -1,9 +1,10 @@
-import { Checkbox } from '@mui/joy'
+import { Checkbox, CssVarsProvider } from '@mui/joy'
 import React, { Fragment, memo } from 'react'
 
 const CommonCheckBox = ({ value, name, onChange, checked, style }) => {
     return (
-        <Fragment>
+
+        <CssVarsProvider>
             <Checkbox
                 color="primary"
                 size="lg"
@@ -14,7 +15,8 @@ const CommonCheckBox = ({ value, name, onChange, checked, style }) => {
                 onChange={onChange}
                 style={{ ...style }}
             />
-        </Fragment>
+        </CssVarsProvider>
+
     )
 }
 
