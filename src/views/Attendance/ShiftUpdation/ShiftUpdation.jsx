@@ -504,7 +504,9 @@ const ShiftUpdation = () => {
     return (
         <Fragment>
             <PageLayoutCloseOnly
-                heading="Attendance Marking" redirect={redirecting}>
+                heading="Attendance Marking"
+                redirect={redirecting}
+            >
                 <div className="col-md-12 mb-2">
                     <div className="row g-2">
                         <div className="col-md-2">

@@ -22,12 +22,11 @@ import { useEffect } from 'react';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
-
-
 const JobSummary = React.lazy(() => import('./JobDescEmpComponent/JobSummaryEmp'));
 const DutyRespos = React.lazy(() => import('./JobDescEmpComponent/DutiesEmp'));
 const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
 const Generic = React.lazy(() => import('./JobDescEmpComponent/JobGenericEmp'));
+const Competency = React.lazy(() => import('./JobDescEmpComponent/JobCompetency'))
 
 const Progress = () => {
     return (
@@ -153,7 +152,7 @@ const JobDescriptionEmployee = () => {
 
                         }
 
-                        {/* Job Specification : Performance & Competency */}
+                        {/* Job Specification : Performance  */}
                         {
 
                             jobdescview > 0 ?
@@ -166,6 +165,18 @@ const JobDescriptionEmployee = () => {
                                 : null
                         }
 
+                        {/* Job Specification : Competency */}
+                        {
+
+                            jobdescview > 0 ?
+                                <Suspense fallback={<Progress />} >
+                                    <Competency
+                                        selectDesignation={getempData.em_designation}
+                                        selectedDept={getempData.em_department}
+                                    />
+                                </Suspense>
+                                : null
+                        }
 
                         {/* Generic */}
                         {

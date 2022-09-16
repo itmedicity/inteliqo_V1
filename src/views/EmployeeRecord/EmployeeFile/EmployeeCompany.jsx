@@ -13,8 +13,7 @@ import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from './EmpFileComponent/ModelLeaveProcess'
 import EmpCompanyTable from './EmployeeFileTable/EmpCompanyTable'
-import TextInput from 'src/views/Component/TextInput'
-import { format } from 'date-fns'
+import { lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment'
 
 const EmployeeCompany = () => {
@@ -226,7 +225,37 @@ const EmployeeCompany = () => {
             infoNofity(message)
         }
     }
+    //useEffect for getting attendancde details to process earn leave
+    const [attendanceata, setAttendanceData] = useState([])
+    const year = moment(new Date()).format('YYYY')
+    useEffect(() => {
+        const postdata = {
+            emp_id: no,
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
 
+    }, [no])
     //Redirect
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
@@ -259,6 +288,7 @@ const EmployeeCompany = () => {
                     olddata={olddata}// check wheather new data
                     setmodelvalue={setmodelvalue}
                     categorychge={categorychge}
+                    nameel={attendanceata === undefined ? [] : attendanceata}
                 /> : null}
                 <div className="row g-2">
                     <div className="col-md-4">

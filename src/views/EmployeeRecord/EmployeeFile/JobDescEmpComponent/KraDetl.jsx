@@ -2,6 +2,7 @@ import { Box, TextareaAutosize } from '@mui/material'
 import React, { Fragment } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AdjustIcon from '@mui/icons-material/Adjust';
+import { memo } from 'react';
 
 const KraDetl = ({ val }) => {
     return (
@@ -39,19 +40,9 @@ const KraDetl = ({ val }) => {
                         disabled={true}
                     />
                 </Box>
-                <Box sx={{ flex: 3, }} >
-                    <TextareaAutosize
-                        style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
-                        minRows={1}
-                        placeholder=""
-                        value={val.competency}
-                        disabled={true}
-                    />
-                </Box>
-
             </Box>
         </Fragment>
     )
 }
 
-export default KraDetl
+export default memo(KraDetl) 

@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material';
-import { compareAsc, lastDayOfYear, startOfYear } from 'date-fns';
+import { compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -152,18 +152,19 @@ const AnnualLeaveSettings = () => {
         )
 
     }, [no, modelvalue, id])
+    const year = moment(new Date()).format('YYYY')
     //useEffect for getting attendancde details to process earn leave
     useEffect(() => {
-        // const postdata = {
-        //     emp_id: id,
-        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        // }
         const postdata = {
             emp_id: no,
-            startdate: '2022-01-01',
-            endate: '2022-12-30'
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
         // data based on the calculation of earn leave
         const getattendanceData = async () => {
             const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
@@ -171,13 +172,16 @@ const AnnualLeaveSettings = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
             else {
                 setAttendanceData([])
             }
         }
         getattendanceData()
 
-    }, [id])
+    }, [no])
     const postFormdata =
     {
         em_no: no,
@@ -320,7 +324,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     setmodelvalue={setmodelvalue}
-                    nameel={attendanceata}
+                    nameel={attendanceata === undefined ? [] : attendanceata}
                 /> : null}
                 {/* if new process pending */}
                 {modellist === true ? <ModelAvailLeavelist
@@ -334,7 +338,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     nodatafixed={nodatafixed}
-                    nameel={attendanceata}
+                    nameel={attendanceata === undefined ? [] : attendanceata}
                 /> : null}
                 <div className="row g-1 pb-1">
                     <div className="col-md-4">

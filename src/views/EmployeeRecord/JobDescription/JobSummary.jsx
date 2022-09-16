@@ -14,6 +14,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
+import { memo } from 'react';
 
 const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept }) => {
 
@@ -42,6 +43,11 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
     })
     //de structuring
     const { objective, scope, equipment } = FormData
+    const defaultState = {
+        objective: '',
+        scope: '',
+        equipment: ''
+    }
     //use effect for getting job summary details to edit
     useEffect(() => {
         if (jobedit > 0) {
@@ -65,6 +71,9 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
 
             }
             getjobSummary()
+        }
+        else {
+            setFormData(defaultState)
         }
 
     }, [jobedit])
@@ -275,4 +284,4 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
     )
 }
 
-export default JobSummary
+export default memo(JobSummary) 

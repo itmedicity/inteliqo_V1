@@ -48,7 +48,7 @@ const AnnualLeaveProcess = () => {
         if (result2.data.success === 2) {
             setholidaycount((result2.data.data).length)
             // data based on the calculation of earn leave
-            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', postdata2)
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculation', postdata)
             const { success, data } = result.data;
             if (success === 2) {
                 setname(data)

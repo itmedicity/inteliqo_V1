@@ -11,7 +11,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import moment from 'moment';
 
 
-const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setgraceperiod, setattendanceDays, setOldctaegory }) => {
+const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -49,6 +49,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setgraceperi
                 }
                 setFormData(frmData)
                 setContractEnd(em_cont_end)
+                setContractStart(em_cont_start)
                 setgraceperiod(cont_grace)
                 setOldctaegory(em_category)
                 const date = new Date(em_cont_end)

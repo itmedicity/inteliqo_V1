@@ -1,23 +1,16 @@
 import { Checkbox, CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useContext } from 'react'
-import IconButton from '@mui/joy/IconButton';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import React, { Fragment } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import TextInput from 'src/views/Component/TextInput';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import FemaleOutlinedIcon from '@mui/icons-material/FemaleOutlined';
 import MaleOutlinedIcon from '@mui/icons-material/MaleOutlined';
-import CourseSelectionMast from 'src/views/CommonCode/CourseSelectionMast';
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
-import SpecializationSelection from 'src/views/CommonCode/SpecializationSelection';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import QualificationItem from './QualificationItem';
+import { memo } from 'react';
 
 const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
     const [formData, setFormData] = useState({
@@ -239,4 +232,4 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
     )
 }
 
-export default JobGenericEmp
+export default memo(JobGenericEmp) 

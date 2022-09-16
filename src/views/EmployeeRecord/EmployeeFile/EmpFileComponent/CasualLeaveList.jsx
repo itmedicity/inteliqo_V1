@@ -47,9 +47,9 @@ const CasualLeaveList = ({ nodataset, no, castable }) => {
                                         {val.cl_lv_mnth}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.cl_lv_allowed}</div>
                                 <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.cl_lv_credit}</div>
                                 <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.cl_lv_taken}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{parseFloat(val.cl_lv_credit) - parseFloat(val.cl_lv_taken)}</div>
                             </div>
                         </li>;
                     })

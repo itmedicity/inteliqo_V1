@@ -6,6 +6,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import DutiesAndresp from './DutiesAndresp';
+import { memo } from 'react';
 
 
 const DutiesEmp = ({ selectDesignation, selectedDept }) => {
@@ -58,4 +59,4 @@ const DutiesEmp = ({ selectDesignation, selectedDept }) => {
     )
 }
 
-export default DutiesEmp
+export default memo(DutiesEmp) 
