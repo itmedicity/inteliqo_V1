@@ -1,5 +1,5 @@
 import { Button, Stack, Alert } from '@mui/material'
-import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, getYear } from 'date-fns'
+import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, getYear, addDays, addMonths } from 'date-fns'
 import moment from 'moment'
 import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -168,9 +168,7 @@ const AnnualProcessComponent = ({
                 const endYearDate = lastDayOfYear(new Date());
                 // console.log(compareAsc(new Date(probationEndDate), new Date()))
                 if (compareAsc(new Date(probationEndDate), new Date()) === -1) {
-
                     return { message: 0 }
-
                     // const a = subYears(new Date(), -1) // For calcualting the Next Year
                     // console.log(a)
                 } else {
@@ -182,9 +180,7 @@ const AnnualProcessComponent = ({
                             return StartOfYear;
                         }
                     }
-
                     const ProbationStartDate = proStartDate(newYearDate, contactStart, probationEndDate)
-
                     // For Probation End Date
                     const proEndDate = (endYearDate, probationStart, probationEndDate) => {
 
@@ -419,7 +415,6 @@ const AnnualProcessComponent = ({
                 }
             }
         }
-
         // earnleave save
         const setearnleave = async (lv_process_slnocurrent) => {
             var datadate = intervalToDuration({
@@ -428,7 +423,10 @@ const AnnualProcessComponent = ({
             })
             if (datadate.years >= 1) {
                 var number = Math.floor(nameel.duty_day / 20)
-                var dateresult = eachMonthOfInterval({ start: subMonths(new Date(), 1), end: lastDayOfYear(new Date()) })
+                console.log(number)
+                const eranleavecalenddate = addMonths(new Date(), number)
+                const ernlvendadte = compareAsc(eranleavecalenddate, lastDayOfYear(new Date()))
+                var dateresult = eachMonthOfInterval({ start: new Date(), end: ernlvendadte === -1 ? eranleavecalenddate : lastDayOfYear(new Date()) })
                 var dataearnlv = dateresult.map((val, index) => {
                     const dataearnleave = {
                         em_no: em_no,
@@ -448,24 +446,24 @@ const AnnualProcessComponent = ({
                     lv_proce: lv_process_slnocurrent
                 }
 
-                // insert earn leave
-                // const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dataearnlv)
-                // const { success, message } = result.data
-                // if (success === 1) {
-                //     // if updated casula leave table update process table
-                //     const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updateearnleave', lv_process)
+                //  insert earn leave
+                const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dataearnlv)
+                const { success, message } = result.data
+                if (success === 1) {
+                    // if updated casula leave table update process table
+                    const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updateearnleave', lv_process)
 
-                //     if (resultupdatcasualleave.data.success === 2) {
-                //         succesNofity(resultupdatcasualleave.data.message)
-                //         if (categorychge !== 1) {
-                //             setnodatael(0)
-                //         }
-                //         count(countdata + 1)
-                //     }
-                // }
-                // else {
-                //     infoNofity(message)
-                // }
+                    if (resultupdatcasualleave.data.success === 2) {
+                        succesNofity(resultupdatcasualleave.data.message)
+                        if (categorychge !== 1) {
+                            setnodatael(0)
+                        }
+                        count(countdata + 1)
+                    }
+                }
+                else {
+                    infoNofity(message)
+                }
             }
             else {
                 warningNofity('one Year Not Completed')

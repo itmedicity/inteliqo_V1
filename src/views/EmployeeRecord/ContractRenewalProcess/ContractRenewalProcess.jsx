@@ -151,6 +151,36 @@ const ContractRenewalProcess = () => {
     const redirect = async () => {
         history.push('/Home/Contract_end_details')
     }
+    //useEffect for getting attendancde details to process earn leave
+    const [attendanceata, setAttendanceData] = useState([])
+    useEffect(() => {
+        // const postdata = {
+        //     emp_id: id,
+        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        // }
+        const postdata = {
+            emp_id: no,
+            startdate: '2022-01-01',
+            endate: '2022-12-30'
+        }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
+
+    }, [id])
     //function for saving new contract
     const RenewOldContract = async (e) => {
         e.preventDefault();
@@ -259,6 +289,7 @@ const ContractRenewalProcess = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 setmodelvalue={setmodelvalue}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
             {open === true ? <ModelOldDataToCopy open={open} handleClose={handleClose} /> : null}
             <Box sx={{ width: "100%" }}>

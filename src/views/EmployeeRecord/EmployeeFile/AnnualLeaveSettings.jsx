@@ -171,6 +171,9 @@ const AnnualLeaveSettings = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
             else {
                 setAttendanceData([])
             }
@@ -320,7 +323,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     setmodelvalue={setmodelvalue}
-                    nameel={attendanceata}
+                    nameel={attendanceata === undefined ? [] : attendanceata}
                 /> : null}
                 {/* if new process pending */}
                 {modellist === true ? <ModelAvailLeavelist
@@ -334,7 +337,7 @@ const AnnualLeaveSettings = () => {
                     setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                     setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                     nodatafixed={nodatafixed}
-                    nameel={attendanceata}
+                    nameel={attendanceata === undefined ? [] : attendanceata}
                 /> : null}
                 <div className="row g-1 pb-1">
                     <div className="col-md-4">
