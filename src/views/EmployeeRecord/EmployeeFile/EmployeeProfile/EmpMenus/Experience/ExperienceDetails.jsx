@@ -14,7 +14,6 @@ import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Box, Paper } from '@mui/material';
 import ExperienceAgGridtable from './ExperienceAgGridtable';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton';
@@ -60,7 +59,6 @@ const ExperienceDetails = () => {
         const enddate = getYear(new Date(workenddate))
         const expyear = enddate - startdate
         settotyear(expyear)
-
     }
     //postData
     const postData = {
@@ -75,6 +73,16 @@ const ExperienceDetails = () => {
         create_user: no,
         tmch_exp: tmch_exp === true ? 1 : 0
     }
+
+    // if (tmch_exp === true) {
+    //     institution_name = "Travancore Medicity"
+    // }
+    // else {
+    //     return null
+    // }
+    // console.log(institution_name);
+
+
     //saving formdata
     const submitFormData = async (e) => {
         e.preventDefault()
@@ -113,8 +121,8 @@ const ExperienceDetails = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Exeperience Information
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Experience Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -135,22 +143,31 @@ const ExperienceDetails = () => {
                             flex: 1, px: 0.5,
                         }}>
                             {/* first row start */}
+
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20
                             }}>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Institution Name
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
                                         Placeholder="Institution Name"
                                         changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                        value={institution_name}
+                                        value={tmch_exp === true ? "Travancore Medicity" : institution_name}
                                         name="institution_name"
                                     />
                                 </Box>
-                                <Box sx={{ flex: 0, px: 0.5, pl: 3, pt: 0.5 }} >
+                                <Box sx={{ flex: 1, pl: 5 }} >
                                     <FormControlLabel
                                         className=""
                                         control={
@@ -163,23 +180,38 @@ const ExperienceDetails = () => {
                                                 onChange={(e) => {
                                                     updateEmployeeExpFormData(e)
                                                 }}
+
                                             />
-                                        }
+                                        } label="Medicity Experience"
                                     />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
-                                    <DesignationMast style={SELECT_CMP_STYLE} />
                                 </Box>
                             </Box>
                             {/* first row end */}
 
-                            {/* second row start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                pt: 0.5,
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Designation
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                    <DesignationMast style={SELECT_CMP_STYLE} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Work Start Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
 
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
@@ -194,7 +226,23 @@ const ExperienceDetails = () => {
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
+                            </Box>
+
+                            {/* second row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                pt: 0.5,
+                                px: 20
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Work End Date
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -208,18 +256,14 @@ const ExperienceDetails = () => {
                                         }}
                                     />
                                 </Box>
-                            </Box>
-                            {/* second row end */}
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Total Year Experience
+                                        </Typography>
 
-                            {/* third row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                                pt: 1,
-                                pb: 1
-                            }}>
-
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -230,7 +274,26 @@ const ExperienceDetails = () => {
                                         disabled={true}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}>
+                            </Box>
+                            {/* second row end */}
+
+                            {/* third row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                                py: 1
+                            }}>
+
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Gross Salary
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -240,6 +303,9 @@ const ExperienceDetails = () => {
                                         name="gross_salary"
                                     />
                                 </Box>
+                                {/* <Box sx={{ flex: 2, backgroundColor: "red" }}>
+
+                                </Box> */}
                             </Box>
                         </Box>
                         {/* third row end */}
@@ -263,7 +329,7 @@ const ExperienceDetails = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -272,15 +338,6 @@ const ExperienceDetails = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment>

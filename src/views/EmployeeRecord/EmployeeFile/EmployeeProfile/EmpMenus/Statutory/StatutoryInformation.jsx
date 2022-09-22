@@ -10,7 +10,6 @@ import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import TextInput from 'src/views/Component/TextInput'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
@@ -160,8 +159,8 @@ const StatutoryInformation = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Statutory Information
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Satutory Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -182,9 +181,10 @@ const StatutoryInformation = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 20,
+                                pt: 0.5
                             }}>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ flex: 1, }} >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -197,7 +197,7 @@ const StatutoryInformation = () => {
                                                 onChange={(e) => updateStatutoryInformation(e)}
                                             />
                                         }
-                                        label="PF"
+                                        label="Provident Fund"
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
@@ -211,13 +211,7 @@ const StatutoryInformation = () => {
                                         name="pfno"
                                     />
                                 </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -230,7 +224,7 @@ const StatutoryInformation = () => {
                                                 onChange={(e) => updateStatutoryInformation(e)}
                                             />
                                         }
-                                        label="ESI"
+                                        label="Employee's State Insurance "
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
@@ -248,8 +242,16 @@ const StatutoryInformation = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 20,
                             }}>
+                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Universal Account Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -261,7 +263,15 @@ const StatutoryInformation = () => {
                                         name="uanno"
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', flex: 1, pl: 1, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Grade
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <GradeSelect
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                         disable={enable}
@@ -276,7 +286,7 @@ const StatutoryInformation = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ display: "flex", pl: 1 }} >
+                    <Box sx={{ display: "flex", p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -285,15 +295,6 @@ const StatutoryInformation = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ display: "flex", pl: 0.5 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment>

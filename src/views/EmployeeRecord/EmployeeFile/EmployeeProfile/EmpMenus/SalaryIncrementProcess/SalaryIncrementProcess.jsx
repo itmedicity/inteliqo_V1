@@ -85,8 +85,8 @@ const SalaryIncrementProcess = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Salary Icrement Process
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Salary Increment Process
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -137,21 +137,6 @@ const SalaryIncrementProcess = () => {
                         </Box>
                     </Paper>
                 </Paper>
-                {/* <Paper square sx={{
-                    backgroundColor: "#F8F8F8",
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
-                    <Box >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper> */}
             </Box>
         </Fragment>
     )

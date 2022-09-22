@@ -20,6 +20,9 @@ const JobDescription = React.lazy(() => import('src/views/EmployeeRecord/Employe
 const ContrtInfrmtion = React.lazy(() => import('./EmpMenus/ContractInformation/ContractInformation'))
 const JobDcrptn = React.lazy(() => import('./EmpMenus/JobDescription/JobDescriptionList'))
 const DocumentList = React.lazy(() => import('./EmpMenus/DocumentScanned/ScannedDoc'));
+const DocumentCheckList = React.lazy(() => import('./EmpMenus/DocumentChecklist/DocumentChecklist'))
+const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/VaccinationInformation'))
+const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
 
 const MenuRenderWind = () => {
 
@@ -39,8 +42,11 @@ const MenuRenderWind = () => {
                                         state === 113 ? <AnnualLeave /> :
                                             state === 114 ? <FineorDeduction /> :
                                                 state === 115 ? <SalaryIncrement /> :
-                                                    state === 119 ? <JobDcrptn /> :
-                                                        <ProfileMenus />
+                                                    state === 116 ? <DocumentCheckList /> :
+                                                        state === 117 ? <Vaccine /> :
+                                                            state === 119 ? <JobDcrptn /> :
+                                                                state === 120 ? <EndofService /> :
+                                                                    <ProfileMenus />
     }
 
     return (

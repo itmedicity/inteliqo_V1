@@ -20,8 +20,6 @@ import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import { Box, Paper } from '@mui/material'
 import QualificationAgGridTable from './QualificationAgGridTable'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
-import CustomeToolTip from 'src/views/Component/CustomeToolTip'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
@@ -231,14 +229,8 @@ const QualificationDetails = () => {
 
     //Back to home page
     const toSettings = () => {
-        console.log("bgghj");
-        console.log(em_no);
-        console.log(em_id);
         //history.push(`/Home/Profile/${id}/${no}`);
-        // history.push(`/Home/Prfle/${id}/${no}`)
         history.push(`/Home/Prfle/${id}/${no}`)
-        //history.push(`/Home/Prfle`)
-        // history.push('/home')
     }
 
     return (
@@ -255,8 +247,8 @@ const QualificationDetails = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Qualification Description
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Qualification Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -283,8 +275,23 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Education
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            Course
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <CourseSelection
@@ -300,10 +307,26 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Specialization
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <SpecializationSelection
                                         disable={specdisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            University
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5, pt: 0 }} >
                                     <UniversitySelection
@@ -319,10 +342,26 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Board
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <BoardMastSelection
                                         disable={boarddisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Year
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pt: 1, pl: 0.5 }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -348,26 +387,33 @@ const QualificationDetails = () => {
                                 </Box>
                             </Box>
                             {/* Third Row End */}
-
                             {/* Fourth Row Start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20
                             }}>
-                                <CustomeToolTip title="Pass/fail" placement="bottom">
-                                    <Box sx={{ flex: 0, pt: 1 }} >
-
-                                        <CommonCheckBox
-                                            name="pass_fail"
-                                            value={pass_fail}
-                                            checked={pass_fail}
-                                            onChange={(e) => updateQualification(e)}
-                                        />
-
-                                    </Box>
-                                </CustomeToolTip>
-                                <Box sx={{ flex: 1, pt: 0.5, pl: 0.5 }} >
+                                <Box sx={{
+                                    display: 'flex',
+                                    //backgroundColor: "yellow",
+                                    width: '20%',
+                                    pt: 0.5
+                                }}
+                                >
+                                    <CommonCheckBox
+                                        name="pass_fail"
+                                        value={pass_fail}
+                                        checked={pass_fail}
+                                        onChange={(e) => updateQualification(e)}
+                                        label="Pass or Fail"
+                                    />
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flex: 1,
+                                    pt: 0.5
+                                    //backgroundColor: "red"
+                                }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -376,11 +422,28 @@ const QualificationDetails = () => {
                                         name="em_mark_grade"
                                         changeTextValue={(e) => updateQualification(e)}
                                         style={{
-                                            width: 490
+                                            width: 311
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 2, pl: 0.5 }} >
+                                <Box sx={{
+                                    display: 'flex',
+                                    width: '20%',
+                                    //backgroundColor: "green",
+                                    pl: 0.5
+                                }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration Type
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flex: 1,
+                                    //backgroundColor: "blue"
+                                }} >
                                     <RegistrationTypeSelection
                                         disable={regTypedisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -393,9 +456,15 @@ const QualificationDetails = () => {
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20,
-                                pt: 0.5
-                            }}>
-                                <Box sx={{ flex: 1, }} >
+                            }}><Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -404,10 +473,17 @@ const QualificationDetails = () => {
                                         value={em_reg_no}
                                         name="em_reg_no"
                                         changeTextValue={(e) => updateQualification(e)}
-
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5, pb: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5, pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration End Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -427,10 +503,18 @@ const QualificationDetails = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                pt: 1,
+                                pt: 0.5,
                                 px: 20
                             }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Challan Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -441,7 +525,14 @@ const QualificationDetails = () => {
                                         changeTextValue={(e) => updateQualification(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Challan End Date
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5, pb: 0.5 }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -466,7 +557,6 @@ const QualificationDetails = () => {
                         //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
                         //backgroundColor: "lightcyan",
                         flexDirection: "column"
-
                     }} >
                         <QualificationAgGridTable update={count} setcount={setcount} />
                     </Paper>
@@ -479,7 +569,7 @@ const QualificationDetails = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -488,15 +578,6 @@ const QualificationDetails = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={toSettings}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
                 {/* Footer save And close end */}
             </Box>
