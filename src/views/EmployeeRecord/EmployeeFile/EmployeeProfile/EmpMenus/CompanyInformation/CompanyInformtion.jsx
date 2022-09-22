@@ -1,4 +1,4 @@
-import { addDays, compareAsc } from 'date-fns'
+import { addDays, compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns'
 import React, { Fragment, useContext, useState, useEffect, memo } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -234,17 +234,18 @@ const CompanyInformtion = () => {
     }
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
+    const year = moment(new Date()).format('YYYY')
     useEffect(() => {
-        // const postdata = {
-        //     emp_id: id,
-        //     startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        //     endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-        // }
         const postdata = {
             emp_id: no,
-            startdate: '2022-01-01',
-            endate: '2022-12-30'
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
         }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
         // data based on the calculation of earn leave
         const getattendanceData = async () => {
             const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
@@ -261,7 +262,7 @@ const CompanyInformtion = () => {
         }
         getattendanceData()
 
-    }, [id])
+    }, [no])
     //Redirect
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
@@ -301,7 +302,7 @@ const CompanyInformtion = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                     Company Information
                                 </Typography>
                             </CssVarsProvider>
@@ -329,12 +330,27 @@ const CompanyInformtion = () => {
                                 flexDirection: "row",
                                 px: 30
                             }}>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Branch Name
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: 1, }} >
                                     <BrnachMastSelection
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', flex: 1, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Department Name
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: 1, }} >
                                     <DepartmentSelect
                                         style={SELECT_CMP_STYLE}
                                     />
@@ -346,14 +362,31 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 30
+                                px: 30,
+                                pt: 0.5
                             }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ display: 'flex', flex: 1, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Department Section Name
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: 1, }} >
                                     <DepartmentSectionSelect
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', flex: 1, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Employee Institution
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: 1, }} >
                                     <EmployeeInstitutiontype
                                         style={SELECT_CMP_STYLE}
                                     />
@@ -366,13 +399,22 @@ const CompanyInformtion = () => {
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 30,
-                                pb: 0.5
+                                py: 0.5
                             }}>
-                                <Box sx={{ flex: 1 }}>
+                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Employee Category
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 3, }}>
                                     <EmployeeCategory
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
+
                             </Box>
                             {/* third row end */}
 
@@ -396,7 +438,7 @@ const CompanyInformtion = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -405,15 +447,6 @@ const CompanyInformtion = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment>

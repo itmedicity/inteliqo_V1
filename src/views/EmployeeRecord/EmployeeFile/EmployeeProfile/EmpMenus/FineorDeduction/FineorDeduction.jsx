@@ -174,8 +174,8 @@ const FineorDeduction = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Fine or Deduction
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Fine And Other Deduction
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -198,21 +198,49 @@ const FineorDeduction = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine or Deduction
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <FineTypeSelection
                                         select="Fine Or Deducation Master Drop Down"
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Create New Fine Master
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 0, }} >
                                     <CssVarsProvider>
                                         <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
-                                            <MdOutlineAddCircleOutline className="text-danger" size={30}
+                                            <MdOutlineAddCircleOutline className="text-info" size={30}
                                             />
                                         </IconButton>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+
+                            </Box>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Description
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -227,8 +255,16 @@ const FineorDeduction = () => {
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20,
+                                pt: 1
                             }}>
-                                <Box sx={{ flex: 1 }} >
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Amount
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -238,7 +274,14 @@ const FineorDeduction = () => {
                                         changeTextValue={(e) => updateFineDed(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Time Period
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -255,6 +298,13 @@ const FineorDeduction = () => {
                                 flexDirection: "row", pt: 1,
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Date start
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
@@ -268,7 +318,14 @@ const FineorDeduction = () => {
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Date End
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -287,6 +344,14 @@ const FineorDeduction = () => {
                                 flexDirection: "row", pt: 1,
                                 px: 20
                             }}>
+
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Remark
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -386,7 +451,7 @@ const FineorDeduction = () => {
                     </Box> */}
                 </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

@@ -27,6 +27,8 @@ const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFil
 const DutyRespos = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/DutiesEmp'));
 // const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
 const Generic = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobGenericEmp'));
+const Performance = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/Jobperformance'));
+const Competency = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobCompetency'))
 
 const Progress = () => {
     return (
@@ -72,23 +74,24 @@ const JobDescriptionList = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
                 {/* Main Heading Section Box */}
 
-                <Paper square elevation={3} sx={{
-                    display: "flex",
-                    p: 1,
-                    alignItems: "center",
-                }}  >
+                <Paper square elevation={2} sx={{ p: 0.5, }}   >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                 Job Description
                             </Typography>
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-                <Paper square elevation={3} sx={{
+                {/* <Paper square elevation={3} sx={{
                     p: 0.5,
                     mt: 0.5,
                     display: 'flex',
@@ -112,7 +115,7 @@ const JobDescriptionList = () => {
                             value={getempData.desg_name}
                         />
                     </Box>
-                </Paper>
+                </Paper> */}
                 {/* Job Summary */}
                 {
                     jobdescview > 0 ?
@@ -129,7 +132,7 @@ const JobDescriptionList = () => {
                         : null
                 }
                 {/* Duties And Responsiblities */}
-                {/* {
+                {
                     jobdescview > 0 ?
                         <Suspense fallback={<Progress />} >
                             <DutyRespos
@@ -140,7 +143,33 @@ const JobDescriptionList = () => {
                         </Suspense>
                         : null
 
-                } */}
+                }
+
+                {/* Job Specification : Performance  */}
+                {
+
+                    jobdescview > 0 ?
+                        <Suspense fallback={<Progress />} >
+                            <Performance
+                                selectDesignation={getempData.em_designation}
+                                selectedDept={getempData.em_department}
+                            />
+                        </Suspense>
+                        : null
+                }
+
+                {/* Job Specification : Competency */}
+                {
+
+                    jobdescview > 0 ?
+                        <Suspense fallback={<Progress />} >
+                            <Competency
+                                selectDesignation={getempData.em_designation}
+                                selectedDept={getempData.em_department}
+                            />
+                        </Suspense>
+                        : null
+                }
 
                 {/* Generic */}
                 {

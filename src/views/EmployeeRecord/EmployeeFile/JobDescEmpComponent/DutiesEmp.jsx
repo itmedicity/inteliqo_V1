@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import DutiesAndresp from './DutiesAndresp';
 import { memo } from 'react';
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
 
 const DutiesEmp = ({ selectDesignation, selectedDept }) => {
@@ -36,12 +37,8 @@ const DutiesEmp = ({ selectDesignation, selectedDept }) => {
         <Fragment>
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
-                        Duties & Responsibilities
+                    <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
+                        Duties And Responsbilities
                     </Typography>
                 </CssVarsProvider>
             </Box>

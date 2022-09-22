@@ -3,7 +3,6 @@ import React, { Fragment, useState, useContext, useEffect, memo } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import TextInput from 'src/views/Component/TextInput'
-// import WagesInfoTable from './EmployeeFileTable/WagesInfoTable'
 import { IoCheckmarkDoneSharp, IoBan } from "react-icons/io5";
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import ModalOne from 'src/views/CommonCode/ModalOne'
@@ -18,10 +17,11 @@ import { employeeNumber } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import Earndeductiontable from './Earndeductiontable'
 import IconButton from '@mui/joy/IconButton'
+import CommonCheckBox from 'src/views/Component/CommonCheckBox'
+import Close from '@mui/icons-material/Close';
 
 const EarnDeductionDetails = () => {
 
@@ -206,8 +206,8 @@ const EarnDeductionDetails = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Earnings - Deductions
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Earnings - Deduction
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -233,10 +233,34 @@ const EarnDeductionDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Earn Description
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <WageDescripErnDeductSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 1, pl: 0.5 }} >
+                            </Box>
+                            {/* First row end  */}
+
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Amount
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -253,7 +277,24 @@ const EarnDeductionDetails = () => {
                                         onChange={(e) => updateAllowance(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 1, pl: 0.5 }} >
+                            </Box>
+                            {/* First row end  */}
+
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Earn Description
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+
+                                <Box sx={{ flex: 1, pt: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -270,9 +311,25 @@ const EarnDeductionDetails = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 20,
+                                pt: 1
                             }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ display: "flex", flex: 1, justifyContent: "center" }} >
+                                    <CssVarsProvider>
+                                        <CommonCheckBox
+                                            //color="success"
+                                            color={include_esi === 1 ? "success" : "error"}
+                                            size="lg"
+                                            label={include_esi === 1 ? "ESI" : "ESI"}
+                                            uncheckedIcon={include_esi === 1 ? <IoCheckmarkDoneSharp /> : <Close />}
+                                        // style={{
+                                        //     color: "#00e676",
+                                        // }}
+                                        />
+                                    </CssVarsProvider>
+                                </Box>
+
+                                {/* <Box sx={{ flex: 1, }} >
                                     <Chip
                                         size="small"
                                         icon={include_esi === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
@@ -285,9 +342,19 @@ const EarnDeductionDetails = () => {
                                             maxWidth: '90%'
                                         }}
                                     />
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <Chip
+                                </Box> */}
+                                <Box sx={{ display: "flex", flex: 1, justifyContent: "center" }} >
+
+                                    <CssVarsProvider>
+                                        <CommonCheckBox
+                                            size="lg"
+                                            color={include_pf === 1 ? "success" : "error"}
+                                            label={include_pf === 1 ? "PF" : "PF"}
+                                            uncheckedIcon={include_pf === 1 ? <IoCheckmarkDoneSharp /> : <Close />}
+                                        />
+                                    </CssVarsProvider>
+
+                                    {/* <Chip
                                         size="small"
                                         icon={include_pf === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
                                         label={include_pf === 1 ? "PF" : "PF"}
@@ -298,10 +365,21 @@ const EarnDeductionDetails = () => {
                                             minWidth: '90%',
                                             maxWidth: '90%'
                                         }}
-                                    />
+                                    /> */}
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <Chip
+                                <Box sx={{ display: "flex", flex: 1, justifyContent: "center" }} >
+
+
+                                    <CssVarsProvider>
+                                        <CommonCheckBox
+                                            size="lg"
+                                            color={include_lwf === 1 ? "success" : "error"}
+                                            label={include_lwf === 1 ? "LWF" : "LWF"}
+                                            uncheckedIcon={include_lwf === 1 ? <IoCheckmarkDoneSharp /> : <Close />}
+                                        />
+                                    </CssVarsProvider>
+
+                                    {/* <Chip
                                         size="small"
                                         icon={include_lwf === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
                                         color={include_lwf === 1 ? "success" : "error"}
@@ -312,10 +390,20 @@ const EarnDeductionDetails = () => {
                                             minWidth: '90%',
                                             maxWidth: '90%'
                                         }}
-                                    />
+                                    /> */}
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <Chip
+                                <Box sx={{ display: "flex", flex: 1, justifyContent: "center" }} >
+
+                                    <CssVarsProvider>
+                                        <CommonCheckBox
+                                            size="lg"
+                                            color={include_protax === 1 ? "success" : "error"}
+                                            label={include_protax === 1 ? "Pro Tax" : "Pro Tax"}
+                                            uncheckedIcon={include_protax === 1 ? <IoCheckmarkDoneSharp /> : <Close />}
+                                        />
+                                    </CssVarsProvider>
+
+                                    {/* <Chip
                                         size="small"
                                         icon={include_protax === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
                                         label={include_protax === 1 ? "Pro Tax" : "Pro Tax"}
@@ -326,7 +414,7 @@ const EarnDeductionDetails = () => {
                                             minWidth: '90%',
                                             maxWidth: '90%'
                                         }}
-                                    />
+                                    /> */}
                                 </Box>
                             </Box>
                             {/* second row end */}
@@ -433,7 +521,7 @@ const EarnDeductionDetails = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -442,18 +530,9 @@ const EarnDeductionDetails = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

@@ -92,7 +92,8 @@ const Earndeductiontable = ({ update }) => {
                 <Box
                     className="ag-theme-alpine ListItemScrol"
                     sx={{
-                        height: 400
+                        height: { xl: 450, lg: 400, md: 350, sm: 350, xs: 300 },
+                        width: "100%"
                     }}
                 >
                     <AgGridReact

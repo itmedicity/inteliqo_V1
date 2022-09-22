@@ -321,7 +321,8 @@ const EmployeeRecord = () => {
                         updateBranchSelected(0)
                         updateInstituteSeleted(0)
                         udateregion2(null)
-                        history.push(`/Home/Profile/${empNo}/${em_id}`)
+                        //history.push(`/Home/Profile/${empNo}/${em_id}`)
+                        history.push(`/Home/Prfle/${empNo}/${em_id}`)
                         succesNofity(message)
                     }
                     else {

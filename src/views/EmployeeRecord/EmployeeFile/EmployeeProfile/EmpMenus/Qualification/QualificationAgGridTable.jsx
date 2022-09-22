@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, useState, useEffect, } from 'react'
+import React, { Fragment, useState, useEffect, memo, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
@@ -107,7 +107,7 @@ const QualificationAgGridTable = ({ update, setcount }) => {
                 <Box
                     className="ag-theme-alpine ListItemScrol"
                     sx={{
-                        height: 400
+                        height: { xl: 450, lg: 400, md: 350, sm: 350, xs: 300 },
                     }}
                 >
                     <AgGridReact
@@ -130,4 +130,4 @@ const QualificationAgGridTable = ({ update, setcount }) => {
     )
 }
 
-export default QualificationAgGridTable
+export default memo(QualificationAgGridTable)
