@@ -26,7 +26,7 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
 
     const updateVerify = async (e) => {
         e.preventDefault();
-        if (slno === 1) {
+        if (slno === '1') {
             const result = await axioslogin.patch('/empVerification', postData)
             const { success, message } = result.data
             if (success === 2) {

@@ -14,9 +14,9 @@ const CourseSelection = (props) => {
             setCourse(data)
         }
         getCourse()
-        return (
-            updateCourse(0)
-        )
+        // return (
+        //     updateCourse(0)
+        // )
     }, [updateCourse, selectEducation]);
 
     return (

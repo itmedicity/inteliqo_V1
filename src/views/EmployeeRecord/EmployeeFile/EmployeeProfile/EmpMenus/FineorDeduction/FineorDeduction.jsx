@@ -1,26 +1,24 @@
-import { Box, Chip, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
+import { Box, Chip, Paper } from '@mui/material'
+import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
-import { useHistory, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import FineTypeSelection from 'src/views/CommonCode/FineTypeSelection'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
 import TextInput from 'src/views/Component/TextInput'
 import { getFineSlno, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelAddFineMaster from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelAddFineMaster'
 import { eachMonthOfInterval, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import ReactTooltip from 'react-tooltip';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import FineorDeductionTable from './FineorDeductionTable'
 import IconButton from '@mui/joy/IconButton'
+import { useMemo } from 'react'
 
 const FineorDeduction = () => {
-    const history = useHistory()
+    //const history = useHistory()
     const [open, setOpen] = useState(false);
     const { id, no } = useParams();
     const { selectFine, updateFine, employeedetails } = useContext(PayrolMasterContext)
@@ -38,6 +36,9 @@ const FineorDeduction = () => {
         fine_status: ''
     })
     const [times, setTimes] = useState(0)
+
+    //use state for updation 
+    const [flag, setflag] = useState(0)
 
     //Destructuring
     const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
@@ -85,20 +86,24 @@ const FineorDeduction = () => {
         getSerialno(fineslno)
     })
 
-    const postData = {
-        fine_emp_no: id,
-        fine_emp_id: no,
-        fine_slno: serialno,
-        fine_type: selectFine,
-        fine_descp: fine_descp,
-        fine_amount: fine_amount,
-        fine_start: finestart,
-        fine_end: fineend,
-        fine_period: times,
-        fine_remark: fine_remark,
-        fine_create_user: em_id,
-        fine_status: '0'
-    }
+    const postData = useMemo(() => {
+        return {
+            fine_emp_no: id,
+            fine_emp_id: no,
+            fine_slno: serialno,
+            fine_type: selectFine,
+            fine_descp: fine_descp,
+            fine_amount: fine_amount,
+            fine_start: finestart,
+            fine_end: fineend,
+            fine_period: times,
+            fine_remark: fine_remark,
+            fine_create_user: em_id,
+            fine_status: '0'
+        }
+    }, [id, no, serialno, selectFine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id])
+
+
     const resetForm = {
         fine_descp: '',
         fine_amount: 0,
@@ -127,27 +132,107 @@ const FineorDeduction = () => {
         }
         finedetlmap.push(postdata)
     }
+    //use state for getting selected fine slno
+    const [updateid, setupdateid] = useState(0)
 
-    //Submit data
-    const submitFine = async (e) => {
+    //function getting selected fine type
+    const getDataTable = useCallback((params) => {
+        setflag(1)
+        const data = params.api.getSelectedRows()
+        const { fine_type, fine_descp, fine_amount, fine_start, fine_end, fine_period, fine_remark, fine_slno } = data[0]
+        const formdata = {
+            fine_descp: fine_descp,
+            fine_amount: fine_amount,
+            fine_remark: fine_remark,
+        }
+        setupdateid(fine_slno)
+        updateFine(fine_type)
+        setMonthstart(format(new Date(fine_start), "yyyy-MM-dd"))
+        setMonthend(format(new Date(fine_end), "yyyy-MM-dd"))
+        setTimes(fine_period)
+        setFineDed(formdata)
+    }, [updateFine])
+
+    // update postdata for submit
+    const updateData = useMemo(() => {
+        return {
+            fine_type: selectFine,
+            fine_descp: fine_descp,
+            fine_amount: fine_amount,
+            fine_start: finestart,
+            fine_end: fineend,
+            fine_period: times,
+            fine_remark: fine_remark,
+            fine_edit_user: em_id,
+            fine_slno: updateid
+        }
+    }, [selectFine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id, updateid])
+
+    //fine detl data
+    var finedetlupdatemap = [];
+    for (var i = 0; i < period.length; i++) {
+        const postdata1 = {
+            fine_emp_no: id,
+            fine_emp_id: no,
+            fine_slno: updateid,
+            fine_amount: fine_amount / period.length,
+            fine_date: format(new Date(period[i]), "yyyy-MM-dd"),
+            create_user: em_id,
+        }
+        finedetlupdatemap.push(postdata1)
+    }
+
+    const submitFine = useCallback((e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/empfinededuction', postData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            const result = await axioslogin.post('/empfinededuction/detltable', finedetlmap)
-            const { success } = result.data;
+        //Submit data
+        const submitdata = async (postData) => {
+            const result = await axioslogin.post('/empfinededuction', postData)
+            const { message, success } = result.data;
             if (success === 1) {
-                succesNofity(message);
-                setcount(count + 1)
-                setFineDed(resetForm);
-                reset()
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
+                const result = await axioslogin.post('/empfinededuction/detltable', finedetlmap)
+                const { success } = result.data;
+                if (success === 1) {
+                    succesNofity(message);
+                    setcount(count + 1)
+                    setFineDed(resetForm);
+                    reset()
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
             }
         }
-    }
+        //update data
+        const submitUpdate = async (updateData) => {
+            const result = await axioslogin.patch('/empfinededuction', updateData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                const result = await axioslogin.delete(`/empfinededuction/delete/${updateid}`)
+                const { success } = result.data;
+                if (success === 1) {
+                    const result = await axioslogin.post('/empfinededuction/detltable', finedetlupdatemap)
+                    const { success } = result.data;
+                    if (success === 1) {
+                        setFineDed(resetForm);
+                        setcount(count + 1)
+                        //history.push(`/Home/FineorDeduction/${id}/${no}`);
+                        succesNofity(message);
+                        reset()
+                    } else {
+                        infoNofity(message)
+                    }
+                }
+            }
+        }
+        if (flag === 0) {
+            submitdata(postData)
+        }
+        else {
+            submitUpdate(updateData)
+
+        }
+    }, [postData, updateData, finedetlmap, finedetlupdatemap])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -156,15 +241,18 @@ const FineorDeduction = () => {
     const handleClose = () => {
         setOpen(false);
     };
-    const RedirectToProfilePage = () => {
-        //history.push(`/Home/Profile/${id}/${no}`)
-    }
-
+    // const RedirectToProfilePage = () => {
+    //     //history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     return (
         <Fragment>
             <ModelAddFineMaster open={open} handleClose={handleClose} />
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
 
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     <Paper square elevation={3} sx={{
@@ -174,8 +262,8 @@ const FineorDeduction = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Fine or Deduction
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Fine And Other Deduction
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -198,21 +286,49 @@ const FineorDeduction = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine or Deduction
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <FineTypeSelection
                                         select="Fine Or Deducation Master Drop Down"
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Create New Fine Master
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 0, }} >
                                     <CssVarsProvider>
                                         <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
-                                            <MdOutlineAddCircleOutline className="text-danger" size={30}
+                                            <MdOutlineAddCircleOutline className="text-info" size={30}
                                             />
                                         </IconButton>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+
+                            </Box>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Description
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -227,8 +343,16 @@ const FineorDeduction = () => {
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20,
+                                pt: 1
                             }}>
-                                <Box sx={{ flex: 1 }} >
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Amount
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -238,7 +362,14 @@ const FineorDeduction = () => {
                                         changeTextValue={(e) => updateFineDed(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Time Period
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -255,6 +386,13 @@ const FineorDeduction = () => {
                                 flexDirection: "row", pt: 1,
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Date start
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
@@ -268,7 +406,14 @@ const FineorDeduction = () => {
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Fine Date End
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -287,6 +432,14 @@ const FineorDeduction = () => {
                                 flexDirection: "row", pt: 1,
                                 px: 20
                             }}>
+
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Remark
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -358,7 +511,7 @@ const FineorDeduction = () => {
 
                     }} >
                         <FineorDeductionTable update={count}
-                            collected={status} />
+                            collected={status} getDataTable={getDataTable} />
                     </Paper>
                 </Paper>
                 <Paper square sx={{
@@ -386,7 +539,7 @@ const FineorDeduction = () => {
                     </Box> */}
                 </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

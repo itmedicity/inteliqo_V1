@@ -1,7 +1,7 @@
 import { getYear } from 'date-fns'
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, memo, useCallback, useContext, useMemo, useState } from 'react'
 import moment from 'moment';
-import { useHistory, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -9,23 +9,28 @@ import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+//import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { Box, Paper } from '@mui/material';
 import ExperienceAgGridtable from './ExperienceAgGridtable';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton';
 
 const ExperienceDetails = () => {
 
-    const classes = useStyles()
+    //const classes = useStyles()
     const { id, no } = useParams();
-    const history = useHistory();
+
+    // const history = useHistory();
     //use state for incrementing count
     const [count, setCount] = useState(0)
+    //use state for updation submission
+    const [flag, setflag] = useState(0)
+
+    const [slno, setslno] = useState(0)
+
     //designation select list
     const { selectDesignation,
         updateDesignation } = useContext(PayrolMasterContext)
@@ -39,7 +44,7 @@ const ExperienceDetails = () => {
         gross_salary: "",
         workstartdate: format(new Date(), "yyyy-MM-dd"),
         workenddate: format(new Date(), "yyyy-MM-dd"),
-        tmch_exp: false
+        tmch_exp: false,
     })
     //defaultState
     const defaultState = {
@@ -60,49 +65,118 @@ const ExperienceDetails = () => {
         const enddate = getYear(new Date(workenddate))
         const expyear = enddate - startdate
         settotyear(expyear)
-
     }
     //postData
-    const postData = {
-        em_no: id,
-        em_id: no,
-        em_institution: institution_name,
-        em_designation: selectDesignation,
-        em_from: moment(workstartdate).format('YYYY-MM-DD'),
-        em_to: moment(workenddate).format('YYYY-MM-DD'),
-        em_total_year: totyear,
-        em_salary: gross_salary,
-        create_user: no,
-        tmch_exp: tmch_exp === true ? 1 : 0
-    }
-    //saving formdata
-    const submitFormData = async (e) => {
-        e.preventDefault()
-        const result = await axioslogin.post('/experience', postData)
-        const { success, message } = result.data
-        if (success === 1) {
-            succesNofity(message)
-            setformData(defaultState)
-            setCount(count + 1)
-            settotyear(0)
-            reset()
+    const postData = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_institution: institution_name,
+            em_designation: selectDesignation,
+            em_from: moment(workstartdate).format('YYYY-MM-DD'),
+            em_to: moment(workenddate).format('YYYY-MM-DD'),
+            em_total_year: totyear,
+            em_salary: gross_salary,
+            create_user: no,
+            tmch_exp: tmch_exp === true ? 1 : 0
         }
-        else if (success === 2) {
-            warningNofity(message)
+    }, [id, no, institution_name, selectDesignation, totyear, gross_salary, tmch_exp, workenddate, workstartdate])
+
+    //function for getting selected row to edit
+    const getTableData = useCallback((params) => {
+        setflag(1)
+        const data = params.api.getSelectedRows()
+        const { em_institution, em_designation, em_from, em_to, em_total_year, em_salary, is_tmch, emexp_slno } = data[0]
+        const frmData = {
+            institution_name: em_institution,
+            gross_salary: em_salary,
+            workstartdate: em_from,
+            workenddate: em_to,
+            tmch_exp: is_tmch === 1 ? true : false,
+        }
+        updateDesignation(em_designation)
+        setformData(frmData)
+        settotyear(em_total_year)
+        setslno(emexp_slno)
+    }, [updateDesignation])
+
+    //patchdata for updating
+    const patchData = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            emexp_slno: slno,
+            em_institution: institution_name,
+            tmch_exp: tmch_exp === false ? 0 : 1,
+            em_designation: selectDesignation,
+            em_from: moment(workstartdate).format('YYYY-MM-DD'),
+            em_to: moment(workenddate).format('YYYY-MM-DD'),
+            em_total_year: totyear,
+            em_salary: gross_salary,
+            create_user: no
+        }
+    }, [id, no, slno, institution_name, tmch_exp, selectDesignation, workenddate, workstartdate, totyear, gross_salary])
+
+    //saving formdata
+    const submitFormData = useCallback((e) => {
+        e.preventDefault()
+        const submitformadata = async (postData) => {
+            const result = await axioslogin.post('/experience', postData)
+            const { success, message } = result.data
+            if (success === 1) {
+                succesNofity(message)
+                setformData(defaultState)
+                setCount(count + 1)
+                settotyear(0)
+                reset()
+            }
+            else if (success === 2) {
+                warningNofity(message)
+            }
+            else {
+                errorNofity('Error Occured!!!!Please Contact EDP')
+            }
+        }
+        //updating data in database
+        const submitUpdateData = async (patchData) => {
+            const result = await axioslogin.patch('/experience', patchData)
+            const { success, message } = result.data
+            if (success === 2) {
+                succesNofity(message)
+                setformData(defaultState)
+                setCount(count + 1)
+                settotyear(0)
+                //history.push(`/Home/EmployeeExperience/${id}/${no}`)
+                succesNofity(message)
+                reset()
+            }
+            else {
+                errorNofity('Error Occured!!!Please Contact EDP')
+            }
+        }
+        if (flag === 0) {
+            submitformadata(postData)
         }
         else {
-            errorNofity('Error Occured!!!!Please Contact EDP')
+            submitUpdateData(patchData)
         }
-    }
+
+    }, [postData, patchData, flag, count,])
+
     //redirecting to home page
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     return (
 
         <Fragment>
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
 
                     {/* heading Section start */}
@@ -113,8 +187,8 @@ const ExperienceDetails = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Exeperience Information
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Experience Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -135,22 +209,31 @@ const ExperienceDetails = () => {
                             flex: 1, px: 0.5,
                         }}>
                             {/* first row start */}
+
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20
                             }}>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Institution Name
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
                                         Placeholder="Institution Name"
                                         changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                        value={institution_name}
+                                        value={tmch_exp === true ? "Travancore Medicity" : institution_name}
                                         name="institution_name"
                                     />
                                 </Box>
-                                <Box sx={{ flex: 0, px: 0.5, pl: 3, pt: 0.5 }} >
+                                <Box sx={{ flex: 1, pl: 5 }} >
                                     <FormControlLabel
                                         className=""
                                         control={
@@ -163,23 +246,38 @@ const ExperienceDetails = () => {
                                                 onChange={(e) => {
                                                     updateEmployeeExpFormData(e)
                                                 }}
+
                                             />
-                                        }
+                                        } label="Medicity Experience"
                                     />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
-                                    <DesignationMast style={SELECT_CMP_STYLE} />
                                 </Box>
                             </Box>
                             {/* first row end */}
 
-                            {/* second row start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                pt: 0.5,
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Designation
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                    <DesignationMast style={SELECT_CMP_STYLE} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Work Start Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
 
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
@@ -194,7 +292,23 @@ const ExperienceDetails = () => {
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
+                            </Box>
+
+                            {/* second row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                pt: 0.5,
+                                px: 20
+                            }}>
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Work End Date
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -208,18 +322,14 @@ const ExperienceDetails = () => {
                                         }}
                                     />
                                 </Box>
-                            </Box>
-                            {/* second row end */}
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Total Year Experience
+                                        </Typography>
 
-                            {/* third row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                                pt: 1,
-                                pb: 1
-                            }}>
-
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -230,7 +340,26 @@ const ExperienceDetails = () => {
                                         disabled={true}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}>
+                            </Box>
+                            {/* second row end */}
+
+                            {/* third row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                                py: 1
+                            }}>
+
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Gross Salary
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -240,6 +369,9 @@ const ExperienceDetails = () => {
                                         name="gross_salary"
                                     />
                                 </Box>
+                                {/* <Box sx={{ flex: 2, backgroundColor: "red" }}>
+
+                                </Box> */}
                             </Box>
                         </Box>
                         {/* third row end */}
@@ -255,7 +387,7 @@ const ExperienceDetails = () => {
                         flexDirection: "column"
 
                     }} >
-                        <ExperienceAgGridtable update={count} />
+                        <ExperienceAgGridtable update={count} getTableData={getTableData} />
                     </Paper>
                 </Paper>
                 <Paper square sx={{
@@ -263,7 +395,7 @@ const ExperienceDetails = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -272,15 +404,6 @@ const ExperienceDetails = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment>

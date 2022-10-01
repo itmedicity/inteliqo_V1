@@ -1,21 +1,19 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, memo, useState, useCallback, useEffect, } from 'react'
+import React, { Fragment, memo, useState, useEffect, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import EditIcon from '@mui/icons-material/Edit';
-import moment from 'moment';
-import { useHistory, useParams } from 'react-router-dom'
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { useParams } from 'react-router-dom'
+import { errorNofity, infoNofity, } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { DeleteOutlineOutlined } from '@material-ui/icons'
+//import { DeleteOutlineOutlined } from '@material-ui/icons'
 
-const ExperienceAgGridtable = ({ update, setcount }) => {
-    const history = useHistory();
+const ExperienceAgGridtable = ({ update, setcount, getTableData }) => {
+
     const [data, setData] = useState([])
-    const { id, no } = useParams()
-
+    const { id } = useParams()
 
     const rowHeight = 30
     const headerHeight = 30
@@ -85,18 +83,15 @@ const ExperienceAgGridtable = ({ update, setcount }) => {
         getTableData()
 
     }, [id, update])
-    //getting table data for edit
-    const getTableData = (data) => {
-        const { emexp_slno } = data
-        history.push(`/Home/EmployeeExperienceEdit/${emexp_slno}/${id}/${no}`)
-    }
+
     return (
         <Fragment>
             <Paper elevation={0}>
                 <Box
                     className="ag-theme-alpine ListItemScrol"
                     sx={{
-                        height: 500
+                        height: { xl: 450, lg: 400, md: 350, sm: 350, xs: 300 },
+                        width: "100%"
                     }}
                 >
                     <AgGridReact

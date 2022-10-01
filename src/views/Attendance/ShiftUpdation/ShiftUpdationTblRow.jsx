@@ -1,13 +1,11 @@
 import { TableCell, TableRow, Avatar } from '@mui/material'
 import React, { Fragment, memo, useEffect, useState } from 'react'
-import { deepOrange, deepPurple, green, brown, pink } from '@mui/material/colors';
+import { deepOrange, deepPurple, green, brown, pink, cyan, red } from '@mui/material/colors';
 import { blueGrey } from '@material-ui/core/colors';
 import Shiftfirstcol from './Shiftfirstcol';
 import CalendarViewDaySharpIcon from '@mui/icons-material/CalendarViewDaySharp';
 import ShiftUpdationModel from './ShiftUpdationModel';
 const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
-    // console.log(val)
-
     const [state, setState] = useState(0)
     const [dutyday, setdutyday] = useState(0)
     const [empno, setempno] = useState(0)
@@ -19,6 +17,7 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
         hrs_worked: 0,
         late_in: 0,
         duty_status: 0,
+        duty_worked: 0,
         lvreq_type: 0,
         over_time: 0,
         punch_in: 0,
@@ -26,10 +25,12 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
         shift_in: 0,
         shift_out: 0,
         shift_id: 0,
-        holiday_flag: 0
+        holiday_flag: 0,
+        offday_falg: 0
     })
 
     const { duty_day, early_out, em_no, hrs_worked, late_in, duty_status,
+        duty_worked, offday_falg,
         lvreq_type, over_time, punch_in, punch_out,
         shift_in, shift_out, shift_id, holiday_flag } = datapunch;
     const checkInTime = punch_in !== null ? punch_in : '00:00';
@@ -50,10 +51,13 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
             shift_in: val.shift_in,
             shift_out: val.shift_out,
             shift_id: val.shift_id,
-            holiday_flag: val.holiday_flag
+            holiday_flag: val.holiday_flag,
+            duty_worked: val.duty_worked,
+            offday_falg: val.offday_falg
         })
 
     }, [count])
+    console.log(offday_falg)
     const getpunchDetails = async (duty_day, em_no) => {
         setState(1)
         setOpen(true)
@@ -87,7 +91,7 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
                     <Shiftfirstcol datapunch={datapunch} />
                 </TableCell>
                 <TableCell align="center">
-                    <Avatar sx={{
+                    {/* <Avatar sx={{
                         bgcolor: (late_in !== 0 || early_out !== 0) ? brown[500] :
                             (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500] : shift_id === 1002 ? blueGrey[200] :
                                 duty_status === 0.5 ? deepPurple[500] :
@@ -98,6 +102,29 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
                             (punch_in !== null && punch_out !== null) && duty_status === 1 ? 'P' : shift_id === 1002 ? 'WOF' :
                                 duty_status === 0.5 ? 'HLP' :
                                     duty_status === 0 && holiday_flag === 0 ? 'LOP' : holiday_flag === 1 ? 'H' : lvreq_type !== null ? lvreq_type : 'P'
+                        }
+                    </Avatar> */}
+                    <Avatar sx={{
+                        width: 24, height: 24, fontSize: 10,
+                        bgcolor: (late_in > 0 || early_out > 0) ? brown[500]
+                            : lvreq_type === 'LV' ? deepPurple[500]
+                                : lvreq_type === 'NP' ? cyan[500]
+                                    : offday_falg === 1 ? blueGrey[500]
+                                        : duty_status === 0 && holiday_flag === 0 ? deepOrange[500]
+                                            : (punch_in !== null && punch_out !== null) && duty_status === 1 ? green[500]
+
+                                                : holiday_flag === 1 ? pink[300]
+                                                    : red[100]
+                    }}>
+                        {
+                            (late_in > 0 || early_out > 0) ? 'L/E'
+                                : lvreq_type === 'LV' ? "L"
+                                    : lvreq_type === 'NP' ? "NP"
+                                        : offday_falg === 1 ? "WOF"
+                                            : duty_status === 0 && holiday_flag === 0 ? "LOP"
+                                                : (punch_in !== null && punch_out !== null) && duty_status === 1 ? "P"
+                                                    : holiday_flag === 1 ? "H"
+                                                        : "NA"
                         }
                     </Avatar>
                 </TableCell>
@@ -111,7 +138,7 @@ const ShiftUpdationTblRow = ({ val, count, setApiData }) => {
                 </TableCell>
             </TableRow>
             {/* </Suspense> */}
-        </Fragment>
+        </Fragment >
     )
 }
 

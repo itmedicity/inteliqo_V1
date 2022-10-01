@@ -45,7 +45,7 @@ const MenuList = ({ id, no }) => {
         { color: '#8c9eff', name: 'Qualification', Icon: <CastForEducationIcon />, funName: clickFunction, slno: 106 },
         { color: '#80d8ff', name: 'Experience', Icon: <ArticleIcon />, funName: clickFunction, slno: 107 },
         { color: '#a7ffeb', name: 'Statutory Information', Icon: <LibraryBooksIcon />, funName: clickFunction, slno: 108 },
-        { color: '#ffccbc', name: 'Contract Information', Icon: <ContactPhoneIcon />, funName: clickFunction, slno: 109 },
+        // { color: '#ffccbc', name: 'Contract Information', Icon: <ContactPhoneIcon />, funName: clickFunction, slno: 109 },
         { color: '#c5e1a5', name: 'Company Information', Icon: <BusinessIcon />, funName: clickFunction, slno: 110 },
         { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: clickFunction, slno: 111 },
         { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: clickFunction, slno: 112 },

@@ -1,8 +1,8 @@
 import { Checkbox, FormControlLabel } from '@material-ui/core'
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
+//import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
 import { Box, Paper } from '@mui/material'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
+import React, { Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -10,16 +10,14 @@ import GradeSelect from 'src/views/CommonCode/GradeSelect'
 import TextInput from 'src/views/Component/TextInput'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
 
-
 const StatutoryInformation = () => {
 
-    const classes = useStyles()
-    const history = useHistory()
+    //const classes = useStyles()
+    //const history = useHistory()
     const { id, no } = useParams()
     const [Esiallowed, setEsiallowed] = useState(0)
     //setting initial state
@@ -94,29 +92,33 @@ const StatutoryInformation = () => {
         Setenable(false)
     }
     //postData
-    const postData = {
-        em_no: id,
-        em_id: no,
-        em_pf_status: pf === false ? 0 : 1,
-        em_pf_no: pfno,
-        em_uan_no: uanno,
-        em_esi_status: esi === false ? 0 : 1,
-        em_esi_no: esino,
-        em_grade: selectGrade,
-        create_user: employeeNumber(),
-    }
+    const postData = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            create_user: employeeNumber(),
+        }
+    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade])
     //editing esi pf
-    const postDataEdit = {
-        em_id: no,
-        em_pf_status: pf === false ? 0 : 1,
-        em_pf_no: pfno,
-        em_uan_no: uanno,
-        em_esi_status: esi === false ? 0 : 1,
-        em_esi_no: esino,
-        em_grade: selectGrade,
-        esi_slno: value,
-        edit_user: employeeNumber(),
-    }
+    const postDataEdit = useMemo(() => {
+        return {
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            esi_slno: value,
+            edit_user: employeeNumber(),
+        }
+    })
 
     //saving form data
     const submitFormData = async (e) => {
@@ -145,9 +147,9 @@ const StatutoryInformation = () => {
         }
     }
 
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     return (
         <Fragment>
@@ -160,8 +162,8 @@ const StatutoryInformation = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Statutory Information
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Satutory Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -182,9 +184,10 @@ const StatutoryInformation = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 20,
+                                pt: 0.5
                             }}>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ flex: 1, }} >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -197,7 +200,7 @@ const StatutoryInformation = () => {
                                                 onChange={(e) => updateStatutoryInformation(e)}
                                             />
                                         }
-                                        label="PF"
+                                        label="Provident Fund"
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
@@ -211,13 +214,7 @@ const StatutoryInformation = () => {
                                         name="pfno"
                                     />
                                 </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -230,7 +227,7 @@ const StatutoryInformation = () => {
                                                 onChange={(e) => updateStatutoryInformation(e)}
                                             />
                                         }
-                                        label="ESI"
+                                        label="Employee's State Insurance "
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
@@ -248,8 +245,16 @@ const StatutoryInformation = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 20
+                                px: 20,
                             }}>
+                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Universal Account Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="text"
@@ -261,7 +266,15 @@ const StatutoryInformation = () => {
                                         name="uanno"
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', flex: 1, pl: 1, }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Grade
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <GradeSelect
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                         disable={enable}
@@ -276,7 +289,7 @@ const StatutoryInformation = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ display: "flex", pl: 1 }} >
+                    <Box sx={{ display: "flex", p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -285,15 +298,6 @@ const StatutoryInformation = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ display: "flex", pl: 0.5 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment>

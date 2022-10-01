@@ -1,14 +1,13 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { compareAsc, lastDayOfYear, startOfYear } from 'date-fns';
+import { compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment';
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
 import CalculatedOffDays from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/CalculatedOffDays';
 import CardLeaveContainer from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/CardLeaveContainer';
@@ -23,7 +22,6 @@ import NotApplicableCmp from 'src/views/EmployeeRecord/EmployeeFile/EmpFileCompo
 import NotProcessedCmp from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/NotProcessedCmp';
 // import './EmpStyle.css'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import IconButton from '@mui/joy/IconButton';
 
@@ -31,8 +29,7 @@ const CasualLeaveList = React.lazy(() => import('src/views/EmployeeRecord/Employ
 
 
 const AnnualLeaveInformation = () => {
-
-    const history = useHistory()
+    //const history = useHistory()
     // get id and number of logged user
     const { id, no } = useParams();
     const dispatch = useDispatch();
@@ -55,6 +52,7 @@ const AnnualLeaveInformation = () => {
     const [processslno, setprocessslno] = useState(0)
     // set open model 
     const [open, setOpen] = useState(false);
+    const [attendanceata, setAttendanceData] = useState([])
     // current process details
     const [leaveprocessid, leaveprocessidupdate] = useState({
         hrm_calcu: 0,
@@ -68,9 +66,9 @@ const AnnualLeaveInformation = () => {
 
     // destructuring current process details
     const { lv_process_slno } = leaveprocessid
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     //  data based on employeee category
     const [leavestate, setleavestate] = useState({
@@ -158,13 +156,45 @@ const AnnualLeaveInformation = () => {
             dispatch(setEmployeeProcessDetail(id))
         )
 
-    }, [no, modelvalue, id])
+    }, [no, modelvalue, id, dispatch])
 
-    const postFormdata =
-    {
-        em_no: no,
-        em_id: id
-    }
+    const year = moment(new Date()).format('YYYY')
+    //useEffect for getting attendancde details to process earn leave
+    useEffect(() => {
+        const postdata = {
+            emp_id: no,
+            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+        }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else if (success === 2) {
+                setAttendanceData([])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
+
+    }, [no, year])
+    const postFormdata = useMemo(() => {
+        return {
+            em_no: no,
+            em_id: id
+        }
+    }, [id, no])
+
     const submitprocess = () => {
         const getdata = async () => {
             //CHECKING WHETHER THE DATA IS INSERTED INTO YEARLY LEAVE PROCESS TABLE
@@ -263,7 +293,7 @@ const AnnualLeaveInformation = () => {
                 if (resultinsert.data.success === 1) {
                     setOpen(true)
                     setmodelvalue(1)
-                    setmodelmessage('Date Exceeded do you Want To Process')
+                    setmodelmessage('Do You Want To Process Leave For The Employee')
                 }
                 else {
                     warningNofity('Please Contact Edp')
@@ -276,6 +306,11 @@ const AnnualLeaveInformation = () => {
     const handleClose = () => {
         setmodellist(false)
     }
+
+    console.log(setnodatacl);
+    console.log(no);
+    console.log(castable);
+    console.log(CasualLeave);
 
     return (
         <Fragment>
@@ -298,6 +333,7 @@ const AnnualLeaveInformation = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 setmodelvalue={setmodelvalue}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
 
             {/* if new process pending */}
@@ -312,6 +348,7 @@ const AnnualLeaveInformation = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 nodatafixed={nodatafixed}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
 
             <Box sx={{ width: "100%" }} >
@@ -326,7 +363,7 @@ const AnnualLeaveInformation = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                     Annual Leave Information
                                 </Typography>
                             </CssVarsProvider>
@@ -367,7 +404,7 @@ const AnnualLeaveInformation = () => {
                                         </Suspense>
                                     </CardLeaveContainer>
                                 </Box>
-                                <Box boxShadow={2} sx={{ flex: 1, px: 0.5 }} >
+                                <Box boxShadow={2} sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
                                     <CardLeaveContainer title={EarnLeave}  >
                                         <Suspense fallback={<CircularProgress />} >
                                             <div className="card-casual-leave">
@@ -379,6 +416,14 @@ const AnnualLeaveInformation = () => {
                                         </Suspense>
                                     </CardLeaveContainer>
                                 </Box>
+
+                            </Box>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                pt: 1,
+                                // height: 200
+                            }}>
                                 <Box boxShadow={2} sx={{ flex: 1, px: 0.5 }} >
                                     <CardLeaveContainer title={Holidy}  >
                                         <Suspense fallback={<CircularProgress />} >
@@ -391,13 +436,6 @@ const AnnualLeaveInformation = () => {
                                         </Suspense>
                                     </CardLeaveContainer>
                                 </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                pt: 1,
-                                // height: 200
-                            }}>
                                 <Box boxShadow={2} sx={{ flex: 1, px: 0.5 }} >
                                     <CardLeaveContainerTwo title={FixedLeaves}  >
                                         <Suspense fallback={<CircularProgress />} >
@@ -410,6 +448,13 @@ const AnnualLeaveInformation = () => {
                                         </Suspense>
                                     </CardLeaveContainerTwo>
                                 </Box>
+                            </Box>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                pt: 1,
+                                // height: 200
+                            }}>
                                 <Box boxShadow={2} sx={{ flex: 1, px: 0.5 }} >
                                     <CardLeaveContainer title={Carryfoward}  >
                                         <Suspense fallback={<CircularProgress />} >
@@ -437,7 +482,7 @@ const AnnualLeaveInformation = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -446,18 +491,9 @@ const AnnualLeaveInformation = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

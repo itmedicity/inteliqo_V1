@@ -15,9 +15,9 @@ const RegistrationTypeSelection = (props) => {
             setreg(data)
         }
         getreg()
-        return (
-            updatereg(0)
-        )
+        // return (
+        //     updatereg(0)
+        // )
     }, [updatereg])
     return (
         <Fragment>
@@ -38,7 +38,7 @@ const RegistrationTypeSelection = (props) => {
                     defaultValue={0}
                     style={props.style}
                 >
-                    <MenuItem value='0' disabled>
+                    <MenuItem value={0} disabled>
                         Select Registration Type
                     </MenuItem>
                     {

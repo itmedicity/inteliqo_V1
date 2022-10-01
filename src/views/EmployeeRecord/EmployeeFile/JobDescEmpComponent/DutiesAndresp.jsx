@@ -5,13 +5,31 @@ import { Box, Paper } from '@mui/material'
 import React, { Fragment, useState } from 'react'
 import AdjustIcon from '@mui/icons-material/Adjust';
 import { memo } from 'react';
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
+
 
 const DutiesAndresp = ({ val }) => {
     return (
         <Fragment>
             <Box sx={{ display: "flex", alignItems: "center", py: 0.1, }} >
                 <Box sx={{ display: "flex", flex: 1, pr: 1, flexDirection: "row" }}>
-                    <Paper
+
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', }}>
+                            {val.duties_and_resp}
+                        </Box>
+                    </Box>
+
+
+                    {/* <Paper
                         square
                         variant="outlined"
                         sx={{
@@ -35,7 +53,7 @@ const DutiesAndresp = ({ val }) => {
                                 {val.duties_and_resp}
                             </Typography>
                         </CssVarsProvider>
-                    </Paper>
+                    </Paper> */}
                 </Box>
             </Box>
         </Fragment>

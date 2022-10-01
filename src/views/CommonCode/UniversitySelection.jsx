@@ -16,9 +16,9 @@ export const UniversitySelection = (props) => {
             setUniversity(data)
         }
         getUniversity()
-        return (
-            updateUniversity(0)
-        )
+        // return (
+        //     updateUniversity(0)
+        // )
 
     }, [updateUniversity, selectEducation]);
 
@@ -42,7 +42,7 @@ export const UniversitySelection = (props) => {
                     style={props.style}
 
                 >
-                    <MenuItem value='0' disabled>
+                    <MenuItem value={0} disabled>
                         Select University
                     </MenuItem>
                     {

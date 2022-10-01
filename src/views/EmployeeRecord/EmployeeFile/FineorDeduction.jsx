@@ -146,7 +146,7 @@ const FineorDeduction = () => {
 
     const handleClickOpen = () => {
         setOpen(true);
-        // history.push(`/Home/FineorDeduction/${id}/${no}`);
+        history.push(`/Home/FineorDeduction/${id}/${no}`);
     };
     const handleClose = () => {
         setOpen(false);

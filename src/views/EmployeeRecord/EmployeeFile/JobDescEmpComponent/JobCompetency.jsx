@@ -6,7 +6,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import { axioslogin } from 'src/views/Axios/Axios';
 import CompetencyDetl from './CompetencyDetl';
 import { memo } from 'react';
-
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
 const JobCompetency = ({ selectedDept, selectDesignation }) => {
     const [competency, setcompetency] = useState([])
@@ -36,11 +36,7 @@ const JobCompetency = ({ selectedDept, selectDesignation }) => {
             {/* Prformance & Competency descriptive table */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
+                    <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
                         Job  Competency
                     </Typography>
                 </CssVarsProvider>

@@ -19,10 +19,10 @@ import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import CustomeToolTip from 'src/views/Component/CustomeToolTip'
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
-
+import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md'
+import Checkbox from '@mui/material/Checkbox'
 
 const PersonalInfrom = () => {
     const history = useHistory()
@@ -61,7 +61,6 @@ const PersonalInfrom = () => {
 
     // reload page
     const RedirectToProfilePage = () => {
-        console.log("worked");
         //history.push(`/Home/Profile/${id}/${no}`)
         history.push(`/Home/Prfle/${em_no}/${em_id}`)
     }
@@ -160,6 +159,7 @@ const PersonalInfrom = () => {
         const getemployeedetails = async () => {
             const result = await axioslogin.get(`/common/getpersonalData/${id}`)
             const { success, data } = result.data
+            console.log(data);
             if (success === 1) {
                 const {
                     em_no,
@@ -346,7 +346,14 @@ const PersonalInfrom = () => {
     return (
 
         <Fragment>
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
+
+                {/* Heading section start */}
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     <Paper square elevation={3} sx={{
                         display: "flex",
@@ -355,14 +362,14 @@ const PersonalInfrom = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Statutory Information
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Personal Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
                     </Paper>
 
-                    {/* Heading end */}
+                    {/* Heading section end */}
 
                     <Paper square elevation={0} sx={{
                         p: 0.5,
@@ -374,16 +381,20 @@ const PersonalInfrom = () => {
                     }} >
                         <Box sx={{
                             display: "flex",
-                            flexDirection: "column",
-                            flex: 1, px: 0.5,
+                            flexDirection: "row",
+                            px: 0.5,
+                            width: "100%"
                         }}>
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
+                                flex: 2,
+                                //backgroundColor: "red",
+                                width: "45%"
                             }}>
-
+                                {/* Present address start*/}
                                 <Paper variant="outlined"
-                                    sx={{ px: 1, }}
+                                    sx={{ px: 1, width: "100%" }}
                                 >
                                     <CssVarsProvider>
                                         <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
@@ -409,6 +420,7 @@ const PersonalInfrom = () => {
                                             }}
                                         >
                                             <TextInput
+                                                style={{ width: "100%", paddingLeft: 13 }}
                                                 type="text"
                                                 classname="form-control form-control-sm"
                                                 Placeholder="Address 1"
@@ -425,6 +437,7 @@ const PersonalInfrom = () => {
                                             }}
                                         >
                                             <TextInput
+                                                style={{ width: "100%", paddingLeft: 13 }}
                                                 type="text"
                                                 classname="form-control form-control-sm"
                                                 Placeholder="Address 2"
@@ -441,15 +454,14 @@ const PersonalInfrom = () => {
                                                 flexDirection: "row",
                                                 justifyContent: "space-between",
                                                 pt: 1,
-                                                pb: 1
                                             }}
                                         >
-                                            <Box>
+                                            <Box sx={{ flex: 1 }}>
                                                 <RegionSelect2
                                                     style={{ minHeight: 10, maxHeight: 27, paddingTop: 2, paddingBottom: 4 }}
                                                 />
                                             </Box>
-                                            <Box sx={{ pl: 0.5 }}>
+                                            <Box sx={{ pl: 0.5, flex: 2 }}>
                                                 <TextInput
                                                     type="text"
                                                     classname="form-control form-control-sm"
@@ -457,125 +469,136 @@ const PersonalInfrom = () => {
                                                     changeTextValue={(e) => updateFormData(e)}
                                                     value={pin1}
                                                     name="pin1"
-                                                    style={{
-                                                        width: 300,
-                                                    }}
+                                                    style={{ width: "100%", paddingLeft: 13 }}
                                                 />
                                             </Box>
                                         </Box>
                                     </CustomeToolTip>
                                 </Paper>
-                                <Box sx={{
-                                    display: "flex",
-                                    pl: 1
-                                }}>
-                                    <Paper variant="outlined"
-                                        sx={{ pl: 2 }}
-                                    >
-                                        <CssVarsProvider>
-                                            <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
-                                                Contact Address
-                                            </Typography>
-                                        </CssVarsProvider>
-                                        <input
-                                            type="hidden"
-                                            name="em_id"
-                                            value={em_id}
-                                            disabled
-                                        />
-                                        <input
-                                            type="hidden"
-                                            nname="em_no"
-                                            value={em_no}
-                                            disabled
-                                        />
-                                        <CustomeToolTip title="Permanent-House Name" placement="bottom">
-                                            <Box
-                                                sx={{
-                                                    pt: 1
-                                                }}
-                                            >
-                                                <TextInput
-                                                    type="text"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Address 1"
-                                                    changeTextValue={(e) => updateFormData(e)}
-                                                    value={contactaddress1}
-                                                    name="contactaddress1"
-                                                />
-                                            </Box>
-                                        </CustomeToolTip>
-                                        <CustomeToolTip title="Permanent-House Name" placement="bottom">
-                                            <Box
-                                                sx={{
-                                                    pt: 1
-                                                }}
-                                            >
-                                                <TextInput
-                                                    type="text"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Address 2"
-                                                    changeTextValue={(e) => updateFormData(e)}
-                                                    value={contactaddress2}
-                                                    name="contactaddress2"
-                                                />
-                                            </Box>
-                                        </CustomeToolTip>
-                                        <CustomeToolTip title="Permanent-House Name" placement="bottom">
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "row",
-                                                    justifyContent: "space-between",
-                                                    pt: 1,
-                                                    pb: 1
-                                                }}
-                                            >
-                                                <Box>
-                                                    <RegionSelect
-                                                        style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
-                                                    />
-                                                </Box>
-                                                <Box
-                                                    sx={{ pl: 0.5 }}
-                                                >
-                                                    <TextInput
-                                                        type="text"
-                                                        classname="form-control form-control-sm"
-                                                        Placeholder="Pincode"
-                                                        changeTextValue={(e) => updateFormData(e)}
-                                                        value={contactpin1}
-                                                        name="contactpin1"
-                                                        style={{
-                                                            width: 300,
-                                                        }}
-                                                    />
-                                                </Box>
-                                            </Box>
-                                        </CustomeToolTip>
-                                    </Paper>
-                                </Box>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        px: 5
-                                    }}>
-                                    <Stack
-                                        direction="row"
-                                        spacing={3}
-                                        justifyContent="center"
-                                        alignItems="center"
-                                    >
-                                        <Avatar
-                                            alt="Remy Sharp"
-                                            src={src}
-                                            variant="square"
-                                            className="img-thumbnail border-2 empImage"
-                                            sx={{ width: 150, height: 150, opacity: 10 }}
-                                        />
-                                    </Stack>
-                                </Box>
                             </Box>
+                            {/* Present address end*/}
+
+                            {/* Contact address start*/}
+                            <Box sx={{
+                                display: "flex",
+                                pl: 1,
+                                flex: 2,
+                                //backgroundColor: "green",
+                                width: "45%"
+                            }}>
+                                <Paper variant="outlined"
+                                    sx={{ px: 1, width: "100%" }}
+                                >
+                                    <CssVarsProvider>
+                                        <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
+                                            Contact Address
+                                        </Typography>
+                                    </CssVarsProvider>
+                                    <input
+                                        type="hidden"
+                                        name="em_id"
+                                        value={em_id}
+                                        disabled
+                                    />
+                                    <input
+                                        type="hidden"
+                                        nname="em_no"
+                                        value={em_no}
+                                        disabled
+                                    />
+                                    <CustomeToolTip title="Permanent-House Name" placement="bottom">
+                                        <Box
+                                            sx={{
+                                                pt: 1
+                                            }}
+                                        >
+                                            <TextInput
+                                                style={{ width: "100%", paddingLeft: 13 }}
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Address 1"
+                                                changeTextValue={(e) => updateFormData(e)}
+                                                value={contactaddress1}
+                                                name="contactaddress1"
+                                            />
+                                        </Box>
+                                    </CustomeToolTip>
+                                    <CustomeToolTip title="Permanent-House Name" placement="bottom">
+                                        <Box
+                                            sx={{
+                                                pt: 1,
+                                            }}
+                                        >
+                                            <TextInput
+                                                style={{ width: "100%", paddingLeft: 13 }}
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="Address 2"
+                                                changeTextValue={(e) => updateFormData(e)}
+                                                value={contactaddress2}
+                                                name="contactaddress2"
+                                            />
+                                        </Box>
+                                    </CustomeToolTip>
+                                    <CustomeToolTip title="Permanent-House Name" placement="bottom">
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                justifyContent: "space-between",
+                                                pt: 1,
+                                                width: "100%"
+                                            }}
+                                        >
+                                            <Box sx={{ flex: 1 }}>
+                                                <RegionSelect
+                                                    style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
+                                                />
+                                            </Box>
+                                            <Box
+                                                sx={{ pl: 0.5, flex: 2 }}
+                                            >
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder="Pincode"
+                                                    changeTextValue={(e) => updateFormData(e)}
+                                                    value={contactpin1}
+                                                    name="contactpin1"
+                                                    style={{ width: "100%", paddingLeft: 13 }}
+                                                />
+                                            </Box>
+                                        </Box>
+                                    </CustomeToolTip>
+                                </Paper>
+                                {/* Contact address end*/}
+                            </Box>
+
+                            {/* Profile picture*/}
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flex: 1,
+                                    //backgroundColor: "yellow",
+                                    px: 5,
+                                    width: "10%"
+                                }}>
+                                <Stack
+                                    direction="row"
+                                    spacing={3}
+                                    justifyContent="center"
+                                    alignItems="center"
+                                >
+                                    <Avatar
+                                        alt="Remy Sharp"
+                                        src={src}
+                                        variant="square"
+                                        className="img-thumbnail border-2 empImage"
+                                        sx={{ width: 150, height: 150, opacity: 10 }}
+                                    />
+                                </Stack>
+                            </Box>
+
                         </Box>
                     </Paper>
                     {/* First Box end */}
@@ -590,15 +613,19 @@ const PersonalInfrom = () => {
 
                         // backgroundColor: "lightcyan"
                     }} >
+                        {/* Other information start*/}
                         <Box sx={{
                             display: "flex",
                             flexDirection: "column",
                             flex: 1, px: 0.5,
-                            py: 0.5
+                            py: 0.5,
+                            width: "100%"
                         }}>
+                            {/* first row */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
+                                width: "100%"
                             }}>
                                 <Box sx={{ flex: 1, }} >
                                     <FormControl fullWidth margin="dense" className="mt-1">
@@ -633,6 +660,7 @@ const PersonalInfrom = () => {
                                         changeTextValue={(e) => updateFormData(e)}
                                         value={mobile}
                                         name="mobile"
+                                        style={{ width: "100%", }}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
@@ -643,6 +671,7 @@ const PersonalInfrom = () => {
                                         changeTextValue={(e) => updateFormData(e)}
                                         value={land_no}
                                         name="land_no"
+                                        style={{ width: "100%", }}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
@@ -653,6 +682,7 @@ const PersonalInfrom = () => {
                                         changeTextValue={(e) => updateFormData(e)}
                                         value={passp_no}
                                         name="passp_no"
+                                        style={{ width: "100%", }}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
@@ -663,6 +693,7 @@ const PersonalInfrom = () => {
                                         changeTextValue={(e) => updateFormData(e)}
                                         value={license}
                                         name="license"
+                                        style={{ width: "100%", }}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
@@ -673,22 +704,27 @@ const PersonalInfrom = () => {
                                         changeTextValue={(e) => updateFormData(e)}
                                         value={adhar_no}
                                         name="adhar_no"
+                                        style={{ width: "100%", }}
                                     />
                                 </Box>
                             </Box>
+
+                            {/* second row */}
+
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                pt: 0.5
+                                pt: 0.5,
+                                width: "100%"
                             }}>
                                 <Box sx={{
                                     display: "flex",
                                     flexDirection: "row",
-                                    flex: 1
+                                    flex: 1,
+                                    width: "50%"
                                 }}>
                                     <Box sx={{
-                                        display: "flex",
-                                        flex: 1
+                                        flex: 1,
                                     }}>
                                         <TextInput
                                             type="text"
@@ -697,15 +733,13 @@ const PersonalInfrom = () => {
                                             changeTextValue={(e) => updateFormData(e)}
                                             value={email}
                                             name="email"
-                                            style={{
-                                                width: 222
-                                            }}
+                                            style={{ width: "100%", paddingLeft: 13 }}
                                         />
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
                                         flex: 1,
-                                        pl: 0.5
+                                        pl: 0.5,
                                     }}>
                                         <ReligionSelect
                                             style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
@@ -714,7 +748,7 @@ const PersonalInfrom = () => {
                                     <Box sx={{
                                         display: "flex",
                                         flex: 1,
-                                        pl: 0.5
+                                        pl: 0.5,
                                     }}>
                                         <FormControl fullWidth margin="dense" className="mt-1">
                                             <Select
@@ -748,71 +782,79 @@ const PersonalInfrom = () => {
                                     display: "flex",
                                     flexDirection: "row",
                                     flex: 1,
-                                    pl: 0.5
+                                    pl: 0.5,
+                                    width: "50%",
                                 }} >
                                     <Box sx={{
                                         display: "flex",
-                                        flex: 1
-                                    }}>
-                                        <BankNameSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
-                                    </Box>
-                                    <Box sx={{
-                                        display: "flex",
                                         flex: 1,
-                                        pl: 0.5
+                                        width: "100%",
                                     }}>
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="ACCOUNT NO"
-                                            changeTextValue={(e) => updateFormData(e)}
-                                            value={accountno}
-                                            name="accountno"
-                                            style={{
-                                                width: 350
-                                            }}
-                                        />
+                                        <Box sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            width: "50%",
+                                            //backgroundColor: "lightgreen"
+                                        }}>
+                                            <BankNameSelect style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                        </Box>
+                                        <Box sx={{
+                                            flex: 1,
+                                            pl: 0.5,
+                                            width: "50%",
+                                            //backgroundColor: "lightpink"
+                                        }}>
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="ACCOUNT NO"
+                                                changeTextValue={(e) => updateFormData(e)}
+                                                value={accountno}
+                                                name="accountno"
+                                                style={{ width: "100%", paddingLeft: 13 }}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                             </Box>
+
+                            {/* third row */}
+
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
+                                width: "100%"
                             }}>
                                 <Box sx={{
                                     display: "flex",
                                     flexDirection: "row",
-                                    flex: 1
+                                    flex: 1,
+                                    width: "50%"
                                 }}>
                                     <Box sx={{
-                                        display: "flex",
-                                        flex: 1
+                                        flex: 1,
                                     }}>
                                         <BloodGroupSelect
                                             style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
                                         />
                                     </Box>
                                     <Box sx={{
-                                        display: "flex",
                                         flex: 1,
                                         pl: 0.5,
                                     }}>
-                                        <TextInput
+                                        < TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
                                             Placeholder="Date Of Birth"
                                             value={dob}
                                             name="dob"
-
                                             disabled={true}
-                                            style={{
-                                                width: 222
-                                            }}
+                                            style={{ width: "100%", paddingLeft: 13 }}
                                         />
                                     </Box>
                                     <Box sx={{
-                                        display: "flex",
-                                        flex: 1, pl: 0.5
+                                        flex: 1,
+                                        pl: 0.5,
                                     }}>
                                         <TextInput
                                             type="text"
@@ -821,9 +863,7 @@ const PersonalInfrom = () => {
                                             value={age}
                                             name="age"
                                             disabled={true}
-                                            style={{
-                                                width: 222
-                                            }}
+                                            style={{ width: "100%", paddingLeft: 13 }}
                                         />
                                     </Box>
                                 </Box>
@@ -832,84 +872,563 @@ const PersonalInfrom = () => {
                                     display: "flex",
                                     flexDirection: "row",
                                     flex: 1,
-                                    pl: 0.5
+                                    pl: 0.5,
+                                    width: "50%",
                                 }} >
                                     <Box sx={{
                                         display: "flex",
-                                        flex: 1
+                                        flex: 1,
+                                        width: "100%",
+                                    }}>
+                                        <Box sx={{
+                                            flex: 1,
+                                            width: "50%",
+                                            //backgroundColor: "lightgreen"
+                                        }}>
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="IFC CODE"
+                                                value={ifsc}
+                                                disabled={true}
+                                                style={{ width: "100%", paddingLeft: 13 }}
+                                            />
+                                        </Box>
+                                        <Box sx={{
+                                            flex: 1,
+                                            pl: 0.5,
+                                            width: "50%",
+                                            //backgroundColor: "lightpink"
+                                        }}>
+                                            <TextInput
+                                                type="text"
+                                                classname="form-control form-control-sm"
+                                                Placeholder="PAN NO"
+                                                changeTextValue={(e) => updateFormData(e)}
+                                                value={panmum}
+                                                name="panmum"
+                                                style={{ width: "100%", paddingLeft: 13 }}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Box>
+
+                    </Paper>
+                    {/* Other information end*/}
+
+                    {/* Family and Languages section start*/}
+                    <Paper square elevation={0} sx={{
+                        mt: 0.5,
+                        display: 'flex',
+                        alignItems: "center",
+                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" },
+                        //backgroundColor: "lightcyan"
+                    }} >
+
+                    </Paper>
+                    {/* Family and Language section */}
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "row"
+                    }}>
+                        <Box sx={{
+                            display: "flex",
+                            //backgroundColor: "red",
+                            flex: 1,
+                            flexDirection: "column",
+                        }}>
+                            <Paper variant="outlined"
+                                sx={{ px: 1, }}
+                            >
+                                <Box sx={{
+                                    display: "flex"
+                                }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
+                                            Family Details
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "row"
+                                }}>
+                                    <Box sx={{
+                                        display: "flex",
+                                        flex: 1,
+                                        pt: 1,
+                                        pl: 0.5
+                                    }}>
+                                        <FormControl fullWidth margin="dense" className="mt-1">
+                                            <Select
+                                                name="relationShip"
+                                                value={relationShip}
+                                                fullWidth
+                                                variant="outlined"
+                                                onChange={(e) => {
+                                                    updateonchange(e)
+                                                    getdataname(e)
+                                                }}
+                                                className="ml-1"
+                                                defaultValue={0}
+                                                style={{
+                                                    minHeight: 10,
+                                                    maxHeight: 27,
+                                                    paddingTop: 0,
+                                                    paddingBottom: 4,
+                                                }}
+                                            >
+                                                <MenuItem value="0" disabled>
+                                                    Relation
+                                                </MenuItem>
+                                                <MenuItem value="1">Father</MenuItem>
+                                                <MenuItem value="2">Mother</MenuItem>
+                                                <MenuItem value="2">Brother</MenuItem>
+                                                <MenuItem value="2">Sister</MenuItem>
+                                                <MenuItem value="2">Spouse</MenuItem>
+                                                <MenuItem value="2">Children</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
+                                    <Box sx={{
+                                        display: "flex",
+                                        flex: 2,
+                                        pt: 1,
+                                        pl: 0.5
                                     }}>
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="IFC CODE"
-                                            value={ifsc}
-                                            disabled={true}
+                                            Placeholder="Name Of the Family Members"
+                                            value={namefamilymembers}
+                                            name="namefamilymembers"
+                                            changeTextValue={(e) => {
+                                                updateonchange(e)
+
+                                            }}
                                             style={{
-                                                width: 318
+                                                width: 330
                                             }}
                                         />
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
                                         flex: 1,
+                                        pt: 1,
+                                        pl: 0.5
                                     }}>
                                         <TextInput
                                             type="text"
                                             classname="form-control form-control-sm"
-                                            Placeholder="PAN NO"
-                                            changeTextValue={(e) => updateFormData(e)}
-                                            value={panmum}
-                                            name="panmum"
-                                            style={{
-                                                width: 350
+                                            Placeholder="Hospital MRD No"
+                                            value={relationmrd_no}
+                                            name="relationmrd_no"
+                                            changeTextValue={(e) => {
+                                                updateonchange(e)
                                             }}
                                         />
                                     </Box>
+                                    <Box sx={{
+                                        display: "flex",
+                                        flex: 0,
+                                    }}>
+                                        <CssVarsProvider>
+                                            <IconButton
+                                                aria-label="add"
+                                                style={{ padding: '0rem' }}
+                                                onClick={(e) => {
+                                                    onClickAddrelation(e)
+                                                }}
+                                            >
+                                                <MdOutlineAddCircleOutline className="text-info" size={30} />
+                                            </IconButton>
+                                        </CssVarsProvider>
+                                    </Box>
                                 </Box>
-                            </Box>
+                            </Paper>
                         </Box>
-                    </Paper>
+                        <Box sx={{
+                            display: "flex",
+                            //backgroundColor: "green",
+                            flex: 1,
+                            flexDirection: "column",
+                            pl: 0.5,
+                        }} >
+                            <Paper variant="outlined"
+                                sx={{ px: 1, }}
+                            >
+                                <Box sx={{
+                                    display: "flex"
+                                }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
+                                            Languages Known
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}>
+                                    <Box borderTop={1} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Language
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Write
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Speak
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Read
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}>
+                                    <Box borderTop={0} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Malayalam
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="malwrite" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="malspeak" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="malread" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}>
+                                    <Box borderTop={0} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Hindi
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="hindiwrite" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="hindispeak"
+                                                sx={{
+                                                    padding: 0
+                                                }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="hindiread" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}>
+                                    <Box borderTop={0} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    English
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="engwrite" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="engspeak" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="engread" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column"
+                                }}>
+                                    <Box borderTop={0} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Tamil
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="tamilwrite" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="tamilspeak" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="tamilread" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    pb: 1
+                                }}>
+                                    <Box borderTop={0} borderLeft={1} borderBottom={1} sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        borderColor: "lightgray"
+
+                                    }}>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <CssVarsProvider>
+                                                <Typography >
+                                                    Arabic
+                                                </Typography>
+                                            </CssVarsProvider>
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="arabicwrite" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+
+                                            <Checkbox color="secondary" name="arabicspeak" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                        <Box borderRight={1} sx={{
+                                            display: "flex",
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            borderColor: "lightgray"
+                                        }}>
+                                            <Checkbox color="secondary" name="arabicread" sx={{
+                                                padding: 0
+                                            }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+                    </Box>
                 </Paper>
 
+                {/* Footer section start*/}
                 <Paper square sx={{
                     backgroundColor: "#F8F8F8",
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ display: "flex", pl: 1 }} >
+                    <Box sx={{ display: "flex", p: 0.3 }} >
                         <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })}
+                            <IconButton variant="outlined" size='sm'
+                                sx={theme => ({
+                                    color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
+                                })}
                                 onClick={personaldataSubmit}
                             >
                                 <LibraryAddCheckOutlinedIcon />
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ display: "flex", pl: 0.5 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
-            </Box>
-        </Fragment >
+                {/* Footer section end*/}
 
+            </Box >
+        </Fragment >
     )
 }
 
 export default memo(PersonalInfrom)
-
-
-
-
-
-
-//                                     </Paper>
-//                                 </Box>
-//                             </Box>

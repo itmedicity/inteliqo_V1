@@ -48,9 +48,9 @@ const EarnLeaveList = ({ hldnodata, no }) => {
                                         {val.ernlv_mnth}
                                     </Typography>
                                 </div>
-                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.ernlv_credit}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.ernlv_allowed}</div>
                                 <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{val.ernlv_taken}</div>
-                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{parseFloat(val.ernlv_credit) - parseFloat(val.ernlv_taken)}</div>
+                                <div className="col-sm-2 py-0 text-center" style={{ width: "10%", fontWeight: "bold", fontSize: 11.5 }}>{parseFloat(val.ernlv_allowed) - parseFloat(val.ernlv_taken)}</div>
                             </div>
                         </li>;
                     })

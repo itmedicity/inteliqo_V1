@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 //import './EmpStyle.css'
 import SalaryIncrementMainCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/SalaryIncrementMainCard'
 import FixedWagesSalaryIncre from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/FixedWagesSalaryIncre'
@@ -8,17 +7,15 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { Box, Paper } from '@mui/material'
 import { CssVarsProvider, Typography } from '@mui/joy'
-import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import IconButton from '@mui/joy/IconButton'
 
 const SalaryIncrementProcess = () => {
 
     const history = useHistory()
     const { id, no } = useParams()
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
     const [fixedWages, setFixedwages] = useState([])
     const [Earnings, setEarnings] = useState([])
     const [Deduction, setDeduction] = useState([])
@@ -85,8 +82,8 @@ const SalaryIncrementProcess = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Salary Icrement Process
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Salary Increment Process
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -137,21 +134,6 @@ const SalaryIncrementProcess = () => {
                         </Box>
                     </Paper>
                 </Paper>
-                {/* <Paper square sx={{
-                    backgroundColor: "#F8F8F8",
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
-                    <Box >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper> */}
             </Box>
         </Fragment>
     )

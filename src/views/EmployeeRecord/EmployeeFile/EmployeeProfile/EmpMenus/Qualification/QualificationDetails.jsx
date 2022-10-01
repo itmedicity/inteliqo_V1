@@ -1,7 +1,7 @@
 import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import React, { Fragment, useState, useContext, useEffect, memo } from 'react'
-import { useHistory, useParams } from 'react-router'
+import React, { Fragment, useState, useContext, useEffect, memo, useCallback } from 'react'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
@@ -20,19 +20,18 @@ import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import { Box, Paper } from '@mui/material'
 import QualificationAgGridTable from './QualificationAgGridTable'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import CloseIcon from '@mui/icons-material/Close';
-import CustomeToolTip from 'src/views/Component/CustomeToolTip'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
+import { useMemo } from 'react'
 
 const QualificationDetails = () => {
 
     const classes = useStyles();
-    const history = useHistory();
+    //const history = useHistory();
     const { id, no } = useParams();
     const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id, em_no } = employeedetails
+    const { em_id, } = employeedetails
     const [unidisable, setunidisable] = useState(false)
     const [boarddisable, setBoarddisable] = useState(false)
     const [coursedisable, setcoursedisable] = useState(false)
@@ -40,6 +39,9 @@ const QualificationDetails = () => {
     const [regTypedisable, setregTypedisable] = useState(false)
     const [regNodisable, setregNodisable] = useState(false)
     const [count, setcount] = useState(0);
+    const [flag, setflag] = useState(0)
+    const [slno, setslno] = useState(0)
+
     const { selectEducation, selectCourse, selectSpec, selectUniversity, updateUniversity, updatereg,
         selectBoard, selectreg, updateBoard, updateSpec, updateEducation, updateCourse } = useContext(PayrolMasterContext)
     const [year, setYear] = useState(format(new Date(), "yyyy-MM-dd"));
@@ -57,7 +59,7 @@ const QualificationDetails = () => {
         em_reg_type: '',
         em_reg_no: '',
         em_chellan: '',
-        pass_fail: true
+        pass_fail: false
     })
 
     //destructuring
@@ -110,52 +112,59 @@ const QualificationDetails = () => {
     }, [selectEducation])
 
     //Post data
-    const postData = {
-        em_no: id,
-        em_id: no,
-        em_education: selectEducation !== 0 ? selectEducation : null,
-        em_course: selectCourse !== 0 ? selectCourse : null,
-        em_specialization: selectSpec !== 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
-        em_board: selectBoard !== 0 ? selectBoard : null,
-        em_year: qual_year,
-        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
-        em_reg_type: selectreg,
-        em_reg_no: em_reg_no,
-        create_user: em_id,
-        em_exp_date: em_reg_no === "" ? null : expyear,
-        em_chellan: em_chellan,
-        em_chellan_exp_date: em_chellan === "" ? null : chellan,
-        pass_fail: pass_fail === true ? 0 : 1
-    }
+    const postData = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_education: selectEducation !== 0 ? selectEducation : null,
+            em_course: selectCourse !== 0 ? selectCourse : null,
+            em_specialization: selectSpec !== 0 ? selectSpec : null,
+            em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
+            em_board: selectBoard !== 0 ? selectBoard : null,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            em_reg_type: selectreg,
+            em_reg_no: em_reg_no,
+            create_user: em_id,
+            em_exp_date: em_reg_no === "" ? null : expyear,
+            em_chellan: em_chellan,
+            em_chellan_exp_date: em_chellan === "" ? null : chellan,
+            pass_fail: pass_fail === true ? 1 : 0
+        }
+    }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_reg_no, em_id, em_chellan, expyear, chellan, pass_fail])
 
-    const postData5 = {
-        em_no: id,
-        em_id: no,
-        em_education: selectEducation,
-        em_course: selectCourse !== 0 ? selectCourse : null,
-        em_specialization: selectSpec !== 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
-        em_board: selectBoard,
-        em_year: qual_year,
-        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
-        create_user: em_id,
-        pass_fail: pass_fail === true ? 0 : 1
+    const postData5 = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_education: selectEducation,
+            em_course: selectCourse !== 0 ? selectCourse : null,
+            em_specialization: selectSpec !== 0 ? selectSpec : null,
+            em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
+            em_board: selectBoard,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            create_user: em_id,
+            pass_fail: pass_fail === true ? 1 : 0
 
-    }
-    const postData4 = {
-        em_no: id,
-        em_id: no,
-        em_education: selectEducation,
-        em_course: selectCourse !== 0 ? selectCourse : null,
-        em_specialization: selectSpec !== 0 ? selectSpec : null,
-        em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
-        em_board: selectBoard,
-        em_year: qual_year,
-        em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
-        create_user: em_id,
-        pass_fail: pass_fail === true ? 0 : 1
-    }
+        }
+    }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_id, pass_fail])
+
+    const postData4 = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_education: selectEducation,
+            em_course: selectCourse !== 0 ? selectCourse : null,
+            em_specialization: selectSpec !== 0 ? selectSpec : null,
+            em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
+            em_board: selectBoard,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            create_user: em_id,
+            pass_fail: pass_fail === true ? 1 : 0
+        }
+    }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_id, pass_fail])
 
     //Form reset
     const resetForm = {
@@ -169,7 +178,7 @@ const QualificationDetails = () => {
         em_reg_type: '',
         em_reg_no: '',
         em_chellan: '',
-        pass_fail: true
+        pass_fail: false
     }
 
     const reset = () => {
@@ -184,67 +193,242 @@ const QualificationDetails = () => {
         setChellan(new Date())
     }
 
-    //Form Submitting
-    const submitQualification = async (e) => {
-        e.preventDefault();
-        if (selectEducation === 5) {
-            const result = await axioslogin.post('/qualify', postData5)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message);
-                setcount(count + 1)
-                setQualification(resetForm);
-                reset()
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
-            }
-        } else if (selectEducation === 4) {
-            const result = await axioslogin.post('/qualify', postData4)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message);
-                setcount(count + 1)
-                setQualification(resetForm);
-                reset()
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
-            }
+    const getDataTable = useCallback((params) => {
+        setflag(1)
+        const data = params.api.getSelectedRows()
+        const { em_education, em_course, em_specialization, em_univ_institute,
+            em_board, em_year, em_mark_grade, em_reg_type, em_reg_no, em_exp_date,
+            em_chellan, em_chellan_exp_date, pass_fail, emqual_slno } = data[0]
+
+        const frmdata = {
+            em_year: em_year,
+            em_mark_grade: em_mark_grade === null ? 0 : em_mark_grade,
+            em_reg_no: em_reg_no === null ? 0 : em_reg_no,
+            em_chellan: em_chellan === null ? 0 : em_chellan,
+            pass_fail: pass_fail === 0 ? false : true
+        }
+        setQualification(frmdata)
+        updateEducation(em_education)
+        updateCourse(em_course)
+        updateSpec(em_specialization === null ? 0 : em_specialization)
+        updateUniversity(em_univ_institute === null ? 0 : em_univ_institute)
+        updateBoard(em_board === null ? 0 : em_board)
+        updatereg(em_reg_type === null ? 0 : em_reg_type)
+        const year = new Date(em_year, 6, 2)
+        setYear(year)
+        setslno(emqual_slno)
+        em_exp_date === null ? setExpyear(new Date()) : setExpyear(format(new Date(em_exp_date), "yyyy-MM-dd"))
+        em_chellan_exp_date === null ? setChellan(new Date()) : setChellan(format(new Date(em_chellan_exp_date), "yyyy-MM-dd"))
+        if (em_education === 4) {
+            setunidisable(true)
+            setBoarddisable(false)
+            setcoursedisable(false)
+            setspecdisable(false)
+            setregTypedisable(true)
+            setregNodisable(true)
+        }
+        else if (em_education === 5) {
+            setBoarddisable(false)
+            setunidisable(true)
+            setcoursedisable(true)
+            setspecdisable(true)
+            setregTypedisable(true)
+            setregNodisable(true)
         } else {
-            const result = await axioslogin.post('/qualify', postData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message);
-                setcount(count + 1)
-                setQualification(resetForm);
-                reset()
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
+            setcoursedisable(false)
+            setspecdisable(false)
+            setunidisable(false)
+            setBoarddisable(true)
+            setregTypedisable(false)
+            setregNodisable(false)
+        }
+    })
+
+    const updatepostData = useMemo(() => {
+        return {
+            em_education: selectEducation,
+            em_course: selectCourse,
+            em_specialization: selectSpec,
+            em_univ_institute: selectUniversity,
+            em_board: selectBoard !== 0 ? selectBoard : null,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            em_reg_type: selectreg !== 0 ? selectreg : null,
+            em_reg_no: em_reg_no,
+            edit_user: em_id,
+            em_exp_date: em_reg_no === "" ? null : expyear,
+            em_chellan: em_chellan,
+            em_chellan_exp_date: em_chellan === "" ? null : chellan,
+            emqual_slno: slno,
+            pass_fail: pass_fail === true ? 1 : 0
+        }
+    }, [selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_reg_no, em_id])
+
+
+    const updatepostdata5 = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_education: selectEducation,
+            em_course: selectCourse !== 0 ? selectCourse : null,
+            em_specialization: selectSpec !== 0 ? selectSpec : null,
+            em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
+            em_board: selectBoard,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            em_reg_type: selectreg !== 0 ? selectreg : null,
+            em_reg_no,
+            edit_user: em_id,
+            emqual_slno: slno,
+            pass_fail: pass_fail === true ? 1 : 0
+        }
+    }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, slno, pass_fail])
+
+    const updatepostdata4 = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_education: selectEducation,
+            em_course: selectCourse !== 0 ? selectCourse : null,
+            em_specialization: selectSpec !== 0 ? selectSpec : null,
+            em_univ_institute: selectUniversity !== 0 ? selectUniversity : null,
+            em_board: selectBoard,
+            em_year: qual_year,
+            em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
+            em_reg_type: selectreg !== 0 ? selectreg : null,
+            em_reg_no,
+            edit_user: em_id,
+            emqual_slno: slno,
+            pass_fail: pass_fail === true ? 1 : 0
+        }
+    }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_id, slno, pass_fail])
+
+    console.log(postData5);
+    console.log(postData4);
+    console.log(postData);
+
+    console.log(updatepostdata5);
+    console.log(updatepostData);
+    console.log(updatepostdata4);
+
+
+    //Form Submitting
+    const submitQualification = useCallback((e) => {
+        e.preventDefault();
+        const submitdata = async () => {
+            if (selectEducation === 5) {
+                const result = await axioslogin.post('/qualify', postData5)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    succesNofity(message);
+                    setcount(count + 1)
+                    setQualification(resetForm);
+                    reset()
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            } else if (selectEducation === 4) {
+                const result = await axioslogin.post('/qualify', postData4)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    succesNofity(message);
+                    setcount(count + 1)
+                    setQualification(resetForm);
+                    reset()
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
             } else {
-                infoNofity(message)
+                const result = await axioslogin.post('/qualify', postData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    succesNofity(message);
+                    setcount(count + 1)
+                    setQualification(resetForm);
+                    reset()
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
             }
         }
-    }
+        const submitupdatedata = async () => {
+            if (selectEducation === 5) {
+                const result = await axioslogin.patch('/qualify', updatepostdata5)
+                const { message, success } = result.data;
+                if (success === 2) {
+                    setQualification(resetForm);
+                    setcount(count + 1)
+                    reset();
+                    //history.push(`/Home/EmployeeQualification/${id}/${no}`);
+                    succesNofity(message);
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            } else if (selectEducation === 4) {
+                const result = await axioslogin.patch('/qualify', updatepostdata4)
+                const { message, success } = result.data;
+                if (success === 2) {
+                    setQualification(resetForm);
+                    setcount(count + 1)
+                    reset();
+                    //history.push(`/Home/EmployeeQualification/${id}/${no}`);
+                    succesNofity(message);
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            }
+            else {
+                const result = await axioslogin.patch('/qualify', updatepostData)
+                const { message, success } = result.data;
+                if (success === 2) {
+                    setQualification(resetForm);
+                    reset();
+                    setcount(count + 1)
+                    //history.push(`/Home/EmployeeQualification/${id}/${no}`);
+                    succesNofity(message);
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            }
+        }
+        if (flag === 0) {
+            submitdata(postData5, postData, postData4)
+        }
+        else {
+            submitupdatedata(updatepostData, updatepostdata4, updatepostdata5)
+        }
+
+    }, [postData, postData4, postData5, updatepostData, updatepostdata4, updatepostdata5])
 
     //Back to home page
-    const toSettings = () => {
-        console.log("bgghj");
-        console.log(em_no);
-        console.log(em_id);
-        //history.push(`/Home/Profile/${id}/${no}`);
-        // history.push(`/Home/Prfle/${id}/${no}`)
-        history.push(`/Home/Prfle/${id}/${no}`)
-        //history.push(`/Home/Prfle`)
-        // history.push('/home')
-    }
+    // const toSettings = () => {
+    //     //history.push(`/Home/Profile/${id}/${no}`);
+    //     history.push(`/Home/Prfle/${id}/${no}`)
+    // }
+
 
     return (
 
         <Fragment>
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
+                //height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
 
                     {/* Heading Section Start */}
@@ -255,8 +439,8 @@ const QualificationDetails = () => {
                     }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
-                                    Qualification Description
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Qualification Information
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -283,8 +467,23 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Education
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            Course
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <CourseSelection
@@ -300,10 +499,26 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Specialization
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <SpecializationSelection
                                         disable={specdisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            University
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5, pt: 0 }} >
                                     <UniversitySelection
@@ -319,10 +534,26 @@ const QualificationDetails = () => {
                                 flexDirection: "row",
                                 px: 20
                             }}>
+                                <Box sx={{ display: 'flex', width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Board
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
                                 <Box sx={{ flex: 1, }} >
                                     <BoardMastSelection
                                         disable={boarddisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Year
+                                        </Typography>
+
+                                    </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pt: 1, pl: 0.5 }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -348,26 +579,33 @@ const QualificationDetails = () => {
                                 </Box>
                             </Box>
                             {/* Third Row End */}
-
                             {/* Fourth Row Start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20
                             }}>
-                                <CustomeToolTip title="Pass/fail" placement="bottom">
-                                    <Box sx={{ flex: 0, pt: 1 }} >
-
-                                        <CommonCheckBox
-                                            name="pass_fail"
-                                            value={pass_fail}
-                                            checked={pass_fail}
-                                            onChange={(e) => updateQualification(e)}
-                                        />
-
-                                    </Box>
-                                </CustomeToolTip>
-                                <Box sx={{ flex: 1, pt: 0.5, pl: 0.5 }} >
+                                <Box sx={{
+                                    display: 'flex',
+                                    //backgroundColor: "yellow",
+                                    width: '20%',
+                                    pt: 0.5
+                                }}
+                                >
+                                    <CommonCheckBox
+                                        name="pass_fail"
+                                        value={pass_fail}
+                                        checked={pass_fail}
+                                        onChange={(e) => updateQualification(e)}
+                                        label="Pass or Fail"
+                                    />
+                                </Box>
+                                <Box sx={{
+                                    // display: "flex",
+                                    flex: 1,
+                                    pt: 0.5
+                                    //backgroundColor: "red"
+                                }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -375,12 +613,27 @@ const QualificationDetails = () => {
                                         value={em_mark_grade}
                                         name="em_mark_grade"
                                         changeTextValue={(e) => updateQualification(e)}
-                                        style={{
-                                            width: 490
-                                        }}
+
                                     />
                                 </Box>
-                                <Box sx={{ flex: 2, pl: 0.5 }} >
+                                <Box sx={{
+                                    display: 'flex',
+                                    width: '20%',
+                                    //backgroundColor: "green",
+                                    pl: 0.5
+                                }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration Type
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{
+                                    display: "flex",
+                                    flex: 1,
+                                    //backgroundColor: "blue"
+                                }} >
                                     <RegistrationTypeSelection
                                         disable={regTypedisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -393,9 +646,15 @@ const QualificationDetails = () => {
                                 display: "flex",
                                 flexDirection: "row",
                                 px: 20,
-                                pt: 0.5
-                            }}>
-                                <Box sx={{ flex: 1, }} >
+                            }}><Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -404,10 +663,17 @@ const QualificationDetails = () => {
                                         value={em_reg_no}
                                         name="em_reg_no"
                                         changeTextValue={(e) => updateQualification(e)}
-
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5, pb: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5, pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Registration End Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -427,10 +693,18 @@ const QualificationDetails = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                pt: 1,
+                                pt: 0.5,
                                 px: 20
                             }}>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Challan Number
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5 }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -441,7 +715,14 @@ const QualificationDetails = () => {
                                         changeTextValue={(e) => updateQualification(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Challan End Date
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, pt: 0.5, pb: 0.5 }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -466,9 +747,8 @@ const QualificationDetails = () => {
                         //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
                         //backgroundColor: "lightcyan",
                         flexDirection: "column"
-
                     }} >
-                        <QualificationAgGridTable update={count} setcount={setcount} />
+                        <QualificationAgGridTable update={count} getDataTable={getDataTable} />
                     </Paper>
                 </Paper>
                 {/* Main Section End */}
@@ -479,7 +759,7 @@ const QualificationDetails = () => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0 }} >
+                    <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
                                 color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
@@ -488,15 +768,6 @@ const QualificationDetails = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={toSettings}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
                 {/* Footer save And close end */}
             </Box>
