@@ -1,21 +1,18 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, memo, useState, useCallback, useEffect, } from 'react'
+import React, { Fragment, memo, useState, useEffect, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import EditIcon from '@mui/icons-material/Edit';
-import { useHistory, useParams } from 'react-router-dom'
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { useParams } from 'react-router-dom'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const Earndeductiontable = ({ update }) => {
+const Earndeductiontable = ({ update, getDataTable }) => {
 
-
-    const history = useHistory();
     const [data, setTableData] = useState();
-    const { id, no } = useParams()
-
+    const { id } = useParams()
 
     const rowHeight = 30
     const headerHeight = 30
@@ -78,13 +75,6 @@ const Earndeductiontable = ({ update }) => {
         }
         getCourse();
     }, [id, update]);
-
-    //For Edit
-    const getDataTable = (data) => {
-        const { ernded_slno } = data
-        history.push(`/Home/EmpAllowanceTableEdit/${ernded_slno}/${id}/${no}`)
-    }
-
 
     return (
         <Fragment>

@@ -37,7 +37,7 @@ const PreviousAmendChanges = ({ emp_id, amendStatus }) => {
                             display: 'flex',
                             flex: 1,
                             flexDirection: "row",
-                            backgroundColor: "green"
+                            //backgroundColor: "green"
                         }}
                             key={val.wagelog_slno}
                         >

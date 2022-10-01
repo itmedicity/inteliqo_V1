@@ -6,7 +6,6 @@ import { axioslogin } from '../Axios/Axios';
 const EducationSelection = (props) => {
     const [edu, setEdu] = useState([]);
     const { selectEducation, updateEducation } = useContext(PayrolMasterContext)
-
     useEffect(() => {
         const getEdu = async () => {
             const result = await axioslogin.get('/common/getEducation');

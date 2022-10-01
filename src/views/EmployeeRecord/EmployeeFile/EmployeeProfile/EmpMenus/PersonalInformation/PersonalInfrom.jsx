@@ -159,6 +159,7 @@ const PersonalInfrom = () => {
         const getemployeedetails = async () => {
             const result = await axioslogin.get(`/common/getpersonalData/${id}`)
             const { success, data } = result.data
+            console.log(data);
             if (success === 1) {
                 const {
                     em_no,

@@ -1,8 +1,8 @@
 import { Checkbox, FormControlLabel } from '@material-ui/core'
-import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
+//import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
 import { Box, Paper } from '@mui/material'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
+import React, { Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -14,11 +14,10 @@ import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
 
-
 const StatutoryInformation = () => {
 
-    const classes = useStyles()
-    const history = useHistory()
+    //const classes = useStyles()
+    //const history = useHistory()
     const { id, no } = useParams()
     const [Esiallowed, setEsiallowed] = useState(0)
     //setting initial state
@@ -93,29 +92,33 @@ const StatutoryInformation = () => {
         Setenable(false)
     }
     //postData
-    const postData = {
-        em_no: id,
-        em_id: no,
-        em_pf_status: pf === false ? 0 : 1,
-        em_pf_no: pfno,
-        em_uan_no: uanno,
-        em_esi_status: esi === false ? 0 : 1,
-        em_esi_no: esino,
-        em_grade: selectGrade,
-        create_user: employeeNumber(),
-    }
+    const postData = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            create_user: employeeNumber(),
+        }
+    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade])
     //editing esi pf
-    const postDataEdit = {
-        em_id: no,
-        em_pf_status: pf === false ? 0 : 1,
-        em_pf_no: pfno,
-        em_uan_no: uanno,
-        em_esi_status: esi === false ? 0 : 1,
-        em_esi_no: esino,
-        em_grade: selectGrade,
-        esi_slno: value,
-        edit_user: employeeNumber(),
-    }
+    const postDataEdit = useMemo(() => {
+        return {
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            esi_slno: value,
+            edit_user: employeeNumber(),
+        }
+    })
 
     //saving form data
     const submitFormData = async (e) => {
@@ -144,9 +147,9 @@ const StatutoryInformation = () => {
         }
     }
 
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     return (
         <Fragment>

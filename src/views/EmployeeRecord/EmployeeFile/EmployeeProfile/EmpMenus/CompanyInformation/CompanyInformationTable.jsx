@@ -4,14 +4,14 @@ import React, { Fragment, memo, useState, useEffect, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const CompanyInformationTable = ({ update }) => {
-    const history = useHistory();
+    //const history = useHistory();
     const [data, setTableData] = useState();
-    const { id, no } = useParams()
+    const { id } = useParams()
 
 
     const rowHeight = 30
