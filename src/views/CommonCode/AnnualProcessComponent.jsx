@@ -114,7 +114,6 @@ const AnnualProcessComponent = ({
 
         // Getting the Contract Employee Start and End Time
         const startEndDate_cont = () => {
-
             const startOfYears = moment(startOfYear(new Date())).format('YYYY-MM-DD'); // Current year First Day eg '01-01-YYYY'
             const endOfYears = moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'); // Current year Last Day eg '31-12-YYYY'
             //const dateOfjoin = moment(date_of_join).format('YYYY-MM-DD'); // Date Of joining
@@ -201,7 +200,6 @@ const AnnualProcessComponent = ({
 
         // For getting the Regular Employee Start and End Time
         const startEndDate_regular = () => {
-
             //Base Employee Admission Record Data
             const startOfYears = moment(startOfYear(new Date())).format('YYYY-MM-DD'); // Current year First Day eg '01-01-YYYY'
             const endOfYears = moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'); // Current year Last Day eg '31-12-YYYY'
@@ -210,7 +208,6 @@ const AnnualProcessComponent = ({
             // const contractEnd = moment(em_cont_end).isValid() === true ? moment(em_cont_end).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Contract End date
             //const confirmationDate = moment(em_conf_end_date).isValid() === true ? moment(em_conf_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
             const probationEndDate = moment(probation_end_date).isValid() === true ? moment(probation_end_date).format('YYYY-MM-DD') : moment('2000-01-01').format('YYYY-MM-DD'); // Training || Probation confirmation if it is Contract || Regular Employee
-
             if (is_under_contract === 0 && is_under_probation === 0) {
                 // Is Employee under Regular Category and not under Training / Probation
                 const regularStart = (dateOfjoin, startOfYears, endOfYears) => {
@@ -234,7 +231,6 @@ const AnnualProcessComponent = ({
                     // For Start Date  
                     const regularStartProb = (dateOfjoin, startOfYears, endOfYears, probationEndDate) => {
                         if (compareAsc(new Date(startOfYears), new Date(dateOfjoin)) === -1 && (new Date() >= new Date(dateOfjoin) && new Date() <= new Date(probationEndDate))) {
-
                             return dateOfjoin
                         } else {
                             return startOfYears
@@ -260,7 +256,6 @@ const AnnualProcessComponent = ({
 
         const contractStartEndDate = startEndDate_cont()
         const regularStartEndDate = startEndDate_regular()
-        // console.log(contractStartEndDate)
         const calculatedDate = {
             regular: regularStartEndDate === undefined ? 1 : regularStartEndDate,
             contract: contractStartEndDate === undefined ? 1 : contractStartEndDate,
@@ -423,7 +418,6 @@ const AnnualProcessComponent = ({
             })
             if (datadate.years >= 1) {
                 var number = Math.floor(nameel.duty_day / 20)
-                console.log(number)
                 const eranleavecalenddate = addMonths(new Date(), number)
                 const ernlvendadte = compareAsc(eranleavecalenddate, lastDayOfYear(new Date()))
                 var dateresult = eachMonthOfInterval({ start: new Date(), end: ernlvendadte === -1 ? eranleavecalenddate : lastDayOfYear(new Date()) })

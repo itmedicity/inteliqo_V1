@@ -45,7 +45,7 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
     const updateVerify = async (e) => {
         e.preventDefault();
         if (notverfied_reason !== '') {
-            if (slno === 1) {
+            if (slno === '1') {
                 const result = await axioslogin.patch('/empVerification', postData)
                 const { success, message } = result.data
                 if (success === 2) {

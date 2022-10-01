@@ -428,7 +428,7 @@ const ShiftUpdation = () => {
                                         setApiData(data)
                                         setcount(count + 1)
                                         const holidaycredit = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary > 21000) {
+                                            if (val.holiday_flag === 1 && val.duty_status > 0 && val.gross_salary > 21000) {
                                                 return val
                                             }
                                             else {
@@ -436,7 +436,7 @@ const ShiftUpdation = () => {
                                             }
                                         })
                                         const holidaytaken = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked === 0) {
+                                            if (val.holiday_flag === 1 && val.duty_status === 0) {
                                                 return val
                                             }
                                             else {
@@ -444,7 +444,7 @@ const ShiftUpdation = () => {
                                             }
                                         })
                                         const holidaytakendoublesalary = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary < 21000) {
+                                            if (val.holiday_flag === 1 && val.duty_status > 0 && val.gross_salary < 21000) {
                                                 return val
                                             }
                                             else {
