@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 //import './EmpStyle.css'
 import SalaryIncrementMainCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/SalaryIncrementMainCard'
 import FixedWagesSalaryIncre from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/FixedWagesSalaryIncre'
@@ -8,17 +7,15 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { Box, Paper } from '@mui/material'
 import { CssVarsProvider, Typography } from '@mui/joy'
-import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import IconButton from '@mui/joy/IconButton'
 
 const SalaryIncrementProcess = () => {
 
     const history = useHistory()
     const { id, no } = useParams()
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
     const [fixedWages, setFixedwages] = useState([])
     const [Earnings, setEarnings] = useState([])
     const [Deduction, setDeduction] = useState([])

@@ -1,26 +1,26 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useContext } from 'react'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
-import IconButton from '@mui/joy/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import React, { Fragment, Suspense, } from 'react'
+//import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+//import IconButton from '@mui/joy/IconButton';
+//import CloseIcon from '@mui/icons-material/Close';
+//import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import DesignationMast from 'src/views/CommonCode/DesignationMast';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+//import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
+//import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+//import DesignationMast from 'src/views/CommonCode/DesignationMast';
+//import { PayrolMasterContext } from 'src/Context/MasterContext';
+//import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextInput from 'src/views/Component/TextInput';
+//import TextInput from 'src/views/Component/TextInput';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
-import { useHistory } from 'react-router-dom';
+//import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 
 const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobSummaryEmp'));
@@ -40,18 +40,18 @@ const Progress = () => {
 const JobDescriptionList = () => {
 
     const [jobdescview, setJobdescView] = useState(0)
-    const { id, no } = useParams()
+    const { no } = useParams()
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(setPersonalData(no))
-    }, [no])
+    }, [no, dispatch])
     const getempData = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
-    const history = useHistory()
-    const Redirect = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    //const history = useHistory()
+    // const Redirect = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
     useEffect(() => {
         const checkJobDesc = async () => {
             const checkData = {
@@ -59,7 +59,7 @@ const JobDescriptionList = () => {
                 dept_id: getempData.em_department
             }
             const result = await axioslogin.post('/jobsummary/check', checkData)
-            const { data, success } = result.data
+            const { success } = result.data
             if (success === 1) {
                 setJobdescView(1)
             }
@@ -76,7 +76,7 @@ const JobDescriptionList = () => {
             <ToastContainer />
             <Box sx={{
                 width: "100%",
-                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" }
             }} >

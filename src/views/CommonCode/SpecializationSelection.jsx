@@ -15,10 +15,10 @@ const SpecializationSelection = (props) => {
             setSpec(data)
         }
         getSpec()
-        return (
-            updateSpec(0),
-            setSpecName('')
-        )
+        // return (
+        //     updateSpec(0),
+        //     setSpecName('')
+        // )
 
     }, [updateSpec, selectCourse]);
     // labeldata 

@@ -1,24 +1,24 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, memo, useState, useCallback, useEffect, } from 'react'
+import React, { Fragment, memo, useState, useEffect, useMemo, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import EditIcon from '@mui/icons-material/Edit';
-import moment from 'moment';
-import { useHistory, useParams } from 'react-router-dom'
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { useParams } from 'react-router-dom'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { DeleteOutlineOutlined } from '@material-ui/icons'
 
-const FineorDeductionTable = ({ update, collected }) => {
-    const history = useHistory();
+const FineorDeductionTable = ({ update, collected, getDataTable }) => {
+    //const history = useHistory();
     const [data, setTableData] = useState();
-    const { id, no } = useParams()
-    const postdata = {
-        id: id,
-        collected: collected
-    }
+    const { id } = useParams()
+    const postdata = useMemo(() => {
+        return {
+            id: id,
+            collected: collected
+        }
+    }, [id, collected])
 
     const rowHeight = 30
     const headerHeight = 30
@@ -57,7 +57,13 @@ const FineorDeductionTable = ({ update, collected }) => {
         { headerName: 'Amount', field: 'fine_amount' },
         { headerName: 'Remark', field: 'fine_remark' },
         { headerName: 'Status', field: 'fine_status' },
-
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <EditIcon onClick={() =>
+                    getDataTable(params)
+                }
+                />
+        },
     ])
 
     //Get Data
@@ -74,13 +80,13 @@ const FineorDeductionTable = ({ update, collected }) => {
             }
         }
         getFineDeduction();
-    }, [id, update, collected]);
+    }, [id, update, collected, postdata]);
 
     //For Edit
-    const getDataTable = (data) => {
-        const { fine_slno } = data
-        history.push(`/Home/FineAndDeductionTableEdit/${fine_slno}/${id}/${no}`)
-    }
+    // const getDataTable = (data) => {
+    //     const { fine_slno } = data
+    //     history.push(`/Home/FineAndDeductionTableEdit/${fine_slno}/${id}/${no}`)
+    // }
 
     return (
         <Fragment>

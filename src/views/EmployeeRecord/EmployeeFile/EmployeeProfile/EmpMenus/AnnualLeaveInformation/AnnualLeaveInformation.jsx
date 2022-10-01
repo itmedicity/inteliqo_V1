@@ -2,9 +2,9 @@ import { CssVarsProvider, Typography } from '@mui/joy';
 import { Box, CircularProgress, Paper } from '@mui/material';
 import { compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns';
 import moment from 'moment';
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -29,7 +29,7 @@ const CasualLeaveList = React.lazy(() => import('src/views/EmployeeRecord/Employ
 
 
 const AnnualLeaveInformation = () => {
-    const history = useHistory()
+    //const history = useHistory()
     // get id and number of logged user
     const { id, no } = useParams();
     const dispatch = useDispatch();
@@ -66,9 +66,9 @@ const AnnualLeaveInformation = () => {
 
     // destructuring current process details
     const { lv_process_slno } = leaveprocessid
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     //  data based on employeee category
     const [leavestate, setleavestate] = useState({
@@ -156,7 +156,8 @@ const AnnualLeaveInformation = () => {
             dispatch(setEmployeeProcessDetail(id))
         )
 
-    }, [no, modelvalue, id])
+    }, [no, modelvalue, id, dispatch])
+
     const year = moment(new Date()).format('YYYY')
     //useEffect for getting attendancde details to process earn leave
     useEffect(() => {
@@ -177,7 +178,7 @@ const AnnualLeaveInformation = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success == 2) {
+            else if (success === 2) {
                 setAttendanceData([])
             }
             else {
@@ -186,12 +187,14 @@ const AnnualLeaveInformation = () => {
         }
         getattendanceData()
 
-    }, [no])
-    const postFormdata =
-    {
-        em_no: no,
-        em_id: id
-    }
+    }, [no, year])
+    const postFormdata = useMemo(() => {
+        return {
+            em_no: no,
+            em_id: id
+        }
+    }, [id, no])
+
     const submitprocess = () => {
         const getdata = async () => {
             //CHECKING WHETHER THE DATA IS INSERTED INTO YEARLY LEAVE PROCESS TABLE
@@ -304,6 +307,10 @@ const AnnualLeaveInformation = () => {
         setmodellist(false)
     }
 
+    console.log(setnodatacl);
+    console.log(no);
+    console.log(castable);
+    console.log(CasualLeave);
 
     return (
         <Fragment>
@@ -326,6 +333,7 @@ const AnnualLeaveInformation = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 setmodelvalue={setmodelvalue}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
 
             {/* if new process pending */}
@@ -340,6 +348,7 @@ const AnnualLeaveInformation = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 nodatafixed={nodatafixed}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
 
             <Box sx={{ width: "100%" }} >

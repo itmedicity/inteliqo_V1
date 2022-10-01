@@ -67,7 +67,7 @@ const SpecializationTableEdit = React.lazy(() => import('./views/Master/Speciali
 const RegistrationType = React.lazy(() => import('./views/Master/RegistrationType/RegistrationMaster'))
 const RegistrationTableEdit = React.lazy(() => import('./views/Master/RegistrationType/RegistrationTableEdit'))
 const EmployeeQualification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeQualification'))
-const EmpQualificationEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/QualificationTableEdit'))
+//const EmpQualificationEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/QualificationTableEdit'))
 const EmployeeExperience = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeExperience'))
 const EmployeeExperienceEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmployeeExperienceEdit'))
 const StatutoryInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/StatutoryInformation'))
@@ -185,6 +185,7 @@ const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/Traini
 const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
 const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
 
+
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -257,7 +258,7 @@ const routes = [
   { path: '/Home/Specialization', exact: true, name: "Specialization Master", component: SpecializationMaster },
   { path: '/Home/SpecializationTableEdit/:id', exact: true, name: "Specialization Table Edit", component: SpecializationTableEdit },
   { path: '/Home/RegistrationType', exact: true, name: "Registration Type", component: RegistrationType },
-  { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
+  // { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
   { path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
   { path: '/Home/EmployeeQualification/:id/:no', exact: true, name: 'Qualification', component: EmployeeQualification },
   { path: '/Home/EmployeeExperience/:id', exact: true, name: 'Experience', component: EmployeeExperience },
@@ -374,7 +375,6 @@ const routes = [
   { path: '/Home/TrainingEnd', exact: true, name: 'Training End List', component: TrainingEnd },
   { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
   { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
-
 ]
 
 export default routes

@@ -1,5 +1,5 @@
 import { addDays, compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns'
-import React, { Fragment, useContext, useState, useEffect, memo } from 'react'
+import React, { Fragment, useContext, useState, useEffect, memo, useMemo } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -11,14 +11,12 @@ import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess'
-import TextInput from 'src/views/Component/TextInput'
-import { format } from 'date-fns'
+//import { format } from 'date-fns'
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { Box, Paper } from '@mui/material'
 import CompanyInformationTable from './CompanyInformationTable'
-import CloseIcon from '@mui/icons-material/Close';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import moment from 'moment'
@@ -136,22 +134,24 @@ const CompanyInformtion = () => {
     }, [getemployeecategory])
 
     //post Data
-    const updateData = {
-        em_branch: selectBranchMast,
-        em_department: selectedDept,
-        em_dept_section: selectDeptSection,
-        em_institution_type: selectInstiType,
-        com_category: company,
-        com_category_new: getemployeecategory,
-        em_category: getemployeecategory,
-        em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
-        contract_status: empstatus === 1 ? 1 : 0,
-        probation_status: probsataus === 1 ? 1 : 0,
-        create_user: employeeNumber(),
-        edit_user: employeeNumber(),
-        em_id: no,
-        em_no: id,
-    }
+    const updateData = useMemo(() => {
+        return {
+            em_branch: selectBranchMast,
+            em_department: selectedDept,
+            em_dept_section: selectDeptSection,
+            em_institution_type: selectInstiType,
+            com_category: company,
+            com_category_new: getemployeecategory,
+            em_category: getemployeecategory,
+            em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
+            contract_status: empstatus === 1 ? 1 : 0,
+            probation_status: probsataus === 1 ? 1 : 0,
+            create_user: employeeNumber(),
+            edit_user: employeeNumber(),
+            em_id: no,
+            em_no: id,
+        }
+    }, [selectBranchMast, selectedDept, selectDeptSection, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id])
     const reset = () => {
         updateBranchSelected(0)
         updateSelected(0)
@@ -253,7 +253,7 @@ const CompanyInformtion = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success == 2) {
+            else if (success === 2) {
                 setAttendanceData([])
             }
             else {
@@ -262,16 +262,18 @@ const CompanyInformtion = () => {
         }
         getattendanceData()
 
-    }, [no])
+    }, [no, year])
     //Redirect
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
-    const postFormdata =
-    {
-        em_no: no,
-        em_id: id
-    }
+    const postFormdata = useMemo(() => {
+        return {
+            em_no: no,
+            em_id: id
+        }
+    }, [no, id])
+
     const handleClose = () => {
         setmodellist(false)
     }
@@ -291,7 +293,12 @@ const CompanyInformtion = () => {
                 setmodelvalue={setmodelvalue}
                 categorychge={categorychge}
             /> : null}
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
 
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     {/* heading section start */}
