@@ -1,7 +1,7 @@
 import { Avatar, CircularProgress } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import ProfilePicDefault from 'src/assets/images/default.png'
-import image1 from '../../../assets/images/social-logo.jpg';
+import image1 from '../../../assets/images/birthDay.png';
 import { urlExist } from 'src/views/Constant/Constant'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 
