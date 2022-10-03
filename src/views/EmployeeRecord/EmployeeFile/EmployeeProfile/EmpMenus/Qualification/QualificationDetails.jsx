@@ -303,15 +303,6 @@ const QualificationDetails = () => {
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_id, slno, pass_fail])
 
-    console.log(postData5);
-    console.log(postData4);
-    console.log(postData);
-
-    console.log(updatepostdata5);
-    console.log(updatepostData);
-    console.log(updatepostdata4);
-
-
     //Form Submitting
     const submitQualification = useCallback((e) => {
         e.preventDefault();
