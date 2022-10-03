@@ -89,7 +89,7 @@ const ProfileCard = () => {
                                 </Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }}>
-                                <Typography textColor="neutral.400" sx={{ textTransform: "uppercase" }}>
+                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }}>
                                     {Department}
                                 </Typography>
                             </Box>
