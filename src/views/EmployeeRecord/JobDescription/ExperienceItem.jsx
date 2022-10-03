@@ -8,6 +8,7 @@ import { memo } from 'react';
 
 
 const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
+
     const deleteexperience = (id) => {
         setDeleteItem(id)
     }
@@ -19,7 +20,7 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
                         <Typography
                             level="body1"
                         >
-                            {jobedit === 0 ? val.course : val.cour_desc}
+                            {jobedit === 0 ? val.course : val.course}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -30,7 +31,7 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
                         <Typography
                             level="body1"
                         >
-                            {jobedit === 0 ? val.course : val.cour_desc}
+                            {jobedit === 0 ? val.specialization : val.specialization}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
