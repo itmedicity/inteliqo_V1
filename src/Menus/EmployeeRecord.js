@@ -16,13 +16,13 @@ const Employeerecord = [
     {
         men_slno: 168,
         component: CNavItem,
-        name: 'Employee File Verification',
+        name: 'I-Level Verification',
         to: '/Home/EmployeeRecordVerification',
     },
     {
         men_slno: 174,
         component: CNavItem,
-        name: 'EmpFile Final Verification',
+        name: 'II-Level Verification',
         to: '/Home/EmpfileFinalVerification',
     },
     {
