@@ -47,6 +47,9 @@ const DueClearenceMaster = () => {
         else if (success === 2) {
             warningNofity(message)
         }
+        else if (success === 7) {
+            errorNofity(message)
+        }
         else {
             errorNofity("Error Occured!!!Please Contact EDP")
         }

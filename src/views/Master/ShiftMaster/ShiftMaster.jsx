@@ -216,6 +216,9 @@ const ShiftMaster = () => {
         else if (success === 2) {
             warningNofity(message)
         }
+        else if (success === 7) {
+            warningNofity(message)
+        }
         else {
             errorNofity('Errror Occured!!!!Please Contact EDP')
         }

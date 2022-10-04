@@ -47,16 +47,17 @@ const DistrictMastTable = ({ update }) => {
     }
 
     return (
+
         <Fragment>
             <MaterialTable
-                title="District "
+                title="District"
+                icons={tableIcons}
                 data={data}
                 columns={title}
-                incons={tableIcons}
                 actions={[
                     {
                         icon: () => <EditOutlinedIcon />,
-                        tooltip: " Click here to Edit",
+                        tooltip: "Click here to Edit",
                         onClick: (e, data) => getDataTable(data)
                     }
                 ]}
@@ -68,6 +69,31 @@ const DistrictMastTable = ({ update }) => {
                 }}
             />
         </Fragment>
+
+
+
+
+        // <Fragment>
+        //     <MaterialTable
+        //         title="District "
+        //         data={data}
+        //         columns={title}
+        //         incons={tableIcons}
+        //         actions={[
+        //             {
+        //                 icon: () => <EditOutlinedIcon />,
+        //                 tooltip: " Click here to Edit",
+        //                 onClick: (e, data) => getDataTable(data)
+        //             }
+        //         ]}
+        //         options={{
+        //             paginationType: "stepped",
+        //             showFirstLastPageButtons: false,
+        //             padding: "dense",
+        //             actionsColumnIndex: 0
+        //         }}
+        //     />
+        // </Fragment>
     )
 }
 
