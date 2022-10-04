@@ -73,6 +73,7 @@ const AnnouncementList = () => {
                     <Box sx={{ height: 410, overflowY: "auto" }} className="ListItemScrol" >
                         {
                             list && list.map((val, ind) => {
+
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
@@ -85,7 +86,7 @@ const AnnouncementList = () => {
                                             {/* <CustomAvatar id={val.em_id} src={image1} /> */}
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography>{val.Announcementheading || val.em_name}</Typography>
+                                            <Typography sx={{ textTransform: 'capitalize' }} >{announceHeading || empName}</Typography>
                                             <Typography level="body2" noWrap sx={{ color: "white" }} >
                                                 {val.Announcement || msg}
                                             </Typography>
