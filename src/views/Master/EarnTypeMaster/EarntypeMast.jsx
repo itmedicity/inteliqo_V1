@@ -65,7 +65,7 @@ const EarntypeMast = () => {
             stdataearntype(reset);
             setcount(count + 1)
 
-        } else if (success === 0 || success === 2) {
+        } else if (success === 0 || success === 2 || success === 7) {
             infoNofity(message);
         }
 

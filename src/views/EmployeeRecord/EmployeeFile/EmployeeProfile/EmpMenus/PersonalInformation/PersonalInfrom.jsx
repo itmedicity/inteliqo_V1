@@ -409,7 +409,7 @@ const PersonalInfrom = () => {
                                     />
                                     <input
                                         type="hidden"
-                                        nname="em_no"
+                                        name="em_no"
                                         value={em_no}
                                         disabled
                                     />
@@ -502,7 +502,7 @@ const PersonalInfrom = () => {
                                     />
                                     <input
                                         type="hidden"
-                                        nname="em_no"
+                                        name="em_no"
                                         value={em_no}
                                         disabled
                                     />

@@ -6,7 +6,7 @@ import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md';
 import { useHistory } from 'react-router-dom';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import DeptSecSelectAuth from 'src/views/CommonCode/DeptSecSelectAuth';
@@ -30,9 +30,15 @@ const DueClearenceDepartment = () => {
             deptcode: selectDeptSec,
             deptdesc: deptname
         }
-        const newdatas = [...arraydata, newdata]
-        arraydataset(newdatas)
+        if (arraydata.some(key => key.deptcode == selectDeptSec)) {
+            warningNofity("Department Already Added!!")
+        }
+        else {
+            const newdatas = [...arraydata, newdata]
+            arraydataset(newdatas)
+        }
     }
+
     //removing table data
     const onClickdelete = (checkid) => {
         const newdata = [...arraydata]
@@ -57,6 +63,9 @@ const DueClearenceDepartment = () => {
             updateDepartmentSection(0)
             updateDeptSec(0)
             arraydataset([])
+        }
+        else if (success === 7) {
+            errorNofity(message)
         }
         else {
             errorNofity("Error Occured!!!!Please Contact EDP")

@@ -30,7 +30,10 @@ const AnnouncementList = () => {
     const empBirthday = useSelector((state) => {
         return state.getBirthdayList.empBirthdayList
     })
-    Announcementlist.push(...empBirthday)
+
+    //Announcementlist.push(...empBirthday)
+    const list = [...Announcementlist, ...empBirthday]
+
     // const [List, setList] = useState(Announcementlist)
     // useEffect(() => {
     //     if (empBirthday.length !== 0) {
@@ -69,7 +72,7 @@ const AnnouncementList = () => {
                 >
                     <Box sx={{ height: 410, overflowY: "auto" }} className="ListItemScrol" >
                         {
-                            Announcementlist && Announcementlist.map((val, ind) => {
+                            list && list.map((val, ind) => {
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
