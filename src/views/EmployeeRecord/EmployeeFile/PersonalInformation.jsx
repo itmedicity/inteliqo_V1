@@ -359,7 +359,7 @@ const PersonalInformation = () => {
                                                     />
                                                     <input
                                                         type="hidden"
-                                                        nname="em_no"
+                                                        name="em_no"
                                                         value={em_no}
                                                         disabled
                                                     />
