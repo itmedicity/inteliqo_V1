@@ -4,12 +4,12 @@ import React, { Fragment, memo, useState, useEffect, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
-const EmployeeFirstVerification = () => {
+const EmployeeSecondVerification = () => {
 
     const [data, setdata] = useState([])
     const rowHeight = 30
@@ -18,17 +18,6 @@ const EmployeeFirstVerification = () => {
     }
     const onGridReady = (params) => {
         params.api.sizeColumnsToFit()
-    }
-
-    const history = useHistory()
-    const ToProfile = async (params) => {
-        console.log("clicked");
-
-        const data = params.api.getSelectedRows()
-        const { em_id, em_no } = data[0]
-        //const { em_id, em_no } = data
-        //history.push(`/Home/ApplicationForm/${em_no}/${em_id}/${1}`)
-        history.push(`/Home/Prfle/${em_no}/${em_id}`)
     }
 
     const rowStyle = {
@@ -63,15 +52,13 @@ const EmployeeFirstVerification = () => {
         { headerName: 'Verification Remark ', field: 'verification_Remark' },
         {
             headerName: 'Action', cellRenderer: params =>
-                <CheckCircleRoundedIcon onClick={() =>
-                    ToProfile(params)
-                } />
+                <CheckCircleRoundedIcon />
         },
     ])
 
     useEffect(() => {
         const getempverification = async () => {
-            const result = await axioslogin.get('/empVerification')
+            const result = await axioslogin.get('/empVerification/secondlevelverify')
             const { success, data } = result.data
             if (success === 1) {
                 setdata(data)
@@ -82,7 +69,6 @@ const EmployeeFirstVerification = () => {
         }
         getempverification()
     }, [])
-
 
     return (
         <Fragment>
@@ -114,4 +100,4 @@ const EmployeeFirstVerification = () => {
     )
 }
 
-export default EmployeeFirstVerification
+export default EmployeeSecondVerification

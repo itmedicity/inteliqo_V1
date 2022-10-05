@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
-import { Box, Grid, Paper, Tooltip, } from '@mui/material';
+import { Box, Grid, IconButton, Paper, Tooltip, } from '@mui/material';
 import React from 'react'
 import { useSelector } from 'react-redux'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
@@ -12,6 +12,8 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined';
 import ProfileAcademicBox from './ProfileAcademicBox';
 import ProfileExperience from './ProfileExperience';
+import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
+import ProfileVerificationModal from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/MyProfileCmp/ProfileVerificationModal';
 
 const ProfileMenus = () => {
 
@@ -31,7 +33,7 @@ const ProfileMenus = () => {
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
-        em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required
+        em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required, em_id
     } = personalData
 
     const emp = {
@@ -72,6 +74,12 @@ const ProfileMenus = () => {
         second_level_verification: second_level_verification
     }
 
+    const getVerification = async (em_id) => {
+        console.log("verified");
+        //setModelopen(empid)
+        // setOpen(true)
+    }
+
     const notUpdated = <CssVarsProvider>
         <Typography variant="soft" color="danger" width="100%" >
             not updated / Required
@@ -83,68 +91,109 @@ const ProfileMenus = () => {
             p: 0.5,
             width: '100%',
         }} >
+
+            {/* <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose}
+                count={count} setCount={setCount}
+                slno={slno}
+            /> */}
+
             {/* Box 1  */}
             <Paper variant="outlined" sx={{
-                px: 1
+                px: 1,
             }} >
-                <CssVarsProvider>
-                    <Box sx={{ display: "flex", py: 0.3 }} >
-                        {/* <PersonOutlinedIcon /> */}
-                        <Typography
-                            fontSize="xl2"
-                            lineHeight={0}
-                            // startDecorator={}
-                            endDecorator={<PersonOutlinedIcon color='primary' />}
-                            sx={{ textTransform: 'capitalize' }}
-                        >
-                            {emp.name.toLowerCase()}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex' }} >
-                        <Typography textColor="text.secondary"
-                            startDecorator={
-                                <ManageAccountsOutlinedIcon fontSize='md' color='primary' />
-                            }
-                            endDecorator={
-                                <Typography>
-                                    |
+                <Box sx={{
+                    display: "flex",
+                    flexDirection: "row"
+                }}>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        //backgroundColor: "lightcoral",
+                        flex: 1
+
+                    }}>
+                        <CssVarsProvider>
+                            <Box sx={{ display: "flex", py: 0.3 }} >
+                                {/* <PersonOutlinedIcon /> */}
+                                <Typography
+                                    fontSize="xl2"
+                                    lineHeight={0}
+                                    // startDecorator={}
+                                    endDecorator={<PersonOutlinedIcon color='primary' />}
+                                    sx={{ textTransform: 'capitalize' }}
+                                >
+                                    {emp.name.toLowerCase()}
                                 </Typography>
-                            }
-                            sx={{ textTransform: 'capitalize' }}
-                        >
-                            {emp.designation.toLowerCase()}
-                        </Typography>
-                        <Typography textColor="text.secondary"
-                            startDecorator={
-                                <LanOutlinedIcon fontSize='md' color='primary' />
-                            }
-                            endDecorator={
-                                <Typography>
-                                    |
+                            </Box>
+                            <Box sx={{ display: 'flex' }} >
+                                <Typography textColor="text.secondary"
+                                    startDecorator={
+                                        <ManageAccountsOutlinedIcon fontSize='md' color='primary' />
+                                    }
+                                    endDecorator={
+                                        <Typography>
+                                            |
+                                        </Typography>
+                                    }
+                                    sx={{ textTransform: 'capitalize' }}
+                                >
+                                    {emp.designation.toLowerCase()}
                                 </Typography>
-                            }
-                            px={1}
-                            sx={{ textTransform: 'capitalize' }}
-                        >
-                            {emp.department.toLowerCase()}
-                        </Typography>
-                        <Typography textColor="text.secondary"
-                            startDecorator={<NumbersOutlinedIcon fontSize='md' color='primary' />}
-                        >
-                            {em_no}
-                        </Typography>
+                                <Typography textColor="text.secondary"
+                                    startDecorator={
+                                        <LanOutlinedIcon fontSize='md' color='primary' />
+                                    }
+                                    endDecorator={
+                                        <Typography>
+                                            |
+                                        </Typography>
+                                    }
+                                    px={1}
+                                    sx={{ textTransform: 'capitalize' }}
+                                >
+                                    {emp.department.toLowerCase()}
+                                </Typography>
+                                <Typography textColor="text.secondary"
+                                    startDecorator={<NumbersOutlinedIcon fontSize='md' color='primary' />}
+                                >
+                                    {em_no}
+                                </Typography>
+                            </Box>
+
+                        </CssVarsProvider>
                     </Box>
-                </CssVarsProvider>
-            </Paper>
+
+                    <Box sx={{
+                        display: 'flex',
+                        //backgroundColor: "lightgray" 
+                    }}
+                    >
+                        <IconButton aria-label="settings" sx={{ marginLeft: 10 }}
+                            onClick={() => getVerification(em_id)}
+                            disabled={emp.verification_status === 1 && emp.second_level_required === 0 && emp.second_level_verification === 1 || verification_required === 0 ? true : false}
+                        >
+                            <VerifiedSharpIcon
+                                fontSize='large'
+                                color={emp.verification_status === 1 ? 'success' : emp.second_level_required && emp.second_level_verification === 1 ? 'success' : 'error'}
+                            />
+                        </IconButton>
+
+                    </Box>
+                </Box>
+
+
+
+
+            </Paper >
             {/* Main Secondary Box */}
-            <Box sx={{
+            < Box sx={{
                 width: '100%',
                 height: { xxl: 750, xl: 600, lg: 450, md: 450, sm: 450, xs: 300 },
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" }
             }} >
                 {/* Box Two */}
-                <Box>
+                < Box >
                     <CssVarsProvider>
                         <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
                             Contact Information
@@ -220,7 +269,7 @@ const ProfileMenus = () => {
                             </Tooltip>
                         </Box>
                     </Paper>
-                </Box>
+                </Box >
 
                 {/* Box 2 */}
                 {/* General Information Start here */}
@@ -586,9 +635,9 @@ const ProfileMenus = () => {
                     <ProfileExperience />
                 </Box>
                 {/* Main secondary Box End */}
-            </Box>
+            </Box >
             {/* Main Box */}
-        </Box>
+        </Box >
     )
 }
 
