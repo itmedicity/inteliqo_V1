@@ -307,11 +307,6 @@ const AnnualLeaveInformation = () => {
         setmodellist(false)
     }
 
-    console.log(setnodatacl);
-    console.log(no);
-    console.log(castable);
-    console.log(CasualLeave);
-
     return (
         <Fragment>
 
