@@ -59,7 +59,7 @@ const QualificationDetails = () => {
         em_reg_type: '',
         em_reg_no: '',
         em_chellan: '',
-        pass_fail: false
+        pass_fail: true
     })
 
     //destructuring
@@ -129,7 +129,7 @@ const QualificationDetails = () => {
             em_exp_date: em_reg_no === "" ? null : expyear,
             em_chellan: em_chellan,
             em_chellan_exp_date: em_chellan === "" ? null : chellan,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_reg_no, em_id, em_chellan, expyear, chellan, pass_fail])
 
@@ -145,7 +145,7 @@ const QualificationDetails = () => {
             em_year: qual_year,
             em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
             create_user: em_id,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
 
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_id, pass_fail])
@@ -162,7 +162,7 @@ const QualificationDetails = () => {
             em_year: qual_year,
             em_mark_grade: em_mark_grade === "" ? 0 : em_mark_grade,
             create_user: em_id,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, em_id, pass_fail])
 
@@ -178,7 +178,7 @@ const QualificationDetails = () => {
         em_reg_type: '',
         em_reg_no: '',
         em_chellan: '',
-        pass_fail: false
+        pass_fail: true
     }
 
     const reset = () => {
@@ -205,11 +205,11 @@ const QualificationDetails = () => {
             em_mark_grade: em_mark_grade === null ? 0 : em_mark_grade,
             em_reg_no: em_reg_no === null ? 0 : em_reg_no,
             em_chellan: em_chellan === null ? 0 : em_chellan,
-            pass_fail: pass_fail === 0 ? false : true
+            pass_fail: pass_fail === 0 ? true : false
         }
         setQualification(frmdata)
         updateEducation(em_education)
-        updateCourse(em_course)
+        updateCourse(em_course === null ? 0 : em_course)
         updateSpec(em_specialization === null ? 0 : em_specialization)
         updateUniversity(em_univ_institute === null ? 0 : em_univ_institute)
         updateBoard(em_board === null ? 0 : em_board)
@@ -243,7 +243,6 @@ const QualificationDetails = () => {
             setregNodisable(false)
         }
     })
-
     const updatepostData = useMemo(() => {
         return {
             em_education: selectEducation,
@@ -260,10 +259,9 @@ const QualificationDetails = () => {
             em_chellan: em_chellan,
             em_chellan_exp_date: em_chellan === "" ? null : chellan,
             emqual_slno: slno,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
         }
-    }, [selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_reg_no, em_id])
-
+    }, [selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_reg_no, em_id, pass_fail])
 
     const updatepostdata5 = useMemo(() => {
         return {
@@ -280,7 +278,7 @@ const QualificationDetails = () => {
             em_reg_no,
             edit_user: em_id,
             emqual_slno: slno,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, slno, pass_fail])
 
@@ -299,7 +297,7 @@ const QualificationDetails = () => {
             em_reg_no,
             edit_user: em_id,
             emqual_slno: slno,
-            pass_fail: pass_fail === true ? 1 : 0
+            pass_fail: pass_fail === true ? 0 : 1
         }
     }, [id, no, selectEducation, selectCourse, selectSpec, selectUniversity, selectBoard, qual_year, em_mark_grade, selectreg, em_id, slno, pass_fail])
 

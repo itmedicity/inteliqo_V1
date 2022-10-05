@@ -185,6 +185,7 @@ const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/Traini
 const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
 const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
 const EmpFirstVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeFirstVerification'))
+const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeSecondVerification'))
 
 
 const routes = [
@@ -377,6 +378,8 @@ const routes = [
   { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
   { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
   { path: '/Home/EmpFirstVerification', exact: true, name: 'Employee Verification', component: EmpFirstVerification },
+  { path: '/Home/EmpSecondVerification', exact: true, name: 'Employee second Verification', component: EmpSecondVerification },
+
 ]
 
 export default routes

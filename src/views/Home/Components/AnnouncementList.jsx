@@ -74,6 +74,9 @@ const AnnouncementList = () => {
                         {
                             list && list.map((val, ind) => {
 
+                                const announceHeading = val.announceHeading && val.announceHeading.toLowerCase();
+                                const empName = val.em_name && val.em_name.toLowerCase();
+
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
