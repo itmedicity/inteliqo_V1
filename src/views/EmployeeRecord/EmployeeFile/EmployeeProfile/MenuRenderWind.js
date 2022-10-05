@@ -23,6 +23,7 @@ const DocumentList = React.lazy(() => import('./EmpMenus/DocumentScanned/Scanned
 const DocumentCheckList = React.lazy(() => import('./EmpMenus/DocumentChecklist/DocumentChecklist'))
 const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/VaccinationInformation'))
 const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
+const TrainingInfo = React.lazy(() => import('./EmpMenus/TrainingInformation/TrainingInformation'))
 
 const MenuRenderWind = () => {
 
@@ -44,9 +45,10 @@ const MenuRenderWind = () => {
                                                 state === 115 ? <SalaryIncrement /> :
                                                     state === 116 ? <DocumentCheckList /> :
                                                         state === 117 ? <Vaccine /> :
-                                                            state === 119 ? <JobDcrptn /> :
-                                                                state === 120 ? <EndofService /> :
-                                                                    <ProfileMenus />
+                                                            state === 118 ? <TrainingInfo /> :
+                                                                state === 119 ? <JobDcrptn /> :
+                                                                    state === 120 ? <EndofService /> :
+                                                                        <ProfileMenus />
     }
 
     return (
