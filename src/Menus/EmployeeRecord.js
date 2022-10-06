@@ -11,7 +11,8 @@ const Employeerecord = [
         men_slno: 20,
         component: CNavItem,
         name: 'Employee File',
-        to: '/Home/EmployeeFile',
+        //to: '/Home/EmployeeFile',
+        to: '/Home/EmployeeRecordsAgGrid'
     },
     {
         men_slno: 168,
