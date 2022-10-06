@@ -14,6 +14,7 @@ import ProfileAcademicBox from './ProfileAcademicBox';
 import ProfileExperience from './ProfileExperience';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/MyProfileCmp/ProfileVerificationModal';
+import CustomeToolTip from 'src/views/Component/CustomeToolTip';
 
 const ProfileMenus = () => {
 
@@ -75,7 +76,6 @@ const ProfileMenus = () => {
     }
 
     const getVerification = async (em_id) => {
-        console.log("verified");
         //setModelopen(empid)
         // setOpen(true)
     }
@@ -566,11 +566,14 @@ const ProfileMenus = () => {
                                     <Box sx={{ display: 'flex', width: "40%", }} >
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
-                                                Start &nbsp;<Typography level="body4" >(Probation/Training)</Typography>
+                                                Start &nbsp;
+                                                {/* <Typography level="body4" >(Probation/Training)</Typography> */}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.dateofJoin === false ? notUpdated : emp.dateofJoin}</Box>
+                                    <Tooltip title="Probation/Training" followCursor placement='top' arrow >
+                                        <Box sx={{ display: 'flex', width: "60%", }} >{emp.dateofJoin === false ? notUpdated : emp.dateofJoin}</Box>
+                                    </Tooltip>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
@@ -578,11 +581,14 @@ const ProfileMenus = () => {
                                     <Box sx={{ display: 'flex', width: "40%", }} >
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" startDecorator={<ArrowRightOutlinedIcon color='primary' />} >
-                                                End &nbsp;<Typography level="body4" >(Probation/Training)</Typography>
+                                                End &nbsp;
+                                                {/* <Typography level="body4" >(Probation/Training)</Typography> */}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.probEndDate === false ? notUpdated : emp.probEndDate}</Box>
+                                    <Tooltip title="Probation/Training" followCursor placement='top' arrow >
+                                        <Box sx={{ display: 'flex', width: "60%", }} >{emp.probEndDate === false ? notUpdated : emp.probEndDate}</Box>
+                                    </Tooltip>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >

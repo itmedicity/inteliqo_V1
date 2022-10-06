@@ -31,6 +31,7 @@ const MenuRenderWind = () => {
         return state.getMenuRenderCompRights.slno;
     })
 
+
     const displayComp = (state) => {
         return state === 105 ? <PersonalInformation /> :
             state === 106 ? <Qualification /> :

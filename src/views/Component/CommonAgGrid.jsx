@@ -1,35 +1,15 @@
-
-import React, { Fragment, memo, useRef } from 'react'
+import { Paper } from '@mui/material'
+import { Box } from '@mui/system'
+import React, { Fragment, memo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-material.css'
-import { Box } from '@mui/system'
-import { Paper } from '@mui/material'
-import { useSelector } from 'react-redux'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 
-const CommonAgGrid = () => {
-
-    const apiRef = useRef();
-    /** useSelector is used for get aggrid download button state */
-    const exportState = useSelector((state) => {
-        return state.changeStateAggrid.aggridstate
-    })
-    /** To download report as excel */
-    if (exportState > 0 && tableDataMain.length > 0) {
-        apiRef.current.api.exportDataAsCsv();
-    }
-
-    /** Ag grid report row and column formatting */
-    const rowHeight = 25
-    const headerHeight = 30
+const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight }) => {
     const defaultColDef = {
-        sortable: true,
-        filter: 'agTextColumnFilter',
     }
-
-    let gridApi
     const onGridReady = (params) => {
-        gridApi = params.api
+        params.api.sizeColumnsToFit()
     }
 
     const rowStyle = {
@@ -49,18 +29,14 @@ const CommonAgGrid = () => {
 
     return (
         <Fragment>
-            <Paper elevation={0}>
+            <Paper elevation={1}>
                 <Box
-                    className="ag-theme-material ListItemScrol"
-                    sx={{
-                        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
-                        width: '100%',
-                    }}
+                    className="ag-theme-alpine ListItemScrol"
+                    sx={sx}
                 >
                     <AgGridReact
-                        ref={apiRef}
-                        columnDefs={columnDefMain}
-                        rowData={tableDataMain}
+                        columnDefs={columnDefs}
+                        rowData={tableData}
                         defaultColDef={defaultColDef}
                         rowHeight={rowHeight}
                         headerHeight={headerHeight}
@@ -69,13 +45,6 @@ const CommonAgGrid = () => {
                         onGridReady={onGridReady}
                         rowSelection="multiple"
                         rowStyle={rowStyle}
-                        suppressColumnVirtualisation={true}
-                        suppressRowVirtualisation={true}
-                        suppressRowClickSelection={true}
-                        groupSelectsChildren={true}
-                        rowGroupPanelShow={'always'}
-                        pivotPanelShow={'always'}
-                        enableRangeSelection={true}
                     ></AgGridReact>
                 </Box>
             </Paper>
