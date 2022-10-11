@@ -380,7 +380,7 @@ const routes = [
   { path: '/Home/EmpFirstVerification', exact: true, name: 'Employee Verification', component: EmpFirstVerification },
   { path: '/Home/EmpSecondVerification', exact: true, name: 'Employee second Verification', component: EmpSecondVerification },
   { path: '/Home/EmployeeRecordsAgGrid', exact: true, name: 'Employee Record File', component: EmployeeRecordsAgGrid },
-
+  { path: '/Home/Prfle/:id/:no/:slno', exact: true, name: 'Employee Profile', component: EmpProfile },
 ]
 
 export default routes

@@ -156,8 +156,7 @@ const AnnualLeaveInformation = () => {
             dispatch(setEmployeeProcessDetail(id))
         )
 
-    }, [no, modelvalue, id, dispatch])
-
+    }, [no, modelvalue, id])
     const year = moment(new Date()).format('YYYY')
     //useEffect for getting attendancde details to process earn leave
     useEffect(() => {
@@ -178,7 +177,7 @@ const AnnualLeaveInformation = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success === 2) {
+            else if (success == 2) {
                 setAttendanceData([])
             }
             else {
@@ -187,14 +186,12 @@ const AnnualLeaveInformation = () => {
         }
         getattendanceData()
 
-    }, [no, year])
-    const postFormdata = useMemo(() => {
-        return {
-            em_no: no,
-            em_id: id
-        }
-    }, [id, no])
-
+    }, [no])
+    const postFormdata =
+    {
+        em_no: no,
+        em_id: id
+    }
     const submitprocess = () => {
         const getdata = async () => {
             //CHECKING WHETHER THE DATA IS INSERTED INTO YEARLY LEAVE PROCESS TABLE
@@ -330,7 +327,6 @@ const AnnualLeaveInformation = () => {
                 setmodelvalue={setmodelvalue}
                 nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
-
             {/* if new process pending */}
             {modellist === true ? <ModelAvailLeavelist
                 open={modellist} //for open model
@@ -346,7 +342,12 @@ const AnnualLeaveInformation = () => {
                 nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
 
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
 
 
@@ -359,7 +360,7 @@ const AnnualLeaveInformation = () => {
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Annual Leave Information
+                                    Leave Setting
                                 </Typography>
                             </CssVarsProvider>
                         </Box>

@@ -41,7 +41,7 @@ import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
-
+import { getdept } from '../reducers/Dept.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -86,7 +86,9 @@ const reducer = combineReducers({
     getGradeList,
     getContractClosedata,
     getBirthdayList,
-    getUserRights
+    getUserRights,
+    getdept,
+
 })
 
 export default reducer;

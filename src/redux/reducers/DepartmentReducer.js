@@ -12,6 +12,6 @@ export const getDepartmentList = (state = empDepartment, { type, payload }) => {
         case FETCH_DEPARTMENT_LIST:
             return { ...state, empDepartmentList: payload, loadingStatus: true }
         default:
-            return state
+            return { ...state, empDepartmentList: [], loadingStatus: false }
     }
 }

@@ -47,7 +47,12 @@ const SalaryInformationDetail = () => {
 
     return (
         <Fragment>
-            <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }} >
+            <Box sx={{
+                width: "100%",
+                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto',
+                '::-webkit-scrollbar': { display: "none" }
+            }} >
                 <Paper square elevation={0} sx={{ p: 0.5, }}>
                     <Paper square elevation={3} sx={{
                         display: "flex",
