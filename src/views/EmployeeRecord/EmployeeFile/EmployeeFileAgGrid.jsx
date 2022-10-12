@@ -28,8 +28,6 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const EmployeeFileAgGrid = () => {
 
-
-
     const classes = useStyles()
     const history = useHistory()
     const [tableData, setTableData] = useState([])
@@ -121,8 +119,9 @@ const EmployeeFileAgGrid = () => {
     const getEmployeeEmpNumber = (params) => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
-        // history.push(`/Home/Profile/${em_no}/${em_id}`)
-        history.push(`/Home/Prfle/${em_no}/${em_id}`)
+        //history.push(`/Home/Profile/${em_no}/${em_id}`)
+
+        history.push(`/Home/Prfle/${em_no}/${em_id}/${0}`)
     }
 
     const [columnDef] = useState([
@@ -265,7 +264,7 @@ const EmployeeFileAgGrid = () => {
                         <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
                             height: 600,
                             width: "100%"
-                        }} rowHeight={50} headerHeight={30} />
+                        }} rowHeight={30} headerHeight={30} />
                     </Paper>
                 </Paper>
             </Box>

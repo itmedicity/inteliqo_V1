@@ -25,12 +25,12 @@ const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/Vacci
 const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
 const TrainingInfo = React.lazy(() => import('./EmpMenus/TrainingInformation/TrainingInformation'))
 
-const MenuRenderWind = () => {
+
+const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
 
     const state = useSelector((state) => {
-        return state.getMenuRenderCompRights.slno;
+        return state.getMenuRenderCompRights.slno
     })
-
 
     const displayComp = (state) => {
         return state === 105 ? <PersonalInformation /> :
@@ -49,7 +49,8 @@ const MenuRenderWind = () => {
                                                             state === 118 ? <TrainingInfo /> :
                                                                 state === 119 ? <JobDcrptn /> :
                                                                     state === 120 ? <EndofService /> :
-                                                                        <ProfileMenus />
+                                                                        < ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} />
+        //state === 104 ? < ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} /> : null
     }
 
     return (

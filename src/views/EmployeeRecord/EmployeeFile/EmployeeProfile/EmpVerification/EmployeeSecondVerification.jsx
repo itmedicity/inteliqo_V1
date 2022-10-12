@@ -1,39 +1,22 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, memo, useState, useEffect, } from 'react'
-import { AgGridReact } from 'ag-grid-react'
+import React, { Fragment, useState, useEffect, useCallback, } from 'react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import { useParams } from 'react-router-dom'
-import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { useHistory } from 'react-router-dom'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import { CssVarsProvider, Typography } from '@mui/joy'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import IconButton from '@mui/joy/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const EmployeeSecondVerification = () => {
 
     const [data, setdata] = useState([])
-    const rowHeight = 30
-    const headerHeight = 30
-    const defaultColDef = {
-    }
-    const onGridReady = (params) => {
-        params.api.sizeColumnsToFit()
-    }
+    const history = useHistory()
 
-    const rowStyle = {
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-    }
     const [columnDef] = useState([
         {
             headerName: '',
@@ -44,15 +27,16 @@ const EmployeeSecondVerification = () => {
             width: 30,
         },
         { headerName: 'ID', field: 'em_no' },
-        { headerName: 'Emp Name ', field: 'em_name' },
+        { headerName: 'Emp Name ', field: 'em_name', filter: true },
         { headerName: 'Branch ', field: 'branch_name' },
         { headerName: 'Department ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
         { headerName: 'Date of Join ', field: 'em_doj' },
+        { headerName: 'Date of Join ', field: 'verify_remark' },
         { headerName: 'Verification Remark ', field: 'verification_Remark' },
         {
             headerName: 'Action', cellRenderer: params =>
-                <CheckCircleRoundedIcon />
+                <CheckCircleRoundedIcon onClick={() => ToProfile(params)} />
         },
     ])
 
@@ -69,33 +53,62 @@ const EmployeeSecondVerification = () => {
         }
         getempverification()
     }, [])
+    const value = 2
+    const ToProfile = useCallback((params) => {
+        const data = params.api.getSelectedRows()
+        const { em_no, em_id } = data[0]
+        // // history.push(`/Home/Profile/${em_no}/${em_id}`)
+        history.push(`/Home/Prfle/${em_no}/${em_id}/${value}`)
+    }, [value])
+
+    const rowStyle = { background: '#CE7D78' };
+    const getRowStyle = params => {
+        if (params.data.second_level_verification === 2) {
+            return { background: '#CE7D78' };
+        }
+    };
+    const toSettings = () => {
+        history.push('/Home')
+    }
 
     return (
+
         <Fragment>
-            <Paper elevation={0}>
-                <Box
-                    className="ag-theme-alpine ListItemScrol"
-                    sx={{
-                        height: { xl: 450, lg: 400, md: 350, sm: 350, xs: 300 },
-                        width: "100%"
-                    }}
-                >
-                    <AgGridReact
-                        columnDefs={columnDef}
-                        rowData={data}
-                        defaultColDef={defaultColDef}
-                        rowHeight={rowHeight}
-                        headerHeight={headerHeight}
-                        rowDragManaged={true}
-                        animateRows={true}
-                        onGridReady={onGridReady}
-                        rowSelection="multiple"
-                        //onSelectionChanged={onSelectionChanged}
-                        rowStyle={rowStyle}
-                    //columnTypes={columnTypes}
-                    ></AgGridReact>
-                </Box>
-            </Paper>
+            <Box sx={{ width: "100%" }} >
+                <Paper square elevation={2} sx={{ p: 0.5, }}>
+                    <Paper square elevation={3} sx={{
+                        display: "flex",
+                        p: 1,
+                        alignItems: "center",
+                    }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Employee Second Level Verification
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex" }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}  >
+                                    <CloseIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                    </Paper>
+                    <Paper square elevation={0} sx={{
+                        pt: 1,
+                        mt: 0.5,
+                        display: 'flex',
+                        flexDirection: "column"
+                    }} >
+                        <CommonAgGrid columnDefs={columnDef} tableData={data} sx={{
+                            height: 600,
+                            width: "100%"
+                        }} rowHeight={30} headerHeight={30} rowStyle={rowStyle} getRowStyle={getRowStyle} />
+                    </Paper>
+                </Paper>
+            </Box>
         </Fragment>
     )
 }

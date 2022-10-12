@@ -50,7 +50,8 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
                 const { success, message } = result.data
                 if (success === 2) {
                     setFormdata(defaultState)
-                    history.push('/Home/EmployeeRecordVerification')
+                    //history.push('/Home/EmployeeRecordVerification')
+                    history.push('/Home/EmpFirstVerification')
                     succesNofity(message)
                 }
                 else {
@@ -62,7 +63,8 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
                 const { success, message } = result.data
                 if (success === 2) {
                     setFormdata(defaultState)
-                    history.push('/Home/EmpfileFinalVerification')
+                    //history.push('/Home/EmpfileFinalVerification')
+                    history.push('/Home/EmpSecondVerification')
                     succesNofity(message)
                 }
                 else {

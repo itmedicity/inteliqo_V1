@@ -1,5 +1,5 @@
 import { Box, createTheme, ThemeProvider, Paper, Card, CardMedia, CardContent, CardActionArea } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Chip, CssVarsProvider, Typography } from '@mui/joy';
 import AspectRatio from '@mui/joy/AspectRatio';
 import ImageIcon from '@mui/icons-material/Image';
@@ -19,6 +19,7 @@ import ProfileCard from './ProfileCard';
 import { useHistory, useParams } from 'react-router-dom';
 import MenuRenderWind from './MenuRenderWind';
 import { useDispatch } from 'react-redux';
+
 import {
     getannualleave,
     getContractDetlEmp,
@@ -27,6 +28,7 @@ import {
     setExperienceData,
     setPersonalData
 } from 'src/redux/actions/Profile.action';
+import { setDept } from 'src/redux/actions/Dept.Action'
 
 const theme = createTheme({
     breakpoints: {
@@ -46,14 +48,27 @@ const Profile = () => {
     const empCredential = useParams()
     const history = useHistory();
     const dispatch = useDispatch();
+    const { id, no, slno } = empCredential;
 
-    const toRedirectToHome = () => {
-        //history.push(`/Home/EmployeeFile`)
-        history.push(`/Home/EmployeeRecordsAgGrid`)
+    // const toRedirectToHome = () => {
+    //     //history.push(`/Home/EmployeeFile`)
+    //     history.push(`/Home/EmployeeRecordsAgGrid`)
 
-    }
+    // }
 
-    const { id, no } = empCredential;
+    const toRedirectToHome = useCallback(() => {
+
+        if (slno === '1') {
+            history.push('/Home/EmpFirstVerification')
+        }
+        else if (slno === '2') {
+            history.push('/Home/EmpSecondVerification')
+        }
+        else {
+            history.push(`/Home/EmployeeRecordsAgGrid`)
+        }
+    }, [slno, id, no])
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         dispatch(setPersonalData(no))
@@ -62,8 +77,8 @@ const Profile = () => {
         dispatch(getannualleave(no))
         dispatch(notify(no))
         dispatch(getContractDetlEmp(no))
-    }, [id, no])
-
+        dispatch(setDept())
+    }, [id, no, count, dispatch])
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }
         <ThemeProvider theme={theme} >
@@ -122,7 +137,7 @@ const Profile = () => {
                                 // backgroundColor: "yellow",
                                 height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }
                             }} >
-                                <MenuRenderWind />
+                                <MenuRenderWind slno={slno} count={count} setCount={setCount} redirect={toRedirectToHome} />
                             </Paper>
                         </Box>
                     </Box>

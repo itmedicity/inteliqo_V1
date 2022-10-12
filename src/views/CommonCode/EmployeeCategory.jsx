@@ -6,9 +6,9 @@ import { axioslogin } from '../Axios/Axios';
 const EmployeeCategory = (props) => {
     // intializing use sate
     const [EmployeeCategorydata, getemployeeCategory] = useState([]);
-    // useContext
+    //useContext
     const { getemployeecategory, udateemployeecategory } = useContext(PayrolMasterContext)
-    // useeffect 
+    //useeffect
     useEffect(() => {
         const getempcategorydata = async () => {
             const result = await axioslogin.get('/empcat/select')
@@ -21,9 +21,8 @@ const EmployeeCategory = (props) => {
         return (
             udateemployeecategory(0)
         )
-
-
     }, [udateemployeecategory]);
+
     return (
         <Fragment>
             <FormControl
@@ -39,7 +38,7 @@ const EmployeeCategory = (props) => {
                     onChange={(e) => udateemployeecategory(e.target.value)}
                     fullWidth
                     variant="outlined"
-                    className="ml-0"
+                    className="ml-1"
                     defaultValue={0}
                     style={props.style}
                 >

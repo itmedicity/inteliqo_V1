@@ -6,7 +6,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
@@ -20,6 +19,10 @@ import CompanyInformationTable from './CompanyInformationTable'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import moment from 'moment'
+import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
+import DeptSelectionRedux from 'src/views/CommonCode/DeptSelectionRedux'
+// import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
+import DepartmentSelect from 'src/views/MuiComponents/DepartmentSelect'
 
 const CompanyInformtion = () => {
     const history = useHistory()
@@ -28,7 +31,7 @@ const CompanyInformtion = () => {
         selectedDept, updateSelected,
         selectDeptSection, updateDepartmentSection,
         selectInstiType, updateInstituteSeleted,
-        getemployeecategory, udateemployeecategory
+        getemployeecategory, udateemployeecategory, updateDeptSection, getDeptSection
     } = useContext(PayrolMasterContext)
 
     // to check the annpual leave procee wheter ist from category change
@@ -106,7 +109,7 @@ const CompanyInformtion = () => {
             }
         }
         getCompany()
-    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateInstituteSeleted, udateemployeecategory])
+    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateDeptSection, updateInstituteSeleted, udateemployeecategory])
 
 
     useEffect(() => {
@@ -131,7 +134,7 @@ const CompanyInformtion = () => {
             }
             getEmpType()
         }
-    }, [getemployeecategory])
+    }, [getemployeecategory, cat.catemp])
 
     //post Data
     const updateData = useMemo(() => {
@@ -151,7 +154,7 @@ const CompanyInformtion = () => {
             em_id: no,
             em_no: id,
         }
-    }, [selectBranchMast, selectedDept, selectDeptSection, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id])
+    }, [selectBranchMast, selectedDept, getDeptSection, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id])
     const reset = () => {
         updateBranchSelected(0)
         updateSelected(0)
@@ -159,6 +162,13 @@ const CompanyInformtion = () => {
         updateInstituteSeleted(0)
         udateemployeecategory(0)
     }
+
+    const postFormdata = useMemo(() => {
+        return {
+            em_no: no,
+            em_id: id
+        }
+    }, [no, id])
 
     //update Data
     const submitCompany = async (e) => {
@@ -232,6 +242,8 @@ const CompanyInformtion = () => {
             infoNofity(message)
         }
     }
+
+
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
     const year = moment(new Date()).format('YYYY')
@@ -267,12 +279,7 @@ const CompanyInformtion = () => {
     const RedirectToProfilePage = () => {
         history.push(`/Home/Profile/${id}/${no}`)
     }
-    const postFormdata = useMemo(() => {
-        return {
-            em_no: no,
-            em_id: id
-        }
-    }, [no, id])
+
 
     const handleClose = () => {
         setmodellist(false)
@@ -292,6 +299,7 @@ const CompanyInformtion = () => {
                 olddata={olddata}// check wheather new data
                 setmodelvalue={setmodelvalue}
                 categorychge={categorychge}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
             <Box sx={{
                 width: "100%",
@@ -335,9 +343,10 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 30
+                                px: 20,
+                                width: "100"
                             }}>
-                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                <Box sx={{ width: "20%" }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Branch Name
@@ -345,22 +354,21 @@ const CompanyInformtion = () => {
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, }} >
+                                <Box sx={{ width: "30%" }} >
                                     <BrnachMastSelection
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, pl: 0.5 }}>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Department Name
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, }} >
+                                <Box sx={{ width: "30%" }} >
                                     <DepartmentSelect
-                                        style={SELECT_CMP_STYLE}
-                                    />
+                                        style={SELECT_CMP_STYLE} />
                                 </Box>
                             </Box>
                             {/* first row end */}
@@ -369,10 +377,11 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 30,
+                                px: 20,
+                                width: "100%",
                                 pt: 0.5
                             }}>
-                                <Box sx={{ display: 'flex', flex: 1, }}>
+                                <Box sx={{ width: "20%" }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Department Section Name
@@ -380,12 +389,12 @@ const CompanyInformtion = () => {
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, }} >
+                                <Box sx={{ width: "30%" }} >
                                     <DepartmentSectionSelect
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, pl: 0.5 }}>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Employee Institution
@@ -393,7 +402,7 @@ const CompanyInformtion = () => {
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, }} >
+                                <Box sx={{ width: "30%" }} >
                                     <EmployeeInstitutiontype
                                         style={SELECT_CMP_STYLE}
                                     />
@@ -405,10 +414,11 @@ const CompanyInformtion = () => {
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                px: 30,
-                                py: 0.5
+                                px: 20,
+                                pt: 0.5,
+                                width: "100%"
                             }}>
-                                <Box sx={{ display: 'flex', flex: 1 }}>
+                                <Box sx={{ width: "20%" }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Employee Category
@@ -416,12 +426,12 @@ const CompanyInformtion = () => {
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 3, }}>
+
+                                <Box sx={{ width: "80%" }}>
                                     <EmployeeCategory
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
-
                             </Box>
                             {/* third row end */}
 
