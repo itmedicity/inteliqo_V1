@@ -13,6 +13,7 @@ yarn.lock
 
 #API Link File
 src/**/**/Static.jsx
+src/**/**/Static.js
 # misc
 #.eslintcache
 #.DS_Store

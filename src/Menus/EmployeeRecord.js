@@ -11,19 +11,22 @@ const Employeerecord = [
         men_slno: 20,
         component: CNavItem,
         name: 'Employee File',
-        to: '/Home/EmployeeFile',
+        //to: '/Home/EmployeeFile',
+        to: '/Home/EmployeeRecordsAgGrid'
     },
     {
         men_slno: 168,
         component: CNavItem,
-        name: 'Employee File Verification',
+        name: 'I-Level Verification',
         to: '/Home/EmployeeRecordVerification',
+        //to: '/Home/EmpFirstVerification',
     },
     {
         men_slno: 174,
         component: CNavItem,
-        name: 'EmpFile Final Verification',
-        to: '/Home/EmpfileFinalVerification',
+        name: 'II-Level Verification',
+        //to: '/Home/EmpfileFinalVerification',
+        to: '/Home/EmpSecondVerification',
     },
     {
         men_slno: 155,

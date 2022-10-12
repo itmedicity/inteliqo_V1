@@ -4,9 +4,11 @@ import { Box, Paper } from '@mui/material'
 import React from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { memo } from 'react';
 
 
-const ExperienceItem = ({ val, setDeleteItem }) => {
+const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
+
     const deleteexperience = (id) => {
         setDeleteItem(id)
     }
@@ -18,7 +20,7 @@ const ExperienceItem = ({ val, setDeleteItem }) => {
                         <Typography
                             level="body1"
                         >
-                            {val.course}
+                            {jobedit === 0 ? val.course : val.course}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -29,7 +31,7 @@ const ExperienceItem = ({ val, setDeleteItem }) => {
                         <Typography
                             level="body1"
                         >
-                            {val.specialization}
+                            {jobedit === 0 ? val.specialization : val.specialization}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -43,4 +45,4 @@ const ExperienceItem = ({ val, setDeleteItem }) => {
     )
 }
 
-export default ExperienceItem
+export default memo(ExperienceItem) 

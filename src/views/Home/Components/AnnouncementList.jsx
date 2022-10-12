@@ -30,7 +30,10 @@ const AnnouncementList = () => {
     const empBirthday = useSelector((state) => {
         return state.getBirthdayList.empBirthdayList
     })
-    Announcementlist.push(...empBirthday)
+
+    //Announcementlist.push(...empBirthday)
+    const list = [...Announcementlist, ...empBirthday]
+
     // const [List, setList] = useState(Announcementlist)
     // useEffect(() => {
     //     if (empBirthday.length !== 0) {
@@ -38,8 +41,6 @@ const AnnouncementList = () => {
     //     }
     // }, [empBirthday])
     const msg = "Happy Birthday!!"
-
-
     return (
         <Sheet
             variant="outlined"
@@ -71,7 +72,11 @@ const AnnouncementList = () => {
                 >
                     <Box sx={{ height: 410, overflowY: "auto" }} className="ListItemScrol" >
                         {
-                            Announcementlist && Announcementlist.map((val, ind) => {
+                            list && list.map((val, ind) => {
+
+                                const announceHeading = val.announceHeading && val.announceHeading.toLowerCase();
+                                const empName = val.em_name && val.em_name.toLowerCase();
+
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
@@ -84,7 +89,7 @@ const AnnouncementList = () => {
                                             {/* <CustomAvatar id={val.em_id} src={image1} /> */}
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography>{val.Announcementheading || val.em_name}</Typography>
+                                            <Typography sx={{ textTransform: 'capitalize' }} >{announceHeading || empName}</Typography>
                                             <Typography level="body2" noWrap sx={{ color: "white" }} >
                                                 {val.Announcement || msg}
                                             </Typography>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
@@ -40,8 +40,14 @@ const DepartmentShiftMast = () => {
             shiftcode: getshifts,
             shiftDescription: shiftnameselect,
         }
-        const newdatas = [...arraydata, newdata]
-        arraydataset(newdatas)
+        if (arraydata.some(key => key.shiftcode == getshifts)) {
+            warningNofity("Shift Time Already Added!!")
+        }
+        else {
+            const newdatas = [...arraydata, newdata]
+            arraydataset(newdatas)
+        }
+
     }
     //removing shift from table
     const onClickdelete = (checkid) => {

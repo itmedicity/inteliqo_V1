@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ReligionMastTable from './ReligionMastTable'
 import { employeeNumber } from 'src/views/Constant/Constant'
 
@@ -48,6 +48,9 @@ const ReligionMast = () => {
             succesNofity(message)
             setformData(defaultState)
             setCount(count + 1)
+        }
+        else {
+            warningNofity(message)
         }
     }
 

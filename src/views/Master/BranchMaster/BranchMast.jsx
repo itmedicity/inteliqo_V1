@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import BranchMastTable from './BranchMastTable'
@@ -49,6 +49,12 @@ const BranchMast = () => {
             setBranchData(resetForm);
         } else if (success === 0 || success === 2) {
             infoNofity(message);
+        }
+        else if (success === 7) {
+            errorNofity(message)
+        }
+        else {
+            errorNofity("Error! Please contact EDP")
         }
     }
     const toSettings = () => {

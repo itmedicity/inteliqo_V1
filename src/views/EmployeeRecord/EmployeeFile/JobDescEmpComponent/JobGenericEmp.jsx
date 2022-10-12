@@ -1,23 +1,17 @@
 import { Checkbox, CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useContext } from 'react'
-import IconButton from '@mui/joy/IconButton';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import React, { Fragment } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import TextInput from 'src/views/Component/TextInput';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import FemaleOutlinedIcon from '@mui/icons-material/FemaleOutlined';
 import MaleOutlinedIcon from '@mui/icons-material/MaleOutlined';
-import CourseSelectionMast from 'src/views/CommonCode/CourseSelectionMast';
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
-import SpecializationSelection from 'src/views/CommonCode/SpecializationSelection';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import QualificationItem from './QualificationItem';
+import { memo } from 'react';
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
 const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
     const [formData, setFormData] = useState({
@@ -30,6 +24,7 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
         special_comment: ''
     })
     const { experience, experience_year, age_from, age_to, is_female, is_male, special_comment } = formData
+
     const [jobQualification, setjobQualification] = useState([])
     useEffect(() => {
         if (selectDesignation !== 0 && selectedDept !== 0) {
@@ -75,29 +70,157 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                     }
                     setFormData(frmData)
                 }
-
-
             }
             getjobQualification()
         }
 
     }, [selectDesignation, selectedDept])
+
+
+
     return (
         <Fragment>
             {/* Generic */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
+                    <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
                         Job Specification : Generic
                     </Typography>
                 </CssVarsProvider>
             </Box>
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
-                <Box sx={{ display: "flex", width: "100%" }} >
+
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Experience
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', }}>
+                            {experience}
+                        </Box>
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Qualification
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        {/* <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box> */}
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', flexDirection: "column" }}>
+                            {
+                                jobQualification && jobQualification.map((val, index) => <QualificationItem key={index} val={val} />)
+                            }
+                        </Box>
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '50%', }}>
+                        {special_comment}
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '50%', }}>
+                        <Box sx={{ display: "flex", flex: 1 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" >Age Between From</Typography>
+                            </CssVarsProvider>
+                        </Box>
+
+                        <Box sx={{ display: "flex", flex: 2, px: 1, alignItems: "center" }} >
+                            <Box sx={{ px: 1 }} >
+                                <Box sx={{ display: "flex", flex: 0 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" >{age_from} To  {age_to}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "center", flex: 0 }} >
+                            <Box sx={{ display: "flex", }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1" >Male</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", pl: 0.5 }}>
+                                <CssVarsProvider>
+                                    {
+                                        is_male === true ? <Checkbox
+                                            color="success"
+                                            size="lg"
+                                            variant="outlined"
+                                            uncheckedIcon={<MaleOutlinedIcon />}
+                                            name="is_male"
+                                            value={is_male}
+                                            checked={is_male}
+                                        /> : <Checkbox
+                                            color="success"
+                                            size="lg"
+                                            variant="outlined"
+                                            uncheckedIcon={<MaleOutlinedIcon />}
+                                            name="is_male"
+                                            value={is_male}
+                                            checked={is_male}
+                                        />
+                                    }
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", pl: 0.5 }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1" >Female</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", pl: 0.5 }}>
+                                <CssVarsProvider>
+                                    {
+                                        is_female === true ? <Checkbox
+                                            color="success"
+                                            size="lg"
+                                            variant="outlined"
+                                            uncheckedIcon={<FemaleOutlinedIcon />}
+                                            name="female"
+                                            value={is_female}
+                                            checked={is_female}
+                                        /> : <Checkbox
+                                            color="success"
+                                            size="lg"
+                                            variant="outlined"
+                                            uncheckedIcon={<FemaleOutlinedIcon />}
+                                            name="female"
+                                            value={is_female}
+                                            checked={is_female}
+                                        />
+
+                                    }
+                                </CssVarsProvider>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+
+
+                {/* <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{
                         display: "flex",
                         flex: 2,
@@ -126,10 +249,10 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                             disabled={true}
                         />
                     </Box>
-                </Box>
+                </Box> */}
 
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Paper square sx={{
+                {/* <Box sx={{ display: "flex", width: "100%" }} > */}
+                {/* <Paper square sx={{
                         display: "flex",
                         flex: 1,
                         px: 0.5,
@@ -139,11 +262,11 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                         <CssVarsProvider>
                             <Typography level="body1"> Qualification</Typography>
                         </CssVarsProvider>
-                    </Paper>
-                    {/* Experience Entry Section */}
-                    <Box sx={{ display: 'flex', flex: 2, flexDirection: "column" }} >
-                        {/* Exp - Header Add + */}
-                        <Paper square sx={{
+                    </Paper> */}
+                {/* Experience Entry Section */}
+                {/* <Box sx={{ display: 'flex', flex: 2, flexDirection: "column" }} > */}
+                {/* Exp - Header Add + */}
+                {/* <Paper square sx={{
                             display: "flex",
                             flex: 3,
                             p: 0.3,
@@ -154,10 +277,10 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                             {
                                 jobQualification && jobQualification.map((val, index) => <QualificationItem key={index} val={val} />)
                             }
-                        </Paper>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", flex: 1, mt: 0.5 }} >
+                        </Paper> */}
+                {/* </Box> */}
+                {/* </Box> */}
+                {/* <Box sx={{ display: "flex", flex: 1, mt: 0.5 }} >
                     <Box sx={{ display: "flex", flex: 2 }} >
                         <TextareaAutosize
                             style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
@@ -233,10 +356,10 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                             </Box>
                         </Box>
                     </Paper>
-                </Box>
+                </Box> */}
             </Paper>
         </Fragment>
     )
 }
 
-export default JobGenericEmp
+export default memo(JobGenericEmp) 

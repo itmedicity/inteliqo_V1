@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useContext } from 'react'
+import React, { Fragment, Suspense, useContext,memo } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,7 +13,8 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
+import Competency from './Competency';
+import { axioslogin } from 'src/views/Axios/Axios';
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
 const Performance = React.lazy(() => import('./Performance'));
@@ -30,10 +31,26 @@ const JobDescription = () => {
     const { selectDesignation, updateDesignation,
         selectedDept, updateSelected, selectDesignationName, selectedDeptName
     } = useContext(PayrolMasterContext)
-    const [jobview, setjobview] = useState(0)
+    const [jobview, setjobview] = useState(0)//use sate job description view
+    const [jobedit, setjobEdit] = useState(0)
+    const checkData = {
+        designation: selectDesignation,
+        dept_id: selectedDept
+    }
     const addtojobSummary = async () => {
         if (selectDesignation !== 0 && selectedDept !== 0) {
-            setjobview(1)
+            const result = await axioslogin.post('/jobsummary/check', checkData)
+            const { data, success } = result.data
+            if (success === 1) {
+                const { summary_slno } = data[0]
+                infoNofity("Job Description Already Added for This Designation and Department")
+                setjobEdit(summary_slno)
+            }
+            else {
+                setjobview(1)
+                setjobEdit(0)
+            }
+
         }
         else {
 
@@ -44,6 +61,8 @@ const JobDescription = () => {
     const Redirect = async () => {
         history.push(`/Home`)
     }
+
+
     return (
         <Fragment>
             <ToastContainer />
@@ -95,6 +114,7 @@ const JobDescription = () => {
                     <Suspense fallback={<Progress />} >
                         <JobSummary
                             jobview={jobview}
+                            jobedit={jobedit}
                             selectDesignationName={selectDesignationName}
                             selectedDeptName={selectedDeptName}
                             selectDesignation={selectDesignation}
@@ -106,16 +126,31 @@ const JobDescription = () => {
                         <DutyRespos
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
                         />
 
                     </Suspense>
 
-                    {/* Job Specification : Performance & Competency */}
+                    {/* Job Specification : Performance */}
                     <Suspense fallback={<Progress />} >
                         <Performance
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
                         />
+                        {/* <Competency /> */}
+                    </Suspense>
+
+
+                    <Suspense fallback={<Progress />} >
+                        <Competency
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                            jobedit={jobedit}
+                        />
+
+
+                        {/* <Competency /> */}
                     </Suspense>
 
                     {/* Generic */}
@@ -123,6 +158,8 @@ const JobDescription = () => {
                         <Generic
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            jobedit={jobedit}
+
                         />
                     </Suspense>
                 </Paper>
@@ -131,4 +168,4 @@ const JobDescription = () => {
     )
 }
 
-export default JobDescription
+export default memo(JobDescription)

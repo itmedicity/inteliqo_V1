@@ -9,7 +9,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment';
 import { useStyles } from "src/views/CommonCode/MaterialStyle"
 import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
-import { succesNofity } from "src/views/CommonCode/Commonfunc"
+import { succesNofity, warningNofity } from "src/views/CommonCode/Commonfunc"
 import { axioslogin } from "src/views/Axios/Axios"
 import YearlyLeaveCalendarTable from "./YearlyLeaveCalendarTable"
 import { useHistory } from "react-router"
@@ -86,6 +86,9 @@ const YearlyLeaveCalendarMast = () => {
             reset();
             setValue(null)
             setYear(null)
+        }
+        else {
+            warningNofity(message)
         }
     }
 

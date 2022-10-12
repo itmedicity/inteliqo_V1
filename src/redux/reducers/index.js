@@ -33,16 +33,17 @@ import { getBranchList } from '../reducers/BranchReducer';
 import { getDashboardNotification } from './Dashboard.Reducer';
 import { getEmployeeSubSect } from '../reducers/SubSectionReducers';
 import { getEmployeeTrainingProbation } from '../reducers/TrainingProbReducers';
+import { getActiveCountemp } from '../reducers/ActiveCountReducers';
+import { getPunchCount } from '../reducers/PunchdataCountreducers';
 import { getMenuRenderCompRights } from './CardMenuSlnoRender';
+import { getContractClosedata } from '../reducers/ContractRenewalReducers'
+import { getUserRights } from '../reducers/EmpUserRights.Reducer'
+import { getHighLevelData } from '../reducers/HighLevel.Reducer'
+import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
-import { getContractClosedata } from '../reducers/ContractRenewalReducers'
-// import { getBirthdayList } from '../reducers/Birthday.Reducer'
-// import { getGradeList } from '../reducers/Grade.Reducer'
-// import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
-import { getUserRights } from '../reducers/EmpUserRights.Reducer'
-import { getHighLevelData } from '../reducers/HighLevel.Reducer'
+
 
 
 const reducer = combineReducers({
@@ -81,16 +82,17 @@ const reducer = combineReducers({
     getBranchList,
     getEmployeeSubSect,
     getEmployeeTrainingProbation,
+    getActiveCountemp,
+    getPunchCount,
     getMenuRenderCompRights,
-    getBirthdayList,
-    getGradeList,
     getHODInchargeNameList,
+    getGradeList,
     getContractClosedata,
     getBirthdayList,
-    getGradeList,
-    getHODInchargeNameList,
     getUserRights,
     getHighLevelData
+
+
 })
 
 export default reducer;

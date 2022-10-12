@@ -15,9 +15,9 @@ const BoardMastSelection = (props) => {
             setBoard(data)
         }
         getBoard()
-        return (
-            updateBoard(0)
-        )
+        // return (
+        //     updateBoard(0)
+        // )
     }, [updateBoard, selectEducation]);
 
 

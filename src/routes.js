@@ -67,7 +67,7 @@ const SpecializationTableEdit = React.lazy(() => import('./views/Master/Speciali
 const RegistrationType = React.lazy(() => import('./views/Master/RegistrationType/RegistrationMaster'))
 const RegistrationTableEdit = React.lazy(() => import('./views/Master/RegistrationType/RegistrationTableEdit'))
 const EmployeeQualification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeQualification'))
-const EmpQualificationEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/QualificationTableEdit'))
+//const EmpQualificationEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/QualificationTableEdit'))
 const EmployeeExperience = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeExperience'))
 const EmployeeExperienceEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmployeeExperienceEdit'))
 const StatutoryInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/StatutoryInformation'))
@@ -155,7 +155,6 @@ const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/Employee
 const PayrollProces = React.lazy(() => import('./views/Payroll/PayrollProcess/PayrollProcess'))
 const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
-const JobDescriptionEdit = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionEdit'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeRecordVerification/EmployeeRecordVerification'))
 const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
@@ -192,6 +191,10 @@ const AppraisalApproveIncharge = React.lazy(() => import('./views/PerformanceApp
 const AppraisalApprovalHOD = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalHOD/ApprovalHOD'))
 const AppraisalApprovalCEO = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalCEO/ApprovalCEO'))
 const SelfAppraisalApproval = React.lazy(() => import('./views/PerformanceAppraisal/SelfApproval/SelfApproval'))
+const EmpFirstVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeFirstVerification'))
+const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeSecondVerification'))
+const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
+
 
 const routes = [
 
@@ -265,7 +268,7 @@ const routes = [
   { path: '/Home/Specialization', exact: true, name: "Specialization Master", component: SpecializationMaster },
   { path: '/Home/SpecializationTableEdit/:id', exact: true, name: "Specialization Table Edit", component: SpecializationTableEdit },
   { path: '/Home/RegistrationType', exact: true, name: "Registration Type", component: RegistrationType },
-  { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
+  // { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
   { path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
   { path: '/Home/EmployeeQualification/:id/:no', exact: true, name: 'Qualification', component: EmployeeQualification },
   { path: '/Home/EmployeeExperience/:id', exact: true, name: 'Experience', component: EmployeeExperience },
@@ -353,7 +356,6 @@ const routes = [
   { path: '/Home/PayrollProcess', exact: true, name: 'Payroll Process', component: PayrollProces },
   { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
-  { path: '/Home/JobDescriptionEdit/:id', exact: true, name: 'JobDescription Edit', component: JobDescriptionEdit },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
   { path: '/Home/EmployeeRecordVerification', exact: true, name: 'Employee Record Verification', component: EmployeeRecordVerification },
   { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
@@ -390,8 +392,9 @@ const routes = [
   { path: '/Home/AppraisalApprovalHOD', exact: true, name: 'Appraisal Approve HOD', component: AppraisalApprovalHOD },
   { path: '/Home/AppraisalApprovalCEO', exact: true, name: 'Appraisal Approve CEO', component: AppraisalApprovalCEO },
   { path: '/Home/SelfAppraisalApproval', exact: true, name: 'Appraisal Approve Self', component: SelfAppraisalApproval },
-
-
+  { path: '/Home/EmpFirstVerification', exact: true, name: 'Employee Verification', component: EmpFirstVerification },
+  { path: '/Home/EmpSecondVerification', exact: true, name: 'Employee second Verification', component: EmpSecondVerification },
+  { path: '/Home/EmployeeRecordsAgGrid', exact: true, name: 'Employee Record File', component: EmployeeRecordsAgGrid },
 
 ]
 

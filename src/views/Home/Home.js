@@ -9,7 +9,6 @@ import LeavesDashbod from './Components/LeavesDashbod';
 import { Paper } from '@mui/material';
 
 const Home = () => {
-    console.log('home')
     return (
         <Fragment>
             {/* Top Time Display and Notification Icon Bar */}

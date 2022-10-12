@@ -6,6 +6,8 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import TextInput from 'src/views/Component/TextInput';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
+import { memo } from 'react';
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
 
 const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignation, selectedDept, setJobdescView }) => {
@@ -49,11 +51,7 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
             {/* Job Summary Description */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
+                    <Typography sx={{ fontStyle: "oblique", fontWeight: 500, color: '#94B7FC' }} startDecorator={<ArrowRightOutlinedIcon />} >
                         Job Summary
                     </Typography>
                 </CssVarsProvider>
@@ -61,6 +59,165 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
 
             {/* Job Summary Box */}
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Objectives
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', }}>
+                            {objective.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Scope
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%', }}>
+                        <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {scope.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Designation
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {selectDesignationName.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Department
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {selectedDeptName.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Location /Work Place
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {workplace.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Reporting
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
+                            {report_dept.toLowerCase()}
+                        </Box>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
+                            {reportingdesignation.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Equipment To Be Used
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {equipment_used.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+            </Paper>
+
+
+            {/* <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{
                         display: "flex",
@@ -178,13 +335,12 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
                             name="equipment"
                             value={equipment_used}
                             disabled={true}
-
                         />
                     </Box>
                 </Box>
-            </Paper>
+            </Paper> */}
         </Fragment>
     )
 }
 
-export default JobSummaryEmp
+export default memo(JobSummaryEmp) 

@@ -1,25 +1,37 @@
 import { Card, CardContent, CardHeader, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import DataSaverOffIcon from '@mui/icons-material/DataSaverOff';
 import { axioslogin } from 'src/views/Axios/Axios';
+import moment from 'moment';
 const ListItemsHoliday = React.lazy(() => import('./ListItemHoliday'));
 
 
+
 const HolidayList = () => {
+
+    const today = new Date();
+    const tdyformat = moment(today).format('YYYY')
     const [array, setArray] = useState([])
+    const postData = useMemo(() => {
+        return {
+            hld_year: tdyformat
+        }
+    }, [tdyformat])
+
     useEffect(() => {
-        const getholidaylist = async () => {
-            const result = await axioslogin.get('/holidaylist/getholidaylist/getlist')
+        const getholidaylist = async (postData) => {
+            const result = await axioslogin.post('/holidaylist/year', postData)
             const { success, data } = result.data
-            if (success === 1) {
+            if (success === 2) {
                 setArray(data)
             }
             else {
                 setArray([])
             }
         }
-        getholidaylist()
-    }, [])
+        getholidaylist(postData)
+    }, [postData])
+
     return (
         <Fragment>
             <Grid item sx={{
@@ -38,7 +50,7 @@ const HolidayList = () => {
                             }}
                             action={
                                 <Typography variant='subtitle2' sx={{ display: "block", paddingY: 0.5, paddingRight: 4, fontSize: 12.5, fontWeight: 600 }}  >
-                                    Year - 2022
+                                    Year - {tdyformat}
                                 </Typography>
                             }
                         />
@@ -63,7 +75,7 @@ const HolidayList = () => {
                                 </ListItem>
                                 <List dense disablePadding sx={{ paddingY: 0, height: 190, overflowY: "auto" }} className="ListItemScrol" >
                                     {
-                                        array.map((val, index) => {
+                                        array && array.map((val, index) => {
                                             return <ListItemsHoliday key={index} holidayName={val.hld_year} holidayDesc={val.hld_desc} />
                                         })
                                     }

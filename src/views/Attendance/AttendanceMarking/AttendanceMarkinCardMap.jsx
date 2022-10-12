@@ -1,12 +1,12 @@
 import { LinearProgress, Typography } from '@mui/material'
 import { TableCell, TableRow } from '@material-ui/core';
 import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
-import '../styleattnd.css'
+// import '../styleattnd.css'
 import AttendanceMarkingTabdata from './AttendanceMarkingTabdata';
 import AttandanceMarkingtotal from './AttandanceMarkingtotal';
 import AttendanceMarkingCheckbox from './AttendanceMarkingCheckbox';
 
-const AttendanceMarkinCardMap = ({ val, key, data, count, dateformat, rageset, employeedata, arrytry, setArrytry }) => {
+const AttendanceMarkinCardMap = ({ val, data, count, dateformat, rageset, employeedata, arrytry, setArrytry }) => {
     useEffect(() => {
 
     }, [count])
@@ -46,7 +46,7 @@ const AttendanceMarkinCardMap = ({ val, key, data, count, dateformat, rageset, e
     return (
         <Fragment>
 
-            <TableRow key={key} >
+            <TableRow key={val.em_id} >
                 <TableCell align="right" style={{ padding: 0, width: '8rem', backgroundColor: "#a2a3ac", height: '3rem' }} >
                     <AttendanceMarkingCheckbox
                         approval={approval}
@@ -62,7 +62,7 @@ const AttendanceMarkinCardMap = ({ val, key, data, count, dateformat, rageset, e
                 </TableCell>
                 <TableCell align="center" style={{ padding: 0, width: '8rem', backgroundColor: "#a2a3ac", height: '3rem' }}>
                     <Typography variant="subtitle2">
-                        {val.em_id}
+                        {val.em_no}
                     </Typography>
                 </TableCell>
 

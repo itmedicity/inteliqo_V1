@@ -47,9 +47,7 @@ export const py_setting_three = [
     { to: '/Home/BoardEdu', name: 'Board Master', slno: 104 },
     { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
     { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 },
-
-
-
+    { to: '/Home/VariablepayIncrease', name: 'Variable pay Increase', slno: 185 }
 ]
 
 export const userManagement_one = [

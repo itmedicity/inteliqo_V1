@@ -1,12 +1,14 @@
 import { Box, Card, Grid, Paper, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, useCallback } from 'react'
+import { useMemo } from 'react'
 import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import TextInput from 'src/views/Component/TextInput'
+import KRAAGgridTable from './KRAAGgridTable'
 import KraTable from './KraTable'
 
 const KRA = () => {
@@ -17,6 +19,8 @@ const KRA = () => {
         krastatus: false
     })
     const { kra, krastatus } = formData
+    const [value, setvalue] = useState(0)
+    const [slno, setslno] = useState(0)
 
     const defaultState = {
         kra: '',
@@ -27,24 +31,78 @@ const KRA = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
     }
-    const postData = {
-        kra_desc: kra,
-        krastatus: krastatus === false ? 0 : 1
-    }
+    const postData = useMemo(() => {
+        return {
+            kra_desc: kra,
+            krastatus: krastatus === false ? 0 : 1
+        }
+
+    })
+
+    const getDataTable = useCallback((params) => {
+        setvalue(1)
+        const data = params.api.getSelectedRows()
+        const { kra_desc, kra_slno, kra_status } = data[0]
+        const formData = {
+            kra: kra_desc,
+            krastatus: kra_status === 1 ? true : false
+        }
+        setFormData(formData)
+        setslno(kra_slno)
+    })
+
+    const postupdateData = useMemo(() => {
+        return {
+            kra_desc: kra,
+            kra_status: krastatus === false ? 0 : 1,
+            kra_slno: slno
+        }
+    })
+
     //saving form Data
-    const SubmitFormData = async (e) => {
+    const SubmitFormData = useCallback((e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/KraMast', postData)
-        const { success, message } = result.data
-        if (success === 1) {
-            setCount(count + 1)
-            setFormData(defaultState)
-            succesNofity(message)
+        const submit = async (postData) => {
+            const result = await axioslogin.post('/KraMast', postData)
+            const { success, message } = result.data
+            if (success === 1) {
+                setCount(count + 1)
+                setFormData(defaultState)
+                succesNofity(message)
+            }
+            else if (success === 7) {
+                errorNofity(message)
+            }
+            else {
+                errorNofity("Error Occure!!!!Please Contact EDP")
+            }
+        }
+        //update data
+        const update = async (postupdateData) => {
+            const result = await axioslogin.patch('/KraMast', postupdateData)
+            const { success, message } = result.data
+            if (success === 2) {
+                setCount(count + 1)
+                setFormData(defaultState)
+                succesNofity(message)
+            }
+            else if (success === 7) {
+                errorNofity(message)
+            }
+            else if (success === 2) {
+                warningNofity(message)
+            }
+            else {
+                errorNofity("Error Occure!!!!Please Contact EDP")
+            }
+        }
+        if (value === 0) {
+            submit(postData)
         }
         else {
-            errorNofity("Error Occure!!!!Please Contact EDP")
+            update(postupdateData)
         }
-    }
+    }, [postData, postupdateData])
     const RedirectToMasterPage = () => {
         history.push('/Home/Settings');
     }
@@ -75,6 +133,7 @@ const KRA = () => {
                                                     style={{ width: "100%", paddingLeft: 3, paddingTop: 6 }}
                                                     name="krastatus"
                                                     value={krastatus}
+                                                    checked={krastatus}
                                                     onChange={(e) => updatekeyResultArea(e)}
                                                 />
                                             </Grid>
@@ -85,7 +144,8 @@ const KRA = () => {
                                     </Card>
                                 </Grid>
                                 <Grid item xs={9} lg={9} xl={9} md={9}>
-                                    <KraTable count={count} />
+                                    {/* <KraTable count={count} /> */}
+                                    <KRAAGgridTable getDataTable={getDataTable} count={count} />
                                 </Grid>
                             </Grid>
                         </Box>

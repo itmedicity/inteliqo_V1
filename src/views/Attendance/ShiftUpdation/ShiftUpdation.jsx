@@ -265,7 +265,6 @@ const ShiftUpdation = () => {
 
         })
         const result2 = await axioslogin.post('/common/getCasualeavearry/', empdata)
-
         if (result2.data.success === 1) {
             const leaveMonth = getMonth(new Date())
             const casual = result2.data.data.filter((val) => {
@@ -429,7 +428,7 @@ const ShiftUpdation = () => {
                                         setApiData(data)
                                         setcount(count + 1)
                                         const holidaycredit = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary > 21000) {
+                                            if (val.holiday_flag === 1 && val.duty_status > 0 && val.gross_salary > 21000) {
                                                 return val
                                             }
                                             else {
@@ -437,7 +436,7 @@ const ShiftUpdation = () => {
                                             }
                                         })
                                         const holidaytaken = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked === 0) {
+                                            if (val.holiday_flag === 1 && val.duty_status === 0) {
                                                 return val
                                             }
                                             else {
@@ -445,7 +444,7 @@ const ShiftUpdation = () => {
                                             }
                                         })
                                         const holidaytakendoublesalary = data.filter((val) => {
-                                            if (val.holiday_flag === 1 && val.duty_worked > 0 && val.gross_salary < 21000) {
+                                            if (val.holiday_flag === 1 && val.duty_status > 0 && val.gross_salary < 21000) {
                                                 return val
                                             }
                                             else {
@@ -505,7 +504,9 @@ const ShiftUpdation = () => {
     return (
         <Fragment>
             <PageLayoutCloseOnly
-                heading="Attendance Marking" redirect={redirecting}>
+                heading="Attendance Marking"
+                redirect={redirecting}
+            >
                 <div className="col-md-12 mb-2">
                     <div className="row g-2">
                         <div className="col-md-2">

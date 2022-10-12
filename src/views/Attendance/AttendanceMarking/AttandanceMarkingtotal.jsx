@@ -7,7 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 const AttandanceMarkingtotal = ({ data, length, count }) => {
 
     const [dutydatatotal, setdutydatatotal] = useState([])
-    // console.log(dutydatatotal)
+    console.log(dutydatatotal)
 
     useEffect(() => {
         const getattnsdata = async () => {
@@ -41,18 +41,25 @@ const AttandanceMarkingtotal = ({ data, length, count }) => {
                     dutydatatotal && dutydatatotal.map((val, index) => {
                         return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{val.duty_status}</TableCell>
                     })
-                }{
+                }
+                {
                     dutydatatotal && dutydatatotal.map((val, index) => {
                         return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{val.leave_type}</TableCell>
-                    })
-                }{
-                    dutydatatotal && dutydatatotal.map((val, index) => {
-                        return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{parseFloat(length) - (parseFloat(val.duty_status) + parseFloat(val.leave_type))}</TableCell>
                     })
                 }
                 {
                     dutydatatotal && dutydatatotal.map((val, index) => {
-                        return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{(parseFloat(val.duty_status) + parseFloat(val.leave_type))}</TableCell>
+                        return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{val.offday}</TableCell>
+                    })
+                }
+                {
+                    dutydatatotal && dutydatatotal.map((val, index) => {
+                        return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{(parseFloat(length) - (parseFloat(val.duty_status)) + (parseFloat(val.leave_type)) - parseFloat(val.offday))}</TableCell>
+                    })
+                }
+                {
+                    dutydatatotal && dutydatatotal.map((val, index) => {
+                        return <TableCell align="center" key={index} style={{ padding: 0, width: '8rem', height: '3rem' }}>{(parseFloat(val.duty_worked) + parseFloat(val.leave_type) + parseFloat(val.offday))}</TableCell>
                     })
                 }
 

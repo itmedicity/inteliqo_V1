@@ -40,9 +40,7 @@ const DepartmentSelect = ({ style, disabled }) => {
             <FormControl
                 fullWidth
                 margin="dense"
-                size='small'
-            // className="mt-1"
-            // style={{ backgroundColor: "yellow" }}
+                className="mt-1"
             >
                 <Select
                     labelId="demo-simple-select-label"
@@ -55,9 +53,9 @@ const DepartmentSelect = ({ style, disabled }) => {
                     }}
                     fullWidth
                     variant="outlined"
-                    // className="ml-3"
+                    className="ml-3"
                     defaultValue={0}
-                    style={{ ...style }}
+                    style={style}
                     disabled={disabled}
                 >
                     <MenuItem value='0' disabled>

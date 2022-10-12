@@ -4,13 +4,32 @@ import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, useState } from 'react'
 import AdjustIcon from '@mui/icons-material/Adjust';
+import { memo } from 'react';
+import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
+
 
 const DutiesAndresp = ({ val }) => {
     return (
         <Fragment>
             <Box sx={{ display: "flex", alignItems: "center", py: 0.1, }} >
                 <Box sx={{ display: "flex", flex: 1, pr: 1, flexDirection: "row" }}>
-                    <Paper
+
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: "flex-start" }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <CssVarsProvider>
+                                    <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                                </CssVarsProvider>
+                            </Box>
+
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', }}>
+                            {val.duties_and_resp}
+                        </Box>
+                    </Box>
+
+
+                    {/* <Paper
                         square
                         variant="outlined"
                         sx={{
@@ -28,17 +47,17 @@ const DutiesAndresp = ({ val }) => {
                             </IconButton>
                         </Box>
                     </Paper>
-                    <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "center", alignItems: "center", width: "100%" }} variant="outlined" >
+                    <Paper square sx={{ display: "flex", px: 0.5, justifyContent: "left", alignItems: "center", width: "100%" }} variant="outlined" >
                         <CssVarsProvider>
-                            <Typography level="body1">
+                            <Typography level="body1" className="text-capitalize">
                                 {val.duties_and_resp}
                             </Typography>
                         </CssVarsProvider>
-                    </Paper>
+                    </Paper> */}
                 </Box>
             </Box>
         </Fragment>
     )
 }
 
-export default DutiesAndresp
+export default memo(DutiesAndresp) 

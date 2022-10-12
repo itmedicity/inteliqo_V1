@@ -58,8 +58,8 @@ const AnnouncementCmpnt = ({ anchorEl, open, handleClose, setannouncecount }) =>
                 sx={{ width: '100%', maxWidth: 500, }}
             >
                 {
-                    Announcementlist && Announcementlist.map((val) => {
-                        return <AnnouncementContent key={val.announcment_slno} alerts={val} handleClose={handleClose} />
+                    Announcementlist && Announcementlist.map((val, index) => {
+                        return <AnnouncementContent key={index} alerts={val} handleClose={handleClose} />
                     })
                 }
             </Menu>

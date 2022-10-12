@@ -56,6 +56,9 @@ const UniversityMast = () => {
         } else if (success === 2) {
             infoNofity(message.sqlMessage);
         }
+        else {
+            errorNofity(message)
+        }
     }
 
     //Back to home

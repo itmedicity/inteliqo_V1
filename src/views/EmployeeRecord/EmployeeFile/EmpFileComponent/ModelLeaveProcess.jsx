@@ -32,8 +32,6 @@ const ModelLeaveProcess = ({
     setnodatahl,
     setnodatafixed, setmodelvalue, categorychge, nameel
 }) => {
-
-
     // open model ModelAvailLeavelist
     const [openleavelist, setopenleavelist] = useState(false);
 
@@ -41,6 +39,7 @@ const ModelLeaveProcess = ({
     const { ecat_cl, ecat_cont, ecat_el, ecat_esi_allow,
         ecat_fh, ecat_lop, ecat_mate, ecat_nh, ecat_prob, ecat_sl,
         em_category, em_contract_end_date, em_prob_end_date } = dataleave
+
 
     // destructuring  leaveprocessid --> Data From the "hrm_leave_process" table if status is "A"
     const {

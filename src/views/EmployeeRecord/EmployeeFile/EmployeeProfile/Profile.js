@@ -48,7 +48,9 @@ const Profile = () => {
     const dispatch = useDispatch();
 
     const toRedirectToHome = () => {
-        history.push(`/Home/EmployeeFile`)
+        //history.push(`/Home/EmployeeFile`)
+        history.push(`/Home/EmployeeRecordsAgGrid`)
+
     }
 
     const { id, no } = empCredential;

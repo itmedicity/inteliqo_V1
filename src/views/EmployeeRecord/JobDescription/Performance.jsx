@@ -5,7 +5,6 @@ import React, { Fragment, useEffect, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import SelectBasic from 'src/views/Component/SelectBasic';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import KraItem from './KraItem';
 import KraSelect from './Jobdesccomponent/KraSelect';
@@ -13,8 +12,9 @@ import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Comm
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
+import { memo } from 'react';
 
-const Performance = ({ selectDesignation, selectedDept }) => {
+const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
     const [Kra, setKra] = useState(0)
     const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
@@ -32,13 +32,11 @@ const Performance = ({ selectDesignation, selectedDept }) => {
     const [formData, setFormData] = useState({
         kpi: '',
         kpiscore: '',
-        competency: ''
     })
-    const { kpi, kpiscore, competency } = formData
+    const { kpi, kpiscore } = formData
     const defaultState = {
         kpi: '',
         kpiscore: '',
-        competency: ''
     }
     //getting form data
     const updatKeyPerformance = async (e) => {
@@ -49,15 +47,15 @@ const Performance = ({ selectDesignation, selectedDept }) => {
     const AddKraDataToTable = () => {
         const keyperformance = {
             id: Math.ceil(Math.random() * 1000),
-            kras: Kra,
-            kraname: KraName,
-            kpiindicator: kpi,
-            kpiscore: kpiscore,
-            kpicompetency: competency
+            key_result_area: Kra,
+            kra_desc: KraName,
+            kpi: kpi,
+            kpi_score: kpiscore,
         }
         setPerformance([...perfomance, keyperformance])
         setFormData(defaultState)
     }
+
     //function for editing kra details
     useEffect(() => {
         if (editKra > 0) {
@@ -67,11 +65,10 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                 }
 
             })
-            const { kras, kpiindicator, kpiscore, kpicompetency } = editdata[0]
+            const { kras, kpi, kpi_score } = editdata[0]
             const frmData = {
-                kpi: kpiindicator,
-                kpiscore: kpiscore,
-                competency: kpicompetency,
+                kpi: kpi,
+                kpiscore: kpi_score,
                 kras: Kra,
             }
             setFormData(frmData)
@@ -101,6 +98,26 @@ const Performance = ({ selectDesignation, selectedDept }) => {
         designation: selectDesignation,
         dept_id: selectedDept
     }
+    //use effect for getting job performance for edit
+    const [editdata, setEditdata] = useState([])
+
+    useEffect(() => {
+        if (jobedit > 0) {
+            const getPerformace = async () => {
+                const result = await axioslogin.post('/jobsummary/getjobspecific', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setPerformance(data)
+                    setEditdata(data)
+                }
+            }
+            getPerformace()
+        }
+        else {
+            setPerformance([])
+            setEditdata([])
+        }
+    }, [jobedit])
     //function for saving job Specification
     const saveJobSpecification = async (e) => {
         e.preventDefault();
@@ -115,10 +132,9 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                 const saveDuties = perfomance && perfomance.map((val) => {
                     return {
                         job_id: summary_slno,
-                        kra: val.kras,
-                        kpi: val.kpiindicator,
-                        kpi_score: val.kpiscore,
-                        competency: val.kpicompetency,
+                        kra: val.key_result_area,
+                        kpi: val.kpi,
+                        kpi_score: val.kpi_score,
                         dept_id: selectedDept,
                         designation: selectDesignation
 
@@ -146,7 +162,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
     return (
         <Fragment>
             <ToastContainer />
-            {/* Job Specification : Performance & Competency */}
+            {/* Job Specification : Performance  */}
             <Box sx={{ p: 1, display: "flex" }} >
                 <CssVarsProvider>
                     <Typography
@@ -154,7 +170,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                         level="body2"
                         sx={{ flex: 2 }}
                     >
-                        Job Specification : Performance & Competency
+                        Job Specification : Performance
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
@@ -164,8 +180,7 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                 </Box>
             </Box>
 
-            {/* Prformance & Competency descriptive table */}
-
+            {/* Peformance & Competency descriptive table */}
 
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", alignItems: "center" }} >
@@ -200,16 +215,6 @@ const Performance = ({ selectDesignation, selectedDept }) => {
                                 onChange={(e) => updatKeyPerformance(e)}
                             />
                         </Box>
-                        <Box sx={{ flex: 2 }} >
-                            <TextareaAutosize
-                                style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
-                                minRows={1}
-                                placeholder="Competency"
-                                name="competency"
-                                value={competency}
-                                onChange={(e) => updatKeyPerformance(e)}
-                            />
-                        </Box>
                         <Box sx={{ flex: 0, px: 1 }} >
                             <IconButton variant="outlined" size='sm' onClick={AddKraDataToTable} >
                                 <AddToPhotosIcon />
@@ -230,4 +235,4 @@ const Performance = ({ selectDesignation, selectedDept }) => {
     )
 }
 
-export default Performance
+export default memo(Performance) 

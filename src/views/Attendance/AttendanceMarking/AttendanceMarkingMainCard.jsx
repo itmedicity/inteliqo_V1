@@ -6,9 +6,6 @@ import '../styleattnd.css'
 import AttandanceDatecmpont from './AttandanceDatecmpont';
 import AttendanceMarkinCardMap from './AttendanceMarkinCardMap';
 const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, rageset, arrytry, setArrytry }) => {
-
-
-
     useEffect(() => {
 
     }, [count])
@@ -26,6 +23,7 @@ const AttendanceMarkingMainCard = ({ dateformat, employeedata, startdate, enddat
                             <TableCell>Work Days </TableCell>
                             <TableCell>Present</TableCell>
                             <TableCell>Leave</TableCell>
+                            <TableCell>Woff</TableCell>
                             <TableCell>Lop</TableCell>
                             <TableCell>Total Days</TableCell>
                         </TableRow>

@@ -108,7 +108,7 @@ const ShiftMaster = () => {
     //FUNCTION TO GET TO TOMORROW DATE
     const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
     const checkoutstartcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
-    const checkoutendcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
+    const checkoutendcrossday = new Date(new Date(checkOutEnd).setDate(new Date().getDate() + 1));
     //use State for Setting Initial State
     const [formData, setFormData] = useState({
         shift_name: "",
@@ -214,6 +214,9 @@ const ShiftMaster = () => {
             SetSecondhalfcheckout(new Date())
         }
         else if (success === 2) {
+            warningNofity(message)
+        }
+        else if (success === 7) {
             warningNofity(message)
         }
         else {

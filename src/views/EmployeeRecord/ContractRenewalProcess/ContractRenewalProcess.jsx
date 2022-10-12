@@ -33,6 +33,7 @@ const ContractRenewalProcess = () => {
     const [probationperiod, setProbationPeriod] = useState(0)
     const [fine, setFine] = useState(0)
     const [disable, setDisable] = useState(false)
+    const [contractstart, setContractStart] = useState(0)
     const [contractend, setContractEnd] = useState(0)
     const [graceperiod, setgraceperiod] = useState(0)
     const [attendanceDays, setattendanceDays] = useState(0)
@@ -151,6 +152,36 @@ const ContractRenewalProcess = () => {
     const redirect = async () => {
         history.push('/Home/Contract_end_details')
     }
+    //useEffect for getting attendancde details to process earn leave
+    const [attendanceata, setAttendanceData] = useState([])
+    useEffect(() => {
+        const postdata = {
+            emp_id: no,
+            startdate: moment(new Date(contractstart)).format('YYYY-MM-DD'),
+            endate: moment(new Date(contractend)).format('YYYY-MM-DD'),
+        }
+        // const postdata = {
+        //     emp_id: no,
+        //     startdate: '2022-01-01',
+        //     endate: '2022-12-30'
+        // }
+        // data based on the calculation of earn leave
+        const getattendanceData = async () => {
+            const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+            const { success, data } = result.data;
+            if (success === 2) {
+                setAttendanceData(data[0])
+            }
+            else if (success == 2) {
+                setAttendanceData([])
+            }
+            else {
+                setAttendanceData([])
+            }
+        }
+        getattendanceData()
+
+    }, [no])
     //function for saving new contract
     const RenewOldContract = async (e) => {
         e.preventDefault();
@@ -169,9 +200,9 @@ const ContractRenewalProcess = () => {
         else if (fine > 0) {
             warningNofity("Please Clear Fine Before Renewing the Contract")
         }
-        // else if (addDays(new Date(contractend), graceperiod) < new Date()) {
-        //     warningNofity("Grace Period Not Completed")
-        // }
+        else if (addDays(new Date(contractend), graceperiod) > new Date()) {
+            warningNofity("Grace Period Not Completed")
+        }
         else {
             const result = await axioslogin.post('/empmast/checkEmno/contracterenew', checkemid)
             const { data } = result.data
@@ -215,9 +246,9 @@ const ContractRenewalProcess = () => {
                                             const resultemployee = await axioslogin.post('/employee', submitemployee);
                                             const { success } = resultemployee.data;
                                             if (success === 1) {
+                                                setDisable(true)
                                                 if (oldCategory !== newcategory) {
                                                     setmodelvalue(1)
-                                                    setDisable(true)
                                                     setOpenModel(true)
                                                 }
                                                 else {
@@ -259,6 +290,7 @@ const ContractRenewalProcess = () => {
                 setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
                 setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
                 setmodelvalue={setmodelvalue}
+                nameel={attendanceata === undefined ? [] : attendanceata}
             /> : null}
             {open === true ? <ModelOldDataToCopy open={open} handleClose={handleClose} /> : null}
             <Box sx={{ width: "100%" }}>
@@ -269,6 +301,7 @@ const ContractRenewalProcess = () => {
                         fine={fine}
                         setFine={setFine}
                         setContractEnd={setContractEnd}
+                        setContractStart={setContractStart}
                         setgraceperiod={setgraceperiod}
                         setattendanceDays={setattendanceDays}
                         setOldctaegory={setOldctaegory}
