@@ -5,7 +5,7 @@ import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 
-const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight }) => {
+const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight, getRowStyle }) => {
     const defaultColDef = {
     }
     const onGridReady = (params) => {
@@ -45,6 +45,7 @@ const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight }) =>
                         onGridReady={onGridReady}
                         rowSelection="multiple"
                         rowStyle={rowStyle}
+                        getRowStyle={getRowStyle}
                     ></AgGridReact>
                 </Box>
             </Paper>
@@ -52,4 +53,4 @@ const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight }) =>
     )
 }
 
-export default CommonAgGrid
+export default memo(CommonAgGrid)

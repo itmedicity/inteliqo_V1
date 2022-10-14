@@ -10,6 +10,7 @@ export const getMenuRenderCompRights = (state = menuCmp, { type, payload }) => {
         case FETCH_EMP_MENU_SLNO:
             return { ...state, slno: payload }
         default:
-            return state
+            return { ...state, slno: 0 }
+        // return state
     }
 }

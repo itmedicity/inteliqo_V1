@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
 
 
-const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
+const DutyRespos = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
     const [duty, setDuty] = useState([])
     const [formData, setFormData] = useState({
         duties: ''
@@ -72,7 +72,8 @@ const DutyRespos = ({ jobedit, selectDesignation, selectedDept }) => {
     }, [deleteData])
     const checkData = {
         designation: selectDesignation,
-        dept_id: selectedDept
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
     }
     //use effect for getting data for edit
     useEffect(() => {

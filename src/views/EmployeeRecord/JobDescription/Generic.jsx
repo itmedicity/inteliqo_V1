@@ -21,7 +21,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { memo } from 'react';
 
 
-const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
+const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const { selectCourse, updateCourse, selectSpec, updateSpec, courseName, setCourseName,
         specName, setSpecName } = useContext(PayrolMasterContext)
@@ -111,7 +111,8 @@ const Generic = ({ jobedit, selectDesignation, selectedDept }) => {
     }
     const checkData = {
         designation: selectDesignation,
-        dept_id: selectedDept
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
     }
     const [editdata, setEditdata] = useState([])
     //use effect for getting job generic to edit

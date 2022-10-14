@@ -22,6 +22,9 @@ import { useEffect } from 'react';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 //import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/joy/IconButton';
+import { useHistory } from 'react-router-dom';
 
 const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobSummaryEmp'));
 const DutyRespos = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/DutiesEmp'));
@@ -37,14 +40,15 @@ const Progress = () => {
         </Box>)
 };
 
-const JobDescriptionList = () => {
+const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, desgname }) => {
 
     const [jobdescview, setJobdescView] = useState(0)
-    const { no } = useParams()
-    const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(setPersonalData(no))
-    }, [no, dispatch])
+    const [tableview, settableview] = useState(0)
+    const history = useHistory()
+
+    // useEffect(() => {
+    //     dispatch(setPersonalData(no))
+    // }, [no, dispatch])
     const getempData = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
@@ -53,12 +57,19 @@ const JobDescriptionList = () => {
     //     history.push(`/Home/Profile/${id}/${no}`)
     // }
     useEffect(() => {
-        const checkJobDesc = async () => {
-            const checkData = {
-                designation: getempData.em_designation,
-                dept_id: getempData.em_department
-            }
-            const result = await axioslogin.post('/jobsummary/check', checkData)
+        const checkData1 = {
+            designation: designation,
+            dept_id: dept_id,
+            sect_id: sect_id
+        }
+        const checkData2 = {
+            designation: getempData.em_designation,
+            dept_id: getempData.em_department,
+            sect_id: getempData.em_dept_section
+
+        }
+        const checkJobDesc = async (checkData2) => {
+            const result = await axioslogin.post('/jobsummary/check', checkData2)
             const { success } = result.data
             if (success === 1) {
                 setJobdescView(1)
@@ -66,10 +77,28 @@ const JobDescriptionList = () => {
             else {
                 setJobdescView(0)
             }
-
         }
-        checkJobDesc(0)
-    }, [getempData.em_designation, getempData.em_department])
+        const checkJobDescTableView = async (checkData1) => {
+            const result = await axioslogin.post('/jobsummary/check', checkData1)
+            const { success } = result.data
+            if (success === 1) {
+                settableview(1)
+            }
+            else {
+                settableview(0)
+            }
+        }
+        if (flag === 1) {
+            checkJobDescTableView(checkData1)
+        }
+        else {
+            checkJobDesc(checkData2)
+        }
+    }, [getempData.em_designation, getempData.em_department, getempData.em_dept_section, flag, dept_id, designation])
+
+    const ViewPage = async () => {
+        history.push(`/Home/JobDescription`)
+    }
 
     return (
         <Fragment>
@@ -82,40 +111,26 @@ const JobDescriptionList = () => {
             }} >
                 {/* Main Heading Section Box */}
 
-                <Paper square elevation={2} sx={{ p: 0.5, }}   >
-                    <Box sx={{ flex: 1 }} >
+                <Paper square elevation={2} sx={{ p: 0.5, display: "flex", flexDirection: "row" }}   >
+                    <Box sx={{ flex: 1, }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                 Job Description
                             </Typography>
                         </CssVarsProvider>
                     </Box>
+
+                    {
+                        flag === 1 ? <Box sx={{}}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' color="danger" onClick={ViewPage}>
+                                    <CloseIcon color='info' />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box> : null
+                    }
                 </Paper>
-                {/* <Paper square elevation={3} sx={{
-                    p: 0.5,
-                    mt: 0.5,
-                    display: 'flex',
-                    alignItems: "center",
-                    flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                    // backgroundColor: "lightcyan"
-                }} >
-                    <Box sx={{ flex: 1, px: 0.5 }} >
-                        <TextInput
-                            style={{ width: "100%", paddingLeft: 13 }}
-                            name="department"
-                            disabled={true}
-                            value={getempData.dept_name}
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                        <TextInput
-                            style={{ width: "100%", paddingLeft: 13 }}
-                            name="designation"
-                            disabled={true}
-                            value={getempData.desg_name}
-                        />
-                    </Box>
-                </Paper> */}
+
                 {/* Job Summary */}
                 {
                     jobdescview > 0 ?
@@ -126,61 +141,89 @@ const JobDescriptionList = () => {
                                 selectDesignationName={getempData.desg_name}
                                 selectedDeptName={getempData.dept_name}
                                 setJobdescView={setJobdescView}
+                                selectDeptSection={getempData.em_dept_section}
                             />
                         </Suspense>
 
-                        : null
+                        : flag === 1 ?
+                            <Suspense fallback={<Progress />} >
+                                <JobSummary
+                                    selectDesignation={designation}
+                                    selectedDept={dept_id}
+                                    selectDesignationName={desgname}
+                                    selectedDeptName={deptname}
+                                    //setJobdescView={setJobdescView}
+                                    selectDeptSection={sect_id}
+                                />
+                            </Suspense> : null
                 }
                 {/* Duties And Responsiblities */}
                 {
-                    jobdescview > 0 ?
+                    flag === 1 ?
+                        <Suspense fallback={<Progress />} >
+                            <DutyRespos
+                                selectDesignation={designation}
+                                selectedDept={dept_id}
+                            />
+                        </Suspense> :
                         <Suspense fallback={<Progress />} >
                             <DutyRespos
                                 selectDesignation={getempData.em_designation}
                                 selectedDept={getempData.em_department}
                             />
-
                         </Suspense>
-                        : null
-
                 }
 
                 {/* Job Specification : Performance  */}
                 {
-
-                    jobdescview > 0 ?
+                    flag === 1 ?
+                        <Suspense fallback={<Progress />} >
+                            <Performance
+                                selectDesignation={designation}
+                                selectedDept={dept_id}
+                            />
+                        </Suspense> :
                         <Suspense fallback={<Progress />} >
                             <Performance
                                 selectDesignation={getempData.em_designation}
                                 selectedDept={getempData.em_department}
                             />
                         </Suspense>
-                        : null
                 }
 
                 {/* Job Specification : Competency */}
                 {
 
-                    jobdescview > 0 ?
+                    flag === 1 ?
                         <Suspense fallback={<Progress />} >
+                            <Competency
+                                selectDesignation={designation}
+                                selectedDept={dept_id}
+                            />
+                        </Suspense>
+                        : <Suspense fallback={<Progress />} >
                             <Competency
                                 selectDesignation={getempData.em_designation}
                                 selectedDept={getempData.em_department}
                             />
                         </Suspense>
-                        : null
                 }
 
                 {/* Generic */}
                 {
-                    jobdescview > 0 ?
+                    flag === 1 ?
                         <Suspense fallback={<Progress />} >
+                            <Generic
+                                selectDesignation={designation}
+                                selectedDept={dept_id}
+                            />
+                        </Suspense>
+                        : <Suspense fallback={<Progress />} >
                             <Generic
                                 selectDesignation={getempData.em_designation}
                                 selectedDept={getempData.em_department}
                             />
                         </Suspense>
-                        : null
                 }
 
             </Box >
