@@ -16,7 +16,7 @@ import { memo } from 'react';
 
 
 
-const Competency = ({ selectDesignation, selectedDept, jobedit }) => {
+const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
     const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
@@ -117,7 +117,8 @@ const Competency = ({ selectDesignation, selectedDept, jobedit }) => {
 
     const checkData = {
         designation: selectDesignation,
-        dept_id: selectedDept
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
     }
 
     // function for saving job competency

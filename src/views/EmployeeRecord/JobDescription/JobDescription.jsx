@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useContext,memo } from 'react'
+import { Box, CircularProgress, Paper, Tooltip } from '@mui/material'
+import React, { Fragment, Suspense, useContext, memo } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,6 +15,9 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Competency from './Competency';
 import { axioslogin } from 'src/views/Axios/Axios';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
+
 const JobSummary = React.lazy(() => import('./JobSummary'));
 const DutyRespos = React.lazy(() => import('./DutyRespos'));
 const Performance = React.lazy(() => import('./Performance'));
@@ -29,14 +32,21 @@ const Progress = () => {
 
 const JobDescription = () => {
     const { selectDesignation, updateDesignation,
-        selectedDept, updateSelected, selectDesignationName, selectedDeptName
+        selectedDept, updateSelected,
+        selectDesignationName, selectedDeptName,
+        selectDeptSection, updateDepartmentSection,
     } = useContext(PayrolMasterContext)
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
+
+    /** checkdata for checking department , dept section and designation */
     const checkData = {
         designation: selectDesignation,
-        dept_id: selectedDept
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
     }
+
+    /** checking department , dept section and designation already exist in jobsummary database table */
     const addtojobSummary = async () => {
         if (selectDesignation !== 0 && selectedDept !== 0) {
             const result = await axioslogin.post('/jobsummary/check', checkData)
@@ -50,7 +60,6 @@ const JobDescription = () => {
                 setjobview(1)
                 setjobEdit(0)
             }
-
         }
         else {
 
@@ -61,7 +70,9 @@ const JobDescription = () => {
     const Redirect = async () => {
         history.push(`/Home`)
     }
-
+    const ViewPage = async () => {
+        history.push(`/Home/JobDescriptionViewTable`)
+    }
 
     return (
         <Fragment>
@@ -82,11 +93,19 @@ const JobDescription = () => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                        <Box >
+                        <Tooltip title="Job Description View" followCursor placement='top' arrow >
+                            <Box>
+                                <IconButton variant="outlined" size='sm' onClick={ViewPage}>
+                                    <VisibilityIcon />
+                                </IconButton>
+                            </Box>
+                        </Tooltip>
+                        <Box sx={{ pl: 1 }}>
                             <IconButton variant="outlined" size='sm' onClick={Redirect}>
                                 <CloseIcon />
                             </IconButton>
                         </Box>
+
                     </Paper>
 
                     {/* Depertment Selection Box */}
@@ -100,6 +119,9 @@ const JobDescription = () => {
                     }} >
                         <Box sx={{ flex: 1, px: 0.5 }} >
                             <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5 }} >
+                            <DepartmentSectionSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}  >
                             <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
@@ -119,6 +141,7 @@ const JobDescription = () => {
                             selectedDeptName={selectedDeptName}
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
+                            selectDeptSection={selectDeptSection}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}
@@ -127,6 +150,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             jobedit={jobedit}
+                            selectDeptSection={selectDeptSection}
                         />
 
                     </Suspense>
@@ -137,6 +161,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             jobedit={jobedit}
+                            selectDeptSection={selectDeptSection}
                         />
                         {/* <Competency /> */}
                     </Suspense>
@@ -147,6 +172,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             jobedit={jobedit}
+                            selectDeptSection={selectDeptSection}
                         />
 
 
@@ -159,7 +185,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             jobedit={jobedit}
-
+                            selectDeptSection={selectDeptSection}
                         />
                     </Suspense>
                 </Paper>
