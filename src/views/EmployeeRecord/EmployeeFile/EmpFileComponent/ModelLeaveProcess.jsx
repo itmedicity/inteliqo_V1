@@ -130,7 +130,11 @@ const ModelLeaveProcess = ({
         const { message, success } = result.data
         if (success === 1) {
             succesNofity(message)
-            setopenleavelist(true) //After insert data into the "hrm_leave_process" table open the Model ( Listing the )
+            /**
+             * After insert data into the "hrm_leave_process" table open the Model ( Listing the )
+             *  Model <ModelAvailLeavelist/>
+             */
+            setopenleavelist(true)
             setOpen(false)
 
         } else if (success === 0) {
@@ -146,14 +150,18 @@ const ModelLeaveProcess = ({
         /*
             When Open the Process model for a new leave Process and on Click the  "Yes" button 
             then --> check
-                if there is any old data in the "hrm_leave_process" table --> if yes , "hrm_process_status" column  status changed as "N" ,means Inactive ( "A" --> "N" )
+                if there is any old data in the "hrm_leave_process" table --> if yes , "hrm_process_status" 
+                column  status changed as "N" ,means Inactive ( "A" --> "N" )
             Following API will updated the coulmn as "N"
         */
         const resultupdate = await axioslogin.patch('/yearleaveprocess/', updata)
         const { message, success } = resultupdate.data
 
         if (success === 2) {
-            // Success === 2 means "hrm_process_status" coulumn status successfully updated as "N" in the table "<ModelAvailLeavelist/>"
+            /**
+             * Success === 2 means "hrm_process_status" coulumn status successfully 
+             * updated as "N" in the table "<ModelAvailLeavelist/>"
+            */
             if (olddata === 1) {
                 // New Process || initial Process
                 datayearsave(processdatanew)
