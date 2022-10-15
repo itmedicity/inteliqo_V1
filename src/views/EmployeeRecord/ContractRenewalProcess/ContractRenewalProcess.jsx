@@ -24,6 +24,7 @@ import { getProcessserialnum } from 'src/views/Constant/Constant';
 import { useDispatch } from 'react-redux';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import moment from 'moment';
+import _ from 'underscore';
 
 const ContractRenewalProcess = () => {
     const { id, no } = useParams()
@@ -69,6 +70,16 @@ const ContractRenewalProcess = () => {
     const { ecat_cl, ecat_el, ecat_esi_allow,
         ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
     } = leavestate
+    //getting data to save
+    const datatoSave = useSelector((state) => {
+        return state.getContractClosedata
+    })
+    const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData, newCategory
+    } = datatoSave
+    //useEffect for setting new employee category
+    useEffect(() => {
+        setnewCategory(newCategory.newEmpcat)
+    }, [newCategory.newEmpcat])
     useEffect(() => {
         const getLeavedetails = async () => {
             const result = await axioslogin.get(`/common/getannprocess/${no}`)
@@ -99,17 +110,13 @@ const ContractRenewalProcess = () => {
         setOpenModel(false)
     }
     //new contract details
-    const [newcategory, setNewCategory] = useState(0)
     const [newContract, updateNewContract] = useState({
         newempId: '',
         newcontractstart: format(new Date(), 'yyyy-MM-dd'),
         newcontractend: format(new Date(), 'yyyy-MM-dd'),
     })
     const { newempId, newcontractstart, newcontractend } = newContract
-    //getting data to save
-    const datatoSave = useSelector((state) => {
-        return state.getContractClosedata
-    })
+
     //new contract details
     const newcontractdetl = {
         em_no: newempId,
@@ -117,13 +124,12 @@ const ContractRenewalProcess = () => {
         em_cont_start: newcontractstart,
         em_cont_end: newcontractend
     }
-    const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData } = datatoSave
 
     //getting new probation or training end details    
     useEffect(() => {
         const getCtaehoryDetl = async () => {
-            if (newcategory > 0) {
-                const result = await axioslogin.get(`/empcat/${newcategory}`)
+            if (newCatgeory > 0) {
+                const result = await axioslogin.get(`/empcat/${newCatgeory}`)
                 const { success, data } = result.data
                 if (success === 1) {
                     const { ecat_prob_period } = data[0]
@@ -136,12 +142,12 @@ const ContractRenewalProcess = () => {
         }
         getCtaehoryDetl()
 
-    }, [newcategory])
+    }, [newCatgeory])
     //update empmaster data
     const updateempMast = {
         em_no: newempId,
         em_doj: newcontractstart,
-        em_category: newcategory,
+        em_category: newCatgeory,
         em_contract_end_date: newcontractend,
         em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD'),
         em_id: no
@@ -247,7 +253,7 @@ const ContractRenewalProcess = () => {
                                             const { success } = resultemployee.data;
                                             if (success === 1) {
                                                 setDisable(true)
-                                                if (oldCategory !== newcategory) {
+                                                if (oldCategory !== newCatgeory) {
                                                     setmodelvalue(1)
                                                     setOpenModel(true)
                                                 }
@@ -269,7 +275,6 @@ const ContractRenewalProcess = () => {
 
     }
     //}
-
     return (
         <Fragment>
             <ToastContainer />
@@ -344,8 +349,7 @@ const ContractRenewalProcess = () => {
                             grace_period={graceperiod}
                             newContract={newContract}
                             updateNewContract={updateNewContract}
-                            newcategory={newcategory}
-                            setNewCategory={setNewCategory}
+
                         />
                     </Paper>
                     <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >

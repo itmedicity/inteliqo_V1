@@ -140,7 +140,7 @@ const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryF
 const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
 const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/Hrm_message'))
 const Probation_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Probation_end_details'))
-const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Contract_end_details'))
+//const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Contract_end_details'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
 const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/AnnualLeaveProcess'))
 const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
@@ -188,7 +188,7 @@ const EmpFirstVerification = React.lazy(() => import('./views/EmployeeRecord/Emp
 const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeSecondVerification'))
 const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
 const JobDescriptionViewTable = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionViewTable'))
-
+const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractDetailsAgGrid'))
 
 
 const routes = [
