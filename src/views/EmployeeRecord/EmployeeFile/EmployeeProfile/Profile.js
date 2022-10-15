@@ -78,7 +78,7 @@ const Profile = () => {
         dispatch(notify(no))
         dispatch(getContractDetlEmp(no))
         dispatch(setDept())
-    }, [id, no, count, dispatch])
+    }, [id, no, count])
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }
         <ThemeProvider theme={theme} >
