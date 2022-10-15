@@ -24,6 +24,7 @@ import NotProcessedCmp from 'src/views/EmployeeRecord/EmployeeFile/EmpFileCompon
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import IconButton from '@mui/joy/IconButton';
+import LeaveProcessComp from './LeaveProcessComp';
 
 const CasualLeaveList = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/CasualLeaveList'))
 
@@ -186,12 +187,16 @@ const AnnualLeaveInformation = () => {
         }
         getattendanceData()
 
-    }, [no])
-    const postFormdata =
-    {
-        em_no: no,
-        em_id: id
-    }
+    }, [no, year])
+    const postFormdata = useMemo(() => {
+        return {
+            em_no: no,
+            em_id: id
+        }
+    }, [id, no])
+
+    // Leave Processing Button Start here
+
     const submitprocess = () => {
         const getdata = async () => {
             //CHECKING WHETHER THE DATA IS INSERTED INTO YEARLY LEAVE PROCESS TABLE
@@ -201,6 +206,14 @@ const AnnualLeaveInformation = () => {
                 endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
             }
             const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+
+            /*
+             * This api get the details from the table 
+                'yearly_leave_process'
+             * For checking the yearly process done or not if it is done 'success=== 2 '
+             * then get the value from the yearly process table
+             */
+
             if (resultselect.data.success === 2) {
                 // check the table where data present if present get the details process table
                 /*
@@ -211,7 +224,7 @@ const AnnualLeaveInformation = () => {
                             {category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld}
                             hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld ==> value = 2 --> Not Applicable
                                                                              ==> value = 1 --> Applicable
-                    }
+                    }                                                        ==> value = 0 --> Not Processed   
                 */
                 const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
                 const { success, message } = result.data;
@@ -226,11 +239,13 @@ const AnnualLeaveInformation = () => {
                     category_slno: category_slno,
                     lv_process_slno: lv_process_slno
                 }
+
+
                 // if no data available
                 if (success === 0) {
                     /*
                         If no data is present means new employee  set model
-    
+
                         success === 0 means --> No data available in the "hrm_leave_process" table 
                         ie: New Employee , This is the initial process , after this leave process 
                         one entry saved in "hrm_leave_process" table with next_updatedate and "hrm_process_status == A" (A -> Active) "N" --> Inactive
@@ -280,6 +295,12 @@ const AnnualLeaveInformation = () => {
 
 
             } else if (resultselect.data.success === 1) {
+                /***
+                 * If the yearly leave process table 
+                 * 'yearly_leave_process' data not present on currect year 
+                 * then insert that current year data and process the leave process
+                 * open this model  '<ModelLeaveProcess/>' component for leave process
+                 */
                 const yearlyleavedata = {
                     em_no: id,
                     em_id: no,
@@ -289,7 +310,7 @@ const AnnualLeaveInformation = () => {
                 const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
                 if (resultinsert.data.success === 1) {
                     setOpen(true)
-                    setmodelvalue(1)
+                    setmodelvalue(1) //open the <ModelLeaveProcess/> component for leave process
                     setmodelmessage('Do You Want To Process Leave For The Employee')
                 }
                 else {
@@ -303,6 +324,8 @@ const AnnualLeaveInformation = () => {
     const handleClose = () => {
         setmodellist(false)
     }
+
+    // Leave Processing Button End here
 
     return (
         <Fragment>
@@ -349,8 +372,6 @@ const AnnualLeaveInformation = () => {
                 '::-webkit-scrollbar': { display: "none" }
             }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-
-
                     {/* Heading Section start */}
                     <Paper square elevation={3} sx={{
                         display: "flex",
@@ -366,6 +387,9 @@ const AnnualLeaveInformation = () => {
                         </Box>
                     </Paper>
                     {/* Heading Section end */}
+
+                    {/* Leave Process Component */}
+                    <LeaveProcessComp empNumbers={postFormdata} />
 
                     <Paper square elevation={3} sx={{
                         p: 0.5,

@@ -14,6 +14,7 @@ import ProfileAcademicBox from './ProfileAcademicBox';
 import ProfileExperience from './ProfileExperience';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/MyProfileCmp/ProfileVerificationModal';
+import { memo } from 'react';
 
 const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
@@ -652,4 +653,4 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
     )
 }
 
-export default ProfileMenus
+export default memo(ProfileMenus)

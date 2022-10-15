@@ -11,6 +11,7 @@ import ProfilePicDefault from '../../../../assets/images/default.png'
 import { urlExist } from 'src/views/Constant/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
+import _ from 'underscore';
 
 const ProfileCard = () => {
     const { no } = useParams()
@@ -23,9 +24,7 @@ const ProfileCard = () => {
         dispatch(setPersonalData(no))
     }, [no, dispatch])
 
-    const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp.empPersonalData.personalData
-    })
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
 
     useEffect(() => {
         const getEmpIdforProfilePic = async () => {

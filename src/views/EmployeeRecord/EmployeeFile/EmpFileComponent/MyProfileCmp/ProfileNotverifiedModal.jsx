@@ -2,7 +2,8 @@ import React, { Fragment } from 'react'
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material'
 import Modal from '@mui/material/Modal';
-import { TextareaAutosize } from '@material-ui/core';
+// import { TextareaAutosize } from '@material-ui/core';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';

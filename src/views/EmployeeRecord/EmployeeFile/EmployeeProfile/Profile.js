@@ -19,7 +19,6 @@ import ProfileCard from './ProfileCard';
 import { useHistory, useParams } from 'react-router-dom';
 import MenuRenderWind from './MenuRenderWind';
 import { useDispatch } from 'react-redux';
-
 import {
     getannualleave,
     getContractDetlEmp,
@@ -29,6 +28,7 @@ import {
     setPersonalData
 } from 'src/redux/actions/Profile.action';
 import { setDept } from 'src/redux/actions/Dept.Action'
+import { Actiontypes } from 'src/redux/constants/action.type';
 
 const theme = createTheme({
     breakpoints: {
@@ -44,11 +44,14 @@ const theme = createTheme({
 });
 
 
+
 const Profile = () => {
     const empCredential = useParams()
     const history = useHistory();
     const dispatch = useDispatch();
     const { id, no, slno } = empCredential;
+
+    const { FETCH_EMP_MENU_SLNO } = Actiontypes;
 
     // const toRedirectToHome = () => {
     //     //history.push(`/Home/EmployeeFile`)
@@ -67,6 +70,7 @@ const Profile = () => {
         else {
             history.push(`/Home/EmployeeRecordsAgGrid`)
         }
+        dispatch({ type: FETCH_EMP_MENU_SLNO, payload: 0 })
     }, [slno, id, no])
     const [count, setCount] = useState(0)
 
@@ -78,7 +82,7 @@ const Profile = () => {
         dispatch(notify(no))
         dispatch(getContractDetlEmp(no))
         dispatch(setDept())
-    }, [id, no, count, dispatch])
+    }, [id, no, count])
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }
         <ThemeProvider theme={theme} >
