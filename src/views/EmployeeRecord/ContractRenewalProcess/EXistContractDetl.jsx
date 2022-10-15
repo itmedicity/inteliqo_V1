@@ -2,16 +2,19 @@ import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
-import { differenceInDays, eachDayOfInterval } from 'date-fns'
+import { addDays, differenceInDays, eachDayOfInterval } from 'date-fns'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
 import moment from 'moment';
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useCallback } from 'react';
 
 
 const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
+
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -78,18 +81,26 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
 
     //function for Closing first contract
     const dispatch = useDispatch()
-    const ContractClose = async () => {
-        dispatch({
-            type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
-                em_cont_close: 'C',
-                em_cont_compl_status: 'C',
-                em_cont_renew: 'R',
-                em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
-                em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
-                em_no: id
-            }
-        })
-    }
+    const ContractClose = useCallback(() => {
+        if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
+            dispatch({
+                type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
+                    em_cont_close: 'C',
+                    em_cont_compl_status: 'C',
+                    em_cont_renew: 'R',
+                    em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+                    em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+                    em_no: id
+                }
+            })
+            succesNofity("Contract Closed Successfully")
+        }
+        else {
+            warningNofity("Grace Period Not Completed")
+        }
+
+    }, [em_cont_end, grace_period])
+
 
     return (
         <Fragment>
