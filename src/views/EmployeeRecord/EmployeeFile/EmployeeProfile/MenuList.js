@@ -1,14 +1,11 @@
 import { Box } from '@mui/material'
-import React, { useEffect } from 'react'
-import { Chip, CssVarsProvider, Typography } from '@mui/joy';
+import React from 'react'
+import { Chip, CssVarsProvider } from '@mui/joy';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRightRounded';
-import Wifi from '@mui/icons-material/Wifi';
-
 import HttpsIcon from '@mui/icons-material/Https';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ArticleIcon from '@mui/icons-material/Article';
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import BusinessIcon from '@mui/icons-material/Business';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -20,24 +17,21 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import { useHistory } from 'react-router-dom';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type';
+import _ from 'underscore';
 
-const MenuList = ({ id, no }) => {
+const MenuList = () => {
     const { FETCH_EMP_MENU_SLNO } = Actiontypes;
-    const history = useHistory();
     const dispatch = useDispatch();
 
     //get module rights
-    const modulerights = useSelector((state) => {
-        return state?.getModuleRightList?.modulerightsList.map(ele => ele.menu_slno) || []
-    }, shallowEqual)
-
+    const modulerights = useSelector((state) => state?.getModuleRightList?.modulerightsList.map(ele => ele.menu_slno) || [], _.isEqual)
 
     const clickFunction = (slno) => {
         dispatch({ type: FETCH_EMP_MENU_SLNO, payload: slno })
     }
+
 
     const MenuItemList = [
         { color: '#ff8a80', name: 'My Profile', Icon: <AppRegistrationIcon />, funName: clickFunction, slno: 104 },
