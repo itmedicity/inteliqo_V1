@@ -42,6 +42,7 @@ import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
+import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -88,6 +89,7 @@ const reducer = combineReducers({
     getBirthdayList,
     getUserRights,
     getdept,
+    getDeptSecList
 
 })
 

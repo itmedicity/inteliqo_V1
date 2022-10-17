@@ -10,8 +10,6 @@ import { extendMoment } from 'moment-range';
 import { addDays, eachDayOfInterval, format } from 'date-fns'
 import { useState, useContext } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DutyPlanningMainCard from './DutyPlanningMainCard'
@@ -20,13 +18,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
 import ShiftSelectModel from './ShiftSelectModel';
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
+import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 const moment = extendMoment(Moment);
 
 
 const DutyPlanning = () => {
   const history = useHistory()
-  const { selectedDept, selectDeptSection, selectBranchMast
+  const { selectBranchMast
   } = useContext(PayrolMasterContext)
+
+  const [dept, setDept] = useState(0)
+  const [deptSec, setDeptSec] = useState(0)
+  console.log("Branch");
+  console.log(selectBranchMast);
+  console.log("dept");
+  console.log(dept);
+  console.log("dept sec");
+  console.log(deptSec);
   //disptach function for updating store
   const dispatch = useDispatch()
   //use state for employee details
@@ -59,17 +68,17 @@ const DutyPlanning = () => {
   useEffect(() => {
     //dispatichng employee details of the selected department and department section
     const getempdetl = async () => {
-      if (selectBranchMast !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
+      if (selectBranchMast !== 0 && dept !== 0 && deptSec !== 0) {
         const postData = {
-          em_department: selectedDept,
-          em_dept_section: selectDeptSection,
+          em_department: dept,
+          em_dept_section: deptSec,
           em_branch: selectBranchMast
         }
         dispatch(getempdetails(postData))
       }
     }
     getempdetl()
-  }, [selectedDept, selectDeptSection, selectBranchMast])
+  }, [dept, deptSec, selectBranchMast])
   useEffect(() => {
     const getholidays = async () => {
       //getting the holidays between start date and end date
@@ -100,8 +109,8 @@ const DutyPlanning = () => {
       setempData(empdetl)
       //checking whether shift is assigned for this department and department section
       const postData = {
-        em_department: selectedDept,
-        em_dept_section: selectDeptSection,
+        em_department: dept,
+        em_dept_section: deptSec,
       }
       const results = await axioslogin.post("/departmentshift/checkshift", postData);
       const { successs } = results.data
@@ -210,10 +219,10 @@ const DutyPlanning = () => {
       warningNofity("There Is No Employees Under This Department Section")
     }
     // getting shift assigned to the selected department and department section
-    if (selectedDept !== 0 && selectDeptSection !== 0) {
+    if (dept !== 0 && deptSec !== 0) {
       const postDataaa = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
+        dept_id: dept,
+        sect_id: deptSec
       }
       dispatch(getdeptShift(postDataaa))
     }
@@ -262,11 +271,14 @@ const DutyPlanning = () => {
             <div className="col-md-2">
               <BrnachMastSelection style={SELECT_CMP_STYLE} />
             </div>
-            <div className="col-md-2">
-              <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
+            <div className="col-md-2  pt-1" >
+              <DeptSelectByRedux value={dept} setValue={setDept} style={SELECT_CMP_STYLE} />
+              {/* <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} /> */}
             </div>
-            <div className="col-md-3">
-              <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} />
+            <div className="col-md-3  pt-1">
+
+              <DeptSecSelectByRedux dept={dept} value={deptSec} setValue={setDeptSec} />
+              {/* <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} /> */}
             </div>
             <div className="col-md-1 text-center">
               <IconButton
@@ -289,8 +301,8 @@ const DutyPlanning = () => {
               duty={duty}
               duty1={duty1}
               count={count}
-              selectedDept={selectedDept}
-              selectDeptSection={selectDeptSection}
+              selectedDept={dept}
+              selectDeptSection={deptSec}
               setemid={setemid}
               setOpen={setOpen}
               update={update}
