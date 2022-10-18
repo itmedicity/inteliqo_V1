@@ -41,6 +41,7 @@ const LeaveRequest = () => {
     const [emplId, SetEmpId] = useState(0)
     const [Emno, SetEmno] = useState(0)
     const [inchargedeptSec, SetinchargedeptSec] = useState([])
+    const [hoddeptSec, SethodSec] = useState([])
     const [levereqtype, setleavereqtype] = useState(0)
     const [leavdaystype, setleavedaystype] = useState(0)
     const [singleselect, setsingleselect] = useState(0)
@@ -71,7 +72,18 @@ const LeaveRequest = () => {
             }
             getInchargeDeptSect()
         }
-    }, [is_incharge, em_id])
+        else if (is_hod === 1) {
+            const getHodDeptSect = async () => {
+                const result = await axioslogin.get(`/common/hoddeptSect/${em_id}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    SethodSec(data)
+                }
+            }
+            getHodDeptSect()
+        }
+
+    }, [is_incharge, em_id, is_hod])
     //getting selected employee
     const handleChange = async (e) => {
         SetEmpId(e)
@@ -259,12 +271,9 @@ const LeaveRequest = () => {
                         warningNofity("Please Enter The Reason")
                     }
                 }
-
-
             }
 
             else if (levereqtype === 2) {
-
                 if ((halfday.casullevemonth !== 0 && halfday.monthleave !== "" && halfday.planslno !== 0)) {
                     const halfdaysavedata = {
                         checkIn: format(halfday.checkIn, "yyyy-MM-dd HH:MM:SS"),
@@ -576,8 +585,10 @@ const LeaveRequest = () => {
                             </div>
                             <div className="col-md-2">
                                 {
-                                    is_incharge === 1 ?
+                                    (is_incharge === 1 || is_hod === 1) ?
                                         <InchargeLeaveReqEmp inchargedeptSec={inchargedeptSec}
+                                            hoddeptSec={hoddeptSec}
+
                                             onChange={handleChange}
                                             style={SELECT_CMP_STYLE}
                                         /> :

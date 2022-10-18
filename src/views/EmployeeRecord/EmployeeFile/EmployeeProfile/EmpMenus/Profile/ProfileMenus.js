@@ -1,7 +1,7 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
 import { Box, Grid, IconButton, Paper, Tooltip, } from '@mui/material';
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
@@ -184,7 +184,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                         >
                             <VerifiedSharpIcon
                                 fontSize='large'
-                                color={emp.verification_status === 1 ? 'success' : emp.second_level_required && emp.second_level_verification === 1 ? 'success' : 'error'}
+                                color={emp.second_level_required && emp.verification_status === 1 ? 'primary' : emp.second_level_verification === 1 ? 'success' : 'error'}
                             />
                         </IconButton>
                     </Box>

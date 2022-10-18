@@ -30,12 +30,7 @@ const DutyPlanning = () => {
 
   const [dept, setDept] = useState(0)
   const [deptSec, setDeptSec] = useState(0)
-  console.log("Branch");
-  console.log(selectBranchMast);
-  console.log("dept");
-  console.log(dept);
-  console.log("dept sec");
-  console.log(deptSec);
+
   //disptach function for updating store
   const dispatch = useDispatch()
   //use state for employee details

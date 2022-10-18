@@ -11,6 +11,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count, setCount, slno }) => {
+
     const [open1, setOpen1] = useState(false)
     const OpenNotVerified = async () => {
         setOpen1(true)
@@ -27,7 +28,7 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
 
     const updateVerify = async (e) => {
         e.preventDefault();
-        if (slno === '1') {
+        if (slno === 1) {
             const result = await axioslogin.patch('/empVerification', postData)
             const { success, message } = result.data
             if (success === 2) {
