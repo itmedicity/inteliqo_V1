@@ -25,7 +25,7 @@ const style = {
     pr: 2
 };
 
-const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
+const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno, count, setCount }) => {
     const history = useHistory()
     const [formdata, setFormdata] = useState({
         notverfied_reason: ''
@@ -46,7 +46,7 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
     const updateVerify = async (e) => {
         e.preventDefault();
         if (notverfied_reason !== '') {
-            if (slno === '1') {
+            if (slno === 1) {
                 const result = await axioslogin.patch('/empVerification', postData)
                 const { success, message } = result.data
                 if (success === 2) {
@@ -54,6 +54,7 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
                     //history.push('/Home/EmployeeRecordVerification')
                     history.push('/Home/EmpFirstVerification')
                     succesNofity(message)
+                    setCount(count + 1)
                 }
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
@@ -67,6 +68,7 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
                     //history.push('/Home/EmpfileFinalVerification')
                     history.push('/Home/EmpSecondVerification')
                     succesNofity(message)
+                    setCount(count + 1)
                 }
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")

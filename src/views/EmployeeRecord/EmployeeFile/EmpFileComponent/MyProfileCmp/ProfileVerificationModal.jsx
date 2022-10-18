@@ -3,6 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, S
 import { Button } from '@mui/material'
 import React, { Fragment } from 'react'
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ProfileNotverifiedModal from './ProfileNotverifiedModal';
@@ -56,8 +57,9 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
     }
     return (
         <Fragment>
+            <ToastContainer />
             {open1 === true ? <ProfileNotverifiedModal open1={open1} handlClose2={handlClose2}
-                modeopen={modeopen} slno={slno} /> : null}
+                modeopen={modeopen} slno={slno} count={count} setCount={setCount} /> : null}
             <Dialog
                 open={open}
                 onClose={handleClose}

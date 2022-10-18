@@ -55,7 +55,7 @@ const ContractDetailsAgGrid = () => {
     //column fot ag grid table
     const [columnDef] = useState([
         {
-            headerName: 'Action', minWidth: 100, wrapText: true,
+            headerName: 'Action', minWidth: 200,
             cellRenderer: params => <Fragment>
                 <IconButton sx={{ pb: 1 }} onClick={() => DirectContractClose(params)}>
                     <CancelIcon color='primary' />

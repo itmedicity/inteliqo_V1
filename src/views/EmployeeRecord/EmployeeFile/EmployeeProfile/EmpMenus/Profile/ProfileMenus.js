@@ -96,6 +96,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
     const religion = emp.religion && emp.religion.toLowerCase();
     const bank = emp.bank && emp.bank.toLowerCase()
 
+
     return (
         <Box sx={{
             p: 0.5,
@@ -184,7 +185,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                         >
                             <VerifiedSharpIcon
                                 fontSize='large'
-                                color={emp.second_level_required && emp.verification_status === 1 ? 'primary' : emp.second_level_verification === 1 ? 'success' : 'error'}
+                                color={emp.second_level_required && emp.second_level_verification === 1 ? 'success' : emp.verification_status === 1 ? 'primary' : 'error'}
                             />
                         </IconButton>
                     </Box>
