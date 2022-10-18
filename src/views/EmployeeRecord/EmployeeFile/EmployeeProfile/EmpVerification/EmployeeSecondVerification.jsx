@@ -12,6 +12,8 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import EmployeeVerificationView from './EmployeeVerificationView'
+import DisabledByDefaultOutlined from '@mui/icons-material/DisabledByDefaultOutlined'
+// import { IconButton } from '@mui/material';
 
 const EmployeeSecondVerification = () => {
 
@@ -21,6 +23,7 @@ const EmployeeSecondVerification = () => {
     const [no, setno] = useState(0)
     const [id, setid] = useState(0)
     const [count, setCount] = useState(0)
+
 
     const [columnDef] = useState([
         {
@@ -41,10 +44,18 @@ const EmployeeSecondVerification = () => {
         { headerName: 'Verification Remark ', field: 'verification_Remark' },
         {
             headerName: 'Action',
-            cellRenderer: params =>
-                <IconButton sx={{ pb: 1 }} onClick={() => ToProfile(params)}>
-                    <CheckCircleRoundedIcon color='primary' />
-                </IconButton>
+            cellRenderer: params => {
+                if (params.data.verification_status === 0 || params.data.verification_status === 2) {
+                    return <IconButton sx={{ pb: 1 }} disabled>
+                        <CheckCircleRoundedIcon />
+                    </IconButton>
+                }
+                else {
+                    return <IconButton sx={{ pb: 1 }} onClick={() => ToProfile(params)}>
+                        <CheckCircleRoundedIcon color='primary' />
+                    </IconButton>
+                }
+            }
         },
     ])
 
@@ -61,6 +72,7 @@ const EmployeeSecondVerification = () => {
         }
         getempverification()
     }, [count])
+
     const ToProfile = useCallback((params) => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
@@ -74,6 +86,8 @@ const EmployeeSecondVerification = () => {
         //history.push(`/Home/Prfle/${em_no}/${em_id}/${value}`)
 
     }, [])
+
+
 
     const rowStyle = { background: '#CE7D78' };
     const getRowStyle = params => {
