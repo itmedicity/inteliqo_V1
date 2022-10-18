@@ -2,21 +2,35 @@ import { FormControl, MenuItem, Select } from '@material-ui/core'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const InchargeLeaveReqEmp = ({ inchargedeptSec, name, style, onChange }) => {
+const InchargeLeaveReqEmp = ({ inchargedeptSec, hoddeptSec, name, style, onChange }) => {
     const [emp, setemp] = useState([])
     useEffect(() => {
         const getEmployee = async () => {
-            const deptsec = inchargedeptSec && inchargedeptSec.map((val) => {
-                return val.dept_section
-            })
-            const result = await axioslogin.post('/common/getsecEmp', deptsec)
-            const { success, data } = result.data
-            if (success === 1) {
-                setemp(data)
+
+            if (inchargedeptSec.length !== 0) {
+                const deptsec = inchargedeptSec && inchargedeptSec.map((val) => {
+                    return val.dept_section
+                })
+                const result = await axioslogin.post('/common/getsecEmp', deptsec)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setemp(data)
+                }
             }
+            else if (hoddeptSec.length !== 0) {
+                const deptsec1 = hoddeptSec && hoddeptSec.map((val) => {
+                    return val.dept_section
+                })
+                const result = await axioslogin.post('/common/getsecEmp', deptsec1)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setemp(data)
+                }
+            }
+
         }
         getEmployee()
-    }, [inchargedeptSec])
+    }, [inchargedeptSec, hoddeptSec])
 
 
     return (

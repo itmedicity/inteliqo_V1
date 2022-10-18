@@ -11,11 +11,16 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import EmployeeVerificationView from './EmployeeVerificationView'
 
 const EmployeeSecondVerification = () => {
 
     const [data, setdata] = useState([])
     const history = useHistory()
+    const [flag, setflag] = useState(0)
+    const [no, setno] = useState(0)
+    const [id, setid] = useState(0)
+    const [count, setCount] = useState(0)
 
     const [columnDef] = useState([
         {
@@ -26,17 +31,20 @@ const EmployeeSecondVerification = () => {
             },
             width: 30,
         },
-        { headerName: 'ID', field: 'em_no' },
+        { headerName: 'ID', field: 'em_no', filter: true },
         { headerName: 'Emp Name ', field: 'em_name', filter: true },
         { headerName: 'Branch ', field: 'branch_name' },
         { headerName: 'Department ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
         { headerName: 'Date of Join ', field: 'em_doj' },
-        { headerName: 'Date of Join ', field: 'verify_remark' },
+        { headerName: 'First Level Remark ', field: 'verify_remark' },
         { headerName: 'Verification Remark ', field: 'verification_Remark' },
         {
-            headerName: 'Action', cellRenderer: params =>
-                <CheckCircleRoundedIcon onClick={() => ToProfile(params)} />
+            headerName: 'Action',
+            cellRenderer: params =>
+                <IconButton sx={{ pb: 1 }} onClick={() => ToProfile(params)}>
+                    <CheckCircleRoundedIcon color='primary' />
+                </IconButton>
         },
     ])
 
@@ -52,14 +60,20 @@ const EmployeeSecondVerification = () => {
             }
         }
         getempverification()
-    }, [])
-    const value = 2
+    }, [count])
     const ToProfile = useCallback((params) => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
+        if (em_id !== 0) {
+            setflag(1)
+        }
+        setno(em_no)
+        setid(em_id)
+
         // // history.push(`/Home/Profile/${em_no}/${em_id}`)
-        history.push(`/Home/Prfle/${em_no}/${em_id}/${value}`)
-    }, [value])
+        //history.push(`/Home/Prfle/${em_no}/${em_id}/${value}`)
+
+    }, [])
 
     const rowStyle = { background: '#CE7D78' };
     const getRowStyle = params => {
@@ -68,7 +82,8 @@ const EmployeeSecondVerification = () => {
         }
     };
     const toSettings = () => {
-        history.push('/Home')
+        setflag(0)
+        history.push('/Home/EmpSecondVerification')
     }
 
     return (
@@ -102,10 +117,12 @@ const EmployeeSecondVerification = () => {
                         display: 'flex',
                         flexDirection: "column"
                     }} >
-                        <CommonAgGrid columnDefs={columnDef} tableData={data} sx={{
-                            height: 600,
-                            width: "100%"
-                        }} rowHeight={30} headerHeight={30} rowStyle={rowStyle} getRowStyle={getRowStyle} />
+                        {flag === 1 ? <EmployeeVerificationView id={id} no={no} count={count} setCount={setCount} /> :
+                            <CommonAgGrid columnDefs={columnDef} tableData={data} sx={{
+                                height: 600,
+                                width: "100%"
+                            }} rowHeight={30} headerHeight={30} rowStyle={rowStyle} getRowStyle={getRowStyle} />
+                        }
                     </Paper>
                 </Paper>
             </Box>
