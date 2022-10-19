@@ -20,7 +20,6 @@ const KRA = () => {
     const { kra, krastatus } = formData
     const [value, setvalue] = useState(0)
     const [slno, setslno] = useState(0)
-
     const defaultState = {
         kra: '',
         krastatus: false
@@ -37,7 +36,6 @@ const KRA = () => {
         }
 
     })
-
     const getDataTable = useCallback((params) => {
         setvalue(1)
         const data = params.api.getSelectedRows()
