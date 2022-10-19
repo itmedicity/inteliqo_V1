@@ -9,7 +9,6 @@ import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import TextInput from 'src/views/Component/TextInput'
 import KRAAGgridTable from './KRAAGgridTable'
-import KraTable from './KraTable'
 
 const KRA = () => {
     const history = useHistory()
