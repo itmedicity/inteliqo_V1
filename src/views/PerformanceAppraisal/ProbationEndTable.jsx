@@ -334,7 +334,7 @@ const ProbationEndTable = ({ tableData }) => {
                     }}
                 >
                     <AgGridReact
-                        columnDefs={columnDef}
+                        // columnDefs={columnDef}
                         rowData={tableData}
                         defaultColDef={defaultColDef}
                         rowHeight={rowHeight}

@@ -71,6 +71,10 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
         history.push(`/Home/AnnualAppraisalList`)
     }
 
+    const ContractAppraisal = () => {
+
+    }
+
     const notificationListWindow = (slno) => {
         return slno === 133 && Leaverequest ||
             slno === 134 && LeaveUser ||
@@ -91,7 +95,8 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 149 && ResignCeo ||
             slno === 154 && RegistRenew ||
             slno === 187 && ProbationEnd ||
-            slno === 188 && Annual
+            slno === 188 && Annual ||
+            slno === 196 && ContractAppraisal
     }
 
     return (
