@@ -1,7 +1,7 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
 import { Box, Grid, IconButton, Paper, Tooltip, } from '@mui/material';
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
@@ -14,9 +14,9 @@ import ProfileAcademicBox from './ProfileAcademicBox';
 import ProfileExperience from './ProfileExperience';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/MyProfileCmp/ProfileVerificationModal';
-import CustomeToolTip from 'src/views/Component/CustomeToolTip';
+import { memo } from 'react';
 
-const ProfileMenus = () => {
+const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const state = useSelector((state) => {
         return state.getMenuRenderCompRights.slno;
@@ -24,7 +24,7 @@ const ProfileMenus = () => {
 
     // get personal details 
     const loginDetl = useSelector((state) => {
-        return state.getPrifileDateEachEmp;
+        return state.getPrifileDateEachEmp || 0
     })
 
     const { personalData, personalDataStatus } = loginDetl.empPersonalData;
@@ -75,9 +75,16 @@ const ProfileMenus = () => {
         second_level_verification: second_level_verification
     }
 
-    const getVerification = async (em_id) => {
-        //setModelopen(empid)
-        // setOpen(true)
+
+    const [modeopen, setModelopen] = useState(0)
+    const [open, setOpen] = useState(false)
+    //function verifying the profile
+    const getVerification = async (empid) => {
+        setModelopen(empid)
+        setOpen(true)
+    }
+    const handleClose = async () => {
+        setOpen(false)
     }
 
     const notUpdated = <CssVarsProvider>
@@ -86,16 +93,20 @@ const ProfileMenus = () => {
         </Typography>
     </CssVarsProvider>;
 
+    const religion = emp.religion && emp.religion.toLowerCase();
+    const bank = emp.bank && emp.bank.toLowerCase()
+
+
     return (
         <Box sx={{
             p: 0.5,
             width: '100%',
         }} >
 
-            {/* <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose}
+            <ProfileVerificationModal open={open} modeopen={modeopen} setOpen={setOpen} handleClose={handleClose}
                 count={count} setCount={setCount}
                 slno={slno}
-            /> */}
+            />
 
             {/* Box 1  */}
             <Paper variant="outlined" sx={{
@@ -174,15 +185,11 @@ const ProfileMenus = () => {
                         >
                             <VerifiedSharpIcon
                                 fontSize='large'
-                                color={emp.verification_status === 1 ? 'success' : emp.second_level_required && emp.second_level_verification === 1 ? 'success' : 'error'}
+                                color={emp.second_level_required && emp.second_level_verification === 1 ? 'success' : emp.verification_status === 1 ? 'primary' : 'error'}
                             />
                         </IconButton>
-
                     </Box>
                 </Box>
-
-
-
 
             </Paper >
             {/* Main Secondary Box */}
@@ -371,7 +378,7 @@ const ProfileMenus = () => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", textTransform: "capitalize" }} >{emp.religion === false ? notUpdated : emp.religion.toLowerCase()}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", textTransform: "capitalize" }} >{emp.religion === false ? notUpdated : religion}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
@@ -510,7 +517,7 @@ const ProfileMenus = () => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", textTransform: 'capitalize' }} >{emp.bank === false ? notUpdated : emp.bank.toLowerCase()}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", textTransform: 'capitalize' }} >{emp.bank === false ? notUpdated : bank}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
@@ -647,4 +654,4 @@ const ProfileMenus = () => {
     )
 }
 
-export default ProfileMenus
+export default memo(ProfileMenus)

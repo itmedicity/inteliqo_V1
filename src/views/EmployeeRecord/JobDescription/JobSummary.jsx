@@ -16,7 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 
-const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept }) => {
+const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const [jobid, setJobid] = useState(0)
     //get job id
@@ -95,7 +95,8 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         working_hour: workingHours,
         reporting_dept: reporting,
         reporting_designation: reportDesig,
-        equipment_used: equipment
+        equipment_used: equipment,
+        sect_id: selectDeptSection
     }
     //post data for edit
     const postDataEdit = {
@@ -156,9 +157,11 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={sumbitJobSummary} >
-                        <LibraryAddCheckOutlinedIcon />
-                    </IconButton>
+                    <CssVarsProvider>
+                        <IconButton variant="outlined" size='sm' onClick={sumbitJobSummary} >
+                            <LibraryAddCheckOutlinedIcon />
+                        </IconButton>
+                    </CssVarsProvider>
                 </Box>
             </Box>
 
@@ -202,13 +205,13 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
                         <CssVarsProvider>
-                            <Typography level="body1">Designation</Typography>
+                            <Typography level="body1">Department</Typography>
                         </CssVarsProvider>
                     </Paper>
                     <Box sx={{ flex: 2, }} >
                         <TextInput
                             style={{ width: "100%", paddingLeft: 13 }}
-                            Placeholder="Auto Select Designation From Top Menu"
+                            Placeholder="Auto Select Department From Top Menu"
                             value={jobview === 1 || jobedit > 0 ? selectedDeptName : ''}
                             disabled={true}
                         />
@@ -217,7 +220,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
                         <CssVarsProvider>
-                            <Typography level="body1">Department</Typography>
+                            <Typography level="body1">Designation</Typography>
                         </CssVarsProvider>
                     </Paper>
                     <Box sx={{ flex: 2, }} >

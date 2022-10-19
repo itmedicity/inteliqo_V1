@@ -1,7 +1,7 @@
 import { Actiontypes } from '../constants/action.type'
 
 const { FETCH_CONTRACT_CLOSE_DATA, FETCH_CONT_CLOSE_ATTENDANCE, FETCH_CONTRACT_ARREAR, FETCH_OLD_DATA_TO_COPY,
-    FETCH_OLD_PERSONAL_DATA, FETCH_OLD_QUALIFICATION, FETCH_OLD_EXPERIENCE, FETCH_OLD_SALARYINFORM } = Actiontypes;
+    FETCH_OLD_PERSONAL_DATA, FETCH_OLD_QUALIFICATION, FETCH_OLD_EXPERIENCE, FETCH_OLD_SALARYINFORM, FETCH_NEW_CAT } = Actiontypes;
 
 
 
@@ -23,6 +23,9 @@ const contractDataInitialState = {
     },
     oldSalaryInform: {
         SalaryData: []
+    },
+    newCategory: {
+        newEmpcat: 0
     }
 }
 
@@ -77,6 +80,15 @@ export const getContractClosedata = (state = contractDataInitialState, { type, p
                 oldSalaryInform: {
                     ...state.oldSalaryInform,
                     SalaryData: payload,
+                }
+
+            }
+        case FETCH_NEW_CAT:
+            return {
+                ...state,
+                newCategory: {
+                    ...state.newCategory,
+                    newEmpcat: payload,
                 }
 
             }

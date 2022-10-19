@@ -71,6 +71,7 @@
     "redux": "4.1.1",
     "redux-thunk": "^2.4.1",
     "simplebar-react": "^2.3.6",
+    "underscore": "^1.13.6",
     "uninstall-all-modules": "^1.0.5"
   },
   "devDependencies": {

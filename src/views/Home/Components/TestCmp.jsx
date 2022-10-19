@@ -70,7 +70,6 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const Annual = () => {
         history.push(`/Home/AnnualAppraisalList`)
     }
-
     const ContractAppraisal = () => {
 
     }

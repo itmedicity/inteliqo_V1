@@ -7,6 +7,7 @@ import { axioslogin } from '../Axios/Axios'
 import { employeeNumber } from '../Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from './Commonfunc'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
+import _ from 'underscore'
 
 const AnnualProcessComponent = ({
     name,
@@ -74,7 +75,7 @@ const AnnualProcessComponent = ({
     //     // max_allowed_count_sick,
     // } = commonleave
 
-    const state = useSelector((state) => state.getEmployeeProcessRecord.ProcessRecord)
+    const state = useSelector((state) => state.getEmployeeProcessRecord.ProcessRecord, _.isEqual)
     const {
         // category_slno,
         // contract_end_date,
@@ -260,6 +261,9 @@ const AnnualProcessComponent = ({
             regular: regularStartEndDate === undefined ? 1 : regularStartEndDate,
             contract: contractStartEndDate === undefined ? 1 : contractStartEndDate,
         }
+
+        // console.log(calculatedDate)
+
         //Final Result for StartDate and EndDate
         //const dateStart = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.startDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.startDate : moment(new Date()).format('YYYY-MM-DD')
         const dateEnd = (calculatedDate.regular !== 1 && !calculatedDate.regular.message) ? calculatedDate.regular.endDate : (calculatedDate.contract !== 1 && !calculatedDate.contract.message) ? calculatedDate.contract.endDate : moment(new Date()).format('YYYY-MM-DD')
@@ -362,7 +366,7 @@ const AnnualProcessComponent = ({
         // commonleave save
         const getCommonleave = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearlyleaves')
-            const { successleave } = result.data
+            const { successleave, messageleave } = result.data
             if (successleave === 1) {
                 // setcommonleave(messageleave[0])
                 const result = await axioslogin.get('/yearlyleaves/get/getcommonleave')
@@ -407,7 +411,11 @@ const AnnualProcessComponent = ({
                     else {
                         infoNofity(message)
                     }
+                } else {
+
                 }
+            } else if (successleave === 0) {
+                infoNofity("Yearly Common Leves Not Updated")
             }
         }
         // earnleave save

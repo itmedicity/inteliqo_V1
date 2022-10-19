@@ -7,12 +7,15 @@ import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import moment from 'moment';
 import { addDays } from 'date-fns';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { Actiontypes } from 'src/redux/constants/action.type'
+import { useDispatch } from 'react-redux';
 
 
-const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract, newcategory, setNewCategory }) => {
+const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract }) => {
+    const dispatch = useDispatch()
     // useContext
     const { getemployeecategory, udateemployeecategory } = useContext(PayrolMasterContext)
-    setNewCategory(getemployeecategory)
+    // setNewCategory(getemployeecategory)
     const { newempId, newcontractstart, newcontractend } = newContract
     //setting contract start and end date
     useEffect(() => {
@@ -30,6 +33,14 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         updateNewContract({ ...newContract, [e.target.name]: value })
     }
+    //USE EFFECT FOR SETTING NEW CATEGORY
+    useEffect(() => {
+        if (getemployeecategory > 0) {
+            dispatch({
+                type: Actiontypes.FETCH_NEW_CAT, payload: getemployeecategory
+            })
+        }
+    }, [getemployeecategory])
     return (
         <Fragment>
             <Box sx={{ display: "flex", width: "100%" }} >

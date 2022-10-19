@@ -1,14 +1,11 @@
 import { Box } from '@mui/material'
-import React, { useEffect } from 'react'
-import { Chip, CssVarsProvider, Typography } from '@mui/joy';
+import React from 'react'
+import { Chip, CssVarsProvider } from '@mui/joy';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRightRounded';
-import Wifi from '@mui/icons-material/Wifi';
-
 import HttpsIcon from '@mui/icons-material/Https';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ArticleIcon from '@mui/icons-material/Article';
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import BusinessIcon from '@mui/icons-material/Business';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -20,24 +17,21 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import { useHistory } from 'react-router-dom';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type';
+import _ from 'underscore';
 
-const MenuList = ({ id, no }) => {
+const MenuList = () => {
     const { FETCH_EMP_MENU_SLNO } = Actiontypes;
-    const history = useHistory();
     const dispatch = useDispatch();
 
     //get module rights
-    const modulerights = useSelector((state) => {
-        return state?.getModuleRightList?.modulerightsList.map(ele => ele.menu_slno) || []
-    }, shallowEqual)
-
+    const modulerights = useSelector((state) => state?.getModuleRightList?.modulerightsList.map(ele => ele.menu_slno) || [], _.isEqual)
 
     const clickFunction = (slno) => {
         dispatch({ type: FETCH_EMP_MENU_SLNO, payload: slno })
     }
+
 
     const MenuItemList = [
         { color: '#ff8a80', name: 'My Profile', Icon: <AppRegistrationIcon />, funName: clickFunction, slno: 104 },
@@ -49,7 +43,7 @@ const MenuList = ({ id, no }) => {
         { color: '#c5e1a5', name: 'Company Information', Icon: <BusinessIcon />, funName: clickFunction, slno: 110 },
         { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: clickFunction, slno: 111 },
         { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: clickFunction, slno: 112 },
-        { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: clickFunction, slno: 113 },
+        { color: '#b39ddb', name: 'Leave Setting', Icon: <BadgeIcon />, funName: clickFunction, slno: 113 },
         { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: clickFunction, slno: 114 },
         { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: clickFunction, slno: 115 },
         { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: clickFunction, slno: 116 },

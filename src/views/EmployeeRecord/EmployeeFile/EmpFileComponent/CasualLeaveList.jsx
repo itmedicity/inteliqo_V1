@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 import React, { Fragment, useEffect, useState } from 'react'
+import { memo } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { TEXT_DARK, TEXT_MUTED } from 'src/views/Constant/Constant';
 // import { axioslogin } from 'src/views/Axios/Axios';
@@ -58,4 +59,4 @@ const CasualLeaveList = ({ nodataset, no, castable }) => {
     )
 }
 
-export default CasualLeaveList
+export default memo(CasualLeaveList)

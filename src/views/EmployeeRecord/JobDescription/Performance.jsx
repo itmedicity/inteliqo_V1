@@ -14,7 +14,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
 
-const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
+const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
     const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
@@ -96,7 +96,8 @@ const Performance = ({ jobedit, selectDesignation, selectedDept }) => {
     }, [deleteKra])
     const checkData = {
         designation: selectDesignation,
-        dept_id: selectedDept
+        dept_id: selectedDept,
+        sect_id: selectDeptSection
     }
     //use effect for getting job performance for edit
     const [editdata, setEditdata] = useState([])

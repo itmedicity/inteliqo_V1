@@ -142,7 +142,6 @@ const PersonalInfrom = () => {
 
     // onchange
     const updateonchange = (e) => {
-
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         funsetdata({ ...setdata, [e.target.name]: value })
     }
@@ -323,24 +322,24 @@ const PersonalInfrom = () => {
     }
     //Profile pic Display
 
-    const [src, setSrc] = useState(ProfilePic)
-    const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
+    // const [src, setSrc] = useState(ProfilePic)
+    // const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
 
-    const empiddata = {
-        em_id: no
-    }
+    // const empiddata = {
+    //     em_id: no
+    // }
 
-    useEffect(() => {
-        const getProfilePicInform = async () => {
-            const result = await axioslogin.post('/upload', empiddata);
-            const { data } = result.data;
-            var { hrm_profile } = data[0];
-            if (hrm_profile === 1) {
-                setSrc(profilePic)
-            }
-        }
-        getProfilePicInform()
-    }, [empiddata, profilePic])
+    // useEffect(() => {
+    //     const getProfilePicInform = async () => {
+    //         const result = await axioslogin.post('/upload', empiddata);
+    //         const { data } = result.data;
+    //         var { hrm_profile } = data[0];
+    //         if (hrm_profile === 1) {
+    //             setSrc(profilePic)
+    //         }
+    //     }
+    //     getProfilePicInform()
+    // }, [empiddata, profilePic])
 
     return (
 
@@ -574,7 +573,7 @@ const PersonalInfrom = () => {
                             </Box>
 
                             {/* Profile picture*/}
-                            <Box
+                            {/* <Box
                                 sx={{
                                     display: "flex",
                                     flex: 1,
@@ -596,7 +595,7 @@ const PersonalInfrom = () => {
                                         sx={{ width: 150, height: 150, opacity: 10 }}
                                     />
                                 </Stack>
-                            </Box>
+                            </Box> */}
 
                         </Box>
                     </Paper>

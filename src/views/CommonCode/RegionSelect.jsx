@@ -2,11 +2,11 @@ import { Autocomplete } from '@mui/material'
 import React, { Fragment, useContext, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
+import _ from 'underscore';
+
 const RegionSelect = () => {
     //getting region list from redux
-    const regionList = useSelector((state) => {
-        return state.getRegionList.RegionList
-    })
+    const regionList = useSelector((state) => state.getRegionList.RegionList, _.isEqual)
     const [inputValue, setInputValue] = useState('');
     const [input, setInput] = useState('');
     // useContext

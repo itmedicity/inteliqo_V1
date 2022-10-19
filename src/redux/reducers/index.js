@@ -43,7 +43,8 @@ import { getHighLevelData } from '../reducers/HighLevel.Reducer'
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
-
+import { getdept } from '../reducers/Dept.Reducer'
+import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 
 
 const reducer = combineReducers({
@@ -90,9 +91,9 @@ const reducer = combineReducers({
     getContractClosedata,
     getBirthdayList,
     getUserRights,
-    getHighLevelData
-
-
+    getHighLevelData,
+    getdept,
+    getDeptSecList
 })
 
 export default reducer;

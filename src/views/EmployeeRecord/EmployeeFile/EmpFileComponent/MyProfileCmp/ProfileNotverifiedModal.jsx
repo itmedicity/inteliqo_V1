@@ -2,7 +2,8 @@ import React, { Fragment } from 'react'
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material'
 import Modal from '@mui/material/Modal';
-import { TextareaAutosize } from '@material-ui/core';
+// import { TextareaAutosize } from '@material-ui/core';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -24,7 +25,7 @@ const style = {
     pr: 2
 };
 
-const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
+const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno, count, setCount }) => {
     const history = useHistory()
     const [formdata, setFormdata] = useState({
         notverfied_reason: ''
@@ -45,13 +46,15 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
     const updateVerify = async (e) => {
         e.preventDefault();
         if (notverfied_reason !== '') {
-            if (slno === '1') {
+            if (slno === 1) {
                 const result = await axioslogin.patch('/empVerification', postData)
                 const { success, message } = result.data
                 if (success === 2) {
                     setFormdata(defaultState)
-                    history.push('/Home/EmployeeRecordVerification')
+                    //history.push('/Home/EmployeeRecordVerification')
+                    history.push('/Home/EmpFirstVerification')
                     succesNofity(message)
+                    setCount(count + 1)
                 }
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
@@ -62,8 +65,10 @@ const ProfileNotverifiedModal = ({ open1, handlClose2, modeopen, slno }) => {
                 const { success, message } = result.data
                 if (success === 2) {
                     setFormdata(defaultState)
-                    history.push('/Home/EmpfileFinalVerification')
+                    //history.push('/Home/EmpfileFinalVerification')
+                    history.push('/Home/EmpSecondVerification')
                     succesNofity(message)
+                    setCount(count + 1)
                 }
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")

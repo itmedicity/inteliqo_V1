@@ -21,9 +21,6 @@ const ApplicationForm = () => {
     const history = useHistory()
     // get id and number of logged user
     const { id, no, slno } = useParams()
-    console.log(id);
-    console.log(no);
-    console.log(slno);
     const dispath = useDispatch()
     const RedirectToProfilePage = useCallback(() => {
         if (slno === '0') {
