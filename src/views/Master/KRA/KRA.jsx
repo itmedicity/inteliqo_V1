@@ -9,7 +9,6 @@ import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import TextInput from 'src/views/Component/TextInput'
 import KRAAGgridTable from './KRAAGgridTable'
-import KraTable from './KraTable'
 
 const KRA = () => {
     const history = useHistory()
@@ -144,7 +143,6 @@ const KRA = () => {
                                     </Card>
                                 </Grid>
                                 <Grid item xs={9} lg={9} xl={9} md={9}>
-                                    {/* <KraTable count={count} /> */}
                                     <KRAAGgridTable getDataTable={getDataTable} count={count} />
                                 </Grid>
                             </Grid>
