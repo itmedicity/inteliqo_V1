@@ -36,6 +36,7 @@ const KRA = () => {
         }
 
     })
+
     const getDataTable = useCallback((params) => {
         setvalue(1)
         const data = params.api.getSelectedRows()

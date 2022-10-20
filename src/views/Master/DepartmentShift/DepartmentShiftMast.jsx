@@ -1,5 +1,5 @@
 import { IconButton } from '@material-ui/core';
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useEffect } from 'react'
 import { useState } from 'react';
 import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
@@ -14,11 +14,12 @@ import DepartmentShiftCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileCo
 import DepartmentShiftTable from './DepartmentShiftTable';
 import { useHistory } from 'react-router'
 
-
 const DepartmentShiftMast = () => {
     const history = useHistory()
     const [arraydata, arraydataset] = useState([])
     const [count, setCount] = useState(0)
+    const [defValue, setdefValue] = useState(0)
+    const [notappValue, setnotappValue] = useState(0)
     const
         {
             selectedDept, updateSelected,
@@ -26,28 +27,71 @@ const DepartmentShiftMast = () => {
             getshifts, updateShifts, shiftnameselect
 
         } = useContext(PayrolMasterContext)
+
     const postData = {
         dept_id: selectedDept,
         sect_id: selectDeptSection,
         shft_code: arraydata,
         updated_user: employeeNumber()
     }
+    //getting common setting data
+    useEffect(() => {
+        const getSettingsData = async () => {
+            const result = await axioslogin.get('/commonsettings')
+            const { success, data } = result.data;
+            const { default_shift, notapplicable_shift } = data[0]
+            if (success === 1) {
+                setdefValue(default_shift)
+                setnotappValue(notapplicable_shift)
+            }
+        }
+        getSettingsData()
+    })
 
     //adding shifts to table
     const getShiftData = () => {
-        const newdata = {
-            id: Math.ceil(Math.random() * 1000),
-            shiftcode: getshifts,
-            shiftDescription: shiftnameselect,
-        }
-        if (arraydata.some(key => key.shiftcode == getshifts)) {
-            warningNofity("Shift Time Already Added!!")
+        if (notappValue === null && defValue === null) {
+            warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            const newdatas = [...arraydata, newdata]
-            arraydataset(newdatas)
+            if (arraydata.some(key => key.shiftcode === getshifts)) {
+                warningNofity("Shift Time Already Added!!")
+            }
+            else {
+                // checking default shift and not applicable 
+                // is present in arraydata, if it is
+                // present add new selected shift
+                if (arraydata.some(key => key.shiftcode === defValue) && arraydata.some(key => key.shiftcode === notappValue)) {
+                    const newdata = {
+                        id: Math.ceil(Math.random() * 1000),
+                        shiftcode: getshifts,
+                        shiftDescription: shiftnameselect,
+                    }
+                    const newdatas = [...arraydata, newdata]
+                    arraydataset(newdatas)
+                }
+                else {
+                    //adding selected shift first time with default and not applicable
+                    const defautdata = {
+                        id: Math.ceil(Math.random() * 1000),
+                        shiftcode: defValue,
+                        shiftDescription: 'default',
+                    }
+                    const noappdata = {
+                        id: Math.ceil(Math.random() * 1000),
+                        shiftcode: notappValue,
+                        shiftDescription: 'NA',
+                    }
+                    const newdata = {
+                        id: Math.ceil(Math.random() * 1000),
+                        shiftcode: getshifts,
+                        shiftDescription: shiftnameselect,
+                    }
+                    const newdatas = [...arraydata, defautdata, noappdata, newdata]
+                    arraydataset(newdatas)
+                }
+            }
         }
-
     }
     //removing shift from table
     const onClickdelete = (checkid) => {
