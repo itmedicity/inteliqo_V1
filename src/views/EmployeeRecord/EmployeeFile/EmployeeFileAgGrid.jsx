@@ -1,10 +1,5 @@
-import MaterialTable from 'material-table'
-import { Button, Checkbox, FormControlLabel } from '@material-ui/core'
+import { Checkbox, FormControlLabel } from '@material-ui/core'
 import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { ToastContainer } from 'react-bootstrap'
-import SessionCheck from 'src/views/Axios/SessionCheck'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { tableIcons } from 'src/views/Constant/MaterialIcon'
 import { axioslogin } from 'src/views/Axios/Axios'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
@@ -25,10 +20,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 
-
 const EmployeeFileAgGrid = () => {
 
-    const classes = useStyles()
+    //const classes = useStyles()
     const history = useHistory()
     const [tableData, setTableData] = useState([])
     const dispatch = useDispatch()
@@ -133,18 +127,18 @@ const EmployeeFileAgGrid = () => {
                 } />
 
         },
-        { headerName: 'Emp No', field: 'em_no', minWidth: 10, },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 10 },
+        { headerName: 'Emp No', field: 'em_no', minWidth: 90, },
+        { headerName: 'Emp Id ', field: 'em_id', minWidth: 90 },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
-        { headerName: 'Gender', field: 'gender' },
-        { headerName: 'Age', field: 'em_age_year' },
-        { headerName: 'DOJ', field: 'em_doj' },
-        { headerName: 'Mobile', field: 'em_mobile' },
-        { headerName: 'Branch', field: 'branch_name' },
-        { headerName: 'Department', field: 'dept_name', wrapText: true },
-        { headerName: 'Department Section', field: 'sect_name', wrapText: true },
-        { headerName: 'Designation', field: 'desg_name' },
-        { headerName: 'Status', field: 'emp_status' },
+        { headerName: 'Gender', field: 'gender', minWidth: 90 },
+        { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
+        { headerName: 'DOJ', field: 'em_doj', minWidth: 90 },
+        { headerName: 'Mobile', field: 'em_mobile', minWidth: 90 },
+        { headerName: 'Branch', field: 'branch_name', minWidth: 90 },
+        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 90 },
+        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 90 },
+        { headerName: 'Designation', field: 'desg_name', minWidth: 90 },
+        { headerName: 'Status', field: 'emp_status', minWidth: 90 },
 
     ])
 
