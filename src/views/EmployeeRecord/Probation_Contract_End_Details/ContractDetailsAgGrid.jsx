@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Fragment } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -57,19 +57,24 @@ const ContractDetailsAgGrid = () => {
         {
             headerName: 'Action', minWidth: 200,
             cellRenderer: params => <Fragment>
-                <IconButton sx={{ pb: 1 }} onClick={() => DirectContractClose(params)}>
-                    <CancelIcon color='primary' />
-                </IconButton>
-
-                <IconButton sx={{ pb: 1 }} onClick={() => ContractRenew(params)}>
-                    <LibraryAddCheckIcon color='primary' />
-                </IconButton>
-                <IconButton sx={{ pb: 1 }} onClick={() => DirectContractRenewProcess(params)}>
-                    <TaskAltIcon color='primary' />
-                </IconButton>
+                <Tooltip title="Direct contract Close" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => DirectContractClose(params)}>
+                        <CancelIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Contract Renew" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => ContractRenew(params)}>
+                        <LibraryAddCheckIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Direct Contract Renew" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => DirectContractRenewProcess(params)}>
+                        <TaskAltIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
             </Fragment>
         },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 10 },
+        { headerName: 'Emp Id ', field: 'em_id', minWidth: 10, filter: true },
         { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true },
         { headerName: 'Designation', field: 'desg_name' },
