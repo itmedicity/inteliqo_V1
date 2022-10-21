@@ -28,12 +28,6 @@ const DepartmentShiftMast = () => {
 
         } = useContext(PayrolMasterContext)
 
-    const postData = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection,
-        shft_code: arraydata,
-        updated_user: employeeNumber()
-    }
     //getting common setting data
     useEffect(() => {
         const getSettingsData = async () => {
@@ -54,42 +48,23 @@ const DepartmentShiftMast = () => {
             warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            if (arraydata.some(key => key.shiftcode === getshifts)) {
+            if ((getshifts === defValue)) {
+                warningNofity("Default Already Exist!!")
+            }
+            else if (getshifts === notappValue) {
+                warningNofity("NA Already Exist!!")
+            }
+            else if (arraydata.some(key => key.shiftcode === getshifts)) {
                 warningNofity("Shift Time Already Added!!")
             }
             else {
-                // checking default shift and not applicable 
-                // is present in arraydata, if it is
-                // present add new selected shift
-                if (arraydata.some(key => key.shiftcode === defValue) && arraydata.some(key => key.shiftcode === notappValue)) {
-                    const newdata = {
-                        id: Math.ceil(Math.random() * 1000),
-                        shiftcode: getshifts,
-                        shiftDescription: shiftnameselect,
-                    }
-                    const newdatas = [...arraydata, newdata]
-                    arraydataset(newdatas)
+                const newdata = {
+                    id: Math.ceil(Math.random() * 1000),
+                    shiftcode: getshifts,
+                    shiftDescription: shiftnameselect,
                 }
-                else {
-                    //adding selected shift first time with default and not applicable
-                    const defautdata = {
-                        id: Math.ceil(Math.random() * 1000),
-                        shiftcode: defValue,
-                        shiftDescription: 'default',
-                    }
-                    const noappdata = {
-                        id: Math.ceil(Math.random() * 1000),
-                        shiftcode: notappValue,
-                        shiftDescription: 'NA',
-                    }
-                    const newdata = {
-                        id: Math.ceil(Math.random() * 1000),
-                        shiftcode: getshifts,
-                        shiftDescription: shiftnameselect,
-                    }
-                    const newdatas = [...arraydata, defautdata, noappdata, newdata]
-                    arraydataset(newdatas)
-                }
+                const newdatas = [...arraydata, newdata]
+                arraydataset(newdatas)
             }
         }
     }
@@ -100,9 +75,30 @@ const DepartmentShiftMast = () => {
         newdata.splice(index, 1);
         arraydataset(newdata)
     }
+
+
     //saving department shift master
     const submitFormData = async (e) => {
         e.preventDefault();
+        const defautdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: defValue,
+            shiftDescription: 'default',
+        }
+        const noappdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: notappValue,
+            shiftDescription: 'NA',
+        }
+        const newdatas = [...arraydata, defautdata, noappdata]
+
+        const postData = {
+            dept_id: selectedDept,
+            sect_id: selectDeptSection,
+            shft_code: newdatas,
+            updated_user: employeeNumber()
+        }
+
         const result = await axioslogin.post('/departmentshift', postData)
         const { success, message } = result.data
         if (success === 1) {
@@ -114,7 +110,7 @@ const DepartmentShiftMast = () => {
             arraydataset([])
         }
         else if (success === 0) {
-            infoNofity("Shift Is Already Assigned To This Section")
+            infoNofity("Department Already Mapped, Please Edit!! ")
             updateSelected(0)
             updateDepartmentSection(0)
             updateShifts(0)

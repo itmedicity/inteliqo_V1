@@ -13,11 +13,15 @@ import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import DepartmentShiftCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/DepartmentShiftCard';
 import DepartmentShiftTable from './DepartmentShiftTable';
 import { useParams, useHistory } from 'react-router'
+import { useCallback } from 'react';
+import { ToastContainer } from 'react-bootstrap';
 
 const DepartmentShiftEdit = () => {
     const { id } = useParams()
     const history = useHistory()
     const [arraydata, arraydataset] = useState([])
+    const [defValue, setdefValue] = useState(0)
+    const [notappValue, setnotappValue] = useState(0)
     const
         {
             selectedDept, updateSelected,
@@ -25,6 +29,26 @@ const DepartmentShiftEdit = () => {
             getshifts, updateShifts, shiftnameselect
         } = useContext(PayrolMasterContext)
 
+
+    //getting common setting data
+    useEffect(() => {
+        const getSettingsData = async () => {
+            const result = await axioslogin.get('/commonsettings')
+            const { success, data } = result.data;
+            const { default_shift, notapplicable_shift } = data[0]
+            if (success === 1) {
+                setdefValue(default_shift)
+                setnotappValue(notapplicable_shift)
+            }
+        }
+        getSettingsData()
+        return () => {
+            setdefValue([])
+            setnotappValue([])
+        }
+    }, [])
+
+    //get selected shift details from database
     useEffect(() => {
         const getdepartmentShiftData = async () => {
             const result = await axioslogin.get(`/departmentshift/${id}`)
@@ -34,35 +58,45 @@ const DepartmentShiftEdit = () => {
                 const obj = JSON.parse(shft_code);
                 updateSelected(dept_id)
                 updateDepartmentSection(sect_id)
-                arraydataset(obj)
-
+                arraydataset(obj.filter(val => val.shiftcode !== 1000 && val.shiftcode !== 0))
+            }
+            else {
+                updateSelected(0)
+                updateDepartmentSection(0)
+                arraydataset([])
             }
         }
         getdepartmentShiftData()
 
     }, [selectedDept, updateDepartmentSection, updateSelected, id])
-    const postData = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection,
-        shft_code: arraydata,
-        updated_user: employeeNumber(),
-        dept_shift_Slno: id,
-    }
+
     //adding shifts to table
     const getShiftData = () => {
-        const newdata = {
-            id: Math.ceil(Math.random() * 1000),
-            shiftcode: getshifts,
-            shiftDescription: shiftnameselect,
-        }
-        if (arraydata.some(key => key.shiftcode == getshifts)) {
-            warningNofity("Shift Time Already Added!!")
+        if (notappValue === null && defValue === null) {
+            warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            const newdatas = [...arraydata, newdata]
-            arraydataset(newdatas)
+            if ((getshifts === defValue)) {
+                warningNofity("Default Already Exist!!")
+            }
+            else if (getshifts === notappValue) {
+                warningNofity("NA Already Exist!!")
+            }
+            else if (arraydata.some(key => key.shiftcode === getshifts)) {
+                warningNofity("Shift Time Already Added!!")
+            }
+            else {
+                const newdata = {
+                    id: Math.ceil(Math.random() * 1000),
+                    shiftcode: getshifts,
+                    shiftDescription: shiftnameselect,
+                }
+                const newdatas = [...arraydata, newdata]
+                arraydataset(newdatas)
+            }
         }
     }
+
     //removing shift from table
     const onClickdelete = (checkid) => {
         const newdata = [...arraydata]
@@ -70,29 +104,56 @@ const DepartmentShiftEdit = () => {
         newdata.splice(index, 1);
         arraydataset(newdata)
     }
-    //saving department shift master
-    const submitFormData = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.patch('/departmentshift', postData)
-        const { success, message } = result.data
-        if (success === 2) {
-            succesNofity(message)
-            updateSelected(0)
-            updateDepartmentSection(0)
-            updateShifts(0)
-            arraydataset([])
-            history.push('/Home/DepartmentShift')
 
+    //saving department shift master
+    const submitFormData = useCallback((e) => {
+        e.preventDefault();
+        const defautdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: defValue,
+            shiftDescription: 'default',
         }
-        else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+        const noappdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: notappValue,
+            shiftDescription: 'NA',
         }
-    }
+        const newdatas = [...arraydata, defautdata, noappdata]
+        const postData = {
+            dept_id: selectedDept,
+            sect_id: selectDeptSection,
+            shft_code: newdatas,
+            updated_user: employeeNumber(),
+            dept_shift_Slno: id,
+        }
+        const UpdateSubmit = async (postData) => {
+            const result = await axioslogin.patch('/departmentshift', postData)
+            const { success, message } = result.data
+            if (success === 2) {
+                succesNofity(message)
+                updateSelected(0)
+                updateDepartmentSection(0)
+                updateShifts(0)
+                arraydataset([])
+                setnotappValue(0)
+                setdefValue(0)
+                history.push('/Home/DepartmentShift')
+            }
+            else {
+                errorNofity("Error Occured!!!Please Contact EDP")
+            }
+        }
+        if (arraydata !== 0) {
+            UpdateSubmit(postData)
+        }
+    }, [arraydata])
+
     const RedirectToProfilePage = () => {
         history.push('/Home/Settings')
     }
     return (
         <Fragment>
+            <ToastContainer />
             <PageLayoutSave
                 heading="Department Shift Master"
                 redirect={RedirectToProfilePage}

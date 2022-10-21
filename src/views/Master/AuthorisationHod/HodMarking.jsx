@@ -21,7 +21,7 @@ const HodMarking = () => {
     const [authorization, setAuthorization] = useState(0)
     const [count, setcount] = useState(0)
     const { getDeptSection, selectempName, selectDeptSec,
-        employeedetails } = useContext(PayrolMasterContext)
+        employeedetails, updateDeptSection, updateDeptSec, updateEmpName } = useContext(PayrolMasterContext)
     const { em_no } = employeedetails
 
     const updateAuthorization = async (e) => {
@@ -61,6 +61,12 @@ const HodMarking = () => {
         if (success === 1) {
             setcount(count + 1)
             succesNofity(message);
+            updateDeptSection(0)
+            updateDeptSec(0)
+            updateEmpName(0)
+            sethod(false)
+            setincharge(false)
+
         } else if (success === 0) {
             infoNofity(message.sqlMessage);
         } else {
