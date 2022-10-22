@@ -6,11 +6,11 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
 import { setBranch } from 'src/redux/actions/Branch.Action'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-
+import { setDept } from 'src/redux/actions/Dept.Action';
+import _ from 'underscore';
 
 const OneYearCurrentRunning = () => {
 
@@ -29,7 +29,8 @@ const OneYearCurrentRunning = () => {
     /** To get stored branch values from redux */
     useEffect(() => {
         dispatch(setBranch());
-        dispatch(setDepartment());
+        //dispatch(setDepartment());
+        dispatch(setDept())
         dispatch(setDeptWiseSection());
     }, [dispatch])
 
@@ -38,11 +39,11 @@ const OneYearCurrentRunning = () => {
         return {
             empBranch: state.getBranchList.branchList || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            dept: state.getdept.departmentlist || 0,
         }
-    })
+    }, _.isEqual)
     /** Destructuring state into values... */
-    const { empBranch, empDepartment, deptSection } = state
+    const { empBranch, dept, deptSection } = state
 
     /** Selction checkbox for branch name  */
     const [columnDefs] = useState([
@@ -85,12 +86,12 @@ const OneYearCurrentRunning = () => {
     useEffect(() => {
         if (secondMenu === 1) {
             if (slno !== 0) {
-                return empDepartment
+                return dept
             } else {
                 warningNofity("Please Select Any Branch!")
             }
         }
-    }, [secondMenu, slno, empDepartment])
+    }, [secondMenu, slno, dept])
 
     /** Selection check box for department */
     const [columnDefDept] = useState([
@@ -295,7 +296,7 @@ const OneYearCurrentRunning = () => {
 
                 /** Department checkbox list */
                 columnDefMenu2={columnDefDept}
-                tableDataMenu2={empDepartment}
+                tableDataMenu2={dept}
                 thirdmenu={thirdmenu}
                 onSelectionChanged3={onSelectionChanged3}
 

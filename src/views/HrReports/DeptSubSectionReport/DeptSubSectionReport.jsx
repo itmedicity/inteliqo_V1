@@ -19,7 +19,7 @@ const DeptSubSectionReport = () => {
 
     /** To get stored  values from redux */
     const dispatch = useDispatch();
-    const [rowData, setRowData] = useState([
+    const [rowData] = useState([
         { field: 'General', dept_sub_sect: 1 },
         { field: 'OT', dept_sub_sect: 2 },
         { field: 'ICU', dept_sub_sect: 3 },
@@ -68,7 +68,7 @@ const DeptSubSectionReport = () => {
 
             }
         }
-    }, [secondMenu, slno])
+    }, [secondMenu, slno, dispatch])
 
     // get section list from redux
     const empSubSect = useSelector((state) => {
@@ -140,7 +140,7 @@ const DeptSubSectionReport = () => {
         else {
             warningNofity("Please Select Any Section Type!")
         }
-    }, [datainsert, dispatch])
+    }, [datainsert, dispatch, slno, Secslno])
 
     /** District wise report ag grid table heading */
     const [columnDefMain] = useState([

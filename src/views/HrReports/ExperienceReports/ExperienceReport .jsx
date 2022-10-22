@@ -5,11 +5,11 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { setEmployeeName } from 'src/redux/actions/EmpName.Action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const ExperienceReport = () => {
 
@@ -27,7 +27,7 @@ const ExperienceReport = () => {
 
     /** To get stored department values from redux */
     useEffect(() => {
-        dispatch(setDepartment());
+        dispatch(setDept())
         dispatch(setDeptWiseSection());
         dispatch(setEmployeeName());
     }, [dispatch])
@@ -35,13 +35,13 @@ const ExperienceReport = () => {
     /** useSelector for getting depatment, department section, employee name wise list from redux */
     const state = useSelector((state) => {
         return {
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            dept: state.getdept.departmentlist || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
             empName: state.getEmpNameList.empNameList || 0
         }
     })
     /** Destructuring state into values... */
-    const { empDepartment, deptSection, empName } = state
+    const { dept, deptSection, empName } = state
 
     /** Selction checkbox for department name  */
     const [columnDefs] = useState([
@@ -277,7 +277,7 @@ const ExperienceReport = () => {
             <CustomReportMain
                 /** Department checkbox */
                 columnDefs={columnDefs}
-                tableData={empDepartment}
+                tableData={dept}
                 onSelectionChanged={onSelectionChanged}
                 menu1={"Department"}
                 secondMenu={secondMenu}

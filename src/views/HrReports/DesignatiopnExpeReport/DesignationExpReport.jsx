@@ -22,7 +22,6 @@ const DesignationExpReport = () => {
     const [value, setValue] = useState(0);
     const serialslno = useMemo(() => slno, [slno]);
     /** dropdown for experience */
-    const [getvalue, Setgetvalue] = useState(0)
     const [exp, setExp] = useState(0)
 
     /** to get stored designation values from redux */
@@ -73,13 +72,11 @@ const DesignationExpReport = () => {
     }, [value])
 
     /** to get first textfield values */
-    const [message, setmessage] = useState(0)
     const handleChange = (e) => {
         setLessSlno(e.target.value)
     }
 
     /** to get second textfield values */
-    const [message2, setmessage2] = useState([])
     const handleChange2 = (e) => {
         setGreaterSlno(e.target.value)
 

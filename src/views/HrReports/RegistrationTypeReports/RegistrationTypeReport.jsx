@@ -5,10 +5,10 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import Custom_Report_Two from 'src/views/Component/Custom_Report_Two';
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const RegistrationTypeReport = () => {
     /** Initiliazing values for tabale data*/
@@ -21,17 +21,17 @@ const RegistrationTypeReport = () => {
     /** To get stored  values from redux */
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setDepartment());
+        dispatch(setDept());
         dispatch(setDeptWiseSection());
     }, [dispatch])
 
     /** useSelector for getting department list and department wise section list */
     const state = useSelector((state) => {
-        return { empDepartment: state.getDepartmentList.empDepartmentList || 0, deptSection: state.getDeptSectList.deptSectionList || 0 }
+        return { dept: state.getdept.departmentlist || 0, deptSection: state.getDeptSectList.deptSectionList || 0 }
 
     })
     /** destructuring the state */
-    const { empDepartment, deptSection } = state
+    const { dept, deptSection } = state
 
     /** Left side selction checkbox for department list */
     const [columnDefs] = useState([
@@ -186,7 +186,7 @@ const RegistrationTypeReport = () => {
             <Custom_Report_Two
                 /** to display left side first selection checkbox list */
                 columnDefs={columnDefs}
-                tableData={empDepartment}
+                tableData={dept}
                 menu1={"Department"}
                 menu2={"Department Section"}
 
