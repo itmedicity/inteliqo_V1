@@ -44,6 +44,7 @@ import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList } from '../reducers/Shift.Reducer'
+import { getCommonSettings } from './CommonSett.Reducer';
 
 const reducer = combineReducers({
     changeState,
@@ -91,7 +92,8 @@ const reducer = combineReducers({
     getUserRights,
     getdept,
     getDeptSecList,
-    getShiftList
+    getShiftList,
+    getCommonSettings
 
 })
 

@@ -109,10 +109,10 @@ export const Actiontypes = {
     FETCH_DEPARTMENTSECTION: "FETCH_DEPARTMENTSECTION",
 
     //for getting shift hours from databse
-    FETCH_SHIFT_DATA: "FETCH_SHIFT_DATA"
+    FETCH_SHIFT_DATA: "FETCH_SHIFT_DATA",
 
-
-
+    //for getting the Common Settig 
+    FETCH_COMMON_SETTING: "FETCH_COMMON_SETTING"
 
 
 

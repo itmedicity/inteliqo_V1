@@ -7,8 +7,13 @@ import DashAlertCmp from './Components/DashAlertCmp';
 import HolidayList from './Components/HolidayList';
 import LeavesDashbod from './Components/LeavesDashbod';
 import { Paper } from '@mui/material';
+import { useEffect } from 'react';
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
+    const dispatch = useDispatch();
+    useEffect(() => dispatch(setCommonSetting()), [])
     return (
         <Fragment>
             {/* Top Time Display and Notification Icon Bar */}

@@ -6,17 +6,30 @@ import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 
 
 
-const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, duty, count, update, empID, duty1, setmodelstatus, setemid, setOpen, state, setstate }) => {
+const DutyPlanningMainCard = ({
+    dateformat, // Date Format --> {date: 'Oct-1-Sa', sunday: '6'}
+    employeedata, // Selected Employee Data
+    startdate, // Selected Start Date
+    enddate, // Selected End Date
+    duty, // after inserting the default shift "duty" state canged to 1
+    count,  //Click function state each click count + 1
+    update,
+    empID,
+    duty1, // after inserting the default shift "duty" state canged to 1
+    setmodelstatus,
+    setemid,
+    setOpen,
+    state,
+    setstate }) => {
 
-    useEffect(() => {
-
-    }, [count, employeedata, update, state])
+    useEffect(() => { }, [count, employeedata, update, state])
     //function for opening model
     const openmodel = async (id) => {
         setemid(id)
         setOpen(true)
         setmodelstatus(1)
     }
+
     return (
         <Fragment>
             <div className="card">
@@ -57,6 +70,9 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
                                 <tbody>
                                     <Suspense fallback={<LinearProgress />} >
                                         {
+                                            /**
+                                             * After updating the onclick modal this map will render and display the table
+                                             */
                                             update === 1 && state !== 0 ? employeedata.map((name) => {
                                                 const data = {
                                                     emp_id: name.em_id,
@@ -91,6 +107,10 @@ const DutyPlanningMainCard = ({ dateformat, employeedata, startdate, enddate, du
 
                                             }) : null}
                                         {
+
+                                            /**
+                                             * Initial rendering the duty plan table
+                                             */
 
                                             update === 0 || state === 0 ?
                                                 employeedata.map((name) => {

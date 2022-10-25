@@ -15,13 +15,13 @@ import DepartmentShiftTable from './DepartmentShiftTable';
 import { useParams, useHistory } from 'react-router'
 import { useCallback } from 'react';
 import { ToastContainer } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const DepartmentShiftEdit = () => {
     const { id } = useParams()
     const history = useHistory()
     const [arraydata, arraydataset] = useState([])
-    const [defValue, setdefValue] = useState(0)
-    const [notappValue, setnotappValue] = useState(0)
     const
         {
             selectedDept, updateSelected,
@@ -29,24 +29,9 @@ const DepartmentShiftEdit = () => {
             getshifts, updateShifts, shiftnameselect
         } = useContext(PayrolMasterContext)
 
+    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
+    const { notapplicable_shift, default_shift } = state;
 
-    //getting common setting data
-    useEffect(() => {
-        const getSettingsData = async () => {
-            const result = await axioslogin.get('/commonsettings')
-            const { success, data } = result.data;
-            const { default_shift, notapplicable_shift } = data[0]
-            if (success === 1) {
-                setdefValue(default_shift)
-                setnotappValue(notapplicable_shift)
-            }
-        }
-        getSettingsData()
-        return () => {
-            setdefValue([])
-            setnotappValue([])
-        }
-    }, [])
 
     //get selected shift details from database
     useEffect(() => {
@@ -72,14 +57,14 @@ const DepartmentShiftEdit = () => {
 
     //adding shifts to table
     const getShiftData = () => {
-        if (notappValue === null && defValue === null) {
+        if (notapplicable_shift === null && default_shift === null) {
             warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            if ((getshifts === defValue)) {
+            if ((getshifts === default_shift)) {
                 warningNofity("Default Already Exist!!")
             }
-            else if (getshifts === notappValue) {
+            else if (getshifts === notapplicable_shift) {
                 warningNofity("NA Already Exist!!")
             }
             else if (arraydata.some(key => key.shiftcode === getshifts)) {
@@ -110,12 +95,12 @@ const DepartmentShiftEdit = () => {
         e.preventDefault();
         const defautdata = {
             id: Math.ceil(Math.random() * 1000),
-            shiftcode: defValue,
+            shiftcode: default_shift,
             shiftDescription: 'default',
         }
         const noappdata = {
             id: Math.ceil(Math.random() * 1000),
-            shiftcode: notappValue,
+            shiftcode: notapplicable_shift,
             shiftDescription: 'NA',
         }
         const newdatas = [...arraydata, defautdata, noappdata]
@@ -135,8 +120,6 @@ const DepartmentShiftEdit = () => {
                 updateDepartmentSection(0)
                 updateShifts(0)
                 arraydataset([])
-                setnotappValue(0)
-                setdefValue(0)
                 history.push('/Home/DepartmentShift')
             }
             else {

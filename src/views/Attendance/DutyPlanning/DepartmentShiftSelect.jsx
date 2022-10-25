@@ -1,14 +1,19 @@
 
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColor }) => {
     const { plan_slno, shift_id, attendance_update_flag } = data;
     const [shft, setShift] = useState(shift_id)
+
+    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual)
+    const { week_off_day, notapplicable_shift } = commonState;
+
     const handleChange = (e) => {
         // const planDate = moment(duty_day).format('YYYY-MM-DD');
         const shiftId = e.target.value;
-        const offday = e.target.value === '1002' ? 1 : 0
+        const offday = e.target.value === week_off_day ? 1 : 0
         const planSlno = plan_slno;
         const newShift = { shiftSlno: planSlno, shiftId: shiftId, offday: offday }
         setShift(shiftId)
@@ -34,7 +39,7 @@ const DepartmentShiftSelect = ({ index, data, setDutyPlan, planArray, changeColo
             <select className="custom-select"
                 onChange={(e) => { handleChange(e) }}
                 value={shft}
-                disabled={attendance_update_flag === 1 ? true : false}
+                disabled={attendance_update_flag === 1 || shft === notapplicable_shift ? true : false}
 
             >
                 <option defaultValue={0}>Choose...</option>

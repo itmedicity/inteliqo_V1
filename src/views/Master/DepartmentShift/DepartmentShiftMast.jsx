@@ -13,13 +13,13 @@ import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import DepartmentShiftCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/DepartmentShiftCard';
 import DepartmentShiftTable from './DepartmentShiftTable';
 import { useHistory } from 'react-router'
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const DepartmentShiftMast = () => {
     const history = useHistory()
     const [arraydata, arraydataset] = useState([])
     const [count, setCount] = useState(0)
-    const [defValue, setdefValue] = useState(0)
-    const [notappValue, setnotappValue] = useState(0)
     const
         {
             selectedDept, updateSelected,
@@ -28,30 +28,19 @@ const DepartmentShiftMast = () => {
 
         } = useContext(PayrolMasterContext)
 
-    //getting common setting data
-    useEffect(() => {
-        const getSettingsData = async () => {
-            const result = await axioslogin.get('/commonsettings')
-            const { success, data } = result.data;
-            const { default_shift, notapplicable_shift } = data[0]
-            if (success === 1) {
-                setdefValue(default_shift)
-                setnotappValue(notapplicable_shift)
-            }
-        }
-        getSettingsData()
-    })
+    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
+    const { notapplicable_shift, default_shift } = state;
 
     //adding shifts to table
     const getShiftData = () => {
-        if (notappValue === null && defValue === null) {
+        if (notapplicable_shift === null && default_shift === null) {
             warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            if ((getshifts === defValue)) {
+            if ((getshifts === default_shift)) {
                 warningNofity("Default Already Exist!!")
             }
-            else if (getshifts === notappValue) {
+            else if (getshifts === notapplicable_shift) {
                 warningNofity("NA Already Exist!!")
             }
             else if (arraydata.some(key => key.shiftcode === getshifts)) {
@@ -82,12 +71,12 @@ const DepartmentShiftMast = () => {
         e.preventDefault();
         const defautdata = {
             id: Math.ceil(Math.random() * 1000),
-            shiftcode: defValue,
+            shiftcode: default_shift,
             shiftDescription: 'default',
         }
         const noappdata = {
             id: Math.ceil(Math.random() * 1000),
-            shiftcode: notappValue,
+            shiftcode: notapplicable_shift,
             shiftDescription: 'NA',
         }
         const newdatas = [...arraydata, defautdata, noappdata]

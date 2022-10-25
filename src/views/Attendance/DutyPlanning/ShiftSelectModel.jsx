@@ -6,36 +6,47 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftSelect from './ShiftSelect';
 import moment from 'moment'
+import _ from 'underscore';
+import { useSelector } from 'react-redux';
 const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, setupdate }) => {
-    const rage = eachDayOfInterval(
-        { start: new Date(startdate), end: new Date(enddate) }
-    )
+    const rage = eachDayOfInterval({ start: new Date(startdate), end: new Date(enddate) })
+
+    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual)
+    const { week_off_day } = commonState;
+
     //finding the dates between start date and end date
     const newDateFormat = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD'), sunday: moment(val).format('d') } })
     const weeklyoff = newDateFormat.map((val) => {
         return val.sunday === '0' ? val.date : 0
     })
+
+    const weeklyoffDayDate = weeklyoff.filter((val) => val !== 0)
+
     const [shiftid, SetShiftId] = useState(0)
-    const [approve, setApprove] = useState({
-        apprv: false
-    })
+    const [approve, setApprove] = useState({ apprv: false })
+
     const { apprv } = approve
+
     const updateData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setApprove({ ...approve, [e.target.name]: value })
     }
+
     const postData = [{
         shiftid: shiftid,
         emp_id: empid,
         startdate: startdate,
         enddate: enddate
     }]
+
+    //postdata for with weekly off daya - for weekly off day updation
     const postData2 = [{
         shiftid: shiftid,
         emp_id: empid,
-        dutydate: weeklyoff,
-
+        dutydate: weeklyoffDayDate,
+        weekOffShiftId: week_off_day
     }]
+
     const submitData = async (e) => {
         e.preventDefault();
         setupdate(0)
