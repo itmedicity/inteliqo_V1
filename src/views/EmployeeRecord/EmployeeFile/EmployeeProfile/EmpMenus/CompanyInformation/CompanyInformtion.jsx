@@ -1,6 +1,6 @@
 import { addDays, compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns'
 import React, { Fragment, useContext, useState, useEffect, memo, useMemo } from 'react'
-import { useHistory, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
@@ -19,19 +19,22 @@ import CompanyInformationTable from './CompanyInformationTable'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import moment from 'moment'
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
-import DeptSelectionRedux from 'src/views/CommonCode/DeptSelectionRedux'
 // import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSelect from 'src/views/MuiComponents/DepartmentSelect'
+import DesignationMast from 'src/views/CommonCode/DesignationMast'
+import TextInput from 'src/views/Component/TextInput'
+import { useCallback } from 'react'
+import { format } from 'date-fns'
 
 const CompanyInformtion = () => {
-    const history = useHistory()
+    //const history = useHistory()
     const { id, no } = useParams();
     const { selectBranchMast, updateBranchSelected,
         selectedDept, updateSelected,
         selectDeptSection, updateDepartmentSection,
         selectInstiType, updateInstituteSeleted,
-        getemployeecategory, udateemployeecategory, updateDeptSection, getDeptSection
+        getemployeecategory, udateemployeecategory, updateDeptSection, getDeptSection,
+        selectDesignation, updateDesignation
     } = useContext(PayrolMasterContext)
 
     // to check the annpual leave procee wheter ist from category change
@@ -88,13 +91,19 @@ const CompanyInformtion = () => {
     const [empstatus, setempStatus] = useState(0)
     const [probsataus, setProbstatus] = useState(0)
     const [probationperiod, setProbationPeriod] = useState(0);
+
+    const [ineffectdate, setineffectdate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [designation, setdesignation] = useState(0)
+
     //Get data
     useEffect(() => {
         const getCompany = async () => {
             const result = await axioslogin.get(`/common/getcompanydetails/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_branch, em_department, em_prob_end_date, em_dept_section, em_institution_type, em_category } = data[0]
+                const { em_branch, em_department, em_prob_end_date,
+                    em_dept_section, em_institution_type, em_category,
+                    em_designation } = data[0]
                 const frm = {
                     catemp: em_category
                 }
@@ -105,11 +114,13 @@ const CompanyInformtion = () => {
                 updateDepartmentSection(em_dept_section)
                 updateInstituteSeleted(em_institution_type)
                 udateemployeecategory(em_category)
+                updateDesignation(em_designation)
                 setcompany(em_category)
+                setdesignation(em_designation)
             }
         }
         getCompany()
-    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateDeptSection, updateInstituteSeleted, udateemployeecategory])
+    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateDeptSection, updateInstituteSeleted, udateemployeecategory, updateDesignation])
 
 
     useEffect(() => {
@@ -136,6 +147,13 @@ const CompanyInformtion = () => {
         }
     }, [getemployeecategory, cat.catemp])
 
+    const getDate = useCallback((e) => {
+        var startdate = e.target.value
+        var ineffectdate = format(new Date(startdate), "yyyy-MM-dd")
+        setineffectdate(ineffectdate)
+        return (ineffectdate)
+    }, [])
+
     //post Data
     const updateData = useMemo(() => {
         return {
@@ -153,14 +171,20 @@ const CompanyInformtion = () => {
             edit_user: employeeNumber(),
             em_id: no,
             em_no: id,
+            com_designation: designation,
+            com_designation_new: selectDesignation,
+            em_designation: selectDesignation,
+            ineffective_date: ineffectdate
         }
-    }, [selectBranchMast, selectedDept, getDeptSection, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id])
+    }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id, selectDesignation, designation, ineffectdate, selectDeptSection])
     const reset = () => {
         updateBranchSelected(0)
         updateSelected(0)
         updateDepartmentSection(0)
         updateInstituteSeleted(0)
         udateemployeecategory(0)
+        updateDesignation(0)
+        setineffectdate(format(new Date(ineffectdate), "yyyy-MM-dd"))
     }
 
     const postFormdata = useMemo(() => {
@@ -276,9 +300,9 @@ const CompanyInformtion = () => {
 
     }, [no, year])
     //Redirect
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
 
     const handleClose = () => {
@@ -410,7 +434,53 @@ const CompanyInformtion = () => {
                             </Box>
                             {/* second row end */}
 
+
                             {/* third row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                                width: "100%",
+                                pt: 0.5
+                            }}>
+                                <Box sx={{ width: "20%" }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Designation
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <TextInput
+                                        type="date"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Date"
+                                        min={new Date()}
+                                        value={ineffectdate}
+                                        name="ineffectdate"
+                                        changeTextValue={(e) => {
+                                            getDate(e)
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+                            {/* third row end */}
+
+
+
+                            {/* fourth row start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
@@ -433,7 +503,7 @@ const CompanyInformtion = () => {
                                     />
                                 </Box>
                             </Box>
-                            {/* third row end */}
+                            {/* fourth row end */}
 
                         </Box>
                     </Paper>

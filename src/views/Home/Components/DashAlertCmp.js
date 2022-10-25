@@ -3,6 +3,7 @@ import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import TestCmp from './TestCmp';
+import _ from 'underscore';
 import {
     getResignCount,
     getcontractCloseCount,
@@ -32,7 +33,7 @@ const DashAlertCmp = () => {
     //getting employee id
     const em_id = useSelector((state) => {
         return state.getProfileData.ProfileData[0].em_id
-    }, shallowEqual)
+    }, _.isEqual)
 
     //get module rights
     const modulerights = useSelector((state) => {

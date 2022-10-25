@@ -1,11 +1,10 @@
-import React, { Fragment, memo, useMemo, useRef, useState } from 'react'
+import React, { Fragment, memo, useMemo, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
-import { Backdrop, CircularProgress, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
-import CustomLoadingOverlay from './CustomLoadingOverlay'
 import CustomLoadingCellRenderer from './CustomLoadingCellRenderer'
 
 const AgGridWithLoading = ({
@@ -34,9 +33,8 @@ const AgGridWithLoading = ({
         filter: 'agTextColumnFilter',
     }
 
-    let gridApi
     const onGridReady = (params) => {
-        gridApi = params.api
+        let gridApi = params.api
     }
 
     const rowStyle = {
