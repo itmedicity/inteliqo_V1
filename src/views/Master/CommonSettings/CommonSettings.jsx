@@ -19,6 +19,7 @@ const CommonSettings = () => {
     const [value, setValue] = useState(0)
     const [defshift, setDefShift] = useState(0)
     const [notappshift, setnoappshift] = useState(0)
+    const [workoff, setworkoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -44,7 +45,6 @@ const CommonSettings = () => {
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level } = FormData
 
-
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -58,7 +58,8 @@ const CommonSettings = () => {
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
-                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift } = data[0]
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift, week_off_day } = data[0]
+
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -83,6 +84,7 @@ const CommonSettings = () => {
                 setFormData(frmData)
                 setDefShift(default_shift === null ? 0 : default_shift)
                 setnoappshift(notapplicable_shift === null ? 0 : notapplicable_shift)
+                setworkoff(week_off_day === null ? 0 : week_off_day)
                 setValue(1)
             }
             else if (success === 0) {
@@ -117,7 +119,9 @@ const CommonSettings = () => {
         creat_user: em_id,
         verification_level: verification_level,
         default_shift: defshift,
-        notapplicable_shift: notappshift
+        notapplicable_shift: notappshift,
+        week_off_day: workoff
+
     }
     //data to edit
     const postDataEdit = {
@@ -142,7 +146,8 @@ const CommonSettings = () => {
         setting_slno: slno,
         verification_level: verification_level,
         default_shift: defshift,
-        notapplicable_shift: notappshift
+        notapplicable_shift: notappshift,
+        week_off_day: workoff
     }
 
     //save
@@ -594,6 +599,17 @@ const CommonSettings = () => {
                                                     </div>
                                                     <div className="col-md-8">
                                                         <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Work OFF</Typography>
+                                                    </div>
+                                                    <div className="col-md-8">
+                                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
                                                     </div>
                                                 </div>
                                             </div>
