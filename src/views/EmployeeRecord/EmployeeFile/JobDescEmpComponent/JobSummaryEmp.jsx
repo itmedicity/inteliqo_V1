@@ -2,8 +2,6 @@ import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import TextInput from 'src/views/Component/TextInput';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
@@ -17,9 +15,10 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
         reportingdesignation: '',
         scope: '',
         equipment_used: '',
-        workplace: ''
+        workplace: '',
+        workingHours: ''
     })
-    const { objective, report_dept, reportingdesignation, scope, equipment_used, workplace } = formData
+    const { objective, report_dept, scope, equipment_used, workplace, workingHours } = formData
     useEffect(() => {
         if (selectedDept !== 0 && selectDesignation !== 0) {
             const getJobSummaryEmp = async () => {
@@ -30,14 +29,15 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
                 const result = await axioslogin.post('/jobsummary/getjobsummary', postData)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { equipment_used, objective, report_dept, reportingdesignation, scope, branch_name } = data[0]
+                    const { equipment_used, objective, reporting_dept, scope, branch_name, working_hour } = data[0]
                     const frmData = {
                         objective: objective,
-                        report_dept: report_dept,
-                        reportingdesignation: reportingdesignation,
+                        report_dept: reporting_dept,
+                        //reportingdesignation: reportingdesignation,
                         scope: scope,
                         equipment_used: equipment_used,
-                        workplace: branch_name
+                        workplace: branch_name,
+                        workingHours: working_hour
                     }
                     setFormData(frmData)
                 }
@@ -45,6 +45,10 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
             getJobSummaryEmp()
         }
     }, [selectedDept, selectDesignation])
+
+    const hours = workingHours.slice(1, -1);
+    const reporting = report_dept && report_dept.toLowerCase()
+
     return (
         <Fragment>
             <ToastContainer />
@@ -166,6 +170,28 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
 
                     </Box>
                 </Box>
+
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
+                    <Box sx={{ display: 'flex', width: '20%' }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Working Hours
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '100%' }}>
+                        <Box sx={{ display: 'flex', }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '80%', textTransform: "capitalize" }}>
+                            {hours.toLowerCase()}
+                        </Box>
+
+                    </Box>
+                </Box>
+
                 <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
                     <Box sx={{ display: 'flex', width: '20%' }}>
                         <CssVarsProvider>
@@ -181,16 +207,16 @@ const JobSummaryEmp = ({ selectDesignationName, selectedDeptName, selectDesignat
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
-                            {report_dept.toLowerCase()}
+                            {reporting}
                         </Box>
-                        <Box sx={{ display: 'flex', }}>
+                        {/* <Box sx={{ display: 'flex', }}>
                             <CssVarsProvider>
                                 <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
                             {reportingdesignation.toLowerCase()}
-                        </Box>
+                        </Box> */}
 
                     </Box>
                 </Box>

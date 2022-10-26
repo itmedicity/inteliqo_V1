@@ -606,7 +606,7 @@ const CommonSettings = () => {
                                                 <div className="row">
                                                     <div className="col-md-1"></div>
                                                     <div className="col-md-3 pt-1">
-                                                        <Typography>Work OFF</Typography>
+                                                        <Typography>Week OFF</Typography>
                                                     </div>
                                                     <div className="col-md-8">
                                                         <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />

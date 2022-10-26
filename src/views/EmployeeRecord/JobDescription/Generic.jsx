@@ -232,7 +232,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={SaveJobGeneric}>
+                    <IconButton variant="outlined" size='sm' onClick={SaveJobGeneric} sx={{ color: 'green' }}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
@@ -302,7 +302,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                 </Box>
                             </Box>
                             <Box sx={{ flex: 0 }} >
-                                <IconButton variant="outlined" size='sm' onClick={addExperienceItem}>
+                                <IconButton variant="outlined" size='sm' onClick={addExperienceItem} sx={{ color: 'blue' }}>
                                     <AddToPhotosIcon />
                                 </IconButton>
                             </Box>

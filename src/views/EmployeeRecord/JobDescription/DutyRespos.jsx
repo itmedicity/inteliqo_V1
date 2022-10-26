@@ -139,7 +139,7 @@ const DutyRespos = ({ jobedit, selectDesignation, selectedDept, selectDeptSectio
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={SubmitFormData}>
+                    <IconButton variant="outlined" size='sm' onClick={SubmitFormData} sx={{ color: 'green' }}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
@@ -160,7 +160,7 @@ const DutyRespos = ({ jobedit, selectDesignation, selectedDept, selectDeptSectio
                         />
                     </Box>
                     <Box sx={{ flex: 0, }} >
-                        <IconButton variant="outlined" size='sm' onClick={addDuties}>
+                        <IconButton variant="outlined" size='sm' onClick={addDuties} sx={{ color: 'blue' }}>
                             <AddToPhotosIcon />
                         </IconButton>
                     </Box>

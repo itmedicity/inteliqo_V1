@@ -25,6 +25,8 @@ import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
 import { useCallback } from 'react'
 import { format } from 'date-fns'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCategory } from 'src/redux/actions/Category.Action'
 
 const CompanyInformtion = () => {
     //const history = useHistory()
@@ -94,6 +96,19 @@ const CompanyInformtion = () => {
 
     const [ineffectdate, setineffectdate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [designation, setdesignation] = useState(0)
+    const [empcatory, setempcat] = useState(0)
+
+
+    /** to get stored category values from redux */
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setCategory());
+    }, [dispatch])
+
+    /** to get employee category details from redux */
+    const empCate = useSelector((state) => {
+        return state.getEmployeeCategory.empCategory || 0
+    })
 
     //Get data
     useEffect(() => {
@@ -129,8 +144,9 @@ const CompanyInformtion = () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { ecat_cont_period, ecat_prob_period } = data[0]
+                    const { ecat_cont_period, ecat_prob_period, emp_type } = data[0]
                     setProbationPeriod(addDays(new Date, ecat_prob_period))
+                    setempcat(emp_type)
                     if (ecat_cont_period > 0) {
                         setempStatus(1)
                     }
@@ -304,10 +320,10 @@ const CompanyInformtion = () => {
     //     history.push(`/Home/Profile/${id}/${no}`)
     // }
 
-
     const handleClose = () => {
         setmodellist(false)
     }
+
     return (
         <Fragment>
             {modelvalue === 1 ? <ModelLeaveProcess

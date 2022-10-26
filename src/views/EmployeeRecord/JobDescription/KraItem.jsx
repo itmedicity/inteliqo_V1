@@ -25,6 +25,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     minRows={1}
                     placeholder="Sourcing"
                     value={val.kra_desc}
+                    disabled={true}
                 />
             </Box>
             <Box sx={{ flex: 3, px: 0.5 }} >
@@ -33,6 +34,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     minRows={1}
                     placeholder=""
                     value={val.kpi}
+                    disabled={true}
                 />
             </Box>
             <Box sx={{ flex: 1, px: 0.5 }} >
@@ -41,6 +43,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
                     minRows={1}
                     placeholder=""
                     value={val.kpi_score}
+                    disabled={true}
                 />
             </Box>
             {/* <Box sx={{ flex: 3, }} >
