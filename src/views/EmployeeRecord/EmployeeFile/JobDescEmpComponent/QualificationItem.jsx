@@ -8,6 +8,9 @@ import { memo } from 'react';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 
 const QualificationItem = ({ val }) => {
+
+    const cour_desc = val.cour_desc && val.cour_desc.toLowerCase();
+
     return (
         <Box sx={{ display: "flex", width: "100%", alignItems: "center", px: 0.1 }} >
             <Box sx={{ display: 'flex', width: '100%' }}>
@@ -20,7 +23,7 @@ const QualificationItem = ({ val }) => {
 
                 </Box>
                 <Box sx={{ display: 'flex', width: '80%', textTransform: 'capitalize', }}>
-                    {val.cour_desc.toLowerCase()}
+                    {cour_desc}
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', width: '100%' }}>

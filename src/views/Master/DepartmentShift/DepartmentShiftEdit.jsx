@@ -43,7 +43,7 @@ const DepartmentShiftEdit = () => {
                 const obj = JSON.parse(shft_code);
                 updateSelected(dept_id)
                 updateDepartmentSection(sect_id)
-                arraydataset(obj.filter(val => val.shiftcode !== 1000 && val.shiftcode !== 0))
+                arraydataset(obj.filter(val => val.shiftcode !== notapplicable_shift && val.shiftcode !== default_shift))
             }
             else {
                 updateSelected(0)

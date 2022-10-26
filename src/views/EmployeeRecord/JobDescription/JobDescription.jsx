@@ -95,13 +95,13 @@ const JobDescription = () => {
                         </Box>
                         <Tooltip title="Job Description View" followCursor placement='top' arrow >
                             <Box>
-                                <IconButton variant="outlined" size='sm' onClick={ViewPage}>
+                                <IconButton variant="outlined" size='sm' onClick={ViewPage} sx={{ color: 'primary' }}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </Box>
                         </Tooltip>
                         <Box sx={{ pl: 1 }}>
-                            <IconButton variant="outlined" size='sm' onClick={Redirect}>
+                            <IconButton variant="outlined" size='sm' onClick={Redirect} sx={{ color: 'red' }}>
                                 <CloseIcon />
                             </IconButton>
                         </Box>
@@ -127,7 +127,7 @@ const JobDescription = () => {
                             <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
                         <Box sx={{ flex: 0, px: 0.5 }} >
-                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary}>
+                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary} sx={{ color: 'blue' }}>
                                 <AddToPhotosIcon />
                             </IconButton>
                         </Box>

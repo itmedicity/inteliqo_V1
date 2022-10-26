@@ -178,7 +178,7 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={saveJobSpecification}>
+                    <IconButton variant="outlined" size='sm' onClick={saveJobSpecification} sx={{ color: 'green' }}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
@@ -205,7 +205,7 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                         />
                     </Box>
                     <Box sx={{ flex: 1, px: 2 }} >
-                        <IconButton variant="outlined" size='sm' onClick={AddCompetencyToTable} onChange={AddKra}  >
+                        <IconButton variant="outlined" size='sm' onClick={AddCompetencyToTable} onChange={AddKra} sx={{ color: 'blue' }} >
                             <AddToPhotosIcon />
                         </IconButton>
                     </Box>

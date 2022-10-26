@@ -8,11 +8,12 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import KraItem from './KraItem';
 import KraSelect from './Jobdesccomponent/KraSelect';
-import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, succesNofity, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
+import TextInput from 'src/views/Component/TextInput';
 
 const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
@@ -44,16 +45,28 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
         setFormData({ ...formData, [e.target.name]: value })
     }
     const [perfomance, setPerformance] = useState([])
+    const [score, setScore] = useState(0)
+
     const AddKraDataToTable = () => {
-        const keyperformance = {
-            id: Math.ceil(Math.random() * 1000),
-            key_result_area: Kra,
-            kra_desc: KraName,
-            kpi: kpi,
-            kpi_score: kpiscore,
+        if (kpiscore > 100 && score < 100) {
+            warningNofity("Please Enter Score Below 100")
         }
-        setPerformance([...perfomance, keyperformance])
-        setFormData(defaultState)
+        else if (score >= 100) {
+            warningNofity("Score Must Be Below 100")
+        }
+        else {
+            setScore(Number(score) + Number(kpiscore))
+            const keyperformance = {
+                id: Math.ceil(Math.random() * 1000),
+                key_result_area: Kra,
+                kra_desc: KraName,
+                kpi: kpi,
+                kpi_score: kpiscore,
+            }
+            setPerformance([...perfomance, keyperformance])
+            setFormData(defaultState)
+            setScore(Number(score) + Number(kpiscore))
+        }
     }
 
     //function for editing kra details
@@ -138,8 +151,6 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                         kpi_score: val.kpi_score,
                         dept_id: selectedDept,
                         designation: selectDesignation
-
-
                     }
                 })
                 const result = await axioslogin.post('/jobsummary/jobspecification', saveDuties)
@@ -169,13 +180,13 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                     <Typography
                         startDecorator={<DragIndicatorOutlinedIcon color='success' />}
                         level="body2"
-                        sx={{ flex: 2 }}
+                        sx={{ flex: 2, }}
                     >
                         Job Specification : Performance
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={saveJobSpecification}>
+                    <IconButton variant="outlined" size='sm' onClick={saveJobSpecification} sx={{ color: 'green' }}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
@@ -189,7 +200,7 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                         <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE} setKraName={setKraName} />
                     </Box>
                     <Box sx={{ flex: 1, px: 2 }} >
-                        <IconButton variant="outlined" size='sm' onClick={AddKra} >
+                        <IconButton variant="outlined" size='sm' onClick={AddKra} sx={{ color: 'blue' }}>
                             <AddToPhotosIcon />
                         </IconButton>
                     </Box>
@@ -207,17 +218,25 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                             />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }} >
-                            <TextareaAutosize
+                            {/* <TextareaAutosize
                                 style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                                 minRows={1}
                                 placeholder="KPI Score"
                                 name="kpiscore"
                                 value={kpiscore}
                                 onChange={(e) => updatKeyPerformance(e)}
+                            /> */}
+                            <TextInput
+                                style={{ width: "100%", paddingLeft: 13 }}
+                                placeholder="KPI Score"
+                                type="number"
+                                name="kpiscore"
+                                value={kpiscore}
+                                changeTextValue={(e) => updatKeyPerformance(e)}
                             />
                         </Box>
                         <Box sx={{ flex: 0, px: 1 }} >
-                            <IconButton variant="outlined" size='sm' onClick={AddKraDataToTable} >
+                            <IconButton variant="outlined" size='sm' onClick={AddKraDataToTable} sx={{ color: 'blue' }} >
                                 <AddToPhotosIcon />
                             </IconButton>
                         </Box>
