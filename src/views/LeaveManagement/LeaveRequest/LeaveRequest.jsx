@@ -22,6 +22,7 @@ import { useDispatch } from 'react-redux'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import LeaveRequestTable from './LeaveRequestTable'
 import InchargeLeaveReqEmp from './Component/InchargeLeaveReqEmp'
+import { Box, Paper } from '@mui/material'
 const Input = styled('input')({
     display: 'none',
 });
@@ -651,20 +652,25 @@ const LeaveRequest = () => {
                                             em_id={is_incharge === 1 ? emplId : em_id} /> : null
                         }
                     </div>
+
                     {/* Diplay the Allowed Leave Calender */}
-                    <div className="card">
-                        <div className="row">
-                            <div className="col-md-5">
+
+                    <Box sx={{ display: 'flex', p: 0.3, width: '100%' }} >
+                        <Box sx={{ display: 'flex', width: '45%', p: 0.2, }} >
+                            <Paper sx={{ width: '100%' }} >
                                 <LeaveCalender em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
-                            </div>
-                            <div className="col-md-7">
+                            </Paper>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '65%', p: 0.2 }} >
+                            <Paper sx={{ width: '100%' }}>
                                 <LeaveRequestTable em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
-                            </div>
-                        </div>
-                    </div>
+                            </Paper>
+                        </Box>
+                    </Box>
+
                 </form>
             </PageLayoutSave >
-        </Fragment>
+        </Fragment >
     )
 }
 export default LeaveRequest

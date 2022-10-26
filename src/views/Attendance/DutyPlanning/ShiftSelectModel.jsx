@@ -12,7 +12,7 @@ const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, setupd
     const rage = eachDayOfInterval({ start: new Date(startdate), end: new Date(enddate) })
 
     const commonState = useSelector((state) => state.getCommonSettings, _.isEqual)
-    const { week_off_day } = commonState;
+    const { week_off_day, notapplicable_shift } = commonState;
 
     //finding the dates between start date and end date
     const newDateFormat = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD'), sunday: moment(val).format('d') } })
@@ -36,7 +36,8 @@ const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, setupd
         shiftid: shiftid,
         emp_id: empid,
         startdate: startdate,
-        enddate: enddate
+        enddate: enddate,
+        notApplicable: notapplicable_shift
     }]
 
     //postdata for with weekly off daya - for weekly off day updation
@@ -44,7 +45,8 @@ const ShiftSelectModel = ({ open, handleClose, empid, startdate, enddate, setupd
         shiftid: shiftid,
         emp_id: empid,
         dutydate: weeklyoffDayDate,
-        weekOffShiftId: week_off_day
+        weekOffShiftId: week_off_day,
+        notApplicable: notapplicable_shift
     }]
 
     const submitData = async (e) => {
