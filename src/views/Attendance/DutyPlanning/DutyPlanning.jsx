@@ -108,7 +108,7 @@ const DutyPlanning = () => {
   //getting employee details of selected department and department secion from redux
   const empdetlNew = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual)
 
-  // Filter the employee data for correcting the employee date of joining 
+  // Filter the employee data for correcting the employee date of
   const empdetl = empdetlNew.map((val) => {
     return {
       desg_name: val.desg_name,
