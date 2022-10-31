@@ -50,10 +50,10 @@ const LeaveRequest = () => {
     const [inchragelevel, setInchargelevel] = useState(0)
     const [hodlevel, sethodlevel] = useState(0)
     const [ceolevel, setceolevel] = useState(0)
+
     useEffect(() => {
-        getleaverequest().then((val) => {
-            setleaveslno(val)
-        })
+        getleaverequest().then((val) => setleaveslno(val))
+
         if (em_id !== '' && is_incharge !== 1) {
             dispath(getannualleave(em_id))
         }
@@ -61,6 +61,8 @@ const LeaveRequest = () => {
             dispath(getannualleave(emplId))
         }
     }, [getleaverequest, em_id, emplId])
+
+
     //if loggined user is incharge getting the department section under the incharge
     useEffect(() => {
         if (is_incharge === 1) {
@@ -85,8 +87,10 @@ const LeaveRequest = () => {
         }
 
     }, [is_incharge, em_id, is_hod])
-    //getting selected employee
+    //getting selected employee 
+    // Onchange function in the employee name selection 
     const handleChange = async (e) => {
+        console.log(e)
         SetEmpId(e)
     }
     useEffect(() => {
@@ -589,7 +593,6 @@ const LeaveRequest = () => {
                                     (is_incharge === 1 || is_hod === 1) ?
                                         <InchargeLeaveReqEmp inchargedeptSec={inchargedeptSec}
                                             hoddeptSec={hoddeptSec}
-
                                             onChange={handleChange}
                                             style={SELECT_CMP_STYLE}
                                         /> :

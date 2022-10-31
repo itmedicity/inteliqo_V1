@@ -6,7 +6,7 @@ const LeaveCalender = ({ count }) => {
     const [data, setData] = useState([])
     const [status, setstatus] = useState(false)
     const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData)
-    console.log(state)
+
     useEffect(() => {
         const { leaveData, apiStatus } = state
         setData(leaveData)

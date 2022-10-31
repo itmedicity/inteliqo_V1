@@ -352,6 +352,120 @@ const AnnualLeaveInformation = () => {
 
             } else {
                 // console.log('no contract')
+
+                const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+
+                /*
+                 * This api get the details from the table 
+                    'yearly_leave_process'
+                 * For checking the yearly process done or not if it is done 'success=== 2 '
+                 * then get the value from the yearly process table
+                 */
+
+                if (resultselect.data.success === 2) {
+                    // check the table where data present if present get the details process table
+                    /*
+                        First check the "hrm_leave_process" table for any data if there
+                        if success === 1 and if data {
+                            fetch the data from table and show in the "dataprvleave" variable
+                            values are 
+                                {category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld}
+                                hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld ==> value = 2 --> Not Applicable
+                                                                                 ==> value = 1 --> Applicable
+                        }                                                        ==> value = 0 --> Not Processed   
+                    */
+                    const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+                    const { success, message } = result.data;
+                    const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                        lv_process_slno, next_updatedate } = message[0]
+                    const dataprvleave = {
+                        hrm_calcu: hrm_calcu,
+                        hrm_clv: hrm_clv,
+                        hrm_cmn: hrm_cmn,
+                        hrm_ern_lv: hrm_ern_lv,
+                        hrm_hld: hrm_hld,
+                        category_slno: category_slno,
+                        lv_process_slno: lv_process_slno
+                    }
+
+
+                    // if no data available
+                    if (success === 0) {
+                        /*
+                            If no data is present means new employee  set model
+
+                            success === 0 means --> No data available in the "hrm_leave_process" table 
+                            ie: New Employee , This is the initial process , after this leave process 
+                            one entry saved in "hrm_leave_process" table with next_updatedate and "hrm_process_status == A" (A -> Active) "N" --> Inactive
+                            Open the Model Component -->  <ModelLeaveProcess/>
+                        */
+                        setmodelvalue(1)
+                        setmodelmessage('Leave process is not done for the employee')
+                        setolddat(1)  // Updated the olddata === 1 for identify this is the new Process , default is 0 ,0 means not a new process
+                        setOpen(true)
+                    }
+                    else if (success === 1) {
+                        leaveprocessidupdate(dataprvleave)
+                        // if employee process date has over 
+                        /*
+                            If the current date "new Date()" > "next_updatedate" --> needed to open the model and needed to Leave Process again
+                            and "hrm_process_status == A" (A -> Active)
+                            Open the Model Component -->  <ModelLeaveProcess/>
+                        */
+                        if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                            setOpen(true)
+                            setmodelvalue(1)
+                            setmodelmessage('Date Exceeded do you Want To Process')
+                        }
+                        /*
+                            If any category change happens --> needed to open the model and needed to Leave Process again
+                            and "hrm_process_status == A" (A -> Active)
+                            Open the Model Component -->  <ModelLeaveProcess/>
+                        */
+                        else if (category_slno !== em_category) {
+                            setmodelvalue(1)
+                            setmodelmessage('Category Change Do You Want to  To Process')
+                            setOpen(true)
+                        }
+                        /*
+                            // if process contain data and pending leave process is present
+                                If "hrm_leave_process" table have the new row with "hrm_process_status" column have the 'A' status ( Active status ) 
+                                and following column is hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0
+                                then the <ModelAvailLeavelist/> model open for Process
+                        */
+                        else if (hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                            setmodellist(true)
+                        }
+                        else {
+                            warningNofity("Leave Process Is Already Done For This Employee")
+                        }
+                    }
+
+
+                } else if (resultselect.data.success === 1) {
+                    /***
+                     * If the yearly leave process table 
+                     * 'yearly_leave_process' data not present on currect year 
+                     * then insert that current year data and process the leave process
+                     * open this model  '<ModelLeaveProcess/>' component for leave process
+                     */
+                    const yearlyleavedata = {
+                        em_no: id,
+                        em_id: no,
+                        proceeuser: 1,
+                        year_of_process: moment(startOfYear(new Date())).format('YYYY-MM-DD')
+                    }
+                    const resultinsert = await axioslogin.post('/yearleaveprocess/insertyearly', yearlyleavedata)
+                    if (resultinsert.data.success === 1) {
+                        setOpen(true)
+                        setmodelvalue(1) //open the <ModelLeaveProcess/> component for leave process
+                        setmodelmessage('Do You Want To Process Leave For The Employee')
+                    }
+                    else {
+                        warningNofity('Please Contact Edp')
+                    }
+                }
+
             }
 
         }

@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
@@ -27,6 +27,7 @@ import { useCallback } from 'react'
 import { format } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCategory } from 'src/redux/actions/Category.Action'
+import _ from 'underscore'
 
 const CompanyInformtion = () => {
     //const history = useHistory()
@@ -106,9 +107,7 @@ const CompanyInformtion = () => {
     }, [dispatch])
 
     /** to get employee category details from redux */
-    const empCate = useSelector((state) => {
-        return state.getEmployeeCategory.empCategory || 0
-    })
+    // const empCate = useSelector((state) => state.getEmployeeCategory.empCategory || 0, _.isEqual)
 
     //Get data
     useEffect(() => {
@@ -192,7 +191,10 @@ const CompanyInformtion = () => {
             em_designation: selectDesignation,
             ineffective_date: ineffectdate
         }
-    }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id, selectDesignation, designation, ineffectdate, selectDeptSection])
+    }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory,
+        probationperiod, empstatus, probsataus, no, id, selectDesignation, designation,
+        ineffectdate, selectDeptSection])
+
     const reset = () => {
         updateBranchSelected(0)
         updateSelected(0)
@@ -210,77 +212,92 @@ const CompanyInformtion = () => {
         }
     }, [no, id])
 
+    //Employee State
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
+    const { contract_status, em_contract_end_date } = state;
+
     //update Data
     const submitCompany = async (e) => {
         e.preventDefault();
-        // get current data allowed  leave based on category
-        const getcategorydata = async () => {
-            const result = await axioslogin.get(`/common/getannprocess/${no}`)
-            const { data } = result.data
-            setleavestate(data[0])
-        }
-        getcategorydata();
-        const getdata = async () => {
-            getProcessserialnum().then((val) => {
-                setprocessslno(val)
-            })
 
-            // check the table where data present if present get the details process table
-            const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
-            const { success, message } = result.data;
-            const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
-                lv_process_slno, next_updatedate } = message[0]
-            const dataprvleave = {
-                hrm_calcu: hrm_calcu,
-                hrm_clv: hrm_clv,
-                hrm_cmn: hrm_cmn,
-                hrm_ern_lv: hrm_ern_lv,
-                hrm_hld: hrm_hld,
-                category_slno: category_slno,
-                lv_process_slno: lv_process_slno
-            }
-
-            // if no data available
-            if (success === 0) {
-                // if no data is present means new employee  set model
-                setmodelvalue(1)
-                setmodelmessage('Leave process is not done for the employee')
-                setolddat(1)
-                setOpen(true)
-            }
-            else if (success === 1) {
-                leaveprocessidupdate(dataprvleave)
-                // if employee process date has over 
-                if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
-                    setOpen(true)
-                    setmodelvalue(1)
-                    setmodelmessage('Date Exceeded do you Want To Process')
-                }
-                else if (category_slno !== getemployeecategory) {
-
-                    setmodelvalue(1)
-                    setmodelmessage('Category Change Do You Want to  To Process')
-                    setOpen(true)
-                }
-                // if process contain data and pending leave process is present
-                else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
-                    setmodellist(true)
-                }
-            }
-        }
-        const result = await axioslogin.post('/empmast/company', updateData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            getcategorydata()
-            succesNofity(message);
-            setcount(count + 1)
-            getdata()
-            reset()
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+        if (contract_status === 1) {
+            warningNofity('Contract Employee Category Change Only Through Contract Process Window')
         } else {
-            infoNofity(message)
+
+            // get current data allowed  leave based on category
+            const getcategorydata = async () => {
+                const result = await axioslogin.get(`/common/getannprocess/${no}`)
+                const { data } = result.data
+                setleavestate(data[0])
+            }
+            getcategorydata();
+
+            const getdata = async () => {
+                getProcessserialnum().then((val) => {
+                    setprocessslno(val)
+                })
+
+                // check the table where data present if present get the details process table
+                const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+                const { success, message } = result.data;
+                const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                    lv_process_slno, next_updatedate } = message[0]
+                const dataprvleave = {
+                    hrm_calcu: hrm_calcu,
+                    hrm_clv: hrm_clv,
+                    hrm_cmn: hrm_cmn,
+                    hrm_ern_lv: hrm_ern_lv,
+                    hrm_hld: hrm_hld,
+                    category_slno: category_slno,
+                    lv_process_slno: lv_process_slno
+                }
+
+                // if no data available
+                if (success === 0) {
+                    // if no data is present means new employee  set model
+                    setmodelvalue(1)
+                    setmodelmessage('Leave process is not done for the employee')
+                    setolddat(1)
+                    setOpen(true)
+                }
+                else if (success === 1) {
+                    leaveprocessidupdate(dataprvleave)
+                    // if employee process date has over 
+                    if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                        setOpen(true)
+                        setmodelvalue(1)
+                        setmodelmessage('Date Exceeded do you Want To Process')
+                    }
+                    else if (category_slno !== getemployeecategory) {
+
+                        setmodelvalue(1)
+                        setmodelmessage('Category Change Do You Want to  To Process')
+                        setOpen(true)
+                    }
+                    // if process contain data and pending leave process is present
+                    else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                        setmodellist(true)
+                    }
+                }
+            }
+            const result = await axioslogin.post('/empmast/company', updateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                getcategorydata()
+                succesNofity(message);
+                setcount(count + 1)
+                getdata()
+                reset()
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+
+
         }
+
+
     }
 
 

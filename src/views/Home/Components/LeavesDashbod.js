@@ -10,14 +10,11 @@ const ListItems = React.lazy(() => import('./ListItemCmp'));
 const LeavesDashbod = () => {
     const dispatch = useDispatch()
     const [data, setData] = useState([])
-    const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp.empLeaveData;
-    })
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData)
 
     //getting employee id
-    const empid = useSelector((state) => {
-        return state.getProfileData.ProfileData[0].em_id
-    })
+    const empid = useSelector((state) => state.getProfileData.ProfileData[0].em_id)
+
     useEffect(() => {
         if (empid !== '') {
             dispatch(getannualleave(empid))
