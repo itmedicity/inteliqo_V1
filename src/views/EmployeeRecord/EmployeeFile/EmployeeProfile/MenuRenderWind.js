@@ -26,6 +26,7 @@ const DocumentCheckList = React.lazy(() => import('./EmpMenus/DocumentChecklist/
 const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/VaccinationInformation'))
 const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
 const TrainingInfo = React.lazy(() => import('./EmpMenus/TrainingInformation/TrainingInformation'))
+const LeaveProcess = React.lazy(() => import('./EmpMenus/LeaveProcess/LeaveProcessMain'))
 
 
 const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
@@ -40,14 +41,15 @@ const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
                                 state === 111 ? <EarnDeductionDetails /> :
                                     state === 112 ? <SalaryInformation /> :
                                         state === 113 ? <AnnualLeave /> :
-                                            state === 114 ? <FineorDeduction /> :
-                                                state === 115 ? <SalaryIncrement /> :
-                                                    state === 116 ? <DocumentCheckList /> :
-                                                        state === 117 ? <Vaccine /> :
-                                                            state === 118 ? <TrainingInfo /> :
-                                                                state === 119 ? <JobDcrptn /> :
-                                                                    state === 120 ? <EndofService /> :
-                                                                        <ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} />
+                                            state === 103 ? <LeaveProcess /> :
+                                                state === 114 ? <FineorDeduction /> :
+                                                    state === 115 ? <SalaryIncrement /> :
+                                                        state === 116 ? <DocumentCheckList /> :
+                                                            state === 117 ? <Vaccine /> :
+                                                                state === 118 ? <TrainingInfo /> :
+                                                                    state === 119 ? <JobDcrptn /> :
+                                                                        state === 120 ? <EndofService /> :
+                                                                            <ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} />
         //state === 104 ? < ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} /> : null
         //< ProfileMenus slno={slno} count={count} setCount={setCount} redirect={redirect} />
     }

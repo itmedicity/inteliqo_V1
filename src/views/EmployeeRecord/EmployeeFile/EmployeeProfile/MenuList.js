@@ -32,7 +32,6 @@ const MenuList = () => {
         dispatch({ type: FETCH_EMP_MENU_SLNO, payload: slno })
     }
 
-
     const MenuItemList = [
         { color: '#ff8a80', name: 'My Profile', Icon: <AppRegistrationIcon />, funName: clickFunction, slno: 104 },
         { color: '#ea80fc', name: 'Personal Information', Icon: <PermContactCalendarIcon />, funName: clickFunction, slno: 105 },
@@ -44,6 +43,7 @@ const MenuList = () => {
         { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: clickFunction, slno: 111 },
         { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: clickFunction, slno: 112 },
         { color: '#b39ddb', name: 'Leave Setting', Icon: <BadgeIcon />, funName: clickFunction, slno: 113 },
+        { color: '#b39ddb', name: 'Leave Process', Icon: <BadgeIcon />, funName: clickFunction, slno: 103 },
         { color: '#b2ebf2', name: 'Fine / Other Deduction', Icon: <AdminPanelSettingsIcon />, funName: clickFunction, slno: 114 },
         { color: '#9fa8da', name: 'Salary Increment Setting', Icon: <LegendToggleIcon />, funName: clickFunction, slno: 115 },
         { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: clickFunction, slno: 116 },
