@@ -151,6 +151,7 @@ const JobDescription = () => {
                             selectedDept={selectedDept}
                             jobedit={jobedit}
                             selectDeptSection={selectDeptSection}
+                            setjobEdit={setjobEdit}
                         />
 
                     </Suspense>

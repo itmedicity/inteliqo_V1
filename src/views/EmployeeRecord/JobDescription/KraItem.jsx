@@ -5,17 +5,19 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import { memo } from 'react';
 
-const KraItem = ({ val, setEditKra, setDeleteKra }) => {
-    const EditKraItem = (id) => {
-        setEditKra(id)
+const KraItem = ({ val, setEditKra, setDeleteKra, setSubmitEdit, setsubmitdelt }) => {
+    const EditKraItem = (val) => {
+        setEditKra(val.id)
+        setSubmitEdit(val.kpi_id)
     }
-    const DelteKraItem = (id) => {
-        setDeleteKra(id)
+    const DelteKraItem = (val) => {
+        setDeleteKra(val.id)
+        setsubmitdelt(val.kpi_id)
     }
     return (
         <Box sx={{ display: "flex", alignItems: "center", py: 0.1 }} >
             <Box sx={{ flex: 0, pr: 0.2 }} >
-                <IconButton variant="outlined" size='sm' onClick={(e) => { EditKraItem(val.id) }}>
+                <IconButton variant="outlined" size='sm' onClick={(e) => { EditKraItem(val) }}>
                     <DriveFileRenameOutlineOutlinedIcon color='primary' size="inherit" />
                 </IconButton>
             </Box>
@@ -56,7 +58,7 @@ const KraItem = ({ val, setEditKra, setDeleteKra }) => {
             </Box> */}
             <Box sx={{ flex: 0, px: 0.5 }} >
 
-                <IconButton variant="outlined" size='sm' onClick={(e) => { DelteKraItem(val.id) }}>
+                <IconButton variant="outlined" size='sm' onClick={(e) => { DelteKraItem(val) }}>
                     <DeleteOutlinedIcon color='error' />
                 </IconButton>
             </Box>

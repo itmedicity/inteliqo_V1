@@ -7,13 +7,21 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import { memo } from 'react';
 
-const Items = ({ val, id, setEdit, setDelete }) => {
-    const EditItem = (id) => {
-        setEdit(id)
+const Items = ({ val, id, setEdit, setDelete, setSubmitEdit, setsubmitdelt }) => {
+
+
+    const EditItem = (val) => {
+        const { duties_id } = val
+        setEdit(val.id)
+        setSubmitEdit(duties_id)
+
     }
-    const DeleteItem = (id) => {
-        setDelete(id)
+    const DeleteItem = (val) => {
+        const { duties_id } = val
+        setDelete(val.id)
+        setsubmitdelt(duties_id)
     }
+
     return (
         <Box sx={{ display: "flex", alignItems: "center", py: 0.1, }} >
             <Box sx={{ display: "flex", flex: 1, pr: 1, flexDirection: "row" }}>
@@ -30,7 +38,7 @@ const Items = ({ val, id, setEdit, setDelete }) => {
                     }}
                 >
                     <Box sx={{ flex: 0, pr: 0.2 }} >
-                        <IconButton variant="outlined" size='sm' onClick={(e) => EditItem(val.id)} >
+                        <IconButton variant="outlined" size='sm' onClick={(e) => EditItem(val)} >
                             <DriveFileRenameOutlineOutlinedIcon color='primary' size="inherit" />
                         </IconButton>
                     </Box>
@@ -44,7 +52,7 @@ const Items = ({ val, id, setEdit, setDelete }) => {
                 </Paper>
             </Box>
             <Box sx={{ flex: 0, justifyItems: "center" }} >
-                <IconButton variant="outlined" size='sm' onClick={(e) => DeleteItem(val.id)} >
+                <IconButton variant="outlined" size='sm' onClick={(e) => DeleteItem(val)} >
                     <DeleteOutlinedIcon color='error' />
                 </IconButton>
             </Box>
