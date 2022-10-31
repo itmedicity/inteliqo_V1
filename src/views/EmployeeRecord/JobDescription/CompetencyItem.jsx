@@ -5,21 +5,23 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import { memo } from 'react';
 
-const CompetencyItem = ({ val, setDeleteComp, setEditComp }) => {
+const CompetencyItem = ({ val, setDeleteComp, setEditComp, setSubmitEdit, setsubmitdelt }) => {
 
-    const EditCompItem = (id) => {
-        setEditComp(id)
+    const EditCompItem = (val) => {
+        setEditComp(val.id)
+        setSubmitEdit(val.competency_id)
     }
 
-    const DeleteCompItem = (id) => {
-        setDeleteComp(id)
+    const DeleteCompItem = (val) => {
+        setDeleteComp(val.id)
+        setsubmitdelt(val.competency_id)
     }
 
     return (
         <Box sx={{ display: "flex", alignItems: "center", py: 0.1 }} >
             <Box sx={{ flex: 0, pr: 0.2 }} >
                 <IconButton variant="outlined" size='sm'
-                    onClick={(e) => { EditCompItem(val.id) }}
+                    onClick={(e) => { EditCompItem(val) }}
                 >
                     <DriveFileRenameOutlineOutlinedIcon color='primary' size="inherit" />
                 </IconButton>
@@ -58,7 +60,7 @@ const CompetencyItem = ({ val, setDeleteComp, setEditComp }) => {
             />
         </Box> */}
             <Box sx={{ flex: 0, px: 0.5 }} >
-                <IconButton variant="outlined" size='sm' onClick={(e) => { DeleteCompItem(val.id) }}>
+                <IconButton variant="outlined" size='sm' onClick={(e) => { DeleteCompItem(val) }}>
                     <DeleteOutlinedIcon color='error' />
                 </IconButton>
             </Box>

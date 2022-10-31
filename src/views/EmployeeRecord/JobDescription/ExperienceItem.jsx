@@ -7,10 +7,11 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { memo } from 'react';
 
 
-const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
+const ExperienceItem = ({ val, setDeleteItem, jobedit, setsubmitdelt }) => {
 
-    const deleteexperience = (id) => {
-        setDeleteItem(id)
+    const deleteexperience = (val) => {
+        setDeleteItem(val.id)
+        setsubmitdelt(val.qualification_id)
     }
     return (
         <Box sx={{ display: "flex", width: "100%", alignItems: "center", px: 0.1 }} >
@@ -20,7 +21,7 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
                         <Typography
                             level="body1"
                         >
-                            {jobedit === 0 ? val.course : val.course}
+                            {jobedit === 0 ? val.course : val.cour_desc}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
@@ -31,13 +32,13 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit }) => {
                         <Typography
                             level="body1"
                         >
-                            {jobedit === 0 ? val.specialization : val.specialization}
+                            {jobedit === 0 ? val.specialization : val.spec_desc}
                         </Typography>
                     </CssVarsProvider>
                 </Paper>
             </Box>
             <Box sx={{ flex: 0, px: 0.2 }} >
-                <IconButton variant="outlined" size='xs' onClick={(e) => deleteexperience(val.id)}>
+                <IconButton variant="outlined" size='xs' onClick={(e) => deleteexperience(val)}>
                     <DeleteOutlinedIcon color='error' />
                 </IconButton>
             </Box>
