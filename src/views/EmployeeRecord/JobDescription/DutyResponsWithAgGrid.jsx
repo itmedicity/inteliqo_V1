@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -60,12 +60,13 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     }, [selectDesignation])
     //use effect for getting data for edit
     useEffect(() => {
-        if (jobedit > 0 || flag === 1 || submitflag === 1) {
+        if (jobedit > 0 || submitflag === 1) {
             const getdutiesandResp = async () => {
                 const result = await axioslogin.post('/jobsummary/getJobDuties', checkData)
                 const { success, data } = result.data
                 if (success === 1) {
                     settableData(data)
+                    setdeletecount(0)
                 }
                 else {
                     settableData([])
@@ -76,7 +77,14 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         else {
             settableData([])
         }
-    }, [jobedit, deletecount, flag, submitflag])
+
+        return () => {
+            settableData([])
+        }
+
+    }, [jobedit, deletecount, submitflag])
+
+    const TableValues = useMemo(() => tableData, [tableData])
 
     //for deletion process
     const DeleteItem = useCallback((params) => {
@@ -90,14 +98,14 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             if (success === 5) {
                 succesNofity(message)
                 setdeletecount(deletecount + 1)
-                setflag(1)
+                //setflag(1)
             }
             else {
                 warningNofity(message)
             }
         }
         deltevalue(value)
-    })
+    }, [])
 
     //edit data select
     const EditData = useCallback((params) => {
@@ -230,7 +238,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                 flexDirection: "column"
             }} >
                 <CommonAgGrid columnDefs={columnDef}
-                    tableData={tableData}
+                    tableData={TableValues}
                     sx={{
                         height: 300,
                         width: "100%"
