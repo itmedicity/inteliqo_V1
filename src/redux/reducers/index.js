@@ -45,6 +45,7 @@ import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList } from '../reducers/Shift.Reducer'
 import { getCommonSettings } from './CommonSett.Reducer';
+import { getCasualLeaveData } from './LeaveData.Reducer';
 
 const reducer = combineReducers({
     changeState,
@@ -93,8 +94,8 @@ const reducer = combineReducers({
     getdept,
     getDeptSecList,
     getShiftList,
-    getCommonSettings
-
+    getCommonSettings,
+    getCasualLeaveData
 })
 
 export default reducer;

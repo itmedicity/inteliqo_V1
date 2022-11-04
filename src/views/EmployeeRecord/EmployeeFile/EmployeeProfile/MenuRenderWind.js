@@ -26,7 +26,7 @@ const DocumentCheckList = React.lazy(() => import('./EmpMenus/DocumentChecklist/
 const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/VaccinationInformation'))
 const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
 const TrainingInfo = React.lazy(() => import('./EmpMenus/TrainingInformation/TrainingInformation'))
-const LeaveProcess = React.lazy(() => import('./EmpMenus/LeaveProcess/LeaveProcessMain'))
+const LeaveProcess = React.lazy(() => import('./EmpMenus/LeaveProcess/LeaveProcessMainCard'))
 
 
 const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
