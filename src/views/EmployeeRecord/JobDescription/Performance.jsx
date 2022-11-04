@@ -31,7 +31,12 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
     const [remaining, setremaining] = useState([])
     const [flag, setflag] = useState(0)
     const [arrays, setArrays] = useState([])
-    const [msg, setMsg] = useState(0)
+    const [editcount, seteditCount] = useState(0)
+    const [currentstate, setCurrentstate] = useState(0)
+    const [checkid, setCheckid] = useState(0)
+    const [addId, setAddId] = useState(0)
+    const [newarray, setnewarray] = useState([])
+    const [newid, setnewId] = useState(0)
 
     const AddKra = () => {
         if (Kra === 0) {
@@ -51,6 +56,7 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
         kpiscore: '',
     }
 
+
     //getting form data
     const updatKeyPerformance = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -59,28 +65,57 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
     const [perfomance, setPerformance] = useState([])
     const [score, setScore] = useState(0)
 
+    //Adding KRA and KPI's and displays as an array
     const AddKraDataToTable = () => {
         if (kpiscore > 100 && score < 100) {
-            warningNofity("Please Enter Score Below 100")
+            infoNofity("Please Enter Score Below 100")
         }
         else if (score >= 100) {
-            warningNofity("Score Must Be Below 100")
+            infoNofity("Score Must Be Below 100")
+        }
+        else if (kpi === '' && kpiscore === '') {
+            infoNofity("Please Add KPI & Score")
+        }
+        else if (kpi !== '' && kpiscore === '') {
+            infoNofity("Please Enter KPI Score")
         }
         else {
-
-            if (editcheckdata.some(key => key.kpi_id === ids)) {
-                setScore(Number(score) + Number(kpiscore))
-                const keyperformance = {
-                    id: ids,
-                    key_result_area: Kra,
-                    kra_desc: KraName,
-                    kpi: kpi,
-                    kpi_score: kpiscore,
-                }
-                setPerformance([...perfomance, keyperformance])
+            if (addId === 2) {
+                infoNofity("Cannot Add New Data, Please Submit edit data")
                 setFormData(defaultState)
+                setAddId(0)
+            }
+            else if (addId === 1) {
+                //checking edit clicked data retrieved from database
+                if (editcheckdata.some(key => key.kpi_id === ids)) {
+                    setScore(Number(score) + Number(kpiscore))
+                    const keyperformance = {
+                        id: ids,
+                        key_result_area: Kra,
+                        kra_desc: KraName,
+                        kpi: kpi,
+                        kpi_score: kpiscore,
+                    }
+                    setPerformance([...perfomance, keyperformance])
+                    setFormData(defaultState)
+                    setAddId(2)
+                }
+                else if (newarray.some(key => key.kpi_id === ids)) {
+                    setScore(Number(score) + Number(kpiscore))
+                    const keyperformance = {
+                        id: ids,
+                        key_result_area: Kra,
+                        kra_desc: KraName,
+                        kpi: kpi,
+                        kpi_score: kpiscore,
+                    }
+                    setPerformance([...perfomance, keyperformance])
+                    setFormData(defaultState)
+                    setAddId(2)
+                }
             }
             else {
+                //adding new KRA KPI's
                 setScore(Number(score) + Number(kpiscore))
                 const keyperformance = {
                     id: new Date().getTime(),
@@ -91,8 +126,8 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                 }
                 setPerformance([...perfomance, keyperformance])
                 setFormData(defaultState)
+                setnewId(1)
             }
-            //setScore(Number(score) + Number(kpiscore))
         }
     }
 
@@ -103,7 +138,6 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                 if (val.id === editKra) {
                     return val
                 }
-
             })
             const { key_result_area, kpi, kpi_score } = editdata[0]
             const frmData = {
@@ -113,7 +147,6 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
             }
             setFormData(frmData)
             setKra(key_result_area)
-
             const newKra = perfomance.filter((val) => {
                 if (val.id !== editKra) {
                     return val
@@ -121,38 +154,43 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
             })
             setPerformance(newKra)
         }
-    }, [editKra])
+        //function for edit after save
 
-    //function foe edit after save
-    useEffect(() => {
-        if (Submitedit > 0) {
-            const editdata = perfomance.filter((val) => {
-                if (val.kpi_id === Submitedit) {
-                    return val
-                }
-
-            })
-            const { key_result_area, kpi, kpi_score, kpi_id, specification_slno } = editdata[0]
-            const frmData = {
-                kpi: kpi,
-                kpiscore: kpi_score,
-                kras: key_result_area,
+        else if (Submitedit > 0) {
+            if (editcount === 1) {
+                infoNofity("Please Save Data Before Another Edit")
             }
-            setFormData(frmData)
-            setKra(key_result_area)
-            setKraview(1)
-            setSlno(specification_slno)
-            setId(kpi_id)
-            const newKra = perfomance.filter((val) => {
-                if (val.kpi_id !== Submitedit) {
-                    return val
+            else {
+                const editdata = perfomance.filter((val) => {
+                    if (val.kpi_id === Submitedit) {
+                        return val
+                    }
+                })
+                const { key_result_area, kpi, kpi_score, kpi_id, specification_slno, kra_desc } = editdata[0]
+                const frmData = {
+                    kpi: kpi,
+                    kpiscore: kpi_score,
+                    kras: key_result_area,
                 }
-
-            })
-            setPerformance(newKra)
+                setFormData(frmData)
+                setKra(key_result_area)
+                setKraName(kra_desc)
+                setKraview(1)
+                setSlno(specification_slno)
+                setId(kpi_id)
+                const newKra = perfomance.filter((val) => {
+                    if (val.kpi_id !== Submitedit) {
+                        return val
+                    }
+                })
+                setPerformance(newKra)
+                seteditCount(editcount + 1)
+                setCurrentstate(1)
+                setCheckid(1)
+                setAddId(1)
+            }
         }
-    }, [Submitedit])
-
+    }, [Submitedit, editKra])
 
     //function for deleting kra details
     useEffect(() => {
@@ -164,35 +202,36 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
             })
             setPerformance(deletee)
         }
-    }, [deleteKra])
+        //function for delete after save
+        else if (sumbitdelt > 0) {
+            if (editcount === 1) {
+                infoNofity("Please Save Data Before Deletion")
+            }
+            else {
+                const deletee = perfomance.filter((val) => {
+                    if (val.kpi_id !== sumbitdelt) {
+                        return val
+                    }
+                })
+                setPerformance(deletee)
 
-    //function for delete after save
-    useEffect(() => {
-        if (sumbitdelt > 0) {
-            const deletee = perfomance.filter((val) => {
-                if (val.kpi_id !== sumbitdelt) {
-                    return val
-                }
-            })
-            setPerformance(deletee)
-
-            const rem = perfomance.filter((val) => {
-                if (val.kpi_id === sumbitdelt) {
-                    return val
-                }
-            })
-            setremaining([...remaining, ...rem])
+                const rem = perfomance.filter((val) => {
+                    if (val.kpi_id === sumbitdelt) {
+                        return val
+                    }
+                })
+                setremaining(rem)
+            }
         }
-    }, [sumbitdelt])
-
-
-
+    }, [sumbitdelt, deleteKra])
 
     useEffect(() => {
-        if (msg === 1) {
-            succesNofity("Delete Successfully")
+        if (selectDesignation !== 0) {
+            setFormData(defaultState)
+            setKraview(0)
+            setPerformance([])
         }
-    }, [msg])
+    }, [selectDesignation])
 
 
     const checkData = {
@@ -228,6 +267,7 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
         e.preventDefault();
         const submitFunc = async (checkData) => {
             if (flag === 1) {
+                //saving job performance, if it already saved in database 
                 let array = perfomance.filter((value) => {
                     return !filterdata.find((val) => {
                         return value.kpi_id === val.kpi_id;
@@ -255,7 +295,13 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                         const result = await axioslogin.post('/jobsummary/jobspecification', saveDuties)
                         const { success, message } = result.data
                         if (success === 1) {
-                            succesNofity(message)
+                            const result = await axioslogin.post('/jobsummary/getjobspecific', checkData)
+                            const { success, data } = result.data
+                            if (success === 1) {
+                                setPerformance(data)
+                                succesNofity(message)
+                                setnewId(0)
+                            }
                         }
                         else if (success === 2) {
                             warningNofity("Already Added!!")
@@ -273,6 +319,7 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                 }
             }
             else {
+                //adding new job performance to database
                 let array = perfomance.filter((value) => {
                     return !arrays.find((val) => {
                         return value.kpi_id === val.kpi_id;
@@ -307,6 +354,8 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                                 setPerformance(data)
                                 setArrays(data)
                                 succesNofity(message)
+                                setnewarray(data)
+                                setnewId(0)
                             }
                         }
                         else if (success === 2) {
@@ -325,9 +374,9 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                 }
 
             }
-
         }
 
+        //updating saved data from database
         const updateEach = async () => {
             let obj = perfomance.find(o => o.id === ids);
             const patchCompte = {
@@ -338,40 +387,63 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
                 specification_slno: slno
             }
             const result = await axioslogin.patch('/jobsummary/updateperf', patchCompte)
-            const { success, message } = result
+            const { success, message } = result.data
             if (success === 4) {
-                succesNofity(message)
+                const result = await axioslogin.post('/jobsummary/getjobspecific', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setPerformance(data)
+                    succesNofity(message)
+                    setnewId(0)
+                }
+                setCurrentstate(0)
             }
             else {
                 warningNofity(message)
             }
         }
-
-        if (sumbitdelt > 0) {
-            remaining && remaining.map((val) => {
-                const deltevalue = async (value) => {
-                    const result = await axioslogin.delete(`/jobsummary/deletePerf/${value}`)
-                    const { success, message } = result.data
-                    if (success === 5) {
-                        setMsg(msg + 1)
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                }
-                deltevalue(val.specification_slno)
-                return 0
-            })
-        }
-        else if (Submitedit > 0) {
+        if (currentstate === 1) {
             updateEach()
         }
         else {
             submitFunc(checkData)
         }
-
     }, [sumbitdelt, checkData, Submitedit])
 
+    //deletion process
+    const [open, setOpen] = useState(false)
+    const [Active, setActive] = useState(0)
+    const handleClose = async () => {
+        setOpen(false)
+        setActive(0)
+    }
+    const Close = async () => {
+        setOpen(false)
+        setActive(0)
+    }
+    // const DeleteValue = useCallback((e) => {
+    //     e.preventDefault();
+    //     const value = remaining && remaining.map((val) => {
+    //         return val.specification_slno
+    //     })
+    //     const deltevalue = async (value) => {
+    //         const result = await axioslogin.delete(`/jobsummary/deletePerf/${value}`)
+    //         const { success, message } = result.data
+    //         if (success === 5) {
+    //             succesNofity(message)
+    //             handleClose()
+    //             const deletee = perfomance.filter((val) => {
+    //                 if (val.kpi_id !== sumbitdelt) {
+    //                     return val
+    //                 }
+    //             })
+    //             setPerformance(deletee)
+
+    //         }
+    //     }
+    //     deltevalue(value)
+    //     return 0
+    // })
 
     return (
         <Fragment>
@@ -447,7 +519,13 @@ const Performance = ({ jobedit, selectDesignation, selectedDept, selectDeptSecti
 
                 {
                     perfomance.length > 0 ? perfomance && perfomance.map((val, index) =>
-                        <KraItem key={index} val={val} setEditKra={setEditKra} setDeleteKra={setDeleteKra} setSubmitEdit={setSubmitEdit} setsubmitdelt={setsubmitdelt} />
+                        <KraItem key={index} val={val}
+                            setEditKra={setEditKra} setDeleteKra={setDeleteKra}
+                            setSubmitEdit={setSubmitEdit} setsubmitdelt={setsubmitdelt}
+                            open={open} setOpen={setOpen}
+                            handleClose={handleClose} Close={Close}
+                            setActive={setActive} Active={Active} checkid={checkid}
+                            setnewId={setnewId} newid={newid} />
                     ) : null
                 }
 

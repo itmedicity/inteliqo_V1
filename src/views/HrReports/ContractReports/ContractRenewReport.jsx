@@ -67,6 +67,7 @@ const ContractRenewReport = () => {
             setsecondmenu(0)
         }
         setsecondmenu(0)
+        setThirdmenu(0)
     }
 
     /** Intializing slno for getting checked branch slno */

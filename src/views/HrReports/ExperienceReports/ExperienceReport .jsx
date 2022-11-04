@@ -23,6 +23,7 @@ const ExperienceReport = () => {
     const [thirdvalue, setThirdValue] = useState(0);
     const [sectslno, setdeptslno] = useState([]);
     const [empslno, setempslno] = useState([]);
+    const [data2, setdata2] = useState(sectslno)
     const dispatch = useDispatch();
 
     /** To get stored department values from redux */
@@ -85,6 +86,7 @@ const ExperienceReport = () => {
         else {
             setValue(event.api.getSelectedRows())
             setsecondmenu(0)
+            setThirdmenu(0)
         }
         setsecondmenu(0)
     }
@@ -153,12 +155,11 @@ const ExperienceReport = () => {
         }
     }
 
-    const [data2, setdata2] = useState(sectslno)
     /** to get deaprtment section wise employee name from redux */
     useEffect(() => {
         if (thirdmenu === 1) {
             if (sectslno !== 0) {
-                const filter = empName.filter(val => slno.includes(val.em_dept_section))
+                const filter = empName.filter(val => sectslno.includes(val.em_dept_section))
                 setdata2(filter)
             }
             else {

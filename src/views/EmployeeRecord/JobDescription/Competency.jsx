@@ -21,8 +21,6 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
     const [EditComp, setEditComp] = useState(0)
     const [deletecomp, setDeleteComp] = useState(0)
     const [Compete, setCompete] = useState([])
-
-
     const [filterdata, setfilterdata] = useState([])
     const [Submitedit, setSubmitEdit] = useState(0)
     const [sumbitdelt, setsubmitdelt] = useState(0)
@@ -32,6 +30,12 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
     const [remaining, setremaining] = useState([])
     const [flag, setflag] = useState(0)
     const [arrays, setArrays] = useState([])
+    const [editcount, seteditCount] = useState(0)
+    const [currentstate, setCurrentstate] = useState(0)
+    const [checkid, setCheckid] = useState(0)
+    const [addId, setAddId] = useState(0)
+    const [newarray, setnewarray] = useState([])
+    const [newid, setnewId] = useState(0)
 
     const AddKra = () => {
         if (Kra === 0) {
@@ -58,20 +62,42 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
     }
 
     const AddCompetencyToTable = () => {
-        if (Kra === 0) {
-            warningNofity("Please Add KRA")
+        if (Kra === 0 && competency_desc === '') {
+            infoNofity("Please Add KRA & Competency!!")
+        }
+        else if (Kra !== 0 && competency_desc === '') {
+            infoNofity("Please Add Competency!!")
         }
         else {
-            if (editcheckdata.some(key => key.competency_id === ids)) {
-                const keyCompetency = {
-                    id: ids,
-                    key_result_area: Kra,
-                    kra_desc: KraName,
-                    competency_desc: competency_desc
-
-                }
-                setCompete([...Compete, keyCompetency])
+            if (addId === 2) {
+                infoNofity("Cannot Add New Data, Please Submit edit data")
                 setFormData(defaultState)
+                setAddId(0)
+            } if (addId === 1) {
+                if (editcheckdata.some(key => key.competency_id === ids)) {
+                    const keyCompetency = {
+                        id: ids,
+                        key_result_area: Kra,
+                        kra_desc: KraName,
+                        competency_desc: competency_desc
+
+                    }
+                    setCompete([...Compete, keyCompetency])
+                    setFormData(defaultState)
+                    setAddId(2)
+                }
+                else if (newarray.some(key => key.competency_id === ids)) {
+                    const keyCompetency = {
+                        id: ids,
+                        key_result_area: Kra,
+                        kra_desc: KraName,
+                        competency_desc: competency_desc
+
+                    }
+                    setCompete([...Compete, keyCompetency])
+                    setFormData(defaultState)
+                    setAddId(2)
+                }
             }
             else {
                 const keyCompetency = {
@@ -83,6 +109,7 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                 }
                 setCompete([...Compete, keyCompetency])
                 setFormData(defaultState)
+                setnewId(1)
             }
         }
     }
@@ -108,32 +135,38 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
             })
             setCompete(newKra)
         }
-    }, [EditComp])
-
-    //function for edit after save
-    useEffect(() => {
-        if (Submitedit > 0) {
-            const editdata = Compete.filter((val) => {
-                if (val.competency_id === Submitedit) {
-                    return val
+        //function for edit after save
+        else if (Submitedit > 0) {
+            if (editcount === 1) {
+                infoNofity("Please Save Edit Data before Another Edit")
+            } else {
+                const editdata = Compete.filter((val) => {
+                    if (val.competency_id === Submitedit) {
+                        return val
+                    }
+                })
+                const { competency_desc, key_result_area, competency_id, competency_slno, kra_desc } = editdata[0]
+                const frmData = {
+                    competency_desc: competency_desc,
                 }
-            })
-            const { competency_desc, key_result_area, competency_id, competency_slno } = editdata[0]
-            const frmData = {
-                competency_desc: competency_desc,
+                setFormData(frmData)
+                setKra(key_result_area)
+                setSlno(competency_slno)
+                setId(competency_id)
+                setKraName(kra_desc)
+                const newKra = Compete.filter((val) => {
+                    if (val.competency_id !== Submitedit) {
+                        return val
+                    }
+                })
+                setCompete(newKra)
+                seteditCount(editcount + 1)
+                setCurrentstate(1)
+                setCheckid(competency_id)
+                setAddId(1)
             }
-            setFormData(frmData)
-            setKra(key_result_area)
-            setSlno(competency_slno)
-            setId(competency_id)
-            const newKra = Compete.filter((val) => {
-                if (val.competency_id !== Submitedit) {
-                    return val
-                }
-            })
-            setCompete(newKra)
         }
-    }, [Submitedit])
+    }, [Submitedit, EditComp])
 
 
     //function for deleting kra details
@@ -146,35 +179,35 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
             })
             setCompete(deletee)
         }
-    }, [deletecomp, Compete])
+        //function for delete after save
+        else if (sumbitdelt > 0) {
+            if (editcount === 1) {
+                infoNofity("Please Save Edit Data Before Deletion")
+            }
+            else {
+                const deletee = Compete.filter((val) => {
+                    if (val.competency_id !== sumbitdelt) {
+                        return val
+                    }
+                })
+                setCompete(deletee)
+                const rem = Compete.filter((val) => {
+                    if (val.competency_id === sumbitdelt) {
+                        return val
+                    }
+                })
+                setremaining(rem)
+            }
 
-    //function for delete after save
-    useEffect(() => {
-        if (sumbitdelt > 0) {
-            const deletee = Compete.filter((val) => {
-                if (val.competency_id !== sumbitdelt) {
-                    return val
-                }
-            })
-            setCompete(deletee)
-
-            const rem = Compete.filter((val) => {
-                if (val.competency_id === sumbitdelt) {
-                    return val
-                }
-            })
-            setremaining([...remaining, ...rem])
         }
-    }, [sumbitdelt])
-
-    const [msg, setMsg] = useState(0)
-
+    }, [sumbitdelt, deletecomp])
 
     useEffect(() => {
-        if (msg === 1) {
-            succesNofity("Delete Successfully")
+        if (selectDesignation !== 0) {
+            setCompete([])
+            setFormData(defaultState)
         }
-    }, [msg])
+    }, [selectDesignation])
 
     useEffect(() => {
         if (jobedit > 0) {
@@ -207,19 +240,18 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
     const saveJobSpecification = useCallback((e) => {
         e.preventDefault();
         const submitFunc = async (checkData) => {
-            if (flag === 1) {
+            if (flag !== 0) {
                 let array = Compete.filter((value) => {
                     return !filterdata.find((val) => {
                         return value.competency_id === val.competency_id;
                     })
                 })
-
                 const result = await axioslogin.post('/jobsummary/check', checkData)
                 const { data, success } = result.data
                 if (success === 1) {
                     const { summary_slno } = data[0]
-                    if (Compete.length === 0) {
-                        infoNofity("Please Add Competency!!")
+                    if (array.length === 0) {
+                        infoNofity("Please Add New Competency!!")
                     }
                     else {
                         const saveDuties = array && array.map((val) => {
@@ -237,7 +269,14 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                         const result = await axioslogin.post('/jobsummary/jobcompetency', saveDuties)
                         const { success, message } = result.data
                         if (success === 1) {
-                            succesNofity(message)
+                            const result = await axioslogin.post('/jobsummary/get/jobcompetency', checkData)
+                            const { success, data } = result.data
+                            if (success === 1) {
+                                setCompete(data)
+                                succesNofity(message)
+                                setKra(0)
+                                setnewId(0)
+                            }
                         }
                         else {
                             errorNofity("Error Occured!!!Please Contact EDP")
@@ -257,12 +296,11 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                         return value.competency_id === val.competency_id;
                     })
                 })
-
                 const result = await axioslogin.post('/jobsummary/check', checkData)
                 const { data, success } = result.data
                 if (success === 1) {
                     const { summary_slno } = data[0]
-                    if (Compete.length === 0) {
+                    if (array.length === 0) {
                         infoNofity("Please Add Competency!!!")
                     }
                     else {
@@ -288,6 +326,8 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                                 setArrays(data)
                                 succesNofity(message)
                                 setKra(0)
+                                setnewarray(data)
+                                setnewId(0)
 
                             }
                         }
@@ -302,11 +342,8 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
-
             }
-
         }
-
         const updateEach = async () => {
             let obj = Compete.find(o => o.id === ids);
             const patchCompte = {
@@ -316,37 +353,67 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
                 competency_slno: slno
             }
             const result = await axioslogin.patch('/jobsummary/updatecompeteEach', patchCompte)
-            const { success, message } = result
+            const { success, message } = result.data
             if (success === 4) {
-                succesNofity(message)
+
+                const result = await axioslogin.post('/jobsummary/get/jobcompetency', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setCompete(data)
+                    succesNofity(message)
+                    setKra(0)
+                    setnewId(0)
+                }
+                setCurrentstate(0)
             }
             else {
                 warningNofity(message)
             }
         }
-        if (Submitedit > 0) {
+        if (currentstate === 1) {
             updateEach()
-        }
-        else if (sumbitdelt > 0) {
-            remaining && remaining.map((val) => {
-                const deltevalue = async (value) => {
-                    const result = await axioslogin.delete(`/jobsummary/deletecompet/${value}`)
-                    const { success, message } = result.data
-                    if (success === 5) {
-                        setMsg(msg + 1)
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                }
-                deltevalue(val.competency_slno)
-                return 0
-            })
         }
         else {
             submitFunc(checkData)
         }
-    }, [checkData, Compete])
+    }, [checkData, Compete, flag])
+
+    //deletion process
+    const [open, setOpen] = useState(false)
+    const [Active, setActive] = useState(0)
+    const handleClose = async () => {
+        setOpen(false)
+        setActive(0)
+    }
+    const Close = async () => {
+        setOpen(false)
+        setActive(0)
+    }
+    const DeleteValue = useCallback((e) => {
+        e.preventDefault();
+        const value = remaining && remaining.map((val) => {
+            return val.competency_slno
+        })
+        const deltevalue = async (value) => {
+            const result = await axioslogin.delete(`/jobsummary/deletecompet/${value}`)
+            const { success, message } = result.data
+            if (success === 5) {
+                succesNofity(message)
+                handleClose()
+                const deletee = Compete.filter((val) => {
+                    if (val.competency_id !== sumbitdelt) {
+                        return val
+                    }
+                })
+                setCompete(deletee)
+            }
+        }
+        deltevalue(value)
+        return 0
+    })
+
+
+
 
     return (
 
@@ -401,7 +468,13 @@ const Competency = ({ selectDesignation, selectedDept, jobedit, selectDeptSectio
 
                 {
                     Compete.length > 0 ? Compete && Compete.map((val, index) =>
-                        <CompetencyItem key={index} val={val} setDeleteComp={setDeleteComp} setEditComp={setEditComp} setSubmitEdit={setSubmitEdit} setsubmitdelt={setsubmitdelt} />
+                        <CompetencyItem key={index} val={val}
+                            setDeleteComp={setDeleteComp} setEditComp={setEditComp}
+                            setSubmitEdit={setSubmitEdit} setsubmitdelt={setsubmitdelt}
+                            DeleteValue={DeleteValue}
+                            open={open} setOpen={setOpen}
+                            handleClose={handleClose} Close={Close}
+                            setActive={setActive} Active={Active} checkid={checkid} setnewId={setnewId} />
                     ) : null
                 }
 
