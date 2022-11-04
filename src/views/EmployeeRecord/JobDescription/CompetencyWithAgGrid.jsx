@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -68,17 +68,21 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
     }, [selectDesignation])
 
     useEffect(() => {
-        if (jobedit > 0 || flag === 1 || submitflag === 1) {
+        if (jobedit > 0 || submitflag === 1) {
             const getCompetency = async () => {
                 const result = await axioslogin.post('/jobsummary/get/jobcompetency', checkData)
                 const { success, data } = result.data
                 if (success === 1) {
                     settableData(data)
+                    setdeletecount(0)
                 }
             }
             getCompetency()
         }
         else {
+            settableData([])
+        }
+        return () => {
             settableData([])
         }
     }, [jobedit, deletecount, flag, submitflag, count])
@@ -95,8 +99,6 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
             if (success === 5) {
                 succesNofity(message)
                 setdeletecount(deletecount + 1)
-                setflag(1)
-                setCount(count + 1)
             }
             else {
                 warningNofity(message)
@@ -104,6 +106,8 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
         }
         deltevalue(value)
     })
+
+    const TableValues = useMemo(() => tableData, [tableData])
 
     //edit data select
     const EditData = useCallback((params) => {
@@ -222,11 +226,11 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
                         <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE} setKraName={setKraName} />
                     </Box>
                     {/* <Box sx={{ display: "flex", alignItems: "center", py: 0.1, flexDirection: "row" }} > */}
-                    <Box sx={{ flex: 4, p: 1, width: "60%", }}
+                    <Box sx={{ flex: 4, pl: 1, width: "60%", }}
                     // style={{ p: 0, height: 20, lineHeight: 2, m: 0 }}
                     >
                         <TextareaAutosize
-                            style={{ width: 800, height: 33, display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13, pt: 4 }}
+                            style={{ width: 800, height: 33, display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13, pt: 3 }}
                             minRows={1}
                             placeholder="Competency"
                             name="competency_desc"
@@ -252,7 +256,7 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
                 flexDirection: "column"
             }} >
                 <CommonAgGrid columnDefs={columnDef}
-                    tableData={tableData}
+                    tableData={TableValues}
                     sx={{
                         height: 300,
                         width: "100%"
