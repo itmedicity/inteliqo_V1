@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useContext, memo } from 'react'
+import React, { Fragment, Suspense, useContext, memo, useEffect } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,14 +13,17 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Competency from './Competency';
+// import Competency from './Competency';
 import { axioslogin } from 'src/views/Axios/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
-const DutyRespos = React.lazy(() => import('./DutyRespos'));
-const Performance = React.lazy(() => import('./Performance'));
+// const DutyRespos = React.lazy(() => import('./DutyRespos'));
+const DutyRespos = React.lazy(() => import('./DutyResponsWithAgGrid'));
+//const Performance = React.lazy(() => import('./Performance'));
+const Performance = React.lazy(() => import('./PerformanceWithAgGrid'))
+const Competency = React.lazy(() => import('./CompetencyWithAgGrid'))
 const Generic = React.lazy(() => import('./Generic'));
 
 const Progress = () => {
@@ -38,13 +41,21 @@ const JobDescription = () => {
     } = useContext(PayrolMasterContext)
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
+    const [clear, setClear] = useState(0)
 
     /** checkdata for checking department , dept section and designation */
     const checkData = {
         designation: selectDesignation,
         dept_id: selectedDept,
-        sect_id: selectDeptSection
+        //sect_id: selectDeptSection
     }
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setClear(1)
+        }
+    }, [selectDesignation])
+
+
 
     /** checking department , dept section and designation already exist in jobsummary database table */
     const addtojobSummary = async () => {
@@ -77,7 +88,7 @@ const JobDescription = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 {/* Outer Main Box */}
                 <Paper square elevation={2} sx={{ p: 0.5, }}   >
                     {/* Main Heading Section Box */}
@@ -120,9 +131,9 @@ const JobDescription = () => {
                         <Box sx={{ flex: 1, px: 0.5 }} >
                             <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
-                        <Box sx={{ flex: 1, px: 0.5 }} >
+                        {/* <Box sx={{ flex: 1, px: 0.5 }} >
                             <DepartmentSectionSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
-                        </Box>
+                        </Box> */}
                         <Box sx={{ flex: 1, px: 0.5 }}  >
                             <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
@@ -142,6 +153,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             selectDeptSection={selectDeptSection}
+                            clear={clear}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}
@@ -151,6 +163,7 @@ const JobDescription = () => {
                             selectedDept={selectedDept}
                             jobedit={jobedit}
                             selectDeptSection={selectDeptSection}
+                            setjobEdit={setjobEdit}
                         />
 
                     </Suspense>

@@ -16,7 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 
-const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
+const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection, clear }) => {
 
     const [jobid, setJobid] = useState(0)
     //get job id
@@ -84,8 +84,14 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
             setFormData(defaultState)
         }
 
-    }, [jobedit])
+    }, [jobedit,])
 
+
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setFormData(defaultState)
+        }
+    }, [selectDesignation])
 
     //function for getting from Data
     const updatejob_description = (e) => {
@@ -119,6 +125,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         //reporting_designation: reportDesig,
         equipment_used: equipment
     }
+
     //saving job summary
     const sumbitJobSummary = async (e) => {
         e.preventDefault();
@@ -132,7 +139,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 succesNofity(message)
             }
             else {
-                errorNofity("Error Occureed!!Please Contact EDp")
+                errorNofity(message)
             }
         }
         else {
@@ -145,10 +152,9 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 warningNofity(message)
             }
             else {
-                errorNofity("Error Occureed!!Please Contact EDp")
+                errorNofity(message)
             }
         }
-
     }
 
     return (
