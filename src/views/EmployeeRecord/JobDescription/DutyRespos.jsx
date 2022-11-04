@@ -28,6 +28,13 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
     const [arrays, setArrays] = useState([])
     const [sumbitdelt, setsubmitdelt] = useState(0)
     const [remaining, setremaining] = useState([])
+    const [editcount, seteditCount] = useState(0)
+    const [currentstate, setCurrentstate] = useState(0)
+    const [checkid, setCheckid] = useState(0)
+    const [addId, setAddId] = useState(0)
+    const [newid, setnewId] = useState(0)
+    const [newarray, setnewarray] = useState([])
+
     const [formData, setFormData] = useState({
         duties: ''
     })
@@ -39,33 +46,97 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
     }
+
     const addDuties = () => {
-        if (editcheckdata.some(key => key.duties_id === ids)) {
-            const newduties = {
-                id: ids,
-                duties_and_resp: duties
-            }
-            setDuty([...duty, newduties])
-            setFormData(defaultstate)
+        if (duties === '') {
+            infoNofity("Please Add Duties & Responsibilities!!")
         }
         else {
-            const newduties = {
-                id: new Date().getTime(),
-                duties_and_resp: duties
+            if (addId === 1) {
+                if (editcheckdata.some(key => key.duties_id === ids)) {
+                    const newduties = {
+                        id: ids,
+                        duties_and_resp: duties
+                    }
+                    setDuty([...duty, newduties])
+                    setFormData(defaultstate)
+                    setAddId(2)
+                }
+                else if (newarray.some(key => key.duties_id === ids)) {
+                    const newduties = {
+                        id: ids,
+                        duties_and_resp: duties
+                    }
+                    setDuty([...duty, newduties])
+                    setFormData(defaultstate)
+                    setAddId(2)
+                }
             }
-            setDuty([...duty, newduties])
-            setFormData(defaultstate)
+            else if (addId === 2) {
+                infoNofity("Cannot Add New Data, Please Submit edit data")
+                setFormData(defaultstate)
+                setAddId(0)
+            }
+            else {
+                const newduties = {
+                    id: new Date().getTime(),
+                    duties_and_resp: duties
+                }
+                setDuty([...duty, newduties])
+                setFormData(defaultstate)
+                setnewId(1)
+            }
         }
     }
 
+    //edit duties aftter save to database
+    useEffect(() => {
+        if (Submitedit > 0) {
+            if (editcount === 1) {
+                infoNofity("Please save edit, before another edit")
+                seteditCount(0)
+            }
+            else {
+                const editdata = duty.filter((val) => {
+                    if (val.duties_id === Submitedit) {
+                        return val
+                    }
+                })
+                const { duties_and_resp, duties_slno, duties_id } = editdata[0]
+                setSlno(duties_slno)
+                setId(duties_id)
+                const frmdata = {
+                    duties: duties_and_resp
+                }
+                setFormData(frmdata)
+                const newdata = duty.filter((val) => {
+                    if (val.duties_id !== Submitedit) {
+                        return val
+                    }
+                })
+                setDuty(newdata)
+                setCurrentstate(1)
+                seteditCount(1)
+                setCheckid(duties_id)
+                setAddId(1)
+            }
+        }
+        else if (Submitedit === 0) {
+            setDuty(duty)
+        }
+        else {
+            setDuty([])
+        }
+    }, [Submitedit])
+
     useEffect(() => {
         if (edit > 0) {
-            const editdata = duty.filter((val) => {
+            const newedit = duty.filter((val) => {
                 if (val.id === edit) {
                     return val
                 }
             })
-            const { duties_and_resp } = editdata[0]
+            const { duties_and_resp } = newedit[0]
             const frmdata = {
                 duties: duties_and_resp
             }
@@ -79,34 +150,6 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
         }
     }, [edit])
 
-    //edit duties aftter save to database
-
-    useEffect(() => {
-        if (Submitedit > 0) {
-            const editdata = duty.filter((val) => {
-                if (val.duties_id === Submitedit) {
-                    return val
-                }
-            })
-            const { duties_and_resp, duties_slno, duties_id } = editdata[0]
-            setSlno(duties_slno)
-            setId(duties_id)
-            const frmdata = {
-                duties: duties_and_resp
-            }
-            setFormData(frmdata)
-            const newdata = duty.filter((val) => {
-                if (val.duties_id !== Submitedit) {
-                    return val
-                }
-            })
-            setDuty(newdata)
-        }
-        else {
-            setDuty([])
-        }
-    }, [Submitedit])
-
     //function for deleting duty 
     useEffect(() => {
         if (deleteData > 0) {
@@ -117,37 +160,29 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
             })
             setDuty(deletee)
         }
-    }, [deleteData])
-
-
-    useEffect(() => {
-        if (sumbitdelt > 0) {
-
+        else if (sumbitdelt > 0) {
             const deletee = duty.filter((val) => {
                 if (val.duties_id !== sumbitdelt) {
                     return val
                 }
-
                 return 0;
             })
             setDuty(deletee)
+
             const rem = duty.filter((val) => {
                 if (val.duties_id === sumbitdelt) {
                     return val
                 }
             })
-            setremaining([...remaining, ...rem])
+            setremaining(rem)
         }
-    }, [sumbitdelt])
-
-    const [msg, setMsg] = useState(0)
-
+    }, [sumbitdelt, deleteData])
 
     useEffect(() => {
-        if (msg !== 0) {
-            succesNofity("Delete Successfully")
+        if (selectDesignation !== 0) {
+            setDuty([])
         }
-    }, [msg])
+    }, [selectDesignation])
 
     const checkData = {
         designation: selectDesignation,
@@ -178,7 +213,6 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
     const SubmitFormData = useCallback((e) => {
         e.preventDefault();
         const submitFunc = async (checkData) => {
-
             if (flag === 1) {
                 let array = duty.filter((value) => {
                     return !filterdata.find((val) => {
@@ -189,8 +223,8 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                 const { data, success } = result.data
                 if (success === 1) {
                     const { summary_slno } = data[0]
-                    if (duty.length === 0) {
-                        infoNofity("Please Add Duties & Responsibilities")
+                    if (array.length === 0) {
+                        infoNofity("Please Add New")
                     }
                     else {
                         const saveDuties = array && array.map((val) => {
@@ -199,7 +233,13 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                         const result = await axioslogin.post('/jobsummary/jobduties', saveDuties)
                         const { success, message } = result.data
                         if (success === 1) {
-                            succesNofity(message)
+                            const result = await axioslogin.post('/jobsummary/getJobDuties', checkData)
+                            const { success, data } = result.data
+                            if (success === 1) {
+                                setDuty(data)
+                                succesNofity(message)
+                                setnewId(0)
+                            }
 
                         }
                         else if (success === 2) {
@@ -218,7 +258,6 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                 }
             }
             else {
-
                 let array = duty.filter((value) => {
                     return !arrays.find((val) => {
                         return value.duties_id === val.duties_id;
@@ -246,6 +285,8 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                                 setDuty(data)
                                 setArrays(data)
                                 succesNofity(message)
+                                setnewId(0)
+                                setnewarray(data)
                             }
                         }
                         else if (success === 2) {
@@ -274,36 +315,66 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                 duties_slno: slno
             }
             const result = await axioslogin.patch('/jobsummary/updatedutieseach', patchDuties)
-            const { success, message } = result
+            const { success, message } = result.data
             if (success === 2) {
-                succesNofity(message)
+                const result = await axioslogin.post('/jobsummary/getJobDuties', checkData)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setDuty(data)
+                    succesNofity(message)
+                    seteditCount(0)
+                    setnewId(0)
+                }
+                setCurrentstate(0)
             }
             else {
                 warningNofity(message)
             }
         }
-        if (Submitedit > 0) {
+        if (currentstate === 1) {
             updateEach()
-        }
-        else if (sumbitdelt > 0) {
-            remaining && remaining.map((val) => {
-                const deltevalue = async (value) => {
-                    const result = await axioslogin.delete(`/jobsummary/deletedata/select/${value}`)
-                    const { success } = result.data
-                    if (success === 5) {
-                        setMsg(msg + 1)
-                    }
-                }
-                deltevalue(val.duties_slno)
-                return 0
-            })
         }
         else {
             submitFunc(checkData)
         }
+    }, [Submitedit, checkData, flag, ids, selectDesignation, selectedDept, slno])
 
-    }, [Submitedit, checkData, setMsg, msg, flag, ids, selectDesignation, selectedDept, slno, sumbitdelt])
+    //deletion process
+    const [open, setOpen] = useState(false)
+    const [Active, setActive] = useState(0)
+    const handleClose = async () => {
+        setOpen(false)
+        setActive(0)
+    }
+    const Close = async () => {
+        setOpen(false)
+        setActive(0)
+        //setDuty(data)
+    }
 
+    // const DeleteValue = useCallback((e) => {
+    //     e.preventDefault();
+    //     const value = remaining && remaining.map((val) => {
+    //         return val.duties_slno
+    //     })
+    //     const deltevalue = async (value) => {
+    //         const result = await axioslogin.delete(`/jobsummary/deletedata/select/${value}`)
+    //         const { success, message } = result.data
+    //         if (success === 5) {
+    //             handleClose()
+    //             succesNofity(message)
+    //             const deletee = duty.filter((val) => {
+    //                 if (val.duties_id !== sumbitdelt) {
+    //                     return val
+    //                 }
+    //                 return 0;
+    //             })
+    //             setDuty(deletee)
+    //         }
+    //     }
+    //     deltevalue(value)
+    //     return 0
+    // })
 
     return (
         <Fragment>
@@ -348,7 +419,13 @@ const DutyRespos = ({ jobedit, setjobEdit, selectDesignation, selectedDept, sele
                 </Box>
                 {
                     duty && duty.map((val, index) =>
-                        < Items key={index} val={val} setEdit={setEdit} setDelete={setDelete} setSubmitEdit={setSubmitEdit} setsubmitdelt={setsubmitdelt} />
+                        < Items key={index} val={val} setEdit={setEdit}
+                            setDelete={setDelete} setSubmitEdit={setSubmitEdit}
+                            setsubmitdelt={setsubmitdelt}
+                            open={open} setOpen={setOpen}
+                            handleClose={handleClose} Close={Close}
+                            setActive={setActive} Active={Active}
+                            checkid={checkid} newid={newid} setnewId={setnewId} />
                     )
                 }
             </Paper>

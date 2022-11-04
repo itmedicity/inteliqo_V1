@@ -131,15 +131,6 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         }
     }, [editKra])
 
-    const [msg, setMsg] = useState(0)
-    useEffect(() => {
-        if (msg === 1) {
-            succesNofity("Delete Successfully")
-        }
-    }, [msg])
-
-
-
     const updateGeneric = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
@@ -199,6 +190,13 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         }
     }, [jobedit])
 
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setExperience([])
+            setFormData(defaultState)
+        }
+    }, [selectDesignation])
+
     const SaveJobGeneric = useCallback((e) => {
         e.preventDefault();
         const submitFunc = async (checkData) => {
@@ -216,19 +214,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                         infoNofity("Please Add Qaulification")
                     }
                     else {
-                        const saveQualification = array && array.map((val) => {
-                            return {
-                                job_id: summary_slno,
-                                course: val.courseslno,
-                                specialization: val.specializationslno,
-                                dept_id: selectedDept,
-                                designation: selectDesignation,
-                                qualification_id: val.id
-                            }
-                        })
-                        const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
-                        const { success } = result.data
-                        if (success === 1) {
+                        if (array.length === 0) {
                             const postData = {
                                 job_id: summary_slno,
                                 experience: experincedetl,
@@ -248,9 +234,43 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                             else {
                                 errorNofity("Error Occured!!!Please Contact EDP")
                             }
-                        }
-                        else {
-                            errorNofity("Error Occured!!!Please Contact EDP")
+                        } else {
+                            const saveQualification = array && array.map((val) => {
+                                return {
+                                    job_id: summary_slno,
+                                    course: val.courseslno,
+                                    specialization: val.specializationslno,
+                                    dept_id: selectedDept,
+                                    designation: selectDesignation,
+                                    qualification_id: val.id
+                                }
+                            })
+                            const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
+                            const { success } = result.data
+                            if (success === 1) {
+                                const postData = {
+                                    job_id: summary_slno,
+                                    experience: experincedetl,
+                                    experience_year: expYear === '' ? 0 : expYear,
+                                    age_from: ageFrom === '' ? 0 : ageFrom,
+                                    age_to: ageTo === '' ? 0 : ageTo,
+                                    is_female: female === true ? 1 : 0,
+                                    is_male: male === true ? 1 : 0,
+                                    special_comment: specialcomment,
+                                    job_generic_slno: slno
+                                }
+                                const result = await axioslogin.patch('/jobsummary/updategeneric', postData)
+                                const { success, message } = result.data
+                                if (success === 2) {
+                                    succesNofity(message)
+                                }
+                                else {
+                                    errorNofity("Error Occured!!!Please Contact EDP")
+                                }
+                            }
+                            else {
+                                errorNofity("Error Occured!!!Please Contact EDP")
+                            }
                         }
                     }
                 }
@@ -261,8 +281,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
             } else {
-
-
+                console.log("enter");
                 let array = experiencee.filter((value) => {
                     return !arrays.find((val) => {
                         return value.qualification_id === val.qualification_id;
@@ -306,6 +325,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                             const result = await axioslogin.post('/jobsummary/jobGeneric', postData)
                             const { success, message } = result.data
                             if (success === 1) {
+                                console.log("success");
                                 const result = await axioslogin.post('/jobsummary/getjobQual', checkData)
                                 const { success, data } = result.data
                                 if (success === 1) {
@@ -330,27 +350,42 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                 }
             }
         }
-        if (sumbitdelt > 0) {
-            remaining && remaining.map((val) => {
-                const deltevalue = async (value) => {
-                    const result = await axioslogin.delete(`/jobsummary/deleteQualification/${value}`)
-                    const { success, message } = result.data
-                    if (success === 5) {
-                        setMsg(msg + 1)
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                }
-                deltevalue(val.qualification_slno)
-                return 0
-            })
-        }
-        else {
-            submitFunc(checkData)
-        }
+        submitFunc(checkData)
     }, [sumbitdelt, remaining, checkData])
 
+    //deletion process
+    // const [open, setOpen] = useState(false)
+    // const [Active, setActive] = useState(0)
+    // const handleClose = async () => {
+    //     setOpen(false)
+    //     setActive(0)
+    // }
+    // const Close = async () => {
+    //     setOpen(false)
+    //     setActive(0)
+    // }
+    // const DeleteValue = useCallback((e) => {
+    //     e.preventDefault();
+    //     const value = remaining && remaining.map((val) => {
+    //         return val.qualification_slno
+    //     })
+    //     const deltevalue = async (value) => {
+    //         const result = await axioslogin.delete(`/jobsummary/deleteQualification/${value}`)
+    //         const { success, message } = result.data
+    //         if (success === 5) {
+    //             succesNofity(message)
+    //             handleClose()
+    //             const newexp = experiencee.filter((val) => {
+    //                 if (val.qualification_id !== sumbitdelt) {
+    //                     return val
+    //                 }
+    //             })
+    //             setExperience(newexp)
+    //         }
+    //     }
+    //     deltevalue(value)
+    //     return 0
+    // })
 
     return (
         <Fragment>
@@ -457,6 +492,10 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                         setDeleteItem={setDeleteItem}
                                         jobedit={jobedit}
                                         setsubmitdelt={setsubmitdelt}
+                                    // DeleteValue={DeleteValue}
+                                    // open={open} setOpen={setOpen}
+                                    // handleClose={handleClose} Close={Close}
+                                    // setActive={setActive} Active={Active}
                                     />
                                 )}
                         </Paper>

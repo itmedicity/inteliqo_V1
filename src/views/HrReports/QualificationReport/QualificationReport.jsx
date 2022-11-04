@@ -64,10 +64,12 @@ const QualificationReport = () => {
         if (event.api.getSelectedRows() === 0) {
             setValue([])
             setsecondmenu(0)
+            setThirdmenu(0)
         }
         else {
             setValue(event.api.getSelectedRows())
         } setsecondmenu(0)
+        setThirdmenu(0)
     }
     /** mapping education slno into education name */
     useEffect(() => {
