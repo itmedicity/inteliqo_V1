@@ -47,7 +47,7 @@ const JobDescription = () => {
     const checkData = {
         designation: selectDesignation,
         dept_id: selectedDept,
-        //sect_id: selectDeptSection
+        sect_id: selectDeptSection
     }
     useEffect(() => {
         if (selectDesignation !== 0) {
@@ -59,7 +59,7 @@ const JobDescription = () => {
 
     /** checking department , dept section and designation already exist in jobsummary database table */
     const addtojobSummary = async () => {
-        if (selectDesignation !== 0 && selectedDept !== 0) {
+        if (selectDesignation !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
             const result = await axioslogin.post('/jobsummary/check', checkData)
             const { data, success } = result.data
             if (success === 1) {
@@ -73,7 +73,6 @@ const JobDescription = () => {
             }
         }
         else {
-
             infoNofity("Choose All Option")
         }
     }
@@ -131,9 +130,9 @@ const JobDescription = () => {
                         <Box sx={{ flex: 1, px: 0.5 }} >
                             <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
-                        {/* <Box sx={{ flex: 1, px: 0.5 }} >
+                        <Box sx={{ flex: 1, px: 0.5 }} >
                             <DepartmentSectionSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
-                        </Box> */}
+                        </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}  >
                             <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
@@ -153,7 +152,6 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             selectDeptSection={selectDeptSection}
-                            clear={clear}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}

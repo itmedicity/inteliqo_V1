@@ -281,14 +281,11 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
             } else {
-                console.log("enter");
                 let array = experiencee.filter((value) => {
                     return !arrays.find((val) => {
                         return value.qualification_id === val.qualification_id;
                     })
                 })
-
-
                 const result = await axioslogin.post('/jobsummary/check', checkData)
                 const { data, success } = result.data
                 if (success === 1) {
@@ -325,7 +322,6 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                             const result = await axioslogin.post('/jobsummary/jobGeneric', postData)
                             const { success, message } = result.data
                             if (success === 1) {
-                                console.log("success");
                                 const result = await axioslogin.post('/jobsummary/getjobQual', checkData)
                                 const { success, data } = result.data
                                 if (success === 1) {

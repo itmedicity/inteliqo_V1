@@ -5,7 +5,7 @@ import { CssVarsProvider, Typography } from '@mui/joy';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { axioslogin } from 'src/views/Axios/Axios';
 import PreviewIcon from '@mui/icons-material/Preview';
-import EditIcon from '@mui/icons-material/Edit';
+// import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
@@ -37,7 +37,6 @@ const JobDescriptionViewTable = () => {
     const editProfile = useCallback((params) => {
         setflag(2)
         const data = params.api.getSelectedRows()
-        console.log(data);
     })
 
     const [columnDef] = useState([
@@ -82,7 +81,7 @@ const JobDescriptionViewTable = () => {
 
     return (
         <Fragment>
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     {
                         flag === 1 ? <JobDescriptionList designation={designation} dept_id={dept_id} flag={flag} sect_id={sect_id} deptname={deptname} desgname={desgname} /> :
@@ -128,7 +127,7 @@ const JobDescriptionViewTable = () => {
                     }
                 </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

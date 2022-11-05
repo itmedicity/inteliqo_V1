@@ -18,7 +18,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const [slno, setSlno] = useState(0)
-    const [flag, setflag] = useState(0)
     const [value, setvalue] = useState(0)
     const [submitflag, setsubmitflag] = useState(0)
 
@@ -131,7 +130,8 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                     job_id: summary_slno,
                     duties_and_resp: duties,
                     dept_id: selectedDept,
-                    designation: selectDesignation
+                    designation: selectDesignation,
+                    sect_id: selectDeptSection
                 }
                 const result = await axioslogin.post('/jobsummary/jobduties', saveDuties)
                 const { success, message } = result.data
