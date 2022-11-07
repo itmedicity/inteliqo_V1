@@ -45,6 +45,12 @@ import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList } from '../reducers/Shift.Reducer'
 import { getCommonSettings } from './CommonSett.Reducer';
+import { getJobSummary } from './JobDescription.Reducer'
+import { getJobDuties } from './JobDuties.Reducer'
+import { getJobPerformance } from './JobPerformance.Reducer'
+import { getJobCompetency } from './JobCompetency.Reducer'
+import { getJobQualification } from './JobQualifi.Reducer'
+import { getJobGenric } from './JobGeneric.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -93,8 +99,13 @@ const reducer = combineReducers({
     getdept,
     getDeptSecList,
     getShiftList,
-    getCommonSettings
-
+    getCommonSettings,
+    getJobSummary,
+    getJobDuties,
+    getJobPerformance,
+    getJobCompetency,
+    getJobQualification,
+    getJobGenric
 })
 
 export default reducer;

@@ -7,8 +7,6 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import TextInput from 'src/views/Component/TextInput';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import BranchSelect from './Jobdesccomponent/BranchSelect';
-import DeptSection from './Jobdesccomponent/DeptSection';
-import DesignationSelect from './Jobdesccomponent/DesignationSelect';
 // import WorkingHours from './Jobdesccomponent/WorkingHours';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -16,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 
-const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection, clear }) => {
+const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const [jobid, setJobid] = useState(0)
     //get job id
@@ -42,9 +40,8 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         equipment: '',
         workingHours: '',
         reporting: ''
-
     })
-    //de structuring
+    //destructuring
     const { objective, scope, equipment, workingHours, reporting } = FormData
     const defaultState = {
         objective: '',
@@ -76,7 +73,6 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                     //setreporting(reporting_dept)
                     setreportDesig(reporting_designation)
                 }
-
             }
             getjobSummary()
         }
@@ -123,7 +119,8 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         working_hour: workingHours,
         reporting_dept: reporting,
         //reporting_designation: reportDesig,
-        equipment_used: equipment
+        equipment_used: equipment,
+        sect_id: selectDeptSection
     }
 
     //saving job summary

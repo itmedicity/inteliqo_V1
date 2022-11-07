@@ -135,7 +135,8 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
                     key_result_area: Kra,
                     competency_desc: competency_desc,
                     dept_id: selectedDept,
-                    designation: selectDesignation
+                    designation: selectDesignation,
+                    sect_id: selectDeptSection
                 }
                 const result = await axioslogin.post('/jobsummary/jobcompetency', saveCompetency)
                 const { success, message } = result.data
