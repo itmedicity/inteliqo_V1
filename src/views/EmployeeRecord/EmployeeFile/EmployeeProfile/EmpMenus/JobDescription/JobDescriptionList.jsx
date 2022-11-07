@@ -1,12 +1,11 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useMemo, } from 'react'
+import React, { Fragment, useMemo, } from 'react'
 //import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 //import IconButton from '@mui/joy/IconButton';
 //import CloseIcon from '@mui/icons-material/Close';
 //import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 //import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
 //import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 //import DesignationMast from 'src/views/CommonCode/DesignationMast';
@@ -16,12 +15,9 @@ import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 //import TextInput from 'src/views/Component/TextInput';
-import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { setPersonalData } from 'src/redux/actions/Profile.action';
 //import { useHistory } from 'react-router-dom';
-import { axioslogin } from 'src/views/Axios/Axios';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
@@ -46,10 +42,8 @@ const Progress = () => {
         </Box>)
 };
 
-const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, desgname }) => {
+const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, desgname, setflag }) => {
 
-    const [jobdescview, setJobdescView] = useState(0)
-    const [tableview, settableview] = useState(0)
     const history = useHistory()
     const dispatch = useDispatch();
     const [summary, setSummary] = useState({
@@ -90,51 +84,33 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
         }
     }, [designation, dept_id, sect_id])
 
-    // const checkData2 = useMemo(() => {
-    //     return {
-    //         designation: getempData.em_designation,
-    //         dept_id: getempData.em_department,
-    //         sect_id: getempData.em_dept_section
-    //     }
-    // },[])
-
-    // useEffect(() => {
-    //     const checkJobDesc = async (checkData2) => {
-    //         const result = await axioslogin.post('/jobsummary/check', checkData2)
-    //         const { success } = result.data
-    //         if (success === 1) {
-    //             setJobdescView(1)
-    //         }
-    //         else {
-    //             setJobdescView(0)
-    //         }
-    //     }
-    //     // const checkJobDescTableView = async (checkData1) => {
-    //     //     const result = await axioslogin.post('/jobsummary/check', checkData1)
-    //     //     const { success } = result.data
-    //     //     if (success === 1) {
-    //     //         settableview(1)
-    //     //     }
-    //     //     else {
-    //     //         settableview(0)
-    //     //     }
-    //     // }
-    //     // if (flag === 1) {
-    //     //     //checkJobDescTableView(checkData1)
-    //     // }
-    //     // else {
-    //     checkJobDesc(checkData2)
-    //     // }
-
-    // }, [getempData.em_designation, getempData.em_department, getempData.em_dept_section, flag, dept_id, designation, checkData1, checkData2])
+    //useMemo for data coming from employee profile
+    const checkData2 = useMemo(() => {
+        return {
+            designation: getempData.em_designation,
+            dept_id: getempData.em_department,
+            sect_id: getempData.em_dept_section
+        }
+    }, [getempData.em_designation, getempData.em_department, getempData.em_dept_section])
 
     useEffect(() => {
-        dispatch(setJobSummary(checkData1))
-        dispatch(setJobDuties(checkData1))
-        dispatch(setJobPerformance(checkData1))
-        dispatch(setJobCompetency(checkData1))
-        dispatch(setJobQualification(checkData1))
-        dispatch(setJobGeneric(checkData1))
+        if (flag === 1) {
+            //dispatch for job description view, when job description table preview click
+            dispatch(setJobSummary(checkData1))
+            dispatch(setJobDuties(checkData1))
+            dispatch(setJobPerformance(checkData1))
+            dispatch(setJobCompetency(checkData1))
+            dispatch(setJobQualification(checkData1))
+            dispatch(setJobGeneric(checkData1))
+        }
+        else {
+            dispatch(setJobSummary(checkData2))
+            dispatch(setJobDuties(checkData2))
+            dispatch(setJobPerformance(checkData2))
+            dispatch(setJobCompetency(checkData2))
+            dispatch(setJobQualification(checkData2))
+            dispatch(setJobGeneric(checkData2))
+        }
         return () => {
             dispatch(setJobSummary())
             dispatch(setJobDuties())
@@ -143,7 +119,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
             dispatch(setJobQualification())
             dispatch(setJobGeneric())
         }
-    }, [dispatch])
+    }, [dispatch, flag])
 
     const state = useSelector((state) => {
         return {
@@ -159,7 +135,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
     const { jobSummary, jobDuties, jobPerformance, jobCompetency, jobQualification, jobGeneric } = state
 
     useEffect(() => {
-        if (jobSummary.length !== 0 && jobGeneric.length !== 0) {
+        if (jobSummary.length !== 0) {
             const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept } = jobSummary[0];
             const summary = {
                 objective: objective === null ? 'Not Updated' : objective,
@@ -172,6 +148,14 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 dept: dept === null ? 'Not Updated' : dept
             }
             setSummary(summary)
+        }
+        return () => {
+            setSummary()
+        }
+    }, [jobSummary.length])
+
+    useEffect(() => {
+        if (jobGeneric.length !== 0) {
             const { experience_year, is_female, is_male, age_from, age_to } = jobGeneric[0]
             const generic = {
                 experience_year: experience_year === 0 ? 'Not Updated' : experience_year,
@@ -182,7 +166,10 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
             }
             setGeneric(generic)
         }
-    }, [jobSummary, jobGeneric])
+        return () => {
+            setGeneric()
+        }
+    }, [jobGeneric.length])
 
     useEffect(() => {
         if (jobQualification.length !== 0) {
@@ -192,10 +179,10 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
             setQualification()
         }
 
-    }, [jobQualification])
+    }, [jobQualification.length])
 
     const ViewPage = async () => {
-        history.push(`/Home/JobDescription`)
+        setflag(0)
     }
 
     return (
@@ -381,25 +368,8 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         </Typography>
                     </CssVarsProvider>
                 </Box>
-
-                {/* <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}>
-                    <Box border={1} sx={{ p: 1, display: "flex", justifyContent: "center", width: "5%", height: 35 }} >
-                        <CssVarsProvider>
-                            <Typography textColor="text.secondary">
-                                Slno
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", justifyContent: "center", width: "95%", height: 35 }} >
-                        <CssVarsProvider>
-                            <Typography textColor="text.secondary">
-                                Duties
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box> */}
                 {
-                    jobDuties.map((val) => {
+                    jobDuties && jobDuties.map((val) => {
                         return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                             key={val.duties_slno}>
                             <Box sx={{ p: 1, display: "flex", justifyContent: "center", width: "5%", height: 'auto' }} >
@@ -461,7 +431,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 </Box>
 
                 {
-                    jobPerformance.map((val) => {
+                    jobPerformance && jobPerformance.map((val) => {
                         return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                             key={val.specification_slno}>
                             <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
@@ -530,7 +500,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                     </Box>
                 </Box>
                 {
-                    jobCompetency.map((val) => {
+                    jobCompetency && jobCompetency.map((val) => {
                         return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                             key={val.competency_slno}>
                             <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
@@ -640,7 +610,9 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                     <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35 }} >
                         <CssVarsProvider>
                             <Typography textColor="text.secondary">
-                                {is_male === 0 ? null : 'Male'} {is_female === 0 ? null : 'Female'}
+                                {
+                                    is_male === 0 && is_female !== 0 ? 'Female' : null || is_male !== 0 && is_female !== 0 ? `Male / Female` : null || is_male !== 0 && is_female === 0 ? 'Male' : null
+                                }
                             </Typography>
                         </CssVarsProvider>
                     </Box>

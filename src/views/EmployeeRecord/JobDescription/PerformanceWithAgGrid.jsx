@@ -21,7 +21,6 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
     const [slno, setSlno] = useState(0)
-    const [flag, setflag] = useState(0)
 
     //table
     const [tableData, settableData] = useState([])
@@ -154,7 +153,8 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                     kpi: kpi,
                     kpi_score: kpiscore,
                     dept_id: selectedDept,
-                    designation: selectDesignation
+                    designation: selectDesignation,
+                    sect_id: selectDeptSection
                 }
                 const result = await axioslogin.post('/jobsummary/jobspecification', savePerformance)
                 const { success, message } = result.data

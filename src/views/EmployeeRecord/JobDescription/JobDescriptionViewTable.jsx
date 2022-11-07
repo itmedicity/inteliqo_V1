@@ -40,7 +40,7 @@ const JobDescriptionViewTable = () => {
     })
 
     const [columnDef] = useState([
-        { headerName: 'SlNo', field: 'summary_slno', minWidth: 10, },
+        { headerName: 'SlNo', field: 'no', minWidth: 10, },
         { headerName: 'Department ', field: 'dpname' },
         { headerName: 'Department Section', field: 'dpsname' },
         { headerName: 'Designation', field: 'dsname', },
@@ -76,7 +76,7 @@ const JobDescriptionViewTable = () => {
     }, [])
 
     const toSettings = () => {
-        history.push('/Home')
+        history.push('/Home/JobDescriptionViewTable')
     }
 
     return (
@@ -84,7 +84,7 @@ const JobDescriptionViewTable = () => {
             <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     {
-                        flag === 1 ? <JobDescriptionList designation={designation} dept_id={dept_id} flag={flag} sect_id={sect_id} deptname={deptname} desgname={desgname} /> :
+                        flag === 1 ? <JobDescriptionList designation={designation} setflag={setflag} dept_id={dept_id} flag={flag} sect_id={sect_id} deptname={deptname} desgname={desgname} /> :
                             flag === 2 ? <JobDescriptionEdit /> :
                                 <Paper square elevation={0} sx={{
                                     pt: 2,
