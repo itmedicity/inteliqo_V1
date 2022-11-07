@@ -12,7 +12,7 @@ import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgr
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 
-const CommonLeavesCard = ({ title, id }) => {
+const CommonLeavesCard = ({ title, id, processStat }) => {
     const [cmData, setcmData] = useState([])
     const [loding, setLoding] = useState(false)
 
@@ -28,9 +28,9 @@ const CommonLeavesCard = ({ title, id }) => {
             }
             setLoding(false)
         }
-        getLeaveData()
+        processStat && getLeaveData()
         return (() => setcmData([]))
-    }, [id])
+    }, [id, processStat])
 
     return (
         <Paper square sx={{ flex: 1 }}>
@@ -47,8 +47,8 @@ const CommonLeavesCard = ({ title, id }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {cmData && cmData.map((row, index) => {
-                            let commnLeave = row.lvetype_desc.toLowerCase()
+                        {cmData && cmData?.map((row, index) => {
+                            let commnLeave = row?.lvetype_desc?.toLowerCase()
                             return (<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row" sx={{ textTransform: 'capitalize' }} >{commnLeave}</TableCell>
                                 <TableCell align="right">{row.cmn_lv_allowed}</TableCell>

@@ -12,7 +12,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
-const HolidayLeaveCard = ({ title, id }) => {
+const HolidayLeaveCard = ({ title, id, processStat }) => {
     const [hlData, sethlData] = useState([])
     const [loding, setLoding] = useState(false)
 
@@ -28,9 +28,9 @@ const HolidayLeaveCard = ({ title, id }) => {
             }
             setLoding(false)
         }
-        getLeaveData()
+        processStat && getLeaveData()
         return (() => sethlData([]))
-    }, [id])
+    }, [id, processStat])
 
     return (
         <Paper square sx={{ flex: 1 }}>

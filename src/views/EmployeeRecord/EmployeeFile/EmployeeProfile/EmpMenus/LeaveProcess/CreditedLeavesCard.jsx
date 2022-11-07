@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
-const CreditedLeavesCard = ({ title, id }) => {
+const CreditedLeavesCard = ({ title, id, processStat }) => {
 
     const [crlData, setcrlData] = useState([])
     const [loding, setLoding] = useState(false)
@@ -29,9 +29,9 @@ const CreditedLeavesCard = ({ title, id }) => {
             }
             setLoding(false)
         }
-        getLeaveData()
+        processStat && getLeaveData()
         return (() => setcrlData([]))
-    }, [id])
+    }, [id, processStat])
 
     return (
         <Paper square sx={{ flex: 1 }}>

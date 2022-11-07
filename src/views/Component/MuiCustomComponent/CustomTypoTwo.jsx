@@ -16,7 +16,10 @@ const CustomTypoTwo = ({ title, bgColor, style }) => {
         }} >
             <CssVarsProvider>
                 <Typography
-                    textColor="neutral.600" sx={{ display: 'flex', p: 0, m: 0 }} >
+                    // textColor="neutral.600"
+                    textColor={'#212121'}
+                    sx={{ display: 'flex', p: 0, m: 0 }}
+                >
                     {title}
                 </Typography>
             </CssVarsProvider>

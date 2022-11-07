@@ -16,8 +16,15 @@ import LeaveCategoryInfo from '../AnnualLeaveInformation/LeaveCategoryInfo';
 import LeaveProcessCard from './LeaveProcessCard';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { getEmployeeCurrentCategoryInfom, getEmployeeCurrentLeaveProcessInfom, processedLeaveList } from './Functions/LeaveProcessFun';
-
+import {
+    checkContractStatus,
+    getEmployeeCurrentCategoryInfom,
+    getEmployeeCurrentLeaveProcessInfom,
+    processedLeaveList,
+    newProcessedEmployeeData
+} from './Functions/LeaveProcessFun';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { getProcessserialnum } from 'src/views/Constant/Constant';
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'));
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'));
@@ -26,11 +33,13 @@ const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'));
 const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'));
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'));
 
-
 const LeaveProcessMainCard = () => {
     const [empCategory, setEmpCategory] = useState({})
     const [empLeaveProcess, setEmpLeaveProcess] = useState({})
     const [processedLveDetl, setprocessedLeaveDetl] = useState({})
+    const [processMesg, setprocessMesg] = useState('')
+    const [processBtn, setprocessBtn] = useState(true)
+    const [processSlno, setProcessSlno] = useState(0)
 
     const { id, no } = useParams();
     const employeeIDs = useMemo(() => {
@@ -39,6 +48,16 @@ const LeaveProcessMainCard = () => {
             em_id: id
         }
     }, [id, no])
+
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
+    const { contract_status, em_contract_end_date } = state;
+
+    useEffect(() => {
+        //new process serial number
+        getProcessserialnum().then((val) => {
+            setProcessSlno(val)
+        })
+    }, [])
 
     useEffect(() => {
         //Set Current Category Infromation 
@@ -57,13 +76,21 @@ const LeaveProcessMainCard = () => {
             }
         })
 
-    }, [employeeIDs.em_no])
+        //for new employee primary data for inserting the the "hrm_emp_processs" table
+        newProcessedEmployeeData(category, processSlno).then((value) => {
+            console.log(value)
+        })
 
+        return () => {
+            setEmpCategory({})
+            setEmpLeaveProcess({})
+        }
+
+    }, [employeeIDs.em_no, category, processSlno])
 
     const category = useMemo(() => empCategory, [empCategory])
     const leaveProcess = useMemo(() => empLeaveProcess, [empLeaveProcess])
     const processedLeaveDetl = useMemo(() => processedLveDetl, [processedLveDetl])
-
 
     useEffect(() => {
         //procedded Leave List
@@ -74,20 +101,65 @@ const LeaveProcessMainCard = () => {
         } else {
             //Leave Process table is blank or not processed || data status is 'N' inActive
             let processedObj = {
-                message: "Leave process is not done for the employee",
-                category: 0,
-                processedStatus: 0,
-                leaveData: []
+                message: "Leave Process is not done",
+                categoryStatus: 1,
+                processedStatus: false,
+                leaveData: [],
+                newProcess: true,
+                dateExceed: false
             }
             setprocessedLeaveDetl(processedObj)
         }
+        return () => {
+            setprocessedLeaveDetl({})
+        }
     }, [category, leaveProcess])
+
+
+    useEffect(() => {
+        setprocessMesg(processedLeaveDetl.message)
+        setprocessBtn(processedLeaveDetl.processedStatus)
+        return () => {
+            setprocessMesg('')
+            setprocessBtn(true)
+        }
+    }, [processedLeaveDetl])
 
     const { leaveData } = processedLeaveDetl;
 
+    //Leave Process 
+    const leaveProcessOption = async () => {
+        /****
+         * 1-> employee is under contract or not
+         * 2-> if Yes retun the message "needs to renew the contract or clode the contract"
+         * 3-> NOT UNDER CONTRACT
+         * 4-> First check any processed data available in processed table
+         * 5-> if Yes , Inactive that data
+         * 6-> create a new object based on new category and new dates --> if contract then contract start & end date
+         *      & consider the 'end of the yesr date' and 'start of the year date'
+         * 7-> then insert a new processed data into the table
+         * 
+         *  
+         */
 
-    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-    // console.log(state)
+        // 1 -> 
+        const contractStatus = await checkContractStatus(em_contract_end_date, contract_status);
+
+        if (contractStatus.status === true) {
+            // 4->
+            if (processedLveDetl.newProcess === true) {
+                //new Process --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
+
+            } else if (processedLveDetl.categoryStatus === 0) {
+                //Category changed in 'hrm_emp_mast' ( check both the table ''hrm_emp_mast' & 'hrm_process_table' )
+            } else if (processedLveDetl.dateExceed === true) {
+                //Next updation date is exceed the current date
+            }
+
+        } else {
+            warningNofity(contractStatus.message)
+        }
+    }
 
     return (
         <CustomLayout title="Leave Process" >
@@ -101,9 +173,17 @@ const LeaveProcessMainCard = () => {
                             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'flex-start' }} >
                                     <Box sx={{ display: 'flex', py: 0.5, px: 0.3, height: 30, }}>
-                                        <CustomTypoTwo title={'Leave Process'} bgColor='#dfe6e9' />
-                                        <Box sx={{ display: 'flex', flex: 1, height: 25 }} >
-                                            <Button variant="outlined" sx={{ mx: 0.5, flex: 1, }} >
+                                        <CustomTypoTwo
+                                            title={processMesg}
+                                            bgColor={processBtn === true ? '#81c784' : '#ef9a9a'}
+                                        />
+                                        <Box sx={{ display: 'flex', flex: 1, height: 25, }} >
+                                            <Button
+                                                variant="outlined"
+                                                sx={{ display: 'flex', mx: 0.5, flex: 1, }}
+                                                disabled={processBtn}
+                                                onClick={() => { leaveProcessOption() }}
+                                            >
                                                 Process
                                             </Button>
                                         </Box>
@@ -143,6 +223,7 @@ const LeaveProcessMainCard = () => {
                             <CasualLeaveTable
                                 title={'Casual Leave'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>
@@ -151,6 +232,7 @@ const LeaveProcessMainCard = () => {
                             <EarnedLeaveTable
                                 title={'Earned || Privilage Leave'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>
@@ -161,6 +243,7 @@ const LeaveProcessMainCard = () => {
                             <HolidayLeaveTable
                                 title={'Naional & Festival Holiday'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>
@@ -169,6 +252,7 @@ const LeaveProcessMainCard = () => {
                             <CommonLeaveTable
                                 title={'Common Off Days'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>
@@ -179,6 +263,7 @@ const LeaveProcessMainCard = () => {
                             <CarryForwardLeaveTable
                                 title={'Carry Forward Leave'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>
@@ -187,6 +272,7 @@ const LeaveProcessMainCard = () => {
                             <CreditedLeaveTable
                                 title={'Credited Leaves'}
                                 id={employeeIDs.em_no}
+                                processStat={processBtn}
                             />
                         </Suspense>
                     </Box>

@@ -12,7 +12,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
-const CarryForwardCard = ({ title, id }) => {
+const CarryForwardCard = ({ title, id, processStat }) => {
     const [cfData, setcfData] = useState([])
     const [loding, setLoding] = useState(false)
 
@@ -28,9 +28,9 @@ const CarryForwardCard = ({ title, id }) => {
             }
             setLoding(false)
         }
-        getLeaveData()
+        processStat && getLeaveData()
         return (() => setcfData([]))
-    }, [id])
+    }, [id, processStat])
 
     return (
         <Paper square sx={{ flex: 1 }}>
