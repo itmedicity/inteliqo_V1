@@ -39,7 +39,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     }
     //colomun for table
     const [columnDef] = useState([
-        { headerName: 'Duties Slno', field: 'slno', width: 50, },
+        { headerName: 'Slno', field: 'slno', width: 50, },
         { headerName: 'Duties & Responsibilities ', field: 'duties_and_resp', autoHeight: true, wrapText: true, minWidth: 200, },
         //{ headerName: 'Department', field: 'dept_name', width: 60, },
         //{ headerName: 'Designation', field: 'desg_name', width: 60, },

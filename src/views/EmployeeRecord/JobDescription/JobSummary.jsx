@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 
-const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
+const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const [jobid, setJobid] = useState(0)
     //get job id
@@ -225,6 +225,21 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                             style={{ width: "100%", paddingLeft: 13 }}
                             Placeholder="Auto Select Department From Top Menu"
                             value={jobview === 1 || jobedit > 0 ? selectedDeptName : ''}
+                            disabled={true}
+                        />
+                    </Box>
+                </Box>
+                <Box sx={{ display: "flex", width: "100%" }} >
+                    <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
+                        <CssVarsProvider>
+                            <Typography level="body1">Department Section</Typography>
+                        </CssVarsProvider>
+                    </Paper>
+                    <Box sx={{ flex: 2, }} >
+                        <TextInput
+                            style={{ width: "100%", paddingLeft: 13 }}
+                            Placeholder="Auto Select Department From Top Menu"
+                            value={jobview === 1 || jobedit > 0 ? deptsectName : ''}
                             disabled={true}
                         />
                     </Box>

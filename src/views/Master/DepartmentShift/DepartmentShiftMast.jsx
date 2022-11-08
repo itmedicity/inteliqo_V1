@@ -29,11 +29,12 @@ const DepartmentShiftMast = () => {
         } = useContext(PayrolMasterContext)
 
     const state = useSelector((state) => state.getCommonSettings, _.isEqual)
-    const { notapplicable_shift, default_shift } = state;
+
+    const { notapplicable_shift, default_shift, week_off_day } = state;
 
     //adding shifts to table
     const getShiftData = () => {
-        if (notapplicable_shift === null && default_shift === null) {
+        if (notapplicable_shift === null && default_shift === null && week_off_day === null) {
             warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
@@ -42,6 +43,9 @@ const DepartmentShiftMast = () => {
             }
             else if (getshifts === notapplicable_shift) {
                 warningNofity("NA Already Exist!!")
+            }
+            else if (getshifts === week_off_day) {
+                warningNofity("Week Off Already Exist")
             }
             else if (arraydata.some(key => key.shiftcode === getshifts)) {
                 warningNofity("Shift Time Already Added!!")
@@ -57,6 +61,7 @@ const DepartmentShiftMast = () => {
             }
         }
     }
+
     //removing shift from table
     const onClickdelete = (checkid) => {
         const newdata = [...arraydata]
@@ -79,7 +84,12 @@ const DepartmentShiftMast = () => {
             shiftcode: notapplicable_shift,
             shiftDescription: 'NA',
         }
-        const newdatas = [...arraydata, defautdata, noappdata]
+        const weekoffdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: week_off_day,
+            shiftDescription: 'WOFF',
+        }
+        const newdatas = [...arraydata, defautdata, noappdata, weekoffdata]
 
         const postData = {
             dept_id: selectedDept,
@@ -106,7 +116,7 @@ const DepartmentShiftMast = () => {
             arraydataset([])
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            errorNofity(message)
         }
     }
     const RedirectToProfilePage = () => {
