@@ -87,6 +87,8 @@ const ExperienceReport = () => {
             setValue(event.api.getSelectedRows())
             setsecondmenu(0)
             setThirdmenu(0)
+            setThirdValue(0)
+            setsecondValue(0)
         }
         setsecondmenu(0)
     }
@@ -127,6 +129,7 @@ const ExperienceReport = () => {
         }
         else {
             setsecondValue(event.api.getSelectedRows())
+            setThirdValue(0)
         }
         setThirdmenu(0)
     }

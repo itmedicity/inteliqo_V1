@@ -36,7 +36,7 @@ const CompanyInformtion = () => {
         selectedDept, updateSelected,
         selectDeptSection, updateDepartmentSection,
         selectInstiType, updateInstituteSeleted,
-        getemployeecategory, udateemployeecategory, updateDeptSection, getDeptSection,
+        getemployeecategory, udateemployeecategory, updateDeptSection,
         selectDesignation, updateDesignation
     } = useContext(PayrolMasterContext)
 
@@ -95,10 +95,10 @@ const CompanyInformtion = () => {
     const [probsataus, setProbstatus] = useState(0)
     const [probationperiod, setProbationPeriod] = useState(0);
 
-    const [ineffectdate, setineffectdate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [ineffectdate, setineffectdate] = useState('');
     const [designation, setdesignation] = useState(0)
     const [empcatory, setempcat] = useState(0)
-
+    const [cateineffectdate, setCateineffectdate] = useState('')
 
     /** to get stored category values from redux */
     const dispatch = useDispatch();
@@ -108,6 +108,7 @@ const CompanyInformtion = () => {
 
     /** to get employee category details from redux */
     // const empCate = useSelector((state) => state.getEmployeeCategory.empCategory || 0, _.isEqual)
+
 
     //Get data
     useEffect(() => {
@@ -153,7 +154,6 @@ const CompanyInformtion = () => {
                         setProbstatus(1)
                     }
                 }
-
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
@@ -167,6 +167,13 @@ const CompanyInformtion = () => {
         var ineffectdate = format(new Date(startdate), "yyyy-MM-dd")
         setineffectdate(ineffectdate)
         return (ineffectdate)
+    }, [])
+
+    const getCateDate = useCallback((e) => {
+        var startdate = e.target.value
+        var cateineffectdate = format(new Date(startdate), "yyyy-MM-dd")
+        setCateineffectdate(cateineffectdate)
+        return (cateineffectdate)
     }, [])
 
     //post Data
@@ -189,11 +196,12 @@ const CompanyInformtion = () => {
             com_designation: designation,
             com_designation_new: selectDesignation,
             em_designation: selectDesignation,
-            ineffective_date: ineffectdate
+            ineffective_date: designation !== selectDesignation ? ineffectdate : null,
+            category_ineffect_date: company !== getemployeecategory ? cateineffectdate : null
         }
     }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory,
         probationperiod, empstatus, probsataus, no, id, selectDesignation, designation,
-        ineffectdate, selectDeptSection])
+        ineffectdate, selectDeptSection, cateineffectdate])
 
     const reset = () => {
         updateBranchSelected(0)
@@ -202,7 +210,7 @@ const CompanyInformtion = () => {
         updateInstituteSeleted(0)
         udateemployeecategory(0)
         updateDesignation(0)
-        setineffectdate(format(new Date(ineffectdate), "yyyy-MM-dd"))
+        setineffectdate('')
     }
 
     const postFormdata = useMemo(() => {
@@ -220,66 +228,80 @@ const CompanyInformtion = () => {
     const submitCompany = async (e) => {
         e.preventDefault();
 
-        if (contract_status === 1) {
-            warningNofity('Contract Employee Category Change Only Through Contract Process Window')
-        } else {
+        //get current data allowed  leave based on category
+        const getcategorydata = async () => {
+            const result = await axioslogin.get(`/common/getannprocess/${no}`)
+            const { data } = result.data
+            setleavestate(data[0])
+        }
+        getcategorydata();
 
-            // get current data allowed  leave based on category
-            const getcategorydata = async () => {
-                const result = await axioslogin.get(`/common/getannprocess/${no}`)
-                const { data } = result.data
-                setleavestate(data[0])
+        const getdata = async () => {
+            getProcessserialnum().then((val) => {
+                setprocessslno(val)
+            })
+
+            // check the table where data present if present get the details process table
+            const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
+            const { success, message } = result.data;
+            const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
+                lv_process_slno, next_updatedate } = message[0]
+            const dataprvleave = {
+                hrm_calcu: hrm_calcu,
+                hrm_clv: hrm_clv,
+                hrm_cmn: hrm_cmn,
+                hrm_ern_lv: hrm_ern_lv,
+                hrm_hld: hrm_hld,
+                category_slno: category_slno,
+                lv_process_slno: lv_process_slno
             }
-            getcategorydata();
 
-            const getdata = async () => {
-                getProcessserialnum().then((val) => {
-                    setprocessslno(val)
-                })
-
-                // check the table where data present if present get the details process table
-                const result = await axioslogin.post('/yearleaveprocess/', postFormdata)
-                const { success, message } = result.data;
-                const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
-                    lv_process_slno, next_updatedate } = message[0]
-                const dataprvleave = {
-                    hrm_calcu: hrm_calcu,
-                    hrm_clv: hrm_clv,
-                    hrm_cmn: hrm_cmn,
-                    hrm_ern_lv: hrm_ern_lv,
-                    hrm_hld: hrm_hld,
-                    category_slno: category_slno,
-                    lv_process_slno: lv_process_slno
-                }
-
-                // if no data available
-                if (success === 0) {
-                    // if no data is present means new employee  set model
+            // if no data available
+            if (success === 0) {
+                // if no data is present means new employee  set model
+                setmodelvalue(1)
+                setmodelmessage('Leave process is not done for the employee')
+                setolddat(1)
+                setOpen(true)
+            }
+            else if (success === 1) {
+                leaveprocessidupdate(dataprvleave)
+                // if employee process date has over 
+                if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
+                    setOpen(true)
                     setmodelvalue(1)
-                    setmodelmessage('Leave process is not done for the employee')
-                    setolddat(1)
+                    setmodelmessage('Date Exceeded do you Want To Process')
+                }
+                else if (category_slno !== getemployeecategory) {
+
+                    setmodelvalue(1)
+                    setmodelmessage('Category Change Do You Want to  To Process')
                     setOpen(true)
                 }
-                else if (success === 1) {
-                    leaveprocessidupdate(dataprvleave)
-                    // if employee process date has over 
-                    if (compareAsc(new Date(), new Date(next_updatedate)) === 1) {
-                        setOpen(true)
-                        setmodelvalue(1)
-                        setmodelmessage('Date Exceeded do you Want To Process')
-                    }
-                    else if (category_slno !== getemployeecategory) {
-
-                        setmodelvalue(1)
-                        setmodelmessage('Category Change Do You Want to  To Process')
-                        setOpen(true)
-                    }
-                    // if process contain data and pending leave process is present
-                    else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
-                        setmodellist(true)
-                    }
+                // if process contain data and pending leave process is present
+                else if (hrm_calcu === 0 || hrm_clv === 0 || hrm_cmn === 0 || hrm_ern_lv === 0 || hrm_hld === 0) {
+                    setmodellist(true)
                 }
             }
+        }
+
+        //only designation change
+        const getdatasub = async () => {
+            const result = await axioslogin.post('/empmast/company', updateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                getcategorydata()
+                succesNofity(message);
+                setcount(count + 1)
+                reset()
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
+        //category change and leave process
+        const getdatasub1 = async () => {
             const result = await axioslogin.post('/empmast/company', updateData)
             const { message, success } = result.data;
             if (success === 1) {
@@ -293,14 +315,23 @@ const CompanyInformtion = () => {
             } else {
                 infoNofity(message)
             }
-
-
         }
-
-
+        if (contract_status === 1) {
+            warningNofity('Contract Employee Category Change Only Through Contract Process Window')
+        }
+        else if (designation !== selectDesignation && ineffectdate === '') {
+            infoNofity("Please Add Designation Change Date")
+        }
+        else if (designation !== selectDesignation && ineffectdate !== '') {
+            getdatasub()
+        }
+        else if (company !== getemployeecategory && cateineffectdate === '') {
+            infoNofity("Please Add Category Change Date")
+        }
+        else {
+            getdatasub1()
+        }
     }
-
-
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
     const year = moment(new Date()).format('YYYY')
@@ -490,7 +521,7 @@ const CompanyInformtion = () => {
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
-                                            Date
+                                            Designation Change Date
                                         </Typography>
 
                                     </CssVarsProvider>
@@ -503,6 +534,7 @@ const CompanyInformtion = () => {
                                         min={new Date()}
                                         value={ineffectdate}
                                         name="ineffectdate"
+                                        //disabled={Toggle === 1 ? false : true}
                                         changeTextValue={(e) => {
                                             getDate(e)
                                         }}
@@ -530,9 +562,31 @@ const CompanyInformtion = () => {
                                     </CssVarsProvider>
                                 </Box>
 
-                                <Box sx={{ width: "80%" }}>
+                                <Box sx={{ width: "30%" }}>
                                     <EmployeeCategory
                                         style={SELECT_CMP_STYLE}
+                                    />
+                                </Box>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Category Change Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <TextInput
+                                        type="date"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Date"
+                                        min={new Date()}
+                                        value={cateineffectdate}
+                                        name="cateineffectdate"
+                                        //disabled={true}
+                                        changeTextValue={(e) => {
+                                            getCateDate(e)
+                                        }}
                                     />
                                 </Box>
                             </Box>

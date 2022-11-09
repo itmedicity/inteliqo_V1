@@ -41,9 +41,9 @@ const JobDescriptionViewTable = () => {
 
     const [columnDef] = useState([
         { headerName: 'SlNo', field: 'no', minWidth: 10, },
-        { headerName: 'Department ', field: 'dpname' },
-        { headerName: 'Department Section', field: 'dpsname' },
-        { headerName: 'Designation', field: 'dsname', },
+        { headerName: 'Department ', field: 'dpname', filter: true },
+        { headerName: 'Department Section', field: 'dpsname', filter: true },
+        { headerName: 'Designation', field: 'dsname', filter: true },
         {
             headerName: 'Preview', minWidth: 100, wrapText: true,
             cellRenderer: params =>
@@ -76,7 +76,7 @@ const JobDescriptionViewTable = () => {
     }, [])
 
     const toSettings = () => {
-        history.push('/Home/JobDescriptionViewTable')
+        history.push('/Home/JobDescription')
     }
 
     return (

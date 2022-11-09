@@ -135,6 +135,8 @@ const MasterContext = ({ children }) => {
     const [courseName, setCourseName] = useState('')
     //specialization name
     const [specName, setSpecName] = useState('')
+
+    const [deptsectName, setDeptSecName] = useState('')
     const value = {
         selectedDept,
         updateSelected,
@@ -253,7 +255,9 @@ const MasterContext = ({ children }) => {
         courseName,
         setCourseName,
         specName,
-        setSpecName
+        setSpecName,
+        deptsectName,
+        setDeptSecName
 
 
     }

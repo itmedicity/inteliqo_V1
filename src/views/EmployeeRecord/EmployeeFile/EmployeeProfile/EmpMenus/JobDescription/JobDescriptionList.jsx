@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, useMemo, } from 'react'
+import React, { Fragment, Suspense, useMemo, } from 'react'
 //import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 //import IconButton from '@mui/joy/IconButton';
 //import CloseIcon from '@mui/icons-material/Close';
@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 //import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
-import { useHistory } from 'react-router-dom';
+//import { useHistory } from 'react-router-dom';
 import { setJobSummary } from 'src/redux/actions/JobDescription.Action';
 import { setJobDuties } from 'src/redux/actions/JobDuties.Action';
 import { setJobPerformance } from 'src/redux/actions/JobPerformance.Action';
@@ -28,12 +28,12 @@ import { setJobCompetency } from 'src/redux/actions/JobCompetency.Action';
 import { setJobQualification } from 'src/redux/actions/JobQualifi.Action';
 import { setJobGeneric } from 'src/redux/actions/JobGeneric.Action';
 
-const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobSummaryEmp'));
-const DutyRespos = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/DutiesEmp'));
-// const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
-const Generic = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobGenericEmp'));
-const Performance = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/Jobperformance'));
-const Competency = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobCompetency'))
+// const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobSummaryEmp'));
+// const DutyRespos = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/DutiesEmp'));
+// // const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
+// const Generic = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobGenericEmp'));
+// const Performance = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/Jobperformance'));
+// const Competency = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobCompetency'))
 
 const Progress = () => {
     return (
@@ -44,7 +44,7 @@ const Progress = () => {
 
 const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, desgname, setflag }) => {
 
-    const history = useHistory()
+    //const history = useHistory()
     const dispatch = useDispatch();
     const [summary, setSummary] = useState({
         objective: '',
@@ -54,9 +54,10 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
         reporting_dept: '',
         equipment_used: '',
         desig: '',
-        dept: ''
+        dept: '',
+        sect: ''
     })
-    const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept } = summary
+    const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept, sect } = summary
 
     const [generic, setGeneric] = useState({
         experience_year: '',
@@ -119,7 +120,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
             dispatch(setJobQualification())
             dispatch(setJobGeneric())
         }
-    }, [dispatch, flag])
+    }, [dispatch, flag, checkData1, checkData2])
 
     const state = useSelector((state) => {
         return {
@@ -136,7 +137,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
 
     useEffect(() => {
         if (jobSummary.length !== 0) {
-            const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept } = jobSummary[0];
+            const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept, sect } = jobSummary[0];
             const summary = {
                 objective: objective === null ? 'Not Updated' : objective,
                 scope: scope === null ? 'Not Updated' : scope,
@@ -145,7 +146,8 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 reporting_dept: reporting_dept === null ? 'Not updated' : reporting_dept,
                 equipment_used: equipment_used === null ? 'Not updated' : equipment_used,
                 desig: desig === null ? 'Not Updated' : desig,
-                dept: dept === null ? 'Not Updated' : dept
+                dept: dept === null ? 'Not Updated' : dept,
+                sect: sect === null ? 'Not Updated' : sect
             }
             setSummary(summary)
         }
@@ -242,14 +244,14 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 </Box>
                 {/* Scope */}
                 <Box sx={{ display: "flex", flexDirection: "row", px: 1 }}>
-                    <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", fontWeight: 500, width: "25%", height: 35 }} >
+                    <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", fontWeight: 500, width: "25%", height: 'auto' }} >
                         <CssVarsProvider>
                             <Typography textColor="text.secondary">
                                 Scope
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35 }} >
+                    <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 'auto' }} >
                         <CssVarsProvider>
                             <Typography textColor="text.secondary">
                                 {scope}
@@ -287,6 +289,23 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         <CssVarsProvider>
                             <Typography textColor="text.secondary">
                                 {dept}
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                </Box>
+                {/* Department Section*/}
+                <Box sx={{ display: "flex", flexDirection: "row", px: 1 }}>
+                    <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", fontWeight: 500, width: "25%", height: 35 }} >
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Department section
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35 }} >
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                {sect}
                             </Typography>
                         </CssVarsProvider>
                     </Box>
@@ -368,27 +387,30 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         </Typography>
                     </CssVarsProvider>
                 </Box>
-                {
-                    jobDuties && jobDuties.map((val) => {
-                        return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
-                            key={val.duties_slno}>
-                            <Box sx={{ p: 1, display: "flex", justifyContent: "center", width: "5%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.slno}
-                                    </Typography>
-                                </CssVarsProvider>
+                <Suspense fallback={<Progress />} >
+                    {
+                        jobDuties && jobDuties.map((val) => {
+                            return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
+                                key={val.duties_slno}>
+                                <Box sx={{ p: 1, display: "flex", justifyContent: "center", width: "5%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.slno}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ p: 1, display: "flex", width: "95%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.duties_and_resp}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                             </Box>
-                            <Box sx={{ p: 1, display: "flex", width: "95%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.duties_and_resp}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    })
-                }
+                        })
+                    }
+                </Suspense>
+
 
                 {/* Job Specification : Performance  */}
                 < Box sx={{ p: 1, display: "flex", fontWeight: 500 }} >
@@ -429,42 +451,43 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         </CssVarsProvider>
                     </Box>
                 </Box>
-
-                {
-                    jobPerformance && jobPerformance.map((val) => {
-                        return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
-                            key={val.specification_slno}>
-                            <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.slno}
-                                    </Typography>
-                                </CssVarsProvider>
+                <Suspense fallback={<Progress />} >
+                    {
+                        jobPerformance && jobPerformance.map((val) => {
+                            return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
+                                key={val.specification_slno}>
+                                <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.slno}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "25%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.kra_desc}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "60%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.kpi}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "10%", height: 'auto', justifyContent: 'center' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.kpi_score}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                             </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "25%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.kra_desc}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "60%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.kpi}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "10%", height: 'auto', justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.kpi_score}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    })
-                }
+                        })
+                    }
+                </Suspense>
 
                 {/* Job Specification : Competency */}
 
@@ -499,35 +522,36 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         </CssVarsProvider>
                     </Box>
                 </Box>
-                {
-                    jobCompetency && jobCompetency.map((val) => {
-                        return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
-                            key={val.competency_slno}>
-                            <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.slno}
-                                    </Typography>
-                                </CssVarsProvider>
+                <Suspense fallback={<Progress />} >
+                    {
+                        jobCompetency && jobCompetency.map((val) => {
+                            return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
+                                key={val.competency_slno}>
+                                <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.slno}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "25%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.kra_desc}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "70%", height: 'auto' }} >
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary">
+                                            {val.competency_desc}
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
                             </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "25%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.kra_desc}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "70%", height: 'auto' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.competency_desc}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    })
-                }
-
+                        })
+                    }
+                </Suspense>
 
                 {/* Job Specification : Generic */}
 
@@ -564,14 +588,14 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35 }} >
+                    <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35, }} >
                         {
                             qualification && qualification.map((val) => {
                                 return <Box sx={{ display: 'flex' }} key={val.qualification_slno}>
-                                    <Box>
+                                    <Box sx={{ textTransform: "capitalize", }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary">
-                                                {val.spec_desc} IN {val.cour_desc},
+                                                {val.spec_desc.toLowerCase()} In {val.cour_desc.toLowerCase()},
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>

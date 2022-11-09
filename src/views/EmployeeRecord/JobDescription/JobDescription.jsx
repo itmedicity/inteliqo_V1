@@ -37,7 +37,7 @@ const JobDescription = () => {
     const { selectDesignation, updateDesignation,
         selectedDept, updateSelected,
         selectDesignationName, selectedDeptName,
-        selectDeptSection, updateDepartmentSection,
+        selectDeptSection, updateDepartmentSection, deptsectName
     } = useContext(PayrolMasterContext)
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
@@ -152,6 +152,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             selectDeptSection={selectDeptSection}
+                            deptsectName={deptsectName}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}

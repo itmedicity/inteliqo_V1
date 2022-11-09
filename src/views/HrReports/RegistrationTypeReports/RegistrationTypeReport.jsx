@@ -83,6 +83,7 @@ const RegistrationTypeReport = () => {
         }
         else {
             setValue(event.api.getSelectedRows())
+            setSecondvalue(0)
         }
         setsecondmenu(0)
     }

@@ -68,7 +68,8 @@ const QualificationReport = () => {
         }
         else {
             setValue(event.api.getSelectedRows())
-        } setsecondmenu(0)
+        }
+        setsecondmenu(0)
         setThirdmenu(0)
     }
     /** mapping education slno into education name */
