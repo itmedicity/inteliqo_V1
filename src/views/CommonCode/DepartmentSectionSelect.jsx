@@ -7,7 +7,7 @@ import { infoNofity } from './Commonfunc';
 
 const DepartmentSectionSelect = (props) => {
     const [departmentSection, setDepartmentSection] = useState([]);
-    const { selectDeptSection, updateDepartmentSection, selectedDept } = useContext(PayrolMasterContext);
+    const { selectDeptSection, updateDepartmentSection, selectedDept, setDeptSecName } = useContext(PayrolMasterContext);
     useEffect(() => {
         const getDepartmentSection = async () => {
             if (selectedDept !== 0) {
@@ -28,6 +28,13 @@ const DepartmentSectionSelect = (props) => {
         )
     }, [updateDepartmentSection, selectedDept]);
 
+
+    const getlaeldat = (e) => {
+        const selectedText = e.nativeEvent.target.textContent
+        setDeptSecName(selectedText)
+
+    }
+
     return (
         <Fragment>
             <ToastContainer />
@@ -41,7 +48,10 @@ const DepartmentSectionSelect = (props) => {
                     id="demo-simple-select"
                     name="selectDepartmentSection"
                     value={selectDeptSection}
-                    onChange={(e) => updateDepartmentSection(e.target.value)}
+                    onChange={(e) => {
+                        updateDepartmentSection(e.target.value)
+                        getlaeldat(e)
+                    }}
                     fullWidth
                     variant="outlined"
                     className="ml-1"

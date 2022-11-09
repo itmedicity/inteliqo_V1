@@ -119,6 +119,7 @@ const EmployeeReport = () => {
         }
         else {
             setsecondValue(event.api.getSelectedRows())
+            setThirdValue(0)
         }
         setThirdmenu(0)
     }

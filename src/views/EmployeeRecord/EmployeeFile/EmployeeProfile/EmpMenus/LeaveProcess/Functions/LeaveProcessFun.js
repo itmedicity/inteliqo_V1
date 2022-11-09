@@ -1,8 +1,9 @@
-import { compareAsc } from "date-fns";
+import { compareAsc, lastDayOfYear } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
+import { employeeNumber } from "src/views/Constant/Constant";
 
-//Employee Category
+//Employee Category from employee mAster
 export const getEmployeeCurrentCategoryInfom = async (em_id) => {
     return await axioslogin.get(`/common/getannprocess/${em_id}`)
 }
@@ -107,6 +108,165 @@ export const checkContractStatus = async (contrctEndDate, contractStatus) => {
 
 
 //for new employee primary data for inserting the the "hrm_emp_processs" table
-export const newProcessedEmployeeData = async (category, processSlno) => {
+export const newProcessedEmployeeData = async (category, processSlno, employeeIDs) => {
 
+    const { ecat_cl, ecat_el, ecat_nh, ecat_fh, ecat_esi_allow, ecat_lop, ecat_mate, ecat_sl, ecat_cont,
+        em_contract_end_date, ecat_prob, em_prob_end_date } = category;
+
+    return {
+        lv_process_slno: processSlno,
+        em_no: employeeIDs.em_id,
+        category_slno: category.em_category,
+        process_user: employeeNumber(),
+        em_id: employeeIDs.em_no,
+        hrm_clv: ecat_cl === 1 ? 0 : 2,
+        hrm_ern_lv: ecat_el === 1 ? 0 : 2,
+        hrm_hld: (ecat_nh === 1 || ecat_fh === 1) ? 0 : 2,
+        hrm_cmn: (ecat_esi_allow === 1 || ecat_el === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) ? 0 : 2,
+        hrm_calcu: 0,
+        hrm_process_status: 'A',
+        next_updatedate: ecat_cont === 1 ? em_contract_end_date : ecat_prob === 1 ? em_prob_end_date : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+    }
+
+}
+
+
+//function for new object for "hrm_emp_processs" table for category change
+
+export const categoryChangedNewObject = async (category, leaveProcess, processSlno, employeeIDs) => {
+    const {
+        ecat_cl,
+        ecat_cont,
+        ecat_el,
+        ecat_esi_allow,
+        ecat_fh,
+        ecat_lop,
+        ecat_mate,
+        ecat_nh,
+        ecat_prob,
+        ecat_sl,
+        em_category,
+        em_contract_end_date,
+        em_prob_end_date
+    } = category;
+
+    const {
+        hrm_calcu,
+        hrm_clv,
+        hrm_cmn,
+        hrm_ern_lv,
+        hrm_hld,
+        lv_process_slno,
+        category_slno
+    } = leaveProcess
+
+    return {
+        lv_process_slno: processSlno,
+        em_no: employeeIDs.em_id,
+        category_slno: em_category,
+        process_user: employeeNumber(),
+        em_id: employeeIDs.em_no,
+        hrm_clv: ((hrm_clv === 1) && (ecat_cl === 1)) ? 1 : ((hrm_clv === 0) && (ecat_cl === 1)) ? 0 : ((hrm_clv === 2) && (ecat_cl === 1)) ? 0 : 2,
+        hrm_ern_lv: ((hrm_ern_lv === 1) && (ecat_el === 1)) ? 1 : ((hrm_ern_lv === 0) && (ecat_el === 1)) ? 0 : ((hrm_ern_lv === 2) && (ecat_el === 1)) ? 0 : 2,
+        hrm_hld: (ecat_nh === 1 || ecat_fh === 1) && (hrm_hld === 1) ? 1 : (ecat_nh === 1 || ecat_fh === 1) && (hrm_hld === 2) ? 0 : (ecat_nh === 1 || ecat_fh === 1) && (hrm_hld === 0) ? 0 : (ecat_nh === 0 && ecat_fh === 0) ? 2 : 2,
+        hrm_cmn: hrm_cmn !== 2 ? hrm_cmn : (ecat_esi_allow === 1 || ecat_el === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1) ? 0 : 2,
+        hrm_calcu: 0,
+        hrm_process_status: 'A',
+        next_updatedate: ecat_cont === 1 ? em_contract_end_date : ecat_prob === 1 ? em_prob_end_date : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+        // "next_updatedate"  if employee is in contract "contract end date" : if is in probation "probation end date" other wise last day of year
+    }
+}
+
+
+/***
+ * 2 --> Inactive the All credited leaves ( Casual leace, holidays, earn Leave )
+ * if only inactive the following criteria 
+ * if previous category have the CL but the current category dont have the CL
+ * then inactive all the credited CL Leaves
+ * 
+**/
+
+export const updateInactiveLeaves = async (category, leaveProcess) => {
+
+    const { ecat_cl, ecat_nh, ecat_fh, ecat_el } = category;
+    const { hrm_clv, hrm_hld, hrm_ern_lv, lv_process_slno } = leaveProcess;
+
+    const leaveProcessSlnoObj = {
+        oldprocessslno: lv_process_slno
+    }
+
+    let resultObj = {
+        success: 1,  // 1 --> success 2 --> error
+        error: 0
+    }
+
+    /*
+        Update the all leaves inactive as value "1" / this data consider for the carry forward
+        Update casual leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
+    */
+    if ((ecat_cl === 0 && hrm_clv === 1)) {
+        let casualLeaveUpdation = await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', leaveProcessSlnoObj)
+        const { success } = casualLeaveUpdation.data;
+        if (success === 2 || success === 1) {
+            let resultObj = { ...resultObj }
+        } else {
+            let resultObj = { ...resultObj, error: 1 }
+        }
+    }
+    //    holiday leaves update
+    if ((ecat_nh === 0 || ecat_fh === 0) && hrm_hld === 1) {
+
+        const holidayLeaveUpdation = await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', leaveProcessSlnoObj)
+        const { success } = holidayLeaveUpdation.data
+        if (success === 2 || success === 1) {
+            let resultObj = { ...resultObj }
+        } else {
+            let resultObj = { ...resultObj, error: 1 }
+        }
+    }
+    // earn leave update
+    if ((ecat_el === 0) && hrm_ern_lv === 1) {
+        const earnLeaveUpdation = await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', leaveProcessSlnoObj)
+        const { success } = earnLeaveUpdation.data
+        if (success === 2 || success === 1) {
+            let resultObj = { ...resultObj }
+        } else {
+            let resultObj = { ...resultObj, error: 1 }
+        }
+    }
+
+    return resultObj;
+
+}
+
+
+//update the old leave processed table data
+
+export const updateOldLeaveProcessedData = async (leaveProcess) => {
+    const { lv_process_slno } = leaveProcess;
+    let oldLeaveProcessSLno = {
+        lv_process_slno: lv_process_slno
+    }
+
+    const inactiveOldLeaveProcessData = await axioslogin.patch('/yearleaveprocess/', oldLeaveProcessSLno)
+    const { message, success } = inactiveOldLeaveProcessData.data
+    if (success === 2 || success === 1) {
+        return { success: 1, message: message }
+    } else {
+        return { success: 0, message: message }
+    }
+
+}
+
+// insert new data into the 'hrm_leave_process' table function
+export const insertNewLeaveProcessData = async (newObj) => {
+    const result = await axioslogin.post('/yearleaveprocess/create', newObj);
+    const { message, success } = result.data
+    if (success === 1) {
+        return { success: 1, message: message }
+    } else if (success === 0) {
+        return { success: 0, message: message }
+    } else {
+        return { success: 2, message: message }
+    }
 }

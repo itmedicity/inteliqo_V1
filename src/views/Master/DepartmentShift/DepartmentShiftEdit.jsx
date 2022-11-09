@@ -30,8 +30,7 @@ const DepartmentShiftEdit = () => {
         } = useContext(PayrolMasterContext)
 
     const state = useSelector((state) => state.getCommonSettings, _.isEqual)
-    const { notapplicable_shift, default_shift } = state;
-
+    const { notapplicable_shift, default_shift, week_off_day } = state;
 
     //get selected shift details from database
     useEffect(() => {
@@ -43,17 +42,17 @@ const DepartmentShiftEdit = () => {
                 const obj = JSON.parse(shft_code);
                 updateSelected(dept_id)
                 updateDepartmentSection(sect_id)
-                arraydataset(obj.filter(val => val.shiftcode !== notapplicable_shift && val.shiftcode !== default_shift))
+                arraydataset(obj.filter(val => val.shiftcode !== notapplicable_shift && val.shiftcode !== default_shift && val.shiftcode !== week_off_day))
             }
             else {
                 updateSelected(0)
                 updateDepartmentSection(0)
                 arraydataset([])
+                updateShifts(0)
             }
         }
         getdepartmentShiftData()
-
-    }, [selectedDept, updateDepartmentSection, updateSelected, id])
+    }, [selectedDept, updateDepartmentSection, updateSelected, id, notapplicable_shift, default_shift, week_off_day])
 
     //adding shifts to table
     const getShiftData = () => {
@@ -66,6 +65,9 @@ const DepartmentShiftEdit = () => {
             }
             else if (getshifts === notapplicable_shift) {
                 warningNofity("NA Already Exist!!")
+            }
+            else if (getshifts === week_off_day) {
+                warningNofity("Week Off Already Exist")
             }
             else if (arraydata.some(key => key.shiftcode === getshifts)) {
                 warningNofity("Shift Time Already Added!!")
@@ -103,7 +105,12 @@ const DepartmentShiftEdit = () => {
             shiftcode: notapplicable_shift,
             shiftDescription: 'NA',
         }
-        const newdatas = [...arraydata, defautdata, noappdata]
+        const weekoffdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: week_off_day,
+            shiftDescription: 'WOFF',
+        }
+        const newdatas = [...arraydata, defautdata, noappdata, weekoffdata]
         const postData = {
             dept_id: selectedDept,
             sect_id: selectDeptSection,
@@ -123,7 +130,7 @@ const DepartmentShiftEdit = () => {
                 history.push('/Home/DepartmentShift')
             }
             else {
-                errorNofity("Error Occured!!!Please Contact EDP")
+                errorNofity(message)
             }
         }
         if (arraydata !== 0) {
