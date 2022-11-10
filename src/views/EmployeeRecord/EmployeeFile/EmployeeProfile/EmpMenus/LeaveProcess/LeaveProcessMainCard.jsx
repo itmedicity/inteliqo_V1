@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
-import { Alert, Paper, Button, Divider, CircularProgress } from '@mui/material';
+import { Alert, Paper, Button, Divider, CircularProgress, Backdrop } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { Suspense } from 'react';
@@ -30,6 +30,8 @@ import {
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
 import CircularProgressBar from 'src/views/Component/MuiCustomComponent/CircularProgressBar';
+import { ToastContainer } from 'react-toastify';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'));
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'));
@@ -49,6 +51,8 @@ const LeaveProcessMainCard = () => {
     //new Object for inserting ( after category change, new Employee Object etc.. )
     const [newEmployeeProcesedData, setNewEmployeeProcesedData] = useState({});
     const [processSpinner, setProcessSpinner] = useState(true)
+    const [updateStat, setUpdateStat] = useState(0)
+    const [open, setOpen] = useState(false)
 
     const { id, no } = useParams();
     const employeeIDs = useMemo(() => {
@@ -90,7 +94,7 @@ const LeaveProcessMainCard = () => {
             setEmpLeaveProcess({})
         }
 
-    }, [employeeIDs.em_no])
+    }, [employeeIDs.em_no, updateStat])
 
     const category = useMemo(() => empCategory, [empCategory])
     const leaveProcess = useMemo(() => empLeaveProcess, [empLeaveProcess])
@@ -123,6 +127,7 @@ const LeaveProcessMainCard = () => {
     useEffect(() => {
         setprocessMesg(processedLeaveDetl.message)
         setprocessBtn(processedLeaveDetl.processedStatus)
+        setOpen(false)
         return () => {
             setprocessMesg('')
             setprocessBtn(true)
@@ -139,12 +144,11 @@ const LeaveProcessMainCard = () => {
 
     }, [category, processSlno, employeeIDs])
 
-
     const { leaveData } = processedLeaveDetl;
 
-    //Leave Process 
+    //Leave Process onClick Process Button Function
     const leaveProcessOption = async () => {
-        setprocessBtn(true)
+        setOpen(true)
         /****
          * 1-> employee is under contract or not
          * 2-> if Yes retun the message "needs to renew the contract or clode the contract"
@@ -171,7 +175,9 @@ const LeaveProcessMainCard = () => {
                     if (success === 1) {
                         succesNofity(insertMessage)
                         setprocessBtn(false)
-                        setProcessSpinner(false)
+                        // setProcessSpinner(false)
+                        setUpdateStat(updateStat + 1)
+
                     } else {
                         warningNofity(`error ! ${message} , LeaveProcessMainCard line # 173, Contact Information Technology`)
                     }
@@ -208,7 +214,8 @@ const LeaveProcessMainCard = () => {
                                         if (success === 1) {
                                             succesNofity(insertMessage)
                                             setprocessBtn(false)
-                                            setProcessSpinner(false)
+                                            setUpdateStat(updateStat + 1)
+                                            // setProcessSpinner(false)
                                         } else {
                                             warningNofity(`error ! ${message} , LeaveProcessMainCard line # 202, Contact Information Technology`)
                                         }
@@ -239,9 +246,10 @@ const LeaveProcessMainCard = () => {
         }
     }
 
-
     return (
         <CustomLayout title="Leave Process" >
+            <ToastContainer />
+            <CustomBackDrop open={open} />
             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
                 <LeaveCategoryInfo />
                 <Box sx={{ display: 'flex', py: 0.5 }} >
@@ -255,7 +263,6 @@ const LeaveProcessMainCard = () => {
                                         <CustomTypoTwo
                                             updateStatus={processBtn}
                                             title={processMesg}
-                                            bgColor={processBtn === true ? '#81c784' : '#ef9a9a'}
                                         />
                                         <Box sx={{ display: 'flex', flex: 1, height: 25, }} >
                                             <Button
@@ -272,7 +279,6 @@ const LeaveProcessMainCard = () => {
                                         <Divider />
                                     </Box>
                                     <Box sx={{ px: 0.5, pb: 0.5, }} >
-                                        {processBtn === true ? null : <CircularProgressBar />}
                                         {
                                             leaveData && leaveData.map((val, ind) => {
                                                 return <LeaveProcessCard key={ind} title={val.name} />
