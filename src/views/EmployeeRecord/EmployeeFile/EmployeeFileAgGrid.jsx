@@ -1,16 +1,11 @@
-import MaterialTable from 'material-table'
-import { Button, Checkbox, FormControlLabel } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { ToastContainer } from 'react-bootstrap'
-import SessionCheck from 'src/views/Axios/SessionCheck'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { tableIcons } from 'src/views/Constant/MaterialIcon'
+import { Checkbox, FormControlLabel } from '@material-ui/core'
+import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import { useHistory } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
+// import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
@@ -25,10 +20,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 
-
 const EmployeeFileAgGrid = () => {
 
-    const classes = useStyles()
+    //const classes = useStyles()
     const history = useHistory()
     const [tableData, setTableData] = useState([])
     const dispatch = useDispatch()
@@ -53,13 +47,13 @@ const EmployeeFileAgGrid = () => {
     const postData = {
         dept_id: selectedDept,
         sect_id: selectDeptSection,
-        branch_slno: selectBranchMast
+        //branch_slno: selectBranchMast
     }
-    const postDataBranch = {
-        branch_slno: selectBranchMast
-    }
+    // const postDataBranch = {
+    //     branch_slno: selectBranchMast
+    // }
     const postDataDept = {
-        branch_slno: selectBranchMast,
+        //branch_slno: selectBranchMast,
         dept_id: selectedDept,
     }
     const [active, updateactive] = useState({
@@ -72,43 +66,84 @@ const EmployeeFileAgGrid = () => {
     }
 
     // Employee Record List
-    const getEmployeeList = async (e) => {
+    const getEmployeeList = useCallback((e) => {
         e.preventDefault()
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/getEmpDet', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
+        const submitfunc = async () => {
+            if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === true) {
+                const result = await axioslogin.post('/empmast/getEmpDet', postData)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
             }
-        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
-            const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
+            else if (selectedDept !== 0 && selectDeptSection === 0 && activestatus === true) {
+                const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
+            }
+            else if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === false) {
+                const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
+            }
+            else {
+                warningNofity("Choose All Option")
             }
         }
-        else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
-            }
-        }
-        else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
-            }
-        }
-        else {
-            warningNofity("Choose All Option")
-        }
-    }
+        submitfunc()
+    }, [postDataDept, postData])
+
+    // if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/getEmpDet', postData)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
+    //     const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else {
+    //     warningNofity("Choose All Option")
+    // }
+
 
     const toSettings = () => {
         dispatch({ type: Actiontypes.FETCH_EMP_RECORD_LIST, payload: [] })
@@ -120,7 +155,6 @@ const EmployeeFileAgGrid = () => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
         //history.push(`/Home/Profile/${em_no}/${em_id}`)
-
         history.push(`/Home/Prfle/${em_no}/${em_id}/${0}`)
     }
 
@@ -131,20 +165,19 @@ const EmployeeFileAgGrid = () => {
                 <AccountCircleOutlinedIcon color='info' onClick={() =>
                     getEmployeeEmpNumber(params)
                 } />
-
         },
-        { headerName: 'Emp No', field: 'em_no', minWidth: 10, },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 10 },
+        { headerName: 'Emp No', field: 'em_no', minWidth: 90, },
+        { headerName: 'Emp Id ', field: 'em_id', minWidth: 90 },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
-        { headerName: 'Gender', field: 'gender' },
-        { headerName: 'Age', field: 'em_age_year' },
-        { headerName: 'DOJ', field: 'em_doj' },
-        { headerName: 'Mobile', field: 'em_mobile' },
-        { headerName: 'Branch', field: 'branch_name' },
-        { headerName: 'Department', field: 'dept_name', wrapText: true },
-        { headerName: 'Department Section', field: 'sect_name', wrapText: true },
-        { headerName: 'Designation', field: 'desg_name' },
-        { headerName: 'Status', field: 'emp_status' },
+        { headerName: 'Gender', field: 'gender', minWidth: 90 },
+        { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
+        { headerName: 'DOJ', field: 'em_doj', minWidth: 90 },
+        { headerName: 'Mobile', field: 'em_mobile', minWidth: 90 },
+        { headerName: 'Branch', field: 'branch_name', minWidth: 90 },
+        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 90 },
+        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 90 },
+        { headerName: 'Designation', field: 'desg_name', minWidth: 90 },
+        { headerName: 'Status', field: 'emp_status', minWidth: 90 },
 
     ])
 
@@ -183,9 +216,9 @@ const EmployeeFileAgGrid = () => {
                                 display: "flex",
                                 flexDirection: "row",
                             }}>
-                                <Box sx={{ display: "flex", flex: 2, p: 2 }}>
+                                {/* <Box sx={{ display: "flex", flex: 2, p: 2 }}>
                                     <BrnachMastSelection style={SELECT_CMP_STYLE} />
-                                </Box>
+                                </Box> */}
                                 <Box sx={{ display: "flex", flex: 2, p: 2 }} >
                                     <DepartmentSelect style={SELECT_CMP_STYLE} />
                                 </Box>

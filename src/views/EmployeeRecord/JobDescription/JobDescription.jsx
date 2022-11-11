@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useContext, memo } from 'react'
+import React, { Fragment, Suspense, useContext, memo, useEffect } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,14 +13,17 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Competency from './Competency';
+// import Competency from './Competency';
 import { axioslogin } from 'src/views/Axios/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
-const DutyRespos = React.lazy(() => import('./DutyRespos'));
-const Performance = React.lazy(() => import('./Performance'));
+// const DutyRespos = React.lazy(() => import('./DutyRespos'));
+const DutyRespos = React.lazy(() => import('./DutyResponsWithAgGrid'));
+//const Performance = React.lazy(() => import('./Performance'));
+const Performance = React.lazy(() => import('./PerformanceWithAgGrid'))
+const Competency = React.lazy(() => import('./CompetencyWithAgGrid'))
 const Generic = React.lazy(() => import('./Generic'));
 
 const Progress = () => {
@@ -34,10 +37,11 @@ const JobDescription = () => {
     const { selectDesignation, updateDesignation,
         selectedDept, updateSelected,
         selectDesignationName, selectedDeptName,
-        selectDeptSection, updateDepartmentSection,
+        selectDeptSection, updateDepartmentSection, deptsectName
     } = useContext(PayrolMasterContext)
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
+    const [clear, setClear] = useState(0)
 
     /** checkdata for checking department , dept section and designation */
     const checkData = {
@@ -45,10 +49,17 @@ const JobDescription = () => {
         dept_id: selectedDept,
         sect_id: selectDeptSection
     }
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setClear(1)
+        }
+    }, [selectDesignation])
+
+
 
     /** checking department , dept section and designation already exist in jobsummary database table */
     const addtojobSummary = async () => {
-        if (selectDesignation !== 0 && selectedDept !== 0) {
+        if (selectDesignation !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
             const result = await axioslogin.post('/jobsummary/check', checkData)
             const { data, success } = result.data
             if (success === 1) {
@@ -62,7 +73,6 @@ const JobDescription = () => {
             }
         }
         else {
-
             infoNofity("Choose All Option")
         }
     }
@@ -77,7 +87,7 @@ const JobDescription = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ width: "100%" }} >
+            <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 {/* Outer Main Box */}
                 <Paper square elevation={2} sx={{ p: 0.5, }}   >
                     {/* Main Heading Section Box */}
@@ -95,13 +105,13 @@ const JobDescription = () => {
                         </Box>
                         <Tooltip title="Job Description View" followCursor placement='top' arrow >
                             <Box>
-                                <IconButton variant="outlined" size='sm' onClick={ViewPage}>
+                                <IconButton variant="outlined" size='sm' onClick={ViewPage} sx={{ color: 'primary' }}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </Box>
                         </Tooltip>
                         <Box sx={{ pl: 1 }}>
-                            <IconButton variant="outlined" size='sm' onClick={Redirect}>
+                            <IconButton variant="outlined" size='sm' onClick={Redirect} sx={{ color: 'red' }}>
                                 <CloseIcon />
                             </IconButton>
                         </Box>
@@ -127,7 +137,7 @@ const JobDescription = () => {
                             <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
                         </Box>
                         <Box sx={{ flex: 0, px: 0.5 }} >
-                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary}>
+                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary} sx={{ color: 'blue' }}>
                                 <AddToPhotosIcon />
                             </IconButton>
                         </Box>
@@ -142,6 +152,7 @@ const JobDescription = () => {
                             selectDesignation={selectDesignation}
                             selectedDept={selectedDept}
                             selectDeptSection={selectDeptSection}
+                            deptsectName={deptsectName}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}
@@ -151,6 +162,7 @@ const JobDescription = () => {
                             selectedDept={selectedDept}
                             jobedit={jobedit}
                             selectDeptSection={selectDeptSection}
+                            setjobEdit={setjobEdit}
                         />
 
                     </Suspense>

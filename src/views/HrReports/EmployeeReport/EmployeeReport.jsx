@@ -6,10 +6,11 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
 import { setBranch } from 'src/redux/actions/Branch.Action'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportWithDateField from 'src/views/Component/CustomReportWithDateField';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import _ from 'underscore';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const EmployeeReport = () => {
 
@@ -23,12 +24,16 @@ const EmployeeReport = () => {
     const [thirdvalue, setThirdValue] = useState(0);
     const [deptslno, setdeptslno] = useState([]);
     const [sectslno, setsectslno] = useState([]);
+    const [data, setdata] = useState(deptslno)
+    const [firsdate, setfirstdate] = useState(0);
+    const [secondadte, setseconddate] = useState(0)
     const dispatch = useDispatch();
 
     /** To get stored branch values from redux */
     useEffect(() => {
         dispatch(setBranch());
-        dispatch(setDepartment());
+        //dispatch(setDepartment());
+        dispatch(setDept())
         dispatch(setDeptWiseSection());
     }, [dispatch])
 
@@ -37,11 +42,12 @@ const EmployeeReport = () => {
         return {
             empBranch: state.getBranchList.branchList || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            dept: state.getdept.departmentlist || 0,
         }
     })
+
     /** Destructuring state into values... */
-    const { empBranch, empDepartment, deptSection } = state
+    const { empBranch, dept, deptSection } = state
 
     /** Selction checkbox for branch name  */
     const [columnDefs] = useState([
@@ -63,6 +69,7 @@ const EmployeeReport = () => {
         }
         else {
             setValue(event.api.getSelectedRows())
+            setThirdmenu(0)
         }
         setsecondmenu(0)
     }
@@ -84,12 +91,12 @@ const EmployeeReport = () => {
     useEffect(() => {
         if (secondMenu === 1) {
             if (slno !== 0) {
-                return empDepartment
+                return dept
             } else {
                 warningNofity("Please Select Any Branch!")
             }
         }
-    }, [secondMenu, slno, empDepartment])
+    }, [secondMenu, slno, dept])
 
     /** Selection check box for department */
     const [columnDefDept] = useState([
@@ -112,6 +119,7 @@ const EmployeeReport = () => {
         }
         else {
             setsecondValue(event.api.getSelectedRows())
+            setThirdValue(0)
         }
         setThirdmenu(0)
     }
@@ -129,7 +137,6 @@ const EmployeeReport = () => {
         setThirdmenu(1)
     }, [])
 
-    const [data, setdata] = useState(deptslno)
     /** to get deaprtment wise department section from redux */
     useEffect(() => {
         if (thirdmenu === 1) {
@@ -224,12 +231,10 @@ const EmployeeReport = () => {
     ])
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */
 
-    const [firsdate, setfirstdate] = useState(0);
     const onChange = (e) => {
         setfirstdate(e.target.value)
     }
 
-    const [secondadte, setseconddate] = useState(0)
     const onChange2 = (e) => {
         setseconddate(e.target.value)
     }
@@ -369,7 +374,7 @@ const EmployeeReport = () => {
 
                 /** Department checkbox list */
                 columnDefMenu2={columnDefDept}
-                tableDataMenu2={empDepartment}
+                tableDataMenu2={dept}
                 thirdmenu={thirdmenu}
                 onSelectionChanged3={onSelectionChanged3}
 

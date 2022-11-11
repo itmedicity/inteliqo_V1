@@ -7,16 +7,14 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import TextInput from 'src/views/Component/TextInput';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import BranchSelect from './Jobdesccomponent/BranchSelect';
-import DeptSection from './Jobdesccomponent/DeptSection';
-import DesignationSelect from './Jobdesccomponent/DesignationSelect';
-import WorkingHours from './Jobdesccomponent/WorkingHours';
+// import WorkingHours from './Jobdesccomponent/WorkingHours';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { getJobid } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 
-const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
+const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, selectedDeptName, selectDesignation, selectedDept, selectDeptSection }) => {
 
     const [jobid, setJobid] = useState(0)
     //get job id
@@ -30,24 +28,29 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
     //useState for Getting work place
     const [workPlace, setWorkPlace] = useState(0)
     //useState for getting  reporting dept section
-    const [reporting, setreporting] = useState(0)
+    //const [reporting, setreporting] = useState(0)
     //useState for getting  reporting Designation
     const [reportDesig, setreportDesig] = useState(0)
     //useState for getting working hours
-    const [workingHours, setWorkinhHours] = useState(0)
+    // const [workingHours, setWorkinhHours] = useState(0)
     //use State for getting formdata
     const [FormData, setFormData] = useState({
         objective: '',
         scope: '',
-        equipment: ''
+        equipment: '',
+        workingHours: '',
+        reporting: ''
     })
-    //de structuring
-    const { objective, scope, equipment } = FormData
+    //destructuring
+    const { objective, scope, equipment, workingHours, reporting } = FormData
     const defaultState = {
         objective: '',
         scope: '',
-        equipment: ''
+        equipment: '',
+        workingHours: '',
+        reporting: ''
     }
+
     //use effect for getting job summary details to edit
     useEffect(() => {
         if (jobedit > 0) {
@@ -60,15 +63,16 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                     const frmdata = {
                         objective: objective,
                         scope: scope,
-                        equipment: equipment_used
+                        equipment: equipment_used,
+                        workingHours: working_hour.slice(1, -1),
+                        reporting: reporting_dept
                     }
                     setFormData(frmdata)
-                    setWorkinhHours([working_hour])
+                    //setWorkinhHours([working_hour])
                     setWorkPlace(work_place)
-                    setreporting(reporting_dept)
+                    //setreporting(reporting_dept)
                     setreportDesig(reporting_designation)
                 }
-
             }
             getjobSummary()
         }
@@ -76,8 +80,14 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
             setFormData(defaultState)
         }
 
-    }, [jobedit])
+    }, [jobedit,])
 
+
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setFormData(defaultState)
+        }
+    }, [selectDesignation])
 
     //function for getting from Data
     const updatejob_description = (e) => {
@@ -94,7 +104,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         work_place: workPlace,
         working_hour: workingHours,
         reporting_dept: reporting,
-        reporting_designation: reportDesig,
+        //reporting_designation: reportDesig,
         equipment_used: equipment,
         sect_id: selectDeptSection
     }
@@ -108,9 +118,11 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
         work_place: workPlace,
         working_hour: workingHours,
         reporting_dept: reporting,
-        reporting_designation: reportDesig,
-        equipment_used: equipment
+        //reporting_designation: reportDesig,
+        equipment_used: equipment,
+        sect_id: selectDeptSection
     }
+
     //saving job summary
     const sumbitJobSummary = async (e) => {
         e.preventDefault();
@@ -124,7 +136,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 succesNofity(message)
             }
             else {
-                errorNofity("Error Occureed!!Please Contact EDp")
+                errorNofity(message)
             }
         }
         else {
@@ -137,11 +149,11 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 warningNofity(message)
             }
             else {
-                errorNofity("Error Occureed!!Please Contact EDp")
+                errorNofity(message)
             }
         }
-
     }
+
     return (
         <Fragment>
             <ToastContainer />
@@ -158,7 +170,7 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
                     <CssVarsProvider>
-                        <IconButton variant="outlined" size='sm' onClick={sumbitJobSummary} >
+                        <IconButton variant="outlined" size='sm' onClick={sumbitJobSummary} sx={{ color: 'green' }}>
                             <LibraryAddCheckOutlinedIcon />
                         </IconButton>
                     </CssVarsProvider>
@@ -220,6 +232,21 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
                         <CssVarsProvider>
+                            <Typography level="body1">Department Section</Typography>
+                        </CssVarsProvider>
+                    </Paper>
+                    <Box sx={{ flex: 2, }} >
+                        <TextInput
+                            style={{ width: "100%", paddingLeft: 13 }}
+                            Placeholder="Auto Select Department From Top Menu"
+                            value={jobview === 1 || jobedit > 0 ? deptsectName : ''}
+                            disabled={true}
+                        />
+                    </Box>
+                </Box>
+                <Box sx={{ display: "flex", width: "100%" }} >
+                    <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
+                        <CssVarsProvider>
                             <Typography level="body1">Designation</Typography>
                         </CssVarsProvider>
                     </Paper>
@@ -242,29 +269,29 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                         <BranchSelect label={"Select Work Place"} value={workPlace} setValue={setWorkPlace} />
                     </Box>
                 </Box>
+
                 <Box sx={{ display: "flex", width: "100%", }} >
                     <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center", height: 30 }} variant="outlined" >
-                        <CssVarsProvider>
-                            <Typography level="body1"> Working Hours</Typography>
-                        </CssVarsProvider>
-                    </Paper>
-                    <Box sx={{ flex: 2 }} >
-                        {/* <SelectMult label="Select Location / Work Place" workingHours,setWorkinhHours/> */}
-                        <WorkingHours label="Working Hours" value={workingHours} setValue={setWorkinhHours} />
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%", }} >
-                    <Paper square sx={{ display: "flex", flex: 2, px: 0.5, justifyContent: "center", height: 30 }} variant="outlined" >
                         <CssVarsProvider>
                             <Typography level="body1">Reporting</Typography>
                         </CssVarsProvider>
                     </Paper>
-                    <Box sx={{ flex: 2 }} >
+                    <Box sx={{ flex: 2, }} >
+                        <TextInput
+                            style={{ width: "100%", paddingLeft: 13 }}
+                            //Placeholder="Description"
+                            name="reporting"
+                            value={reporting}
+                            changeTextValue={(e) => updatejob_description(e)}
+                        />
+                    </Box>
+
+                    {/* <Box sx={{ flex: 2 }} >
                         <DeptSection label="Department Section" value={reporting} setValue={setreporting} />
                     </Box>
                     <Box sx={{ flex: 2 }} >
                         <DesignationSelect label="Designation" value={reportDesig} setValue={setreportDesig} />
-                    </Box>
+                    </Box> */}
                 </Box>
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} variant="outlined" >
@@ -275,11 +302,30 @@ const JobSummary = ({ jobedit, jobview, selectDesignationName, selectedDeptName,
                     <Box sx={{ flex: 2, }} >
                         <TextInput
                             style={{ width: "100%", paddingLeft: 13 }}
-                            Placeholder="Description"
+                            //Placeholder="Description"
                             name="equipment"
                             value={equipment}
                             changeTextValue={(e) => updatejob_description(e)}
                         />
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: "flex", width: "100%", }} >
+                    <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center", height: 30 }} variant="outlined" >
+                        <CssVarsProvider>
+                            <Typography level="body1"> Working Hours</Typography>
+                        </CssVarsProvider>
+                    </Paper>
+                    <Box sx={{ flex: 2 }} >
+                        {/* <SelectMult label="Select Location / Work Place" workingHours,setWorkinhHours/> */}
+                        {/* <WorkingHours label="Working Hours" value={workingHours} setValue={setWorkinhHours} /> */}
+                        <TextInput
+                            style={{ width: "100%", paddingLeft: 13 }}
+                            name="workingHours"
+                            value={workingHours}
+                            changeTextValue={(e) => updatejob_description(e)}
+                        />
+
                     </Box>
                 </Box>
             </Paper>

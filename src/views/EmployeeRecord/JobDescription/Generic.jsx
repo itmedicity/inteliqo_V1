@@ -1,7 +1,7 @@
 import { Checkbox, CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useCallback, useContext } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -15,7 +15,7 @@ import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import SpecializationSelection from 'src/views/CommonCode/SpecializationSelection';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { memo } from 'react';
@@ -28,31 +28,58 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
     const [experiencee, setExperience] = useState([])
     const [deleteitem, setDeleteItem] = useState(0)
     const [editKra, setEditKra] = useState(0)
-    const [qual, setqual] = useState(0)
-    const [course, setcourse] = useState(0)
+    const [sumbitdelt, setsubmitdelt] = useState(0)
+    const [remaining, setremaining] = useState([])
+    const [filterdata, setfilterdata] = useState([])
+    const [flag, setflag] = useState(0)
+    const [arrays, setArrays] = useState([])
+    const [slno, setslno] = useState(0)
 
     //adding experience to tbale
-
     const addExperienceItem = () => {
         if (selectCourse > 0 && selectSpec > 0) {
-
-            const frmData = {
-                id: Math.ceil(Math.random() * 1000),
-                course: courseName,
-                specialization: specName,
-                courseslno: selectCourse,
-                specializationslno: selectSpec
+            if (experiencee.some(key => key.courseslno === selectCourse && key.specializationslno === selectSpec)) {
+                warningNofity("Course & Specialization Already Added!!")
             }
-            setExperience([...experiencee, frmData])
-            updateCourse(0)
-            updateSpec(0)
-            setCourseName('')
-            setSpecName('')
+            else {
+                const frmData = {
+                    id: new Date().getTime(),
+                    course: courseName,
+                    specialization: specName,
+                    courseslno: selectCourse,
+                    specializationslno: selectSpec
+                }
+                setExperience([...experiencee, frmData])
+                updateCourse(0)
+                updateSpec(0)
+                setCourseName('')
+                setSpecName('')
+            }
         }
         else {
             infoNofity('Select Course And Specialization ')
         }
     }
+    //deleting after save
+
+    useEffect(() => {
+        if (sumbitdelt > 0) {
+            const newexp = experiencee.filter((val) => {
+                if (val.qualification_id !== sumbitdelt) {
+                    return val
+                }
+            })
+            setExperience(newexp)
+            const rem = experiencee.filter((val) => {
+                if (val.qualification_id === sumbitdelt) {
+                    return val
+                }
+            })
+
+            setremaining([...remaining, ...rem])
+        }
+    }, [sumbitdelt])
+
     //deleteing qualiification
     useEffect(() => {
         if (deleteitem > 0) {
@@ -63,18 +90,20 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
             })
             setExperience(newexp)
         }
-
     }, [deleteitem])
+
+
     //save
     const [formData, setFormData] = useState({
         experincedetl: '',
-        expYear: '',
+        expYear: 0,
         specialcomment: '',
         ageFrom: '',
         ageTo: '',
         female: false,
         male: false
     })
+
     const defaultState = {
         experincedetl: '',
         expYear: '',
@@ -85,25 +114,22 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         male: false
     }
     const { experincedetl, expYear, specialcomment, ageFrom, ageTo, female, male } = formData
+
     useEffect(() => {
         if (editKra > 0) {
             const editdata = experiencee.filter((val) => {
                 if (val.id === editKra) {
                     return val
                 }
-
             })
-
             const newKra = experiencee.filter((val) => {
                 if (val.id !== editKra) {
                     return val
                 }
-
             })
             setExperience(newKra)
         }
     }, [editKra])
-
 
     const updateGeneric = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -122,7 +148,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                 const result = await axioslogin.post('/jobsummary/getjobgeneric', checkData)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { experience, experience_year, special_comment, age_from, age_to, is_female, is_male } = data[0]
+                    const { experience, experience_year, special_comment, age_from, age_to, is_female, is_male, job_generic_slno } = data[0]
                     const frmdata = {
                         experincedetl: experience,
                         expYear: experience_year,
@@ -135,6 +161,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     }
                     setFormData(frmdata)
                     setEditdata(data)
+                    setslno(job_generic_slno)
 
                 }
             }
@@ -144,6 +171,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
             setFormData(defaultState)
         }
     }, [jobedit])
+
     useEffect(() => {
         if (jobedit > 0) {
             const getJobqualification = async () => {
@@ -151,6 +179,8 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                 const { success, data } = result.data
                 if (success === 1) {
                     setExperience(data)
+                    setfilterdata(data)
+                    setflag(1)
                 }
             }
             getJobqualification()
@@ -160,64 +190,202 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         }
     }, [jobedit])
 
+    useEffect(() => {
+        if (selectDesignation !== 0) {
+            setExperience([])
+            setFormData(defaultState)
+        }
+    }, [selectDesignation])
 
-    const SaveJobGeneric = async (e) => {
+    const SaveJobGeneric = useCallback((e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/jobsummary/check', checkData)
-        const { data, success } = result.data
-        if (success === 1) {
-            const { summary_slno } = data[0]
-            if (experiencee.length === 0) {
-                infoNofity("Please Add Qaulification")
-            }
-            else {
-                const saveQualification = experiencee && experiencee.map((val) => {
-                    return {
-                        job_id: summary_slno,
-                        course: val.courseslno,
-                        specialization: val.specializationslno,
-                        dept_id: selectedDept,
-                        designation: selectDesignation
-                    }
+        const submitFunc = async (checkData) => {
+            if (flag === 1) {
+                let array = experiencee.filter((value) => {
+                    return !filterdata.find((val) => {
+                        return value.qualification_id === val.qualification_id;
+                    })
                 })
-                const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
-                const { success } = result.data
+                const result = await axioslogin.post('/jobsummary/check', checkData)
+                const { data, success } = result.data
                 if (success === 1) {
-                    const postData = {
-                        job_id: summary_slno,
-                        experience: experincedetl,
-                        experience_year: expYear,
-                        age_from: ageFrom,
-                        age_to: ageTo,
-                        is_female: female === 1 ? true : false,
-                        is_male: male === 1 ? true : false,
-                        special_comment: specialcomment,
-                        dept_id: selectedDept,
-                        designation: selectDesignation
-
-                    }
-                    const result = await axioslogin.post('/jobsummary/jobGeneric', postData)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        succesNofity(message)
+                    const { summary_slno } = data[0]
+                    if (experiencee.length === 0) {
+                        infoNofity("Please Add Qaulification")
                     }
                     else {
-                        errorNofity("Error Occured!!!Please Contact EDP")
+                        if (array.length === 0) {
+                            const postData = {
+                                job_id: summary_slno,
+                                experience: experincedetl,
+                                experience_year: expYear === '' ? 0 : expYear,
+                                age_from: ageFrom === '' ? 0 : ageFrom,
+                                age_to: ageTo === '' ? 0 : ageTo,
+                                is_female: female === true ? 1 : 0,
+                                is_male: male === true ? 1 : 0,
+                                special_comment: specialcomment,
+                                job_generic_slno: slno
+                            }
+                            const result = await axioslogin.patch('/jobsummary/updategeneric', postData)
+                            const { success, message } = result.data
+                            if (success === 2) {
+                                succesNofity(message)
+                            }
+                            else {
+                                errorNofity("Error Occured!!!Please Contact EDP")
+                            }
+                        } else {
+                            const saveQualification = array && array.map((val) => {
+                                return {
+                                    job_id: summary_slno,
+                                    course: val.courseslno,
+                                    specialization: val.specializationslno,
+                                    dept_id: selectedDept,
+                                    designation: selectDesignation,
+                                    sect_id: selectDeptSection,
+                                    qualification_id: val.id
+                                }
+                            })
+                            const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
+                            const { success } = result.data
+                            if (success === 1) {
+                                const postData = {
+                                    job_id: summary_slno,
+                                    experience: experincedetl,
+                                    experience_year: expYear === '' ? 0 : expYear,
+                                    age_from: ageFrom === '' ? 0 : ageFrom,
+                                    age_to: ageTo === '' ? 0 : ageTo,
+                                    is_female: female === true ? 1 : 0,
+                                    is_male: male === true ? 1 : 0,
+                                    special_comment: specialcomment,
+                                    job_generic_slno: slno
+                                }
+                                const result = await axioslogin.patch('/jobsummary/updategeneric', postData)
+                                const { success, message } = result.data
+                                if (success === 2) {
+                                    succesNofity(message)
+                                }
+                                else {
+                                    errorNofity("Error Occured!!!Please Contact EDP")
+                                }
+                            }
+                            else {
+                                errorNofity("Error Occured!!!Please Contact EDP")
+                            }
+                        }
                     }
+                }
+                else if (success === 0) {
+                    infoNofity("Please Save Job Specification Before Saving Job Generic")
                 }
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
-
+            } else {
+                let array = experiencee.filter((value) => {
+                    return !arrays.find((val) => {
+                        return value.qualification_id === val.qualification_id;
+                    })
+                })
+                const result = await axioslogin.post('/jobsummary/check', checkData)
+                const { data, success } = result.data
+                if (success === 1) {
+                    const { summary_slno } = data[0]
+                    if (experiencee.length === 0) {
+                        infoNofity("Please Add Qaulification")
+                    }
+                    else {
+                        const saveQualification = array && array.map((val) => {
+                            return {
+                                job_id: summary_slno,
+                                course: val.courseslno,
+                                specialization: val.specializationslno,
+                                dept_id: selectedDept,
+                                designation: selectDesignation,
+                                sect_id: selectDeptSection,
+                                qualification_id: val.id
+                            }
+                        })
+                        const result = await axioslogin.post('/jobsummary/jobqualification', saveQualification)
+                        const { success } = result.data
+                        if (success === 1) {
+                            const postData = {
+                                job_id: summary_slno,
+                                experience: experincedetl,
+                                experience_year: expYear === '' ? 0 : expYear,
+                                age_from: ageFrom === '' ? 0 : ageFrom,
+                                age_to: ageTo === '' ? 0 : ageTo,
+                                is_female: female === true ? 1 : 0,
+                                is_male: male === true ? 1 : 0,
+                                special_comment: specialcomment,
+                                dept_id: selectedDept,
+                                designation: selectDesignation,
+                                sect_id: selectDeptSection,
+                            }
+                            const result = await axioslogin.post('/jobsummary/jobGeneric', postData)
+                            const { success, message } = result.data
+                            if (success === 1) {
+                                const result = await axioslogin.post('/jobsummary/getjobQual', checkData)
+                                const { success, data } = result.data
+                                if (success === 1) {
+                                    setArrays(data)
+                                    succesNofity(message)
+                                }
+                            }
+                            else {
+                                errorNofity("Error Occured!!!Please Contact EDP")
+                            }
+                        }
+                        else {
+                            errorNofity("Error Occured!!!Please Contact EDP")
+                        }
+                    }
+                }
+                else if (success === 0) {
+                    infoNofity("Please Save Job Specification Before Saving Job Generic")
+                }
+                else {
+                    errorNofity("Error Occured!!!Please Contact EDP")
+                }
             }
         }
-        else if (success === 0) {
-            infoNofity("Please Save Job Specification Before Saving Job Generic")
-        }
-        else {
-            errorNofity("Error Occured!!!Please Contact EDP")
-        }
-    }
+        submitFunc(checkData)
+    }, [sumbitdelt, remaining, checkData])
+
+    //deletion process
+    // const [open, setOpen] = useState(false)
+    // const [Active, setActive] = useState(0)
+    // const handleClose = async () => {
+    //     setOpen(false)
+    //     setActive(0)
+    // }
+    // const Close = async () => {
+    //     setOpen(false)
+    //     setActive(0)
+    // }
+    // const DeleteValue = useCallback((e) => {
+    //     e.preventDefault();
+    //     const value = remaining && remaining.map((val) => {
+    //         return val.qualification_slno
+    //     })
+    //     const deltevalue = async (value) => {
+    //         const result = await axioslogin.delete(`/jobsummary/deleteQualification/${value}`)
+    //         const { success, message } = result.data
+    //         if (success === 5) {
+    //             succesNofity(message)
+    //             handleClose()
+    //             const newexp = experiencee.filter((val) => {
+    //                 if (val.qualification_id !== sumbitdelt) {
+    //                     return val
+    //                 }
+    //             })
+    //             setExperience(newexp)
+    //         }
+    //     }
+    //     deltevalue(value)
+    //     return 0
+    // })
+
     return (
         <Fragment>
             {/* Generic */}
@@ -232,7 +400,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     </Typography>
                 </CssVarsProvider>
                 <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm' onClick={SaveJobGeneric}>
+                    <IconButton variant="outlined" size='sm' onClick={SaveJobGeneric} sx={{ color: 'green' }}>
                         <LibraryAddCheckOutlinedIcon />
                     </IconButton>
                 </Box>
@@ -302,7 +470,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                 </Box>
                             </Box>
                             <Box sx={{ flex: 0 }} >
-                                <IconButton variant="outlined" size='sm' onClick={addExperienceItem}>
+                                <IconButton variant="outlined" size='sm' onClick={addExperienceItem} sx={{ color: 'blue' }}>
                                     <AddToPhotosIcon />
                                 </IconButton>
                             </Box>
@@ -322,13 +490,18 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                         val={val}
                                         setDeleteItem={setDeleteItem}
                                         jobedit={jobedit}
+                                        setsubmitdelt={setsubmitdelt}
+                                    // DeleteValue={DeleteValue}
+                                    // open={open} setOpen={setOpen}
+                                    // handleClose={handleClose} Close={Close}
+                                    // setActive={setActive} Active={Active}
                                     />
                                 )}
                         </Paper>
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", flex: 1, mt: 0.5 }} >
-                    <Box sx={{ display: "flex", flex: 2 }} >
+                    <Box sx={{ display: "flex", flex: 1, backgroundColor: "yellow" }} >
                         <TextareaAutosize
                             style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                             minRows={2}
@@ -342,8 +515,10 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                         display: "flex",
                         flex: 1,
                         justifyContent: "center",
-                        alignItems: "center"
-                    }} variant="outlined" >
+                        alignItems: "center",
+                    }}
+                        variant="outlined"
+                    >
 
                         <Box sx={{ display: "flex", flexDirection: "row-reverse", flex: 1, px: 1, alignItems: "center" }} >
                             <CssVarsProvider>
@@ -375,6 +550,12 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                         </Box>
 
                         <Box sx={{ display: "flex", flex: 2, px: 1, alignItems: "center" }} >
+                            <Box sx={{ display: "flex", flexDirection: "row-reverse", px: 1, alignItems: "center" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1" >Female</Typography>
+                                </CssVarsProvider>
+                            </Box>
+
                             <Box sx={{ display: "flex", px: 0.5, alignItems: "center" }} >
                                 <CssVarsProvider>
                                     <Checkbox
@@ -389,6 +570,12 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                     />
                                 </CssVarsProvider>
                             </Box>
+                            <Box sx={{ display: "flex", flexDirection: "row-reverse", px: 1, alignItems: "center" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1" >Male</Typography>
+                                </CssVarsProvider>
+                            </Box>
+
                             <Box sx={{ display: "flex", px: 0.5, alignItems: "center" }} >
                                 <CssVarsProvider>
                                     <Checkbox

@@ -1,12 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { ListDivider, ListItemContent, ListItemDecorator } from '@mui/joy';
-import image1 from '../../../assets/images/avatars/1.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { colorList } from 'src/views/Constant/Constant';
 import { setBirthdayAlert } from 'src/redux/actions/Birthday.Action';
@@ -33,7 +31,6 @@ const AnnouncementList = () => {
 
     //Announcementlist.push(...empBirthday)
     const list = [...Announcementlist, ...empBirthday]
-
     // const [List, setList] = useState(Announcementlist)
     // useEffect(() => {
     //     if (empBirthday.length !== 0) {
@@ -74,7 +71,7 @@ const AnnouncementList = () => {
                         {
                             list && list.map((val, ind) => {
 
-                                const announceHeading = val.announceHeading && val.announceHeading.toLowerCase();
+                                const Announcementheading = val.Announcementheading && val.Announcementheading.toLowerCase();
                                 const empName = val.em_name && val.em_name.toLowerCase();
 
                                 return <Box key={ind}>
@@ -89,7 +86,7 @@ const AnnouncementList = () => {
                                             {/* <CustomAvatar id={val.em_id} src={image1} /> */}
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography sx={{ textTransform: 'capitalize' }} >{announceHeading || empName}</Typography>
+                                            <Typography sx={{ textTransform: 'capitalize' }} >{Announcementheading || empName}</Typography>
                                             <Typography level="body2" noWrap sx={{ color: "white" }} >
                                                 {val.Announcement || msg}
                                             </Typography>

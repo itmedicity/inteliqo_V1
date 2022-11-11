@@ -1,5 +1,5 @@
 import { IconButton } from '@material-ui/core';
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useEffect } from 'react'
 import { useState } from 'react';
 import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
@@ -13,7 +13,8 @@ import { employeeNumber, SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import DepartmentShiftCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/DepartmentShiftCard';
 import DepartmentShiftTable from './DepartmentShiftTable';
 import { useHistory } from 'react-router'
-
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const DepartmentShiftMast = () => {
     const history = useHistory()
@@ -26,29 +27,41 @@ const DepartmentShiftMast = () => {
             getshifts, updateShifts, shiftnameselect
 
         } = useContext(PayrolMasterContext)
-    const postData = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection,
-        shft_code: arraydata,
-        updated_user: employeeNumber()
-    }
+
+    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
+
+    const { notapplicable_shift, default_shift, week_off_day } = state;
 
     //adding shifts to table
     const getShiftData = () => {
-        const newdata = {
-            id: Math.ceil(Math.random() * 1000),
-            shiftcode: getshifts,
-            shiftDescription: shiftnameselect,
-        }
-        if (arraydata.some(key => key.shiftcode == getshifts)) {
-            warningNofity("Shift Time Already Added!!")
+        if (notapplicable_shift === null && default_shift === null && week_off_day === null) {
+            warningNofity("Please Add Default Shift and Not Applicable in common setting")
         }
         else {
-            const newdatas = [...arraydata, newdata]
-            arraydataset(newdatas)
+            if ((getshifts === default_shift)) {
+                warningNofity("Default Already Exist!!")
+            }
+            else if (getshifts === notapplicable_shift) {
+                warningNofity("NA Already Exist!!")
+            }
+            else if (getshifts === week_off_day) {
+                warningNofity("Week Off Already Exist")
+            }
+            else if (arraydata.some(key => key.shiftcode === getshifts)) {
+                warningNofity("Shift Time Already Added!!")
+            }
+            else {
+                const newdata = {
+                    id: Math.ceil(Math.random() * 1000),
+                    shiftcode: getshifts,
+                    shiftDescription: shiftnameselect,
+                }
+                const newdatas = [...arraydata, newdata]
+                arraydataset(newdatas)
+            }
         }
-
     }
+
     //removing shift from table
     const onClickdelete = (checkid) => {
         const newdata = [...arraydata]
@@ -56,9 +69,35 @@ const DepartmentShiftMast = () => {
         newdata.splice(index, 1);
         arraydataset(newdata)
     }
+
+
     //saving department shift master
     const submitFormData = async (e) => {
         e.preventDefault();
+        const defautdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: default_shift,
+            shiftDescription: 'default',
+        }
+        const noappdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: notapplicable_shift,
+            shiftDescription: 'NA',
+        }
+        const weekoffdata = {
+            id: Math.ceil(Math.random() * 1000),
+            shiftcode: week_off_day,
+            shiftDescription: 'WOFF',
+        }
+        const newdatas = [...arraydata, defautdata, noappdata, weekoffdata]
+
+        const postData = {
+            dept_id: selectedDept,
+            sect_id: selectDeptSection,
+            shft_code: newdatas,
+            updated_user: employeeNumber()
+        }
+
         const result = await axioslogin.post('/departmentshift', postData)
         const { success, message } = result.data
         if (success === 1) {
@@ -70,14 +109,14 @@ const DepartmentShiftMast = () => {
             arraydataset([])
         }
         else if (success === 0) {
-            infoNofity("Shift Is Already Assigned To This Section")
+            infoNofity("Department Already Mapped, Please Edit!! ")
             updateSelected(0)
             updateDepartmentSection(0)
             updateShifts(0)
             arraydataset([])
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            errorNofity(message)
         }
     }
     const RedirectToProfilePage = () => {

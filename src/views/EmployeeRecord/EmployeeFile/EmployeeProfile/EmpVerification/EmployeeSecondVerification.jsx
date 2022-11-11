@@ -12,7 +12,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import EmployeeVerificationView from './EmployeeVerificationView'
-import DisabledByDefaultOutlined from '@mui/icons-material/DisabledByDefaultOutlined'
+import SquareIcon from '@mui/icons-material/Square';
 // import { IconButton } from '@mui/material';
 
 const EmployeeSecondVerification = () => {
@@ -97,7 +97,7 @@ const EmployeeSecondVerification = () => {
     };
     const toSettings = () => {
         setflag(0)
-        history.push('/Home/EmpSecondVerification')
+        history.push('/Home')
     }
 
     return (
@@ -137,6 +137,26 @@ const EmployeeSecondVerification = () => {
                                 width: "100%"
                             }} rowHeight={30} headerHeight={30} rowStyle={rowStyle} getRowStyle={getRowStyle} />
                         }
+                    </Paper>
+                    <Paper square sx={{
+                        display: "flex",
+                        p: 1,
+                        alignItems: "center",
+                    }}  >
+                        <Box sx={{ display: "flex" }}>
+                            <CssVarsProvider>
+                                <IconButton size='xs' sx={{ color: "#CE7D78" }}  >
+                                    <SquareIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", width: "98%", fontWeight: 500, pl: 5 }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Profile Not Completed or Need Correction
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
                     </Paper>
                 </Paper>
             </Box>

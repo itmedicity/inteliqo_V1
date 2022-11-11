@@ -137,11 +137,26 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5 }} >
-                    <Box sx={{ display: 'flex', width: '50%', }}>
+                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', p: 0.5, }} >
+                    <Box sx={{ display: 'flex', width: '16.5%', }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                Special Comment
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: "flex-start", }}>
+                        <Box sx={{ display: "flex", flexDirection: "column" }}>
+                            <CssVarsProvider>
+                                <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
+                            </CssVarsProvider>
+                        </Box>
+
+                    </Box>
+                    <Box sx={{ display: 'flex', width: '30%' }}>
                         {special_comment}
                     </Box>
-                    <Box sx={{ display: 'flex', width: '50%', }}>
+                    <Box sx={{ display: 'flex', width: '40%' }}>
                         <Box sx={{ display: "flex", flex: 1 }}>
                             <CssVarsProvider>
                                 <Typography level="body1" >Age Between From</Typography>

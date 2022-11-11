@@ -146,7 +146,6 @@ const ContractRenewalProcess = () => {
     //update empmaster data
     const updateempMast = {
         em_no: newempId,
-        em_doj: newcontractstart,
         em_category: newCatgeory,
         em_contract_end_date: newcontractend,
         em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD'),

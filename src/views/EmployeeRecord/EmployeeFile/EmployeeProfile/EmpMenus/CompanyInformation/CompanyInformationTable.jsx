@@ -45,8 +45,8 @@ const CompanyInformationTable = ({ update }) => {
             },
             width: 30,
         },
-        { headerName: 'Update Date', field: 'update_date' },
-        { headerName: 'Category ', field: 'ecat_name' },
+        { headerName: 'Update Date', field: 'ineffective_date' },
+        { headerName: 'Designation ', field: 'desg_name' },
         { headerName: 'Update User ', field: 'edit_user' },
 
     ])

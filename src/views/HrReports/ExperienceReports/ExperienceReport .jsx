@@ -5,11 +5,11 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { setEmployeeName } from 'src/redux/actions/EmpName.Action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const ExperienceReport = () => {
 
@@ -23,11 +23,12 @@ const ExperienceReport = () => {
     const [thirdvalue, setThirdValue] = useState(0);
     const [sectslno, setdeptslno] = useState([]);
     const [empslno, setempslno] = useState([]);
+    const [data2, setdata2] = useState(sectslno)
     const dispatch = useDispatch();
 
     /** To get stored department values from redux */
     useEffect(() => {
-        dispatch(setDepartment());
+        dispatch(setDept())
         dispatch(setDeptWiseSection());
         dispatch(setEmployeeName());
     }, [dispatch])
@@ -35,13 +36,13 @@ const ExperienceReport = () => {
     /** useSelector for getting depatment, department section, employee name wise list from redux */
     const state = useSelector((state) => {
         return {
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            dept: state.getdept.departmentlist || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
             empName: state.getEmpNameList.empNameList || 0
         }
     })
     /** Destructuring state into values... */
-    const { empDepartment, deptSection, empName } = state
+    const { dept, deptSection, empName } = state
 
     /** Selction checkbox for department name  */
     const [columnDefs] = useState([
@@ -85,6 +86,9 @@ const ExperienceReport = () => {
         else {
             setValue(event.api.getSelectedRows())
             setsecondmenu(0)
+            setThirdmenu(0)
+            setThirdValue(0)
+            setsecondValue(0)
         }
         setsecondmenu(0)
     }
@@ -125,6 +129,7 @@ const ExperienceReport = () => {
         }
         else {
             setsecondValue(event.api.getSelectedRows())
+            setThirdValue(0)
         }
         setThirdmenu(0)
     }
@@ -153,12 +158,11 @@ const ExperienceReport = () => {
         }
     }
 
-    const [data2, setdata2] = useState(sectslno)
     /** to get deaprtment section wise employee name from redux */
     useEffect(() => {
         if (thirdmenu === 1) {
             if (sectslno !== 0) {
-                const filter = empName.filter(val => slno.includes(val.em_dept_section))
+                const filter = empName.filter(val => sectslno.includes(val.em_dept_section))
                 setdata2(filter)
             }
             else {
@@ -277,7 +281,7 @@ const ExperienceReport = () => {
             <CustomReportMain
                 /** Department checkbox */
                 columnDefs={columnDefs}
-                tableData={empDepartment}
+                tableData={dept}
                 onSelectionChanged={onSelectionChanged}
                 menu1={"Department"}
                 secondMenu={secondMenu}

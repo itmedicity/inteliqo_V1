@@ -9,12 +9,17 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Checkbox, FormControlLabel } from '@material-ui/core'
+import ShiftSelectByRedux from 'src/views/MuiComponents/ShiftSelectByRedux'
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 
 const CommonSettings = () => {
     const history = useHistory()
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_id } = employeedetails
     const [value, setValue] = useState(0)
+    const [defshift, setDefShift] = useState(0)
+    const [notappshift, setnoappshift] = useState(0)
+    const [workoff, setworkoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -39,6 +44,7 @@ const CommonSettings = () => {
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level } = FormData
+
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -52,7 +58,8 @@ const CommonSettings = () => {
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
-                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level } = data[0]
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift, week_off_day } = data[0]
+
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -72,9 +79,12 @@ const CommonSettings = () => {
                     esi_limit: esi_limit,
                     esi_employee: esi_employee,
                     esi_employer: esi_employer,
-                    verification_level: verification_level
+                    verification_level: verification_level,
                 }
                 setFormData(frmData)
+                setDefShift(default_shift === null ? 0 : default_shift)
+                setnoappshift(notapplicable_shift === null ? 0 : notapplicable_shift)
+                setworkoff(week_off_day === null ? 0 : week_off_day)
                 setValue(1)
             }
             else if (success === 0) {
@@ -86,6 +96,7 @@ const CommonSettings = () => {
         }
         getCommonSettings()
     }, [])
+
     //data to save
     const postData = {
         cmmn_grace_period: commn_grace,
@@ -106,7 +117,11 @@ const CommonSettings = () => {
         esi_employee: esi_employee,
         esi_employer: esi_employer,
         creat_user: em_id,
-        verification_level: verification_level
+        verification_level: verification_level,
+        default_shift: defshift,
+        notapplicable_shift: notappshift,
+        week_off_day: workoff
+
     }
     //data to edit
     const postDataEdit = {
@@ -129,7 +144,10 @@ const CommonSettings = () => {
         esi_employer: esi_employer,
         update_user: em_id,
         setting_slno: slno,
-        verification_level: verification_level
+        verification_level: verification_level,
+        default_shift: defshift,
+        notapplicable_shift: notappshift,
+        week_off_day: workoff
     }
 
     //save
@@ -542,6 +560,56 @@ const CommonSettings = () => {
                                                             value={esi_employer}
                                                             changeTextValue={(e) => updateCommonSettings(e)}
                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Shift Setting */}
+
+                        <div className="col-md-12 pt-3" >
+                            <div className="row">
+                                <div className="col-md-1"></div>
+                                <div className="col-md-5">
+                                    <div className="card">
+                                        <div className="card-header pb-0 border  text-black">
+                                            <h6>Shift Setting</h6>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Default Shift</Typography>
+                                                    </div>
+                                                    <div className="col-md-8">
+                                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Not Applicable</Typography>
+                                                    </div>
+                                                    <div className="col-md-8">
+                                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12 pt-2">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Week OFF</Typography>
+                                                    </div>
+                                                    <div className="col-md-8">
+                                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
                                                     </div>
                                                 </div>
                                             </div>

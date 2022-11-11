@@ -363,6 +363,9 @@ const AnnualProcessComponent = ({
             }
 
         }
+
+
+
         // commonleave save
         const getCommonleave = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearlyleaves')
@@ -386,7 +389,8 @@ const AnnualProcessComponent = ({
                             cmn_lv_balance: 0,
                             Iv_process_slno: lv_process_slnocurrent,
                             update_user: employeeNumber(),
-                            em_id: em_id
+                            em_id: em_id,
+                            cmn_lv_year: moment().format('YYYY-MM-DD')
                         }
                         return commonleave
                     })
@@ -418,6 +422,8 @@ const AnnualProcessComponent = ({
                 infoNofity("Yearly Common Leves Not Updated")
             }
         }
+
+
         // earnleave save
         const setearnleave = async (lv_process_slnocurrent) => {
             var datadate = intervalToDuration({

@@ -6,10 +6,11 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
 import { setBranch } from 'src/redux/actions/Branch.Action'
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { setDept } from 'src/redux/actions/Dept.Action';
+import _ from 'underscore';
 
 const ContractClosedReport = () => {
 
@@ -28,7 +29,7 @@ const ContractClosedReport = () => {
     /** To get stored branch values from redux */
     useEffect(() => {
         dispatch(setBranch());
-        dispatch(setDepartment());
+        dispatch(setDept());
         dispatch(setDeptWiseSection());
     }, [dispatch])
 
@@ -37,12 +38,12 @@ const ContractClosedReport = () => {
         return {
             empBranch: state.getBranchList.branchList || 0,
             deptSection: state.getDeptSectList.deptSectionList || 0,
-            empDepartment: state.getDepartmentList.empDepartmentList || 0,
+            dept: state.getdept.departmentlist || 0,
         }
-    })
+    }, _.isEqual)
 
     /** Destructuring state into values... */
-    const { empBranch, deptSection, empDepartment } = state
+    const { empBranch, deptSection, dept } = state
 
     /** Selction checkbox for branch name  */
     const [columnDefs] = useState([
@@ -66,6 +67,7 @@ const ContractClosedReport = () => {
             setValue(event.api.getSelectedRows())
         }
         setsecondmenu(0)
+        setThirdmenu(0)
     }
 
     /** Intializing slno for getting checked branch slno */
@@ -85,12 +87,12 @@ const ContractClosedReport = () => {
     useEffect(() => {
         if (secondMenu === 1) {
             if (slno !== 0) {
-                return empDepartment
+                return dept
             } else {
                 warningNofity("Please Select Any Branch!")
             }
         }
-    }, [secondMenu, slno, empDepartment])
+    }, [secondMenu, slno, dept])
 
     /** Selection check box for department */
     const [columnDefDept] = useState([
@@ -298,7 +300,7 @@ const ContractClosedReport = () => {
 
                 /** Department checkbox list */
                 columnDefMenu2={columnDefDept}
-                tableDataMenu2={empDepartment}
+                tableDataMenu2={dept}
                 thirdmenu={thirdmenu}
                 onSelectionChanged3={onSelectionChanged3}
 

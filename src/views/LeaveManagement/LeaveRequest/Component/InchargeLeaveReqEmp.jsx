@@ -32,6 +32,7 @@ const InchargeLeaveReqEmp = ({ inchargedeptSec, hoddeptSec, name, style, onChang
         getEmployee()
     }, [inchargedeptSec, hoddeptSec])
 
+    console.log(emp)
 
     return (
         <Fragment>

@@ -160,7 +160,7 @@ const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeReco
 const BloodReports = React.lazy(() => import('./views/HrReports/BloodReports/BloodReports '))
 const ReligionReport = React.lazy(() => import('./views/HrReports/ReligionReports/ReligionReport '))
 const RegionReport = React.lazy(() => import('./views/HrReports/RegionReports/RegionReport '))
-//const ExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceReport '))
+const ExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceReport '))
 const InstitutionTypeReport = React.lazy(() => import('./views/HrReports/InstitutionTypeReports/InstitutionTypeReport'))
 const CategoryReports = React.lazy(() => import('./views/HrReports/CategoryReport/CategoryReports'))
 const DesignationReport = React.lazy(() => import('./views/HrReports/DesignationReport/DesignationReport'))
@@ -195,6 +195,17 @@ const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/Em
 const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
 const JobDescriptionViewTable = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionViewTable'))
 const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractDetailsAgGrid'))
+const RegistrationTypeReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/RegistrationTypeReport'))
+const ContractClosedReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractClosedReport'))
+const ContractRenewReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractRenewReport'))
+const ContractCurrentRunningReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractCurrentRunningReport'))
+const TraningProbaReport = React.lazy(() => import('./views/HrReports/TrainingProbaReport/TraningProbaReport'))
+const DeptSubSectionReport = React.lazy(() => import('./views/HrReports/DeptSubSectionReport/DeptSubSectionReport'))
+const DesignationExpReport = React.lazy(() => import('./views/HrReports/DesignatiopnExpeReport/DesignationExpReport'))
+const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractReports/OneYearCurrentRunning'))
+const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
+const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
+const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
 
 const routes = [
 
@@ -361,7 +372,7 @@ const routes = [
   { path: '/Home/BloodReports', exact: true, name: 'Employee BloodGroup Report', component: BloodReports },
   { path: '/Home/ReligionReport', exact: true, name: 'Employee Religion Report', component: ReligionReport },
   { path: '/Home/RegionReport', exact: true, name: 'Employee district Report', component: RegionReport },
-  //{ path: '/Home/ExperienceReport', exact: true, name: 'Employee Department Report', component: ExperienceReport },
+  { path: '/Home/ExperienceReport', exact: true, name: 'Employee Department Report', component: ExperienceReport },
   { path: '/Home/InstitutionTypeReport', exact: true, name: 'Employee InstitutionType Report', component: InstitutionTypeReport },
   { path: '/Home/CategoryReport', exact: true, name: 'Employee Category Report', component: CategoryReports },
   { path: '/Home/DesignationReport', exact: true, name: 'Employee Designation Report', component: DesignationReport },
@@ -396,6 +407,17 @@ const routes = [
   { path: '/Home/EmployeeRecordsAgGrid', exact: true, name: 'Employee Record File', component: EmployeeRecordsAgGrid },
   { path: '/Home/Prfle/:id/:no/:slno', exact: true, name: 'Employee Profile', component: EmpProfile },
   { path: '/Home/JobDescriptionViewTable', exact: true, name: 'Job Description View Table', component: JobDescriptionViewTable },
+  { path: '/Home/RegistrationTypeReport', exact: true, name: 'Department Wise Registration Type Report', component: RegistrationTypeReport },
+  { path: '/Home/ContractClosedReport', exact: true, name: 'Employee Contract Closed report', component: ContractClosedReport },
+  { path: '/Home/ContractRenewReport', exact: true, name: "Employee Contract Renew Report", component: ContractRenewReport },
+  { path: '/Home/ContractCurrentRunningReport', exact: true, name: 'Employee Contract Current Running', component: ContractCurrentRunningReport },
+  { path: '/Home/TraningProbaReport', exact: true, name: 'Traning Probation Report', component: TraningProbaReport },
+  { path: '/Home/DeptSubSectionReport', exact: true, name: 'DeptSubSectionReport', component: DeptSubSectionReport },
+  { path: '/Home/DesignationExpReport', exact: true, name: 'DesignationExpReport', component: DesignationExpReport },
+  { path: '/Home/ContractOneYear+CurrentReport', exact: true, name: 'Contract One Year + Current Report', component: ContractOneYear },
+  { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
+  { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
+  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport }
 
 ]
 

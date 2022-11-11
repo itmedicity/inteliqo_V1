@@ -1,10 +1,10 @@
 import { addDays, compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns'
 import React, { Fragment, useContext, useState, useEffect, memo, useMemo } from 'react'
-import { useHistory, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
@@ -19,19 +19,25 @@ import CompanyInformationTable from './CompanyInformationTable'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import moment from 'moment'
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
-import DeptSelectionRedux from 'src/views/CommonCode/DeptSelectionRedux'
 // import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSelect from 'src/views/MuiComponents/DepartmentSelect'
+import DesignationMast from 'src/views/CommonCode/DesignationMast'
+import TextInput from 'src/views/Component/TextInput'
+import { useCallback } from 'react'
+import { format } from 'date-fns'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCategory } from 'src/redux/actions/Category.Action'
+import _ from 'underscore'
 
 const CompanyInformtion = () => {
-    const history = useHistory()
+    //const history = useHistory()
     const { id, no } = useParams();
     const { selectBranchMast, updateBranchSelected,
         selectedDept, updateSelected,
         selectDeptSection, updateDepartmentSection,
         selectInstiType, updateInstituteSeleted,
-        getemployeecategory, udateemployeecategory, updateDeptSection, getDeptSection
+        getemployeecategory, udateemployeecategory, updateDeptSection,
+        selectDesignation, updateDesignation
     } = useContext(PayrolMasterContext)
 
     // to check the annpual leave procee wheter ist from category change
@@ -88,13 +94,31 @@ const CompanyInformtion = () => {
     const [empstatus, setempStatus] = useState(0)
     const [probsataus, setProbstatus] = useState(0)
     const [probationperiod, setProbationPeriod] = useState(0);
+
+    const [ineffectdate, setineffectdate] = useState('');
+    const [designation, setdesignation] = useState(0)
+    const [empcatory, setempcat] = useState(0)
+    const [cateineffectdate, setCateineffectdate] = useState('')
+
+    /** to get stored category values from redux */
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setCategory());
+    }, [dispatch])
+
+    /** to get employee category details from redux */
+    // const empCate = useSelector((state) => state.getEmployeeCategory.empCategory || 0, _.isEqual)
+
+
     //Get data
     useEffect(() => {
         const getCompany = async () => {
             const result = await axioslogin.get(`/common/getcompanydetails/${id}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_branch, em_department, em_prob_end_date, em_dept_section, em_institution_type, em_category } = data[0]
+                const { em_branch, em_department, em_prob_end_date,
+                    em_dept_section, em_institution_type, em_category,
+                    em_designation } = data[0]
                 const frm = {
                     catemp: em_category
                 }
@@ -105,11 +129,13 @@ const CompanyInformtion = () => {
                 updateDepartmentSection(em_dept_section)
                 updateInstituteSeleted(em_institution_type)
                 udateemployeecategory(em_category)
+                updateDesignation(em_designation)
                 setcompany(em_category)
+                setdesignation(em_designation)
             }
         }
         getCompany()
-    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateDeptSection, updateInstituteSeleted, udateemployeecategory])
+    }, [id, updateBranchSelected, updateSelected, selectedDept, updateDepartmentSection, updateDeptSection, updateInstituteSeleted, udateemployeecategory, updateDesignation])
 
 
     useEffect(() => {
@@ -118,8 +144,9 @@ const CompanyInformtion = () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { ecat_cont_period, ecat_prob_period } = data[0]
+                    const { ecat_cont_period, ecat_prob_period, emp_type } = data[0]
                     setProbationPeriod(addDays(new Date, ecat_prob_period))
+                    setempcat(emp_type)
                     if (ecat_cont_period > 0) {
                         setempStatus(1)
                     }
@@ -127,7 +154,6 @@ const CompanyInformtion = () => {
                         setProbstatus(1)
                     }
                 }
-
                 else {
                     errorNofity("Error Occured!!!Please Contact EDP")
                 }
@@ -135,6 +161,20 @@ const CompanyInformtion = () => {
             getEmpType()
         }
     }, [getemployeecategory, cat.catemp])
+
+    const getDate = useCallback((e) => {
+        var startdate = e.target.value
+        var ineffectdate = format(new Date(startdate), "yyyy-MM-dd")
+        setineffectdate(ineffectdate)
+        return (ineffectdate)
+    }, [])
+
+    const getCateDate = useCallback((e) => {
+        var startdate = e.target.value
+        var cateineffectdate = format(new Date(startdate), "yyyy-MM-dd")
+        setCateineffectdate(cateineffectdate)
+        return (cateineffectdate)
+    }, [])
 
     //post Data
     const updateData = useMemo(() => {
@@ -153,14 +193,24 @@ const CompanyInformtion = () => {
             edit_user: employeeNumber(),
             em_id: no,
             em_no: id,
+            com_designation: designation,
+            com_designation_new: selectDesignation,
+            em_designation: selectDesignation,
+            ineffective_date: designation !== selectDesignation ? ineffectdate : null,
+            category_ineffect_date: company !== getemployeecategory ? cateineffectdate : null
         }
-    }, [selectBranchMast, selectedDept, getDeptSection, selectInstiType, company, getemployeecategory, probationperiod, empstatus, probsataus, no, id])
+    }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory,
+        probationperiod, empstatus, probsataus, no, id, selectDesignation, designation,
+        ineffectdate, selectDeptSection, cateineffectdate])
+
     const reset = () => {
         updateBranchSelected(0)
         updateSelected(0)
         updateDepartmentSection(0)
         updateInstituteSeleted(0)
         udateemployeecategory(0)
+        updateDesignation(0)
+        setineffectdate('')
     }
 
     const postFormdata = useMemo(() => {
@@ -170,16 +220,22 @@ const CompanyInformtion = () => {
         }
     }, [no, id])
 
+    //Employee State
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
+    const { contract_status, em_contract_end_date } = state;
+
     //update Data
     const submitCompany = async (e) => {
         e.preventDefault();
-        // get current data allowed  leave based on category
+
+        //get current data allowed  leave based on category
         const getcategorydata = async () => {
             const result = await axioslogin.get(`/common/getannprocess/${no}`)
             const { data } = result.data
             setleavestate(data[0])
         }
         getcategorydata();
+
         const getdata = async () => {
             getProcessserialnum().then((val) => {
                 setprocessslno(val)
@@ -228,22 +284,54 @@ const CompanyInformtion = () => {
                 }
             }
         }
-        const result = await axioslogin.post('/empmast/company', updateData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            getcategorydata()
-            succesNofity(message);
-            setcount(count + 1)
-            getdata()
-            reset()
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
-        } else {
-            infoNofity(message)
+
+        //only designation change
+        const getdatasub = async () => {
+            const result = await axioslogin.post('/empmast/company', updateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                getcategorydata()
+                succesNofity(message);
+                setcount(count + 1)
+                reset()
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
+        //category change and leave process
+        const getdatasub1 = async () => {
+            const result = await axioslogin.post('/empmast/company', updateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                getcategorydata()
+                succesNofity(message);
+                setcount(count + 1)
+                getdata()
+                reset()
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
+        if (contract_status === 1) {
+            warningNofity('Contract Employee Category Change Only Through Contract Process Window')
+        }
+        else if (designation !== selectDesignation && ineffectdate === '') {
+            infoNofity("Please Add Designation Change Date")
+        }
+        else if (designation !== selectDesignation && ineffectdate !== '') {
+            getdatasub()
+        }
+        else if (company !== getemployeecategory && cateineffectdate === '') {
+            infoNofity("Please Add Category Change Date")
+        }
+        else {
+            getdatasub1()
         }
     }
-
-
     //useEffect for getting attendancde details to process earn leave
     const [attendanceata, setAttendanceData] = useState([])
     const year = moment(new Date()).format('YYYY')
@@ -276,14 +364,14 @@ const CompanyInformtion = () => {
 
     }, [no, year])
     //Redirect
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
-
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
 
     const handleClose = () => {
         setmodellist(false)
     }
+
     return (
         <Fragment>
             {modelvalue === 1 ? <ModelLeaveProcess
@@ -410,7 +498,54 @@ const CompanyInformtion = () => {
                             </Box>
                             {/* second row end */}
 
+
                             {/* third row start */}
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                px: 20,
+                                width: "100%",
+                                pt: 0.5
+                            }}>
+                                <Box sx={{ width: "20%" }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Designation
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
+                                </Box>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Designation Change Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <TextInput
+                                        type="date"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Date"
+                                        min={new Date()}
+                                        value={ineffectdate}
+                                        name="ineffectdate"
+                                        //disabled={Toggle === 1 ? false : true}
+                                        changeTextValue={(e) => {
+                                            getDate(e)
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+                            {/* third row end */}
+
+
+
+                            {/* fourth row start */}
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
@@ -427,13 +562,35 @@ const CompanyInformtion = () => {
                                     </CssVarsProvider>
                                 </Box>
 
-                                <Box sx={{ width: "80%" }}>
+                                <Box sx={{ width: "30%" }}>
                                     <EmployeeCategory
                                         style={SELECT_CMP_STYLE}
                                     />
                                 </Box>
+                                <Box sx={{ width: "20%", pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Category Change Date
+                                        </Typography>
+
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: "30%" }} >
+                                    <TextInput
+                                        type="date"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Date"
+                                        min={new Date()}
+                                        value={cateineffectdate}
+                                        name="cateineffectdate"
+                                        //disabled={true}
+                                        changeTextValue={(e) => {
+                                            getCateDate(e)
+                                        }}
+                                    />
+                                </Box>
                             </Box>
-                            {/* third row end */}
+                            {/* fourth row end */}
 
                         </Box>
                     </Paper>

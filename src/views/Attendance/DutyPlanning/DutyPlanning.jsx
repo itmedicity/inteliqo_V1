@@ -20,19 +20,25 @@ import ShiftSelectModel from './ShiftSelectModel';
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import _ from 'underscore';
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
 const moment = extendMoment(Moment);
 
-
 const DutyPlanning = () => {
+
   const history = useHistory()
-  const { selectBranchMast
-  } = useContext(PayrolMasterContext)
+  const { selectBranchMast } = useContext(PayrolMasterContext);
+  const dispatch = useDispatch()
+  useEffect(() => dispatch(setCommonSetting()), [])
+
+  const commonState = useSelector((state) => state.getCommonSettings, _.isEqual)
+  const { notapplicable_shift, default_shift } = commonState;
 
   const [dept, setDept] = useState(0)
   const [deptSec, setDeptSec] = useState(0)
 
   //disptach function for updating store
-  const dispatch = useDispatch()
+
   //use state for employee details
   const [empData, setempData] = useState([])
   const [hldadata, sethldadata] = useState([])
@@ -49,6 +55,7 @@ const DutyPlanning = () => {
     startDate: format(new Date(), "yyyy-MM-dd"),
     endDate: format(new Date(), "yyyy-MM-dd"),
   })
+
   //de structuring
   const { startDate, endDate } = formData
   //getting form data
@@ -56,9 +63,15 @@ const DutyPlanning = () => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value })
   }
-  //date validations
+
+  /***
+   * Date validation for restricting the frondend calander for selecting the date not more than 30
+   * days from the selected start date
+   */
+
   const maxdate = addDays(new Date(startDate), 30)
-  const maxdatee = moment(maxdate).format('YYYY-MM-DD')
+  const maxDateForDisplyCalender = moment(maxdate).format('YYYY-MM-DD')
+
   //use effect getting the employee details of the selected department and department section
   useEffect(() => {
     //dispatichng employee details of the selected department and department section
@@ -74,6 +87,8 @@ const DutyPlanning = () => {
     }
     getempdetl()
   }, [dept, deptSec, selectBranchMast])
+
+
   useEffect(() => {
     const getholidays = async () => {
       //getting the holidays between start date and end date
@@ -89,13 +104,24 @@ const DutyPlanning = () => {
     }
     getholidays()
   }, [startDate, endDate])
-  //getting employee details of selected department and department secion from redux
-  const empdetl = useSelector((state) => {
-    return state.getEmployeedetailsDutyplan.EmpdetlInitialdata
 
+  //getting employee details of selected department and department secion from redux
+  const empdetlNew = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual)
+
+  // Filter the employee data for correcting the employee date of
+  const empdetl = empdetlNew.map((val) => {
+    return {
+      desg_name: val.desg_name,
+      em_id: val.em_id,
+      em_name: val.em_name,
+      em_no: val.em_no,
+      em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj
+    }
   })
+
   //insert duty planning (click function of plus button in th duty planning page)
   const insertDutyPlanning = async () => {
+    setDuty(0) // this function rerender the duty plan display component every time Onclick function set the "duty" value set as "0"
     setCount(count + 1)
 
     //checking whether the selected department section have employees
@@ -116,64 +142,97 @@ const DutyPlanning = () => {
           { start: new Date(startDate), end: new Date(endDate) }
         )
         //finding the dates between start date and end date
+        // Date Format --> {date: 'Oct-1-Sa', sunday: '6'}
         const newDateFormat = rage.map((val) => { return { date: moment(val).format('MMM-D-dd'), sunday: moment(val).format('d') } })
         setdateFormat(newDateFormat)
         const newDateFormat2 = rage.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } })
-        //getting employee id from employee details
-        const empidata = empdetl && empdetl.map((val) => {
-          return val.em_id
-        })
+
+        //getting employee id from employee details - date fomat --> {date: '2022-10-01'} 
+        const empidata = empdetl && empdetl.map((val) => val.em_id)
+
         const postDate = {
           start_date: moment(startDate).format('YYYY-MM-DD'),
           end_date: moment(endDate).format('YYYY-MM-DD'),
           empData: empidata
         }
+
         //checking wheher duty plan is already inserted in these dates
         const result = await axioslogin.post("/plan/check", postDate)
         const { success, data } = result.data
+
+
         //if duty plan is already inserted
+
         if (success === 1) {
+
+          /******** if the duty plan is excist between these days **********/
           const dutyday = empdetl.map((val) => {
             const dutydate = newDateFormat2.map((value) => {
               return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
             })
             return dutydate
           })
+
+          //convert to a single array from mlti array
           const dutyplanarray = dutyday.flat(Infinity)
+
           //filtering the data from the data base and inserting dates and finding the new array to insert
+          /***
+           * filtering the data from the database if the all date have the shift id inserted or not 
+           * if no shift id in that date filter that date and return a new array
+           * if all date have the shift id then blank array will return
+           */
           const newdutyplanarray = dutyplanarray.filter((val) => {
             return data.filter((data) => {
               return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
             }).length === 0
           })
 
+          /**
+           * returned array object 
+           * {date: '2022-11-19', emp_id: 1212, doj: '2022-10-05'}
+           * with date of join
+           * Again filter tis array for the shift id Mapping
+           * if the date is greater than the Date of join for a empoyee that particular 
+           * employee shift id is marker as "Not applicable shift id" from common setting
+           * other wise "default shift id " from common setting
+           * 
+           */
+
           const insertnewdutyplanarray = newdutyplanarray.map((val) => {
-            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? default_shift : notapplicable_shift }
           })
+
           //if new array lenth is zero no need to inset
           if (newdutyplanarray.length === 0) {
             setDuty(1)
-          }
-          //if new array length not eqal to zero inserting the new array
-          else {
+          } else {
+
+            //if new array length not eqal to zero inserting the new array
             //inserting the duty plan
+
             const results = await axioslogin.post("/plan/insert", insertnewdutyplanarray)
             const { success1 } = results.data
             if (success1 === 1) {
               setDuty(1)
               setDuty1(1)
               if (hldadata.length > 0) {
-                await axioslogin.patch("/plan/holiday", hldadata)
-
+                const result = await axioslogin.patch("/plan/holiday", hldadata);
+                const { success } = result.data;
+                if (success === 0) {
+                  errorNofity("Error Updating the Holidays ! Please Contact EDP")
+                }
               }
             }
             else {
-              errorNofity("Error Occured!!Please Contact EDP")
+              errorNofity("Error Occured!! Please Contact EDP")
             }
           }
-        }
-        //if the no dates are inserted betwen the start date and end date inserting the dates
-        else {
+        } else {
+
+          /******** if not excist  **********/
+          //if the no dates are inserted betwen the start date and end date inserting the dates
+
           const dutyday = empdetl.map((val) => {
             const dutydate = newDateFormat2.map((value) => {
               return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
@@ -183,22 +242,34 @@ const DutyPlanning = () => {
           const dutyplanarray = dutyday.flat(Infinity)
           //inserting duty plan based on date of join
           const insertdutyplanarray = dutyplanarray.map((val) => {
-            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? 0 : 1000 }
+            return { date: val.date, emp_id: val.emp_id, shift: val.date >= val.doj ? default_shift : notapplicable_shift }
           })
-          //inserting the duty plan
-          const results = await axioslogin.post("/plan/insert", insertdutyplanarray)
-          const { success1 } = results.data
-          if (success1 === 1) {
-            setDuty(1)
-            setDuty1(duty1 + 1)
-            if (hldadata.length > 0) {
-              await axioslogin.patch("/plan/holiday", hldadata)
+
+          if (default_shift === null || notapplicable_shift === null) {
+            errorNofity("Check The Common Setting For Default and Not Applicable Shift") //Default and Notapplicable Shift Not Updaed in Common Setting
+          } else {
+
+            //inserting the duty plan
+            const results = await axioslogin.post("/plan/insert", insertdutyplanarray)
+            const { success1 } = results.data
+            if (success1 === 1) {
+              setDuty(1)
+              setDuty1(duty1 + 1)
+              if (hldadata.length > 0) {
+                const result = await axioslogin.patch("/plan/holiday", hldadata);
+                const { success } = result.data;
+                if (success === 0) {
+                  errorNofity("Error Updating the Holidays ! Please Contact EDP")
+                }
+              }
+
+            }
+            else {
+              errorNofity("Error Occured!!Please Contact EDP")
             }
 
           }
-          else {
-            errorNofity("Error Occured!!Please Contact EDP")
-          }
+
         }
 
       }
@@ -207,12 +278,12 @@ const DutyPlanning = () => {
         setDuty(0)
         infoNofity("Please Map Shift For This Department Section")
       }
-    }
-    ///if there is no employees in the department section
-    else {
+    } else { ///if there is no employees in the department section *****************
       setDuty(0)
       warningNofity("There Is No Employees Under This Department Section")
     }
+
+
     // getting shift assigned to the selected department and department section
     if (dept !== 0 && deptSec !== 0) {
       const postDataaa = {
@@ -222,11 +293,14 @@ const DutyPlanning = () => {
       dispatch(getdeptShift(postDataaa))
     }
 
+
   }
   //redirecting to profile page
   const redirecting = () => {
     history.push('/Home')
   }
+
+
   //Model for shift default selecting
   const [emid, setemid] = useState(0)
   const [open, setOpen] = useState(false);
@@ -235,6 +309,8 @@ const DutyPlanning = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+
   return (
     <Fragment>
       <PageLayoutCloseOnly heading="Duty Planning"
@@ -259,7 +335,7 @@ const DutyPlanning = () => {
                 name="endDate"
                 value={endDate}
                 min={startDate}
-                max={maxdatee}
+                max={maxDateForDisplyCalender}
                 changeTextValue={(e) => updateDutyPlanning(e)}
               />
             </div>
@@ -289,26 +365,35 @@ const DutyPlanning = () => {
         <div>{
           duty === 1 ?
             <DutyPlanningMainCard
-              dateformat={dateFormat}
-              employeedata={empData}
-              startdate={startDate}
-              enddate={endDate}
-              duty={duty}
-              duty1={duty1}
-              count={count}
-              selectedDept={dept}
-              selectDeptSection={deptSec}
-              setemid={setemid}
-              setOpen={setOpen}
-              update={update}
-              setmodelstatus={setmodelstatus}
-              state={state}
-              setstate={setstate}
+              dateformat={dateFormat}  // Date Format --> {date: 'Oct-1-Sa', sunday: '6'}
+              employeedata={empData} // Selected Employee Data
+              startdate={startDate} // Selected Start Date
+              enddate={endDate} // Selected End Date
+              duty={duty}  // after inserting the default shift "duty" state canged to 1
+              duty1={duty1} // after inserting the default shift "duty" state canged to 1
+              count={count}  //Click function state each click count + 1
+              selectedDept={dept}  //Selected department
+              selectDeptSection={deptSec} // Selected Department Section
+              setemid={setemid} //For model opening default 
+              setOpen={setOpen} //For model opening default 
+              update={update}  //For model opening default 
+              setmodelstatus={setmodelstatus} //For model opening default 
+              state={state} // This state updation not from this component 
+              setstate={setstate} // This state updation not from this component 
             /> : null
         }
         </div>
-        {modelstatus === 1 ? < ShiftSelectModel empid={emid} open={open} handleClose={handleClose} startdate={startDate}
-          enddate={endDate} setDuty1={setDuty1} duty1={duty1} setupdate={setupdate} update={update} /> : null}
+        {modelstatus === 1 ?
+          <ShiftSelectModel
+            empid={emid}
+            open={open}
+            handleClose={handleClose}
+            startdate={startDate}
+            enddate={endDate}
+            setDuty1={setDuty1}
+            duty1={duty1}
+            setupdate={setupdate}
+            update={update} /> : null}
       </PageLayoutCloseOnly >
     </Fragment>
   )

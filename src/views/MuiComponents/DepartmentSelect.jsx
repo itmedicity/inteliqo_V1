@@ -1,6 +1,5 @@
 import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setDept } from 'src/redux/actions/Dept.Action'
+import { useSelector } from 'react-redux'
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 
@@ -8,7 +7,7 @@ const DepartmentSelect = ({ style, disabled }) => {
     const { selectedDept, updateSelected, updateSelectedName } = useContext(PayrolMasterContext);
     const [deptData, setdeptData] = useState([]);
 
-    const dispatch = useDispatch()
+    //const dispatch = useDispatch()
     const dept = useSelector((state) => {
         return state.getdept.departmentlist
     })
