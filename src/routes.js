@@ -185,7 +185,6 @@ const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/Traini
 const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
 const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
 const HighLevelMaster = React.lazy(() => import('./views/Master/HighLevelMaster/HighLevelMaster'))
-const HighLevelMasterEdit = React.lazy(() => import('./views/Master/HighLevelMaster/HighLevelMasterEdit'))
 const HierarchyLevel = React.lazy(() => import('./views/Master/HierarchyLevelMaster/HierarchyLevelMaster'))
 const AppraisalApproveIncharge = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalIncharge/AppraisalApproveIncharge'))
 const AppraisalApprovalHOD = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalHOD/ApprovalHOD'))
@@ -196,8 +195,6 @@ const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/Em
 const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
 const JobDescriptionViewTable = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionViewTable'))
 const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractDetailsAgGrid'))
-
-
 
 const routes = [
 
@@ -389,7 +386,6 @@ const routes = [
   { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
   { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
   { path: '/Home/HighLevelMaster', exact: true, name: 'High Level Master', component: HighLevelMaster },
-  { path: '/Home/HighLevelMasterEdit/:id', exact: true, name: 'High Level Master', component: HighLevelMasterEdit },
   { path: '/Home/HierarchyLevel', exact: true, name: 'Hierarchy Level Master', component: HierarchyLevel },
   { path: '/Home/AppraisalApproveIncharge', exact: true, name: 'Appraisal Approve Incharge', component: AppraisalApproveIncharge },
   { path: '/Home/AppraisalApprovalHOD', exact: true, name: 'Appraisal Approve HOD', component: AppraisalApprovalHOD },
