@@ -222,7 +222,12 @@ const CompanyInformtion = () => {
 
     //Employee State
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-    const { contract_status, em_contract_end_date } = state;
+    const { contract_status, em_contract_end_date, em_prob_end_date } = state;
+
+    const probationEndDate = moment(em_prob_end_date);
+
+    console.log(probationEndDate > new Date())
+
 
     //update Data
     const submitCompany = async (e) => {
@@ -316,17 +321,17 @@ const CompanyInformtion = () => {
                 infoNofity(message)
             }
         }
-        if (contract_status === 1) {
-            warningNofity('Contract Employee Category Change Only Through Contract Process Window')
+        if (contract_status === 1 && probationEndDate > new Date()) {
+            warningNofity('Contract Renewal Category Change Only Through Contract Process Window')
         }
         else if (designation !== selectDesignation && ineffectdate === '') {
-            infoNofity("Please Add Designation Change Date")
+            infoNofity("Fill the Designation With Effective Date")
         }
         else if (designation !== selectDesignation && ineffectdate !== '') {
             getdatasub()
         }
         else if (company !== getemployeecategory && cateineffectdate === '') {
-            infoNofity("Please Add Category Change Date")
+            infoNofity("Fill the Employee Category With Effective Date")
         }
         else {
             getdatasub1()
