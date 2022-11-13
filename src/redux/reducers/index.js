@@ -52,6 +52,16 @@ import { getJobPerformance } from './JobPerformance.Reducer'
 import { getJobCompetency } from './JobCompetency.Reducer'
 import { getJobQualification } from './JobQualifi.Reducer'
 import { getJobGenric } from './JobGeneric.Reducer'
+import {
+    getHolidayList,
+    getCommonLeave,
+    getCreditedCasualLeaves,
+    getCreditedCarryForwardLeaves,
+    getCreditedCommonLeaves,
+    getCreditedCreditedLeaves,
+    getCreditedHolidayLeaves,
+    getCreditedPrivilegeLeaves
+} from './LeaveProcess.Reducer'
 
 const reducer = combineReducers({
     changeState,
@@ -107,7 +117,15 @@ const reducer = combineReducers({
     getJobPerformance,
     getJobCompetency,
     getJobQualification,
-    getJobGenric
+    getJobGenric,
+    getHolidayList,
+    getCommonLeave,
+    getCreditedCasualLeaves,
+    getCreditedCarryForwardLeaves,
+    getCreditedCommonLeaves,
+    getCreditedCreditedLeaves,
+    getCreditedHolidayLeaves,
+    getCreditedPrivilegeLeaves
 })
 
 export default reducer;

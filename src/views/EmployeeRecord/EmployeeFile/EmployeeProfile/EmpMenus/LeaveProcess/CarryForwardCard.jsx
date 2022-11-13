@@ -11,10 +11,15 @@ import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
+import { useMemo } from 'react';
 
 const CarryForwardCard = ({ title, id, processStat }) => {
     const [cfData, setcfData] = useState([])
     const [loding, setLoding] = useState(false)
+
+    // console.log(carryForward)
 
     useEffect(() => {
         setLoding(true)

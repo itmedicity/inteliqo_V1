@@ -5,7 +5,7 @@ import React from 'react';
 import { Suspense } from 'react';
 import { useMemo } from 'react';
 import { memo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
@@ -32,6 +32,8 @@ import { getProcessserialnum } from 'src/views/Constant/Constant';
 import CircularProgressBar from 'src/views/Component/MuiCustomComponent/CircularProgressBar';
 import { ToastContainer } from 'react-toastify';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import LeaveReduxFun from './Functions/LeaveReduxFun';
+import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'));
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'));
@@ -41,18 +43,21 @@ const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'));
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'));
 
 const LeaveProcessMainCard = () => {
-    const [empCategory, setEmpCategory] = useState({}) //emp_master category
-    const [empLeaveProcess, setEmpLeaveProcess] = useState({}) // Employee Leave processed data from 'hrm_leave_process'
-    const [processedLveDetl, setprocessedLeaveDetl] = useState({}) // object after the calculation based on emp category and  Leave processed data from 'hrm_leave_process'
-    const [processMesg, setprocessMesg] = useState('')
-    const [processBtn, setprocessBtn] = useState(true)
-    const [processSlno, setProcessSlno] = useState(0)
+    const dispatch = useDispatch();
+
+    const [empCategory, setEmpCategory] = useState({}); //emp_master category
+    const [empLeaveProcess, setEmpLeaveProcess] = useState({}); // Employee Leave processed data from 'hrm_leave_process'
+    const [processedLveDetl, setprocessedLeaveDetl] = useState({}); // object after the calculation based on emp category and  Leave processed data from 'hrm_leave_process'
+    const [processMesg, setprocessMesg] = useState('');
+    const [processBtn, setprocessBtn] = useState(true);
+    const [processSlno, setProcessSlno] = useState(0);
 
     //new Object for inserting ( after category change, new Employee Object etc.. )
     const [newEmployeeProcesedData, setNewEmployeeProcesedData] = useState({});
-    const [processSpinner, setProcessSpinner] = useState(true)
-    const [updateStat, setUpdateStat] = useState(0)
-    const [open, setOpen] = useState(false)
+    const [updateStat, setUpdateStat] = useState(0);
+    const [open, setOpen] = useState(false);
+
+    const [processedLeave, setProcessedLeave] = useState([]);
 
     const { id, no } = useParams();
     const employeeIDs = useMemo(() => {
@@ -62,8 +67,14 @@ const LeaveProcessMainCard = () => {
         }
     }, [id, no])
 
+    const updateStatus = useMemo(() => updateStat, [updateStat])
+
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-    const { contract_status, em_contract_end_date } = state;
+    const employeeDetl = useMemo(() => state, [state])
+
+    console.log(employeeDetl)
+
+    const { contract_status, em_contract_end_date, em_prob_end_date, des_type, emp_type } = employeeDetl;
 
     useEffect(() => {
         //new process serial number
@@ -73,28 +84,42 @@ const LeaveProcessMainCard = () => {
     }, [])
 
     useEffect(() => {
+        //employee category and contract detailed based on after hrm_leave_process
+        dispatch(setEmployeeProcessDetail(employeeIDs.em_id))
+
         //Set Current Category Infromation 
         getEmployeeCurrentCategoryInfom(employeeIDs.em_no).then((value) => {
             const { success, data } = value.data;
             if (success === 1) {
                 setEmpCategory(data[0])
             }
-        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 82, Contact Information Technology`))
 
         // Set Current Leave Process table Data if Active or Excist
         getEmployeeCurrentLeaveProcessInfom(employeeIDs).then((value) => {
             const { success, message } = value.data;
             if (success === 1) {
                 setEmpLeaveProcess(message[0])
+                let data = message[0];
+                const processedLeaveData = [
+                    { ...data, name: 'Casual Leave', value: data?.hrm_clv ?? 2, leave: 1 },
+                    { ...data, name: 'Common Leave', value: data?.hrm_cmn ?? 2, leave: 2 },
+                    { ...data, name: 'Privilege Leave', value: data?.hrm_ern_lv ?? 2, leave: 3 },
+                    { ...data, name: 'Holiday Leave', value: data?.hrm_hld ?? 2, leave: 4 },
+                ]
+                setProcessedLeave(processedLeaveData);
             }
-        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 90, Contact Information Technology`))
+
+
 
         return () => {
             setEmpCategory({})
             setEmpLeaveProcess({})
+            // dispatch(setEmployeeProcessDetail(0))
         }
 
-    }, [employeeIDs.em_no, updateStat])
+    }, [employeeIDs.em_no, updateStatus, employeeIDs.em_id])
 
     const category = useMemo(() => empCategory, [empCategory])
     const leaveProcess = useMemo(() => empLeaveProcess, [empLeaveProcess])
@@ -105,7 +130,7 @@ const LeaveProcessMainCard = () => {
         if (Object.keys(category).length > 0 && Object.keys(leaveProcess).length > 0) {
             processedLeaveList(category, leaveProcess).then((value) => {
                 setprocessedLeaveDetl(value)
-            }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+            }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 108, Contact Information Technology`))
         } else {
             //Leave Process table is blank or not processed || data status is 'N' inActive
             let processedObj = {
@@ -140,7 +165,7 @@ const LeaveProcessMainCard = () => {
         //for new employee primary data for inserting the the "hrm_emp_processs" table
         newProcessedEmployeeData(category, processSlno, employeeIDs).then((newEmployeeObj) => {
             setNewEmployeeProcesedData(newEmployeeObj)
-        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+        }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 143, Contact Information Technology`))
 
     }, [category, processSlno, employeeIDs])
 
@@ -163,7 +188,7 @@ const LeaveProcessMainCard = () => {
          */
 
         // 1 -> 
-        const contractStatus = await checkContractStatus(em_contract_end_date, contract_status);
+        const contractStatus = await checkContractStatus(em_contract_end_date, contract_status, em_prob_end_date, des_type, emp_type);
 
         if (contractStatus.status === true) {
             // 4->
@@ -179,9 +204,9 @@ const LeaveProcessMainCard = () => {
                         setUpdateStat(updateStat + 1)
 
                     } else {
-                        warningNofity(`error ! ${message} , LeaveProcessMainCard line # 173, Contact Information Technology`)
+                        warningNofity(`error ! ${message} , LeaveProcessMainCard line # 182, Contact Information Technology`)
                     }
-                }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 175, Contact Information Technology`))
+                }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 184, Contact Information Technology`))
 
 
             } else if (processedLveDetl.categoryStatus === 0) {
@@ -217,24 +242,24 @@ const LeaveProcessMainCard = () => {
                                             setUpdateStat(updateStat + 1)
                                             // setProcessSpinner(false)
                                         } else {
-                                            warningNofity(`error ! ${message} , LeaveProcessMainCard line # 202, Contact Information Technology`)
+                                            warningNofity(`error ! ${message} , LeaveProcessMainCard line # 221, Contact Information Technology`)
                                         }
-                                    }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 202, Contact Information Technology`))
+                                    }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 222, Contact Information Technology`))
 
                                 } else {
                                     warningNofity('Error !, Contact IT')
                                 }
 
-                            }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+                            }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 228, Contact Information Technology`))
 
                         } else {
                             warningNofity('Somthing went Wrong in Old Leave Updation in Category change Process, contact Information Technology')
                             return
                         }
 
-                    }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+                    }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 235, Contact Information Technology`))
 
-                }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 193, Contact Information Technology`))
+                }).catch((error) => warningNofity(`error ! ${error} , LeaveProcessMainCard line # 237, Contact Information Technology`))
 
             } else if (processedLveDetl.dateExceed === true) {
                 //Next updation date is exceed the current date
@@ -242,12 +267,14 @@ const LeaveProcessMainCard = () => {
             }
 
         } else {
+            setOpen(false)
             warningNofity(contractStatus.message)
         }
     }
 
     return (
         <CustomLayout title="Leave Process" >
+            <LeaveReduxFun />
             <ToastContainer />
             <CustomBackDrop open={open} />
             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
@@ -280,8 +307,11 @@ const LeaveProcessMainCard = () => {
                                     </Box>
                                     <Box sx={{ px: 0.5, pb: 0.5, }} >
                                         {
-                                            leaveData && leaveData.map((val, ind) => {
-                                                return <LeaveProcessCard key={ind} title={val.name} />
+                                            processedLeave && processedLeave.map((element, index) => {
+                                                // console.log(element)
+                                                return element.value !== 2 ?
+                                                    <LeaveProcessCard key={index} data={element} category={category} /> : null;
+                                                // return <LeaveProcessCard key={ind} title={val.name} />
                                             })
                                         }
                                     </Box>

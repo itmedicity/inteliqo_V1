@@ -16,7 +16,7 @@ const CustomTypoTwo = ({ title, style, updateStatus }) => {
             alignItems: 'center',
             px: 1,
             flex: 1,
-            backgroundColor: updateStatus === true ? '#81c784' : '#ef9a9a',
+            backgroundColor: updateStatus === true ? '#c8e6c9' : '#ffcdd2',
             height: 25
         }} >
             <CssVarsProvider>
