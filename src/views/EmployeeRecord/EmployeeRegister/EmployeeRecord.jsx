@@ -72,6 +72,7 @@ const EmployeeRecord = () => {
     const [contractflag, setcontractflag] = useState(0)
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
+    const [probationStatus, setProbationStatus] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
     // const [enable, setenable] = useState(true)
     // usestate for age
@@ -167,7 +168,7 @@ const EmployeeRecord = () => {
             em_doc_type: doctortype === true ? getDoctype : null,
             em_category: getemployeecategory,
             em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
-            em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+            em_conf_end_date: moment(probationendate).format('YYYY-MM-DD'),
             em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
             em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
@@ -184,7 +185,8 @@ const EmployeeRecord = () => {
             em_age_month: mnthage,
             em_age_day: dayge,
             hrm_religion: getreligion,
-            contractflag: contractflag
+            contractflag: contractflag,
+            probationStatus: probationStatus
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
@@ -247,6 +249,7 @@ const EmployeeRecord = () => {
                 }
                 if (ecat_prob_period > 0) {
                     setdesiggperioddate(addDays(today, ecat_prob_period))
+                    setProbationStatus(1)
                 }
                 else {
 
@@ -320,6 +323,7 @@ const EmployeeRecord = () => {
                         updateSalutSelected(0)
                         updateBranchSelected(0)
                         updateInstituteSeleted(0)
+                        setProbationStatus(0)
                         udateregion2(null)
                         //history.push(`/Home/Profile/${empNo}/${em_id}`)
                         history.push(`/Home/Prfle/${empNo}/${em_id}`)

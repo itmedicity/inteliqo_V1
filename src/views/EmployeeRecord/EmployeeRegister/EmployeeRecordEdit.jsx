@@ -33,7 +33,8 @@ const EmployeeRecordEdit = () => {
     const classes = useStyles();
     const history = useHistory()
     // Context API
-    const { selectedDept,
+    const {
+        selectedDept,
         updateSelected,
         udateGrade,
         setEarnTypecontext,
@@ -58,10 +59,13 @@ const EmployeeRecordEdit = () => {
         getbloodgroup, getregion2, udateregion2,
         updateDepartmentSection
     } = useContext(PayrolMasterContext);
+
+
     // usestare
     const [cont_perioddate, setcont_perioddate] = useState(0)
     const [contractflag, setcontractflag] = useState(0)
     const [cont_gracedate, setcont_gracedate] = useState(0)
+    const [probationStatus, setProbationStatus] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
 
@@ -130,7 +134,8 @@ const EmployeeRecordEdit = () => {
                     em_phone, em_mobile, em_email, em_no, em_name, em_doc_type, em_gender, em_dob, em_doj,
                     hrm_pin2, em_department, em_region, em_category, blood_slno, hrm_religion, em_age_month,
                     em_age_year, em_age_day, em_salutation, em_branch, em_dept_section, em_institution_type,
-                    em_designation, hrm_region2, em_conf_end_date, em_contract_end_date, em_prob_end_date, em_retirement_date } = data[0]
+                    em_designation, hrm_region2, em_conf_end_date, em_contract_end_date, em_prob_end_date,
+                    em_retirement_date } = data[0]
                 const frmdata = {
                     empName: em_name,
                     empNo: em_no,
@@ -234,7 +239,7 @@ const EmployeeRecordEdit = () => {
             em_doc_type: doctortype === true ? getDoctype : null,
             em_category: getemployeecategory,
             em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
-            em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+            em_conf_end_date: moment(probationendate).format('YYYY-MM-DD'),
             em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
             em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
@@ -252,13 +257,14 @@ const EmployeeRecordEdit = () => {
             em_age_day: dayge,
             hrm_religion: getreligion,
             contractflag: contractflag,
+            probationStatus: probationStatus
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
         email, selectBranchMast, selectedDept, selectDeptSection, selectInstiType, selectDesignation, doctortype,
         getDoctype, getemployeecategory, probationendate, cont_gracedate, retirementyear, cont_perioddate, empstatus,
         addressPermnt1, addressPermnt2, perPincode, getregion, addressPresent1, addressPresent2, presPincode,
-        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag])
+        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag, probationStatus])
     useEffect(() => {
         return (
             udateGrade(0),
@@ -275,6 +281,7 @@ const EmployeeRecordEdit = () => {
             updateBranchSelected(0),
             updateInstituteSeleted(0),
             udateregion2(null)
+            // setProbationStatus(0)
         )
 
     }, [setEarnTypecontext, udateGrade,
@@ -291,6 +298,7 @@ const EmployeeRecordEdit = () => {
             const getcategorydata = async () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
                 const { data } = result.data;
+
                 var today = new Date(dateofjoining);
                 var cont_grace = data[0].cont_grace;
                 var ecat_cont_period = data[0].ecat_cont_period;
@@ -312,9 +320,9 @@ const EmployeeRecordEdit = () => {
                 }
                 if (ecat_prob_period > 0) {
                     setdesiggperioddate(addDays(today, ecat_prob_period))
+                    setProbationStatus(1)
                 }
                 else {
-
                     setdesiggperioddate(new Date('0000:00:00'))
                 }
 
@@ -327,6 +335,7 @@ const EmployeeRecordEdit = () => {
     // for submition
     const submitemployeerecord = async (e) => {
         e.preventDefault();
+
         const result = await axioslogin.patch('/empmast/empregister/Edit', submitdata);
         const { success, message } = result.data;
         if (success === 1) {

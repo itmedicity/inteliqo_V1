@@ -72,9 +72,9 @@ const LeaveProcessMainCard = () => {
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
     const employeeDetl = useMemo(() => state, [state])
 
-    console.log(employeeDetl)
+    // console.log(employeeDetl)
 
-    const { contract_status, em_contract_end_date, em_prob_end_date, des_type, emp_type } = employeeDetl;
+    const { contract_status, em_prob_end_date, des_type, emp_type,em_cont_start,em_cont_end,em_doj } = employeeDetl;
 
     useEffect(() => {
         //new process serial number
@@ -188,7 +188,7 @@ const LeaveProcessMainCard = () => {
          */
 
         // 1 -> 
-        const contractStatus = await checkContractStatus(em_contract_end_date, contract_status, em_prob_end_date, des_type, emp_type);
+        const contractStatus = await checkContractStatus(em_cont_start,em_cont_end, contract_status, em_doj, em_prob_end_date, des_type, emp_type);
 
         if (contractStatus.status === true) {
             // 4->
