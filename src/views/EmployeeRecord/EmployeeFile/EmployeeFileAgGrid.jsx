@@ -1,11 +1,11 @@
 import { Checkbox, FormControlLabel } from '@material-ui/core'
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import { useHistory } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
+// import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
@@ -47,13 +47,13 @@ const EmployeeFileAgGrid = () => {
     const postData = {
         dept_id: selectedDept,
         sect_id: selectDeptSection,
-        branch_slno: selectBranchMast
+        //branch_slno: selectBranchMast
     }
-    const postDataBranch = {
-        branch_slno: selectBranchMast
-    }
+    // const postDataBranch = {
+    //     branch_slno: selectBranchMast
+    // }
     const postDataDept = {
-        branch_slno: selectBranchMast,
+        //branch_slno: selectBranchMast,
         dept_id: selectedDept,
     }
     const [active, updateactive] = useState({
@@ -66,43 +66,84 @@ const EmployeeFileAgGrid = () => {
     }
 
     // Employee Record List
-    const getEmployeeList = async (e) => {
+    const getEmployeeList = useCallback((e) => {
         e.preventDefault()
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/getEmpDet', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
+        const submitfunc = async () => {
+            if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === true) {
+                const result = await axioslogin.post('/empmast/getEmpDet', postData)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
             }
-        } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
-            const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
+            else if (selectedDept !== 0 && selectDeptSection === 0 && activestatus === true) {
+                const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
+            }
+            else if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === false) {
+                const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+                const { success, data, message } = result.data
+                if (success === 1) {
+                    setTableData(data)
+                    dispatch(setEmployeeList(data))
+                }
+                else {
+                    warningNofity(message)
+                }
+            }
+            else {
+                warningNofity("Choose All Option")
             }
         }
-        else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
-            }
-        }
-        else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
-            const { success, data } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
-            }
-        }
-        else {
-            warningNofity("Choose All Option")
-        }
-    }
+        submitfunc()
+    }, [postDataDept, postData])
+
+    // if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/getEmpDet', postData)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
+    //     const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
+    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+    //     const { success, data } = result.data
+    //     if (success === 1) {
+    //         setTableData(data)
+    //         dispatch(setEmployeeList(data))
+    //     }
+    // }
+    // else {
+    //     warningNofity("Choose All Option")
+    // }
+
 
     const toSettings = () => {
         dispatch({ type: Actiontypes.FETCH_EMP_RECORD_LIST, payload: [] })
@@ -114,7 +155,6 @@ const EmployeeFileAgGrid = () => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
         //history.push(`/Home/Profile/${em_no}/${em_id}`)
-
         history.push(`/Home/Prfle/${em_no}/${em_id}/${0}`)
     }
 
@@ -125,7 +165,6 @@ const EmployeeFileAgGrid = () => {
                 <AccountCircleOutlinedIcon color='info' onClick={() =>
                     getEmployeeEmpNumber(params)
                 } />
-
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 90, },
         { headerName: 'Emp Id ', field: 'em_id', minWidth: 90 },
@@ -177,9 +216,9 @@ const EmployeeFileAgGrid = () => {
                                 display: "flex",
                                 flexDirection: "row",
                             }}>
-                                <Box sx={{ display: "flex", flex: 2, p: 2 }}>
+                                {/* <Box sx={{ display: "flex", flex: 2, p: 2 }}>
                                     <BrnachMastSelection style={SELECT_CMP_STYLE} />
-                                </Box>
+                                </Box> */}
                                 <Box sx={{ display: "flex", flex: 2, p: 2 }} >
                                     <DepartmentSelect style={SELECT_CMP_STYLE} />
                                 </Box>
