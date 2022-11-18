@@ -60,7 +60,8 @@ import {
     getCreditedCommonLeaves,
     getCreditedCreditedLeaves,
     getCreditedHolidayLeaves,
-    getCreditedPrivilegeLeaves
+    getCreditedPrivilegeLeaves,
+    updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
 
 const reducer = combineReducers({
@@ -125,7 +126,8 @@ const reducer = combineReducers({
     getCreditedCommonLeaves,
     getCreditedCreditedLeaves,
     getCreditedHolidayLeaves,
-    getCreditedPrivilegeLeaves
+    getCreditedPrivilegeLeaves,
+    updateCasualLeaveStatus
 })
 
 export default reducer;

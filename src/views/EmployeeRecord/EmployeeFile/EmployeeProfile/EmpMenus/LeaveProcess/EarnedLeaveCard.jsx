@@ -49,7 +49,7 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
                     <TableBody>
                         {elData && elData.map((row, index) => (
                             <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{row.ernlv_mnth}</TableCell>
+                                <TableCell component="th" scope="row">{row.ernlv_mnth + ` - ` + row.year}</TableCell>
                                 <TableCell align="right">{row.ernlv_credit}</TableCell>
                                 <TableCell align="right">{row.ernlv_taken}</TableCell>
                                 <TableCell align="right">{row.ernlv_credit - row.ernlv_taken}</TableCell>

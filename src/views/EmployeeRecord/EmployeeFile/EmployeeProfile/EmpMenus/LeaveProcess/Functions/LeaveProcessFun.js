@@ -1,7 +1,10 @@
-import { compareAsc, getYear, lastDayOfYear, startOfYear } from 'date-fns'
+import { compareAsc, differenceInCalendarYears, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
+
+const loggerUser = employeeNumber()
 
 //Employee Category from employee mAster
 export const getEmployeeCurrentCategoryInfom = async (em_id) => {
@@ -111,11 +114,10 @@ export const checkContractStatus = async (
    * designation type ->Probation ->1,training->2,Confirmation -> 3 (des_type)
    * employee type -> Regular -> 1, contract -> 2 (emp_type)
    */
-
-  const contrctEndDate = moment(em_cont_end).isValid() ? moment(em_cont_end):  0;
-  const contractStartDate = moment(em_cont_start).isValid() ? moment(em_cont_start):  0;
-  const dateOfJoin = moment(em_doj).isValid() ? moment(em_doj):  0;
-  const probationEndDate = moment(em_prob_end_date).isValid() ? moment(em_prob_end_date):  0;
+  const contrctEndDate = moment(em_cont_end).isValid() ? moment(em_cont_end) : 0
+  const contractStartDate = moment(em_cont_start).isValid() ? moment(em_cont_start) : 0
+  const dateOfJoin = moment(em_doj).isValid() ? moment(em_doj) : 0
+  const probationEndDate = moment(em_prob_end_date).isValid() ? moment(em_prob_end_date) : 0
 
   if (contract_status === 1) {
     if (moment(contrctEndDate).isValid()) {
@@ -135,6 +137,11 @@ export const checkContractStatus = async (
         message: 'Contract End Date Showing is a Invalid Date, Please Contract HRD',
         status: false,
       }
+    }
+  } else if ((des_type === 1 || des_type === 2) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
+    return {
+      message: 'Probation || Training Confirmation Pending,Do the Process First',
+      status: false,
     }
   } else {
     return {
@@ -177,11 +184,9 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      ecat_cont === 1
-        ? em_contract_end_date
-        : ecat_prob === 1
-        ? em_prob_end_date
-        : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+      (ecat_cont === 1 && moment(em_contract_end_date) <= moment(lastDayOfYear(new Date()))) ? em_contract_end_date :
+        (ecat_prob === 1 && moment(em_prob_end_date) <= moment(lastDayOfYear(new Date()))) ? em_prob_end_date :
+          moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
   }
 }
 
@@ -222,28 +227,28 @@ export const categoryChangedNewObject = async (
       hrm_clv === 1 && ecat_cl === 1
         ? 1
         : hrm_clv === 0 && ecat_cl === 1
-        ? 0
-        : hrm_clv === 2 && ecat_cl === 1
-        ? 0
-        : 2,
+          ? 0
+          : hrm_clv === 2 && ecat_cl === 1
+            ? 0
+            : 2,
     hrm_ern_lv:
       hrm_ern_lv === 1 && ecat_el === 1
         ? 1
         : hrm_ern_lv === 0 && ecat_el === 1
-        ? 0
-        : hrm_ern_lv === 2 && ecat_el === 1
-        ? 0
-        : 2,
+          ? 0
+          : hrm_ern_lv === 2 && ecat_el === 1
+            ? 0
+            : 2,
     hrm_hld:
       (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 1
         ? 1
         : (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 2
-        ? 0
-        : (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0
-        ? 0
-        : ecat_nh === 0 && ecat_fh === 0
-        ? 2
-        : 2,
+          ? 0
+          : (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0
+            ? 0
+            : ecat_nh === 0 && ecat_fh === 0
+              ? 2
+              : 2,
     hrm_cmn:
       hrm_cmn !== 2
         ? hrm_cmn
@@ -252,16 +257,14 @@ export const categoryChangedNewObject = async (
           ecat_lop === 1 ||
           ecat_mate === 1 ||
           ecat_sl === 1
-        ? 0
-        : 2,
+          ? 0
+          : 2,
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      ecat_cont === 1
-        ? em_contract_end_date
-        : ecat_prob === 1
-        ? em_prob_end_date
-        : moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+      (ecat_cont === 1 && moment(em_contract_end_date) <= moment(lastDayOfYear(new Date()))) ? em_contract_end_date :
+        (ecat_prob === 1 && moment(em_prob_end_date) <= moment(lastDayOfYear(new Date()))) ? em_prob_end_date :
+          moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
     // "next_updatedate"  if employee is in contract "contract end date" : if is in probation "probation end date" other wise last day of year
   }
 }
@@ -361,33 +364,71 @@ export const updateOldLeaveProcessedData = async (leaveProcess) => {
 export const insertNewLeaveProcessData = async (newObj) => {
   const { em_id, em_no } = newObj ?? 0
 
-  const yearlyProcessTableData = {
-    em_id: em_id,
+  // const yearlyProcessTableData = {
+  //   em_id: em_id,
+  //   em_no: em_no,
+  //   processUser: employeeNumber(),
+  //   currentYear: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+  //   year: moment().format('YYYY')
+  // }
+
+  const lastYearDate = subYears(new Date(), 1);
+  const lastYear = getYear(lastYearDate);
+
+  const getProcessDataObj = {
     em_no: em_no,
-    processUser: employeeNumber(),
-    currentYear: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+    year: lastYear
   }
 
   const result = await axioslogin.post('/yearleaveprocess/create', newObj)
   const { message, success } = result.data
   if (success === 1) {
-    // get the Yearly Or Annual Leave process data inserted into the 'yearly_leave_process' table
 
-    const getYearlyLeaveProcessData = await axioslogin.post(
-      '/yearleaveprocess/select_yearlyprocess',
-      yearlyProcessTableData,
-    )
-    // console.log(getYearlyLeaveProcessData)
-    const { successStatus } = getYearlyLeaveProcessData.data
+    /*** ANNUAL PROCESS TABLE DATA INSERT
+     * 1-> After inserting the "hrm_leave_process" table 
+     * 2-> Then check the yearl_process_table has the annual process data 
+     * 3-> if "no" then insert into a new data based on current year()
+     */
 
-    if (successStatus === 1) {
-      //No Record
-      const insertYearlyLeaveProcessTableData = await axioslogin.post(
-        '/yearleaveprocess/insertyearly',
-        yearlyProcessTableData,
-      )
-      // console.log(insertYearlyLeaveProcessTableData)
-      // const { success } = insertYearlyLeaveProcessTableData.data;
+    // const getYearlyLeaveProcessData = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', yearlyProcessTableData,)
+    // const { successStatus } = getYearlyLeaveProcessData.data;
+    // if (successStatus === 1) {
+    //   //No Record yearly data 
+    //   const insertYearlyLeaveProcessTableData = await axioslogin.post('/yearleaveprocess/insertyearly',yearlyProcessTableData)
+    // }
+
+    /**** ANNUAL PROCESS TABLE DATA INSERT AND PREVOUS DATA DEACTIVATE
+     * 1-> check any leave process data in "hrm_leave_process" table with ('A') active status with Previous Year;
+     * 2-> if Yes -> then inactive that data
+     * 3-> then inactive all active previous year CL,HLDAY,COMNLEV,EARN_LEVE credit_status === 1
+     * 4-> if no nothing happends
+     */
+    const getProcessDataLastYear = await axioslogin.post('/yearleaveprocess/getLeaveProccedData', getProcessDataObj);
+    const { success, msge } = getProcessDataLastYear.data;
+    if (success === 1) {
+      const { lv_process_slno } = msge;
+      const procSlno = {
+        lv_process_slno: lv_process_slno
+      }
+      //update status as 'N'
+      const inactiveLastYearProcessData = await axioslogin.post('/yearleaveprocess/inactiveLastYearProcessData', procSlno);
+      const { success } = inactiveLastYearProcessData;
+      if (success === 1) {
+        try {
+
+          //inactive casual leave
+          await axioslogin.post('/yearleaveprocess/inactiveCasualLeave', getProcessDataObj);
+          //inactive earn leave
+          await axioslogin.post('/yearleaveprocess/inactiveEarnLeave', getProcessDataObj);
+          //inactive holiday leave
+          await axioslogin.post('/yearleaveprocess/inactiveHoliday', getProcessDataObj);
+          //inactive common leave
+          await axioslogin.post('/yearleaveprocess/inactiveCommonLeave', getProcessDataObj);
+
+        } catch (err) {
+
+        }
+      }
     }
 
     return { success: 1, message: message }
@@ -413,34 +454,422 @@ export const getEmployeeProcessStartAndEndDate = async (empCategoryProcessDetl) 
     em_gender,
   } = empCategoryProcessDetl
 
+  //if date is invalid defaultDate is supply - 2000-01-01
+  const defaultDate = moment(new Date('2000-01-01')).format('YYYY-MM-DD')
+
+  const startOfYears = moment(startOfYear(new Date())).format('YYYY-MM-DD') // Current year First Day eg '01-01-YYYY'
+  const endOfYears = moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') // Current year Last Day eg '31-12-YYYY'
+
+  const dateOfJoin =
+    moment(date_of_join).isValid() === true
+      ? moment(date_of_join).format('YYYY-MM-DD')
+      : moment(new Date('2000-01-01')).format('YYYY-MM-DD') // date of join
+  const contactStart =
+    moment(em_cont_start).isValid() === true
+      ? moment(em_cont_start).format('YYYY-MM-DD')
+      : moment(new Date('2000-01-01')).format('YYYY-MM-DD') // Contract Start date
+  const contractEnd =
+    moment(em_cont_end).isValid() === true
+      ? moment(em_cont_end).format('YYYY-MM-DD')
+      : moment(new Date('2000-01-01')).format('YYYY-MM-DD') // Contract End date
+  const probationEndDate =
+    moment(probation_end_date).isValid() === true
+      ? moment(probation_end_date).format('YYYY-MM-DD')
+      : moment(new Date('2000-01-01')).format('YYYY-MM-DD') // Training || Probation end Date Contract || Regular Employee
+
+  // const dateOfJoin = moment(new Date('2021-12-12')).format('YYYY-MM-DD');
+  // const contactStart = moment(new Date('2022-06-12')).format('YYYY-MM-DD');
+  // const contractEnd = moment(new Date('2023-06-12')).format('YYYY-MM-DD');
+  // const probationEndDate = moment(new Date('2023-03-12')).format('YYYY-MM-DD');
+
   /****
-   * 1==> contract 
-   * 1:1 ==> contract + traiing 
+   * 1==> contract
+   * 1:1 ==> contract + traiing
    * 1:2 ==> contract + probation
    * 1:3 ==> contract + confirmation
-   * 
+   *
    * 2==> permanent
-   * 2:1 ==> permanent + traiing 
+   * 2:1 ==> permanent + traiing
    * 2:2 ==> permanent + probation
    * 2:3 ==> permanent + confirmation
-   * 
+   *
    */
 
-  if(is_under_contract === 1){
-    //employee under contract
-    if(is_under_probation === 1){
-      // employee under probation or training in Contract
-    }else{
-      // employee is contract + confirmation 
-    }
-  }else{
-    // employee is permanent
-    if(is_under_probation === 1){
-      // employee under probation or training in Permanent
-    }else{
+  // 0 --> not default dates / start and end dates are correct
+  // 1 --> start or end dates is default date
 
-    }
-
+  const processDates = {
+    startDate: defaultDate,
+    endDate: defaultDate,
+    status: 0,
+    message: 'noError',
   }
 
+  // check the sontract start and wnd dateis valid ( not equal to "2000-01-01" )
+  if (is_under_contract === 1 && contactStart !== defaultDate && contractEnd !== defaultDate) {
+    //employee under contract
+    if (is_under_probation === 1) {
+      // employee under probation or training in Contract
+      if (
+        startOfYears <= contactStart &&
+        contactStart <= probationEndDate &&
+        probationEndDate <= endOfYears &&
+        probationEndDate <= contractEnd
+      ) {
+        return { ...processDates, startDate: contactStart, endDate: probationEndDate, status: 1 }
+      } else if (
+        startOfYears >= contactStart &&
+        contactStart <= probationEndDate &&
+        probationEndDate <= endOfYears &&
+        probationEndDate <= contractEnd &&
+        probationEndDate <= endOfYears
+      ) {
+        return { ...processDates, startDate: startOfYears, endDate: probationEndDate, status: 1 }
+      } else if (
+        contactStart >= startOfYears &&
+        contactStart <= probationEndDate &&
+        probationEndDate >= endOfYears &&
+        contractEnd >= endOfYears
+      ) {
+        return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
+      } else {
+        return { ...processDates, message: 'inside contract & inside probation' }
+      }
+    } else {
+      // employee is contract + confirmation
+      if (
+        startOfYears <= contactStart &&
+        contactStart <= contractEnd &&
+        contractEnd <= endOfYears
+      ) {
+        return { ...processDates, startDate: contactStart, endDate: contractEnd, status: 1 }
+      } else if (
+        startOfYears >= contactStart &&
+        contactStart <= contractEnd &&
+        contractEnd <= endOfYears
+      ) {
+        return { ...processDates, startDate: startOfYears, endDate: contractEnd, status: 1 }
+      } else if (
+        contactStart >= startOfYears &&
+        contactStart <= endOfYears &&
+        contactStart <= contractEnd
+      ) {
+        return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
+      }
+      return { ...processDates, message: 'inside contract & confirmation' }
+    }
+  } else if (is_under_contract === 0) {
+    // employee is permanent
+    if (is_under_probation === 1) {
+      // employee under probation or training in Permanent
+      if (
+        startOfYears <= dateOfJoin &&
+        dateOfJoin <= probationEndDate &&
+        dateOfJoin <= endOfYears &&
+        probationEndDate <= endOfYears &&
+        dateOfJoin !== defaultDate
+      ) {
+        return { ...processDates, startDate: dateOfJoin, endDate: probationEndDate, status: 1 }
+      } else if (
+        startOfYears >= dateOfJoin &&
+        startOfYears <= probationEndDate &&
+        dateOfJoin <= probationEndDate &&
+        probationEndDate <= endOfYears &&
+        dateOfJoin !== defaultDate
+      ) {
+        return { ...processDates, startDate: startOfYears, endDate: probationEndDate, status: 1 }
+      } else if (
+        startOfYears <= dateOfJoin &&
+        dateOfJoin <= endOfYears &&
+        dateOfJoin <= probationEndDate &&
+        endOfYears <= probationEndDate &&
+        dateOfJoin !== defaultDate
+      ) {
+        return { ...processDates, startDate: dateOfJoin, endDate: endOfYears, status: 1 }
+      }
+
+      return { ...processDates, message: 'inside regular & probation' }
+    } else {
+      if (startOfYears <= dateOfJoin && dateOfJoin <= endOfYears && dateOfJoin !== defaultDate) {
+        return { ...processDates, startDate: dateOfJoin, endDate: endOfYears, status: 1 }
+      } else if (startOfYears >= dateOfJoin && startOfYears <= endOfYears) {
+        return { ...processDates, startDate: startOfYears, endDate: endOfYears, status: 1 }
+      }
+      return { ...processDates, message: 'inside regular' }
+    }
+  }
+  return { ...processDates, message: 'default error !end of the function' }
+}
+
+//Update Casual Leave Based on process
+
+export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, em_id, em_no) => {
+  const { startDate, endDate } = calulatedProcessDate
+
+  let casualLeaveDateRange = eachMonthOfInterval({
+    start: new Date(startDate),
+    end: new Date(endDate),
+  })
+  let processedCasualLeaveList = casualLeaveDateRange && casualLeaveDateRange.map((value, index) => {
+    const today = moment().format('YYYY-MM');
+    const checkDate = moment(value).format('YYYY-MM');
+
+    // console.log(today, checkDate)
+    const leaveDay = moment(value).format('YYYY-MM-DD');
+
+    // if (checkDate >= today) {
+    return (checkDate >= today) && {
+      em_no: em_no,
+      em_id: em_id,
+      cl_lv_mnth: leaveDay,
+      cl_lv_year: leaveDay,
+      cl_lv_allowed: 1,
+      cl_lv_credit: 1,
+      cl_lv_taken: 0,
+      lv_process_slno: lv_process_slno,
+      update_user: loggerUser,
+    }
+    // }
+    // return casualLeveList
+  }).filter((val) => val !== false)
+  return processedCasualLeaveList
+}
+
+//Casual Leave Insert Function
+
+export const casualLeaveInsertFun = async (value, lv_process_slno) => {
+
+  let returnMessage = { status: 0, message: '' }
+  const lv_process = {
+    lv_proce: lv_process_slno
+  }
+  const result = await axioslogin.post('/yearleaveprocess/insert', value);
+  const { success, message } = result.data
+
+  if (success === 1) {
+    //After insert the Casual Leave data to the Table then updated the currespoding leave process table updation
+    const casualLeaveStatusUpdation = await axioslogin.patch('/yearleaveprocess/updatecasualleave', lv_process)
+    if (casualLeaveStatusUpdation.data.success === 2) {
+      return {
+        ...returnMessage,
+        status: 1,
+        message: 'Casual Leave Updated SuccessFully'
+      }
+    }
+  } else {
+    let errorMsg = message?.sqlMessage;
+    return {
+      ...returnMessage,
+      status: 0,
+      message: errorMsg ?? 'Error Updating Casual Leave! Contact EDP, line-621',
+    }
+  }
+
+}
+
+
+//update holiday based on saved Holiday
+
+export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no) => {
+  const { startDate, endDate } = calulatedProcessDate;
+  let messages = { status: 0, data: [] }
+  const holidayList = await axioslogin.get('/yearleaveprocess/year/holiday');
+  const { success, data } = holidayList.data;
+  if (success === 2) {
+    return { ...messages, status: 0 }
+  } else {
+    let holidayList = data.map((val) => {
+      const today = moment().format('YYYY-MM-DD');
+      const holidayDate = moment(val.hld_date).format('YYYY-MM-DD');
+
+      // console.log(today, holidayDate)
+      return (holidayDate >= today) ? {
+        em_no: em_no,
+        hd_slno: val.hld_slno,
+        hl_lv_year: val.hld_date,
+        hl_date: val.hld_date,
+        hl_lv_credit: 1,
+        hl_lv_taken: 0,
+        hl_lv_allowed: 1,
+        lv_process_slno: lv_process_slno,
+        update_user: loggerUser,
+        em_id: em_id
+      } : null;
+    }).filter((val) => val !== null)
+
+    return { ...messages, status: 1, data: holidayList }
+  }
+}
+
+//insert Holiday 
+
+export const insertHolidayFun = async (data, lv_process_slno) => {
+  let returnMessage = { status: 0, message: '' }
+  const lv_processdta = {
+    lv_proce: lv_process_slno
+  }
+  const resultinsrtholiday = await axioslogin.post('/yearleaveprocess/insertholiday', data);
+  const { success, message } = resultinsrtholiday.data;
+  // if data inserted update process table
+  if (success === 1) {
+    const resultupdateholiday = await axioslogin.patch('/yearleaveprocess/updateholiday', lv_processdta)
+    if (resultupdateholiday.data.success === 2) {
+      return {
+        ...returnMessage,
+        status: 1,
+        message: resultupdateholiday.data.message
+      }
+    }
+  } else {
+    let errorMsg = message?.sqlMessage;
+    return {
+      ...returnMessage,
+      status: 0,
+      message: errorMsg ?? 'Error Updating Holiday Leave! Contact EDP, line-688',
+    }
+  }
+}
+
+//Update Common Leaves 
+export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow) => {
+
+  const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
+  const { successcommonleave, messagecommonleave } = result.data;
+  let commonLeaveMessage = { status: 0, data: [] }
+  if (successcommonleave === 1) {
+    // Filter the Maternity For the Male Employee
+    const filterCommonArray = messagecommonleave.filter((val) => val.lvetype_slno !== 2);
+    const newCommonArray = em_gender === 1 ? filterCommonArray : messagecommonleave;
+    let commondata = newCommonArray.map((val) => {
+      const commonleave = {
+        em_no: em_no,
+        llvetype_slno: val.lvetype_slno,
+        cmn_lv_allowedflag: ecat_esi_allow === 1 ? 1 : 0,
+        cmn_lv_allowed: val.leave_credit_policy_count,
+        cmn_lv_taken: 0,
+        cmn_lv_balance: 0,
+        Iv_process_slno: lv_process_slno,
+        update_user: loggerUser,
+        em_id: em_id,
+        cmn_lv_year: moment().format('YYYY-MM-DD')
+      }
+      return commonleave
+    })
+    return { ...commonLeaveMessage, status: 1, data: commondata }
+  } else {
+    return { ...commonLeaveMessage, status: 0, data: [] }
+  }
+}
+
+//insert Common Leaves
+
+export const insertCommonLeaves = async (data, lv_process_slno) => {
+  let returnMessage = { status: 0, message: '' }
+  const lv_processdta = {
+    lv_proce: lv_process_slno
+  }
+  const resultcommonleave = await axioslogin.post('/yearleaveprocess/insertCommonleave', data);
+  const { success, message } = resultcommonleave.data;
+  if (success === 1) {
+    // if updated casula leave table update process table
+    const resultupdatcommonleave = await axioslogin.patch('/yearleaveprocess/updatecommon', lv_processdta)
+
+    if (resultupdatcommonleave.data.success === 2) {
+      // succesNofity(resultupdatcommonleave.data.message)
+      return {
+        ...returnMessage,
+        status: 1,
+        message: resultupdatcommonleave.data.message
+      }
+    }
+  }
+  else {
+    let errorMsg = message?.sqlMessage;
+    return {
+      ...returnMessage,
+      status: 0,
+      message: errorMsg ?? 'Error Updating Holiday Leave! Contact EDP, line-688',
+    }
+  }
+}
+
+//update Earn Leaves
+export const updateEarnLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no) => {
+  const { startDate, endDate } = calulatedProcessDate;
+
+  let earnLeaveDateRange = eachMonthOfInterval({
+    start: new Date(startDate),
+    end: new Date(endDate),
+  })
+
+  let processedEarnLeaveList = earnLeaveDateRange && earnLeaveDateRange.map((value, index) => {
+    const today = moment().format('YYYY-MM');
+    const checkDate = moment(value).format('YYYY-MM');
+
+    const leaveDay = moment(value).format('YYYY-MM-DD');
+
+    return (checkDate >= today) && {
+      em_no: em_no,
+      ernlv_mnth: leaveDay,
+      ernlv_year: leaveDay,
+      ernlv_allowed: 1,
+      ernlv_credit: 0,
+      ernlv_taken: 0,
+      lv_process_slno: lv_process_slno,
+      update_user: loggerUser,
+      em_id: em_id
+    }
+
+  }).filter((val) => val !== false)
+  return processedEarnLeaveList;
+}
+
+//insert Earn Leaves
+export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no) => {
+  let returnMessage = { status: 0, message: '' }
+  const lv_process = {
+    lv_proce: lv_process_slno
+  }
+
+  const lastYearDate = subYears(new Date(), 1);
+  const lastYear = getYear(lastYearDate);
+  const currentYear = getYear(new Date());
+
+  const yearDiffrence = differenceInYears(new Date(), new Date(em_doj))
+
+
+  // console.log(lastYearDate, lastYear, resulta, yeardiff)
+  let data = {
+    currentYear: currentYear,
+    creditYear: lastYear,
+    em_no: em_no
+  }
+
+  //Update previous year earn leaves
+  if (yearDiffrence >= 1) {
+    const privilegeLeaveUpdation = await axioslogin.post('/yearleaveprocess/creditPrivilegeLeave', data);
+  }
+
+  const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dateRange);
+  const { success, message } = result.data
+  if (success === 1) {
+
+    // if updated Earn leave table update process table
+    const resultupdatcasualleave = await axioslogin.patch('/yearleaveprocess/updateearnleave', lv_process);
+    if (resultupdatcasualleave.data.success === 2) {
+      return {
+        ...returnMessage,
+        status: 1,
+        message: 'Casual Leave Updated SuccessFully'
+      }
+    }
+
+  } else {
+    let errorMsg = message?.sqlMessage;
+    return {
+      ...returnMessage,
+      status: 0,
+      message: errorMsg ?? 'Error Updating Casual Leave! Contact EDP, line-621',
+    }
+  }
 }

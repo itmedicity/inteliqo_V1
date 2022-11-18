@@ -9,6 +9,7 @@ const {
     FETCH_PRIVILEGE_LEAVE_LIST,
     FETCH_CARRY_FORWARD_LEAVE_LIST,
     FETCH_CREDIT_LEAVE_LIST,
+    UPDATE_CASUAL_LEAVE
 } = Actiontypes;
 
 const holiday = {
@@ -103,6 +104,18 @@ export const getCreditedCreditedLeaves = (state = creditLeaveList, { type, paylo
     switch (type) {
         case FETCH_CREDIT_LEAVE_LIST:
             return { ...state, data: payload }
+        default:
+            return state
+    }
+}
+
+
+const casualLeaveStatus = 0;
+
+export const updateCasualLeaveStatus = (state = casualLeaveStatus, { type }) => {
+    switch (type) {
+        case UPDATE_CASUAL_LEAVE:
+            return state + 1
         default:
             return state
     }

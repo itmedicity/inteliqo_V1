@@ -25,7 +25,6 @@ const ProfileCard = () => {
     }, [no, dispatch])
 
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-
     useEffect(() => {
         const getEmpIdforProfilePic = async () => {
             if (no > 0) {
