@@ -67,7 +67,8 @@ const Employeerecord = [
         men_slno: 128,
         component: CNavItem,
         name: 'Probation End List',
-        to: '/Home/Probation_end_details',
+        //to: '/Home/Probation_end_details',
+        to: '/Home/ProbationEnd'
     },
     {
         men_slno: 129,

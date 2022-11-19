@@ -228,37 +228,53 @@ const ContractRenewalProcess = () => {
                             const result = await axioslogin.post('/empcontract', newcontractdetl)
                             const { success } = result.data
                             if (success === 1) {
-                                const result = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
+                                const result = await axioslogin.patch('/empcontract/updateQual', newcontractdetl)
                                 const { success } = result.data
-                                if (success === 1) {
-                                    const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
+                                if (success === 2) {
+                                    const result = await axioslogin.patch('/empcontract/updateExp', newcontractdetl)
                                     const { success } = result.data
                                     if (success === 2) {
-                                        setOpen(true)
-                                        const result = await axioslogin.get(`/empmast/databyempid/${no}`)
-                                        const { data, success } = result.data
-                                        if (success === 1) {
-                                            const { em_id, em_no, em_category } = data[0]
-                                            setnewCategory(em_category)
-                                            const submitemployee = {
-                                                emp_no: em_no,
-                                                emp_id: em_id,
-                                                emp_status: 1,
-                                                emp_username: newempId,
-                                                emp_password: newempId
-                                            }
-                                            // update hrm_employee table
-                                            const resultemployee = await axioslogin.post('/employee', submitemployee);
-                                            const { success } = resultemployee.data;
-                                            if (success === 1) {
-                                                setDisable(true)
-                                                if (oldCategory !== newCatgeory) {
-                                                    setmodelvalue(1)
-                                                    setOpenModel(true)
-                                                }
-                                                else {
-                                                    setmodelvalue(0)
-                                                    setOpenModel(false)
+                                        const result = await axioslogin.patch('/empcontract/updateEarn', newcontractdetl)
+                                        const { success } = result.data
+                                        if (success === 2) {
+                                            const result = await axioslogin.patch('/empcontract/updatePersonal', newcontractdetl)
+                                            const { success } = result.data
+                                            if (success === 2) {
+                                                const result = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
+                                                const { success } = result.data
+                                                if (success === 1) {
+                                                    const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
+                                                    const { success } = result.data
+                                                    if (success === 2) {
+                                                        setOpen(true)
+                                                        const result = await axioslogin.get(`/empmast/databyempid/${no}`)
+                                                        const { data, success } = result.data
+                                                        if (success === 1) {
+                                                            const { em_id, em_no, em_category } = data[0]
+                                                            setnewCategory(em_category)
+                                                            const submitemployee = {
+                                                                emp_no: em_no,
+                                                                emp_id: em_id,
+                                                                emp_status: 1,
+                                                                emp_username: newempId,
+                                                                emp_password: newempId
+                                                            }
+                                                            // update hrm_employee table
+                                                            const resultemployee = await axioslogin.post('/employee', submitemployee);
+                                                            const { success } = resultemployee.data;
+                                                            if (success === 1) {
+                                                                setDisable(true)
+                                                                if (oldCategory !== newCatgeory) {
+                                                                    setmodelvalue(1)
+                                                                    setOpenModel(true)
+                                                                }
+                                                                else {
+                                                                    setmodelvalue(0)
+                                                                    setOpenModel(false)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
