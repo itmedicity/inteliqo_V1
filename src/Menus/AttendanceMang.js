@@ -8,6 +8,12 @@ const AttendanceManagement = [
         to: '/Home/Dutyplanning',
     },
     {
+        men_slno: 23,
+        component: CNavItem,
+        name: 'Duty Planning',
+        to: '/Home/Dutyplan',
+    },
+    {
         men_slno: 24,
         component: CNavItem,
         name: 'Attendance Updation',

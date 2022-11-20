@@ -22,6 +22,7 @@ import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import _ from 'underscore';
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 const moment = extendMoment(Moment);
 
 const DutyPlanning = () => {

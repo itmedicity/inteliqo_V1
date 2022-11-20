@@ -3,6 +3,10 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from '../Axios/SessionCheck'
 import FooterCloseOnly from './FooterCloseOnly'
 
+import { CssVarsProvider, Typography } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+
 const PageLayoutCloseOnly = (props) => {
     return (
         <Fragment>
