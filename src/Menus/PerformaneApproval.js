@@ -10,7 +10,7 @@ const PerformanceApproval = [
         men_slno: 50,
         component: CNavItem,
         name: 'Self Appraisal Entry',
-        to: '/homes',
+        to: '/Home/SelfAppraisalApproval',
     },
     {
         men_slno: 51,
@@ -35,6 +35,24 @@ const PerformanceApproval = [
         component: CNavItem,
         name: 'Basic Salary Updation',
         to: '/homes',
+    },
+    {
+        men_slno: 193,
+        component: CNavItem,
+        name: 'Appraisal-Incharge Approval',
+        to: '/Home/AppraisalApproveIncharge',
+    },
+    {
+        men_slno: 194,
+        component: CNavItem,
+        name: 'Appraisal-HOD Approval',
+        to: '/Home/AppraisalApprovalHOD',
+    },
+    {
+        men_slno: 195,
+        component: CNavItem,
+        name: 'Appraisal-CEO Approval',
+        to: '/Home/AppraisalApprovalCEO',
     },
 
 ]

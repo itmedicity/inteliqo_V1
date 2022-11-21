@@ -17,6 +17,7 @@ import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutl
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton';
+import { useSelector } from 'react-redux';
 
 const ExperienceDetails = () => {
 
@@ -66,6 +67,13 @@ const ExperienceDetails = () => {
         const expyear = enddate - startdate
         settotyear(expyear)
     }
+
+    const empno = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_no
+        //const status = state.getProfileData.lodingStatus
+    })
+
+
     //postData
     const postData = useMemo(() => {
         return {
@@ -77,10 +85,10 @@ const ExperienceDetails = () => {
             em_to: moment(workenddate).format('YYYY-MM-DD'),
             em_total_year: totyear,
             em_salary: gross_salary,
-            create_user: no,
+            create_user: empno,
             tmch_exp: tmch_exp === true ? 1 : 0
         }
-    }, [id, no, institution_name, selectDesignation, totyear, gross_salary, tmch_exp, workenddate, workstartdate])
+    }, [id, no, institution_name, selectDesignation, totyear, gross_salary, tmch_exp, workenddate, workstartdate, empno])
 
     //function for getting selected row to edit
     const getTableData = useCallback((params) => {

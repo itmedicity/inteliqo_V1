@@ -1,29 +1,80 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import PageLayoutCloseOnly from '../CommonCode/PageLayoutCloseOnly'
 import { axioslogin } from '../Axios/Axios';
-import { Checkbox } from '@mui/material'
-import TrainingEndTable from './TrainingEndTable';
-import CusIconButton from 'src/views/Component/CusIconButton'
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import moment from 'moment';
-import { errorNofity, succesNofity } from '../CommonCode/Commonfunc';
-
+import { errorNofity, succesNofity, warningNofity } from '../CommonCode/Commonfunc';
+import { useDispatch, useSelector } from 'react-redux'
+import { CssVarsProvider, Typography } from '@mui/joy'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CommonAgGrid from '../Component/CommonAgGrid';
+import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
+import CommonCheckBox from '../Component/CommonCheckBox';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/joy/IconButton';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CompanyChange from './CompanyChange';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const TrainingEnd = () => {
 
     const history = useHistory()
+    const dispatch = useDispatch()
     const [tableData, setTableData] = useState([])
-    const [pb, setpb] = useState(false)
-    const [ap, setap] = useState(false)
+    const [appraisal, setappraisal] = useState(false)
     const [value, setValue] = useState([]);
-    const [id, setid] = useState([])
+    const [id, setid] = useState(0)
+    const [empno, setempno] = useState(0)
+    const [flag, setFlag] = useState(0)
+    const [empid, setEmpid] = useState(0)
+    const [display, setdisplay] = useState(0)
+    const [name, setname] = useState('')
 
     const RedirectToHome = () => {
         history.push(`/Home`)
     }
 
+    useEffect(() => {
+        dispatch(setDept())
+    }, [dispatch])
+
+    const [columnDef] = useState([
+        { headerName: 'ID', field: 'em_id', filter: true, filter: true },
+        { headerName: 'Emp No ', field: 'em_no', filter: true },
+        { headerName: 'Name ', field: 'em_name', filter: true },
+        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
+        { headerName: 'Designation ', field: 'desg_name', },
+        { headerName: 'Date of joining ', field: 'em_doj', },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
+        { headerName: 'Training End Date', field: 'training_end', },
+        {
+            headerName: 'Action',
+            cellRenderer: params =>
+                <Fragment>
+                    <Tooltip title="Direct Contract Confirmation" followCursor placement='top' arrow >
+                        <IconButton sx={{ pb: 1 }} onClick={() => addtoProcess(params)}>
+                            <TaskAltRoundedIcon color='primary' />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                        <IconButton sx={{ pb: 1 }} onClick={() => addtoProcess(params)}>
+                            <AssignmentTurnedInIcon color='primary' />
+                        </IconButton>
+                    </Tooltip>
+                </Fragment>
+        },
+    ])
+
+    const getValue2 = useCallback((e) => {
+        if (e.target.checked === true) {
+            setappraisal(true)
+        }
+        else {
+            setappraisal(false)
+        }
+    })
+    /** list training end employees, 3 month & 6 month */
     useEffect(() => {
         const trainingEndList = async () => {
             const result = await axioslogin.get('/Performance/trainingdata')
@@ -39,6 +90,27 @@ const TrainingEnd = () => {
         trainingEndList()
     }, [])
 
+    //direct contract confirmation process
+    const addtoProcess = useCallback((params) => {
+        setFlag(1)
+        const data = params.api.getSelectedRows()
+        const { em_no, em_id, em_name } = data[0]
+        setEmpid(em_id)
+        setempno(em_no)
+        setname(em_name)
+    }, [])
+
+    /** to get employee category details from redux */
+    const empCate = useSelector((state) => {
+        return state.getEmployeeCategory.empCategory || 0
+    })
+
+    useEffect(() => {
+        if (empCate.some(key => key.des_type === 2)) {
+            setdisplay(1)
+        }
+    }, [empCate])
+
     /** mapping em_id of employees into an array */
     useEffect(() => {
         const arr = value && value.map((val, index) => {
@@ -47,145 +119,90 @@ const TrainingEnd = () => {
         setid(arr)
     }, [value])
 
-
-    const addtoProcess = useCallback((e) => {
-        e.preventDefault();
-        const getallemployeeRights = async (id) => {
-            /** getting appraisal user rights of listed employees, by sumbitting employee em_id */
-            const result = await axioslogin.post('/performanceappriasalrights/allappraisalemp/list', id)
-            const { success, data } = result.data
-            /** the array of objects destructured using a loop */
-            data.forEach(element => {
-                const { em_id, rights_needed, em_no } = element
-                const obj = JSON.parse(rights_needed);
-                const { incharge, hod, gm, om, hr, ms, cno, acno, ed, md } = obj
-                const today = new Date();
-                const tdyformat = moment(today).format('YYYY-MM-DD')
-                const savedata = {
-                    appraisal_start_date: tdyformat,
-                    em_id: em_id,
-                    em_no: em_no,
-                    appraisal_type: "T",
-                    incharge_required: incharge,
-                    hod_required: hod,
-                    gm_required: gm,
-                    om_required: om,
-                    hr_required: hr,
-                    ms_required: ms,
-                    cno_required: cno,
-                    acno_required: acno,
-                    ed_required: ed,
-                    md_required: md
-                }
-                const getallemployeeRights = async (savedata) => {
-                    /** submitting probation end employee rights to the database table */
-                    const result = await axioslogin.post('/performanceappriasalrights/createappraisal', savedata)
-                }
-                if (savedata.length !== 0) {
-                    getallemployeeRights(savedata)
-                }
-            });
-        }
-        if (id !== 0) {
-            getallemployeeRights(id)
-            succesNofity("Appraisal Submitted")
-        }
-        else {
-            errorNofity("Please contact EDP")
-        }
-
-    }, [id])
-
-
-
-
-    const getValue1 = useCallback((e) => {
-        if (e.target.checked === true) {
-            setpb(true)
-            setap(false)
-        }
-        else {
-            setpb(false)
-            setap(false)
-        }
-
-    })
-
-    const getValue2 = useCallback((e) => {
-        if (e.target.checked === true) {
-            setap(true)
-            setpb(false)
-
-        }
-        else {
-            setpb(false)
-            setap(false)
-        }
-    })
-
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Training End List"
-                redirect={RedirectToHome}
-            >
-                <Box sx={{
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
-                    <Box>
-                        <Checkbox
-                            name="pb"
-                            value={pb}
-                            checked={pb}
-                            onChange={(e) => getValue1(e)}
-                        />
-                        <Typography variant='8'>
-                            {"Training End List"}
-                        </Typography>
-                    </Box>
-                    <Box sx={{
-                        pl: 2
-                    }}>
-                        <Checkbox
-                            name="ap"
-                            value={ap}
-                            checked={ap}
-                            onChange={(e) => getValue2(e)}
-                        />
-                        <Typography variant='8'>
-                            {"Appraisal Pending"}
-                        </Typography>
-                    </Box>
-                    <Box sx={{
-                        pl: 120,
-                        display: "flex",
-                        flexDirection: "row"
-                    }}>
-                        <Box>
-                            <CusIconButton variant="outlined" size="sm" color="success"
-                                onClick={addtoProcess}
-                            >
-                                <AddTaskIcon />
-                            </CusIconButton>
-                        </Box>
-                        <Box
-                            sx={{
-                                pl: 2,
-                                pt: 1
-                            }}>
-                            <Typography variant='8'>
-                                {"Submit All"}
-                            </Typography>
-                        </Box>
-
-                    </Box>
-                </Box>
+            <Box sx={{ width: "100%" }} >
                 {
-                    pb === true ? <TrainingEndTable tableData={tableData} /> : null
+                    flag === 1 ? <CompanyChange empid={empid} setFlag={setFlag} empno={empno} display={display} name={name} /> : <Paper square elevation={2} sx={{ p: 0.5, }}>
+                        <Paper square elevation={3} sx={{
+                            display: "flex",
+                            p: 1,
+                            alignItems: "center",
+                        }}  >
+                            <Box sx={{ flex: 1 }} >
+                                <CssVarsProvider>
+                                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                        Employee Training End List
+                                    </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box>
+                                <CssVarsProvider>
+                                    <IconButton variant="outlined" size='sm' color="danger" onClick={RedirectToHome}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </CssVarsProvider>
+                            </Box>
+                        </Paper>
+                        <Paper square elevation={0} sx={{
+                            p: 0.5,
+                            mt: 0.5,
+                            display: 'flex',
+                            alignItems: "center",
+                            flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
+                        }} >
+                            <Box sx={{ display: "flex", flex: 1, flexDirection: "row" }}>
+                                <Box sx={{ display: "flex", p: 2 }}>
+                                    <CommonCheckBox
+                                        name="appraisal"
+                                        value={appraisal}
+                                        checked={appraisal}
+                                        onChange={(e) => getValue2(e)}
+                                    />
+                                </Box>
+                                <Box sx={{ display: "flex", p: 1, pt: 1.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography>
+                                            Appraisal Pending
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", }}>
+                                <Box sx={{ display: "flex", p: 1, }}>
+                                    <CssVarsProvider>
+                                        <IconButton variant="outlined" size='sm' color="primary" onClick={RedirectToHome}>
+                                            <AddTaskIcon />
+                                        </IconButton>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", p: 1.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography>
+                                            Submit All
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                        </Paper>
+                        <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                            {
+                                appraisal === true ? null : <CommonAgGrid
+                                    columnDefs={columnDef}
+                                    tableData={tableData}
+                                    sx={{
+                                        height: 600,
+                                        width: "100%"
+                                    }}
+                                    rowHeight={30}
+                                    headerHeight={30}
+                                />
+                            }
+                        </Paper>
+                    </Paper>
                 }
-            </PageLayoutCloseOnly>
-        </Fragment >
+            </Box>
+        </Fragment>
     )
 }
 
