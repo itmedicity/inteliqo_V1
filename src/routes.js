@@ -185,6 +185,12 @@ const PerformanceAppraisalRightsEdit = React.lazy(() => (import('./views/Master/
 const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/TrainingEnd'))
 const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
 const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
+const HighLevelMaster = React.lazy(() => import('./views/Master/HighLevelMaster/HighLevelMaster'))
+const HierarchyLevel = React.lazy(() => import('./views/Master/HierarchyLevelMaster/HierarchyLevelMaster'))
+const AppraisalApproveIncharge = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalIncharge/AppraisalApproveIncharge'))
+const AppraisalApprovalHOD = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalHOD/ApprovalHOD'))
+const AppraisalApprovalCEO = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalCEO/ApprovalCEO'))
+const SelfAppraisalApproval = React.lazy(() => import('./views/PerformanceAppraisal/SelfApproval/SelfApproval'))
 const EmpFirstVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeFirstVerification'))
 const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeSecondVerification'))
 const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
@@ -392,6 +398,12 @@ const routes = [
   { path: '/Home/TrainingEnd', exact: true, name: 'Training End List', component: TrainingEnd },
   { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
   { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
+  { path: '/Home/HighLevelMaster', exact: true, name: 'High Level Master', component: HighLevelMaster },
+  { path: '/Home/HierarchyLevel', exact: true, name: 'Hierarchy Level Master', component: HierarchyLevel },
+  { path: '/Home/AppraisalApproveIncharge', exact: true, name: 'Appraisal Approve Incharge', component: AppraisalApproveIncharge },
+  { path: '/Home/AppraisalApprovalHOD', exact: true, name: 'Appraisal Approve HOD', component: AppraisalApprovalHOD },
+  { path: '/Home/AppraisalApprovalCEO', exact: true, name: 'Appraisal Approve CEO', component: AppraisalApprovalCEO },
+  { path: '/Home/SelfAppraisalApproval', exact: true, name: 'Appraisal Approve Self', component: SelfAppraisalApproval },
   { path: '/Home/EmpFirstVerification', exact: true, name: 'Employee Verification', component: EmpFirstVerification },
   { path: '/Home/EmpSecondVerification', exact: true, name: 'Employee second Verification', component: EmpSecondVerification },
   { path: '/Home/EmployeeRecordsAgGrid', exact: true, name: 'Employee Record File', component: EmployeeRecordsAgGrid },

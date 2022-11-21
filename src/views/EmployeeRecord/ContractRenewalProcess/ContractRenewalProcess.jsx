@@ -1,35 +1,35 @@
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CssVarsProvider } from '@mui/joy'
-import Typography from '@mui/joy/Typography'
+import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
 import React, { Fragment } from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import TextInput from 'src/views/Component/TextInput'
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined'
-import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined'
-import EXistContractDetl from './EXistContractDetl'
-import AttendanceDetails from './AttendanceDetails'
-import Old_dataTo_copy from './Old_dataTo_copy'
-import Renew_Process from './Renew_Process'
-import { addDays, format } from 'date-fns'
-import { ToastContainer } from 'react-toastify'
-import { useSelector } from 'react-redux'
-import ModelOldDataToCopy from './ModelOldDataToCopy'
-import ModelLeaveProcess from '../EmployeeFile/EmpFileComponent/ModelLeaveProcess'
-import { getProcessserialnum } from 'src/views/Constant/Constant'
-import { useDispatch } from 'react-redux'
-import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
-import moment from 'moment'
-import _ from 'underscore'
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import TextInput from 'src/views/Component/TextInput';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
+import EXistContractDetl from './EXistContractDetl';
+import AttendanceDetails from './AttendanceDetails';
+import Old_dataTo_copy from './Old_dataTo_copy';
+import Renew_Process from './Renew_Process';
+import { addDays, format } from 'date-fns';
+import { ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import ModelOldDataToCopy from './ModelOldDataToCopy';
+import ModelLeaveProcess from '../EmployeeFile/EmpFileComponent/ModelLeaveProcess';
+import { getProcessserialnum } from 'src/views/Constant/Constant';
+import { useDispatch } from 'react-redux';
+import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
+import moment from 'moment';
+import _ from 'underscore';
 
 const ContractRenewalProcess = () => {
   const { id, no } = useParams()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   //useState for fine
   const [probationperiod, setProbationPeriod] = useState(0)
   const [fine, setFine] = useState(0)
@@ -65,21 +65,16 @@ const ContractRenewalProcess = () => {
     ecat_woff_allow: 0,
     ecat_sl: 0,
     em_category: 0,
-    em_doj: '',
+    em_doj: ''
   })
-  const { ecat_cl, ecat_el, ecat_esi_allow, ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category } =
-    leavestate
+  const { ecat_cl, ecat_el, ecat_esi_allow,
+    ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
+  } = leavestate
   //getting data to save
   const datatoSave = useSelector((state) => {
     return state.getContractClosedata
   })
-  const {
-    contractclose,
-    attendancedetls,
-    arreardetails,
-    olDataTocopy,
-    oldPersonalData,
-    newCategory,
+  const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData, newCategory
   } = datatoSave
   //useEffect for setting new employee category
   useEffect(() => {
@@ -91,14 +86,18 @@ const ContractRenewalProcess = () => {
       const { data } = result.data
       setleavestate(data[0])
     }
-    getLeavedetails()
+    getLeavedetails();
     getProcessserialnum().then((val) => {
       setprocessslno(val)
-    })
+    }
+    )
     // Get the Employee Joinng / Contract / category Details ( All Date Detail )
     dispatch(setEmployeeProcessDetail(id))
 
-    return dispatch(setEmployeeProcessDetail(id))
+    return (
+      dispatch(setEmployeeProcessDetail(id))
+    )
+
   }, [newCatgeory])
   //FUNCTION FOR OPENING MODEL
   const [open, setOpen] = useState(false)
@@ -118,15 +117,22 @@ const ContractRenewalProcess = () => {
   })
   const { newempId, newcontractstart, newcontractend } = newContract
 
+  const empno = useSelector((state) => {
+    return state.getProfileData.ProfileData[0].em_no
+    //const status = state.getProfileData.lodingStatus
+  })
+
   //new contract details
   const newcontractdetl = {
     em_no: newempId,
     em_id: no,
     em_cont_start: newcontractstart,
     em_cont_end: newcontractend,
+    em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD')
   }
 
-  //getting new probation or training end details
+
+  //getting new probation or training end details    
   useEffect(() => {
     const getCtaehoryDetl = async () => {
       if (newCatgeory > 0) {
@@ -135,25 +141,25 @@ const ContractRenewalProcess = () => {
         if (success === 1) {
           const { ecat_prob_period } = data[0]
           setProbationPeriod(ecat_prob_period)
-        } else {
+        }
+        else {
           setProbationPeriod(0)
         }
       }
     }
     getCtaehoryDetl()
+
   }, [newCatgeory])
   //update empmaster data
   const updateempMast = {
     em_no: newempId,
     em_category: newCatgeory,
     em_contract_end_date: newcontractend,
-    em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format(
-      'YYYY-MM-DD',
-    ),
-    em_id: no,
+    em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD'),
+    em_id: no
   }
   const checkemid = {
-    em_no: newempId,
+    em_no: newempId
   }
   const redirect = async () => {
     history.push('/Home/Contract_end_details')
@@ -174,100 +180,110 @@ const ContractRenewalProcess = () => {
     // data based on the calculation of earn leave
     const getattendanceData = async () => {
       const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
-      const { success, data } = result.data
+      const { success, data } = result.data;
       if (success === 2) {
         setAttendanceData(data[0])
-      } else if (success == 2) {
+      }
+      else if (success == 2) {
         setAttendanceData([])
-      } else {
+      }
+      else {
         setAttendanceData([])
       }
     }
     getattendanceData()
+
   }, [no])
   //function for saving new contract
   const RenewOldContract = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (newempId === '') {
-      infoNofity('Please Enter New Contract Details')
-    } else if (Object.keys(contractclose.contCloseData).length === 0) {
-      infoNofity('Please Close The First Contract')
-    } else if (Object.keys(olDataTocopy.dataTocopy).length === 0) {
-      infoNofity('Please Select Previous Data To Copy')
-    } else if (Object.keys(attendancedetls.attendancedata).length === 0) {
-      infoNofity('Please Process the attendance of the employee till date')
-    } else if (fine > 0) {
-      warningNofity('Please Clear Fine Before Renewing the Contract')
-    } else if (addDays(new Date(contractend), graceperiod) > new Date()) {
-      warningNofity('Grace Period Not Completed')
-    } else {
+      infoNofity("Please Enter New Contract Details")
+    }
+    else if (Object.keys(contractclose.contCloseData).length === 0) {
+      infoNofity("Please Close The First Contract")
+    }
+    else if (Object.keys(olDataTocopy.dataTocopy).length === 0) {
+      infoNofity("Please Select Previous Data To Copy")
+    }
+    else if (Object.keys(attendancedetls.attendancedata).length === 0) {
+      infoNofity("Please Process the attendance of the employee till date")
+    }
+    else if (fine > 0) {
+      warningNofity("Please Clear Fine Before Renewing the Contract")
+    }
+    else if (addDays(new Date(contractend), graceperiod) > new Date()) {
+      warningNofity("Grace Period Not Completed")
+    }
+    else {
       const result = await axioslogin.post('/empmast/checkEmno/contracterenew', checkemid)
       const { data } = result.data
       if (data.length > 1) {
-        warningNofity('Employee ID Already Exist')
-      } else {
-        //closing first contract and update the status as 1 in the "hrm_emp_contract_detl"
-        const result = await axioslogin.patch(
-          '/empcontract/contractrenew',
-          contractclose.contCloseData,
-        )
-        //
+        warningNofity("Employee ID Already Exist")
+      }
+      else {
+        //closing first contract
+        const result = await axioslogin.patch('/empcontract/contractrenew', contractclose.contCloseData)
         const { success } = result.data
         if (success === 2) {
-          const result = await axioslogin.post(
-            '/attedancemarkSave/insert',
-            attendancedetls.attendancedata,
-          )
+          const result = await axioslogin.post('/attedancemarkSave/insert', attendancedetls.attendancedata)
           const { success } = result.data
           if (success === 1) {
-            const result = await axioslogin.post(
-              '/empcontract/arrearSalary',
-              arreardetails.arreardata,
-            )
+            const result = await axioslogin.post('/empcontract/arrearSalary', arreardetails.arreardata)
             const { success } = result.data
             if (success === 1) {
-              // insert new contract details into the "hrm_emp_contract_detl" table
               const result = await axioslogin.post('/empcontract', newcontractdetl)
               const { success } = result.data
               if (success === 1) {
-                // contract log table updation after updating or inserting the "hrm_emp_contract_detl" table
-                const result = await axioslogin.post(
-                  '/empcontract/createcontractlog',
-                  oldPersonalData.personalData,
-                )
+                const result = await axioslogin.patch('/empcontract/updateQual', newcontractdetl)
                 const { success } = result.data
-                if (success === 1) {
-                  //update employee master for "em_no" , "catgeory", "contract_end _date",probation_end_date
-                  const result = await axioslogin.patch(
-                    '/empcontract/updateEmpMaster',
-                    updateempMast,
-                  )
+                if (success === 2) {
+                  const result = await axioslogin.patch('/empcontract/updateExp', newcontractdetl)
                   const { success } = result.data
                   if (success === 2) {
-                    setOpen(true)
-                    const result = await axioslogin.get(`/empmast/databyempid/${no}`)
-                    const { data, success } = result.data
-                    if (success === 1) {
-                      const { em_id, em_no, em_category } = data[0]
-                      setnewCategory(em_category)
-                      const submitemployee = {
-                        emp_no: em_no,
-                        emp_id: em_id,
-                        emp_status: 1,
-                        emp_username: newempId,
-                        emp_password: newempId,
-                      }
-                      // update hrm_employee table
-                      const resultemployee = await axioslogin.post('/employee', submitemployee)
-                      const { success } = resultemployee.data
-                      if (success === 1) {
-                        setDisable(true)
-                        if (oldCategory !== newCatgeory) {
-                          setmodelvalue(1)
-                          setOpenModel(true)
-                        } else {
-                          setmodelvalue(0)
-                          setOpenModel(false)
+                    const result = await axioslogin.patch('/empcontract/updateEarn', newcontractdetl)
+                    const { success } = result.data
+                    if (success === 2) {
+                      const result = await axioslogin.patch('/empcontract/updatePersonal', newcontractdetl)
+                      const { success } = result.data
+                      if (success === 2) {
+                        const result = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
+                        const { success } = result.data
+                        if (success === 1) {
+                          const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
+                          const { success } = result.data
+                          if (success === 2) {
+                            setOpen(true)
+                            const result = await axioslogin.get(`/empmast/databyempid/${no}`)
+                            const { data, success } = result.data
+                            if (success === 1) {
+                              const { em_id, em_no, em_category, em_email } = data[0]
+                              setnewCategory(em_category)
+                              const submitemployee = {
+                                emp_no: em_no,
+                                emp_id: em_id,
+                                emp_status: 1,
+                                emp_username: newempId,
+                                emp_password: newempId,
+                                emp_email: em_email,
+                                create_user: empno
+                              }
+                              // update hrm_employee table
+                              const resultemployee = await axioslogin.post('/employee', submitemployee);
+                              const { success } = resultemployee.data;
+                              if (success === 1) {
+                                setDisable(true)
+                                if (oldCategory !== newCatgeory) {
+                                  setmodelvalue(1)
+                                  setOpenModel(true)
+                                }
+                                else {
+                                  setmodelvalue(0)
+                                  setOpenModel(false)
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -278,36 +294,36 @@ const ContractRenewalProcess = () => {
           }
         }
       }
+
     }
+
   }
   //}
   return (
     <Fragment>
       <ToastContainer />
-      {modelvalue === 1 && open === false ? (
-        <ModelLeaveProcess
-          open={openleavemodel}
-          dataleave={leavestate} // {Allowed Leaves based on category}
-          handleClose={handleCloseModel}
-          setOpen={setOpen} //for open model
-          id={newempId} //employee id
-          no={no} //employee number
-          valuemessage={'Category Change You Want To Process Leave'} //model message
-          leaveprocessid={0} //current proceess details from the
-          processslno={processslno} //processess serialno
-          olddata={1} // check value === 1 then this is the new process and 0 is not a new process
-          setcastable={setcastable} //casual leave table rerender
-          setnodatacl={setnodatacl} //dataset render  for rerendering the casual leave
-          setnodatael={setnodatael} //dataset render  for rerendering the earnleave
-          setnodatahl={setnodatahl} //dataset render  for rerendering the holiday
-          setnodatafixed={setnodatafixed} //dataset render  for rerendering the datafixed
-          setmodelvalue={setmodelvalue}
-          nameel={attendanceata === undefined ? [] : attendanceata}
-        />
-      ) : null}
+      {modelvalue === 1 && open === false ? <ModelLeaveProcess
+        open={openleavemodel}
+        dataleave={leavestate} // {Allowed Leaves based on category}
+        handleClose={handleCloseModel}
+        setOpen={setOpen}  //for open model
+        id={newempId}//employee id
+        no={no}//employee number
+        valuemessage={'Category Change You Want To Process Leave'}//model message
+        leaveprocessid={0} //current proceess details from the 
+        processslno={processslno}//processess serialno
+        olddata={1}// check value === 1 then this is the new process and 0 is not a new process
+        setcastable={setcastable}//casual leave table rerender
+        setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
+        setnodatael={setnodatael} //dataset render  for rerendering the earnleave
+        setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
+        setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
+        setmodelvalue={setmodelvalue}
+        nameel={attendanceata === undefined ? [] : attendanceata}
+      /> : null}
       {open === true ? <ModelOldDataToCopy open={open} handleClose={handleClose} /> : null}
-      <Box sx={{ width: '100%' }}>
-        <Paper square elevation={2} sx={{ p: 0.5, flexDirection: 'row' }}>
+      <Box sx={{ width: "100%" }}>
+        <Paper square elevation={2} sx={{ p: 0.5, flexDirection: "row" }} >
           <EXistContractDetl
             id={id}
             no={no}
@@ -321,37 +337,32 @@ const ContractRenewalProcess = () => {
           />
 
           {/*attendance details */}
-          <Paper
-            square
-            elevation={3}
-            sx={{
-              display: 'flex',
-              p: 1,
-              alignItems: 'center',
-            }}
-          >
+          <Paper square elevation={3} sx={{
+            display: "flex",
+            p: 1,
+            alignItems: "center",
+          }}  >
             <AttendanceDetails
               id={id}
               no={no}
               em_cont_end={contractend}
               grace_period={graceperiod}
               attendanceDays={attendanceDays}
-              // formData={formData}
+            // formData={formData}
             />
           </Paper>
           {/* old Contract details top copy */}
-          <Paper square elevation={3} sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
-            <Old_dataTo_copy id={id} no={no} />
+          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Old_dataTo_copy
+              id={id}
+              no={no}
+            />
           </Paper>
           {/* conntract renew process */}
-          <Paper square elevation={3} sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ p: 1, display: 'flex' }}>
+          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Box sx={{ p: 1, display: "flex" }} >
               <CssVarsProvider>
-                <Typography
-                  startDecorator={<DragIndicatorOutlinedIcon color="success" />}
-                  level="h6"
-                  sx={{ flex: 2 }}
-                >
+                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" sx={{ flex: 2 }}>
                   Contract Renew Process
                 </Typography>
               </CssVarsProvider>
@@ -362,28 +373,26 @@ const ContractRenewalProcess = () => {
               grace_period={graceperiod}
               newContract={newContract}
               updateNewContract={updateNewContract}
+
             />
           </Paper>
-          <Paper square elevation={3} sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ flex: 0 }}>
-              <IconButton
-                variant="outlined"
-                size="sm"
-                onClick={RenewOldContract}
+          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Box sx={{ flex: 0 }} >
+              <IconButton variant="outlined" size='sm' onClick={RenewOldContract}
                 disabled={disable}
               >
-                <LibraryAddCheckOutlinedIcon color="primary" />
+                <LibraryAddCheckOutlinedIcon color='primary' />
               </IconButton>
-              <IconButton variant="outlined" size="sm" onClick={redirect}>
+              <IconButton variant="outlined" size='sm' onClick={redirect}>
                 <CssVarsProvider>
-                  <DisabledByDefaultOutlinedIcon color="primary" />
+                  <DisabledByDefaultOutlinedIcon color='primary' />
                 </CssVarsProvider>
               </IconButton>
             </Box>
-          </Paper>
-        </Paper>
-      </Box>
-    </Fragment>
+          </Paper >
+        </Paper >
+      </Box >
+    </Fragment >
   )
 }
 

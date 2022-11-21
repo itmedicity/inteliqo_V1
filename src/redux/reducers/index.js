@@ -38,6 +38,8 @@ import { getPunchCount } from '../reducers/PunchdataCountreducers';
 import { getMenuRenderCompRights } from './CardMenuSlnoRender';
 import { getContractClosedata } from '../reducers/ContractRenewalReducers'
 import { getUserRights } from '../reducers/EmpUserRights.Reducer'
+import { getHighLevelData } from '../reducers/HighLevel.Reducer'
+// import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
@@ -63,6 +65,7 @@ import {
     getCreditedPrivilegeLeaves,
     updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
+
 
 const reducer = combineReducers({
     changeState,
@@ -108,6 +111,7 @@ const reducer = combineReducers({
     getContractClosedata,
     getBirthdayList,
     getUserRights,
+    getHighLevelData,
     getdept,
     getDeptSecList,
     getShiftList,

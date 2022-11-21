@@ -45,6 +45,8 @@ const dashBoadNotify = {
     154: { slno: 154, name: "Registration Renew", count: 0, status: true },
     187: { slno: 187, name: "Probation End", count: 0, status: true },
     188: { slno: 188, name: "Annual Appraisal", count: 0, status: true },
+    196: { slno: 196, name: "Contract Appraisal", count: 0, status: true },
+
 }
 
 export const getDashboardNotification = (state = dashBoadNotify, { type, payload, status }) => {

@@ -85,6 +85,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
         if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
             dispatch({
                 type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
+                    status: 1,
                     em_cont_close: 'C',
                     em_cont_compl_status: 'C',
                     em_cont_renew: 'R',

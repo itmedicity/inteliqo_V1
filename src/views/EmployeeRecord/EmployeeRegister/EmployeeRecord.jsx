@@ -67,13 +67,20 @@ const EmployeeRecord = () => {
         empstatus: false,
         presPincode: ''
     }
-    // usestare
+    // usestate
     const [cont_perioddate, setcont_perioddate] = useState(0)
-    const [contractflag, setcontractflag] = useState(0)
     const [cont_gracedate, setcont_gracedate] = useState(0)
     const [probationendate, setdesiggperioddate] = useState(0)
-    const [probationStatus, setProbationStatus] = useState(0)
     const [retirementyear, setretirementyear] = useState(0)
+
+    //useState for probation status
+    const [prob_status, setProb_status] = useState(0)
+    const [destype, setDestype] = useState(0)
+
+    //usestate for contract status
+    const [contractflag, setcontractflag] = useState(0)
+    const [emptype, setEmptype] = useState(0)
+
     // const [enable, setenable] = useState(true)
     // usestate for age
     const [agestate, agesetstate] = useState({
@@ -168,7 +175,7 @@ const EmployeeRecord = () => {
             em_doc_type: doctortype === true ? getDoctype : null,
             em_category: getemployeecategory,
             em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
-            em_conf_end_date: moment(probationendate).format('YYYY-MM-DD'),
+            em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
             em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
             em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
@@ -185,15 +192,15 @@ const EmployeeRecord = () => {
             em_age_month: mnthage,
             em_age_day: dayge,
             hrm_religion: getreligion,
-            contractflag: contractflag,
-            probationStatus: probationStatus
+            contractflag: emptype === 2 ? contractflag : 0,
+            probation_status: destype === 1 || destype === 2 ? prob_status : 0
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
         email, selectBranchMast, selectedDept, selectDeptSection, selectInstiType, selectDesignation, doctortype,
         getDoctype, getemployeecategory, probationendate, cont_gracedate, retirementyear, cont_perioddate, empstatus,
         addressPermnt1, addressPermnt2, perPincode, getregion, addressPresent1, addressPresent2, presPincode,
-        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag])
+        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag, destype, emptype, prob_status])
 
     useEffect(() => {
         return (
@@ -222,8 +229,7 @@ const EmployeeRecord = () => {
         updatedoctortype, udateemployeecategory])
 
     useEffect(() => {
-
-        // employee category on change
+        // employee category details when a selected
         if (getemployeecategory !== 0) {
             const getcategorydata = async () => {
                 const result = await axioslogin.get(`/empcat/${getemployeecategory}`)
@@ -232,16 +238,18 @@ const EmployeeRecord = () => {
                 var cont_grace = data[0].cont_grace;
                 var ecat_cont_period = data[0].ecat_cont_period;
                 var ecat_prob_period = data[0].ecat_prob_period;
+                var des_type = data[0].des_type;
+                var emp_type = data[0].emp_type;
+                setEmptype(emp_type)//setting category emptype
+                setDestype(des_type)//setting category destype
                 if (ecat_cont_period > 0) {
                     setcont_perioddate(addDays(today, ecat_cont_period))
                     setcontractflag(1)
                 }
                 else {
-
                     setcont_perioddate(new Date('0000:00:00'))
                 }
                 if (cont_grace > 0) {
-
                     setcont_gracedate(addDays(today, cont_grace))
                 } else {
 
@@ -249,18 +257,30 @@ const EmployeeRecord = () => {
                 }
                 if (ecat_prob_period > 0) {
                     setdesiggperioddate(addDays(today, ecat_prob_period))
-                    setProbationStatus(1)
                 }
                 else {
-
                     setdesiggperioddate(new Date('0000:00:00'))
                 }
-
+                //setting probation status
+                if (des_type === 1 || des_type === 2) {
+                    setProb_status(1)
+                }
+                else {
+                    setProb_status(0)
+                }
             }
             getcategorydata();
         }
+        return () => {
+            setcont_perioddate(new Date('0000:00:00'))
+            setcont_gracedate(new Date('0000:00:00'))
+            setcontractflag(0)
+            setdesiggperioddate(new Date('0000:00:00'))
+            setProb_status(0)
+        }
 
     }, [getemployeecategory, dateofjoining])
+
     //useEffect for getting Verification level
     const [verification, setverificationlevel] = useState(0)
     useEffect(() => {
@@ -277,81 +297,186 @@ const EmployeeRecord = () => {
         }
         getverificationlevel()
     }, [])
+
     // for submition
-    const submitemployeerecord = async (e) => {
+    const submitemployeerecord = useCallback((e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/empmast', submitdata);
-        const { success, message } = result.data;
-        if (success === 1) {
-            const result = await axioslogin.get(`/empmast/${empNo}`)
-            const { success, data } = result.data
+        const SubmitFunc = async () => {
+            const result = await axioslogin.post('/empmast', submitdata);
+            const { success, message } = result.data;
             if (success === 1) {
-                const { em_id } = data[0]
-
-                const submitemployee = {
-                    emp_no: empNo,
-                    emp_id: em_id,
-                    emp_status: empstatus === true ? 1 : 0,
-                    emp_email: email,
-                    emp_username: empNo,
-                    emp_password: empNo,
-                    create_user: employeeNumber()
-                }
-                // update hrm_employee table
-                const resultemployee = await axioslogin.post('/employee', submitemployee);
-                const { success } = resultemployee.data;
+                const result = await axioslogin.get(`/empmast/${empNo}`)
+                const { success, data } = result.data
                 if (success === 1) {
-                    const postdataverify = {
-                        em_id: em_id,
-                        verification_required: verification === 1 || verification === 2 ? 1 : 0,
-                        second_level_required: verification === 2 ? 1 : 0
+                    const { em_id } = data[0]
+                    const submitemployee = {
+                        emp_no: empNo,
+                        emp_id: em_id,
+                        emp_status: empstatus === true ? 1 : 0,
+                        emp_email: email,
+                        emp_username: empNo,
+                        emp_password: empNo,
+                        create_user: employeeNumber()
                     }
-                    const result = await axioslogin.post('/empVerification', postdataverify)
-                    const { success, message } = result.data
+                    // update hrm_employee table
+                    const resultemployee = await axioslogin.post('/employee', submitemployee);
+                    const { success } = resultemployee.data;
                     if (success === 1) {
-                        getFormdata(defaultstate)
-                        udateGrade(0)
-                        setEarnTypecontext(0)
-                        udateregion(null)
-                        udatereligion(0)
-                        udateemployeecategory(0)
-                        updatebloodgroup(0)
-                        updatedoctortype(0)
-                        updateSelected(0)
-                        updateDesignationType(0)
-                        updateDesignation(0)
-                        updateSalutSelected(0)
-                        updateBranchSelected(0)
-                        updateInstituteSeleted(0)
-                        setProbationStatus(0)
-                        udateregion2(null)
-                        //history.push(`/Home/Profile/${empNo}/${em_id}`)
-                        history.push(`/Home/Prfle/${empNo}/${em_id}`)
-                        succesNofity(message)
+                        const postdataverify = {
+                            em_id: em_id,
+                            verification_required: verification === 1 || verification === 2 ? 1 : 0,
+                            second_level_required: verification === 2 ? 1 : 0
+                        }
+                        //inserting details hrm_emp_verification table
+                        const result = await axioslogin.post('/empVerification', postdataverify)
+                        const { success } = result.data
+                        if (success === 1) {
+                            const postContractDetl = {
+                                em_id: em_id,
+                                em_no: empNo,
+                                em_cont_start: dateofjoining,
+                                em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
+                                em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
+                                em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD')
+                            }
+                            const result = await axioslogin.post('/empmast/createContract', postContractDetl)
+                            const { success, message } = result.data
+                            if (success === 1) {
+                                getFormdata(defaultstate)
+                                udateGrade(0)
+                                setEarnTypecontext(0)
+                                udateregion(null)
+                                udatereligion(0)
+                                udateemployeecategory(0)
+                                updatebloodgroup(0)
+                                updatedoctortype(0)
+                                updateSelected(0)
+                                updateDesignationType(0)
+                                updateDesignation(0)
+                                updateSalutSelected(0)
+                                updateBranchSelected(0)
+                                updateInstituteSeleted(0)
+                                udateregion2(null)
+                                setcontractflag(0)
+                                setProb_status(0)
+                                setEmptype(0)
+                                setDestype(0)
+                                //history.push(`/Home/Profile/${empNo}/${em_id}`)
+                                history.push(`/Home/Prfle/${empNo}/${em_id}`)
+                                succesNofity(message)
+                            }
+                            else {
+                                errorNofity("Error Occured!!Please Contact ED")
+                            }
+                        }
+                        else {
+                            errorNofity("Error Occured!!Please Contact ED")
+                        }
+                    } else if (success === 0) {
+                        errorNofity(message)
+                    } else if (success === 2) {
+                        infoNofity(message)
                     }
-                    else {
-                        errorNofity("Error Occured!!Please Contact ED")
-                    }
-
-                } else if (success === 0) {
-                    errorNofity(message)
-                } else if (success === 2) {
-                    infoNofity(message)
                 }
+                else {
+                    errorNofity("Error Occured!!Please Contact EDP")
+                }
+
+            } else if (success === 0) {
+                warningNofity(message)
+            } else if (success === 2) {
+                infoNofity(message)
             }
             else {
-                errorNofity("Error Occured!!Please Contact EDP")
+                infoNofity(message)
             }
+        }
 
-        } else if (success === 0) {
-            warningNofity(message)
-        } else if (success === 2) {
-            infoNofity(message)
+        const NotPerFunc = async () => {
+            const result = await axioslogin.post('/empmast', submitdata);
+            const { success, message } = result.data;
+            if (success === 1) {
+                const result = await axioslogin.get(`/empmast/${empNo}`)
+                const { success, data } = result.data
+                if (success === 1) {
+                    const { em_id } = data[0]
+                    const submitemployee = {
+                        emp_no: empNo,
+                        emp_id: em_id,
+                        emp_status: empstatus === true ? 1 : 0,
+                        emp_email: email,
+                        emp_username: empNo,
+                        emp_password: empNo,
+                        create_user: employeeNumber()
+                    }
+                    // update hrm_employee table
+                    const resultemployee = await axioslogin.post('/employee', submitemployee);
+                    const { success } = resultemployee.data;
+                    if (success === 1) {
+                        const postdataverify = {
+                            em_id: em_id,
+                            verification_required: verification === 1 || verification === 2 ? 1 : 0,
+                            second_level_required: verification === 2 ? 1 : 0
+                        }
+                        const result = await axioslogin.post('/empVerification', postdataverify)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            getFormdata(defaultstate)
+                            udateGrade(0)
+                            setEarnTypecontext(0)
+                            udateregion(null)
+                            udatereligion(0)
+                            udateemployeecategory(0)
+                            updatebloodgroup(0)
+                            updatedoctortype(0)
+                            updateSelected(0)
+                            updateDesignationType(0)
+                            updateDesignation(0)
+                            updateSalutSelected(0)
+                            updateBranchSelected(0)
+                            updateInstituteSeleted(0)
+                            udateregion2(null)
+                            setcontractflag(0)
+                            setProb_status(0)
+                            setEmptype(0)
+                            setDestype(0)
+                            //history.push(`/Home/Profile/${empNo}/${em_id}`)
+                            history.push(`/Home/Prfle/${empNo}/${em_id}`)
+                            succesNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    } else if (success === 0) {
+                        errorNofity(message)
+                    } else if (success === 2) {
+                        infoNofity(message)
+                    }
+                }
+                else {
+                    errorNofity("Error Occured!!Please Contact EDP")
+                }
+
+            } else if (success === 0) {
+                warningNofity(message)
+            } else if (success === 2) {
+                infoNofity(message)
+            }
+            else {
+                infoNofity(message)
+            }
+        }
+
+        if (contractflag === 1) {
+            SubmitFunc(submitdata)
         }
         else {
-            infoNofity(message)
+            NotPerFunc()
         }
-    }
+
+    }, [contractflag, submitdata, empNo, email,
+        empstatus, verification, dateofjoining,
+        cont_gracedate, cont_perioddate, probationendate])
 
     // toSetting
     const toSettings = (e) => {
