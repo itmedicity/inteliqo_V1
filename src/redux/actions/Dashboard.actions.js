@@ -36,7 +36,7 @@ export const getResignCount = () => async (dispatch) => {
 }
 
 export const getcontractCloseCount = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/contractcloseCount')
+    const result = await axioslogin.get('/Count/contractcloseCount/list')
     const { success, data } = result.data
     if (success === 1) {
         const { contractcloseCount } = data[0]
