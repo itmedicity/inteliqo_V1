@@ -54,257 +54,257 @@ const ContractEndTable = ({ tableData }) => {
     const rowSelect = useCallback((params) => {
         const data1 = params.api.getSelectedRows();
         const { em_no, em_id, sect_id, incharge, hod } = data1[0]
-        const getIDOnly = async () => {
-            /** fetching level3 hierarchy dept section for checking 
-             * selected employee dept section is present or not */
-            const result = await axioslogin.get(`/Performance/idonly`)
-            const { data } = result.data;
-            var arr = data.map(data => (data.level2_sect_id));
-            /** fetching level2 hierarchy dept section for checking 
-             * selected employee dept section is present or not */
-            const level2ID = await axioslogin.get(`/HierarchyLevel/data`)
-            const { datas } = level2ID.data;
-            var l2ID = datas.map(datas => (datas.sect_id))
-            /** comparing selected employee dept section with level3 hierarchy dept section */
-            if (arr.indexOf(sect_id) !== -1) {
-                console.log("level3");
-                const result = await axioslogin.get(`/Performance/level2hier/${sect_id}`)
-                const { data } = result.data;
-                const { authorization_hod, authorization_incharge, highlevel_slno } = data[0]
-                const today = new Date();
-                const tdyformat = moment(today).format('YYYY-MM-DD')
-                if (highlevel_slno === 1) {
-                    const savedata = {
-                        appraisal_start_date: tdyformat,
-                        em_id: em_id,
-                        em_no: em_no,
-                        appraisal_type: "C",
-                        incharge_required: authorization_incharge,
-                        hod_required: authorization_hod,
-                        ed_required: 1,
-                        md_required: 0,
-                        trustiee_required: 0,
-                        ceo_required: 0
-                    }
-                    const result = await axioslogin.post('/Performance/create', savedata)
-                    const { success } = result.data
-                    if (success === 1) {
-                        succesNofity("Appraisal Submitted")
-                    }
-                    else {
-                        errorNofity("Please contact EDP")
-                    }
-                }
-                else if (highlevel_slno === 2) {
-                    const savedata = {
-                        appraisal_start_date: tdyformat,
-                        em_id: em_id,
-                        em_no: em_no,
-                        appraisal_type: "C",
-                        incharge_required: authorization_incharge,
-                        hod_required: authorization_hod,
-                        ed_required: 0,
-                        md_required: 1,
-                        trustiee_required: 0,
-                        ceo_required: 0
-                    }
-                    const result = await axioslogin.post('/Performance/create', savedata)
-                    const { success } = result.data
-                    if (success === 1) {
-                        succesNofity("Appraisal Submitted")
-                    }
-                    else {
-                        errorNofity("Please contact EDP")
-                    }
-                }
-                else {
-                    const savedata = {
-                        appraisal_start_date: tdyformat,
-                        em_id: em_id,
-                        em_no: em_no,
-                        appraisal_type: "C",
-                        incharge_required: authorization_incharge,
-                        hod_required: authorization_hod,
-                        ed_required: 0,
-                        md_required: 0,
-                        trustiee_required: 1,
-                        ceo_required: 0
-                    }
-                    const result = await axioslogin.post('/Performance/create', savedata)
-                    const { success } = result.data
-                    if (success === 1) {
-                        succesNofity("Appraisal Submitted")
-                    }
-                    else {
-                        errorNofity("Please contact EDP")
-                    }
-                }
+        // const getIDOnly = async () => {
+        //     /** fetching level3 hierarchy dept section for checking 
+        //      * selected employee dept section is present or not */
+        //     const result = await axioslogin.get(`/Performance/idonly`)
+        //     const { data } = result.data;
+        //     var arr = data.map(data => (data.level2_sect_id));
+        //     /** fetching level2 hierarchy dept section for checking 
+        //      * selected employee dept section is present or not */
+        //     const level2ID = await axioslogin.get(`/HierarchyLevel/data`)
+        //     const { datas } = level2ID.data;
+        //     var l2ID = datas.map(datas => (datas.sect_id))
+        //     /** comparing selected employee dept section with level3 hierarchy dept section */
+        //     if (arr.indexOf(sect_id) !== -1) {
+        //         console.log("level3");
+        //         const result = await axioslogin.get(`/Performance/level2hier/${sect_id}`)
+        //         const { data } = result.data;
+        //         const { authorization_hod, authorization_incharge, highlevel_slno } = data[0]
+        //         const today = new Date();
+        //         const tdyformat = moment(today).format('YYYY-MM-DD')
+        //         if (highlevel_slno === 1) {
+        //             const savedata = {
+        //                 appraisal_start_date: tdyformat,
+        //                 em_id: em_id,
+        //                 em_no: em_no,
+        //                 appraisal_type: "C",
+        //                 incharge_required: authorization_incharge,
+        //                 hod_required: authorization_hod,
+        //                 ed_required: 1,
+        //                 md_required: 0,
+        //                 trustiee_required: 0,
+        //                 ceo_required: 0
+        //             }
+        //             const result = await axioslogin.post('/Performance/create', savedata)
+        //             const { success } = result.data
+        //             if (success === 1) {
+        //                 succesNofity("Appraisal Submitted")
+        //             }
+        //             else {
+        //                 errorNofity("Please contact EDP")
+        //             }
+        //         }
+        //         else if (highlevel_slno === 2) {
+        //             const savedata = {
+        //                 appraisal_start_date: tdyformat,
+        //                 em_id: em_id,
+        //                 em_no: em_no,
+        //                 appraisal_type: "C",
+        //                 incharge_required: authorization_incharge,
+        //                 hod_required: authorization_hod,
+        //                 ed_required: 0,
+        //                 md_required: 1,
+        //                 trustiee_required: 0,
+        //                 ceo_required: 0
+        //             }
+        //             const result = await axioslogin.post('/Performance/create', savedata)
+        //             const { success } = result.data
+        //             if (success === 1) {
+        //                 succesNofity("Appraisal Submitted")
+        //             }
+        //             else {
+        //                 errorNofity("Please contact EDP")
+        //             }
+        //         }
+        //         else {
+        //             const savedata = {
+        //                 appraisal_start_date: tdyformat,
+        //                 em_id: em_id,
+        //                 em_no: em_no,
+        //                 appraisal_type: "C",
+        //                 incharge_required: authorization_incharge,
+        //                 hod_required: authorization_hod,
+        //                 ed_required: 0,
+        //                 md_required: 0,
+        //                 trustiee_required: 1,
+        //                 ceo_required: 0
+        //             }
+        //             const result = await axioslogin.post('/Performance/create', savedata)
+        //             const { success } = result.data
+        //             if (success === 1) {
+        //                 succesNofity("Appraisal Submitted")
+        //             }
+        //             else {
+        //                 errorNofity("Please contact EDP")
+        //             }
+        //         }
 
-            }
-            else {
-                /** comparing selected employee dept section with level2 hierarchy dept section */
-                if (l2ID.indexOf(sect_id) !== -1) {
-                    console.log("level2");
-                    const result = await axioslogin.get(`/Performance/level1/${sect_id}`)
-                    const { data } = result.data;
-                    const { authorization_hod, authorization_incharge, highlevel_slno, } = data[0]
-                    const today = new Date();
-                    const tdyformat = moment(today).format('YYYY-MM-DD')
-                    if (highlevel_slno === 1) {
-                        const savedata = {
-                            appraisal_start_date: tdyformat,
-                            em_id: em_id,
-                            em_no: em_no,
-                            appraisal_type: "C",
-                            incharge_required: authorization_incharge,
-                            hod_required: authorization_hod,
-                            ed_required: 1,
-                            md_required: 0,
-                            trustiee_required: 0,
-                            ceo_required: 0
-                        }
-                        const result = await axioslogin.post('/Performance/create', savedata)
-                        const { success } = result.data
-                        if (success === 1) {
-                            succesNofity("Appraisal Submitted")
-                        }
-                        else {
-                            errorNofity("Please contact EDP")
-                        }
-                    }
-                    else if (highlevel_slno === 2) {
-                        const savedata = {
-                            appraisal_start_date: tdyformat,
-                            em_id: em_id,
-                            em_no: em_no,
-                            appraisal_type: "C",
-                            incharge_required: authorization_incharge,
-                            hod_required: authorization_hod,
-                            ed_required: 0,
-                            md_required: 1,
-                            trustiee_required: 0,
-                            ceo_required: 0
-                        }
-                        const result = await axioslogin.post('/Performance/create', savedata)
-                        const { success } = result.data
-                        if (success === 1) {
-                            succesNofity("Appraisal Submitted")
-                        }
-                        else {
-                            errorNofity("Please contact EDP")
-                        }
-                    }
-                    else {
-                        const savedata = {
-                            appraisal_start_date: tdyformat,
-                            em_id: em_id,
-                            em_no: em_no,
-                            appraisal_type: "C",
-                            incharge_required: authorization_incharge,
-                            hod_required: authorization_hod,
-                            ed_required: 0,
-                            md_required: 0,
-                            trustiee_required: 1,
-                            ceo_required: 0
-                        }
-                        const result = await axioslogin.post('/Performance/create', savedata)
-                        const { success } = result.data
-                        if (success === 1) {
-                            succesNofity("Appraisal Submitted")
-                        }
-                        else {
-                            errorNofity("Please contact EDP")
-                        }
-                    }
+        //     }
+        //     else {
+        //         /** comparing selected employee dept section with level2 hierarchy dept section */
+        //         if (l2ID.indexOf(sect_id) !== -1) {
+        //             console.log("level2");
+        //             const result = await axioslogin.get(`/Performance/level1/${sect_id}`)
+        //             const { data } = result.data;
+        //             const { authorization_hod, authorization_incharge, highlevel_slno, } = data[0]
+        //             const today = new Date();
+        //             const tdyformat = moment(today).format('YYYY-MM-DD')
+        //             if (highlevel_slno === 1) {
+        //                 const savedata = {
+        //                     appraisal_start_date: tdyformat,
+        //                     em_id: em_id,
+        //                     em_no: em_no,
+        //                     appraisal_type: "C",
+        //                     incharge_required: authorization_incharge,
+        //                     hod_required: authorization_hod,
+        //                     ed_required: 1,
+        //                     md_required: 0,
+        //                     trustiee_required: 0,
+        //                     ceo_required: 0
+        //                 }
+        //                 const result = await axioslogin.post('/Performance/create', savedata)
+        //                 const { success } = result.data
+        //                 if (success === 1) {
+        //                     succesNofity("Appraisal Submitted")
+        //                 }
+        //                 else {
+        //                     errorNofity("Please contact EDP")
+        //                 }
+        //             }
+        //             else if (highlevel_slno === 2) {
+        //                 const savedata = {
+        //                     appraisal_start_date: tdyformat,
+        //                     em_id: em_id,
+        //                     em_no: em_no,
+        //                     appraisal_type: "C",
+        //                     incharge_required: authorization_incharge,
+        //                     hod_required: authorization_hod,
+        //                     ed_required: 0,
+        //                     md_required: 1,
+        //                     trustiee_required: 0,
+        //                     ceo_required: 0
+        //                 }
+        //                 const result = await axioslogin.post('/Performance/create', savedata)
+        //                 const { success } = result.data
+        //                 if (success === 1) {
+        //                     succesNofity("Appraisal Submitted")
+        //                 }
+        //                 else {
+        //                     errorNofity("Please contact EDP")
+        //                 }
+        //             }
+        //             else {
+        //                 const savedata = {
+        //                     appraisal_start_date: tdyformat,
+        //                     em_id: em_id,
+        //                     em_no: em_no,
+        //                     appraisal_type: "C",
+        //                     incharge_required: authorization_incharge,
+        //                     hod_required: authorization_hod,
+        //                     ed_required: 0,
+        //                     md_required: 0,
+        //                     trustiee_required: 1,
+        //                     ceo_required: 0
+        //                 }
+        //                 const result = await axioslogin.post('/Performance/create', savedata)
+        //                 const { success } = result.data
+        //                 if (success === 1) {
+        //                     succesNofity("Appraisal Submitted")
+        //                 }
+        //                 else {
+        //                     errorNofity("Please contact EDP")
+        //                 }
+        //             }
 
-                }
-                else {
-                    warningNofity("No Rights to the Departments!!")
-                }
+        //         }
+        //         else {
+        //             warningNofity("No Rights to the Departments!!")
+        //         }
 
-            }
-        }
+        //     }
+        // }
         /** if appraisal employee is HOD or Incharge */
-        const submitHODAppraisal = async () => {
-            /** fetching employee department section hirarchy details */
-            const result = await axioslogin.get(`/Performance/level1/${sect_id}`)
-            const { data } = result.data;
-            const { highlevel_slno } = data[0]
-            const today = new Date();
-            const tdyformat = moment(today).format('YYYY-MM-DD')
-            if (highlevel_slno === 1) {
-                const savedata = {
-                    appraisal_start_date: tdyformat,
-                    em_id: em_id,
-                    em_no: em_no,
-                    appraisal_type: "C",
-                    incharge_required: 0,
-                    hod_required: 0,
-                    ed_required: 1,
-                    md_required: 0,
-                    trustiee_required: 0,
-                    ceo_required: 0
-                }
-                const result = await axioslogin.post('/Performance/create', savedata)
-                const { success } = result.data
-                if (success === 1) {
-                    succesNofity("Appraisal Submitted")
-                }
-                else {
-                    errorNofity("Please contact EDP")
-                }
-            }
-            else if (highlevel_slno === 2) {
-                const savedata = {
-                    appraisal_start_date: tdyformat,
-                    em_id: em_id,
-                    em_no: em_no,
-                    appraisal_type: "C",
-                    incharge_required: 0,
-                    hod_required: 0,
-                    ed_required: 0,
-                    md_required: 1,
-                    trustiee_required: 0,
-                    ceo_required: 0
-                }
-                const result = await axioslogin.post('/Performance/create', savedata)
-                const { success } = result.data
-                if (success === 1) {
-                    succesNofity("Appraisal Submitted")
-                }
-                else {
-                    errorNofity("Please contact EDP")
-                }
-            }
-            else {
-                const savedata = {
-                    appraisal_start_date: tdyformat,
-                    em_id: em_id,
-                    em_no: em_no,
-                    appraisal_type: "C",
-                    incharge_required: 0,
-                    hod_required: 0,
-                    ed_required: 0,
-                    md_required: 0,
-                    trustiee_required: 1,
-                    ceo_required: 0
-                }
-                const result = await axioslogin.post('/Performance/create', savedata)
-                const { success } = result.data
-                if (success === 1) {
-                    succesNofity("Appraisal Submitted")
-                }
-                else {
-                    errorNofity("Please contact EDP")
-                }
-            }
-        }
+        // const submitHODAppraisal = async () => {
+        //     /** fetching employee department section hirarchy details */
+        //     const result = await axioslogin.get(`/Performance/level1/${sect_id}`)
+        //     const { data } = result.data;
+        //     const { highlevel_slno } = data[0]
+        //     const today = new Date();
+        //     const tdyformat = moment(today).format('YYYY-MM-DD')
+        //     if (highlevel_slno === 1) {
+        //         const savedata = {
+        //             appraisal_start_date: tdyformat,
+        //             em_id: em_id,
+        //             em_no: em_no,
+        //             appraisal_type: "C",
+        //             incharge_required: 0,
+        //             hod_required: 0,
+        //             ed_required: 1,
+        //             md_required: 0,
+        //             trustiee_required: 0,
+        //             ceo_required: 0
+        //         }
+        //         const result = await axioslogin.post('/Performance/create', savedata)
+        //         const { success } = result.data
+        //         if (success === 1) {
+        //             succesNofity("Appraisal Submitted")
+        //         }
+        //         else {
+        //             errorNofity("Please contact EDP")
+        //         }
+        //     }
+        //     else if (highlevel_slno === 2) {
+        //         const savedata = {
+        //             appraisal_start_date: tdyformat,
+        //             em_id: em_id,
+        //             em_no: em_no,
+        //             appraisal_type: "C",
+        //             incharge_required: 0,
+        //             hod_required: 0,
+        //             ed_required: 0,
+        //             md_required: 1,
+        //             trustiee_required: 0,
+        //             ceo_required: 0
+        //         }
+        //         const result = await axioslogin.post('/Performance/create', savedata)
+        //         const { success } = result.data
+        //         if (success === 1) {
+        //             succesNofity("Appraisal Submitted")
+        //         }
+        //         else {
+        //             errorNofity("Please contact EDP")
+        //         }
+        //     }
+        //     else {
+        //         const savedata = {
+        //             appraisal_start_date: tdyformat,
+        //             em_id: em_id,
+        //             em_no: em_no,
+        //             appraisal_type: "C",
+        //             incharge_required: 0,
+        //             hod_required: 0,
+        //             ed_required: 0,
+        //             md_required: 0,
+        //             trustiee_required: 1,
+        //             ceo_required: 0
+        //         }
+        //         const result = await axioslogin.post('/Performance/create', savedata)
+        //         const { success } = result.data
+        //         if (success === 1) {
+        //             succesNofity("Appraisal Submitted")
+        //         }
+        //         else {
+        //             errorNofity("Please contact EDP")
+        //         }
+        //     }
+        // }
 
         if (sect_id !== 0 && incharge !== 1 && hod !== 1) {
-            getIDOnly()
+            //getIDOnly()
         }
         else {
-            submitHODAppraisal()
+            //submitHODAppraisal()
         }
     }, [])
 

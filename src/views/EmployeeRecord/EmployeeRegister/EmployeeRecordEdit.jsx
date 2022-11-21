@@ -480,6 +480,7 @@ const EmployeeRecordEdit = () => {
 
         const UpdateContractDetl = async (no) => {
             const updateData = {
+                em_cont_start: dateofjoining,
                 em_prob_end_date: moment(probationendate).format('YYYY-MM-DD'),
                 em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
                 status: contractflag === 0 ? 0 : 1,

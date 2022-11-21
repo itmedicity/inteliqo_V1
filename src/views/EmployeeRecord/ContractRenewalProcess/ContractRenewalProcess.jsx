@@ -117,13 +117,20 @@ const ContractRenewalProcess = () => {
     })
     const { newempId, newcontractstart, newcontractend } = newContract
 
+    const empno = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_no
+        //const status = state.getProfileData.lodingStatus
+    })
+
     //new contract details
     const newcontractdetl = {
         em_no: newempId,
         em_id: no,
         em_cont_start: newcontractstart,
-        em_cont_end: newcontractend
+        em_cont_end: newcontractend,
+        em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD')
     }
+
 
     //getting new probation or training end details    
     useEffect(() => {
@@ -250,14 +257,16 @@ const ContractRenewalProcess = () => {
                                                         const result = await axioslogin.get(`/empmast/databyempid/${no}`)
                                                         const { data, success } = result.data
                                                         if (success === 1) {
-                                                            const { em_id, em_no, em_category } = data[0]
+                                                            const { em_id, em_no, em_category, em_email } = data[0]
                                                             setnewCategory(em_category)
                                                             const submitemployee = {
                                                                 emp_no: em_no,
                                                                 emp_id: em_id,
                                                                 emp_status: 1,
                                                                 emp_username: newempId,
-                                                                emp_password: newempId
+                                                                emp_password: newempId,
+                                                                emp_email: em_email,
+                                                                create_user: empno
                                                             }
                                                             // update hrm_employee table
                                                             const resultemployee = await axioslogin.post('/employee', submitemployee);

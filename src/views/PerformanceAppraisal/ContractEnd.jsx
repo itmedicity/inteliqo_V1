@@ -53,7 +53,6 @@ const ContractEnd = () => {
         const contractEndList = async () => {
             const result = await axioslogin.get('/Performance/contractrenew')
             const { success, data } = result.data
-            console.log(data);
             if (success === 1) {
                 setTableData(data)
                 setValue(data)

@@ -372,7 +372,8 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             //setting probation end date on hrm_emp_matser when probation or training date extend
             em_prob_end_date: disp === 1 && training_checkbox !== false ? training_extendDate :
                 disp === 2 && extended_checkbox === true ? prob_extendDate : enddate,
-            em_cont_end: old_cont_end_date
+            em_cont_end: old_cont_end_date,
+            em_cont_start: startdate
         }
     }, [selectBranchMast, selectedDept, selectInstiType, company, getemployeecategory,
         probationperiod, empstatus, probsataus, no, id, selectDesignation, designation,
