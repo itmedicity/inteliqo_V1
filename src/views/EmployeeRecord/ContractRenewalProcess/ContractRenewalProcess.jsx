@@ -122,6 +122,9 @@ const ContractRenewalProcess = () => {
     //const status = state.getProfileData.lodingStatus
   })
 
+  const [probsataus, setProbstatus] = useState(0)// for setting probation status
+  const [contstatus, setContrstatus] = useState(0)
+
   //new contract details
   const newcontractdetl = {
     em_no: newempId,
@@ -138,9 +141,22 @@ const ContractRenewalProcess = () => {
       if (newCatgeory > 0) {
         const result = await axioslogin.get(`/empcat/${newCatgeory}`)
         const { success, data } = result.data
+        console.log(data);
         if (success === 1) {
-          const { ecat_prob_period } = data[0]
+          const { ecat_prob_period, ecat_prob, ecat_cont } = data[0]
           setProbationPeriod(ecat_prob_period)
+          if (ecat_prob === 1) {
+            setProbstatus(1)
+          }
+          else {
+            setProbstatus(0)
+          }
+          if (ecat_cont === 1) {
+            setContrstatus(1)
+          }
+          else {
+            setContrstatus(0)
+          }
         }
         else {
           setProbationPeriod(0)
@@ -156,7 +172,9 @@ const ContractRenewalProcess = () => {
     em_category: newCatgeory,
     em_contract_end_date: newcontractend,
     em_prob_end_date: moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD'),
-    em_id: no
+    em_id: no,
+    probation_status: probsataus === 1 ? 1 : 0,
+    contract_status: contstatus === 1 ? 1 : 0
   }
   const checkemid = {
     em_no: newempId
