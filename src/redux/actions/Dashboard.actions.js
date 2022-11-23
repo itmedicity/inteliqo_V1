@@ -20,7 +20,8 @@ const {
     FETCH_TRAIN_COUNT,
     FETCH_REGISTER_RENEW,
     FETCH_PROBATION,
-    FETCH_ANNUAL
+    FETCH_ANNUAL,
+    FETCH_CONTRACT_APPRAISAL
 } = Actiontypes;
 
 export const getResignCount = () => async (dispatch) => {
@@ -241,5 +242,16 @@ export const getAnnual = () => async (dispatch) => {
         dispatch({ type: FETCH_ANNUAL, payload: annualcount, status: false })
     } else {
         dispatch({ type: FETCH_ANNUAL, payload: 0, status: false })
+    }
+}
+
+export const getContractAppraisal = () => async (dispatch) => {
+    const result = await axioslogin.get('/Count/contractappraisal/list')
+    const { success, data } = result.data
+    if (success === 1) {
+        const { contractappraisalcount } = data[0]
+        dispatch({ type: FETCH_CONTRACT_APPRAISAL, payload: contractappraisalcount, status: false })
+    } else {
+        dispatch({ type: FETCH_CONTRACT_APPRAISAL, payload: 0, status: false })
     }
 }

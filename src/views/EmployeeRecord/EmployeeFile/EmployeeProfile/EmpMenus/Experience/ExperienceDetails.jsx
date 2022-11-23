@@ -3,7 +3,7 @@ import React, { Fragment, memo, useCallback, useContext, useMemo, useState } fro
 import moment from 'moment';
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
@@ -142,7 +142,7 @@ const ExperienceDetails = () => {
                 warningNofity(message)
             }
             else {
-                errorNofity('Error Occured!!!!Please Contact EDP')
+                infoNofity(message)
             }
         }
         //updating data in database
@@ -162,11 +162,12 @@ const ExperienceDetails = () => {
                 errorNofity('Error Occured!!!Please Contact EDP')
             }
         }
-        if (flag === 0) {
-            submitformadata(postData)
+        if (flag === 1) {
+
+            submitUpdateData(patchData)
         }
         else {
-            submitUpdateData(patchData)
+            submitformadata(postData)
         }
 
     }, [postData, patchData, flag, count,])
