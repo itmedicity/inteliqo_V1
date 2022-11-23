@@ -46,12 +46,33 @@ export const getEmployeeDetlDutyPlanBased = async (postData) => {
     }
 }
 
+const getDutyPlanDetl = async (getDateOnly, emplyeeDetl) => {
 
+    const getDutyPlanDetl = await axioslogin.post("/plan/planDetl", getDateOnly);
+    const { success, data } = getDutyPlanDetl.data;
+    if (success === 1) {
+        if (Object.keys(data).length > 0) {
+            let planObj = { emp_id: 0, emp_name: "", plan: [] }
+
+            return emplyeeDetl.map((values, index) => {
+                return {
+                    ...planObj,
+                    emp_id: values.em_id,
+                    emp_name: values.em_name,
+                    plan: [...planObj.plan, data.filter((val) => val.emp_id === values.em_id ? val : null)]
+                }
+            })
+        }
+    } else {
+        return null
+    }
+
+}
 
 // duty plan insert function
 
 export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, employeeDetl, deptShift) => {
-    let message = { status: 0, message: '', data: [] };
+    let message = { status: 0, message: '', data: [], dateFormat: [] };
     const { notapplicable_shift, default_shift, week_off_day } = commonSettings;
     const { fromDate, toDate, deptName, deptSecName } = formData;
     const { status, data } = holidayList;
@@ -86,7 +107,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             em_no: val.em_no,
             em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj
         }
-    }).filter((val) => val.em_id === 144)
+    })
+    // .filter((val) => val.em_id === 144)
 
     if (Object.keys(employeeDetails).length > 0) {
 
@@ -111,36 +133,36 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //hrm_duty_plan insert initial array data making
             const shiftDutyDay = await employeeDetails.map((val) => {
                 return dutyPlanDateRange.map((value) => {
-                    return { date: value.date, emp_id: val.em_id, doj: val.em_doj }
+                    return { date: value.date, emp_id: val.em_id, doj: val.em_doj, em_no: val.em_no }
                 })
             }).flat(Infinity)
 
-            // initital array -> add the default and not applicabele shift based on date of join
-            const insertDutyPlanArray = await shiftDutyDay.map((val) => {
-                return holidayFilterList.map((values) => {
-                    if (values.hld_date === val.date) {
-                        return {
-                            date: val.date,
-                            emp_id: val.emp_id,
-                            shift: val.date >= val.doj ? default_shift : notapplicable_shift,
-                            holidayStatus: values.hld_date === val.date ? 1 : 0,
-                            holidayName: values.hld_date === val.date ? values.hld_desc : null,
-                            holidaySlno: values.hld_date === val.date ? values.hld_slno : 0
-                        }
+            //add the holiday details into the shift plan array
+            const holidayFilterFun = (values) => {
+                const holiday = holidayFilterList.find((val) => val.hld_date === values.date)
+                if (holiday !== undefined) {
+                    return {
+                        date: values.date,
+                        emp_id: values.emp_id,
+                        em_no: values.em_no,
+                        shift: values.date >= values.doj ? default_shift : notapplicable_shift,
+                        holidayStatus: 1,
+                        holidayName: holiday.hld_desc,
+                        holidaySlno: holiday.hld_slno
                     }
-                    else {
-                        return null
+                } else {
+                    return {
+                        date: values.date,
+                        emp_id: values.emp_id,
+                        em_no: values.em_no,
+                        shift: values.date >= values.doj ? default_shift : notapplicable_shift,
+                        holidayStatus: 0,
+                        holidayName: null,
+                        holidaySlno: 0
                     }
-                })
-                return {
-                    date: val.date,
-                    emp_id: val.emp_id,
-                    shift: val.date >= val.doj ? default_shift : notapplicable_shift
                 }
-            })
-
-            console.log(insertDutyPlanArray)
-            // console.log(holidayFilterList)
+            }
+            //
 
             //checking wheher duty plan is already inserted in these dates
             const postDate = {
@@ -152,16 +174,76 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             const result = await axioslogin.post("/plan/check", postDate)
             const { success, data } = result.data;
 
+            const getDateOnly = {
+                start_date: moment(fromDate).format('YYYY-MM-DD'),
+                end_date: moment(toDate).format('YYYY-MM-DD'),
+            }
+
             if (success === 1) {
                 /******** If duty plan is already inserted *********/
 
+                if (default_shift === null || notapplicable_shift === null) {
+                    return { ...message, status: 0, message: 'Default and Not Applicable Shift Not Mapped', data: [] }
+                } else {
+                    // after the holiday inserted duty day array
+                    const insertDutyPlanArray = await shiftDutyDay.map(holidayFilterFun);
+
+                    //filtering the data from the data base and inserting dates and finding the new array to insert
+                    /***
+                     * filtering the data from the database if the all date have the shift id inserted or not 
+                     * if no shift id in that date filter that date and return a new array
+                     * if all date have the shift id then blank array will return
+                     */
+
+                    const newFilterdArray = insertDutyPlanArray.filter((val) => {
+                        return data.filter((data) => {
+                            return val.emp_id === data.emp_id && val.date === moment(data.duty_day).format('YYYY-MM-DD')
+                        }).length === 0
+                    })
+
+                    if (newFilterdArray.length === 0) {
+                        // no Date with out duty plan in the database 
+                        return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
+                            return { ...message, status: 1, message: 'Duty Plan Inserted', data: values, dateFormat: dateAndDayFormat }
+                        })
+
+                    } else {
+                        //date with out duty plan - need to insert the default duty plans
+                        const insertDutyPlainIntDB = await axioslogin.post("/plan/insert", newFilterdArray)
+                        const { success1 } = insertDutyPlainIntDB.data;
+                        if (success1 === 1) {
+                            //duty plan inserted 
+                            return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
+                                return { ...message, status: 1, message: 'Pending Duty Plan Inserted', data: values, dateFormat: dateAndDayFormat }
+                            })
+
+                        } else {
+                            return { ...message, status: 0, message: 'Error Updating Duty Plan', data: [] }
+                        }
+                    }
+                }
+
             } else {
                 /******** if not excist  **********/
+                if (default_shift === null || notapplicable_shift === null) {
+                    return { ...message, status: 0, message: 'Default and Not Applicable Shift Not Mapped', data: [] }
+                } else {
+                    // after the holiday inserted duty day array
+                    const insertDutyPlanArray = await shiftDutyDay.map(holidayFilterFun);
 
+                    //duty plan inserting function
+                    const insertDutyPlainIntDB = await axioslogin.post("/plan/insert", insertDutyPlanArray)
+                    const { success1 } = insertDutyPlainIntDB.data;
+                    if (success1 === 1) {
+                        //duty plan inserted 
+                        return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
+                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: dateAndDayFormat }
+                        })
 
-
-
-
+                    } else {
+                        return { ...message, status: 0, message: 'Error initial Inserting Duty Plan', data: [] }
+                    }
+                }
             }
 
         } else {
@@ -170,4 +252,6 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
     } else {
         return { ...message, status: 0, message: 'There Is No Employees Under This Department Section', data: [] }
     }
+
+    return message;
 }

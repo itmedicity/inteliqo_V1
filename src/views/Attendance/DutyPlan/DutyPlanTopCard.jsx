@@ -29,9 +29,13 @@ import { useSelector } from 'react-redux'
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import _ from 'underscore'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const DutyPlanTopCard = () => {
     const [count, setCount] = useState(0)
+    const [plan, setPlan] = useState([])
+    const [dateFormat, setDateFormat] = useState([])
+    const [open, setOpen] = useState(false)
 
     const { FETCH_EMP_DETAILS } = Actiontypes;
     const reduxDispatch = useDispatch()
@@ -83,16 +87,16 @@ const DutyPlanTopCard = () => {
      */
 
     const onClickDutyPlanButton = async (e) => {
+        setOpen(true)
         e.preventDefault()
         if (deptName === 0 || deptSecName === 0) {
-            infoNofity('Check The Department || Department Section Feild')
+            infoNofity('Check The Department || Department Section Feild');
+            setOpen(false);
         } else if (moment(toDate) > moment(calanderMaxDate)) {
             infoNofity('Select the Correct From || To || Both Dates')
+            setOpen(false);
         } else {
-            setCount(count + 1)
             //For get shift Details
-            console.log('inside')
-
             const postData = {
                 em_department: deptName,
                 em_dept_section: deptSecName,
@@ -111,7 +115,15 @@ const DutyPlanTopCard = () => {
                     //process function
                     dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
                         //employee details based on selected dept and dept sec
-                        // console.log(values)
+                        const { data, status, message, dateFormat } = values;
+                        if (status === 1) {
+                            setPlan(data);
+                            setDateFormat(dateFormat);
+                            setOpen(false)
+                        } else {
+
+                        }
+
                     })
                 } else {
                     dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
@@ -120,14 +132,16 @@ const DutyPlanTopCard = () => {
         }
     }
 
-
-    console.log('render - 1')
+    const planData = useMemo(() => plan, [plan])
+    console.log(planData)
+    console.log(dateFormat)
     return (
         <Paper
             square
             variant="outlined"
             sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
         >
+            <CustomBackDrop open={open} />
             <Box
                 sx={{
                     display: 'flex',
