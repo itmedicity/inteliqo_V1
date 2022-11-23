@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { memo } from 'react'
 import { Button, Paper } from '@mui/material'
 import { Box } from '@mui/system'
@@ -13,9 +13,28 @@ import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import SendIcon from '@mui/icons-material/Send'
 import { useReducer } from 'react'
 import { addDays, lastDayOfMonth } from 'date-fns/esm'
-import { dutyPlanInitialState, dutyPlanReducer, planInitialState } from './DutyPlanFun/DutyPlanFun'
+import {
+    dutyPlanInitialState,
+    dutyPlanInsertFun,
+    dutyPlanReducer,
+    getEmployeeDetlDutyPlanBased,
+    planInitialState,
+} from './DutyPlanFun/DutyPlanFun'
+import { infoNofity } from 'src/views/CommonCode/Commonfunc'
+import { useDispatch } from 'react-redux'
+import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
+import { useEffect } from 'react'
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import { useSelector } from 'react-redux'
+import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
+import _ from 'underscore'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const DutyPlanTopCard = () => {
+    const [count, setCount] = useState(0)
+
+    const { FETCH_EMP_DETAILS } = Actiontypes;
+    const reduxDispatch = useDispatch()
     const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
 
     const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
@@ -23,9 +42,86 @@ const DutyPlanTopCard = () => {
 
     const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
     const { fromDate, toDate, deptName, deptSecName } = planState
-
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
 
+
+    // console.log(deptName, deptSecName)
+
+    useEffect(() => {
+        // common settings
+        reduxDispatch(setCommonSetting());
+        //get holiday current
+        reduxDispatch(getHolidayList());
+
+        return () => {
+            dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
+        }
+    }, [])
+
+
+    // state variable from reducx state
+    // EMployee detaild selected dept & dept_section
+    const employeeDetl = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual);
+    //Common settings
+    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
+    // get holiday 
+    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+    // selected department shift details
+    const departmentShiftt = useSelector((state) => state.getDepartmentShiftData.deptShiftData, _.isEqual);
+
+
+    const empDetl = useMemo(() => employeeDetl, [employeeDetl]);
+    const commonSettings = useMemo(() => commonState, [commonState]);
+    const holidayList = useMemo(() => holiday, [holiday]);
+    const deptShift = useMemo(() => departmentShiftt, [departmentShiftt])
+
+    /****
+     * a->before getting the date need to check the validation it exceed current month last days
+     *
+     * 1-> get post data dep,sect,and date start & end
+     * 2-> dispatch for gettting employee details
+     */
+
+    const onClickDutyPlanButton = async (e) => {
+        e.preventDefault()
+        if (deptName === 0 || deptSecName === 0) {
+            infoNofity('Check The Department || Department Section Feild')
+        } else if (moment(toDate) > moment(calanderMaxDate)) {
+            infoNofity('Select the Correct From || To || Both Dates')
+        } else {
+            setCount(count + 1)
+            //For get shift Details
+            console.log('inside')
+
+            const postData = {
+                em_department: deptName,
+                em_dept_section: deptSecName,
+            }
+
+            const departmentDetlFrShiftGet = {
+                dept_id: deptName,
+                sect_id: deptSecName
+            }
+
+            getEmployeeDetlDutyPlanBased(postData).then((emplyDataArray) => {
+                const { status, data } = emplyDataArray;
+                if (status === 1) {
+                    dispatch({ type: FETCH_EMP_DETAILS, payload: data });
+                    reduxDispatch(getdeptShift(departmentDetlFrShiftGet));
+                    //process function
+                    dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
+                        //employee details based on selected dept and dept sec
+                        // console.log(values)
+                    })
+                } else {
+                    dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
+                }
+            })
+        }
+    }
+
+
+    console.log('render - 1')
     return (
         <Paper
             square
@@ -123,7 +219,7 @@ const DutyPlanTopCard = () => {
                     },
                 }}
             >
-                <Button variant="outlined" startIcon={<SendIcon />}>
+                <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
                     Process
                 </Button>
             </Box>

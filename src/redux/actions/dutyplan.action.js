@@ -9,6 +9,8 @@ export const getdeptShift = (postData) => async (dispatch) => {
         const { shft_code } = data[0]
         const obj = JSON.parse(shft_code)
         dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: obj })
+    } else {
+        dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: [] })
     }
 }
 //getting employee details for duty plan

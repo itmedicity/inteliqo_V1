@@ -1,22 +1,24 @@
 import { Box } from '@mui/system';
 import React, { useState } from 'react'
+import { useEffect } from 'react';
+import { useMemo } from 'react';
 import { memo } from 'react';
-
-
-const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-];
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const ShiftSelect = () => {
+
+    const departmentShiftt = useSelector((state) => state.getDepartmentShiftData.deptShiftData, _.isEqual);
+    const deptShift = useMemo(() => departmentShiftt, [departmentShiftt])
+
     const [selectedOption, setSelectedOption] = useState(null);
+
     return (
         <select style={{ width: '100%' }} >
-            <option disabled >Select</option>
-            <option>Mon 9 am- 5 pm</option>
-            <option>Mon 9 am-  dgdfgfd</option>
-            <option>Mon 9 am- 5 pm dgdfg sfsdfsdfsdf</option>
+            <option disabled defaultValue={0} >Select...</option>
+            {
+                deptShift && deptShift.map((val, index) => <option key={index} value={val.shiftcode}>{val.shiftDescription}</option>)
+            }
         </select>
     )
 }

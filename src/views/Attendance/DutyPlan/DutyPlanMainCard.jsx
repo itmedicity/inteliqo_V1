@@ -19,58 +19,35 @@ import { eachDayOfInterval } from 'date-fns'
 import { dutyPlanInitialState, dutyPlanReducer } from './DutyPlanFun/DutyPlanFun'
 import moment from 'moment'
 import { useReducer } from 'react'
-import ShiftSelect from './DutyPlanFun/ShiftSelect';
+import ShiftSelect from './DutyPlanFun/ShiftSelect'
+import { ToastContainer } from 'react-toastify'
+import { useSelector } from 'react-redux'
+import _ from 'underscore'
+import { useEffect } from 'react'
 
 const DutyPlanMainCard = () => {
-    const duty = [
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan dfsfsdfdsf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunansdfdsfsdfdsf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunansdfsdfsdf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan dfsfsdfdsf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunansdfdsfsdfdsf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunansdfsdfsdf' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-        { name: 'Ajith Arjunan' },
-    ]
+
+    const duty = []
 
     const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
     const { fromDate, toDate, deptName, deptSecName } = planState
 
+
     const dateRange = eachDayOfInterval({
         start: new Date('2022-11-01'),
-        end: new Date('2022-11-30'),
+        end: new Date('2022-11-05'),
     })
     const newDateFormat = dateRange.map((val) => {
-        return { date: moment(val).format('MMM-D'), sunday: moment(val).format('ddd') }
+        // return { date: moment(val).format('MMM-D'), sunday: moment(val).format('ddd') }
+        return {}
     })
 
-    console.log(planState)
+    // console.log(planState)
 
     console.log('render 2 ')
     return (
         <CustomLayout title="Duty Planning">
+            <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
                 <DutyPlanTopCard />
                 <Paper square variant="outlined" sx={{ display: 'flex', p: 0.5, flex: 1 }}>
@@ -81,30 +58,19 @@ const DutyPlanMainCard = () => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{ minHeight: 25, maxHeight: 25, p: 0.2, }}
-                                            >
+                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Name
                                             </Box>
                                         </TableCell>
                                         <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}
-                                            >
+                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 ID #
                                             </Box>
                                         </TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Days
                                             </Box>
                                         </TableCell>
@@ -126,12 +92,15 @@ const DutyPlanMainCard = () => {
                                                     component={Grid}
                                                     item
                                                     sx={{
-                                                        minHeight: 25, maxHeight: 25, p: 0.2,
-                                                        fontWeight: "normal", textOverflow: "ellipsis",
-                                                        width: 100
+                                                        minHeight: 25,
+                                                        maxHeight: 25,
+                                                        p: 0.2,
+                                                        fontWeight: 'normal',
+                                                        textOverflow: 'ellipsis',
+                                                        width: 100,
                                                     }}
                                                 >
-                                                    <Typography variant="body2" gutterBottom noWrap={true} >
+                                                    <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {row.name}
                                                     </Typography>
                                                 </Box>
@@ -145,7 +114,10 @@ const DutyPlanMainCard = () => {
                                                     component={Button}
                                                     variant="outlined"
                                                     sx={{
-                                                        minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: "normal",
+                                                        minHeight: 25,
+                                                        maxHeight: 25,
+                                                        p: 0.2,
+                                                        fontWeight: 'normal',
                                                     }}
                                                 >
                                                     12568
@@ -159,6 +131,7 @@ const DutyPlanMainCard = () => {
                         </TableContainer>
                     </Box>
                     {/* shift selecction section */}
+
                     {/* <Box sx={{ minWidth: 600, maxWidth: 1423 }} > */}
                     <Box
                         component={Grid}
@@ -193,11 +166,11 @@ const DutyPlanMainCard = () => {
                         <TableContainer
                             component={Grid}
                             item
-                            xs={"auto"}
-                            sm={"auto"}
-                            md={"auto"}
-                            lg={"auto"}
-                            xl={"auto"}
+                            xs={'auto'}
+                            sm={'auto'}
+                            md={'auto'}
+                            lg={'auto'}
+                            xl={'auto'}
                             sx={{
                                 display: 'flex',
                             }}
