@@ -1,3 +1,4 @@
+import { SignalCellularNullTwoTone } from "@material-ui/icons";
 import { eachDayOfInterval } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
@@ -6,7 +7,7 @@ export const planInitialState = {
     FROM_DATE: "FROM_DATE",
     TO_DATE: "TO_DATE",
     DEPT_NAME: "DEPT_NAME",
-    DEPT_SEC_NAME: "DEPT_SEC_NAME"
+    DEPT_SEC_NAME: "DEPT_SEC_NAME",
 }
 
 const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState;
@@ -33,7 +34,6 @@ export const dutyPlanReducer = (state = dutyPlanInitialState, action) => {
     }
 }
 
-
 //get employee details 
 export const getEmployeeDetlDutyPlanBased = async (postData) => {
     let dataObj = { status: 0, data: [] }
@@ -47,17 +47,17 @@ export const getEmployeeDetlDutyPlanBased = async (postData) => {
 }
 
 const getDutyPlanDetl = async (getDateOnly, emplyeeDetl) => {
-
     const getDutyPlanDetl = await axioslogin.post("/plan/planDetl", getDateOnly);
     const { success, data } = getDutyPlanDetl.data;
     if (success === 1) {
         if (Object.keys(data).length > 0) {
-            let planObj = { emp_id: 0, emp_name: "", plan: [] }
+            let planObj = { emp_id: 0, em_no: 0, emp_name: "", plan: [] }
 
             return emplyeeDetl.map((values, index) => {
                 return {
                     ...planObj,
                     emp_id: values.em_id,
+                    em_no: values.em_no,
                     emp_name: values.em_name,
                     plan: [...planObj.plan, data.filter((val) => val.emp_id === values.em_id ? val : null)]
                 }
@@ -87,7 +87,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
         sect_id: deptSecName
     }
 
-    let holidayFilterList; // filter holidays based on from to dates
+    let holidayFilterList = []; // filter holidays based on from to dates
     let employeeDetails; //new object based on employee details
 
     if (status === 1) {
@@ -97,8 +97,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
     } else {
         return { ...message, status: 0, message: 'Holiday List Not Updated', data: [] }
     }
-    // return planState;
 
+    // return planState;
     employeeDetails = employeeDetl.map((val) => {
         return {
             desg_name: val.desg_name,
@@ -118,11 +118,33 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
 
             //finding the dates between start date and end date
             const dateRange = eachDayOfInterval({ start: new Date(fromDate), end: new Date(toDate) });
-
             //date format for top Head
             const dateAndDayFormat = dateRange.map((val) => {
                 return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
             });
+
+            const addHolidayToDateRange = (values) => {
+                const holidayDate = holidayFilterList.find((val) => moment(val.hld_date).format('MMM-D') === values.date)
+                if (holidayDate !== undefined) {
+                    return {
+                        date: values.date,
+                        sunday: values.sunday,
+                        days: values.days,
+                        holiday: 1,
+                        holidayDays: holidayDate.hld_desc
+                    }
+                } else {
+                    return {
+                        date: values.date,
+                        sunday: values.sunday,
+                        days: values.days,
+                        holiday: 0,
+                        holidayDays: null
+                    }
+                }
+            }
+
+            const newDateRange = dateAndDayFormat.map(addHolidayToDateRange)
 
             //duty plan date range
             const dutyPlanDateRange = dateRange.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
@@ -204,7 +226,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                     if (newFilterdArray.length === 0) {
                         // no Date with out duty plan in the database 
                         return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
-                            return { ...message, status: 1, message: 'Duty Plan Inserted', data: values, dateFormat: dateAndDayFormat }
+                            return { ...message, status: 1, message: 'Duty Plan Inserted', data: values, dateFormat: newDateRange }
                         })
 
                     } else {
@@ -214,7 +236,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         if (success1 === 1) {
                             //duty plan inserted 
                             return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
-                                return { ...message, status: 1, message: 'Pending Duty Plan Inserted', data: values, dateFormat: dateAndDayFormat }
+                                return { ...message, status: 1, message: 'Pending Duty Plan Inserted', data: values, dateFormat: newDateRange }
                             })
 
                         } else {
@@ -237,7 +259,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                     if (success1 === 1) {
                         //duty plan inserted 
                         return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
-                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: dateAndDayFormat }
+                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: newDateRange }
                         })
 
                     } else {

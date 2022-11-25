@@ -15,36 +15,48 @@ import {
 import { Box } from '@mui/system'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DutyPlanTopCard from './DutyPlanTopCard'
-import { eachDayOfInterval } from 'date-fns'
 import { dutyPlanInitialState, dutyPlanReducer } from './DutyPlanFun/DutyPlanFun'
-import moment from 'moment'
 import { useReducer } from 'react'
 import ShiftSelect from './DutyPlanFun/ShiftSelect'
 import { ToastContainer } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { useEffect } from 'react'
+import { useMemo } from 'react'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const DutyPlanMainCard = () => {
+    const [plan, setPlan] = useState([])
+    const [dateFormat, setDateFormat] = useState([])
 
-    const duty = []
+    const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT } = Actiontypes;
 
-    const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
+    const dispatchRedux = useDispatch();
+
+    const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState);
     const { fromDate, toDate, deptName, deptSecName } = planState
 
+    const planData = useSelector((state) => state.getShiftPlanDetl.shiftData, _.isEqual);
+    const shiftDate = useSelector((state) => state.getShiftDateFormat.dateFormat, _.isEqual);
 
-    const dateRange = eachDayOfInterval({
-        start: new Date('2022-11-01'),
-        end: new Date('2022-11-05'),
-    })
-    const newDateFormat = dateRange.map((val) => {
-        // return { date: moment(val).format('MMM-D'), sunday: moment(val).format('ddd') }
-        return {}
-    })
+    const shiftPlanData = useMemo(() => planData, [planData]);
+    const shiftBaseDateFormat = useMemo(() => shiftDate, [shiftDate]);
 
-    // console.log(planState)
+    useEffect(() => {
+        Object.keys(shiftPlanData).length > 0 ? setPlan(shiftPlanData) : setPlan([]);
+        Object.keys(shiftBaseDateFormat).length > 0 ? setDateFormat(shiftBaseDateFormat) : setDateFormat([]);
+    }, [shiftPlanData, shiftBaseDateFormat])
 
-    console.log('render 2 ')
+    useEffect(() => {
+        return () => {
+            dispatchRedux({ type: GET_SHIFT_PLAN_DETL, payload: [], status: true })
+            dispatchRedux({ type: GET_SHIFT_DATE_FORMAT, payload: [], status: true })
+        }
+    }, [])
+
+    console.log('Duty main card')
     return (
         <CustomLayout title="Duty Planning">
             <ToastContainer />
@@ -57,28 +69,28 @@ const DutyPlanMainCard = () => {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
+                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Name
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
+                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 ID #
                                             </Box>
                                         </TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}>
+                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Days
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee' }}></TableCell>
+                                        <TableCell sx={{ p: 0, backgroundColor: '#f1faee', border: 0.1, borderColor: '#E1E6E1' }}></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {duty.map((row, index) => (
+                                    {plan.map((row, index) => (
                                         <TableRow
                                             key={index}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -86,7 +98,10 @@ const DutyPlanMainCard = () => {
                                             <TableCell
                                                 component="th"
                                                 scope="row"
-                                                sx={{ py: 0, px: 0.5, backgroundColor: '#f1faee', width: 100 }}
+                                                sx={{
+                                                    py: 0, px: 0.5, backgroundColor: '#f1faee', width: 100,
+                                                    border: 0.1, borderColor: '#E1E6E1'
+                                                }}
                                             >
                                                 <Box
                                                     component={Grid}
@@ -101,14 +116,17 @@ const DutyPlanMainCard = () => {
                                                     }}
                                                 >
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {row.name}
+                                                        {row.emp_name}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
                                             <TableCell
                                                 component="th"
                                                 scope="row"
-                                                sx={{ py: 0, px: 0.5, backgroundColor: '#f1faee', width: 50 }}
+                                                sx={{
+                                                    py: 0, px: 0.5, backgroundColor: '#f1faee', width: 50,
+                                                    border: 0.1, borderColor: '#E1E6E1', textAlign: 'center'
+                                                }}
                                             >
                                                 <Box
                                                     component={Button}
@@ -120,8 +138,7 @@ const DutyPlanMainCard = () => {
                                                         fontWeight: 'normal',
                                                     }}
                                                 >
-                                                    12568
-                                                    {/* <DataSaverOnIcon /> */}
+                                                    {row.em_no}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -179,8 +196,13 @@ const DutyPlanMainCard = () => {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        {newDateFormat.map((val, index) => (
-                                            <TableCell key={index} sx={{ p: 0, backgroundColor: '#f1faee' }}>
+                                        {dateFormat && dateFormat.map((val, index) => (
+                                            <TableCell key={index} sx={{
+                                                p: 0,
+                                                border: 0.1, borderColor: '#E1E6E1',
+                                                backgroundColor: val.holiday === 1 ? '#e3f2fd' : '#f1faee',
+                                            }}
+                                            >
                                                 <Box
                                                     component={Grid}
                                                     item
@@ -192,33 +214,47 @@ const DutyPlanMainCard = () => {
                                         ))}
                                     </TableRow>
                                     <TableRow>
-                                        {newDateFormat.map((val, index) => (
-                                            <TableCell key={index} sx={{ p: 0, backgroundColor: '#f1faee' }}>
+                                        {dateFormat && dateFormat.map((val, index) => (
+                                            <TableCell key={index} sx={{
+                                                p: 0,
+                                                backgroundColor: val.sunday === '0' ? '#ffebee' : '#f1faee',
+                                                border: 0.1,
+                                                borderColor: '#E1E6E1',
+                                            }}
+                                            >
                                                 <Box
                                                     component={Grid}
                                                     item
-                                                    sx={{ minHeight: 25, maxHeight: 25, textAlign: 'center' }}
+                                                    sx={{
+                                                        minHeight: 25, maxHeight: 25, textAlign: 'center',
+                                                        textTransform: 'capitalize',
+                                                        color: val.holiday === 1 || val.sunday === '0' ? '#880e4f' : '#212121'
+                                                    }}
                                                 >
-                                                    {val.sunday}
+                                                    {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
                                                 </Box>
                                             </TableCell>
                                         ))}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {newDateFormat.map((row, index) => (
+                                    {plan && plan.map((row, index) => (
                                         <TableRow
                                             key={index}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            selected={true}
+                                            hover={true}
                                         >
-                                            {newDateFormat.map((val, index) => (
+                                            {row.plan[0].map((val, index) => (
                                                 <TableCell key={index} sx={{ p: 0 }}>
                                                     <Box
                                                         component={Grid}
                                                         item
-                                                        sx={{ display: 'flex', minHeight: 25, maxHeight: 25 }}
+                                                        sx={{
+                                                            display: 'flex', minHeight: 25, maxHeight: 25,
+                                                        }}
                                                     >
-                                                        <ShiftSelect />
+                                                        <ShiftSelect data={val} />
                                                     </Box>
                                                 </TableCell>
                                             ))}
@@ -229,8 +265,8 @@ const DutyPlanMainCard = () => {
                         </TableContainer>
                     </Box>
                 </Paper>
-            </Box>
-        </CustomLayout>
+            </Box >
+        </CustomLayout >
     )
 }
 

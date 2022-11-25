@@ -45,7 +45,7 @@ import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
-import { getShiftList } from '../reducers/Shift.Reducer'
+import { getShiftList, getShiftPlanDetl, getShiftDateFormat, getUpdatedShiftId } from '../reducers/Shift.Reducer'
 import { getCommonSettings } from './CommonSett.Reducer';
 import { getCasualLeaveData } from './LeaveData.Reducer';
 import { getJobSummary } from './JobDescription.Reducer'
@@ -131,7 +131,10 @@ const reducer = combineReducers({
     getCreditedCreditedLeaves,
     getCreditedHolidayLeaves,
     getCreditedPrivilegeLeaves,
-    updateCasualLeaveStatus
+    updateCasualLeaveStatus,
+    getShiftPlanDetl,
+    getShiftDateFormat,
+    getUpdatedShiftId
 })
 
 export default reducer;

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { memo } from 'react'
-import { Button, Paper } from '@mui/material'
+import { IconButton, Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import TextField from '@mui/material/TextField'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
@@ -20,7 +20,7 @@ import {
     getEmployeeDetlDutyPlanBased,
     planInitialState,
 } from './DutyPlanFun/DutyPlanFun'
-import { infoNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch } from 'react-redux'
 import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
 import { useEffect } from 'react'
@@ -30,14 +30,18 @@ import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import _ from 'underscore'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { CssVarsProvider, Button } from '@mui/joy'
+import SaveIcon from '@mui/icons-material/Save';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import { axioslogin } from 'src/views/Axios/Axios'
 
 const DutyPlanTopCard = () => {
+    console.log('duty top card')
     const [count, setCount] = useState(0)
-    const [plan, setPlan] = useState([])
-    const [dateFormat, setDateFormat] = useState([])
     const [open, setOpen] = useState(false)
 
-    const { FETCH_EMP_DETAILS } = Actiontypes;
+    const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS } = Actiontypes;
+
     const reduxDispatch = useDispatch()
     const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
 
@@ -47,9 +51,6 @@ const DutyPlanTopCard = () => {
     const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
     const { fromDate, toDate, deptName, deptSecName } = planState
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
-
-
-    // console.log(deptName, deptSecName)
 
     useEffect(() => {
         // common settings
@@ -73,11 +74,27 @@ const DutyPlanTopCard = () => {
     // selected department shift details
     const departmentShiftt = useSelector((state) => state.getDepartmentShiftData.deptShiftData, _.isEqual);
 
-
     const empDetl = useMemo(() => employeeDetl, [employeeDetl]);
     const commonSettings = useMemo(() => commonState, [commonState]);
     const holidayList = useMemo(() => holiday, [holiday]);
     const deptShift = useMemo(() => departmentShiftt, [departmentShiftt])
+
+    //updated shift array for updating into database
+    const getUpdatedShiftId = useSelector((state) => state.getUpdatedShiftId, _.isEqual);
+    const shiftId = useMemo(() => getUpdatedShiftId, [getUpdatedShiftId]);
+
+    const onClickSaveShiftUpdation = async (e) => {
+        e.preventDefault();
+        const updateShiftChanges = await axioslogin.patch("/plan", shiftId)
+        const { success } = updateShiftChanges.data
+        if (success === 1) {
+            succesNofity("Duty Plan Updated")
+        }
+        else {
+            errorNofity("Error Occured!!!Please Contact EDP")
+        }
+    }
+
 
     /****
      * a->before getting the date need to check the validation it exceed current month last days
@@ -117,11 +134,12 @@ const DutyPlanTopCard = () => {
                         //employee details based on selected dept and dept sec
                         const { data, status, message, dateFormat } = values;
                         if (status === 1) {
-                            setPlan(data);
-                            setDateFormat(dateFormat);
+                            reduxDispatch({ type: GET_SHIFT_PLAN_DETL, payload: data, status: false })
+                            reduxDispatch({ type: GET_SHIFT_DATE_FORMAT, payload: dateFormat, status: false })
                             setOpen(false)
                         } else {
-
+                            warningNofity(message)
+                            setOpen(false)
                         }
 
                     })
@@ -131,10 +149,6 @@ const DutyPlanTopCard = () => {
             })
         }
     }
-
-    const planData = useMemo(() => plan, [plan])
-    console.log(planData)
-    console.log(dateFormat)
     return (
         <Paper
             square
@@ -231,11 +245,29 @@ const DutyPlanTopCard = () => {
                         lg: 0,
                         xl: 1,
                     },
+                    justifyContent: 'flex-start'
                 }}
             >
-                <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
-                    Process
+                <CssVarsProvider>
+                    <Box sx={{ p: 0.2 }} >
+                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
+                            color: '#90caf9'
+                        }} >
+                            <PublishedWithChangesIcon />
+                        </Button>
+                    </Box>
+                    <Box sx={{ p: 0.2 }}>
+                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickSaveShiftUpdation} sx={{
+                            color: '#81c784'
+                        }}>
+                            <SaveIcon />
+                        </Button>
+                    </Box>
+                </CssVarsProvider>
+                {/* <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
                 </Button>
+                <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
+                </Button> */}
             </Box>
         </Paper>
     )
