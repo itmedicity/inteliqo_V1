@@ -29,12 +29,15 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const { personalData, personalDataStatus } = loginDetl.empPersonalData;
 
+
+
     const {
         em_no, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
-        em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required, em_id
+        em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required, em_id,
+        contract_status
     } = personalData
 
     const emp = {
@@ -95,7 +98,6 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const religion = emp.religion && emp.religion.toLowerCase();
     const bank = emp.bank && emp.bank.toLowerCase()
-
 
     return (
         <Box sx={{
@@ -553,7 +555,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.dateofJoin === false ? notUpdated : emp.dateofJoin}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.dateofJoin === false || contract_status === 0 ? notUpdated : emp.dateofJoin}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
@@ -565,7 +567,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.constractEnd === false ? notUpdated : emp.constractEnd}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.constractEnd === false || contract_status === 0 ? notUpdated : emp.constractEnd}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
