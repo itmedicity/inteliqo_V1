@@ -29,8 +29,6 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const { personalData, personalDataStatus } = loginDetl.empPersonalData;
 
-
-
     const {
         em_no, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
         desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,
@@ -416,7 +414,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.bloodgroup === false ? notUpdated : emp.bloodgroup}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.bloodgroup === false ? notUpdated : emp.bloodgroup.toLowerCase()}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >
