@@ -36,7 +36,6 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const DutyPlanTopCard = () => {
-    console.log('duty top card')
     const [count, setCount] = useState(0)
     const [open, setOpen] = useState(false)
 

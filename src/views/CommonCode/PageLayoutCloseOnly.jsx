@@ -3,9 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from '../Axios/SessionCheck'
 import FooterCloseOnly from './FooterCloseOnly'
 
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper } from '@mui/material'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CustomHeaderCmpOnly from '../Component/MuiCustomComponent/CustomHeaderCmpOnly'
 
 const PageLayoutCloseOnly = (props) => {
     return (
@@ -13,9 +11,7 @@ const PageLayoutCloseOnly = (props) => {
             <SessionCheck />
             <ToastContainer />
             <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white lead">
-                    <h6>{props.heading}</h6>
-                </div>
+                <CustomHeaderCmpOnly title={props.heading} displayClose={true} />
                 <div className="card-body">
                     <div className="card">
                         <div className="card-body">

@@ -26,12 +26,16 @@ import { useMemo } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import BuilShiftUpdationModal from './DutyPlanFun/BuilShiftUpdationModal'
 
 const DutyPlanMainCard = () => {
     const [plan, setPlan] = useState([])
+    const [open, setOpen] = useState(false);
     const [dateFormat, setDateFormat] = useState([])
 
-    const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT } = Actiontypes;
+    const [updatedPlanfrmModel, setUpdatedPlanfrmModel] = useState({});
+
+    const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_UPDATED_PLAN } = Actiontypes;
 
     const dispatchRedux = useDispatch();
 
@@ -40,25 +44,77 @@ const DutyPlanMainCard = () => {
 
     const planData = useSelector((state) => state.getShiftPlanDetl.shiftData, _.isEqual);
     const shiftDate = useSelector((state) => state.getShiftDateFormat.dateFormat, _.isEqual);
+    const newPlanDetl = useSelector((state) => state.updatedShiftDetlOnModel.shiftPlan, _.isEqual);
 
     const shiftPlanData = useMemo(() => planData, [planData]);
     const shiftBaseDateFormat = useMemo(() => shiftDate, [shiftDate]);
+    const updatedPlanDetl = useMemo(() => newPlanDetl, [newPlanDetl]); // from modal updation
 
     useEffect(() => {
         Object.keys(shiftPlanData).length > 0 ? setPlan(shiftPlanData) : setPlan([]);
         Object.keys(shiftBaseDateFormat).length > 0 ? setDateFormat(shiftBaseDateFormat) : setDateFormat([]);
+        dispatchRedux({ type: FETCH_UPDATED_PLAN, payload: shiftPlanData });
     }, [shiftPlanData, shiftBaseDateFormat])
 
     useEffect(() => {
         return () => {
             dispatchRedux({ type: GET_SHIFT_PLAN_DETL, payload: [], status: true })
             dispatchRedux({ type: GET_SHIFT_DATE_FORMAT, payload: [], status: true })
+            dispatchRedux({ type: FETCH_UPDATED_PLAN, payload: [] });
         }
     }, [])
 
-    console.log('Duty main card')
+    //update the "plan" state after updating the model updation.
+
+    useEffect(() => {
+
+        const updateNewShiftPlan = async (updatedPlanfrmModel) => {
+
+            let { em_no, plan, notApplicableShift } = updatedPlanfrmModel;
+
+            const getNewShiftPlan = (value) => {
+                // updated plan state
+                const newPlan = plan.find((val) => val.plan_slno === value.plan_slno)
+                return value.shift_id === notApplicableShift ? value : newPlan;
+            }
+
+            const newPlanObj = [...updatedPlanDetl]
+
+            const newPlanState = await newPlanObj.map((val) => {
+                if (val.em_no === em_no) {
+                    return {
+                        em_no: val.em_no,
+                        emp_id: val.emp_id,
+                        emp_name: val.emp_name,
+                        plan: [val.plan[0].map(getNewShiftPlan)]
+                    }
+                } else {
+                    return val;
+                }
+            })
+            dispatchRedux({ type: FETCH_UPDATED_PLAN, payload: newPlanState });
+            setPlan(newPlanState)
+        }
+
+        updateNewShiftPlan(updatedPlanfrmModel)
+
+    }, [updatedPlanfrmModel])
+
+
+
+    // console.log(updatedPlanDetl)
+    // console.log(plan)
+
+    //open modal for bulk shift updation
+    const [emNo, setEmno] = useState(0);
+    const builkShiftUpdation = async (em_no) => {
+        setEmno(em_no)
+        setOpen(true)
+    }
+
     return (
-        <CustomLayout title="Duty Planning">
+        <CustomLayout title="Duty Planning" displayClose={true} >
+            <BuilShiftUpdationModal open={open} handleChange={setOpen} emNo={emNo} updation={setUpdatedPlanfrmModel} />
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
                 <DutyPlanTopCard />
@@ -137,6 +193,7 @@ const DutyPlanMainCard = () => {
                                                         p: 0.2,
                                                         fontWeight: 'normal',
                                                     }}
+                                                    onClick={() => builkShiftUpdation(row.em_no)}
                                                 >
                                                     {row.em_no}
                                                 </Box>

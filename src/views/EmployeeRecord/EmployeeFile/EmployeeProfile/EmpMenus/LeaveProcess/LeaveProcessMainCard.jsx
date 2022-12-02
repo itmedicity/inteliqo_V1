@@ -77,7 +77,9 @@ const LeaveProcessMainCard = () => {
 
   const employeeDetl = useMemo(() => state, [state])
 
-  // console.log(employeeDetl)
+  console.log(state)
+
+  console.log(leaveUpdateStat)
 
   const {
     contract_status,

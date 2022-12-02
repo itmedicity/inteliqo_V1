@@ -26,6 +26,7 @@ import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
 import { ToastContainer } from 'react-toastify'
+import CustomHeaderCmpOnly from 'src/views/Component/MuiCustomComponent/CustomHeaderCmpOnly'
 
 const EmployeeRecordEdit = () => {
 
@@ -533,7 +534,8 @@ const EmployeeRecordEdit = () => {
 
         if (probdate > today && cont_date > today && oldContract_Status === 1 && oldprob_status === 1 && oldCategory !== getemployeecategory) {
             //contract training or probation employee to other
-            submitFunction(submitdata)
+            submitFunction(submitdata);
+            history.push(`/Home/LeaveProcess/${id}/${no}`);
         }
         else if (probdate < today && cont_date < today && oldContract_Status === 1 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
@@ -549,10 +551,12 @@ const EmployeeRecordEdit = () => {
             //perm prob to contract
             if (contractflag === 1) {
                 UpdateFunction(submitdata)
+                history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
             else {
                 //perm to perm
                 submit(submitdata)
+                history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
         }
         //employee with permanent or permanent confirmation
@@ -560,15 +564,18 @@ const EmployeeRecordEdit = () => {
             //perm or perm conf to contract
             if (contractflag === 1) {
                 UpdateFunction(submitdata)
+                history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
             else {
                 //permanent to permanent
                 submit(submitdata)
+                history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
         }
         else if (probdate < today && cont_date > today && oldContract_Status === 1 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             //contract confirmation to any
             submitFunction(submitdata)
+            history.push(`/Home/LeaveProcess/${id}/${no}`);
         }
         else {
             //edit without designation change
@@ -641,17 +648,12 @@ const EmployeeRecordEdit = () => {
         history.push('/Home/EmployeeRecordTable')
     })
 
-    const hai = (e) => {
-        e.preventDefault();
-        succesNofity('gtjgj')
-    }
-
     // const reset = () => {
     //     history.push('/Home/EmployeeRecord')
     // }
 
     const Notification = async () => {
-        history.push('/Home/EmployeeRecord')
+        // history.push('/Home/EmployeeRecord')
     }
 
 
@@ -660,9 +662,7 @@ const EmployeeRecordEdit = () => {
             <SessionCheck />
             <ToastContainer />
             <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Employee Register</h5>
-                </div>
+                <CustomHeaderCmpOnly title="Employee Register Edit" displayClose={true} />
                 <form className={classes.empRecordStyle} onSubmit={submitemployeerecord} >
                     <div className="card-body">
                         <div className="row">

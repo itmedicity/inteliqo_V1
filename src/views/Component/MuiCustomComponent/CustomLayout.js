@@ -3,8 +3,17 @@ import { Box, Paper } from '@mui/material'
 import React from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { memo } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/joy/IconButton';
+import { useHistory } from 'react-router-dom';
+const CustomLayout = ({ children, title, displayClose }) => {
 
-const CustomLayout = ({ children, title }) => {
+    const history = useHistory();
+
+    const toRedirectToHome = () => {
+        history.push(`/Home`)
+    }
+
     return (
         <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
             <Paper sx={{ flex: 1, }} >
@@ -17,6 +26,22 @@ const CustomLayout = ({ children, title }) => {
                                     <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
                                         {title}
                                     </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", pr: 1 }}>
+                                <CssVarsProvider>
+                                    {
+                                        displayClose &&
+                                        <IconButton
+                                            variant="outlined"
+                                            size='xs'
+                                            color="danger"
+                                            onClick={toRedirectToHome}
+                                            sx={{ color: '#ef5350' }}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    }
                                 </CssVarsProvider>
                             </Box>
                         </Paper>

@@ -207,6 +207,7 @@ const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractRepor
 const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
 const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
+const LeaveProcessNew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'))
 
 const routes = [
 
@@ -419,8 +420,8 @@ const routes = [
   { path: '/Home/ContractOneYear+CurrentReport', exact: true, name: 'Contract One Year + Current Report', component: ContractOneYear },
   { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
-  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport }
-
+  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
+  { path: '/Home/LeaveProcess/:id/:no', exact: true, name: 'Employee Leave Process', component: LeaveProcessNew }
 ]
 
 export default routes
