@@ -33,6 +33,7 @@ import { useHistory } from 'react-router-dom'
 import CustomModel from '../MuiComponents/CustomModel'
 import CommonCheckBox from '../Component/CommonCheckBox'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
+import { es } from 'date-fns/locale'
 
 const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
@@ -125,6 +126,10 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
     const [destype, setDestype] = useState(0)//for setting destype
 
+    const [p_status, setp_status] = useState(0)
+    const [p_startdate, setp_startdate] = useState('')
+    const [p_enddate, setp_endadate] = useState('')
+
     //date for designation change date
     const getDate = useCallback((e) => {
         var startdate = e.target.value
@@ -187,10 +192,11 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
     //Employee contract status
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-    const { contract_status, em_contract_end_date, em_prob_end_date } = state;
+    const { contract_status, em_prob_end_date, em_contract_end_date, em_doj } = state;
 
     const disp = useMemo(() => display, [display])
     const empname = useMemo(() => name, [name])
+
 
     useEffect(() => {
 
@@ -249,10 +255,16 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 updateDesignation(em_designation)
                 setcompany(em_category)
                 setdesignation(em_designation)
-                setstartdate(em_doj)
-                setenddate(em_prob_end_date)
                 setOld_cont_end_date(em_contract_end_date)
                 setOld_cont_conf_end_date(em_conf_end_date)
+                setp_startdate(em_doj)
+                setp_endadate(em_prob_end_date)
+                const result = await axioslogin.get(`/empcontract/contractByno/${em_no}`)
+                if (result.data.success === 1) {
+                    const { em_cont_start, em_prob_end_date } = result.data.data[0]
+                    setstartdate(em_cont_start)
+                    setenddate(em_prob_end_date)
+                }
             }
         }
         getCompany()
@@ -371,7 +383,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             probation_extend_date: disp === 2 && extended_checkbox === true ? prob_extendDate : null,
             //setting probation end date on hrm_emp_matser when probation or training date extend
             em_prob_end_date: disp === 1 && training_checkbox !== false ? training_extendDate :
-                disp === 2 && extended_checkbox === true ? prob_extendDate : enddate,
+                disp === 2 && extended_checkbox === true ? prob_extendDate : p_enddate,
             em_cont_end: old_cont_end_date,
             em_cont_start: startdate
         }
@@ -479,7 +491,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
         const getdatasub1 = async () => {
             const result = await axioslogin.post('/empmast/company', updateData)
             const { message, success } = result.data;
-            if (success === 1) {
+            if (success === 1 && contract_status === 1) {
                 getcategorydata()
                 //succesNofity(message);
                 setcount(count + 1)
@@ -493,7 +505,12 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 else {
                     infoNofity(message)
                 }
-
+            } else if (success === 1 && contract_status === 0) {
+                getcategorydata()
+                //succesNofity(message);
+                setcount(count + 1)
+                getdata()
+                reset()
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
@@ -504,27 +521,24 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             if (old_destype[0] === 2 || old_destype[0] === 1 && old_type[0] !== 2 || new_type[0] !== 1) {
                 getdatasub1()
 
-            }
-            //contract to permanent change
+            } //contract to permanent change
             else if (old_type[0] === 2 && new_type[0] === 1 && old_destype[0] === 1 || old_destype[0] === 2) {
                 setcp_open(1)
                 setOpen(true)
                 setcp_message('Cannot Change Employee Category Contract to Permanent, Please Close Contract First!!')
-            }
-            else {
+            } else {
                 warningNofity('Contract Employee Category Change Only Through Contract Process Window')
             }
-        }
-        else if (designation !== selectDesignation && ineffectdate === '') {
+        } else if (contract_status === 0) {
+            //if the category is permanent+ probation
+            getdatasub1()
+        } else if (designation !== selectDesignation && ineffectdate === '') {
             infoNofity("Please Add Designation Change Date")
-        }
-        else if (designation !== selectDesignation && ineffectdate !== '') {
+        } else if (designation !== selectDesignation && ineffectdate !== '') {
             getdatasub()
-        }
-        else if (company !== getemployeecategory && cateineffectdate === '') {
+        } else if (company !== getemployeecategory && cateineffectdate === '') {
             infoNofity("Please Add Category Change Date")
-        }
-        else {
+        } else {
             getdatasub1()
         }
     }
@@ -569,6 +583,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
     const Close = () => {
         setOpen(false)
     }
+    //probation extend checkbox value
     const getextendValue = useCallback((e) => {
         if (e.target.checked === true) {
             setextended_checkbox(true)
@@ -577,6 +592,8 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             setextended_checkbox(false)
         }
     })
+
+    //training extend checkbox value
     const gettraingCheckBox = useCallback((e) => {
         if (e.target.checked === true) {
             setTraining_Checkbox(true)
@@ -795,14 +812,14 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     <Box sx={{ width: "20%", fontWeight: 500, }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" >
-                                                Training Start Date : {startdate}
+                                                Training Start Date : {old_type[0] === 2 ? startdate : startdate}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ width: "20%", pl: 0.5, fontWeight: 500, }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" >
-                                                Training End Date :{enddate}
+                                                Training End Date :{old_type[0] === 2 ? p_enddate : p_enddate}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
@@ -874,14 +891,14 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                         <Box sx={{ width: "20%", fontWeight: 500, }}>
                                             <CssVarsProvider>
                                                 <Typography textColor="text.secondary" >
-                                                    Probation Start Date : {startdate}
+                                                    Probation Start Date : {old_type[0] === 2 ? startdate : p_startdate}
                                                 </Typography>
                                             </CssVarsProvider>
                                         </Box>
                                         <Box sx={{ width: "20%", pl: 0.5, fontWeight: 500, }}>
                                             <CssVarsProvider>
                                                 <Typography textColor="text.secondary" >
-                                                    Probation End Date :{enddate}
+                                                    Probation End Date :{old_type[0] === 2 ? p_enddate : p_enddate}
                                                 </Typography>
                                             </CssVarsProvider>
                                         </Box>

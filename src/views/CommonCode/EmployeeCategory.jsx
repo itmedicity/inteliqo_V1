@@ -41,6 +41,7 @@ const EmployeeCategory = (props) => {
                     className="ml-1"
                     defaultValue={0}
                     style={props.style}
+                    disabled={props.disable}
                 >
                     <MenuItem value='0' disabled>
                         Employee Category
