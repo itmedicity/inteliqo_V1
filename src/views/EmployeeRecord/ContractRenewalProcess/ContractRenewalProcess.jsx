@@ -25,7 +25,7 @@ import { useDispatch } from 'react-redux';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import moment from 'moment';
 import _ from 'underscore';
-import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
+import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, employeeUpdateExpTable, employeeUpdatePersonaltable, employeeUpdateQualificationTable, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 
 const ContractRenewalProcess = () => {
@@ -259,6 +259,7 @@ const ContractRenewalProcess = () => {
                 warningNofity("Employee ID Already Exist")
             }
             else {
+
                 //closing first contract
                 const result = await axioslogin.patch('/empcontract/contractrenew', contractclose.contCloseData)
                 const { success } = result.data
@@ -284,19 +285,49 @@ const ContractRenewalProcess = () => {
                                     updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
                                         const { modelStatus, openStatus, disableStatus } = messsage;
                                         if (modelStatus === 1 && contstatus === 0) {
-                                            employeeRecordUpdationMandatory(newcontractdetl, oldPersonalData).then((message) => {
-                                                if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                                    employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
-                                                        if (status === 1) {
-                                                            setmodelvalue(1)
-                                                            setOpenModel(true)
-                                                            setDisable(false)
+                                            employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                                                const { contrLogStatus, message } = values
+                                                if (contrLogStatus === 1) {
+                                                    employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+                                                        const { persoStatus, message } = values
+                                                        if (persoStatus === 1) {
+                                                            employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+                                                                const { qualifStatus, message } = values
+                                                                if (qualifStatus === 1) {
+                                                                    employeeUpdateExpTable(newcontractdetl).then((values) => {
+                                                                        const { expeStatus, message } = values
+                                                                        if (expeStatus === 1) {
+                                                                            if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                                                                                employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
+                                                                                    if (status === 1) {
+                                                                                        setmodelvalue(1)
+                                                                                        setOpenModel(true)
+                                                                                        setDisable(false)
+                                                                                    }
+                                                                                })
+                                                                            } else {
+                                                                                setmodelvalue(1)
+                                                                                setOpenModel(true)
+                                                                                setDisable(false)
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            warningNofity(message)
+                                                                        }
+                                                                    })
+                                                                }
+                                                                else {
+                                                                    warningNofity(message)
+                                                                }
+                                                            })
+                                                        }
+                                                        else {
+                                                            warningNofity(message)
                                                         }
                                                     })
-                                                } else {
-                                                    setmodelvalue(1)
-                                                    setOpenModel(true)
-                                                    setDisable(false)
+                                                }
+                                                else {
+                                                    warningNofity("error while updation")
                                                 }
                                             })
                                             /** 1 -> next category contain contract
@@ -304,19 +335,49 @@ const ContractRenewalProcess = () => {
                                         } else if (modelStatus === 1 && contstatus === 1) {
                                             employeeNewContractEntry(newcontractdetl).then((message) => {
                                                 if (status === 1) {
-                                                    employeeRecordUpdationMandatory(newcontractdetl, oldPersonalData).then((message) => {
-                                                        if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                                            employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
-                                                                if (status === 1) {
-                                                                    setmodelvalue(1)
-                                                                    setOpenModel(true)
-                                                                    setDisable(false)
+                                                    employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                                                        const { contrLogStatus, message } = values
+                                                        if (contrLogStatus === 1) {
+                                                            employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+                                                                const { persoStatus, message } = values
+                                                                if (persoStatus === 1) {
+                                                                    employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+                                                                        const { qualifStatus, message } = values
+                                                                        if (qualifStatus === 1) {
+                                                                            employeeUpdateExpTable(newcontractdetl).then((values) => {
+                                                                                const { expeStatus, message } = values
+                                                                                if (expeStatus === 1) {
+                                                                                    if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                                                                                        employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
+                                                                                            if (status === 1) {
+                                                                                                setmodelvalue(1)
+                                                                                                setOpenModel(true)
+                                                                                                setDisable(false)
+                                                                                            }
+                                                                                        })
+                                                                                    } else {
+                                                                                        setmodelvalue(1)
+                                                                                        setOpenModel(true)
+                                                                                        setDisable(false)
+                                                                                    }
+                                                                                }
+                                                                                else {
+                                                                                    warningNofity(message)
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                        else {
+                                                                            warningNofity(message)
+                                                                        }
+                                                                    })
+                                                                }
+                                                                else {
+                                                                    warningNofity(message)
                                                                 }
                                                             })
-                                                        } else {
-                                                            setmodelvalue(1)
-                                                            setOpenModel(true)
-                                                            setDisable(false)
+                                                        }
+                                                        else {
+                                                            warningNofity("error while updation")
                                                         }
                                                     })
                                                 } else {
