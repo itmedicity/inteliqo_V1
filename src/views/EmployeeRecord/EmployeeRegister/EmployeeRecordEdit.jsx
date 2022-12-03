@@ -27,6 +27,8 @@ import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
 import { ToastContainer } from 'react-toastify'
 import CustomHeaderCmpOnly from 'src/views/Component/MuiCustomComponent/CustomHeaderCmpOnly'
+import { useDispatch } from 'react-redux'
+import { setPersonalData } from 'src/redux/actions/Profile.action'
 
 const EmployeeRecordEdit = () => {
 
@@ -34,6 +36,7 @@ const EmployeeRecordEdit = () => {
     const classes = useStyles();
     const history = useHistory()
 
+    const dispatch = useDispatch();
 
     // Context API
     const { selectedDept,
@@ -83,6 +86,12 @@ const EmployeeRecordEdit = () => {
     const [oldprob_end_date, setOldprob_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [old_cont_end_date, setOld_cont_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [oldprob_status, setOld_prob_Status] = useState(0)
+
+    // to redirection and dispatch the updated details to the Leave Process Component
+    const redirectionOnUpdation = (id, no) => {
+        dispatch(setPersonalData(no));
+        history.push(`/Home/LeaveProcess/${id}/${no}`);
+    }
 
     // use state intialization
     const [employeerecord, getFormdata] = useState({
@@ -550,32 +559,42 @@ const EmployeeRecordEdit = () => {
         else if (oldContract_Status === 0 && oldprob_status === 1 && oldCategory !== getemployeecategory) {
             //perm prob to contract
             if (contractflag === 1) {
-                UpdateFunction(submitdata)
-                history.push(`/Home/LeaveProcess/${id}/${no}`);
+                UpdateFunction(submitdata).then((values) => {
+                    redirectionOnUpdation(id, no)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
             else {
                 //perm to perm
-                submit(submitdata)
-                history.push(`/Home/LeaveProcess/${id}/${no}`);
+                submit(submitdata).then((values) => {
+                    redirectionOnUpdation(id, no)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
         }
         //employee with permanent or permanent confirmation
         else if (oldContract_Status === 0 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             //perm or perm conf to contract
             if (contractflag === 1) {
-                UpdateFunction(submitdata)
-                history.push(`/Home/LeaveProcess/${id}/${no}`);
+                UpdateFunction(submitdata).then((values) => {
+                    redirectionOnUpdation(id, no)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
             else {
                 //permanent to permanent
-                submit(submitdata)
-                history.push(`/Home/LeaveProcess/${id}/${no}`);
+                submit(submitdata).then((values) => {
+                    redirectionOnUpdation(id, no)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
         }
         else if (probdate < today && cont_date > today && oldContract_Status === 1 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             //contract confirmation to any
-            submitFunction(submitdata)
-            history.push(`/Home/LeaveProcess/${id}/${no}`);
+            submitFunction(submitdata).then((values) => {
+                redirectionOnUpdation(id, no)
+            })
+            // history.push(`/Home/LeaveProcess/${id}/${no}`);
         }
         else {
             //edit without designation change
