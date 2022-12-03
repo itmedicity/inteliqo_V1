@@ -1,25 +1,19 @@
 import { CssVarsProvider } from '@mui/joy'
 import { Box, Paper, Typography } from '@mui/material'
-import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
-import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import moment from 'moment';
 import { addDays } from 'date-fns';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { useDispatch } from 'react-redux';
 import CommonCheckBox from 'src/views/Component/CommonCheckBox';
-import { axioslogin } from 'src/views/Axios/Axios';
 import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySelect';
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
 
 
-const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract, emp_doj, emp_retireDate, contractrenew, setContractrenew, contractTpPermanent, setcontractTpPermanent }) => {
+const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract, emp_retireDate, contractrenew, setContractrenew, contractTpPermanent, setcontractTpPermanent }) => {
     const dispatch = useDispatch()
-    // useContext
-    const { getemployeecategory, udateemployeecategory } = useContext(PayrolMasterContext)
-    // setNewCategory(getemployeecategory)
 
     const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
 
@@ -28,7 +22,6 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
     const [permanentcate, setpermanentcate] = useState(0)//setting permanent category
     const [renewCate, setRenewCate] = useState(0)
 
-    const dateofjoin = useMemo(() => emp_doj, [emp_doj])
     const retirementDate = useMemo(() => emp_retireDate, [emp_retireDate])
 
     //setting contract start and end date
@@ -63,7 +56,7 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
                 type: Actiontypes.FETCH_NEW_CAT, payload: renewCate
             })
         }
-    }, [permanentcate, renewCate])
+    }, [permanentcate, renewCate, dispatch])
 
     //checkbox for contract renewal process
     const getContract = useCallback((e) => {
@@ -76,7 +69,7 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
             setContractrenew(false)
             setcontractTpPermanent(true)
         }
-    })
+    }, [])
 
     //checkbox for contract to permannet 
     const getPermanent = useCallback((e) => {
@@ -88,7 +81,7 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
             setcontractTpPermanent(false)
             setContractrenew(true)
         }
-    })
+    }, [])
 
 
     return (
