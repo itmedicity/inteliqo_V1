@@ -1,14 +1,13 @@
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Chip, IconButton, Paper } from '@mui/material'
+import { Box, IconButton, Paper } from '@mui/material'
 import React, { Fragment } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import TextInput from 'src/views/Component/TextInput';
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
 import EXistContractDetl from './EXistContractDetl';
@@ -27,6 +26,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, employeeUpdateExpTable, employeeUpdatePersonaltable, employeeUpdateQualificationTable, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
+import warning from 'warning';
 
 const ContractRenewalProcess = () => {
     const { id, no } = useParams()
@@ -119,7 +119,7 @@ const ContractRenewalProcess = () => {
         return (
             dispatch(setEmployeeProcessDetail(id))
         )
-    }, [newCatgeory])
+    }, [newCatgeory, dispatch, id, no])
 
 
     //function for open leave model
@@ -150,7 +150,7 @@ const ContractRenewalProcess = () => {
 
     //new entry contract details
     const newcontractdetl = {
-        em_no: newempId,
+        em_no: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
         em_id: no,
         em_cont_start: newcontractstart,
         em_cont_end: newcontractend,
@@ -223,7 +223,7 @@ const ContractRenewalProcess = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success == 2) {
+            else if (success === 2) {
                 setAttendanceData([])
             }
             else {
@@ -232,7 +232,7 @@ const ContractRenewalProcess = () => {
         }
         getattendanceData()
 
-    }, [no])
+    }, [no, contractstart, contractend])
 
     //function for saving new contract
     const RenewOldContract = async (e) => {
@@ -298,8 +298,9 @@ const ContractRenewalProcess = () => {
                                                                         const { expeStatus, message } = values
                                                                         if (expeStatus === 1) {
                                                                             if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                                                                employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
-                                                                                    if (status === 1) {
+                                                                                employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+                                                                                    const { salaryUpdtStatus, message } = values
+                                                                                    if (salaryUpdtStatus === 1) {
                                                                                         setmodelvalue(1)
                                                                                         setOpenModel(true)
                                                                                         setDisable(false)
@@ -310,24 +311,21 @@ const ContractRenewalProcess = () => {
                                                                                 setOpenModel(true)
                                                                                 setDisable(false)
                                                                             }
-                                                                        }
-                                                                        else {
+                                                                        } else {
                                                                             warningNofity(message)
                                                                         }
                                                                     })
-                                                                }
-                                                                else {
+                                                                } else {
                                                                     warningNofity(message)
                                                                 }
                                                             })
-                                                        }
-                                                        else {
+                                                        } else {
                                                             warningNofity(message)
                                                         }
                                                     })
                                                 }
                                                 else {
-                                                    warningNofity("error while updation")
+                                                    warningNofity(message)
                                                 }
                                             })
                                             /** 1 -> next category contain contract
@@ -389,9 +387,11 @@ const ContractRenewalProcess = () => {
                                         }
                                     })
                                 } else {
-                                    warningNofity("Error While closing Contract")
+                                    warningNofity(message)
                                 }
                             })
+                        } else {
+                            warningNofity(message)
                         }
                     })
                 }
