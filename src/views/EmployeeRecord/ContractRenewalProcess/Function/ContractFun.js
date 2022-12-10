@@ -1,31 +1,14 @@
 import { axioslogin } from "src/views/Axios/Axios"
 
-export const employeeRecordUpdationMandatory = async (newcontractdetl, oldPersonalData) => {
-    let message = { persoStatus: 0, qualifStatus: 0, expeStatus: 0, contrLogStatus: 0, message: "" }
+export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
 
-    console.log(oldPersonalData.personalData);
     //contract log updation
     const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
-    console.log("working");
     if (updateContractLogTable.data.success === 1) {
-        return { ...message, persoStatus: 0, qualifStatus: 0, expeStatus: 0, contrLogStatus: 1, message: "Update Personal Information Successfully" }
+        return { contrLogStatus: 1, message: "Update Data Successfully" }
     }
-
-    //update Personal information
-    const updatePersonalInfom = await axioslogin.patch('/empcontract/updatePersonal', newcontractdetl)
-    if (updatePersonalInfom.data.success === 2) {
-        return { ...message, persoStatus: 1, qualifStatus: 0, expeStatus: 0, contrLogStatus: 0, message: "Update Personal Information Successfully" }
-    }
-
-    //update qualification
-    const updateQualification = await axioslogin.patch('/empcontract/updateQual', newcontractdetl)
-    if (updateQualification.data.success === 2) {
-        return { ...message, persoStatus: 0, qualifStatus: 1, expeStatus: 0, contrLogStatus: 0, message: "Update Qualification Successfully" }
-    }
-    //update Experience
-    const updateExperience = await axioslogin.patch('/empcontract/updateExp', newcontractdetl)
-    if (updateExperience.data.success === 2) {
-        return { ...message, persoStatus: 0, qualifStatus: 0, expeStatus: 1, contrLogStatus: 0, message: "Update Personal Information Successfully" }
+    else {
+        return { contrLogStatus: 0, message: "Error while updating" }
     }
 
     // return  { ...message, persoStatus: 0, qualifStatus: 0 , expeStatus: 1, message: "Update Personal Information Successfully" }
@@ -33,12 +16,14 @@ export const employeeRecordUpdationMandatory = async (newcontractdetl, oldPerson
 
 
 export const employeeRecordUpdationUserChoice = async (newcontractdetl, oldPersonalData) => {
-    let message = { salaryUpdtStatus: 0, contrLogStatus: 0, message: "" }
+    //let message = { salaryUpdtStatus: 0, message: "" }
     //update salary table updation
 
     const updateSalaryTableUpdation = await axioslogin.patch('/empcontract/updateEarn', newcontractdetl)
     if (updateSalaryTableUpdation.data.success === 2) {
-        return { ...message, salaryUpdtStatus: 1, contrLogStatus: 0, message: "Update Personal Information Successfully" }
+        return { salaryUpdtStatus: 1, message: "Update Personal Information Successfully" }
+    } else {
+        return { salaryUpdtStatus: 0, message: "Error While Updating salary information" }
     }
 
 }
@@ -50,7 +35,7 @@ export const updateoldAttndanceDetail = async (attendancedetls) => {
     if (success === 1) {
         return { status: 1, message: "updated successfully" }
     } else {
-        return { status: 0, message: "Error Updating" }
+        return { status: 0, message: "Error Updating Attendance" }
     }
 }
 
@@ -61,7 +46,7 @@ export const updateArrearSalary = async (arreardetails) => {
     if (success === 1) {
         return { status: 1, message: "updated successfully" }
     } else {
-        return { status: 0, message: "Error Updating " }
+        return { status: 0, message: "Error Updating Arrear Salary" }
     }
 }
 
@@ -89,10 +74,10 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
             const { success } = resultemployee.data;
             if (success === 1) {
                 if (oldCategory !== em_category) {
-                    return { ...messsage, modelStatus: 1, openStatus: 1, disableStatus: 0 }
+                    return { ...messsage, modelStatus: 1, openStatus: 1, disableStatus: 0, message: "Data Inserted successfully" }
                 }
                 else {
-                    return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1 }
+                    return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
                 }
 
             }
@@ -108,5 +93,39 @@ export const employeeNewContractEntry = async (newcontractdetl) => {
         return { status: 1, message: "Data Inserted successfully" }
     } else {
         return { status: 0, message: "Error Updating " }
+    }
+}
+
+export const employeeUpdatePersonaltable = async (newcontractdetl) => {
+    //update Personal information
+    const updatePersonalInfom = await axioslogin.patch('/empcontract/updatePersonal', newcontractdetl)
+    if (updatePersonalInfom.data.success === 2) {
+        return { persoStatus: 1, message: "Update Personal Information Successfully" }
+    } else {
+        return { persoStatus: 0, message: "Error While Updating Personal Table" }
+    }
+
+}
+
+export const employeeUpdateQualificationTable = async (newcontractdetl) => {
+
+    //update qualification
+    const updateQualification = await axioslogin.patch('/empcontract/updateQual', newcontractdetl)
+    if (updateQualification.data.success === 2) {
+        return { qualifStatus: 1, message: "Update Qualification Successfully" }
+    }
+    else {
+        return { qualifStatus: 0, message: "Error while updating Qualification Table" }
+    }
+}
+
+export const employeeUpdateExpTable = async (newcontractdetl) => {
+
+    //update Experience
+    const updateExperience = await axioslogin.patch('/empcontract/updateExp', newcontractdetl)
+    if (updateExperience.data.success === 2) {
+        return { expeStatus: 1, message: "Update Personal Information Successfully" }
+    } else {
+        return { expeStatus: 0, message: "Error While Updating Experience Table" }
     }
 }

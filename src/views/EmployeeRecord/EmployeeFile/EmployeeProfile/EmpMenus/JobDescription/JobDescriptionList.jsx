@@ -1,39 +1,13 @@
-import { CssVarsProvider } from '@mui/joy'
+import { CssVarsProvider } from '@mui/joy';
 import Typography from '@mui/joy/Typography';
-import { Box, CircularProgress, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useMemo, } from 'react'
-//import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
-//import IconButton from '@mui/joy/IconButton';
-//import CloseIcon from '@mui/icons-material/Close';
-//import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-//import ViewCompactAltOutlinedIcon from '@mui/icons-material/ViewCompactAltOutlined';
-//import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-//import DesignationMast from 'src/views/CommonCode/DesignationMast';
-//import { PayrolMasterContext } from 'src/Context/MasterContext';
-//import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { Box, CircularProgress, Paper } from '@mui/material';
+import React, { Fragment, Suspense, useMemo, useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-//import TextInput from 'src/views/Component/TextInput';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-//import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
-//import { useHistory } from 'react-router-dom';
 import { setJobSummary } from 'src/redux/actions/JobDescription.Action';
-import { setJobDuties } from 'src/redux/actions/JobDuties.Action';
-import { setJobPerformance } from 'src/redux/actions/JobPerformance.Action';
-import { setJobCompetency } from 'src/redux/actions/JobCompetency.Action';
-import { setJobQualification } from 'src/redux/actions/JobQualifi.Action';
-import { setJobGeneric } from 'src/redux/actions/JobGeneric.Action';
-
-// const JobSummary = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobSummaryEmp'));
-// const DutyRespos = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/DutiesEmp'));
-// // const Performance = React.lazy(() => import('./JobDescEmpComponent/Jobperformance'));
-// const Generic = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobGenericEmp'));
-// const Performance = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/Jobperformance'));
-// const Competency = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescEmpComponent/JobCompetency'))
+import { axioslogin } from 'src/views/Axios/Axios';
 
 const Progress = () => {
     return (
@@ -42,9 +16,8 @@ const Progress = () => {
         </Box>)
 };
 
-const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, desgname, setflag }) => {
+const JobDescriptionList = ({ flag, setflag, id }) => {
 
-    //const history = useHistory()
     const dispatch = useDispatch();
     const [summary, setSummary] = useState({
         objective: '',
@@ -55,38 +28,35 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
         equipment_used: '',
         desig: '',
         dept: '',
-        sect: ''
+        sect: '',
+        date: '',
+        revisiondate: '',
+        docno: 0
     })
-    const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept, sect } = summary
+    const { objective, scope, branch_name, working_hour, reporting_dept,
+        equipment_used, desig, dept, sect } = summary
 
     const [generic, setGeneric] = useState({
         experience_year: '',
-        age_from: '',
-        age_to: '',
+        age_from: 0,
+        age_to: 0,
         is_female: '',
         is_male: ''
     })
     const { experience_year, is_female, is_male, age_from, age_to } = generic
-    const [qualification, setQualification] = useState(0)
 
-    // useEffect(() => {
-    //     dispatch(setPersonalData(no))
-    // }, [no, dispatch])
+    //redux data from login employee details via profile. 
     const getempData = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
 
-    //useMemo for data coming from job description table
-    const checkData1 = useMemo(() => {
-        return {
-            designation: designation,
-            dept_id: dept_id,
-            sect_id: sect_id
-        }
-    }, [designation, dept_id, sect_id])
+    //dispatch from data job description table
+    useEffect(() => {
+        dispatch(setJobSummary(id))
+    }, [dispatch, id])
 
     //useMemo for data coming from employee profile
-    const checkData2 = useMemo(() => {
+    const checkData = useMemo(() => {
         return {
             designation: getempData.em_designation,
             dept_id: getempData.em_department,
@@ -95,49 +65,47 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
     }, [getempData.em_designation, getempData.em_department, getempData.em_dept_section])
 
     useEffect(() => {
-        if (flag === 1) {
-            //dispatch for job description view, when job description table preview click
-            dispatch(setJobSummary(checkData1))
-            dispatch(setJobDuties(checkData1))
-            dispatch(setJobPerformance(checkData1))
-            dispatch(setJobCompetency(checkData1))
-            dispatch(setJobQualification(checkData1))
-            dispatch(setJobGeneric(checkData1))
+        if (checkData !== 0) {
+            const getId = async (checkData) => {
+                const result = await axioslogin.post('/jobsummary/check', checkData)
+                const { data, success } = result.data
+                if (success === 1) {
+                    const { summary_slno } = data[0]
+                    dispatch(setJobSummary(summary_slno))
+                }
+            }
+            getId(checkData)
         }
-        else {
-            dispatch(setJobSummary(checkData2))
-            dispatch(setJobDuties(checkData2))
-            dispatch(setJobPerformance(checkData2))
-            dispatch(setJobCompetency(checkData2))
-            dispatch(setJobQualification(checkData2))
-            dispatch(setJobGeneric(checkData2))
-        }
-        return () => {
-            dispatch(setJobSummary())
-            dispatch(setJobDuties())
-            dispatch(setJobPerformance())
-            dispatch(setJobCompetency())
-            dispatch(setJobQualification())
-            dispatch(setJobGeneric())
-        }
-    }, [dispatch, flag, checkData1, checkData2])
+    }, [checkData, dispatch])
 
-    const state = useSelector((state) => {
+    const newState = useSelector((state) => {
         return {
-            jobSummary: state.getJobSummary.jobSummaryList || 0,
-            jobDuties: state.getJobDuties.jobDutiesList || 0,
-            jobPerformance: state.getJobPerformance.jobPerformanceList || 0,
-            jobCompetency: state.getJobCompetency.jobCompetencyList || 0,
-            jobQualification: state.getJobQualification.jobQualificationList || 0,
-            jobGeneric: state.getJobGenric.jobGenericList || 0
+            jobDuties: state.getJobSummary.jobDuties.jobDutiesList,
+            jobCompetency: state.getJobSummary.jobCompetency.jobCompetencyList,
+            jobGeneric: state.getJobSummary.jobGeneric.jobGenericList,
+            jobPerformance: state.getJobSummary.jobPerformance.jobPerformanceList,
+            jobQualification: state.getJobSummary.jobQualification.jobQualificationList,
+            jobSummary: state.getJobSummary.jobSummary.jobSummaryList
         }
     })
+    const { jobDuties, jobCompetency, jobGeneric, jobPerformance, jobQualification, jobSummary } = newState;
 
-    const { jobSummary, jobDuties, jobPerformance, jobCompetency, jobQualification, jobGeneric } = state
+    const jsummary = useMemo(() => jobSummary, [jobSummary])
+    const jDuty = useMemo(() => jobDuties, [jobDuties])
+    const jCompetency = useMemo(() => jobCompetency, [jobCompetency])
+    const jPerformance = useMemo(() => jobPerformance, [jobPerformance])
+    const jGeneric = useMemo(() => jobGeneric, [jobGeneric])
+    const jQualify = useMemo(() => jobQualification, [jobQualification])
 
+
+
+    //destructuring job summary 
     useEffect(() => {
-        if (jobSummary.length !== 0) {
-            const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept, sect } = jobSummary[0];
+        if (jsummary.length !== 0) {
+            const { objective, scope, branch_name, working_hour,
+                reporting_dept, equipment_used, desig, dept,
+                sect, Docno, date, edit_date } = jsummary[0];
+
             const summary = {
                 objective: objective === null ? 'Not Updated' : objective,
                 scope: scope === null ? 'Not Updated' : scope,
@@ -147,22 +115,25 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 equipment_used: equipment_used === null ? 'Not updated' : equipment_used,
                 desig: desig === null ? 'Not Updated' : desig,
                 dept: dept === null ? 'Not Updated' : dept,
-                sect: sect === null ? 'Not Updated' : sect
+                sect: sect === null ? 'Not Updated' : sect,
+                date: date == null ? 'NIL' : date,
+                revisiondate: edit_date === null ? 'NIL' : edit_date,
+                docno: Docno === null ? 'NIL' : Docno
             }
             setSummary(summary)
         }
         return () => {
             setSummary()
         }
-    }, [jobSummary.length])
+    }, [jsummary.length])
 
     useEffect(() => {
-        if (jobGeneric.length !== 0) {
-            const { experience_year, is_female, is_male, age_from, age_to } = jobGeneric[0]
+        if (jGeneric.length !== 0) {
+            const { experience_year, is_female, is_male, age_from, age_to } = jGeneric[0]
             const generic = {
                 experience_year: experience_year === 0 ? 'Not Updated' : experience_year,
-                is_female: is_female === 0 ? 0 : is_female,
-                is_male: is_male === 0 ? 0 : is_male,
+                is_female: is_female === 0 ? 0 : 'Female',
+                is_male: is_male === 0 ? 0 : 'Male',
                 age_from: age_from === 0 ? 0 : age_from,
                 age_to: age_to === 0 ? 0 : age_to,
             }
@@ -171,21 +142,12 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
         return () => {
             setGeneric()
         }
-    }, [jobGeneric.length])
-
-    useEffect(() => {
-        if (jobQualification.length !== 0) {
-            setQualification(jobQualification)
-        }
-        return () => {
-            setQualification()
-        }
-
-    }, [jobQualification.length])
+    }, [jGeneric.length])
 
     const ViewPage = async () => {
         setflag(0)
     }
+
 
     return (
         <Fragment>
@@ -202,7 +164,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                     <Box sx={{ flex: 1, textAlign: 'center', fontWeight: 600, pt: 0.5 }} >
                         <CssVarsProvider>
                             <Typography textColor="text.secondary">
-                                JOB DESCRIPTION - {flag === 1 ? desgname : getempData.desg_name}
+                                JOB DESCRIPTION - {flag === 1 ? desig.toUpperCase() : getempData.desg_name.toUpperCase()}
                             </Typography>
                         </CssVarsProvider>
                     </Box>
@@ -389,7 +351,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 </Box>
                 <Suspense fallback={<Progress />} >
                     {
-                        jobDuties && jobDuties.map((val) => {
+                        jDuty && jDuty.map((val) => {
                             return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                                 key={val.duties_slno}>
                                 <Box sx={{ p: 1, display: "flex", justifyContent: "center", width: "5%", height: 'auto' }} >
@@ -453,7 +415,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 </Box>
                 <Suspense fallback={<Progress />} >
                     {
-                        jobPerformance && jobPerformance.map((val) => {
+                        jPerformance && jPerformance.map((val) => {
                             return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                                 key={val.specification_slno}>
                                 <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
@@ -470,12 +432,18 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "60%", height: 'auto' }} >
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary">
-                                            {val.kpi}
-                                        </Typography>
-                                    </CssVarsProvider>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "60%", height: 'auto', flexDirection: 'column' }} >
+                                    {
+                                        val.kpi.split(",") && val.kpi.split(",").map((id) => {
+                                            return <Box key={id}>
+                                                <CssVarsProvider >
+                                                    <Typography textColor="text.secondary">
+                                                        -{id}
+                                                    </Typography>
+                                                </CssVarsProvider>
+                                            </Box>
+                                        })
+                                    }
                                 </Box>
                                 <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "10%", height: 'auto', justifyContent: 'center' }} >
                                     <CssVarsProvider>
@@ -524,7 +492,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                 </Box>
                 <Suspense fallback={<Progress />} >
                     {
-                        jobCompetency && jobCompetency.map((val) => {
+                        jCompetency && jCompetency.map((val) => {
                             return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
                                 key={val.competency_slno}>
                                 <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
@@ -541,12 +509,25 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "70%", height: 'auto' }} >
-                                    <CssVarsProvider>
+                                <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "70%", height: 'auto', flexDirection: 'column' }} >
+
+                                    {
+                                        val.competency_desc.split(",") && val.competency_desc.split(",").map((id) => {
+                                            return <Box key={id}>
+                                                <CssVarsProvider >
+                                                    <Typography textColor="text.secondary">
+                                                        -{id}
+                                                    </Typography>
+                                                </CssVarsProvider>
+                                            </Box>
+                                        })
+                                    }
+
+                                    {/* <CssVarsProvider>
                                         <Typography textColor="text.secondary">
                                             {val.competency_desc}
                                         </Typography>
-                                    </CssVarsProvider>
+                                    </CssVarsProvider> */}
                                 </Box>
                             </Box>
                         })
@@ -590,7 +571,7 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                     </Box>
                     <Box borderRight={1} borderBottom={1} sx={{ p: 1, display: "flex", width: "75%", height: 35, }} >
                         {
-                            qualification && qualification.map((val) => {
+                            jQualify && jQualify.map((val) => {
                                 return <Box sx={{ display: 'flex' }} key={val.qualification_slno}>
                                     <Box sx={{ textTransform: "capitalize", }}>
                                         <CssVarsProvider>
@@ -641,102 +622,6 @@ const JobDescriptionList = ({ dept_id, designation, flag, sect_id, deptname, des
                         </CssVarsProvider>
                     </Box>
                 </Box>
-
-                {/* Job Summary */}
-                {/* {
-                    jobdescview > 0 ?
-                        <Suspense fallback={<Progress />} >
-                            <JobSummary
-                                selectDesignation={getempData.em_designation}
-                                selectedDept={getempData.em_department}
-                                selectDesignationName={getempData.desg_name}
-                                selectedDeptName={getempData.dept_name}
-                                setJobdescView={setJobdescView}
-                                selectDeptSection={getempData.em_dept_section}
-                            />
-                        </Suspense>
-
-                        : flag === 1 ?
-                            <Suspense fallback={<Progress />} >
-                                <JobSummary
-                                    selectDesignation={designation}
-                                    selectedDept={dept_id}
-                                    selectDesignationName={desgname}
-                                    selectedDeptName={deptname}
-                                    //setJobdescView={setJobdescView}
-                                    selectDeptSection={sect_id}
-                                />
-                            </Suspense> : null
-                } */}
-                {/* Duties And Responsiblities */}
-                {/* {
-                    flag === 1 ?
-                        <Suspense fallback={<Progress />} >
-                            <DutyRespos
-                                selectDesignation={designation}
-                                selectedDept={dept_id}
-                            />
-                        </Suspense> :
-                        <Suspense fallback={<Progress />} >
-                            <DutyRespos
-                                selectDesignation={getempData.em_designation}
-                                selectedDept={getempData.em_department}
-                            />
-                        </Suspense>
-                } */}
-
-                {/* Job Specification : Performance  */}
-                {/* {
-                    flag === 1 ?
-                        <Suspense fallback={<Progress />} >
-                            <Performance
-                                selectDesignation={designation}
-                                selectedDept={dept_id}
-                            />
-                        </Suspense> :
-                        <Suspense fallback={<Progress />} >
-                            <Performance
-                                selectDesignation={getempData.em_designation}
-                                selectedDept={getempData.em_department}
-                            />
-                        </Suspense>
-                } */}
-
-                {/* Job Specification : Competency */}
-                {/* {
-
-                    flag === 1 ?
-                        <Suspense fallback={<Progress />} >
-                            <Competency
-                                selectDesignation={designation}
-                                selectedDept={dept_id}
-                            />
-                        </Suspense>
-                        : <Suspense fallback={<Progress />} >
-                            <Competency
-                                selectDesignation={getempData.em_designation}
-                                selectedDept={getempData.em_department}
-                            />
-                        </Suspense>
-                } */}
-
-                {/* Generic */}
-                {/* {
-                    flag === 1 ?
-                        <Suspense fallback={<Progress />} >
-                            <Generic
-                                selectDesignation={designation}
-                                selectedDept={dept_id}
-                            />
-                        </Suspense>
-                        : <Suspense fallback={<Progress />} >
-                            <Generic
-                                selectDesignation={getempData.em_designation}
-                                selectedDept={getempData.em_department}
-                            />
-                        </Suspense>
-                } */}
-
             </Box >
         </Fragment >
     )
