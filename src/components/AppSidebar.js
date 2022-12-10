@@ -28,6 +28,9 @@ import PerformanceApproval from '../Menus/PerformaneApproval'
 import TrainingAndDevelopment from '../Menus/TrainingAndDevelopment'
 import Resignation from '../Menus/Resignation'
 import { getMenuSlno } from 'src/views/Constant/Constant'
+import CIcon from '@coreui/icons-react'
+import { CssVarsProvider, Typography } from '@mui/joy'
+import { Box } from '@mui/material'
 
 
 const AppSidebar = () => {
@@ -184,7 +187,10 @@ const AppSidebar = () => {
     }
     getModuleUserRight()
   }, [count])
-
+  const em_name = useSelector((state) => {
+    return state.getProfileData.ProfileData[0].em_name
+    //const status = state.getProfileData.lodingStatus
+  })
 
   return (
     <Fragment>
@@ -197,10 +203,29 @@ const AppSidebar = () => {
         }}
       >
         <CSidebarBrand className="d-none d-md-flex" to="/">
+
+          <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}>
+            <Box sx={{ p: 1, display: "flex", }} >
+              <CssVarsProvider>
+                <Typography textColor="text.secondary">
+                  WELCOME
+                </Typography>
+              </CssVarsProvider>
+            </Box>
+            <Box sx={{ p: 1, display: "flex", textTransform: 'capitalize', fontStyle: "oblique", }} >
+              <CssVarsProvider>
+                <Typography textColor="text.secondary">
+                  {em_name.toLowerCase()}
+                </Typography>
+              </CssVarsProvider>
+            </Box>
+          </Box>
+
+
           {/* Company Logo Big Size */}
-          {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} /> */}
+          {/* <CIcon className="sidebar-brand-full" height={35} /> */}
           {/* Company Logo Small size */}
-          {/* <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} /> */}
+          {/* <CIcon className="sidebar-brand-narrow" height={35} /> */}
         </CSidebarBrand>
         <CSidebarNav>
           <SimpleBar>
