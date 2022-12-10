@@ -4,7 +4,7 @@ import { getProfileData, getPrifileDateEachEmp } from '../reducers/ProfileDataRe
 import { LoginCredential } from '../reducers/LoginReducer'
 import { getEmployeeRecordList } from '../reducers/EmployeeRecod.reducer'
 import { getDepartmentShiftData } from '../reducers/Departmentshift'
-import { leavedata } from '../reducers/Leavereqdata'
+import { leavedata, hodAuthorisedSection, hodBasedSectionNameList, getLeaveRequestInfom, getEmpLeaveData } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
 import { getEmployeedetailsDutyplan } from '../reducers/EmployeeDetails'
@@ -135,7 +135,11 @@ const reducer = combineReducers({
     getShiftPlanDetl,
     getShiftDateFormat,
     getUpdatedShiftId,
-    updatedShiftDetlOnModel
+    updatedShiftDetlOnModel,
+    hodAuthorisedSection,
+    hodBasedSectionNameList,
+    getLeaveRequestInfom,
+    getEmpLeaveData
 })
 
 export default reducer;
