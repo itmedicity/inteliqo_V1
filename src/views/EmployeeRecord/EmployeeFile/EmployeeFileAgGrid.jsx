@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, Tooltip } from '@mui/material'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CloseIcon from '@mui/icons-material/Close';
@@ -162,9 +162,11 @@ const EmployeeFileAgGrid = () => {
         {
             headerName: 'Action', minWidth: 100, wrapText: true,
             cellRenderer: params =>
-                <AccountCircleOutlinedIcon color='info' onClick={() =>
-                    getEmployeeEmpNumber(params)
-                } />
+                <Tooltip title="Profile View" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => getEmployeeEmpNumber(params)}>
+                        <AccountCircleOutlinedIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 90, },
         { headerName: 'Emp Id ', field: 'em_id', minWidth: 90 },
