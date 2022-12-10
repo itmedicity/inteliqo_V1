@@ -74,6 +74,15 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
 
     }
 
+    const AppraisalHod = () => {
+        history.push(`/Home/AppraisalApprovalHOD`)
+    }
+
+    const AppraisalIncharge = () => {
+        history.push(`/Home/AppraisalApproveIncharge`)
+    }
+
+
     const notificationListWindow = (slno) => {
         return slno === 133 && Leaverequest ||
             slno === 134 && LeaveUser ||
@@ -95,7 +104,9 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 154 && RegistRenew ||
             slno === 187 && ProbationEnd ||
             slno === 188 && Annual ||
-            slno === 196 && ContractAppraisal
+            slno === 196 && ContractAppraisal ||
+            slno === 215 && AppraisalHod ||
+            slno === 216 && AppraisalIncharge
     }
 
     return (

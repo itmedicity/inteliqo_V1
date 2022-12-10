@@ -1,126 +1,69 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { Paper, Box, Grid } from '@mui/material'
-import DeptSectionSingleSelect from 'src/views/CommonCode/DeptSectionSingleSelect'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { axioslogin } from 'src/views/Axios/Axios'
-import AppraisalApproveInchargeTable from './AppraisalApproveInchargeTable'
-import EditIcon from '@mui/icons-material/Edit';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { CssVarsProvider, Typography } from '@mui/joy'
+import { Box, Paper, Tooltip } from '@mui/material'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from '@mui/joy/IconButton';
 
 const AppraisalApproveIncharge = () => {
-    const [dept, setdept] = useState(0)
-    const [value, setvalue] = useState([])
-    const [tableData, settableData] = useState([])
 
-    const history = useHistory()
-    const RedirectToProfilePage = () => {
-        history.push(`/Home`)
-    }
+    const [flag, setFlag] = useState(0)
 
-    const login = useSelector((state) => {
-        return state.getProfileData.ProfileData[0]
+    const state = useSelector((state) => {
+        return state.getAppraisalData.appraisalIncharge.appraisalInchargeList
     })
 
-    const { incharge, em_dept_section } = login
+    const [columnDef] = useState([
+        { headerName: 'ID', field: 'em_id' },
+        { headerName: 'Emp No ', field: 'em_no' },
+        { headerName: 'Name ', field: 'em_name' },
+        { headerName: 'Dept Name ', field: 'dept_name' },
+        { headerName: 'Designation ', field: 'desg_name' },
+        { headerName: 'Date of joining ', field: 'em_doj' },
+        {
+            headerName: 'Action',
+            cellRenderer: params =>
+                <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => toAppraisal(params)}>
+                        <VisibilityIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
+        },
+    ])
 
-    useEffect(() => {
-        if (incharge === 1) {
-            const getInchargeDeptSect = async () => {
-                const result = await axioslogin.get(`/section/${em_dept_section}`);
-                const { success, data } = result.data
-                if (success === 1) {
-                    setvalue(data)
-                }
-                else {
-                    setvalue([])
-                }
-            }
-            getInchargeDeptSect()
-        }
-    }, [incharge, em_dept_section])
-
-    const postData = useMemo(() => {
-        return {
-            sect_id: em_dept_section,
-            level2_sect_id: em_dept_section
-        }
-    }, [em_dept_section])
-
-    const getInchargeAppraisalList = useCallback((e) => {
-        const getdatafromtable = async (postData) => {
-            const result = await axioslogin.post('/Performance/incharge/apprlist', postData)
-            const { success, data } = result.data
-            if (success === 1) {
-                settableData(data)
-            }
-            else {
-                settableData([])
-            }
-        }
-        if (postData !== 0) {
-            getdatafromtable(postData)
-        }
-        else {
-            warningNofity("No data")
-        }
-
-    }, [postData])
-
-    if (dept !== 0) {
-        getInchargeAppraisalList(postData)
-    }
+    const toAppraisal = useCallback((params) => {
+        const data = params.api.getSelectedRows()
+        setFlag(1)
+    })
 
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Performance Appraisal Approval Incharge"
-                redirect={RedirectToProfilePage}
-            >
-                <Box>
-                    <Paper square elevation={2} sx={{ p: 0.5, }}>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                pt: 2
-                            }}>
-                                <Grid
-                                    sx={{
-                                        width: 400
-                                    }}
-                                >
-                                    <DeptSectionSingleSelect
-                                        value={dept}
-                                        setValue={setdept}
-                                        data={value}
-                                        label={"Select Department"}
-                                        style={SELECT_CMP_STYLE}
-                                    />
-                                </Grid>
-                            </Box>
-                            <Box sx={{
-                                pt: 5
-                            }}>
-                                <Grid>
-                                    <AppraisalApproveInchargeTable tableData={tableData} />
-
-
-                                </Grid>
-                            </Box>
+            <Box sx={{ width: "100%" }} >
+                <Paper square elevation={2} sx={{ p: 0.5, }}>
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Performance Appraisal Incharge Approval List
+                                </Typography>
+                            </CssVarsProvider>
                         </Box>
                     </Paper>
-                </Box>
-
-            </PageLayoutCloseOnly>
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} > <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={state}
+                        sx={{
+                            height: 600,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    ></CommonAgGrid>
+                    </Paper>
+                </Paper>
+            </Box>
         </Fragment>
     )
 }

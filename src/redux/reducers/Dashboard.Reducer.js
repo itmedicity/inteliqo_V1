@@ -21,7 +21,9 @@ const {
     FETCH_REGISTER_RENEW,
     FETCH_PROBATION,
     FETCH_ANNUAL,
-    FETCH_CONTRACT_APPRAISAL
+    FETCH_CONTRACT_APPRAISAL,
+    FETCH_HOD_APPRAISAL_COUNT,
+    FETCH_INCHARGE_APPARAISAL_COUNT
 } = Actiontypes;
 
 
@@ -47,6 +49,8 @@ const dashBoadNotify = {
     187: { slno: 187, name: "Probation End", count: 0, status: true },
     188: { slno: 188, name: "Annual Appraisal", count: 0, status: true },
     196: { slno: 196, name: "Contract Appraisal", count: 0, status: true },
+    215: { slno: 215, name: "Appraisal HOD", count: 0, status: true },
+    216: { slno: 216, name: "Appraisal Incharge", count: 0, status: true },
 
 }
 
@@ -95,6 +99,10 @@ export const getDashboardNotification = (state = dashBoadNotify, { type, payload
             return { ...state, 188: { slno: 188, name: "Annual Appraisal", count: payload, status: false } }
         case FETCH_CONTRACT_APPRAISAL:
             return { ...state, 196: { slno: 196, name: "Contract Appraisal", count: payload, status: false } }
+        case FETCH_HOD_APPRAISAL_COUNT:
+            return { ...state, 215: { slno: 215, name: "Appraisal HOD", count: payload, status: false } }
+        case FETCH_INCHARGE_APPARAISAL_COUNT:
+            return { ...state, 216: { slno: 216, name: "Appraisal Incharge", count: payload, status: false } }
         default:
             return state;
     }

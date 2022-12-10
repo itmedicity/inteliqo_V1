@@ -53,7 +53,7 @@ import { getJobPerformance } from './JobPerformance.Reducer'
 import { getJobCompetency } from './JobCompetency.Reducer'
 import { getJobQualification } from './JobQualifi.Reducer'
 import { getJobGenric } from './JobGeneric.Reducer'
-
+import { getAppraisalData } from './AppraisalReducer'
 
 const reducer = combineReducers({
     changeState,
@@ -109,7 +109,8 @@ const reducer = combineReducers({
     getJobPerformance,
     getJobCompetency,
     getJobQualification,
-    getJobGenric
+    getJobGenric,
+    getAppraisalData
 })
 
 export default reducer;
