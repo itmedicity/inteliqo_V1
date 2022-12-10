@@ -419,7 +419,6 @@ const routes = [
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
 
-
 ]
 
 export default routes

@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useContext, memo, useEffect } from 'react'
+import React, { Fragment, Suspense, useContext, memo } from 'react'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,14 +34,14 @@ const Progress = () => {
 };
 
 const JobDescription = () => {
-    const { selectDesignation, updateDesignation,
-        selectedDept, updateSelected,
+    const { selectDesignation,
+        selectedDept,
         selectDesignationName, selectedDeptName,
-        selectDeptSection, updateDepartmentSection, deptsectName
+        selectDeptSection, deptsectName
     } = useContext(PayrolMasterContext)
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
-    const [clear, setClear] = useState(0)
+
 
     /** checkdata for checking department , dept section and designation */
     const checkData = {
@@ -49,13 +49,6 @@ const JobDescription = () => {
         dept_id: selectedDept,
         sect_id: selectDeptSection
     }
-    useEffect(() => {
-        if (selectDesignation !== 0) {
-            setClear(1)
-        }
-    }, [selectDesignation])
-
-
 
     /** checking department , dept section and designation already exist in jobsummary database table */
     const addtojobSummary = async () => {
