@@ -501,7 +501,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                     </Box>
                 </Box>
                 <Box sx={{ display: "flex", flex: 1, mt: 0.5 }} >
-                    <Box sx={{ display: "flex", flex: 1, backgroundColor: "yellow" }} >
+                    <Box sx={{ display: "flex", flex: 1 }} >
                         <TextareaAutosize
                             style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
                             minRows={2}

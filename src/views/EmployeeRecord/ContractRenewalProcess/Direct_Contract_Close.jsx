@@ -2,7 +2,7 @@ import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
-import { differenceInDays, eachDayOfInterval } from 'date-fns'
+import { differenceInDays } from 'date-fns'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
@@ -11,7 +11,8 @@ import moment from 'moment';
 import { useHistory, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-
+import CloseIcon from '@mui/icons-material/Close';
+import { useSelector } from 'react-redux';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
@@ -51,8 +52,8 @@ const Direct_Contract_Close = () => {
             const result = await axioslogin.get(`/empcontract/${no}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_cont_start, em_cont_end, em_no, em_id, em_cont_close,
-                    em_category, em_name, ecat_name, cont_grace, dept_name, desg_name, sect_name } = data[0]
+                const { em_cont_start, em_cont_end, em_no, em_id,
+                    em_name, ecat_name, cont_grace, dept_name, desg_name, sect_name } = data[0]
                 const frmData = {
                     em_cont_start: em_cont_start,
                     em_cont_end: em_cont_end,
@@ -71,6 +72,12 @@ const Direct_Contract_Close = () => {
         }
         getcontractInformation()
     }, [no])
+
+    //to get login employee number
+    const emp_no = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_no
+    })
+
     //useEffect for getting fine Deatails
     useEffect(() => {
         const getFinedetl = async () => {
@@ -86,26 +93,32 @@ const Direct_Contract_Close = () => {
         getFinedetl()
 
     }, [id])
+
+    //update hrm_emp_contract_detl table
     const contractclose = {
         em_cont_close: 'C',
         em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+        edit_user: emp_no,
+        status: 1,
+        em_id: no,
+        em_status: 0,
         em_no: id
     }
     //FUNCTION FOR CLOSING CONTRACT
     const ContractClose = async () => {
         const result = await axioslogin.patch('/empcontract/contractclose', contractclose)
         const { success, message } = result.data
-        if (success === 2) {
+        if (success === 1) {
             setFine(0)
             setFormData(defaultState)
             history.push('/Home/Contract_end_details')
             succesNofity(message)
-
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            errorNofity(message)
         }
     }
+
     const redirect = async () => {
         history.push('/Home/Contract_end_details')
     }
@@ -303,7 +316,7 @@ const Direct_Contract_Close = () => {
                         <Box sx={{ flex: 0 }}>
                             <IconButton variant="outlined" size='sm' onClick={redirect}>
                                 <CssVarsProvider>
-                                    <DisabledByDefaultOutlinedIcon color='primary' fontSize='large' />
+                                    <CloseIcon />
                                 </CssVarsProvider>
                             </IconButton>
                         </Box>

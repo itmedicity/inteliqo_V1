@@ -175,7 +175,6 @@ const Direct_Contract_Close = React.lazy(() => import('./views/EmployeeRecord/Co
 const ContractRenewApprovalList = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractRenewApprovalList'))
 const PerformanceGrade = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGrade'))
 const PerformanceGradeEdit = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGradeEdit'))
-const PerformanceAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/PerformanceAppraisalList')))
 const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
 const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
 const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
@@ -206,6 +205,8 @@ const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractRepor
 const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
 const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
+const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
+
 
 const routes = [
 
@@ -387,7 +388,6 @@ const routes = [
   { path: '/Home/ContractRenewApprovalList', exact: true, name: 'Contract Renew Approval List', component: ContractRenewApprovalList },
   { path: '/Home/PerformanceGradeMaster', exact: true, name: 'Performance Grade', component: PerformanceGrade },
   { path: '/Home/PerformanceGradeEdit/:id', exact: true, name: 'Performance Grade', component: PerformanceGradeEdit },
-  { path: '/Home/PerformanceAppraisal', exact: true, name: 'Performance Appraisal', component: PerformanceAppraisalList },
   { path: '/Home/ProbationEnd', exact: true, name: 'Probation End List', component: ProbationEnd },
   { path: '/Home/AnnualAppraisalList', exact: true, name: 'Annual Appraisal List', component: AnnualAppraisalList },
   { path: '/Home/ContractEnd', exact: true, name: 'Contract End List', component: ContractEnd },
@@ -418,6 +418,7 @@ const routes = [
   { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
+  { path: '/Home/HRAppraisalList', exact: true, name: 'Employee Appraisal List', component: HRAppraisalList },
 
 ]
 

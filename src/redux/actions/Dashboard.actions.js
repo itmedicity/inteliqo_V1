@@ -21,11 +21,14 @@ const {
     FETCH_REGISTER_RENEW,
     FETCH_PROBATION,
     FETCH_ANNUAL,
-    FETCH_CONTRACT_APPRAISAL,
     FETCH_HOD_APPRAISAL_COUNT,
     FETCH_INCHARGE_APPARAISAL_COUNT,
     FETCH_HOD_APPRAISAL_LIST,
-    FETCH_INCHARGE_APPARAISAL_LIST
+    FETCH_INCHARGE_APPARAISAL_LIST,
+    FETCH_CEO_APPRAISAL_COUNT,
+    FETCH_CEO_APPRAISAL_LIST,
+    FETCH_APPRAISAL_COMPLETE,
+    FETCH_APPRAISAL_COMPLETE_LIST
 } = Actiontypes;
 
 export const getResignCount = () => async (dispatch) => {
@@ -44,8 +47,7 @@ export const getcontractCloseCount = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/contractcloseCount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { contractcloseCount } = data[0]
-        dispatch({ type: FETCH_CONTRACT_CLOSE, payload: contractcloseCount, status: false })
+        dispatch({ type: FETCH_CONTRACT_CLOSE, payload: data.length, status: false })
     } else {
         dispatch({ type: FETCH_CONTRACT_CLOSE, payload: 0, status: false })
     }
@@ -198,8 +200,7 @@ export const getContractRenewalCount = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/contractcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { contractcount } = data[0]
-        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: contractcount, status: false })
+        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: data.length, status: false })
     } else {
         dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: 0, status: false })
     }
@@ -209,8 +210,8 @@ export const getTrainingCount = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/trainingcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { trainingcount } = data[0]
-        dispatch({ type: FETCH_TRAIN_COUNT, payload: trainingcount, status: false })
+        // const { trainingcount } = data[0]
+        dispatch({ type: FETCH_TRAIN_COUNT, payload: data.length, status: false })
     } else {
         dispatch({ type: FETCH_TRAIN_COUNT, payload: 0, status: false })
     }
@@ -231,8 +232,7 @@ export const getProbation = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/probCount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { probationcount } = data[0]
-        dispatch({ type: FETCH_PROBATION, payload: probationcount, status: false })
+        dispatch({ type: FETCH_PROBATION, payload: data.length, status: false })
     } else {
         dispatch({ type: FETCH_PROBATION, payload: 0, status: false })
     }
@@ -242,26 +242,14 @@ export const getAnnual = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/annualempcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        const { annualcount } = data[0]
-        dispatch({ type: FETCH_ANNUAL, payload: annualcount, status: false })
+        dispatch({ type: FETCH_ANNUAL, payload: data.length, status: false })
     } else {
         dispatch({ type: FETCH_ANNUAL, payload: 0, status: false })
     }
 }
 
-export const getContractAppraisal = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/contractappraisal/list')
-    const { success, data } = result.data
-    if (success === 1) {
-        const { contractappraisalcount } = data[0]
-        dispatch({ type: FETCH_CONTRACT_APPRAISAL, payload: contractappraisalcount, status: false })
-    } else {
-        dispatch({ type: FETCH_CONTRACT_APPRAISAL, payload: 0, status: false })
-    }
-}
-
-export const getAppraisalHod = () => async (dispatch) => {
-    const result = await axioslogin.get('/Performance/hodData')
+export const getAppraisalHod = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/Performance/hodData/${id}`)
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_HOD_APPRAISAL_LIST, payload: data, status: false })
@@ -272,8 +260,8 @@ export const getAppraisalHod = () => async (dispatch) => {
     }
 }
 
-export const getAppraisalIncharge = () => async (dispatch) => {
-    const result = await axioslogin.get('/Performance/inchargeData')
+export const getAppraisalIncharge = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/Performance/inchargeData/${id}`)
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_INCHARGE_APPARAISAL_LIST, payload: data, status: false })
@@ -282,4 +270,29 @@ export const getAppraisalIncharge = () => async (dispatch) => {
         dispatch({ type: FETCH_INCHARGE_APPARAISAL_LIST, payload: [], status: false })
         dispatch({ type: FETCH_INCHARGE_APPARAISAL_COUNT, payload: 0, status: false })
     }
+}
+
+export const getAppraisalCeo = () => async (dispatch) => {
+    const result = await axioslogin.get('/Performance/ceodata')
+    const { success, data } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_CEO_APPRAISAL_LIST, payload: data, status: false })
+        dispatch({ type: FETCH_CEO_APPRAISAL_COUNT, payload: data.length, status: false })
+    } else {
+        dispatch({ type: FETCH_CEO_APPRAISAL_LIST, payload: [], status: false })
+        dispatch({ type: FETCH_CEO_APPRAISAL_COUNT, payload: 0, status: false })
+    }
+}
+
+export const getAllAppraisal = () => async (dispatch) => {
+    const result = await axioslogin.get('/Performance/hrlist')
+    const { success, data } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_APPRAISAL_COMPLETE_LIST, payload: data, status: true })
+        dispatch({ type: FETCH_APPRAISAL_COMPLETE, payload: data.length, status: false })
+    } else {
+        dispatch({ type: FETCH_APPRAISAL_COMPLETE_LIST, payload: [], status: false })
+        dispatch({ type: FETCH_APPRAISAL_COMPLETE, payload: 0, status: false })
+    }
+
 }

@@ -28,10 +28,9 @@ const PerformanceDescSelect = ({ value, setValue, style, label }) => {
                     <MenuItem value={0} disabled selected >{label}</MenuItem>
                     <MenuItem value='1'>Key Performer</MenuItem>
                     <MenuItem value='2'>Star Performer </MenuItem>
-                    <MenuItem value='3'>Potential Performer</MenuItem>
-                    <MenuItem value='4'>General Category</MenuItem>
-                    <MenuItem value='5'>Need Improvement</MenuItem>
-                    <MenuItem value='6'>Poor Performer</MenuItem>
+                    <MenuItem value='3'>Good Performer </MenuItem>
+                    <MenuItem value='4'>Potential Performer</MenuItem>
+                    <MenuItem value='5'>General Performaer</MenuItem>
                 </Select>
             </FormControl>
         </Fragment>
