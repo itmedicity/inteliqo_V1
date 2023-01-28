@@ -72,24 +72,6 @@ const CompetencyAssessment = ({ empid }) => {
         },
     ])
 
-    const getData = async (params) => {
-        const data = params.api.getSelectedRows()
-        const { assessment_slno, actual_comp, competency_score } = data[0]
-        const postData = {
-            actual_comp: actual_comp,
-            competency_score: competency_score,
-            assessment_slno: assessment_slno
-        }
-        //submitting score to table
-        const result = await axioslogin.patch('/Performance/update/compt', postData)
-        const { message, success } = result.data
-        if (success === 2) {
-            succesNofity(message)
-            setCount(count + 1)//for render a function for getting training need data
-        } else {
-            warningNofity(message)
-        }
-    }
 
     //colomun for table
     const [columnDef] = useState([
@@ -112,6 +94,27 @@ const CompetencyAssessment = ({ empid }) => {
         }
         getData()
     }, [count, emp_id])
+
+    const getData = async (params) => {
+        const data = params.api.getSelectedRows()
+        const { assessment_slno, actual_comp, competency_score } = data[0]
+        const postData = {
+            actual_comp: actual_comp,
+            competency_score: competency_score,
+            assessment_slno: assessment_slno
+        }
+        //submitting score to table
+        const result = await axioslogin.patch('/Performance/update/compt', postData)
+        const { message, success } = result.data
+        if (success === 2) {
+            setCount(count + 1)//for render a function for getting training need data
+            succesNofity(message)
+
+        } else {
+            warningNofity(message)
+        }
+    }
+
 
     return (
         <Fragment>

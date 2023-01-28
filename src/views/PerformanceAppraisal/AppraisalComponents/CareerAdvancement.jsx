@@ -6,12 +6,13 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const CareerAdvancement = ({ empid, show }) => {
 
 
     const emp_id = useMemo(() => empid, [empid])
-    console.log(emp_id);
 
     const [InchargeValue, SetInchargeValue] = useState(false)
     const [incharge_comment, setincharge_comment] = useState('')
@@ -24,6 +25,14 @@ const CareerAdvancement = ({ empid, show }) => {
     const [ceoValue, setCeoValue] = useState(false)
     const [ceo_comment, setceo_comment] = useState('')
     const [ceoRes, setCeoRes] = useState(false)
+
+
+    const log_emid = useSelector((state) => {
+        return state.getProfileData.ProfileData[0].em_id
+        //const status = state.getProfileData.lodingStatus
+    })
+    const today = moment(new Date).format('YYYY-MM-DD hh:mm:ss')
+
 
     const HigherData = [
         { dslno: 1, dname: 'Probation' },
@@ -45,9 +54,9 @@ const CareerAdvancement = ({ empid, show }) => {
             if (success === 1) {
                 const { incharge_comment, incharge_data, incharge_res,
                     hod_data, hod_res, hod_comment } = data[0]
-                SetInchargeValue(incharge_data)
-                setincharge_comment(incharge_comment)
-                setinchargeRes(incharge_res)
+                SetInchargeValue(incharge_data === null ? false : incharge_data)
+                setincharge_comment(incharge_comment === null ? '' : incharge_comment)
+                setinchargeRes(incharge_res === null ? false : incharge_res)
                 setHodValue(hod_data === null ? false : hod_data)
                 sethodRes(hod_res === null ? false : hod_res)
                 sethod_comment(hod_comment === null ? '' : hod_comment)
@@ -84,11 +93,12 @@ const CareerAdvancement = ({ empid, show }) => {
                         incharge_res: inchargeRes,
                         incharge_comment: incharge_comment,
                         incharge_status: 1,
+                        incharge_appraisal_date: today,
                         em_id: emp_id
                     }
                     const results = await axioslogin.patch('/Performance/update/incharge/remark', postData)
                     const { message, success } = results.data
-                    if (success === 2) {
+                    if (success === 1) {
                         succesNofity(message)
                         SetInchargeValue(false)
                         setinchargeRes(false)
@@ -103,6 +113,7 @@ const CareerAdvancement = ({ empid, show }) => {
                         incharge_res: inchargeRes,
                         incharge_comment: incharge_comment,
                         incharge_status: 1,
+                        incharge_appraisal_date: today,
                         em_id: emp_id
                     }
                     const results = await axioslogin.post('/Performance/inchargeremark', postData)
@@ -127,6 +138,7 @@ const CareerAdvancement = ({ empid, show }) => {
     }
 
     const SaveHodData = async () => {
+
         if (hod_comment === '') {
             infoNofity("Please Add Remarks")
         } else {
@@ -138,6 +150,7 @@ const CareerAdvancement = ({ empid, show }) => {
                     hod_data: hodValue,
                     hod_res: hodRes,
                     hod_comment: hod_comment,
+                    hod_apprasial_date: today,
                     hod_status: 1
                 }
                 const results = await axioslogin.post('/Performance/hodRemark', postData)
@@ -156,6 +169,7 @@ const CareerAdvancement = ({ empid, show }) => {
                     hod_res: hodRes,
                     hod_comment: hod_comment,
                     hod_status: 1,
+                    hod_apprasial_date: today,
                     em_id: emp_id
                 }
                 const results = await axioslogin.patch('/Performance/update/hod', patchData)
@@ -189,6 +203,8 @@ const CareerAdvancement = ({ empid, show }) => {
                     ceo_res: ceoRes,
                     ceo_comment: ceo_comment,
                     ceo_status: 1,
+                    ceo_id: log_emid,
+                    ceo_appraisal_time: today,
                     em_id: emp_id
                 }
                 const results = await axioslogin.post('/Performance/ceoRemark', postData)
@@ -209,6 +225,8 @@ const CareerAdvancement = ({ empid, show }) => {
                     ceo_res: ceoRes,
                     ceo_comment: ceo_comment,
                     ceo_status: 1,
+                    ceo_id: log_emid,
+                    ceo_appraisal_time: today,
                     em_id: emp_id
                 }
                 const results = await axioslogin.patch('/Performance/updateCeoCareer', patchData)

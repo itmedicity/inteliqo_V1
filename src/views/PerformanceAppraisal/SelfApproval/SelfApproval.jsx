@@ -7,9 +7,12 @@ import { setAccademicData } from 'src/redux/actions/Profile.action'
 import ExistingEmpDetl from '../AppraisalComponents/ExistingEmpDetl'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CheckIdExists, CreateEmployeeRemak, UpdateEmployeeDetl, updateEmpstatus } from '../AppraisalFunctions'
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/joy/IconButton';
+import { useHistory } from 'react-router-dom';
 
 
 const Progress = () => {
@@ -25,9 +28,23 @@ const Perform = React.lazy(() => import('src/views/PerformanceAppraisal/Appraisa
 const SelfApproval = () => {
 
     const dispatch = useDispatch();
+    const history = useHistory()
     const [display, setDisplay] = useState(0)
     const [self_comment, setSelf_comment] = useState('')
     const [flag, setFlag] = useState(0)// for diable button after click
+    const [compdata, setCompdata] = useState(0)
+    const [perfData, setperfdata] = useState(0)
+
+    useEffect(() => {
+        if (compdata === 1 && perfData === 1) {
+            warningNofity('There is No Appraisal For Pending')
+        }
+    }, [compdata, perfData])
+
+    const RedirectToHome = async () => {
+        history.push(`/Home`)
+    }
+
 
     //to get typed comments of employee
     const getdata = async (e) => {
@@ -168,6 +185,30 @@ const SelfApproval = () => {
                 flexDirection: 'column',
                 width: '100%'
             }}>
+                <Paper square elevation={2} sx={{
+                    display: "flex",
+                    p: 1,
+                    alignItems: "center",
+                }}>
+                    <Box sx={{ flex: 1 }} >
+                        <CssVarsProvider>
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                Completed Appraisal List
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ pl: 1 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='sm' sx={{ color: 'red' }}
+                                onClick={RedirectToHome}
+                            >
+                                <CloseIcon color="danger" />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
+
+
                 <ExistingEmpDetl
                     empno={em_no}
                     display={display}
@@ -183,7 +224,7 @@ const SelfApproval = () => {
                 </Paper>
 
                 <Suspense fallback={<Progress />} >
-                    <Perform />
+                    <Perform setperfdata={setperfdata} />
                 </Suspense>
 
                 <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
@@ -197,7 +238,7 @@ const SelfApproval = () => {
                 </Paper>
 
                 <Suspense fallback={<Progress />} >
-                    <Comp />
+                    <Comp setCompdata={setCompdata} />
                 </Suspense>
 
                 <Paper square variant='outlined' sx={{ display: "flex" }}  >

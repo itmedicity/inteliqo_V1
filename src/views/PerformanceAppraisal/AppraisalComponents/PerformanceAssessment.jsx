@@ -49,7 +49,6 @@ const PerformanceAssessment = ({ empid }) => {
             const result = await axioslogin.get(`/Performance/Score/details/${emp_id}`)
             const { data, success } = result.data
             if (success === 1) {
-                console.log(data);
                 const { given_score, performance_score, performance_grade, performance_category } = data[0]
                 setGiven_score(given_score === null ? 0 : given_score)
                 setPerfScore(performance_score === null ? 0 : performance_score)
@@ -140,19 +139,19 @@ const PerformanceAssessment = ({ empid }) => {
             const v = scoreArray.map(item => item.kpi_score).reduce((prev, next) => Number(prev) + Number(next));
             //performance score of total kpi score
             const performance_score = v / max_score * 100
-            const perf_score = (Math.round(performance_score * 100) / 100).toFixed(2);
-            setFlag(1)
+            const score = (Math.round(performance_score * 100) / 100).toFixed(2);
+
             //finding grade and description
-            if (perf_score === 100) {
+            if (score == 100.00) {
                 setGrade('O')
                 setDescription('Key Performer')
-            } else if (perf_score < 100 && perf_score > 91) {
+            } else if (score < 100 && score > 91) {
                 setGrade('A')
                 setDescription('Star Performer')
-            } else if (perf_score < 91 && perf_score > 81) {
+            } else if (score < 91 && score > 81) {
                 setGrade('B')
                 setDescription('Good Performer')
-            } else if (perf_score < 81 && perf_score > 71) {
+            } else if (score < 81 && score > 71) {
                 setGrade('C')
                 setDescription('Potential Performer')
             } else {
@@ -160,11 +159,10 @@ const PerformanceAssessment = ({ empid }) => {
                 setDescription('General Performer')
             }
             setGiven_score(v)
-            setPerfScore(perf_score)
+            setPerfScore(score)
+            setFlag(1)
         }
     }, [scoreArray, max_score])
-
-
 
     const SaveData = async () => {
         const postData = {
@@ -229,6 +227,15 @@ const PerformanceAssessment = ({ empid }) => {
                 //rowStyle={rowStyle} 
                 //getRowStyle={getRowStyle}
                 />
+            </Paper>
+            <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
+                <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
+                    <CssVarsProvider>
+                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                            Performance Grdae Scale
+                        </Typography>
+                    </CssVarsProvider>
+                </Box>
             </Paper>
 
             <Suspense fallback={<Progress />} >

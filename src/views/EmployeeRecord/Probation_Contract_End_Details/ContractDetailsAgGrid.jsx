@@ -155,8 +155,11 @@ const ContractDetailsAgGrid = () => {
                         dept_id: dept_id,
                         sect_id: sect_id,
                         incharge_id: 0,
+                        incharge_status: 1,
                         hod_id: 0,
+                        hod_status: 1,
                         ceo_flag: 1,
+                        ceo_status: 0,
                         appraisal_status: 1,
                         last_appraisal_date: today
                     }

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
-const CompetencyViewTable = () => {
+const CompetencyViewTable = ({ setCompdata }) => {
     const [competency, setCompetency] = useState([])//setting state for removing rerendering redux data
 
     const newstate = useSelector((state) => state.getAppraisalData.compAssessment.compAssessmentList, _.isEqual)
@@ -15,6 +15,8 @@ const CompetencyViewTable = () => {
     useEffect(() => {
         if (Object.keys(comp).length > 0) {
             setCompetency(comp)
+        } else if (Object.keys(comp).length === 0) {
+            setCompdata(1)
         }
     }, [comp])
 
@@ -58,9 +60,9 @@ const CompetencyViewTable = () => {
                 </Box>
             </Box>
             {
-                competency && competency.map((val) => {
+                competency && competency.map((val, index) => {
                     return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
-                        key={val.assessment_slno}>
+                        key={index}>
                         <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary">

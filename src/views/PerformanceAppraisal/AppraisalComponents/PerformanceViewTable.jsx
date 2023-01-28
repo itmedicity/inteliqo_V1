@@ -4,7 +4,7 @@ import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 
-const PerformanceViewTable = () => {
+const PerformanceViewTable = ({ setperfdata }) => {
 
     const [performa, setPerforma] = useState([])//to reduce rendering or array data
 
@@ -15,8 +15,10 @@ const PerformanceViewTable = () => {
     useEffect(() => {
         if (Object.keys(perfromance).length > 0) {
             setPerforma(perfromance)
+        } else if (Object.keys(perfromance).length === 0) {
+            setperfdata(1)
         }
-    }, [perfromance])
+    }, [perfromance, setperfdata])
 
     return (
         <Fragment>
@@ -58,9 +60,9 @@ const PerformanceViewTable = () => {
                 </Box>
             </Box>
             {
-                performa && performa.map((val) => {
+                performa && performa.map((val, index) => {
                     return <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}
-                        key={val.specification_slno}>
+                        key={index}>
                         <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ p: 1, display: "flex", width: "5%", height: 'auto' }} >
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary">

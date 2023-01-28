@@ -1,7 +1,6 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo } from 'react'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 
 const PerformanceGradeScale = () => {
 
@@ -15,70 +14,60 @@ const PerformanceGradeScale = () => {
 
     return (
         <Fragment>
-            <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
-                <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
+            <Box sx={{ display: "flex", flexDirection: "row", px: 3, width: '100%', }}>
+                <Box border={1} sx={{ display: "flex", flex: 1, fontWeight: 500, justifyContent: 'center' }} >
                     <CssVarsProvider>
-                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                            Performance Grdae Scale
+                        <Typography textColor="text.secondary">
+                            Grades
                         </Typography>
                     </CssVarsProvider>
                 </Box>
-            </Paper>
-            <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", flexDirection: 'column' }}  >
-                <Box sx={{ display: "flex", flexDirection: "row", px: 5, width: '100%', }}>
-                    <Box border={1} sx={{ display: "flex", flex: 1, height: 30, fontWeight: 500, justifyContent: 'center' }} >
-                        <CssVarsProvider>
-                            <Typography textColor="text.secondary">
-                                Grades
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ justifyContent: 'center', fontWeight: 500, height: 30, display: "flex", flex: 1, }} >
-                        <CssVarsProvider>
-                            <Typography textColor="text.secondary">
-                                Score
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ justifyContent: 'center', fontWeight: 500, height: 30, display: "flex", flex: 1, }} >
-                        <CssVarsProvider>
-                            <Typography textColor="text.secondary">
-                                Performance Description
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
+                <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ justifyContent: 'center', fontWeight: 500, display: "flex", flex: 1, }} >
+                    <CssVarsProvider>
+                        <Typography textColor="text.secondary">
+                            Score
+                        </Typography>
+                    </CssVarsProvider>
                 </Box>
+                <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ justifyContent: 'center', fontWeight: 500, display: "flex", flex: 1, }} >
+                    <CssVarsProvider>
+                        <Typography textColor="text.secondary">
+                            Performance Description
+                        </Typography>
+                    </CssVarsProvider>
+                </Box>
+            </Box>
 
-                {
-                    arr && arr.map((val, index) => {
-                        return <Box sx={{ display: "flex", flexDirection: "row", px: 5, width: '100%', }}
-                            key={index}
-                        >
-                            <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ height: 30, display: "flex", flex: 1, justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.grade}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ height: 30, display: "flex", flex: 1, justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.Score}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box borderRight={1} borderBottom={1} sx={{ height: 30, display: "flex", flex: 1, justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography textColor="text.secondary">
-                                        {val.description}
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
+            {
+                arr && arr.map((val, index) => {
+                    return <Box sx={{ display: "flex", flexDirection: "row", px: 3, width: '100%', }}
+                        key={index}
+                    >
+                        <Box borderRight={1} borderBottom={1} borderLeft={1} sx={{ display: "flex", flex: 1, justifyContent: 'center' }} >
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary">
+                                    {val.grade}
+                                </Typography>
+                            </CssVarsProvider>
                         </Box>
-                    })
-                }
-            </Paper>
+                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", flex: 1, justifyContent: 'center' }} >
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary">
+                                    {val.Score}
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", flex: 1, justifyContent: 'center' }} >
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary">
+                                    {val.description}
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                })
+            }
+
         </Fragment >
     )
 }
