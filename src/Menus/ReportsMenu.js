@@ -6,6 +6,7 @@ export const hr_report_one = [
     { to: '/Home/RegionReport', name: 'Employee Region Report', slno: 163 },
     { to: '/Home/ExperienceReport', name: 'Employee Experience Report', slno: 166 },
     { to: '/Home/InstitutionTypeReport', name: 'Employee Institution Type Report', slno: 169 },
+    { to: '/Home/NoExperienceReport', name: 'No Experience Report', slno: 218 },
 
 ]
 export const hr_report_two = [
