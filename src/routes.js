@@ -199,7 +199,7 @@ const ContractReport = React.lazy(() => import('./views/HrReports/ContractReport
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
 const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
 const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal/CompletedAppraisalList'))
-
+const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
 
 const routes = [
 
@@ -405,9 +405,7 @@ const routes = [
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
   { path: '/Home/HRAppraisalList', exact: true, name: 'Employee Appraisal List', component: HRAppraisalList },
   { path: '/Home/ApprovedAppraisal', exact: true, name: 'Employee Appraisal List', component: CompletedAppraisal },
-
-
-
+  { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
 
 ]
 
