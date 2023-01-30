@@ -74,6 +74,7 @@ import {
     getCreditedPrivilegeLeaves,
     updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
+import { getAppraisalData } from './AppraisalReducer'
 
 
 const reducer = combineReducers({
@@ -151,7 +152,8 @@ const reducer = combineReducers({
     getEmpLeaveData,
     singleLeaveRequestFormState,
     getEmployeeInformationState,
-    getEmployeeApprovalLevel
+    getEmployeeApprovalLevel,
+    getAppraisalData
 })
 
 export default reducer;

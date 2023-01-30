@@ -21,33 +21,48 @@ const {
     FETCH_REGISTER_RENEW,
     FETCH_PROBATION,
     FETCH_ANNUAL,
-    FETCH_CONTRACT_APPRAISAL
+    FETCH_HOD_APPRAISAL_COUNT,
+    FETCH_INCHARGE_APPARAISAL_COUNT,
+    FETCH_CEO_APPRAISAL_COUNT,
+    FETCH_APPRAISAL_COMPLETE
+
 } = Actiontypes;
 
 
 const dashBoadNotify = {
+    //for leave request
     133: { slno: 133, name: "Leave Request", count: 0, status: true },
     134: { slno: 134, name: "Leave Request User", count: 0, status: true },
     135: { slno: 135, name: "Leave Request Incharge", count: 0, status: true },
     136: { slno: 136, name: "Leave Request HOD", count: 0, status: true },
     137: { slno: 137, name: "Leave Request CEO", count: 0, status: true },
-    138: { slno: 138, name: "Contract Renewal", count: 0, status: true },
-    139: { slno: 139, name: "Training Confirmation", count: 0, status: true },
-    140: { slno: 140, name: "Contract Closed", count: 0, status: true },
+
+    //ot 
     141: { slno: 141, name: "Overtime Request", count: 0, status: true },
     142: { slno: 142, name: "Overtime Request User", count: 0, status: true },
     143: { slno: 143, name: "Overtime Request Incharge", count: 0, status: true },
     144: { slno: 144, name: "Overtime Request HOD", count: 0, status: true },
     145: { slno: 145, name: "Overtime Request CEO", count: 0, status: true },
+
+    //resignation
     146: { slno: 146, name: "Resignation Request", count: 0, status: true },
     147: { slno: 147, name: "Resignation Request Incharge", count: 0, status: true },
     148: { slno: 148, name: "Resignation Request HOD", count: 0, status: true },
     149: { slno: 149, name: "Resignation Request CEO", count: 0, status: true },
     154: { slno: 154, name: "Registration Renew", count: 0, status: true },
-    187: { slno: 187, name: "Probation End", count: 0, status: true },
-    188: { slno: 188, name: "Annual Appraisal", count: 0, status: true },
-    196: { slno: 196, name: "Contract Appraisal", count: 0, status: true },
 
+    //for appraisal or category change
+    139: { slno: 139, name: "Training End", count: 0, status: true },
+    187: { slno: 187, name: "Probation End", count: 0, status: true },
+    188: { slno: 188, name: "Annual End", count: 0, status: true },
+    138: { slno: 138, name: "Contract Renewal", count: 0, status: true },
+    140: { slno: 140, name: "Contract Closed", count: 0, status: true },
+
+    //appraisal process
+    215: { slno: 215, name: "Appraisal HOD", count: 0, status: true },
+    216: { slno: 216, name: "Appraisal Incharge", count: 0, status: true },
+    217: { slno: 217, name: "Appraisal CEO", count: 0, status: true },
+    219: { slno: 219, name: "Appraisal HR", count: 0, status: true },
 }
 
 export const getDashboardNotification = (state = dashBoadNotify, { type, payload, status }) => {
@@ -86,15 +101,21 @@ export const getDashboardNotification = (state = dashBoadNotify, { type, payload
         case FETCH_CONTRACT_RENEW_COUNT:
             return { ...state, 138: { slno: 138, name: "Contract Renewal", count: payload, status: false } }
         case FETCH_TRAIN_COUNT:
-            return { ...state, 139: { slno: 139, name: "Training Confirmation", count: payload, status: false } }
+            return { ...state, 139: { slno: 139, name: "Training End", count: payload, status: false } }
         case FETCH_REGISTER_RENEW:
             return { ...state, 154: { slno: 154, name: "Registration Renew", count: payload, status: false } }
         case FETCH_PROBATION:
             return { ...state, 187: { slno: 187, name: "Probation End", count: payload, status: false } }
         case FETCH_ANNUAL:
             return { ...state, 188: { slno: 188, name: "Annual Appraisal", count: payload, status: false } }
-        case FETCH_CONTRACT_APPRAISAL:
-            return { ...state, 196: { slno: 196, name: "Contract Appraisal", count: payload, status: false } }
+        case FETCH_HOD_APPRAISAL_COUNT:
+            return { ...state, 215: { slno: 215, name: "Appraisal HOD", count: payload, status: false } }
+        case FETCH_INCHARGE_APPARAISAL_COUNT:
+            return { ...state, 216: { slno: 216, name: "Appraisal Incharge", count: payload, status: false } }
+        case FETCH_CEO_APPRAISAL_COUNT:
+            return { ...state, 217: { slno: 217, name: "Appraisal CEO", count: payload, status: false } }
+        case FETCH_APPRAISAL_COMPLETE:
+            return { ...state, 219: { slno: 219, name: "Appraisal HR", count: payload, status: false } }
         default:
             return state;
     }

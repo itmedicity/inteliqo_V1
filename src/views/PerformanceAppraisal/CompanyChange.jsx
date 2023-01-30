@@ -1,4 +1,4 @@
-import { addDays, compareAsc, differenceInDays, lastDayOfYear, startOfYear, sub } from 'date-fns'
+import { addDays, compareAsc, lastDayOfYear, startOfYear, sub } from 'date-fns'
 import React, { Fragment, useContext, useState, useEffect, memo, useMemo } from 'react'
 import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -10,7 +10,6 @@ import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
 import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess'
-//import { format } from 'date-fns'
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -18,7 +17,6 @@ import { Box, Paper } from '@mui/material'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import moment from 'moment'
-// import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
 import DepartmentSelect from 'src/views/MuiComponents/DepartmentSelect'
 import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
@@ -998,4 +996,4 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
     )
 }
 
-export default CompanyChange
+export default memo(CompanyChange)

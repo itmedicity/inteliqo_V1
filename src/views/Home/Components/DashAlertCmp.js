@@ -1,5 +1,5 @@
 import { Grid, Paper, } from '@mui/material'
-import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { useHistory } from 'react-router'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import TestCmp from './TestCmp';
@@ -25,7 +25,10 @@ import {
     getRegistRenew,
     getProbation,
     getAnnual,
-    getContractAppraisal
+    getAppraisalHod,
+    getAppraisalIncharge,
+    getAppraisalCeo,
+    getAllAppraisal
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
@@ -67,7 +70,10 @@ const DashAlertCmp = () => {
         dispatch(getRegistRenew())
         dispatch(getProbation())
         dispatch(getAnnual())
-        dispatch(getContractAppraisal())
+        dispatch(getAppraisalHod(em_id))
+        dispatch(getAppraisalIncharge(em_id))
+        dispatch(getAppraisalCeo())
+        dispatch(getAllAppraisal())
     }, [em_id])
 
     const data = Object.values(notificationNewState);
