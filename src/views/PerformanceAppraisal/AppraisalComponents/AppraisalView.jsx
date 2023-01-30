@@ -28,7 +28,6 @@ const GradeTable = React.lazy(() => import('src/views/PerformanceAppraisal/Appra
 
 const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
 
-
     const [formdata, setformdata] = useState({
         name: '',
         department_name: '',
@@ -205,6 +204,8 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         setSrc(picUrl)
+                    }else{
+                        setSrc(ProfilePicDefault)
                     }
                 })
             }
@@ -218,6 +219,9 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                         const picUrl = JSON.parse(profilePic)
                         setinchargesig(picUrl)
                     }
+                    else{
+                        setinchargesig(ProfilePicDefault)
+                    }
                 })
             }
         }
@@ -230,6 +234,8 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         sethodsig(picUrl)
+                    }else{
+                        sethodsig(ProfilePicDefault)
                     }
                 })
             }
@@ -243,6 +249,8 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         sethrSig(picUrl)
+                    }else{
+                        sethrSig(ProfilePicDefault)
                     }
                 })
             }
@@ -256,6 +264,8 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         setceosig(picUrl)
+                    }else{
+                        setceosig(ProfilePicDefault)
                     }
                 })
             }

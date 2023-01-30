@@ -30,6 +30,10 @@ const CompletedAppraisalList = () => {
         history.push(`/Home`)
     }
 
+    const loginData = useSelector((state) => {
+        return state.getProfileData.ProfileData[0]
+        //const status = state.getProfileData.lodingStatus
+    })
 
     /** to get employee category details from redux */
     const empCate = useSelector((state) => {
@@ -56,13 +60,6 @@ const CompletedAppraisalList = () => {
 
 
     const [complteCol] = useState([
-        { headerName: 'Slno', field: 'slno', filter: true },
-        { headerName: 'ID', field: 'em_id', filter: true },
-        { headerName: 'Emp No ', field: 'em_no', filter: true },
-        { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
-        { headerName: 'Designation ', field: 'desg_name', },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
         {
             headerName: 'Action',
             cellRenderer: params =>
@@ -90,6 +87,13 @@ const CompletedAppraisalList = () => {
                     </Tooltip>
                 </Fragment>
         },
+        { headerName: 'Slno', field: 'slno', filter: true },
+        { headerName: 'Emp Id', field: 'em_id', filter: true },
+        { headerName: 'Emp No ', field: 'em_no', filter: true },
+        { headerName: 'Name ', field: 'em_name', filter: true },
+        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
+        { headerName: 'Designation ', field: 'desg_name', },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },    
     ])
 
     //Direct Contract close
@@ -111,7 +115,9 @@ const CompletedAppraisalList = () => {
 
 
     const toAppraisalView = (params) => {
-        const { em_no, em_id } = params.data
+      
+        const data = params.api.getSelectedRows()
+        const { em_no, em_id} = data[0]
         setempno(em_no)
         setEmpid(em_id)
         setAppraisalview(1)
@@ -133,7 +139,7 @@ const CompletedAppraisalList = () => {
                 {
                     flag === 1 ? <CompanyChange empid={empid} setFlag={setFlag} empno={empno}
                         display={display}
-                        name={name} /> : appraisalview === 1 ? <AppraisalView empno={empno} empid={empid} setAppraisalview={setAppraisalview} /> : <Box sx={{ width: "100%" }} >
+                        name={name} /> : appraisalview === 1 ? <AppraisalView empno={empno} empid={empid} setAppraisalview={setAppraisalview} loginData={loginData} /> : <Box sx={{ width: "100%" }} >
 
                             <Paper square elevation={2} sx={{ p: 0.5, }}>
 
