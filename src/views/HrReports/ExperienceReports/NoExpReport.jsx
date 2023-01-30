@@ -135,6 +135,7 @@ const NoExpReport = () => {
             const result = await axioslogin.post('/experienceReport/noexp', slno)
             const { success, data } = result.data;
             if (success === 1) {
+                console.log(data);
                 setTableData(data)
             }
             else {
@@ -163,20 +164,14 @@ const NoExpReport = () => {
 
     /** report ag grid table heading */
     const [columnDefMain] = useState([
-        {
-            headerName: '#',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
-        { headerName: 'ID', field: 'em_no' },
+        { headerName: 'Sl No', field: 'slno' },
+        { headerName: 'Emp ID', field: 'em_id' },
+        { headerName: 'Emp No', field: 'em_no' },
         { headerName: 'Name ', field: 'em_name' },
         { headerName: 'Dept Name ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
         { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'Designation ', field: 'em_dojs' },
+        { headerName: 'Date Of Join ', field: 'em_doj' },
     ])
 
     return (
