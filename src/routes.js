@@ -206,6 +206,7 @@ const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractRepor
 const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
 const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
+const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
 
 const routes = [
 
@@ -418,6 +419,7 @@ const routes = [
   { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
+  { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
 
 ]
 

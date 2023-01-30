@@ -19,6 +19,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import { useMemo } from 'react'
 
 const EmployeeFileAgGrid = () => {
 
@@ -41,21 +42,23 @@ const EmployeeFileAgGrid = () => {
     const {
         selectedDept,
         selectDeptSection,
-        selectBranchMast,
     } = useContext(PayrolMasterContext)
 
-    const postData = {
-        dept_id: selectedDept,
-        sect_id: selectDeptSection,
-        //branch_slno: selectBranchMast
-    }
+    const postData = useMemo(() => {
+        return {
+            dept_id: selectedDept,
+            sect_id: selectDeptSection,
+            //branch_slno: selectBranchMast
+        }
+    }, [selectedDept, selectDeptSection])
     // const postDataBranch = {
     //     branch_slno: selectBranchMast
     // }
-    const postDataDept = {
+    const postDataDept = useMemo(() => {
         //branch_slno: selectBranchMast,
-        dept_id: selectedDept,
-    }
+        return { dept_id: selectedDept }
+    }, [selectedDept])
+
     const [active, updateactive] = useState({
         activestatus: true
     })
@@ -107,7 +110,7 @@ const EmployeeFileAgGrid = () => {
             }
         }
         submitfunc()
-    }, [postDataDept, postData])
+    }, [postDataDept, postData, selectedDept, selectDeptSection, activestatus, dispatch])
 
     // if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
     //     const result = await axioslogin.post('/empmast/getEmpDet', postData)
@@ -168,8 +171,8 @@ const EmployeeFileAgGrid = () => {
                     </IconButton>
                 </Tooltip>
         },
-        { headerName: 'Emp No', field: 'em_no', minWidth: 90, },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 90 },
+        { headerName: 'Emp No', field: 'em_no', minWidth: 90, filter: true },
+        { headerName: 'Emp Id ', field: 'em_id', minWidth: 90, filter: true },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Gender', field: 'gender', minWidth: 90 },
         { headerName: 'Age', field: 'em_age_year', minWidth: 90 },

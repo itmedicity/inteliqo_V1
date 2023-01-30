@@ -79,12 +79,30 @@ const JobDescriptionViewTable = () => {
     }
 
     const download = async (params) => {
-        setDownload(1)
         const data = params.api.getSelectedRows()
         const { summary_slno } = data[0]
         setId(summary_slno)
-        dispatch(setJobSummary(summary_slno))
+        // try {
+        //     console.log("fsgjfhnd");
+        //     console.log(summary_slno);
+        //     dispatch(setJobSummary(summary_slno))
+        // }
+        // catch (exceptionVar) {
+        //     // console.log("err");
+        //     setDownload(0)
+        // }
+        // finally {
+        //     //console.log("finally");
+
+        //     setDownload(1)
+        // }
+
+
+        dispatch(setJobSummary(summary_slno)).then(() => {
+            setDownload(1)
+        })
         //history.push(`/Home/JobDescrPdf`)
+        setDownload(0)
     }
 
     const [summary, setSummary] = useState({
@@ -134,7 +152,7 @@ const JobDescriptionViewTable = () => {
 
     //de structuring job summary 
     useEffect(() => {
-        if (jsummary.length !== 0) {
+        if (Object.keys(jsummary).length > 0) {
             const { objective, scope, branch_name, working_hour, reporting_dept, equipment_used, desig, dept, sect, Docno, date, edit_date } = jsummary[0];
             const summary = {
                 objective: objective === '' ? 'Not Updated' : objective,
@@ -153,13 +171,13 @@ const JobDescriptionViewTable = () => {
             setSummary(summary)
             //setDocno(docno)
         }
-        return () => {
-            setSummary()
-        }
-    }, [jsummary.length])
+        // return () => {
+        //     setSummary()
+        // }
+    }, [jsummary])
 
     useEffect(() => {
-        if (jGeneric.length !== 0) {
+        if (Object.keys(jGeneric).length > 0) {
             const { experience_year, is_female, is_male, age_from, age_to } = jGeneric[0]
             const generic = {
                 experience_year: experience_year === '' ? 'Not Updated' : experience_year,
@@ -170,13 +188,28 @@ const JobDescriptionViewTable = () => {
             }
             setGeneric(generic)
         }
-        return () => {
-            setGeneric()
-        }
-    }, [jGeneric.length])
+        // return () => {
+        //     setGeneric()
+        // }
+    }, [jGeneric])
 
     useEffect(() => {
         if (downloads === 1) {
+            // try {
+            //     pdfdownlod(objective, desig, scope, branch_name,
+            //         working_hour, reporting_dept, equipment_used,
+            //         dept, sect, date, revisiondate, docno, jDuty,
+            //         jPerformance, jCompetency, jQualify,
+            //         experience_year, is_female, is_male, age_from, age_to)
+            // } catch (exceptionVar) {
+            //     console.log("err");
+            //     setDownload(0)
+            // } finally {
+            //     console.log("finally");
+
+            //     setDownload(0)
+            // }
+
             pdfdownlod(objective, desig, scope, branch_name,
                 working_hour, reporting_dept, equipment_used,
                 dept, sect, date, revisiondate, docno, jDuty,
@@ -187,7 +220,6 @@ const JobDescriptionViewTable = () => {
         working_hour, reporting_dept, equipment_used, dept,
         sect, date, revisiondate, docno, jDuty, jPerformance, jCompetency, jQualify,
         experience_year, is_female, is_male, age_from, age_to])
-
 
     useEffect(() => {
         return () => {
