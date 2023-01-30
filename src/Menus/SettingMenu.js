@@ -12,7 +12,6 @@ export const py_setting_one = [
     { to: '/Home/DueClearenceDepartment', name: 'Due Clearence Department', slno: 121 },
     { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
     { to: '/Home/KRA', name: 'Key Result Areas', slno: 177 },
-    { to: '/Home/PerformanceGradeMaster', name: 'Performance Grade', slno: 184 },
 
 ]
 
@@ -29,9 +28,6 @@ export const py_setting_two = [
     { to: '/Home/LeaveRequestType', name: 'Leave Request Type Master', slno: 94 },
     { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
     { to: '/Home/CarryForwardSetting', name: 'Carry Forward Setting', slno: 126 },
-    { to: '/Home/HighLevelMaster', name: 'High Level Master', slno: 191 },
-    { to: '/Home/HierarchyLevel', name: 'Hierarchy Level Master', slno: 192 },
-
 ]
 
 export const py_setting_three = [
@@ -47,7 +43,6 @@ export const py_setting_three = [
     { to: '/Home/BoardEdu', name: 'Board Master', slno: 104 },
     { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
     { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 },
-    { to: '/Home/VariablepayIncrease', name: 'Variable pay Increase', slno: 185 }
 ]
 
 export const userManagement_one = [
@@ -58,6 +53,4 @@ export const userManagement_one = [
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
     // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
-    { to: '/Home/PerformanceAppraisalRights', name: 'Performance Appraisal Rights', slno: 189 },
-    { to: '/Home/HODInchargeMaster', name: 'HOD/Incharge Appraisal Rights', slno: 190 },
 ]

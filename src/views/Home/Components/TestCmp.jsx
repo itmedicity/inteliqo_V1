@@ -25,15 +25,7 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const LeaveCEO = () => {
         history.push(`/Home/ApprovalCEO`)
     }
-    const ContractRenew = () => {
-        history.push(`/Home/ContractEnd`)
-    }
-    const Training = () => {
-        history.push(`/Home/TrainingEnd`)
-    }
-    const Contractclose = () => {
-        history.push(`/Home/Contract_end_details`)
-    }
+
     const Otrequest = () => {
         history.push(`/Home/OTApprovalHR`)
     }
@@ -64,38 +56,73 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const RegistRenew = () => {
         history.push(`/Home/RegistrationRenew`)
     }
+
+    const ContractRenew = () => {
+        history.push(`/Home/Contract_end_details`)
+    }
+    const Training = () => {
+        history.push(`/Home/TrainingEnd`)
+    }
+    const Contractclose = () => {
+        history.push(`/Home/ContractEnd`)
+    }
     const ProbationEnd = () => {
         history.push(`/Home/ProbationEnd`)
     }
     const Annual = () => {
         history.push(`/Home/AnnualAppraisalList`)
     }
-    const ContractAppraisal = () => {
+    // const ContractAppraisal = () => {
 
+    // }
+
+    const AppraisalHod = () => {
+        history.push(`/Home/AppraisalApprovalHOD`)
+    }
+
+    const AppraisalIncharge = () => {
+        history.push(`/Home/AppraisalApproveIncharge`)
+    }
+
+    const AppraisalCEO = () => {
+        history.push(`/Home/AppraisalApprovalCEO`)
+    }
+
+    const HrAppraisal = () => {
+        history.push(`/Home/HRAppraisalList`)
     }
 
     const notificationListWindow = (slno) => {
+
         return slno === 133 && Leaverequest ||
             slno === 134 && LeaveUser ||
             slno === 135 && LeaveIncharge ||
             slno === 136 && LeaveHOD ||
             slno === 137 && LeaveCEO ||
-            slno === 138 && ContractRenew ||
-            slno === 139 && Training ||
-            slno === 140 && Contractclose ||
+
             slno === 141 && Otrequest ||
             slno === 142 && Otuser ||
             slno === 143 && Otinch ||
             slno === 144 && Othod ||
             slno === 145 && Otceo ||
+
             slno === 146 && Resign ||
             slno === 147 && ResignInch ||
             slno === 148 && ResignHod ||
             slno === 149 && ResignCeo ||
             slno === 154 && RegistRenew ||
+
+            slno === 138 && ContractRenew ||
+            slno === 140 && Contractclose ||
+            slno === 139 && Training ||
             slno === 187 && ProbationEnd ||
             slno === 188 && Annual ||
-            slno === 196 && ContractAppraisal
+            // slno === 196 && ContractAppraisal ||
+
+            slno === 215 && AppraisalHod ||
+            slno === 216 && AppraisalIncharge ||
+            slno === 217 && AppraisalCEO ||
+            slno === 219 && HrAppraisal
     }
 
     return (
