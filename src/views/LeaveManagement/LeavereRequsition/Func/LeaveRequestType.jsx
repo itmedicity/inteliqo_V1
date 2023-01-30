@@ -69,4 +69,4 @@ const LeaveRequestType = ({ empstatus, onChange, onChangeVal }) => {
     )
 }
 
-export default LeaveRequestType
+export default memo(LeaveRequestType)

@@ -6,8 +6,10 @@ import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
-const CommonLeaveOptionCmp = ({ active }) => {
-    const state = useSelector((state) => state.hodAuthorisedSection.sectionDetal, _.isEqual);
+const CommonLeaveOptionCmp = ({ active, setCommonLeve, value, setLeaveDesc }) => {
+    const singleLeaveType = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
+    const CommonLeaveType = useMemo(() => singleLeaveType, [singleLeaveType]);
+
     return (
         <FormControl
             fullWidth={true}
@@ -20,17 +22,16 @@ const CommonLeaveOptionCmp = ({ active }) => {
                 variant="outlined"
                 margin='dense'
                 size='small'
-                value={0}
                 disabled={active === true ? false : true}
-            // value={sectionVal}
-            // onChange={(e) => setSection(e.target.value)}
+                value={value}
+                onChange={(e) => setCommonLeve(e.target.value)}
             >
                 <MenuItem value={0} disabled>
-                    Select Department Section
+                    Select Common Single Leave Type
                 </MenuItem>
                 {
-                    state && state.map((val, index) => {
-                        return <MenuItem key={index} value={val.dept_section}>{val.sect_name}</MenuItem>
+                    CommonLeaveType && CommonLeaveType.map((val, index) => {
+                        return <MenuItem key={index} value={val.llvetype_slno} onClick={() => setLeaveDesc(val.lvetype_desc)} >{val.lvetype_desc}</MenuItem>
                     })
 
                 }

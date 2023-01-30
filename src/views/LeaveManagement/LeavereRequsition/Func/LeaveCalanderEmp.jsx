@@ -20,7 +20,7 @@ const LeaveCalanderEmp = () => {
     return (
         <Box sx={{ flex: 1, p: 0.5 }} >
             {
-                status === false ? <Skeleton animation="wave" variant="rectangular" /> :
+                status === false ? <Skeleton variant="rounded" height={40} /> :
                     <TableContainer component={Paper}  >
                         <Table sx={{}} size="small" aria-label="a dense table">
                             <TableHead>

@@ -6,7 +6,7 @@ import { memo } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
-const DepartmentSection = ({ setSection, sectionVal }) => {
+const DepartmentSection = ({ setSection, sectionVal, formSubmit }) => {
     const state = useSelector((state) => state.hodAuthorisedSection.sectionDetal, _.isEqual);
     return (
         <FormControl
@@ -19,6 +19,7 @@ const DepartmentSection = ({ setSection, sectionVal }) => {
                 variant="outlined"
                 margin='dense'
                 size='small'
+                disabled={formSubmit}
                 value={sectionVal}
                 onChange={(e) => setSection(e.target.value)}
             >

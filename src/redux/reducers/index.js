@@ -4,7 +4,16 @@ import { getProfileData, getPrifileDateEachEmp } from '../reducers/ProfileDataRe
 import { LoginCredential } from '../reducers/LoginReducer'
 import { getEmployeeRecordList } from '../reducers/EmployeeRecod.reducer'
 import { getDepartmentShiftData } from '../reducers/Departmentshift'
-import { leavedata, hodAuthorisedSection, hodBasedSectionNameList, getLeaveRequestInfom, getEmpLeaveData } from '../reducers/Leavereqdata'
+import {
+    leavedata,
+    hodAuthorisedSection,
+    hodBasedSectionNameList,
+    getLeaveRequestInfom,
+    singleLeaveRequestFormState,
+    getEmpLeaveData,
+    getEmployeeInformationState,
+    getEmployeeApprovalLevel
+} from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
 import { getEmployeedetailsDutyplan } from '../reducers/EmployeeDetails'
@@ -139,7 +148,10 @@ const reducer = combineReducers({
     hodAuthorisedSection,
     hodBasedSectionNameList,
     getLeaveRequestInfom,
-    getEmpLeaveData
+    getEmpLeaveData,
+    singleLeaveRequestFormState,
+    getEmployeeInformationState,
+    getEmployeeApprovalLevel
 })
 
 export default reducer;

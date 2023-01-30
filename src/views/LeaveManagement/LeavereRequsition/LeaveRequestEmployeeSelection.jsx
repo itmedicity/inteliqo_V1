@@ -9,7 +9,7 @@ import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
+import { getCommonLeaveData, getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import TextInput from 'src/views/Component/TextInput'
 import _ from 'underscore'
@@ -21,15 +21,21 @@ import { Button, CssVarsProvider } from '@mui/joy'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const LeaveRequestEmployeeSelection = () => {
     const dispatch = useDispatch();
 
-    const { FETCH_LEAVE_REQUEST } = Actiontypes;
+    const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState, _.isEqual);
+
+    const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+
+    const { formSubmit } = singleLevFormData;
     const { hod, incharge, em_id, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
 
     const [deptSection, setDeptSection] = useState(0);
@@ -52,7 +58,9 @@ const LeaveRequestEmployeeSelection = () => {
                     empNo: employeeID,
                     requestType: levReq
                 }
-                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
+                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
+                console.log(` emp selectio hod ${em_no} `)
+                // dispatch(getCommonLeaveData(em_no));
             }
 
         } else {
@@ -66,9 +74,17 @@ const LeaveRequestEmployeeSelection = () => {
                     requestType: levReq
                 }
                 dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
+                dispatch(getCommonLeaveData(em_no));
             }
         }
 
+    }
+
+
+    const changeForm = () => {
+        let requestType = { requestType: 0 };
+        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+        dispatch({ type: LEAVE_REQ_DEFAULT })
     }
 
     return (
@@ -84,6 +100,7 @@ const LeaveRequestEmployeeSelection = () => {
                         <DepartmentSection
                             setSection={setDeptSection}
                             sectionVal={deptSection}
+                            formSubmit={formSubmit}
                         />
                     </Box> :
                     <Box sx={{
@@ -115,6 +132,7 @@ const LeaveRequestEmployeeSelection = () => {
                             section={deptSection}
                             setEmployeeId={setEmployeeID}
                             employeeId={employeeID}
+                            formSubmit={formSubmit}
                         />
                     </Box> :
                     <Box sx={{
@@ -164,14 +182,29 @@ const LeaveRequestEmployeeSelection = () => {
                 <CssVarsProvider>
                     <Button
                         aria-label="Like"
-                        variant="soft"
-                        color="neutral"
+                        variant="outlined"
+                        color="primary"
                         onClick={onSubmitLeaveRequestEntry}
                         sx={{
-                            color: 'green',
+                            // color: 'green',
                         }}
                     >
                         <AddCircleOutlineIcon />
+                    </Button>
+                </CssVarsProvider>
+            </Box>
+            <Box sx={{ display: "flex", p: 0.2 }} >
+                <CssVarsProvider>
+                    <Button
+                        aria-label="Like"
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => changeForm()}
+                        sx={{
+                            // color: 'green',
+                        }}
+                    >
+                        <RefreshIcon />
                     </Button>
                 </CssVarsProvider>
             </Box>
@@ -179,4 +212,4 @@ const LeaveRequestEmployeeSelection = () => {
     )
 }
 
-export default LeaveRequestEmployeeSelection
+export default memo(LeaveRequestEmployeeSelection)

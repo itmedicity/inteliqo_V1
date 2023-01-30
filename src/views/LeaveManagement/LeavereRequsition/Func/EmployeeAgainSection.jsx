@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { useMemo } from 'react';
 import { memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getannualleave } from 'src/redux/actions/Profile.action';
+import { getCommonLeaveData, getEmployeeInformation } from 'src/redux/actions/LeaveReqst.action';
+import { getannualleave, setProfileData } from 'src/redux/actions/Profile.action';
 import _ from 'underscore';
 
-const EmployeeAgainSection = ({ section, employeeId, setEmployeeId }) => {
+const EmployeeAgainSection = ({ section, employeeId, setEmployeeId, formSubmit }) => {
     const dispatch = useDispatch();
     const [emplList, setEmplList] = useState([]);
     const state = useSelector((state) => state.hodBasedSectionNameList.sectionEmployeeName, _.isEqual);
@@ -22,8 +23,14 @@ const EmployeeAgainSection = ({ section, employeeId, setEmployeeId }) => {
         }
     }, [section, filterEmployeeList])
 
+    useEffect(() => {
+        // console.log(`employee selection table ${employeeId}`)
+        dispatch(getCommonLeaveData(employeeId));
+    }, [employeeId])
+
     const getEmployeeId = (em_id) => {
         dispatch(getannualleave(em_id))
+        dispatch(getEmployeeInformation(em_id))
     }
 
     return (
@@ -38,6 +45,7 @@ const EmployeeAgainSection = ({ section, employeeId, setEmployeeId }) => {
                 variant="outlined"
                 margin='dense'
                 size='small'
+                disabled={formSubmit}
                 value={employeeId}
                 onChange={(e) => setEmployeeId(e.target.value)}
                 sx={{ minHeight: 10, p: 0 }}
