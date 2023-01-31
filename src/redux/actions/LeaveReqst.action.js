@@ -1,7 +1,14 @@
 import { axioslogin } from 'src/views/Axios/Axios';
 import { Actiontypes } from '../constants/action.type'
 
-const { FETCH_EMP_LEAVE_LIST } = Actiontypes;
+const {
+    FETCH_EMP_LEAVE_LIST,
+    FETCH_HOD_INCAHRGE_SECTION,
+    FETCH_HOD_INCAHRGE_SECT_EMP_NAME,
+    FETCH_COMMON_LEAVES_DATA,
+    FETCH_EMPLOYEE_INFORMATION_FOR_LVE_REQ,
+    GET_EMPLOYEE_APPROVAL_LEVEL
+} = Actiontypes;
 
 export const getlevedata = (id) => async (dispatch) => {
 
@@ -36,19 +43,54 @@ export const getlevedata = (id) => async (dispatch) => {
     } else {
         dispatch({ type: FETCH_EMP_LEAVE_LIST, payload: [] })
     }
+}
 
+export const getHodBasedDeptSectionName = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/common/getDepartSetionHodIncharge/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_HOD_INCAHRGE_SECTION, payload: data })
+    } else {
+        dispatch({ type: FETCH_HOD_INCAHRGE_SECTION, payload: [] })
+    }
+}
 
+export const getEmpNameHodSectionBased = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/common/getSectionBasedEmpoyeeHodIncharge/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_HOD_INCAHRGE_SECT_EMP_NAME, payload: data })
+    } else {
+        dispatch({ type: FETCH_HOD_INCAHRGE_SECT_EMP_NAME, payload: [] })
+    }
+}
 
+export const getCommonLeaveData = (no) => async (dispatch) => {
+    const result = await axioslogin.get(`/leaveRequestType/empCommonLeave/${no}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_COMMON_LEAVES_DATA, payload: data })
+    } else {
+        dispatch({ type: FETCH_COMMON_LEAVES_DATA, payload: [] })
+    }
+}
 
+export const getEmployeeInformation = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/common/getEmpoyeeInfomation/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_EMPLOYEE_INFORMATION_FOR_LVE_REQ, payload: data })
+    } else {
+        dispatch({ type: FETCH_EMPLOYEE_INFORMATION_FOR_LVE_REQ, payload: [] })
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
+export const getEmployeeApprovalLevel = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/common/getapproval/levels/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: data })
+    } else {
+        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: [] })
+    }
 }

@@ -4,7 +4,16 @@ import { getProfileData, getPrifileDateEachEmp } from '../reducers/ProfileDataRe
 import { LoginCredential } from '../reducers/LoginReducer'
 import { getEmployeeRecordList } from '../reducers/EmployeeRecod.reducer'
 import { getDepartmentShiftData } from '../reducers/Departmentshift'
-import { leavedata } from '../reducers/Leavereqdata'
+import {
+    leavedata,
+    hodAuthorisedSection,
+    hodBasedSectionNameList,
+    getLeaveRequestInfom,
+    singleLeaveRequestFormState,
+    getEmpLeaveData,
+    getEmployeeInformationState,
+    getEmployeeApprovalLevel
+} from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
 import { getEmployeedetailsDutyplan } from '../reducers/EmployeeDetails'
@@ -45,15 +54,28 @@ import { getGradeList } from '../reducers/Grade.Reducer'
 import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
-import { getShiftList } from '../reducers/Shift.Reducer'
+import { getShiftList, getShiftPlanDetl, getShiftDateFormat, getUpdatedShiftId, updatedShiftDetlOnModel } from '../reducers/Shift.Reducer'
 import { getCommonSettings } from './CommonSett.Reducer';
+import { getCasualLeaveData } from './LeaveData.Reducer';
 import { getJobSummary } from './JobDescription.Reducer'
 import { getJobDuties } from './JobDuties.Reducer'
 import { getJobPerformance } from './JobPerformance.Reducer'
 import { getJobCompetency } from './JobCompetency.Reducer'
 import { getJobQualification } from './JobQualifi.Reducer'
 import { getJobGenric } from './JobGeneric.Reducer'
+import {
+    getHolidayList,
+    getCommonLeave,
+    getCreditedCasualLeaves,
+    getCreditedCarryForwardLeaves,
+    getCreditedCommonLeaves,
+    getCreditedCreditedLeaves,
+    getCreditedHolidayLeaves,
+    getCreditedPrivilegeLeaves,
+    updateCasualLeaveStatus
+} from './LeaveProcess.Reducer'
 import { getAppraisalData } from './AppraisalReducer'
+
 
 const reducer = combineReducers({
     changeState,
@@ -104,12 +126,33 @@ const reducer = combineReducers({
     getDeptSecList,
     getShiftList,
     getCommonSettings,
+    getCasualLeaveData,
     getJobSummary,
     getJobDuties,
     getJobPerformance,
     getJobCompetency,
     getJobQualification,
     getJobGenric,
+    getHolidayList,
+    getCommonLeave,
+    getCreditedCasualLeaves,
+    getCreditedCarryForwardLeaves,
+    getCreditedCommonLeaves,
+    getCreditedCreditedLeaves,
+    getCreditedHolidayLeaves,
+    getCreditedPrivilegeLeaves,
+    updateCasualLeaveStatus,
+    getShiftPlanDetl,
+    getShiftDateFormat,
+    getUpdatedShiftId,
+    updatedShiftDetlOnModel,
+    hodAuthorisedSection,
+    hodBasedSectionNameList,
+    getLeaveRequestInfom,
+    getEmpLeaveData,
+    singleLeaveRequestFormState,
+    getEmployeeInformationState,
+    getEmployeeApprovalLevel,
     getAppraisalData
 })
 

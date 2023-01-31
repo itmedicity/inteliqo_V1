@@ -1,17 +1,7 @@
-import { Box, createTheme, ThemeProvider, Paper, Card, CardMedia, CardContent, CardActionArea } from '@mui/material'
+import { Box, createTheme, ThemeProvider, Paper } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Button, Chip, CssVarsProvider, Typography } from '@mui/joy';
-import AspectRatio from '@mui/joy/AspectRatio';
-import ImageIcon from '@mui/icons-material/Image';
-import Avatar from '@mui/joy/Avatar'
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import BadgeIcon from '@mui/icons-material/Badge';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LensIcon from '@mui/icons-material/Lens';
+import { CssVarsProvider, Typography } from '@mui/joy';
 import IconButton from '@mui/joy/IconButton';
-import MoreHoriz from '@mui/icons-material/MoreHoriz';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import UploadIcon from '@mui/icons-material/Upload';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import MenuList from './MenuList';
 import CloseIcon from '@mui/icons-material/Close';

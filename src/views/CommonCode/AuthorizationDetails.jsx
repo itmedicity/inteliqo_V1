@@ -53,10 +53,7 @@ const AuthorizationDetails = () => {
         )
     }, [em_dept_section, em_id, updateAuthorization])
     return (
-        <Fragment>
-            <SessionCheck>
-            </SessionCheck>
-        </Fragment>
+        <SessionCheck />
     )
 }
 export default AuthorizationDetails

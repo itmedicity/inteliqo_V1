@@ -48,7 +48,7 @@ const EmployeeRecordTable = () => {
     // Employee Record List
     const getEmployeeList = async (e) => {
         e.preventDefault()
-        if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0) {
+        if (selectedDept !== 0 && selectDeptSection !== 0) {
             const result = await axioslogin.post('/empmast/getEmpDet', postData)
             const { success, data } = result.data
             if (success === 1) {
@@ -57,7 +57,7 @@ const EmployeeRecordTable = () => {
                 setdata(1)
             }
         }
-        else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0) {
+        else if (selectedDept === 0 && selectDeptSection === 0) {
             const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
             const { success, data } = result.data
             if (success === 1) {
@@ -66,7 +66,7 @@ const EmployeeRecordTable = () => {
                 setdata(1)
             }
         }
-        else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0) {
+        else if (selectedDept !== 0 && selectDeptSection === 0) {
             const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
             const { success, data } = result.data
             if (success === 1) {
@@ -90,9 +90,9 @@ const EmployeeRecordTable = () => {
             >
                 <div className="col-md-12">
                     <div className="row g-1">
-                        <div className="col-md-3">
+                        {/* <div className="col-md-3">
                             <BrnachMastSelection style={SELECT_CMP_STYLE} />
-                        </div>
+                        </div> */}
                         <div className="col-md-3">
                             <DepartmentSelect style={SELECT_CMP_STYLE} />
                         </div>
