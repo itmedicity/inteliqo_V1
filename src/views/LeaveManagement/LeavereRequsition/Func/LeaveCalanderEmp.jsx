@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Skeleton, Box } from '@mui/material'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Skeleton, Box, Alert } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { memo } from 'react'
 import { useMemo } from 'react'
@@ -35,7 +35,7 @@ const LeaveCalanderEmp = () => {
 
                             <TableBody>
                                 {
-                                    data && data.map((val) => {
+                                    data?.map((val) => {
                                         const leaveType = val.typeleve;
 
                                         return < TableRow

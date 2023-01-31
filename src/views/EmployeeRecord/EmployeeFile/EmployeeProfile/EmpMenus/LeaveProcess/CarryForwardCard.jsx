@@ -1,4 +1,4 @@
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, TableContainer } from '@mui/material'
 import React from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table';
@@ -38,30 +38,32 @@ const CarryForwardCard = ({ title, id, processStat }) => {
     }, [id, processStat])
 
     return (
-        <Paper square sx={{ flex: 1 }}>
+        <Paper square sx={{ flex: 1, height: 250 }}>
             <CustmTypog title={title} />
             <Box>
                 {loding && <LinearProgreeBar />}
-                <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow sx={{ height: 5 }} >
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} >Name</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Credited</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Taken</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Balance</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {cfData && cfData.map((row, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{row.name}</TableCell>
-                                <TableCell align="right">{row.Credited}</TableCell>
-                                <TableCell align="right">{row.Taken}</TableCell>
-                                <TableCell align="right">{row.Credited - row.Taken}</TableCell>
+                <TableContainer sx={{ maxHeight: 200 }} >
+                    <Table size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow sx={{ height: 5 }} >
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} >Name</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Credited</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Taken</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Balance</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {cfData && cfData.map((row, index) => (
+                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row">{row.name}</TableCell>
+                                    <TableCell align="right">{row.Credited}</TableCell>
+                                    <TableCell align="right">{row.Taken}</TableCell>
+                                    <TableCell align="right">{row.Credited - row.Taken}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Box>
         </Paper>
     )

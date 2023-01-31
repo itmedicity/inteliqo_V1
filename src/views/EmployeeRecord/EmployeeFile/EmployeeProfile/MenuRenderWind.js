@@ -44,7 +44,7 @@ const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
                                             state === 103 ? <LeaveProcess /> :
                                                 state === 114 ? <FineorDeduction /> :
                                                     state === 115 ? <SalaryIncrement /> :
-                                                        state === 116 ? <DocumentCheckList /> :
+                                                        state === 116 ? <DocumentList /> :
                                                             state === 117 ? <Vaccine /> :
                                                                 state === 118 ? <TrainingInfo /> :
                                                                     state === 119 ? <JobDcrptn /> :

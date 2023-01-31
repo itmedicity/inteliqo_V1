@@ -2,7 +2,7 @@ import { Button, Checkbox, CssVarsProvider } from '@mui/joy'
 import { Box, Grid, Paper, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import React, { lazy } from 'react'
+import React, { lazy, useCallback } from 'react'
 import { useState } from 'react'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CommonLeaveOptionCmp from './Func/CommonLeaveOptionCmp'
@@ -35,11 +35,11 @@ const LeaveRequestForm = () => {
     const [commnLevType, setCommnLevType] = useState(0)
     const [commnLevDesc, setCommnLevDesc] = useState('')
 
-    const singleLeaveTypeCheckOption = (e) => {
+    const singleLeaveTypeCheckOption = useCallback((e) => {
         setSgleCheck(e.target.checked)
-    }
+    })
 
-    const leaveRequestSubmitFun = async () => {
+    const leaveRequestSubmitFun = useCallback(async () => {
 
         if (singleLeveTypeCheck === true) {
             if (commnLevType === 0) {
@@ -86,13 +86,14 @@ const LeaveRequestForm = () => {
             //Not a single Leave type Leave Selection
             if (dateCheckBox === true) {
                 //Single Date Selected
-
+                let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
             } else {
                 //Date Rage selected
+                let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
             }
         }
 
-    }
+    })
 
     return (
         <Box>
@@ -151,7 +152,7 @@ const LeaveRequestForm = () => {
                             size="lg"
                             variant="outlined"
                             checked={singleLeveTypeCheck}
-                            onChange={(e) => singleLeaveTypeCheckOption(e)}
+                            onChange={useCallback((e) => singleLeaveTypeCheckOption(e))}
                         />
                     </CssVarsProvider>
                 </Box>

@@ -1,4 +1,4 @@
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, TableContainer } from '@mui/material'
 import React from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table';
@@ -33,31 +33,33 @@ const HolidayLeaveCard = ({ title, id, processStat }) => {
     }, [id, processStat])
 
     return (
-        <Paper square sx={{ flex: 1 }}>
+        <Paper square sx={{ flex: 1, height: 250 }}>
             <CustmTypog title={title} />
             <Box>
                 {loding && <LinearProgreeBar />}
-                <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow sx={{ height: 5 }} >
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} >Name</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Credited</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Taken</TableCell>
-                            <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Balance</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {hlData && hlData.map((row, index) => {
-                            let holiday = row.hld_desc.toLowerCase()
-                            return <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row" sx={{ textTransform: 'capitalize' }} >{holiday}</TableCell>
-                                <TableCell align="right">{row.hl_lv_credit}</TableCell>
-                                <TableCell align="right">{row.hl_lv_taken}</TableCell>
-                                <TableCell align="right">{row.hl_lv_credit - row.hl_lv_taken}</TableCell>
+                <TableContainer sx={{ maxHeight: 200 }} >
+                    <Table size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow sx={{ height: 5 }} >
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} >Name</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Credited</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Taken</TableCell>
+                                <TableCell variant='body' sx={{ fontWeight: 550 }} align="right">Balance</TableCell>
                             </TableRow>
-                        })}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {hlData && hlData.map((row, index) => {
+                                let holiday = row.hld_desc.toLowerCase()
+                                return <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row" sx={{ textTransform: 'capitalize' }} >{holiday}</TableCell>
+                                    <TableCell align="right">{row.hl_lv_credit}</TableCell>
+                                    <TableCell align="right">{row.hl_lv_taken}</TableCell>
+                                    <TableCell align="right">{row.hl_lv_credit - row.hl_lv_taken}</TableCell>
+                                </TableRow>
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Box>
         </Paper>
     )

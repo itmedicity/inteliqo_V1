@@ -747,7 +747,7 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
         cmn_lv_allowedflag: ecat_esi_allow === 1 ? 1 : 0,
         cmn_lv_allowed: val.leave_credit_policy_count,
         cmn_lv_taken: 0,
-        cmn_lv_balance: 0,
+        cmn_lv_balance: val.leave_credit_policy_count,
         Iv_process_slno: lv_process_slno,
         update_user: loggerUser,
         em_id: em_id,

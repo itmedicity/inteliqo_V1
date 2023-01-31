@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Paper } from '@mui/material'
+import { Box, LinearProgress, Paper, TableContainer } from '@mui/material'
 import React from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table'
@@ -33,44 +33,46 @@ const CasualLeaveCard = ({ title, id, processStat }) => {
   }, [id, processStat])
 
   return (
-    <Paper square sx={{ flex: 1 }}>
+    <Paper square sx={{ flex: 1, height: 250 }}>
       <CustmTypog title={title} />
       <Box>
         {loding && <LinearProgreeBar />}
-        <Table size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow sx={{ height: 5 }}>
-              <TableCell variant="body" sx={{ fontWeight: 550 }}>
-                Name
-              </TableCell>
-              <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
-                Credited
-              </TableCell>
-              <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
-                Taken
-              </TableCell>
-              <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
-                Balance
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {clData &&
-              clData.map((row) => (
-                <TableRow
-                  key={row.hrm_cl_slno}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.cl_lv_mnth}
-                  </TableCell>
-                  <TableCell align="right">{row.cl_lv_credit}</TableCell>
-                  <TableCell align="right">{row.cl_lv_taken}</TableCell>
-                  <TableCell align="right">{row.cl_lv_credit - row.cl_lv_taken}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <TableContainer sx={{ maxHeight: 200 }} >
+          <Table size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow sx={{ height: 5 }}>
+                <TableCell variant="body" sx={{ fontWeight: 550 }}>
+                  Name
+                </TableCell>
+                <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
+                  Credited
+                </TableCell>
+                <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
+                  Taken
+                </TableCell>
+                <TableCell variant="body" sx={{ fontWeight: 550 }} align="right">
+                  Balance
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {clData &&
+                clData.map((row) => (
+                  <TableRow
+                    key={row.hrm_cl_slno}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.cl_lv_mnth}
+                    </TableCell>
+                    <TableCell align="right">{row.cl_lv_credit}</TableCell>
+                    <TableCell align="right">{row.cl_lv_taken}</TableCell>
+                    <TableCell align="right">{row.cl_lv_credit - row.cl_lv_taken}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </Paper>
   )

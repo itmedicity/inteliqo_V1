@@ -102,6 +102,7 @@ export const getLeaveRequestInfom = (state = leaveRequestState, { type, payload 
     }
 }
 
+// SINGLE LEAVE REQUEST (ONLY FROM COMMON LEAVES)
 export const singleLeaveReqState = {
     leaveReqState: {
         dateRangeCheck: false,
@@ -138,6 +139,13 @@ export const singleLeaveRequestFormState = (state = singleLeaveReqState, { type,
     }
 }
 
+//MULTI LEAVE REQUEST FORM 
+export const multiLeaveRequestState = {
+
+}
+
+
+// EMPLOYEE INFORATION
 const employeeInfomState = {
     empData: []
 }
@@ -161,3 +169,5 @@ export const getEmployeeApprovalLevel = (state = employeeApprovalLevel, { type, 
             return state
     }
 }
+
+

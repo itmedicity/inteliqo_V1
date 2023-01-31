@@ -10,7 +10,10 @@ import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { getEmployeeApprovalLevel, getEmployeeInformation, getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
+import {
+    getEmployeeApprovalLevel, getEmployeeInformation,
+    getEmpNameHodSectionBased, getHodBasedDeptSectionName
+} from 'src/redux/actions/LeaveReqst.action'
 import { getannualleave, setProfileData } from 'src/redux/actions/Profile.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'

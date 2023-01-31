@@ -22,6 +22,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { add, format } from 'date-fns'
 import { getleaverequest } from 'src/views/Constant/Constant'
+import { useCallback } from 'react'
 
 const SingleLeaveRequestForm = () => {
 
@@ -41,7 +42,7 @@ const SingleLeaveRequestForm = () => {
 
     const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
 
-    console.log(hod, incharge)
+    // console.log(hod, incharge)
 
     const {
         em_no, em_id, em_doj, em_branch, em_designation, em_retirement_date, em_prob_end_date, em_conf_end_date, em_contract_end_date,
@@ -50,7 +51,7 @@ const SingleLeaveRequestForm = () => {
         hod: empHodStat, incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
-    console.log(empHodStat, empInchrgStat)
+    // console.log(empHodStat, empInchrgStat)
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))
@@ -73,7 +74,7 @@ const SingleLeaveRequestForm = () => {
 
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
 
-    const leaveRequestSubmitFun = async () => {
+    const leaveRequestSubmitFun = useCallback(async () => {
 
         let postDataForGetAttendMarking = {
             empNo: em_no,
@@ -87,9 +88,13 @@ const SingleLeaveRequestForm = () => {
 
         const singleLeveData = CommonLeaveType?.filter((val) => val.llvetype_slno === singleLeaveType)
         const { cmn_lv_balance } = singleLeveData?.[0];
+        // console.log(singleLeveData)
+
         if (success === 1) {
             warningNofity("Attendance Marking Processed ! Contact HRD")
         } else {
+            // console.log(cmn_lv_balance, totalDays)
+
             if (cmn_lv_balance >= totalDays) {
 
                 /***
@@ -152,9 +157,7 @@ const SingleLeaveRequestForm = () => {
                             ceo_req_status: empHodStat === 1 ? 1 : 0,
                             resonforleave: reason
                         }
-
-
-                        console.log(postData)
+                        console.log(` single leave type ${postData}`)
                     }
                 }
 
@@ -162,7 +165,7 @@ const SingleLeaveRequestForm = () => {
                 warningNofity("Allowed Leave is Not Enough For This Leave Request")
             }
         }
-    }
+    }, [CommonLeaveType, em_no, fromDate, toDate, reason, singleLeaveState])
 
     return (
         <Paper
