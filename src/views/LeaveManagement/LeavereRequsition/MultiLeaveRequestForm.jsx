@@ -9,7 +9,7 @@ const MultiLeaveRequestForm = () => {
             variant="outlined"
             sx={{ display: "flex", flex: 1, p: 0.5, mb: 0.5, alignItems: 'center', backgroundColor: '#EBEDEF', flexDirection: 'column' }}
         >
-            dddd
+
         </Paper>
     )
 }
