@@ -10,7 +10,13 @@ const {
     FETCH_SINGLE_LEAVE_REQ_FORM_DATA,
     FETCH_EMPLOYEE_INFORMATION_FOR_LVE_REQ,
     LEAVE_REQ_DEFAULT,
-    GET_EMPLOYEE_APPROVAL_LEVEL
+    GET_EMPLOYEE_APPROVAL_LEVEL,
+    FETCH_CREDITED_CASUAL_LEAVE_DETL,
+    FETCH_CREDITED_COMMON_LEAVE,
+    FETCH_CREDITED_HOLIDAYS_LEAVE,
+    FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
+    FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
+    RESET_SELECT_BOX_COUNTER
 } = Actiontypes;
 
 const Leavestate = [];
@@ -102,7 +108,7 @@ export const getLeaveRequestInfom = (state = leaveRequestState, { type, payload 
     }
 }
 
-// SINGLE LEAVE REQUEST (ONLY FROM COMMON LEAVES)
+// SINGLE LEAVE & MULTI LEAVE TYPE REQUEST (ONLY FROM COMMON LEAVES)
 export const singleLeaveReqState = {
     leaveReqState: {
         dateRangeCheck: false,
@@ -139,11 +145,6 @@ export const singleLeaveRequestFormState = (state = singleLeaveReqState, { type,
     }
 }
 
-//MULTI LEAVE REQUEST FORM 
-export const multiLeaveRequestState = {
-
-}
-
 
 // EMPLOYEE INFORATION
 const employeeInfomState = {
@@ -171,3 +172,96 @@ export const getEmployeeApprovalLevel = (state = employeeApprovalLevel, { type, 
 }
 
 
+
+// GET THE ALLOWED CASUAL LEAVE FROM THE CREDITED TABLE
+
+const creditedCasualLeave = {
+    casualLeave: [],
+    apiStats: false
+}
+
+export const getCreditedCasualLeave = (state = creditedCasualLeave, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_CASUAL_LEAVE_DETL:
+            return { ...state, casualLeave: payload, apiStats: true }
+        default:
+            return state
+    }
+}
+
+// GET THE CREDITED COMMON LEAVE THE TABLE
+
+const creitedCommonLeave = {
+    commonLerave: [],
+    apiStats: false
+}
+
+export const getCreitedCommonLeave = (state = creitedCommonLeave, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_COMMON_LEAVE:
+            return { ...state, commonLerave: payload, apiStats: true }
+        default:
+            return state
+    }
+}
+
+//GET THE CRDITED HOLIDAYS LEAVE FOR THE TABLE
+
+const creitedHolidayLeave = {
+    holidayLeave: [],
+    apiStats: false
+}
+
+export const getCreitedHolidayLeave = (state = creitedHolidayLeave, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_HOLIDAYS_LEAVE:
+            return { ...state, holidayLeave: payload, apiStats: true }
+        default:
+            return state
+    }
+}
+
+//GET THE CRDITED COMPANSATORY OFF LEAVE FOR THE TABLE
+
+const creitedCompansatoryOffLeave = {
+    compansatory: [],
+    apiStats: false
+}
+
+export const getCreitedCompansatoryOffLeave = (state = creitedCompansatoryOffLeave, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_COMPENSATORY_OFF_LEAVE:
+            return { ...state, compansatory: payload, apiStats: true }
+        default:
+            return state
+    }
+}
+
+//GET THE CRDITED EARN LEAVE FOR THE TABLE
+
+const creditedEarnLeave = {
+    earnLeave: [],
+    apiStats: false
+}
+
+export const getCreditedEarnLeave = (state = creditedEarnLeave, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_EARNLEAVE_OFF_LEAVE:
+            return { ...state, earnLeave: payload, apiStats: true }
+        default:
+            return state
+    }
+}
+
+// for resetting the selected leave select box while find the duplicate leaves
+
+const resetCounter = 0
+
+export const resetSelectedBoxCounter = (state = resetCounter, { type, payload }) => {
+    switch (type) {
+        case RESET_SELECT_BOX_COUNTER:
+            return state + 1
+        default:
+            return state
+    }
+}

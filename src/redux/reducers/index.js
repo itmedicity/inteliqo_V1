@@ -12,7 +12,13 @@ import {
     singleLeaveRequestFormState,
     getEmpLeaveData,
     getEmployeeInformationState,
-    getEmployeeApprovalLevel
+    getEmployeeApprovalLevel,
+    getCreditedCasualLeave,
+    getCreitedCommonLeave,
+    getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave,
+    getCreditedEarnLeave,
+    resetSelectedBoxCounter
 } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
@@ -153,7 +159,13 @@ const reducer = combineReducers({
     singleLeaveRequestFormState,
     getEmployeeInformationState,
     getEmployeeApprovalLevel,
-    getAppraisalData
+    getAppraisalData,
+    getCreditedCasualLeave,
+    getCreitedCommonLeave,
+    getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave,
+    getCreditedEarnLeave,
+    resetSelectedBoxCounter
 })
 
 export default reducer;

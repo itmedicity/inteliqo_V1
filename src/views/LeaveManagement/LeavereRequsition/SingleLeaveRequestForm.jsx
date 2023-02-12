@@ -37,8 +37,8 @@ const SingleLeaveRequestForm = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
 
-    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, getEmployeeInformation)
-    const empApprovalLevel = useMemo(() => employeeApprovalLevels, employeeApprovalLevels)
+    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
+    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
     const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
 
@@ -157,7 +157,8 @@ const SingleLeaveRequestForm = () => {
                             ceo_req_status: empHodStat === 1 ? 1 : 0,
                             resonforleave: reason
                         }
-                        console.log(` single leave type ${postData}`)
+                        console.log('single leave')
+                        console.log(postData)
                     }
                 }
 

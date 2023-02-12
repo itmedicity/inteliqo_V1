@@ -39,9 +39,11 @@ const LeaveRequestForm = () => {
         setSgleCheck(e.target.checked)
     })
 
+    console.log(singleLeveTypeCheck)
     const leaveRequestSubmitFun = useCallback(async () => {
 
         if (singleLeveTypeCheck === true) {
+            console.log('single leaves')
             if (commnLevType === 0) {
                 warningNofity("Please Select The Leave Type")
             } else {
@@ -83,17 +85,42 @@ const LeaveRequestForm = () => {
             }
         } else {
             setRequestFom(false)
+            console.log('multi leave ')
             //Not a single Leave type Leave Selection
             if (dateCheckBox === true) {
                 //Single Date Selected
                 let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                let postFormDataSgleDate = {
+                    dateRangeCheck: dateCheckBox,
+                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                    toDate: moment(toDate).format('YYYY-MM-DD'),
+                    singleLevCheck: singleLeveTypeCheck,
+                    singleLeaveType: commnLevType,
+                    singleLeaveDesc: commnLevDesc,
+                    totalDays: totalDays + 1,
+                    formSubmit: true
+                }
+
+                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
             } else {
                 //Date Rage selected
                 let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                let postFormDataSgleDate = {
+                    dateRangeCheck: dateCheckBox,
+                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                    toDate: moment(fromDate).format('YYYY-MM-DD'),
+                    singleLevCheck: singleLeveTypeCheck,
+                    singleLeaveType: commnLevType,
+                    singleLeaveDesc: commnLevDesc,
+                    totalDays: totalDays + 1,
+                    formSubmit: true
+                }
+
+                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
             }
         }
 
-    })
+    }, [fromDate, toDate, singleLeveTypeCheck, commnLevType, dateCheckBox])
 
     return (
         <Box>
@@ -152,7 +179,7 @@ const LeaveRequestForm = () => {
                             size="lg"
                             variant="outlined"
                             checked={singleLeveTypeCheck}
-                            onChange={useCallback((e) => singleLeaveTypeCheckOption(e))}
+                            onChange={(e) => singleLeaveTypeCheckOption(e)}
                         />
                     </CssVarsProvider>
                 </Box>
