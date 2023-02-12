@@ -3,12 +3,13 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { memo } from 'react'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import _ from 'underscore'
 
 const LeaveCalanderEmp = () => {
     const [data, setData] = useState([])
     const [status, setstatus] = useState(false)
 
-    const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData);
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData, _.isEqual);
     const allowedLeaveData = useMemo(() => state, [state]);
 
     useEffect(() => {
