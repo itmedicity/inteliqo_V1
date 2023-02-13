@@ -73,15 +73,15 @@ const LeaveRequestMainCard = () => {
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
                 <LeaveRequestEmployeeSelection />
-                {
-                    requestType === 1 ?
-                        <Suspense fallback={<LinearProgreeBar />} >
-                            <LeaveRequestFormPage />
-                        </Suspense> :
-                        requestType === 2 ? null :
-                            requestType === 3 ? null :
-                                requestType === 4 ? null : null
-                }
+                <Suspense fallback={<LinearProgreeBar />} >
+                    {
+                        requestType === 1 ?
+                            <LeaveRequestFormPage /> :
+                            requestType === 2 ? null :
+                                requestType === 3 ? null :
+                                    requestType === 4 ? null : null
+                    }
+                </Suspense>
                 <LeaveTableContainer />
             </Box>
         </CustomLayout>
