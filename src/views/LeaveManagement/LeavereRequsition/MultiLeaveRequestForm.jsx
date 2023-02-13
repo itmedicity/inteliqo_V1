@@ -1,5 +1,5 @@
 import React, { memo, lazy } from 'react'
-import { Paper, Grid, Box, TextField, Typography } from '@mui/material'
+import { Paper, Grid, Box, TextField, Typography, TextareaAutosize } from '@mui/material'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import { useMemo } from 'react';
@@ -169,56 +169,63 @@ const MultiLeaveRequestForm = () => {
                 }}
             >
                 <Box sx={{ display: "flex", flex: 1 }}>
-                    <Box sx={{ display: "flex", flex: 2 }}>
-                        <Form.Group style={{ width: '100%' }} >
-                            <Form.Control type="file" size="sm" />
-                        </Form.Group>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 2, pl: 1 }} >
-                        <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="sm"
-                                    color="primary"
-                                // fullWidth
+                    <Box sx={{ flex: 2 }} >
+                        <Box sx={{ display: "flex", flex: 1 }}>
+                            <Box sx={{ display: "flex", flex: 2 }}>
+                                <Form.Group style={{ width: '100%' }} >
+                                    <Form.Control type="file" size="sm" />
+                                </Form.Group>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 2, pl: 1 }} >
+                                <CssVarsProvider>
+                                    <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                                        <Button
+                                            variant="outlined"
+                                            component="label"
+                                            size="sm"
+                                            color="primary"
+                                        // fullWidth
 
-                                // onClick={() => setOpen(true)}
-                                >
-                                    <FindInPageIcon />View Document
-                                </Button>
-                            </Tooltip>
-                        </CssVarsProvider>
+                                        // onClick={() => setOpen(true)}
+                                        >
+                                            <FindInPageIcon />View Document
+                                        </Button>
+                                    </Tooltip>
+                                </CssVarsProvider>
+                            </Box>
+                        </Box>
+                        <Box sx={{
+                            display: 'flex',
+                            flex: 1,
+                            width: '100%',
+                            flexDirection: 'start',
+                            p: 0,
+                            m: 0
+                        }} >
+                            <Typo level="body4">Supported Document/ Image Formats - *.pdf / *.jpg,*.jpeg,*.png || Doc/Image Size Should Be Less Than 2 MB </Typo>
+                        </Box>
                     </Box>
-                    <Box sx={{ flex: 1 }} ></Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 5 }} >
+                    <Box sx={{ display: "flex", flex: 2, px: 1 }} >
+                        <TextareaAutosize maxRows={2} minRows={2} style={{ width: '100%' }} />
+                    </Box>
+                    <Box sx={{ display: "flex", flex: 1, px: 0 }} >
                         <CssVarsProvider>
                             <Button
                                 aria-label="Like"
                                 variant="outlined"
-                                color="danger"
+                                color="success"
                                 size="sm"
                                 startDecorator={<SaveAsIcon />}
                                 // onClick={leaveRequestSubmitFun}
                                 fullWidth
                             // sx={{ color: 'green' }} 
                             >
-                                Save Request
+                                Save Leave Request
                             </Button>
                         </CssVarsProvider>
                     </Box>
                 </Box>
-                <Box sx={{
-                    display: 'flex',
-                    flex: 1,
-                    width: '100%',
-                    flexDirection: 'start',
-                    p: 0,
-                    m: 0
-                }} >
-                    <Typo level="body4">Supported Document/ Image Formats - *.pdf / *.jpg,*.jpeg,*.png || Doc/Image Size Should Be Less Than 2 MB </Typo>
-                </Box>
+
             </Paper>
         </Paper>
     )
