@@ -22,11 +22,15 @@ import { useEffect } from 'react'
 const SingleLeaveRequestForm = lazy(() => import('./SingleLeaveRequestForm'));
 const MultiLeaveRequestForm = lazy(() => import('./MultiLeaveRequestForm'));
 
+const BlankForm = () => {
+    return (<Box></Box>)
+}
+
 const LeaveRequestForm = () => {
     const { FETCH_SINGLE_LEAVE_REQ_FORM_DATA } = Actiontypes;
 
     const dispatch = useDispatch()
-    const [requestFomOne, setRequestFom] = useState(false)
+    const [requestFomOne, setRequestFom] = useState(0)
 
     const [dateCheckBox, setCheckBx] = useState(false)
     const [singleLeveTypeCheck, setSgleCheck] = useState(false)
@@ -39,11 +43,11 @@ const LeaveRequestForm = () => {
         setSgleCheck(e.target.checked)
     })
 
-    console.log(singleLeveTypeCheck)
+    // console.log(singleLeveTypeCheck)
     const leaveRequestSubmitFun = useCallback(async () => {
 
         if (singleLeveTypeCheck === true) {
-            console.log('single leaves')
+            // console.log('single leaves')
             if (commnLevType === 0) {
                 warningNofity("Please Select The Leave Type")
             } else {
@@ -85,7 +89,7 @@ const LeaveRequestForm = () => {
             }
         } else {
             setRequestFom(false)
-            console.log('multi leave ')
+            // console.log('multi leave ')
             //Not a single Leave type Leave Selection
             if (dateCheckBox === true) {
                 //Single Date Selected
@@ -207,7 +211,7 @@ const LeaveRequestForm = () => {
                 </Box>
             </Paper >
             {
-                requestFomOne === true ? < SingleLeaveRequestForm /> : <MultiLeaveRequestForm />
+                requestFomOne === true ? < SingleLeaveRequestForm /> : requestFomOne === false ? <MultiLeaveRequestForm /> : <BlankForm />
             }
         </Box>
     )

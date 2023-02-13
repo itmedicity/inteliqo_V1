@@ -13,18 +13,30 @@ import moment from 'moment'
 import _ from 'underscore'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import IconButton from '@mui/material/IconButton';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LeaveRequestDocModal from './LeaveRequestDocModal'
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { add, format } from 'date-fns'
+import { add, differenceInCalendarDays, format } from 'date-fns'
 import { getleaverequest } from 'src/views/Constant/Constant'
 import { useCallback } from 'react'
 
+import { Actiontypes } from 'src/redux/constants/action.type'
+
 const SingleLeaveRequestForm = () => {
+
+    const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
+    const dispatch = useDispatch();
+
+    //form reset function
+    const changeForm = () => {
+        let requestType = { requestType: 0 };
+        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+        dispatch({ type: LEAVE_REQ_DEFAULT })
+    }
 
     const [singleLeaveState, setSingleLeaveState] = useState({});
     const [levRequestNo, setLevRequestNo] = useState(0);
@@ -71,16 +83,29 @@ const SingleLeaveRequestForm = () => {
         totalDays
     } = singleLeaveState;
 
-
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
 
     const leaveRequestSubmitFun = useCallback(async () => {
+
+        let postDataLeaveDetlInform = [{
+            leaveid: levRequestNo,
+            lveDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+            caulmnth: singleLeaveType,
+            lveType: singleLeaveType,
+            status: 1,
+            levtypename: singleLeaveDesc,
+            leave: singleLeaveDesc,
+            nof_leave: totalDays,
+            singleleave: 1
+        }]
 
         let postDataForGetAttendMarking = {
             empNo: em_no,
             fromDate: moment(fromDate).format('YYYY-MM-DD'),
             toDate: moment(toDate).format('YYYY-MM-DD')
         }
+
+        const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1;
 
         //Checking attendance marking is saved in  current month || start of month b/w current date 
         const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
@@ -139,7 +164,7 @@ const SingleLeaveRequestForm = () => {
                                     (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
                             inc_apprv_time:
                                 (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : 'NULL',
+                                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                             hod_apprv_req:
                                 (authorization_hod === 1 && hod === 1) ? 1 :
                                     (authorization_hod === 1 && hod === 0) ? 1 :
@@ -152,16 +177,33 @@ const SingleLeaveRequestForm = () => {
                                     (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
                             hod_apprv_time:
                                 (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : 'NULL',
+                                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                             hr_aprrv_requ: 1,
                             ceo_req_status: empHodStat === 1 ? 1 : 0,
-                            resonforleave: reason
+                            resonforleave: reason,
+                            no_of_leave: numberOfDays
                         }
-                        console.log('single leave')
-                        console.log(postData)
+
+                        // insert the single leave request 
+                        const result = await axioslogin.post('/LeaveRequest', postData);
+                        const { success, message } = await result.data;
+                        if (success === 1) {
+                            // insert the leave request detailed table
+                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDataLeaveDetlInform);
+                            const { success, message } = await insertDetlTable.data;
+                            if (success === 1) {
+                                succesNofity(message);
+                                changeForm()
+                            } else {
+                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                changeForm()
+                            }
+                        } else {
+                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                            changeForm()
+                        }
                     }
                 }
-
             } else {
                 warningNofity("Allowed Leave is Not Enough For This Leave Request")
             }
@@ -280,4 +322,4 @@ const SingleLeaveRequestForm = () => {
     )
 }
 
-export default memo(SingleLeaveRequestForm)
+export default memo(SingleLeaveRequestForm) 

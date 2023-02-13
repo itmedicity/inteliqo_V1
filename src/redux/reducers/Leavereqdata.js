@@ -252,16 +252,3 @@ export const getCreditedEarnLeave = (state = creditedEarnLeave, { type, payload 
             return state
     }
 }
-
-// for resetting the selected leave select box while find the duplicate leaves
-
-const resetCounter = 0
-
-export const resetSelectedBoxCounter = (state = resetCounter, { type, payload }) => {
-    switch (type) {
-        case RESET_SELECT_BOX_COUNTER:
-            return state + 1
-        default:
-            return state
-    }
-}

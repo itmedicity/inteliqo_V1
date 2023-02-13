@@ -7,18 +7,17 @@ import { Suspense } from 'react';
 import { Form } from 'react-bootstrap';
 import TextInputBootStrap from 'src/views/Attendance/Component/TextInputBootStrap';
 import MultiLeaveTypeDetl from './Func/CasualLeaveSelected';
-// import MuliLeaveMapCmp from './MuliLeaveMapCmp';
-import { Button, CssVarsProvider, Tooltip, Typography as Typo } from '@mui/joy';
+import { Button, CssVarsProvider, Textarea, Tooltip, Typography as Typo } from '@mui/joy';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import { eachDayOfInterval } from 'date-fns';
+import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { useState } from 'react';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { Actiontypes } from 'src/redux/constants/action.type';
+import { getleaverequest } from 'src/views/Constant/Constant';
 
 // lazy import 
 const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
@@ -26,14 +25,38 @@ const MuliLeaveMapCmp = lazy(() => import('./MuliLeaveMapCmp'));
 
 const MultiLeaveRequestForm = () => {
 
-    const { RESET_SELECT_BOX_COUNTER } = Actiontypes;
-
     const dispatch = useDispatch();
     const [newData, setnewData] = useState([]);
+    const [levRequestNo, setLevRequestNo] = useState(0);
+    const [reason, setReason] = useState('');
     //request selected employee details after the submit button pn;y changes
     // const empDetl = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
     // const reqEmpDetl = useMemo(() => empDetl, [empDetl]);
     // const { em_no, requestType, deptSection } = reqEmpDetl;
+
+    //get the employee details for taking the HOd and Incharge Details
+    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
+
+    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
+    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
+    const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
+
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
+
+    // console.log(hod, incharge)
+
+    const {
+        em_no, em_id, em_doj, em_branch, em_designation, em_retirement_date, em_prob_end_date, em_conf_end_date, em_contract_end_date,
+        em_department, em_dept_section, ecat_esi_allow, blood_slno, hrm_religion, hrm_profile, contract_status, emp__ot, ot_amount,
+        gross_salary, em_category, category_slno, emp_type, des_type, probation_status,
+        hod: empHodStat, incharge: empInchrgStat
+    } = selectedEmployeeDetl?.[0];
+
+    useEffect(() => {
+        getleaverequest().then((val) => setLevRequestNo(val))
+    }, [])
 
     // selected form data 
     const multiLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState, _.isEqual);
@@ -48,6 +71,7 @@ const MultiLeaveRequestForm = () => {
     //get the date interwal
     // console.log(intervalDate)
 
+    const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1;
 
     useEffect(() => {
         const intervalDate = eachDayOfInterval({ start: new Date(fromDate), end: new Date(toDate) }).map((date) => moment(date).format('YYYY-MM-DD'))
@@ -78,16 +102,11 @@ const MultiLeaveRequestForm = () => {
     //leave request selection
 
     const handleChangeLeaveRequest = useCallback(async (leveTypeData, leaveDetl) => {
-        // console.log(leveTypeData?.index)
-        // console.log(leaveDetl)
-        // const newSelectedData = [...leaveSelectedData];
 
-        //filter the leaves for duplication
-
+        //filter the leaves for duplication and get the post data
         const duplicateLeaveSelection = newData?.map((val) => val.selectedLveSlno).includes(leaveDetl?.selectedLveSlno);
         if (duplicateLeaveSelection === true) {
             warningNofity("You are Already Selected This Leaves");
-            dispatch({ type: RESET_SELECT_BOX_COUNTER })
         } else {
             // leave add to the map
             const newSelectedLeaveData = newData?.map((val) => {
@@ -111,13 +130,73 @@ const MultiLeaveRequestForm = () => {
             })
             setnewData(newSelectedLeaveData)
         }
-
-        // console.log(newData)
-        // console.log(newSelectedLeaveData)
     })
 
+    // multi leave request  submit function
+    const leaveRequestSubmitFun = useCallback(async () => {
+        // requested form information
+        const { dateRangeCheck, fromDate, toDate, singleLevCheck, singleLeaveType, singleLeaveDesc, totalDays, formSubmit
+        } = multiLeaveTypeData;
 
-    console.log(newData)
+        // leave request master table post data
+        const postData = {
+            leaveid: levRequestNo,
+            em_id: em_id,
+            em_no: em_no,
+            em_department: em_department,
+            em_dept_section: em_dept_section,
+            leavefrom_date: fromDate,
+            leavetodate: toDate,
+            rejoin_date: format(add(new Date(toDate), { days: 1 }), "yyyy-MM-dd"),
+            request_status: 1,
+            inc_apprv_req:
+                (authorization_incharge === 1 && incharge === 1) ? 1 :
+                    (authorization_incharge === 1 && incharge === 0) ? 1 :
+                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+            incapprv_status:
+                (authorization_incharge === 1 && incharge === 1) ? 1 :
+                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+            inc_apprv_cmnt:
+                (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
+                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+            inc_apprv_time:
+                (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+            hod_apprv_req:
+                (authorization_hod === 1 && hod === 1) ? 1 :
+                    (authorization_hod === 1 && hod === 0) ? 1 :
+                        (authorization_hod === 0 && hod === 1) ? 1 : 0,
+            hod_apprv_status:
+                (authorization_hod === 1 && hod === 1) ? 1 :
+                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
+            hod_apprv_cmnt:
+                (authorization_hod === 1 && hod === 1) ? "DIRECT" :
+                    (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
+            hod_apprv_time:
+                (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+            hr_aprrv_requ: 1,
+            ceo_req_status: empHodStat === 1 ? 1 : 0,
+            resonforleave: reason,
+            no_of_leave: numberOfDays
+        }
+
+        //validation
+        const checkIfSelectedLeveReqType = newData?.filter((val) => val.leaveTypeSlno === 0);
+        const checkIfSelectedLeve = newData?.filter((val) => val.selectedLveSlno === 0);
+
+        if (checkIfSelectedLeveReqType.length > 0 || checkIfSelectedLeve.length > 0) {
+            warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
+        } else {
+            console.log(CommonLeaveType)
+            // CommonLeaveType?.filter()
+        }
+
+
+
+
+    }, [newData, multiLeaveTypeData])
+
     return (
         <Paper
             // component={Grid}
@@ -206,7 +285,20 @@ const MultiLeaveRequestForm = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", flex: 2, px: 1 }} >
-                        <TextareaAutosize maxRows={2} minRows={2} style={{ width: '100%' }} />
+                        {/* <TextareaAutosize maxRows={2} minRows={2} style={{ width: '100%', p: 0.5 }} placeholder="Leave Request Reasons" /> */}
+                        <CssVarsProvider>
+                            <Textarea
+                                label="Outlined"
+                                placeholder="Reason For Leave Request"
+                                variant="outlined"
+                                color="warning"
+                                size="lg"
+                                minRows={1}
+                                maxRows={3}
+                                onChange={(e) => setReason(e.target.value)}
+                                sx={{ flex: 1 }}
+                            />
+                        </CssVarsProvider>
                     </Box>
                     <Box sx={{ display: "flex", flex: 1, px: 0 }} >
                         <CssVarsProvider>
@@ -216,7 +308,7 @@ const MultiLeaveRequestForm = () => {
                                 color="primary"
                                 size="sm"
                                 startDecorator={<SaveAsIcon />}
-                                // onClick={leaveRequestSubmitFun}
+                                onClick={leaveRequestSubmitFun}
                                 fullWidth
                             // sx={{ color: 'green' }} 
                             >
