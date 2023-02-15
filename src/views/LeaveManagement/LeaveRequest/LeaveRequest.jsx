@@ -558,120 +558,118 @@ const LeaveRequest = () => {
                 redirect={RedirectToProfilePage}
                 submit={submitLeave}
             >
-                <form>
-                    <div className="col-md-12">
-                        <div className="row g-1 mb-2">
-                            <div className="col-md-3">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Department"
-                                    disabled="disabled"
-                                    value={dept_name}
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Department Section"
-                                    disabled="disabled"
-                                    value={sect_name}
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Emplyee Number"
-                                    disabled="disabled"
-                                    value={is_incharge === 1 ? Emno : em_no}
-                                />
-                            </div>
-                            <div className="col-md-2">
-                                {
-                                    (is_incharge === 1 || is_hod === 1) ?
-                                        <InchargeLeaveReqEmp inchargedeptSec={inchargedeptSec}
-                                            hoddeptSec={hoddeptSec}
-                                            onChange={handleChange}
-                                            style={SELECT_CMP_STYLE}
-                                        /> :
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="Employee Name"
-                                            disabled="disabled"
-                                            value={em_name}
-                                        />
-                                }
-                            </div>
-                            <div className="col-md-3">
-                                <LeaveRequestType style={SELECT_CMP_STYLE} select="Leave Request Type" setleavereqtype={setleavereqtype} />
-                            </div>
+                <div className="col-md-12">
+                    <div className="row g-1 mb-2">
+                        <div className="col-md-3">
+                            <TextInput
+                                type="text"
+                                classname="form-control form-control-sm"
+                                Placeholder="Department"
+                                disabled="disabled"
+                                value={dept_name}
+                            />
                         </div>
-                        <div className="row g-1 mb-2">
-                            <div className="col-md-9">
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Reason For Leave"
-                                    name="resonforleave"
-                                    value={resonforleave}
-                                    changeTextValue={(e) => updateLeaveDetails(e)}
-                                />
-                            </div>
-                            <div className="col-md-3 text-center">
-                                <Stack direction="row" alignItems="center" spacing={2}>
-                                    <label htmlFor="contained-button-file">
-                                        <Input accept="image/*" id="contained-button-file" multiple type="file" />
-                                        <Button variant="contained" component="span" size="small">
-                                            Upload
-                                        </Button>
-                                    </label>
-                                </Stack>
-                            </div>
+                        <div className="col-md-2">
+                            <TextInput
+                                type="text"
+                                classname="form-control form-control-sm"
+                                Placeholder="Department Section"
+                                disabled="disabled"
+                                value={sect_name}
+                            />
+                        </div>
+                        <div className="col-md-2">
+                            <TextInput
+                                type="text"
+                                classname="form-control form-control-sm"
+                                Placeholder="Emplyee Number"
+                                disabled="disabled"
+                                value={is_incharge === 1 ? Emno : em_no}
+                            />
+                        </div>
+                        <div className="col-md-2">
+                            {
+                                (is_incharge === 1 || is_hod === 1) ?
+                                    <InchargeLeaveReqEmp inchargedeptSec={inchargedeptSec}
+                                        hoddeptSec={hoddeptSec}
+                                        onChange={handleChange}
+                                        style={SELECT_CMP_STYLE}
+                                    /> :
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Employee Name"
+                                        disabled="disabled"
+                                        value={em_name}
+                                    />
+                            }
+                        </div>
+                        <div className="col-md-3">
+                            <LeaveRequestType style={SELECT_CMP_STYLE} select="Leave Request Type" setleavereqtype={setleavereqtype} />
                         </div>
                     </div>
-                    {/* Leave Request Card */}
-                    <div className="col-md-12 mb-2">
-                        {
-                            getleavereqtype === 1 ? <DirLeaveRequest
-                                emid={is_incharge === 1 ? emplId : em_id}// employee id
-                                leaveDetails={leaveDetails} // for main page details of leave 
-                                leaveretypeid={getleavereqtype}////type of leave request half,leave,latecoming
-                                setLeveData={setLveData}
-                                leveData={lveData}
-                                setleavestartend={setleavestartend}
-                                setleavedata={setleavedata}
-                                setleavedaystype={setleavedaystype}
-                                setsingleselect={setsingleselect}
-                                leavdaystype={leavdaystype}//no days leave
-                            /> :
-                                getleavereqtype === 2 ? <HalfDayLeaveRequest sethalfday={sethalfday}
+                    <div className="row g-1 mb-2">
+                        <div className="col-md-9">
+                            <TextInput
+                                type="text"
+                                classname="form-control form-control-sm"
+                                Placeholder="Reason For Leave"
+                                name="resonforleave"
+                                value={resonforleave}
+                                changeTextValue={(e) => updateLeaveDetails(e)}
+                            />
+                        </div>
+                        <div className="col-md-3 text-center">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                                <label htmlFor="contained-button-file">
+                                    <Input accept="image/*" id="contained-button-file" multiple type="file" />
+                                    <Button variant="contained" component="span" size="small">
+                                        Upload
+                                    </Button>
+                                </label>
+                            </Stack>
+                        </div>
+                    </div>
+                </div>
+                {/* Leave Request Card */}
+                <div className="col-md-12 mb-2">
+                    {
+                        getleavereqtype === 1 ? <DirLeaveRequest
+                            emid={is_incharge === 1 ? emplId : em_id}// employee id
+                            leaveDetails={leaveDetails} // for main page details of leave 
+                            leaveretypeid={getleavereqtype}////type of leave request half,leave,latecoming
+                            setLeveData={setLveData}
+                            leveData={lveData}
+                            setleavestartend={setleavestartend}
+                            setleavedata={setleavedata}
+                            setleavedaystype={setleavedaystype}
+                            setsingleselect={setsingleselect}
+                            leavdaystype={leavdaystype}//no days leave
+                        /> :
+                            getleavereqtype === 2 ? <HalfDayLeaveRequest sethalfday={sethalfday}
+                                em_id={is_incharge === 1 ? emplId : em_id} /> :
+                                getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch}
                                     em_id={is_incharge === 1 ? emplId : em_id} /> :
-                                    getleavereqtype === 3 ? <NoPunchRequest setnopunch={setnopunch}
-                                        em_id={is_incharge === 1 ? emplId : em_id} /> :
-                                        getleavereqtype === 4 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff}
-                                            em_id={is_incharge === 1 ? emplId : em_id} /> : null
-                        }
-                    </div>
+                                    getleavereqtype === 4 ? <Compensatoryoff setcopensatoryoff={setcopensatoryoff}
+                                        em_id={is_incharge === 1 ? emplId : em_id} /> : null
+                    }
+                </div>
 
-                    {/* Diplay the Allowed Leave Calender */}
+                {/* Diplay the Allowed Leave Calender */}
 
-                    <Box sx={{ display: 'flex', p: 0.3, width: '100%' }} >
-                        <Box sx={{ display: 'flex', width: '45%', p: 0.2, }} >
-                            <Paper sx={{ width: '100%' }} >
-                                <LeaveCalender em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
-                            </Paper>
-                        </Box>
-                        <Box sx={{ display: 'flex', width: '65%', p: 0.2 }} >
-                            <Paper sx={{ width: '100%' }}>
-                                <LeaveRequestTable em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
-                            </Paper>
-                        </Box>
+                <Box sx={{ display: 'flex', p: 0.3, width: '100%' }} >
+                    <Box sx={{ display: 'flex', width: '45%', p: 0.2, }} >
+                        <Paper sx={{ width: '100%' }} >
+                            <LeaveCalender em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
+                        </Paper>
                     </Box>
+                    <Box sx={{ display: 'flex', width: '65%', p: 0.2 }} >
+                        <Paper sx={{ width: '100%' }}>
+                            <LeaveRequestTable em_id={is_incharge === 1 ? emplId : em_id} count={count} setCount={setCount} />
+                        </Paper>
+                    </Box>
+                </Box>
 
-                </form>
             </PageLayoutSave >
         </Fragment >
     )

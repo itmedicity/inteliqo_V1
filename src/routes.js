@@ -96,6 +96,7 @@ const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/Shif
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
 const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
+const Dutyplan = React.lazy(() => import('./views/Attendance/DutyPlan/DutyPlanMainCard'))
 const LeaveRequest = React.lazy(() => import('./views/LeaveManagement/LeaveRequest/LeaveRequest'))
 const ApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/ApprovalIncharge/ApprovalIncharge'))
 const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/ApprovalHod'))
@@ -197,6 +198,8 @@ const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractRepor
 const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
 const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
+const LeaveProcessNew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'))
+const LeaveRequesitionMainCard = React.lazy(() => import('./views/LeaveManagement/LeavereRequsition/LeaveRequestMainCard'))
 const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
 const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal/CompletedAppraisalList'))
 const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
@@ -302,6 +305,7 @@ const routes = [
   { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit },
   { path: '/Home/AllowanceDeduction', exact: true, name: 'Allowance Deducation', component: AllowanceDeducation },
   { path: '/Home/Dutyplanning', exact: true, name: 'Duty Planning', component: Dutyplanning },
+  { path: '/Home/Dutyplan', exact: true, name: 'Duty Planning', component: Dutyplan },
   { path: '/Home/LeaveRequest', exact: true, name: 'Leave Request', component: LeaveRequest },
   { path: '/Home/ApprovalIncharge', exact: true, name: ' Leave Approval Incharge', component: ApprovalIncharge },
   { path: '/Home/ApprovalHOD', exact: true, name: 'Leave Approval HOD', component: ApprovalHOD },
@@ -403,10 +407,12 @@ const routes = [
   { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
+  { path: '/Home/LeaveProcess/:id/:no', exact: true, name: 'Employee Leave Process', component: LeaveProcessNew },
+  { path: '/Home/LeaveRequsition', exact: true, name: 'Employee Leave Requsition', component: LeaveRequesitionMainCard },
+  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
   { path: '/Home/HRAppraisalList', exact: true, name: 'Employee Appraisal List', component: HRAppraisalList },
   { path: '/Home/ApprovedAppraisal', exact: true, name: 'Employee Appraisal List', component: CompletedAppraisal },
   { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
-
 ]
 
 export default routes

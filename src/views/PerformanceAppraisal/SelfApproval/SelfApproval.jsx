@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Button, CircularProgress, Paper, TextareaAutosize } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Paper, TextareaAutosize } from '@mui/material';
 import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCompAssesment, getPerformanceAssesment } from 'src/redux/actions/Appraisal.Action'
@@ -34,10 +34,12 @@ const SelfApproval = () => {
     const [flag, setFlag] = useState(0)// for diable button after click
     const [compdata, setCompdata] = useState(0)
     const [perfData, setperfdata] = useState(0)
+    const [alert,setAlert]=useState(0)
 
     useEffect(() => {
         if (compdata === 1 && perfData === 1) {
-            warningNofity('There is No Appraisal For Pending')
+            setAlert(1)
+            //warningNofity('There is No Appraisal For Pending')
         }
     }, [compdata, perfData])
 
@@ -180,20 +182,12 @@ const SelfApproval = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Paper square variant='outlined' sx={{
-                display: "flex",
-                flexDirection: 'column',
-                width: '100%'
-            }}>
-                <Paper square elevation={2} sx={{
-                    display: "flex",
-                    p: 1,
-                    alignItems: "center",
-                }}>
+            <Paper square variant='outlined' sx={{ display: "flex",flexDirection: 'column', width: '100%'}}>
+                <Paper square elevation={2} sx={{ display: "flex", p: 1, alignItems: "center", }}>
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Completed Appraisal List
+                                Employee Appraisal Approval
                             </Typography>
                         </CssVarsProvider>
                     </Box>
@@ -207,13 +201,13 @@ const SelfApproval = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-
-
-                <ExistingEmpDetl
-                    empno={em_no}
-                    display={display}
-                />
-                <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
+{
+    alert===1?
+    <Paper><Alert severity="info">There is No Appraisal For Pending!</Alert></Paper> :
+    <Fragment>
+    <ExistingEmpDetl empno={em_no}display={display}
+    />
+    <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
                     <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -222,7 +216,6 @@ const SelfApproval = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-
                 <Suspense fallback={<Progress />} >
                     <Perform setperfdata={setperfdata} />
                 </Suspense>
@@ -285,8 +278,11 @@ const SelfApproval = () => {
                             </Button>
                         </Box>
                     </Box>
-
                 </Paper>
+                </Fragment>
+
+}
+  
             </Paper>
         </Fragment>
     )

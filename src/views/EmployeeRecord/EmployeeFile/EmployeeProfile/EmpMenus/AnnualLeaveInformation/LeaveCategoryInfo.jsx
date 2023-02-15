@@ -7,23 +7,23 @@ import { useSelector } from 'react-redux';
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog';
 import CustmTypo_tow from 'src/views/Component/MuiCustomComponent/CustmTypo_tow';
 import CustomBtnProcess from 'src/views/Component/MuiCustomComponent/CustomBtnProcess';
+import _ from 'underscore';
 
-const LeaveCategoryInfo = ({ empNumber }) => {
+const LeaveCategoryInfo = () => {
     const dataTabStyle = {
-        display: 'flex', flex: 1, justifyContent: 'center'
+        display: 'flex', flex: 1, justifyContent: 'flex-start'
     }
     // Get The Employee information Details from the Reduct Store
-    const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp.empPersonalData.personalData
-    })
+    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
 
     // Employee Leave Category Information 
     // des_type === 1 --> 'PROBATION' , des_type === 2 --> 'TRAINING',des_type === 3 --> 'CONFIRMATION' 
     const categoryInform = {
+        employeeNo: state.em_no,
         contrStatus: state.contract_status,
         contStartDate: state.em_cont_start === null ? 'No Data' : moment(new Date(state.em_cont_start)).format('DD-MM-YYYY'),
         contEndDate: state.em_cont_end === null ? 'No Data' : moment(new Date(state.em_cont_end)).format('DD-MM-YYYY'),
-        doj: state.em_doj,
+        doj: state.contract_status === 1 ? moment(new Date(state.em_cont_start)).format('DD-MM-YYYY') : moment(new Date(state.em_doj)).format('DD-MM-YYYY'),
         employeeCaegoryName: state.ecat_name.toLowerCase(),
         empCategSlno: state.category_slno,
         traing_Probarion: state.des_type,
@@ -37,49 +37,45 @@ const LeaveCategoryInfo = ({ empNumber }) => {
         <Paper square sx={{ flex: 1, }} >
             {/* Heading  */}
             <Box sx={{ flex: 1 }} >
-                <CustmTypog title="Leave Category Information" />
+                <CustmTypog title="Employee Current Leaves & Category Information" />
             </Box>
             {/* Contenet */}
             <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Contract Start" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.contStartDate} /></Box>
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Contract End" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.contEndDate} /></Box>
+                <Box sx={{ flex: 1, }} ><CustmTypo_tow title="Employee #" fontSize={400} /></Box>
+                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.employeeNo} /></Box>
+                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Joining Date" fontSize={400} /></Box>
+                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.doj} /></Box>
             </Box>
-            <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Probation Start" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.probationStart} /></Box>
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Probation End" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.probationEndDate} /></Box>
-            </Box>
-            <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Training Start" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.trainingStart} /></Box>
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Training End" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.trainingEnd} /></Box>
-            </Box>
+            {
+                categoryInform.contrStatus === 1 ? <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
+                    <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Contract Start" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.contStartDate} /></Box>
+                    <Box sx={{ flex: 1, }} ><CustmTypo_tow title="Contract End" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.contEndDate} /></Box>
+                </Box> : null
+            }
+            {
+                categoryInform.traing_Probarion === 1 ? <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
+                    <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Probation Start" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.probationStart} /></Box>
+                    <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Probation End" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.probationEndDate} /></Box>
+                </Box> : null
+            }
+            {
+                categoryInform.traing_Probarion === 2 ? <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
+                    <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Training Start" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.trainingStart} /></Box>
+                    <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Training End" fontSize={400} /></Box>
+                    <Box sx={dataTabStyle} ><CustmTypo_tow title={categoryInform.trainingEnd} /></Box>
+                </Box> : null
+            }
             <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
                 <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Current Category" fontSize={400} /></Box>
-                <Box sx={{ flex: 2 }}  ><CustmTypo_tow style={{ textTransform: 'capitalize' }} title={categoryInform.employeeCaegoryName} /></Box>
+                <Box sx={dataTabStyle}  ><CustmTypo_tow style={{ textTransform: 'capitalize' }} title={categoryInform.employeeCaegoryName} /></Box>
+                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Leave Period" fontSize={400} /></Box>
+                <Box sx={dataTabStyle}  ><CustmTypo_tow style={{ textTransform: 'capitalize' }} title="DD/MM/YYYY - DD/MM/YYYY" /></Box>
             </Box>
-            {/* <Box sx={{ display: 'flex', flex: 1, py: 0.2 }} >
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Leave Process" fontSize={400} /></Box>
-                <Box sx={dataTabStyle} ><CustmTypo_tow title="21-10-2022" /></Box>
-                <Box sx={{ flex: 1 }} ><CustmTypo_tow title="Next Process" fontSize={400} /></Box>
-                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center' }} ><CustmTypo_tow title="21-10-2022" /></Box>
-            </Box> */}
-            {/* <Box sx={{ display: 'flex', flex: 1, py: 0.5, alignItems: 'center' }} >
-                <Box sx={{ flex: 5, p: 0.5 }} >
-                    <Alert
-                        variant="outlined"
-                        severity="success"
-                        sx={{ py: 0 }}
-                    >
-                        CAtegory Cahanged you needs to process
-                    </Alert>
-                </Box>
-                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center' }} ><CustomBtnProcess style={{ p: 1 }} /></Box>
-            </Box> */}
         </Paper>
     )
 }

@@ -5,36 +5,32 @@ import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from 'react-redux';
 import MenuItem from "@mui/material/MenuItem";
 import { setDept } from 'src/redux/actions/Dept.Action';
+import _ from 'underscore';
+import { useMemo } from 'react';
 
 const DeptSelectByRedux = ({ style, value, setValue }) => {
 
     const dispatch = useDispatch()
+    useEffect(() => dispatch(setDept()), [dispatch])
 
-    useEffect(() => {
-        dispatch(setDept())
-    }, [dispatch])
-
-    const dept = useSelector((state) => {
-        return state.getdept.departmentlist
-    })
+    const dept = useSelector((state) => state.getdept.departmentlist, _.isEqual);
+    const deptValues = useMemo(() => dept, [dept])
 
     return (
         <Box >
-            <FormControl fullWidth size="small"  >
+            <FormControl fullWidth size="small" sx={{ minWidth: 300, maxWidth: 500 }}  >
                 <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    style={style}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     size="small"
                     fullWidth
                     variant='outlined'
-                    sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
+                    // sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
+                    sx={{ ...style, minWidth: 100 }}
                 >
                     <MenuItem value={0} disabled >Select Department</MenuItem>
                     {
-                        dept && dept.map((val, index) => {
+                        deptValues && deptValues.map((val, index) => {
                             return <MenuItem key={index} value={val.dept_id}>{val.dept_name}</MenuItem>
                         })
                     }

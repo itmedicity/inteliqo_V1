@@ -4,6 +4,12 @@ const Leavemanagement = [
         men_slno: 25,
         component: CNavItem,
         name: 'Leave Request',
+        to: '/Home/LeaveRequsition',
+    },
+    {
+        men_slno: 25,
+        component: CNavItem,
+        name: 'Leave Request',
         to: '/Home/LeaveRequest',
     },
     {

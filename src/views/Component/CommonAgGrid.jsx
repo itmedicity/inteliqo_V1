@@ -2,8 +2,8 @@ import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { Fragment, memo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import 'ag-grid-community/dist/styles/ag-grid.min.css'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.min.css'
 
 const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight, getRowStyle }) => {
     const defaultColDef = {

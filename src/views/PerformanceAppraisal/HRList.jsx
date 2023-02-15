@@ -68,13 +68,6 @@ const HRList = () => {
         history.push(`/Home`)
     }
     const [complteCol] = useState([
-        { headerName: 'Slno', field: 'slno', filter: true },
-        { headerName: 'ID', field: 'em_id', filter: true },
-        { headerName: 'Emp No ', field: 'em_no', filter: true },
-        { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
-        { headerName: 'Designation ', field: 'desg_name', },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
         {
             headerName: 'Action',
             cellRenderer: params =>
@@ -102,26 +95,35 @@ const HRList = () => {
                     </Tooltip>
                 </Fragment>
         },
+        { headerName: 'Slno', field: 'slno', filter: true, width:100 },
+        { headerName: 'Emp Id', field: 'em_id', filter: true, width:150},
+        { headerName: 'Emp No ', field: 'em_no', filter: true, width:150 },
+        { headerName: 'Name ', field: 'em_name', filter: true },
+        { headerName: 'Department  ', field: 'dept_name', filter: true },
+        { headerName: 'Department Section  ', field: 'sect_name', },
+        { headerName: 'Designation ', field: 'desg_name', },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, }, 
     ])
 
 
     //for displaying column heading with status
     const [pendingCol] = useState([
-        { headerName: 'ID', field: 'em_id', filter: true },
+        { headerName: 'Emp Id', field: 'em_id', filter: true },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
+        { headerName: 'Department ', field: 'dept_name', filter: true },
+        { headerName: 'Department Section', field:'sect_name'},
         { headerName: 'Designation ', field: 'desg_name', },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
         { headerName: 'Status ', field: 'status', wrapText: true, minWidth: 250, },
     ])
     //for displaying column with all appraisal list
     const [column] = useState([
-        { headerName: 'ID', field: 'em_id', filter: true },
+        { headerName: 'Emp Id', field: 'em_id', filter: true },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department', field: 'dept_name', filter: true },
-        { headerName: 'Department Section', field: 'dept_name', filter: true },
+        { headerName: 'Department Section', field: 'sect_name', filter: true },
         { headerName: 'Designation ', field: 'desg_name', },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
     ])
@@ -162,7 +164,7 @@ const HRList = () => {
         }
     }, [empCate])
 
-    //appraisal list data---> like all,pending,contract,permanent,probatio
+    //appraisal list data---> like all,pending,contract,permanent,probation
     const newState = useSelector((state) => {
         return {
             allAppraisal: state.getAppraisalData.allAppraisal.allAppraisalList,
@@ -174,6 +176,7 @@ const HRList = () => {
             contractPending: state.getAppraisalData.contractPending.contractPendingList
         }
     })
+    //destructuring redux data list
     const { allAppraisal, pendingAppraisal,
         approvedAppraisal, trainingPending,
         probationPending, permanentPending,
