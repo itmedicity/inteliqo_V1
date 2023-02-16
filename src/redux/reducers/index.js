@@ -81,6 +81,7 @@ import {
     updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
 import { getAppraisalData } from './AppraisalReducer'
+import { getLeaveType } from './LeaveType.Reducer'
 
 
 const reducer = combineReducers({
@@ -165,7 +166,8 @@ const reducer = combineReducers({
     getCreitedHolidayLeave,
     getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
-    resetSelectedBoxCounter
+    resetSelectedBoxCounter,
+    getLeaveType
 })
 
 export default reducer;

@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom'
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import ShiftSelectByRedux from 'src/views/MuiComponents/ShiftSelectByRedux'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import LeaveTypeMultipeSelect from 'src/views/MuiComponents/LeaveTypeMultipeSelect'
 
 const CommonSettings = () => {
     const history = useHistory()
@@ -44,6 +45,8 @@ const CommonSettings = () => {
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level } = FormData
+
+    const [levaetype,setLeaveType]=useState([])
 
     //getting form data
     const updateCommonSettings = async (e) => {
@@ -120,9 +123,11 @@ const CommonSettings = () => {
         verification_level: verification_level,
         default_shift: defshift,
         notapplicable_shift: notappshift,
-        week_off_day: workoff
-
+        week_off_day: workoff,
+        leavetype_multiple:levaetype
     }
+
+
     //data to edit
     const postDataEdit = {
         cmmn_grace_period: commn_grace,
@@ -147,7 +152,8 @@ const CommonSettings = () => {
         verification_level: verification_level,
         default_shift: defshift,
         notapplicable_shift: notappshift,
-        week_off_day: workoff
+        week_off_day: workoff,
+        leavetype_multiple:levaetype
     }
 
     //save
@@ -610,6 +616,28 @@ const CommonSettings = () => {
                                                     </div>
                                                     <div className="col-md-8">
                                                         <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-5">
+                                    <div className="card">
+                                        <div className="card-header pb-0 border  text-black">
+                                            <h6>Allowed Half Day Leave Type</h6>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Leave Type</Typography>
+                                                    </div>
+                                                    <div  className="col-md-8">
+                                                        {/* <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} /> */}
+                                                        <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType}/>
                                                     </div>
                                                 </div>
                                             </div>
