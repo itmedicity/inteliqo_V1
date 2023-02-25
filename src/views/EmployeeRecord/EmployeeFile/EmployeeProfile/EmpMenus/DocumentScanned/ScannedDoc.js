@@ -25,6 +25,8 @@ import ReceiptLong from '@mui/icons-material/ReceiptLong';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import Overview from './Overview';
+import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const ScannedDoc = () => {
 
@@ -34,9 +36,55 @@ const ScannedDoc = () => {
     const [open4, setOpen4] = useState(false);
     const [open5, setOpen5] = useState(false);
 
+    const [empfile, setEmpfile] = useState(0)
+    const [ApplicationEmployment, setApplicationEmployment] = useState(0)
+    const [biodata, setBiodata] = useState(0)
+    const [interviewAssessment, setInterviewAssessment] = useState(0)
+    const [offerletter, setOfferletter] = useState(0)
+    const [preEmploymentHealth, setPreEmploymentHealth] = useState(0)
+
+    const [personalData, setPersonaldata] = useState(0)
+    const [accademicCertificate, setAccademicCertificate] = useState(0)
+    const [regCertificate, setRegCertficate] = useState(0)
+    const [expCertificate, setExpCertificate] = useState(0)
+    const [photoidproof, setPhotoidproof] = useState(0)
+    const [antecedentVerify, setAntecedentVerify] = useState(0)
+    const [credentialverify, setCredentialVerify] = useState(0)
+    const [credentailprivilg, setCredenailPrivilg] = useState(0)
+    const [jobDescription, setJobDescription] = useState(0)
+    const [appointmentletter, setappointmentletter] = useState(0)
+    const [joiningletter, setjoiningletter] = useState(0)
+    const [compLetter, setCompLetter] = useState(0)
+    const [statutoryRecord, setstatutoryRecord] = useState(0)
+    const [inductionRecord, setInductionRecord] = useState(0)
+    const [deptOreintn, setdeptOrientation] = useState(0)
+    const [empRights, setemprights] = useState(0)
+    const [vaccination, setVaccination] = useState(0)
+    const [reviewProbation, setReviewprobation] = useState(0)
+    const [confimLetter, setConfirmLetter] = useState(0)
+
+    const [trainingRecord, setTrainingRecord] = useState(0)
+    const [training, setTraining] = useState(0)
+    const [performanceAppraisal, setperformaceAppraisal] = useState(0)
+    const [annualhealth, setAnnualHeath] = useState(0)
+
+    const [disciplinerecord, setDisciplinerecord] = useState(0)
+    const [grievancerecord, setGrievancerecord] = useState(0)
+    const [otherrecord, setOtherrecord] = useState(0)
+
+    const [dueclearence, setDueClrearence] = useState(0)
+    const [exitquestin, setExitquestion] = useState(0)
+
+    const Array = [
+        { dueslno: 1, duename: 'Yes' },
+        { dueslno: 2, duename: 'No' },
+        { dueslno: 3, duename: 'NA' }
+    ]
+
+
     return (
         <Box sx={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: 'space-between' }} >
-            <Paper elevation={3} sx={{ display: "flex", flexDirection: 'column', width: '20%', p: 0.5, backgroundColor: '#EEEFF0' }} >
+            <Paper elevation={3} sx={{ display: "flex", flexDirection: 'column', width: '30%', p: 0.5, backgroundColor: '#EEEFF0' }} >
                 <Box>
                     <CssVarsProvider>
                         {/* <Typography
@@ -61,13 +109,13 @@ const ScannedDoc = () => {
                                         aria-describedby="employee-documents"
                                         sx={{ borderRadius: 5, justifyContent: 'center' }}
                                     >
-                                        DOCUMENTATION
+                                        EMPLOYEE FILE CHECKLIST
                                     </ListItemButton>
                                 </ListItem>
-                                <Typography level="body3" aria-hidden>
+                                {/* <Typography level="body3" aria-hidden>
                                     Included with your recent Apple device purchase. Must be accepted within
                                     90 days of activation.
-                                </Typography>
+                                </Typography> */}
                             </ListItem>
                         </List>
                     </CssVarsProvider>
@@ -76,6 +124,8 @@ const ScannedDoc = () => {
                     sx={{
                         flex: 1,
                         pl: '24px',
+                        overflow: 'auto',
+                        '::-webkit-scrollbar': { display: "none" }
                     }}
                 >
                     <CssVarsProvider>
@@ -156,28 +206,178 @@ const ScannedDoc = () => {
                                     >
                                         Pre-Joining
                                     </Typography>
-                                    <Typography component="span" level="body3" sx={{ ml: 1 }}>
+                                    {/* <Typography component="span" level="body3" sx={{ ml: 1 }}>
                                         6
-                                    </Typography>
+                                    </Typography> */}
                                 </ListItem>
                                 {open && (
                                     <List sx={{ '--List-item-paddingY': '8px' }}>
                                         <ListItem>
-                                            <ListItemButton>Overview</ListItemButton>
+                                            <ListItemButton>1. Employee File Check List</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>
-                                                0. Set Up Your Development Environment
-                                            </ListItemButton>
+                                            <ListItemButton>1. Employee File Check List</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>
-                                                1. Create and Deploy Your First Gatsby Site
-                                            </ListItemButton>
+                                            <ListItemButton>1. Employee File Check List</ListItemButton>
                                         </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>2. Use and Style React components</ListItemButton>
-                                        </ListItem>
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '45%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>1. Employee File Check List</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "45%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setEmpfile}
+                                                                checkedValue={empfile}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                            <Box sx={{ width: '10%' }}>
+                                                <IconButton
+                                                    variant="plain"
+                                                    size="sm"
+                                                    color="neutral"
+                                                //onClick={() => setOpen(!open)}
+                                                >
+                                                    <FilePresentIcon
+                                                        sx={{ fontSize: 25 }}
+                                                    />
+                                                </IconButton>
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>2. Application For Employment</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setApplicationEmployment}
+                                                                checkedValue={ApplicationEmployment}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton> 3. Bio Data </ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setBiodata}
+                                                                checkedValue={biodata}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>4. Interview Assessment Sheet</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setInterviewAssessment}
+                                                                checkedValue={interviewAssessment}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>5. Offer Letter</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setOfferletter}
+                                                                checkedValue={offerletter}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>6. Pre Employment Health Check Up Form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setPreEmploymentHealth}
+                                                                checkedValue={preEmploymentHealth}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
                                     </List>
                                 )}
                             </ListItem>
@@ -211,24 +411,489 @@ const ScannedDoc = () => {
                                     >
                                         Joining Formalities
                                     </Typography>
-                                    <Typography component="span" level="body3" sx={{ ml: 1 }}>
+                                    {/* <Typography component="span" level="body3" sx={{ ml: 1 }}>
                                         19
-                                    </Typography>
+                                    </Typography> */}
                                 </ListItem>
                                 {open2 && (
                                     <List sx={{ '--List-item-paddingY': '8px' }}>
+
                                         <ListItem>
-                                            <ListItemButton>Overview</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Local Development</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Routing</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Styling</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>7. Personnel Data Form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setPersonaldata}
+                                                                checkedValue={personalData}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>8. Self attested copies of Academic Certificates</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setAccademicCertificate}
+                                                                checkedValue={accademicCertificate}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>9. Self attested copies of Registration Certificates</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setRegCertficate}
+                                                                checkedValue={regCertificate}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>10. Self attested copies of Experience Certificates</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setExpCertificate}
+                                                                checkedValue={expCertificate}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>11. Self attested copy of Photo ID proof</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setPhotoidproof}
+                                                                checkedValue={photoidproof}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>12. Antecedent verification Form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setAntecedentVerify}
+                                                                checkedValue={antecedentVerify}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>13. Credential Verification Form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setCredentialVerify}
+                                                                checkedValue={credentialverify}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* 
+                                        <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>14. Credentialing and Previleging Form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setCredenailPrivilg}
+                                                                checkedValue={credentailprivilg}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>15. Job Description and Job Specification </ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setJobDescription}
+                                                                checkedValue={jobDescription}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>16. Appointment Letter</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setappointmentletter}
+                                                                checkedValue={appointmentletter}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>17. Joining Letter</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setjoiningletter}
+                                                                checkedValue={joiningletter}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>18. Competency assessment</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setCompLetter}
+                                                                checkedValue={compLetter}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>19. statutory Record</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setstatutoryRecord}
+                                                                checkedValue={statutoryRecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>20. Induction Record</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setInductionRecord}
+                                                                checkedValue={inductionRecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>21. Department Orientation</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setdeptOrientation}
+                                                                checkedValue={deptOreintn}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>22. Employee Rights and Responsibilities</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setemprights}
+                                                                checkedValue={empRights}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>23. Vaccination Card</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setVaccination}
+                                                                checkedValue={vaccination}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>24. Review of Probation Period</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setReviewprobation}
+                                                                checkedValue={reviewProbation}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>25. Confirmation Letter</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setConfirmLetter}
+                                                                checkedValue={confimLetter}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
                                     </List>
                                 )}
                             </ListItem>
@@ -261,24 +926,114 @@ const ScannedDoc = () => {
                                     >
                                         Annual Mandatory Events
                                     </Typography>
-                                    <Typography component="span" level="body3" sx={{ ml: 1 }}>
+                                    {/* <Typography component="span" level="body3" sx={{ ml: 1 }}>
                                         4
-                                    </Typography>
+                                    </Typography> */}
                                 </ListItem>
                                 {open3 && (
                                     <List sx={{ '--List-item-paddingY': '8px' }}>
                                         <ListItem>
-                                            <ListItemButton>Overview</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Local Development</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Routing</ListItemButton>
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Styling</ListItemButton>
-                                        </ListItem>
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>26. Training Record</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setTrainingRecord}
+                                                                checkedValue={trainingRecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>27. BLS/ACLS/PALS/NALS Training</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setTraining}
+                                                                checkedValue={training}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>28. Performance Appraisal Forms</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setperformaceAppraisal}
+                                                                checkedValue={performanceAppraisal}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>29. Annual Health Check-Up form</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setAnnualHeath}
+                                                                checkedValue={annualhealth}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
                                     </List>
                                 )}
                             </ListItem>
@@ -311,28 +1066,97 @@ const ScannedDoc = () => {
                                     >
                                         Special Documents
                                     </Typography>
-                                    <Typography component="span" level="body3" sx={{ ml: 1 }}>
+                                    {/* <Typography component="span" level="body3" sx={{ ml: 1 }}>
                                         3
-                                    </Typography>
+                                    </Typography> */}
                                 </ListItem>
                                 {open4 && (
                                     <List sx={{ '--List-item-paddingY': '8px' }}>
                                         <ListItem>
-                                            <ListItemButton>Overview</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Local Development</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Routing</ListItemButton>
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Styling</ListItemButton>
-                                        </ListItem>
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>30. Any disciplinary record</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setDisciplinerecord}
+                                                                checkedValue={disciplinerecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>31.Any grievance record</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setGrievancerecord}
+                                                                checkedValue={grievancerecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>32.Any other records</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setOtherrecord}
+                                                                checkedValue={otherrecord}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
                                     </List>
                                 )}
                             </ListItem>
                             {/*  Speical Documents End */}
+
 
                             {/*  Exit Documents Start */}
                             <ListItem
@@ -361,24 +1185,69 @@ const ScannedDoc = () => {
                                     >
                                         Exit Documents
                                     </Typography>
-                                    <Typography component="span" level="body3" sx={{ ml: 1 }}>
+                                    {/* <Typography component="span" level="body3" sx={{ ml: 1 }}>
                                         2
-                                    </Typography>
+                                    </Typography> */}
                                 </ListItem>
                                 {open5 && (
                                     <List sx={{ '--List-item-paddingY': '8px' }}>
                                         <ListItem>
-                                            <ListItemButton>Overview</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
                                         <ListItem>
-                                            <ListItemButton>Local Development</ListItemButton>
+                                            <ListItemButton>34. Exit Questionnaire</ListItemButton>
                                         </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Routing</ListItemButton>
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemButton>Styling</ListItemButton>
-                                        </ListItem>
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>33.Dues Clearence Certificate</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setDueClrearence}
+                                                                checkedValue={dueclearence}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+
+                                        </Box> */}
+
+                                        {/* <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                                            <Box sx={{ width: '50%' }}>
+                                                <ListItem>
+                                                    <ListItemButton>34. Exit Questionnaire</ListItemButton>
+                                                </ListItem>
+                                            </Box>
+                                            <Box sx={{ display: "flex", width: "50%", flexDirection: 'row', justifyContent: 'center', pl: 1, pt: 1 }}>
+                                                {
+                                                    Array && Array.map((val, index) => {
+                                                        return <Box sx={{ display: 'flex', width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" } }}
+                                                            key={index}
+                                                        >
+                                                            <MappingCheckbox
+                                                                label={val.duename}
+                                                                name={val.duename}
+                                                                value={val.dueslno}
+                                                                onChange={setExitquestion}
+                                                                checkedValue={exitquestin}
+                                                            />
+                                                        </Box>
+                                                    })
+                                                }
+                                            </Box>
+                                        </Box> */}
                                     </List>
                                 )}
                             </ListItem>
@@ -388,7 +1257,7 @@ const ScannedDoc = () => {
                     </CssVarsProvider>
                 </Box>
             </Paper>
-            <Box sx={{ display: "flex", flex: 1, width: '80%', px: 1 }} >
+            <Box sx={{ display: "flex", flex: 1, width: '70%', px: 1 }} >
                 <Paper elevation={3} sx={{ flex: 1, p: 1, }} >
                     <Box>
                         <Overview />
