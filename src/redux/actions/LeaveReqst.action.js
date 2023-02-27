@@ -12,7 +12,8 @@ const {
     FETCH_CREDITED_COMMON_LEAVE,
     FETCH_CREDITED_HOLIDAYS_LEAVE,
     FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
-    FETCH_CREDITED_EARNLEAVE_OFF_LEAVE
+    FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
+    FETCH_DUTY_PLANNED_SHIFT_HALF_DAY
 } = Actiontypes;
 
 export const getlevedata = (id) => async (dispatch) => {
@@ -157,5 +158,16 @@ export const getCreditedEarnLeave = (id) => async (dispatch) => {
         dispatch({ type: FETCH_CREDITED_EARNLEAVE_OFF_LEAVE, payload: data })
     } else {
         dispatch({ type: FETCH_CREDITED_EARNLEAVE_OFF_LEAVE, payload: [] })
+    }
+}
+
+//GET THE DUTY PLANNED BASED SHIFT INFORMATION FOR HALF DAY LEAVE REQUEST
+export const getDutyPlannedShiftForHalfDayRequest = (postData) => async (dispatch) => {
+    const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: data })
+    } else {
+        dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: [] })
     }
 }

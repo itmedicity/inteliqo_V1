@@ -26,7 +26,16 @@ const MultiLeaveTypeSelectCmp = ({ index, onChange, leaveTypeChange }) => {
 
     const handleChange = useCallback((event) => {
         onChange(event.target.value);
-        leaveTypeChange({ index: index, 'leaveType': event.target.value, 'leaveTypeName': event.target.selectedOptions[0].label }, null)
+        const singleLeave = event.target.value === '1' ||
+            event.target.value === '4' ||
+            event.target.value === '3' ||
+            event.target.value === '11' || event.target.value === '8' ? 0 : 1;
+        leaveTypeChange({
+            index: index,
+            'leaveType': event.target.value,
+            'leaveTypeName': event.target.selectedOptions[0].label,
+            'singleLeave': singleLeave
+        }, null)
     })
 
 

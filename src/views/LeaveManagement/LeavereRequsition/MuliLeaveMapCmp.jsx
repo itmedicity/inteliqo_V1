@@ -1,11 +1,12 @@
 import React, { memo, lazy } from 'react'
-import { Paper, Grid, Box, TextField } from '@mui/material'
+import { Grid, Box } from '@mui/material'
 import { Suspense } from 'react';
 import TextInputBootStrap from 'src/views/Attendance/Component/TextInputBootStrap';
 // import CasualLeaveSelected from './Func/CasualLeaveSelected';
 import { useState } from 'react';
 import moment from 'moment';
 import { useCallback } from 'react';
+import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
 const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
 const CasualLeaveSelected = lazy(() => import('./Func/CasualLeaveSelected'));
@@ -45,7 +46,7 @@ const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
                 />
             </Box>
             <Box item component={Grid} sx={{ flex: 'display', flex: 1, mx: 0.3 }} >
-                <Suspense>
+                <Suspense fallback={<LinearProgreeBar />} >
                     <MultiLeaveTypeSelectCmp
                         onChange={setSelect}
                         leaveTypeChange={handleChange}
@@ -54,7 +55,7 @@ const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
                 </Suspense>
             </Box>
             <Box item component={Grid} sx={{ flex: 1 }} >
-                <Suspense>
+                <Suspense fallback={<LinearProgreeBar />} >
                     {/* 
                     casual leave -1 ,
                     holidays - > festival leave - nation holiday - 3, 4

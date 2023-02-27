@@ -1,24 +1,18 @@
 import { Paper, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { useCallback } from 'react'
 import { useState } from 'react'
-import { useEffect } from 'react'
 import { useMemo } from 'react'
 import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
-import { getCommonLeaveData, getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import TextInput from 'src/views/Component/TextInput'
+import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
 import _ from 'underscore'
 import DepartmentSection from './Func/DepartmentSection'
 import EmployeeAgainSection from './Func/EmployeeAgainSection'
 import LeaveRequestType from './Func/LeaveRequestType'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { Button, CssVarsProvider } from '@mui/joy'
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -77,9 +71,7 @@ const LeaveRequestEmployeeSelection = () => {
                 dispatch(getCommonLeaveData(em_no));
             }
         }
-
     }
-
 
     const changeForm = () => {
         let requestType = { requestType: 0 };

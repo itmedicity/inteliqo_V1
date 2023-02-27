@@ -1,12 +1,7 @@
-import { Button, Checkbox, CssVarsProvider, Textarea, Tooltip, Typography } from '@mui/joy'
-import { Box, Grid, Paper, TextField } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { Button, CssVarsProvider, Textarea, Tooltip, Typography } from '@mui/joy'
+import { Box, Grid, Paper } from '@mui/material'
 import React from 'react'
 import { useState } from 'react'
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import CommonLeaveOptionCmp from './Func/CommonLeaveOptionCmp'
-import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { memo } from 'react'
 import moment from 'moment'
@@ -14,7 +9,6 @@ import _ from 'underscore'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import IconButton from '@mui/material/IconButton';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LeaveRequestDocModal from './LeaveRequestDocModal'
@@ -57,9 +51,9 @@ const SingleLeaveRequestForm = () => {
     // console.log(hod, incharge)
 
     const {
-        em_no, em_id, em_doj, em_branch, em_designation, em_retirement_date, em_prob_end_date, em_conf_end_date, em_contract_end_date,
-        em_department, em_dept_section, ecat_esi_allow, blood_slno, hrm_religion, hrm_profile, contract_status, emp__ot, ot_amount,
-        gross_salary, em_category, category_slno, emp_type, des_type, probation_status,
+        em_no, em_id,
+        em_department, em_dept_section,
+        probation_status,
         hod: empHodStat, incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
@@ -74,10 +68,8 @@ const SingleLeaveRequestForm = () => {
     }, [singleLeaveTypeFormData])
 
     const {
-        dateRangeCheck,
         fromDate,
         toDate,
-        singleLevCheck,
         singleLeaveType,
         singleLeaveDesc,
         totalDays

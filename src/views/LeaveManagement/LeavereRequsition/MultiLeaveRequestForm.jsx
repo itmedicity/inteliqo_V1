@@ -1,12 +1,9 @@
 import React, { memo, lazy } from 'react'
-import { Paper, Grid, Box, TextField, Typography, TextareaAutosize } from '@mui/material'
+import { Paper, Box, Typography } from '@mui/material'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import { useMemo } from 'react';
-import { Suspense } from 'react';
 import { Form } from 'react-bootstrap';
-import TextInputBootStrap from 'src/views/Attendance/Component/TextInputBootStrap';
-import MultiLeaveTypeDetl from './Func/CasualLeaveSelected';
 import { Button, CssVarsProvider, Textarea, Tooltip, Typography as Typo } from '@mui/joy';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
@@ -16,19 +13,28 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { getleaverequest } from 'src/views/Constant/Constant';
-
+import { axioslogin } from 'src/views/Axios/Axios';
+import { Actiontypes } from 'src/redux/constants/action.type'
 // lazy import 
-const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
+// const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
 const MuliLeaveMapCmp = lazy(() => import('./MuliLeaveMapCmp'));
 
 const MultiLeaveRequestForm = () => {
 
+    const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
     const dispatch = useDispatch();
     const [newData, setnewData] = useState([]);
     const [levRequestNo, setLevRequestNo] = useState(0);
     const [reason, setReason] = useState('');
+
+    const changeForm = () => {
+        let requestType = { requestType: 0 };
+        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+        dispatch({ type: LEAVE_REQ_DEFAULT })
+    }
+
     //request selected employee details after the submit button pn;y changes
     // const empDetl = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
     // const reqEmpDetl = useMemo(() => empDetl, [empDetl]);
@@ -45,12 +51,9 @@ const MultiLeaveRequestForm = () => {
 
     const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
 
-    // console.log(hod, incharge)
-
     const {
-        em_no, em_id, em_doj, em_branch, em_designation, em_retirement_date, em_prob_end_date, em_conf_end_date, em_contract_end_date,
-        em_department, em_dept_section, ecat_esi_allow, blood_slno, hrm_religion, hrm_profile, contract_status, emp__ot, ot_amount,
-        gross_salary, em_category, category_slno, emp_type, des_type, probation_status,
+        em_no, em_id,
+        em_department, em_dept_section,
         hod: empHodStat, incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
@@ -62,14 +65,9 @@ const MultiLeaveRequestForm = () => {
     const multiLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState, _.isEqual);
     const multiLeaveTypeData = useMemo(() => multiLeaveTypeFormData, [multiLeaveTypeFormData])
 
-    // console.log(`multi leaves`)
-    // console.log(reqEmpDetl)
-
-    const { dateRangeCheck, fromDate, toDate, singleLevCheck, singleLeaveType, singleLeaveDesc, totalDays, formSubmit
-    } = multiLeaveTypeData;
+    const { fromDate, toDate } = multiLeaveTypeData;
 
     //get the date interwal
-    // console.log(intervalDate)
 
     const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1;
 
@@ -115,6 +113,11 @@ const MultiLeaveRequestForm = () => {
                         ...val,
                         "leaveTypeSlno": leveTypeData?.leaveType,
                         "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "singleLeave": leveTypeData?.singleLeave,
+                        "selectedLveSlno": 0,
+                        "selectedLeaveTypeName": '',
+                        "leaveDate": '',
+                        "selectedLeaveName": '',
                     }
                 } else if (val?.index === leaveDetl?.index) {
                     return {
@@ -134,9 +137,9 @@ const MultiLeaveRequestForm = () => {
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
+
         // requested form information
-        const { dateRangeCheck, fromDate, toDate, singleLevCheck, singleLeaveType, singleLeaveDesc, totalDays, formSubmit
-        } = multiLeaveTypeData;
+        const { fromDate, toDate } = multiLeaveTypeData;
 
         // leave request master table post data
         const postData = {
@@ -181,21 +184,120 @@ const MultiLeaveRequestForm = () => {
             no_of_leave: numberOfDays
         }
 
-        //validation
-        const checkIfSelectedLeveReqType = newData?.filter((val) => val.leaveTypeSlno === 0);
-        const checkIfSelectedLeve = newData?.filter((val) => val.selectedLveSlno === 0);
+        //validation    
+        const checkIfSelectedLeveReqType = newData?.filter((val) => val.leaveTypeSlno === 0 && val.singleLeave === 1);
+        const checkIfSelectedLeve = newData?.filter((val) => val.selectedLveSlno === 0 && val.singleLeave === 0);
+        const checkIfAnyLeaveSelected = newData?.filter((val) => val.leaveTypeSlno === 0 && val.selectedLveSlno === 0);
 
-        if (checkIfSelectedLeveReqType.length > 0 || checkIfSelectedLeve.length > 0) {
+        if (checkIfSelectedLeveReqType?.length > 0 || checkIfSelectedLeve?.length > 0 || checkIfAnyLeaveSelected?.length > 0) {
             warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
+        } else if (reason === '') {
+            warningNofity("Leave Request Reason is Blank")
         } else {
-            console.log(CommonLeaveType)
-            // CommonLeaveType?.filter()
+            // 
+            const findSingleTypeLeave = newData?.filter((val) => val.singleLeave === 1);
+
+            // IF SELECTED LEAVE TYPE HAVE THE COMMON LEAVE
+            if (findSingleTypeLeave?.length > 0) {
+                const counts = {}
+                findSingleTypeLeave?.map((val) => val.leaveTypeSlno).forEach((val) => {
+                    counts[val] = (counts[val] || 0) + 1
+                })
+                //find the leave count ( selected common leaves)
+                if (Object.values(counts).length > 0) {
+                    const commonLeaveSelectedCount = await Object.entries(counts)?.map((val) => {
+                        return { 'leaveType': Number.parseInt(val[0]), count: val[1] }
+                    })?.map((element) => {
+                        const a = CommonLeaveType?.find((val) => val.llvetype_slno === element.leaveType)
+                        return {
+                            name: a?.lvetype_desc,
+                            balance: a?.cmn_lv_balance,
+                            selected: element?.count,
+                            status: a?.cmn_lv_balance >= element?.count ? true : false
+                        }
+                    })
+
+                    if (commonLeaveSelectedCount?.length > 0 && commonLeaveSelectedCount?.filter(val => val.status === false)?.length > 0) {
+                        warningNofity(`${commonLeaveSelectedCount?.map(val => `${val.name} `)} Selected Greater than Allowed Count `)
+                    } else {
+                        //insert function leave master and detail
+                        //detailed object fro insert 
+
+                        const postDetailedData = newData?.map((val) => {
+                            return {
+                                leaveid: levRequestNo,
+                                lveDate: moment(val.date).format('YYYY-MM-DD HH:mm:ss'),
+                                caulmnth: val.singleLeave === 1 ? val.leaveTypeSlno : val.selectedLveSlno,
+                                lveType: val.leaveTypeSlno,
+                                status: 1,
+                                levtypename: val.leaveTypeName,
+                                leave: val.singleLeave === 1 ? val.leaveTypeName : val.selectedLeaveName,
+                                nof_leave: 1,
+                                singleleave: 0
+                            }
+                        })
+
+                        // insert the single leave request 
+                        const result = await axioslogin.post('/LeaveRequest', postData);
+                        const { success, message } = await result.data;
+                        if (success === 1) {
+                            // insert the leave request detailed table
+                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                            const { success, message } = await insertDetlTable.data;
+                            if (success === 1) {
+                                succesNofity(message);
+                                changeForm()
+                            } else {
+                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                changeForm()
+                            }
+                        } else {
+                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                            changeForm()
+                        }
+                    }
+
+                } else {
+                    warningNofity('Common Leave Not Selected ! Select the Leave and Check')
+                }
+
+            } else {
+                //insert function leave master and details
+                const postDetailedData = newData?.map((val) => {
+                    return {
+                        leaveid: levRequestNo,
+                        lveDate: moment(val.date).format('YYYY-MM-DD HH:mm:ss'),
+                        caulmnth: val.singleLeave === 1 ? val.leaveTypeSlno : val.selectedLveSlno,
+                        lveType: val.leaveTypeSlno,
+                        status: 1,
+                        levtypename: val.leaveTypeName,
+                        leave: val.singleLeave === 1 ? val.leaveTypeName : val.selectedLeaveName,
+                        nof_leave: 1,
+                        singleleave: 0
+                    }
+                })
+
+                // insert the single leave request 
+                const result = await axioslogin.post('/LeaveRequest', postData);
+                const { success, message } = await result.data;
+                if (success === 1) {
+                    //insert the leave request detailed table
+                    const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                    const { success, message } = await insertDetlTable.data;
+                    if (success === 1) {
+                        succesNofity(message);
+                        changeForm()
+                    } else {
+                        warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                        changeForm()
+                    }
+                } else {
+                    warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                    changeForm()
+                }
+            }
         }
-
-
-
-
-    }, [newData, multiLeaveTypeData])
+    }, [newData, multiLeaveTypeData, reason, toDate, fromDate, em_id, em_no, levRequestNo, em_department, em_dept_section, numberOfDays])
 
     return (
         <Paper
