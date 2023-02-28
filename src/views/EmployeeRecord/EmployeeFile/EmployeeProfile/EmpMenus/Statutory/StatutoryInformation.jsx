@@ -1,6 +1,4 @@
-import { Checkbox, FormControlLabel } from '@material-ui/core'
-//import { useStyles } from '@material-ui/pickers/views/Calendar/Day'
-import { Box, Paper } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material'
 import React, { Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -155,11 +153,7 @@ const StatutoryInformation = () => {
         <Fragment>
             <Box sx={{ width: "100%" }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
+                    <Paper square elevation={3} sx={{display: "flex", p: 1, alignItems: "center",}}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -168,25 +162,9 @@ const StatutoryInformation = () => {
                             </CssVarsProvider>
                         </Box>
                     </Paper>
-                    <Paper square elevation={3} sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        alignItems: "center",
-                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }} >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flex: 1, px: 0.5,
-                        }}>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                                pt: 0.5
-                            }}>
+                    <Paper square elevation={3} sx={{sp: 0.5,mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }}} >
+                        <Box sx={{ display: "flex",flexDirection: "column",flex: 1, px: 0.5, }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, pt: 0.5}}>
                                 <Box sx={{ flex: 1, }} >
                                     <FormControlLabel
                                         control={
@@ -242,17 +220,12 @@ const StatutoryInformation = () => {
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                            }}>
+                            <Box sx={{ display: "flex", flexDirection: "row",px: 20,}}>
                                 <Box sx={{ display: 'flex', flex: 1 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Universal Account Number
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
@@ -271,7 +244,6 @@ const StatutoryInformation = () => {
                                         <Typography textColor="text.secondary" >
                                             Grade
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
@@ -284,11 +256,7 @@ const StatutoryInformation = () => {
                         </Box>
                     </Paper>
                 </Paper>
-                <Paper square sx={{
-                    backgroundColor: "#F8F8F8",
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
+                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ display: "flex", p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({

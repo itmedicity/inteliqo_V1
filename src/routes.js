@@ -128,7 +128,7 @@ const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprova
 const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
 const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
-const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
+//const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
@@ -203,6 +203,7 @@ const LeaveRequesitionMainCard = React.lazy(() => import('./views/LeaveManagemen
 const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
 const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal/CompletedAppraisalList'))
 const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
+const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettingNew'))
 
 const routes = [
 

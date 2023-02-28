@@ -9,9 +9,7 @@ import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-//import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { Box, Paper } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material';
 import ExperienceAgGridtable from './ExperienceAgGridtable';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { CssVarsProvider, Typography } from '@mui/joy'
@@ -170,7 +168,7 @@ const ExperienceDetails = () => {
             submitformadata(postData)
         }
 
-    }, [postData, patchData, flag, count,])
+    }, [postData, patchData, flag, count])
 
     //redirecting to home page
     // const RedirectToProfilePage = () => {
@@ -180,20 +178,10 @@ const ExperienceDetails = () => {
     return (
 
         <Fragment>
-            <Box sx={{
-                width: "100%",
-                height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
-                overflow: 'auto',
-                '::-webkit-scrollbar': { display: "none" }
-            }} >
+            <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" }}} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-
                     {/* heading Section start */}
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
+                    <Paper square elevation={3} sx={{display: "flex", p: 1,alignItems: "center"}}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -204,32 +192,15 @@ const ExperienceDetails = () => {
                     </Paper>
                     {/* headig section end */}
 
-                    <Paper square elevation={3} sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        alignItems: "center",
-                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }} >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flex: 1, px: 0.5,
-                        }}>
+                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center",flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }}} >
+                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                             {/* first row start */}
-
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20}}>
                                 <Box sx={{ display: 'flex', width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Institution Name
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
@@ -263,17 +234,12 @@ const ExperienceDetails = () => {
                             </Box>
                             {/* first row end */}
 
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
+                            <Box sx={{display: "flex", flexDirection: "row", px: 20}}>
                                 <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Designation
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, pt: 0.5 }} >
@@ -284,10 +250,8 @@ const ExperienceDetails = () => {
                                         <Typography textColor="text.secondary" >
                                             Work Start Date
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-
                                 <Box sx={{ flex: 1, }} >
                                     <TextInput
                                         type="date"
@@ -302,14 +266,8 @@ const ExperienceDetails = () => {
                                     />
                                 </Box>
                             </Box>
-
                             {/* second row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                pt: 0.5,
-                                px: 20
-                            }}>
+                            <Box sx={{ display: "flex",flexDirection: "row", pt: 0.5,px: 20}}>
                                 <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -351,21 +309,13 @@ const ExperienceDetails = () => {
                                 </Box>
                             </Box>
                             {/* second row end */}
-
                             {/* third row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                                py: 1
-                            }}>
-
+                            <Box sx={{ display: "flex", flexDirection: "row",px: 20, py: 1}}>
                                 <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Gross Salary
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1, }}>
@@ -377,33 +327,16 @@ const ExperienceDetails = () => {
                                         value={gross_salary}
                                         name="gross_salary"
                                     />
-                                </Box>
-                                {/* <Box sx={{ flex: 2, backgroundColor: "red" }}>
-
-                                </Box> */}
+                                </Box>                 
                             </Box>
                         </Box>
                         {/* third row end */}
-
                     </Paper>
-                    <Paper square elevation={0} sx={{
-                        pt: 1,
-                        mt: 0.5,
-                        display: 'flex',
-                        //alignItems: "center",
-                        //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        //backgroundColor: "lightcyan",
-                        flexDirection: "column"
-
-                    }} >
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex',flexDirection: "column"}} >
                         <ExperienceAgGridtable update={count} getTableData={getTableData} />
                     </Paper>
                 </Paper>
-                <Paper square sx={{
-                    backgroundColor: "#F8F8F8",
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
+                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0, p: 0.3 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
