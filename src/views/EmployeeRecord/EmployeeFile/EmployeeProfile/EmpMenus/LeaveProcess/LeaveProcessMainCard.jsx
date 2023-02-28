@@ -34,6 +34,7 @@ import { ToastContainer } from 'react-toastify'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import LeaveReduxFun from './Functions/LeaveReduxFun'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
+import { useCallback } from 'react'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -76,10 +77,6 @@ const LeaveProcessMainCard = () => {
   const leaveUpdateStat = useSelector((state) => state.updateCasualLeaveStatus, _.isEqual)
 
   const employeeDetl = useMemo(() => state, [state])
-
-  console.log(state)
-
-  console.log(leaveUpdateStat)
 
   const {
     contract_status,
@@ -205,7 +202,7 @@ const LeaveProcessMainCard = () => {
   const { leaveData } = processedLeaveDetl
 
   //Leave Process onClick Process Button Function
-  const leaveProcessOption = async () => {
+  const leaveProcessOption = useCallback(async () => {
     setOpen(true)
     /****
      * 1-> employee is under contract or not
@@ -234,7 +231,7 @@ const LeaveProcessMainCard = () => {
     if (contractStatus.status === true) {
       // 4->
       if (processedLveDetl.newProcess === true) {
-        //new Process --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
+        //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
         // new employee data for insert to DB
         insertNewLeaveProcessData(newEmployeeProcesedData)
           .then((insertMessage) => {
@@ -336,7 +333,7 @@ const LeaveProcessMainCard = () => {
       setOpen(false)
       warningNofity(contractStatus.message)
     }
-  }
+  })
 
   return (
     <CustomLayout title="Leave Process">
@@ -380,7 +377,6 @@ const LeaveProcessMainCard = () => {
                   <Box sx={{ px: 0.5, pb: 0.5 }}>
                     {processedLeave &&
                       processedLeave.map((element, index) => {
-                        // console.log(element)
                         return element.value !== 2 ? (
                           <LeaveProcessCard key={index} data={element} category={category} />
                         ) : null
