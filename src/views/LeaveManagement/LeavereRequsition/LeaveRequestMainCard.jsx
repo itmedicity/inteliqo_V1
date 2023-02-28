@@ -1,9 +1,6 @@
-import { Paper, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { lazy } from 'react'
-import { useCallback } from 'react'
 import { Suspense } from 'react'
-import { useState } from 'react'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
 import { memo } from 'react'
@@ -14,37 +11,34 @@ import {
     getEmployeeApprovalLevel, getEmployeeInformation,
     getEmpNameHodSectionBased, getHodBasedDeptSectionName
 } from 'src/redux/actions/LeaveReqst.action'
-import { getannualleave, setProfileData } from 'src/redux/actions/Profile.action'
+import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
-import TextInput from 'src/views/Component/TextInput'
 import _ from 'underscore'
-import DepartmentSection from './Func/DepartmentSection'
-import EmployeeAgainSection from './Func/EmployeeAgainSection'
-import LeaveRequestType from './Func/LeaveRequestType'
 import LeaveRequestEmployeeSelection from './LeaveRequestEmployeeSelection'
 import LeaveTableContainer from './LeaveTableContainer'
-import { singleLeaveReqState } from 'src/redux/reducers/Leavereqdata'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
+import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
+const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
 
 const LeaveRequestMainCard = () => {
 
     const dispatch = useDispatch();
-    const { FETCH_SINGLE_LEAVE_REQ_FORM_DATA, LEAVE_REQ_DEFAULT } = Actiontypes;
+    const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge, em_id, em_name, sect_name } = employeeProfileDetl;
+    const { hod, incharge, em_id, } = employeeProfileDetl;
 
     const state = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
-    const { deptSection, em_no, requestType } = state;
+    const { requestType } = state;
 
     // const [deptSection, setDeptSection] = useState(0);
     // const [employeeID, setEmployeeID] = useState(0);
-
     useEffect(() => {
         if (hod === 1 || incharge === 1) {
             dispatch(getHodBasedDeptSectionName(em_id));
@@ -67,21 +61,19 @@ const LeaveRequestMainCard = () => {
         }
     }, [])
 
-    console.log('main page render')
     return (
         <CustomLayout title="Leave Requsition" displayClose={true} >
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
                 <LeaveRequestEmployeeSelection />
-                {
-                    requestType === 1 ?
-                        <Suspense fallback={<LinearProgreeBar />} >
-                            <LeaveRequestFormPage />
-                        </Suspense> :
-                        requestType === 2 ? null :
-                            requestType === 3 ? null :
-                                requestType === 4 ? null : null
-                }
+                <Suspense fallback={<LinearProgreeBar />} >
+                    {
+                        requestType === 1 ? <LeaveRequestFormPage /> :
+                            requestType === 2 ? <HalfDayLeaveRequest /> :
+                                requestType === 3 ? <MissPunchRequest /> :
+                                    requestType === 4 ? <CompansatoryOffMast /> : null
+                    }
+                </Suspense>
                 <LeaveTableContainer />
             </Box>
         </CustomLayout>

@@ -18,7 +18,8 @@ import {
     getCreitedHolidayLeave,
     getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
-    resetSelectedBoxCounter
+    getDutyPlannedShift,
+    leaveRequestSelectedEmployee
 } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
@@ -166,6 +167,8 @@ const reducer = combineReducers({
     getCreitedHolidayLeave,
     getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
+    getDutyPlannedShift,
+    leaveRequestSelectedEmployee,
     resetSelectedBoxCounter,
     getLeaveType
 })

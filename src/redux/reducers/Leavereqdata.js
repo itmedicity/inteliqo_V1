@@ -16,7 +16,8 @@ const {
     FETCH_CREDITED_HOLIDAYS_LEAVE,
     FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
     FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
-    RESET_SELECT_BOX_COUNTER
+    FETCH_DUTY_PLANNED_SHIFT_HALF_DAY,
+    GET_SELECTED_EMPLOYEE_LEAVE_REQUEST
 } = Actiontypes;
 
 const Leavestate = [];
@@ -253,14 +254,29 @@ export const getCreditedEarnLeave = (state = creditedEarnLeave, { type, payload 
     }
 }
 
-// for resetting the selected leave select box while find the duplicate leaves
 
-const resetCounter = 0
+//GET THE DUTY PLANNED BASED SHIFT INFORMATION FOR HALF DAY LEAVE REQUEST
 
-export const resetSelectedBoxCounter = (state = resetCounter, { type, payload }) => {
+const shiftInformation = []
+
+export const getDutyPlannedShift = (state = shiftInformation, { type, payload }) => {
     switch (type) {
-        case RESET_SELECT_BOX_COUNTER:
-            return state + 1
+        case FETCH_DUTY_PLANNED_SHIFT_HALF_DAY:
+            return { ...state, shiftInformation: payload }
+        default:
+            return state
+    }
+}
+
+const leaveRequestSelectedEmpId = {
+    em_no: 0,
+    em_id: 0
+}
+
+export const leaveRequestSelectedEmployee = (state = leaveRequestSelectedEmpId, { type, payload }) => {
+    switch (type) {
+        case GET_SELECTED_EMPLOYEE_LEAVE_REQUEST:
+            return { ...state, em_no: payload.em_no, em_id: payload.em_id }
         default:
             return state
     }
