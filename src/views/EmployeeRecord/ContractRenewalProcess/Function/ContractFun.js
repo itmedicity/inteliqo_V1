@@ -1,4 +1,5 @@
 import { axioslogin } from "src/views/Axios/Axios"
+import { warningNofity } from "src/views/CommonCode/Commonfunc"
 
 export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
 
@@ -81,6 +82,9 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
                 }
 
             }
+            else {
+                return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
+            }
         }
     }
 }
@@ -102,9 +106,9 @@ export const employeeUpdatePersonaltable = async (newcontractdetl) => {
     if (updatePersonalInfom.data.success === 2) {
         return { persoStatus: 1, message: "Update Personal Information Successfully" }
     } else {
+        warningNofity("Error While Updating Personal Table")
         return { persoStatus: 0, message: "Error While Updating Personal Table" }
     }
-
 }
 
 export const employeeUpdateQualificationTable = async (newcontractdetl) => {
@@ -115,6 +119,7 @@ export const employeeUpdateQualificationTable = async (newcontractdetl) => {
         return { qualifStatus: 1, message: "Update Qualification Successfully" }
     }
     else {
+        warningNofity("Error while updating Qualification Table")
         return { qualifStatus: 0, message: "Error while updating Qualification Table" }
     }
 }
@@ -126,6 +131,7 @@ export const employeeUpdateExpTable = async (newcontractdetl) => {
     if (updateExperience.data.success === 2) {
         return { expeStatus: 1, message: "Update Personal Information Successfully" }
     } else {
+        warningNofity("Error While Updating Experience Table")
         return { expeStatus: 0, message: "Error While Updating Experience Table" }
     }
 }

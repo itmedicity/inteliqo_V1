@@ -276,47 +276,80 @@ const ContractRenewalProcess = () => {
            *  d-> salary head split details (earning and deduction details)
            *  e-> contract log updation
            */
-          updateoldAttndanceDetail(attendancedetls).then((values) => {
-            const { status, message } = values;
-            if (status === 1) {
-              updateArrearSalary(arreardetails).then((values) => {
-                const { status, message } = values;
+
+          updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
+            const { modelStatus, openStatus, disableStatus } = messsage;
+            if (modelStatus === 1 && contstatus === 0) {
+              employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                const { contrLogStatus, message } = values
+                if (contrLogStatus === 1) {
+                  employeeUpdatePersonaltable(newcontractdetl)
+                  employeeUpdateQualificationTable(newcontractdetl)
+                  employeeUpdateExpTable(newcontractdetl).then((values) => {
+                    const { expeStatus, message } = values
+                    if (expeStatus === 1) {
+                      updateoldAttndanceDetail(attendancedetls).then((values) => {
+                        const { status, message } = values;
+                        if (status === 1) {
+                          updateArrearSalary(arreardetails).then((values) => {
+                            if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                              employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+                                const { status } = values
+                                if (status === 1) {
+                                  setmodelvalue(1)
+                                  setOpenModel(true)
+                                  setDisable(false)
+                                }
+                              })
+                            } else {
+                              setmodelvalue(1)
+                              setOpenModel(true)
+                              setDisable(false)
+                            }
+                          })
+                        } else {
+                          warningNofity(message)
+                        }
+                      })
+                    } else {
+                      warningNofity(message)
+                    }
+                  })
+                } else {
+                  warningNofity(message)
+                }
+              })
+              /** 1 -> next category contain contract
+          */
+            } else if (modelStatus === 1 && contstatus === 1) {
+              employeeNewContractEntry(newcontractdetl).then((values) => {
+                const { status } = values
                 if (status === 1) {
-                  updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
-                    const { modelStatus, openStatus, disableStatus } = messsage;
-                    if (modelStatus === 1 && contstatus === 0) {
-                      employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
-                        const { contrLogStatus, message } = values
-                        if (contrLogStatus === 1) {
-                          employeeUpdatePersonaltable(newcontractdetl).then((values) => {
-                            const { persoStatus, message } = values
-                            if (persoStatus === 1) {
-                              employeeUpdateQualificationTable(newcontractdetl).then((values) => {
-                                const { qualifStatus, message } = values
-                                if (qualifStatus === 1) {
-                                  employeeUpdateExpTable(newcontractdetl).then((values) => {
-                                    const { expeStatus, message } = values
-                                    if (expeStatus === 1) {
-                                      if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                        employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
-                                          const { salaryUpdtStatus, message } = values
-                                          if (salaryUpdtStatus === 1) {
-                                            setmodelvalue(1)
-                                            setOpenModel(true)
-                                            setDisable(false)
-                                          }
-                                        })
-                                      } else {
-                                        setmodelvalue(1)
-                                        setOpenModel(true)
-                                        setDisable(false)
-                                      }
-                                    } else {
-                                      warningNofity(message)
+                  employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                    const { contrLogStatus, message } = values
+                    if (contrLogStatus === 1) {
+                      employeeUpdatePersonaltable(newcontractdetl)
+                      employeeUpdateQualificationTable(newcontractdetl)
+                      employeeUpdateExpTable(newcontractdetl).then((values) => {
+                        const { expeStatus, message } = values
+                        if (expeStatus === 1) {
+                          updateoldAttndanceDetail(attendancedetls).then((values) => {
+                            const { status, message } = values;
+                            if (status === 1) {
+                              updateArrearSalary(arreardetails).then((values) => {
+                                if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                                  employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+                                    const { status } = values
+                                    if (status === 1) {
+                                      setmodelvalue(1)
+                                      setOpenModel(true)
+                                      setDisable(false)
                                     }
                                   })
                                 } else {
-                                  warningNofity(message)
+                                  setmodelvalue(1)
+                                  setOpenModel(true)
+                                  setDisable(false)
                                 }
                               })
                             } else {
@@ -328,72 +361,139 @@ const ContractRenewalProcess = () => {
                           warningNofity(message)
                         }
                       })
-                      /** 1 -> next category contain contract
-                  */
-                    } else if (modelStatus === 1 && contstatus === 1) {
-                      employeeNewContractEntry(newcontractdetl).then((message) => {
-                        if (status === 1) {
-                          employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
-                            const { contrLogStatus, message } = values
-                            if (contrLogStatus === 1) {
-                              employeeUpdatePersonaltable(newcontractdetl).then((values) => {
-                                const { persoStatus, message } = values
-                                if (persoStatus === 1) {
-                                  employeeUpdateQualificationTable(newcontractdetl).then((values) => {
-                                    const { qualifStatus, message } = values
-                                    if (qualifStatus === 1) {
-                                      employeeUpdateExpTable(newcontractdetl).then((values) => {
-                                        const { expeStatus, message } = values
-                                        if (expeStatus === 1) {
-                                          if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                            employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
-                                              if (status === 1) {
-                                                setmodelvalue(1)
-                                                setOpenModel(true)
-                                                setDisable(false)
-                                              }
-                                            })
-                                          } else {
-                                            setmodelvalue(1)
-                                            setOpenModel(true)
-                                            setDisable(false)
-                                          }
-                                        }
-                                        else {
-                                          warningNofity(message)
-                                        }
-                                      })
-                                    }
-                                    else {
-                                      warningNofity(message)
-                                    }
-                                  })
-                                }
-                                else {
-                                  warningNofity(message)
-                                }
-                              })
-                            }
-                            else {
-                              warningNofity("error while updation")
-                            }
-                          })
-                        } else {
-                          warningNofity("Error while adding new contract entry")
-                        }
-
-                      })
-
+                    }
+                    else {
+                      warningNofity("error while updation")
                     }
                   })
                 } else {
-                  warningNofity(message)
+                  warningNofity("Error while adding new contract entry")
                 }
+
               })
-            } else {
-              warningNofity(message)
+
             }
           })
+
+          // updateoldAttndanceDetail(attendancedetls).then((values) => {
+          //   const { status, message } = values;
+          //   if (status === 1) {
+          //     updateArrearSalary(arreardetails).then((values) => {
+          //       const { status, message } = values;
+          //       if (status === 1) {
+          //         updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
+          //           const { modelStatus, openStatus, disableStatus } = messsage;
+          //           if (modelStatus === 1 && contstatus === 0) {
+          //             employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+          //               const { contrLogStatus, message } = values
+          //               if (contrLogStatus === 1) {
+          //                 employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+          //                   const { persoStatus, message } = values
+          //                   if (persoStatus === 1) {
+          //                     employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+          //                       const { qualifStatus, message } = values
+          //                       if (qualifStatus === 1) {
+          //                         employeeUpdateExpTable(newcontractdetl).then((values) => {
+          //                           const { expeStatus, message } = values
+          //                           if (expeStatus === 1) {
+          //                             if (olDataTocopy.dataTocopy.salaryinformation === true) {
+          //                               employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+          //                                 const { salaryUpdtStatus, message } = values
+          //                                 if (salaryUpdtStatus === 1) {
+          //                                   setmodelvalue(1)
+          //                                   setOpenModel(true)
+          //                                   setDisable(false)
+          //                                 }
+          //                               })
+          //                             } else {
+          //                               setmodelvalue(1)
+          //                               setOpenModel(true)
+          //                               setDisable(false)
+          //                             }
+          //                           } else {
+          //                             warningNofity(message)
+          //                           }
+          //                         })
+          //                       } else {
+          //                         warningNofity(message)
+          //                       }
+          //                     })
+          //                   } else {
+          //                     warningNofity(message)
+          //                   }
+          //                 })
+          //               }
+          //               else {
+          //                 warningNofity(message)
+          //               }
+          //             })
+          //             /** 1 -> next category contain contract
+          //         */
+          //           } else if (modelStatus === 1 && contstatus === 1) {
+          //             employeeNewContractEntry(newcontractdetl).then((values) => {
+          //               const { status } = values
+          //               if (status === 1) {
+          //                 employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+          //                   const { contrLogStatus, message } = values
+          //                   if (contrLogStatus === 1) {
+          //                     employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+          //                       const { persoStatus, message } = values
+          //                       if (persoStatus === 1) {
+          //                         employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+          //                           const { qualifStatus, message } = values
+          //                           if (qualifStatus === 1) {
+          //                             employeeUpdateExpTable(newcontractdetl).then((values) => {
+          //                               const { expeStatus, message } = values
+          //                               if (expeStatus === 1) {
+          //                                 if (olDataTocopy.dataTocopy.salaryinformation === true) {
+          //                                   employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
+          //                                     if (status === 1) {
+          //                                       setmodelvalue(1)
+          //                                       setOpenModel(true)
+          //                                       setDisable(false)
+          //                                     }
+          //                                   })
+          //                                 } else {
+          //                                   setmodelvalue(1)
+          //                                   setOpenModel(true)
+          //                                   setDisable(false)
+          //                                 }
+          //                               }
+          //                               else {
+          //                                 warningNofity(message)
+          //                               }
+          //                             })
+          //                           }
+          //                           else {
+          //                             warningNofity(message)
+          //                           }
+          //                         })
+          //                       }
+          //                       else {
+          //                         warningNofity(message)
+          //                       }
+          //                     })
+          //                   }
+          //                   else {
+          //                     warningNofity("error while updation")
+          //                   }
+          //                 })
+          //               } else {
+          //                 warningNofity("Error while adding new contract entry")
+          //               }
+
+          //             })
+
+          //           }
+          //         })
+          //       } else {
+          //         warningNofity(message)
+          //       }
+          //     })
+          //   } else {
+          //     warningNofity(message)
+          //   }
+          // })
         }
       }
     }
