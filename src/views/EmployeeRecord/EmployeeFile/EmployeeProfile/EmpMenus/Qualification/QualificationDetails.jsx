@@ -1,5 +1,5 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+// import { DatePicker } from '@mui/lab'
+// import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import React, { Fragment, useState, useContext, useEffect, memo, useCallback } from 'react'
 import { useParams } from 'react-router'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -24,6 +24,8 @@ import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
 import { useMemo } from 'react'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const QualificationDetails = () => {
 
@@ -64,6 +66,9 @@ const QualificationDetails = () => {
 
     //destructuring
     const { em_mark_grade, em_reg_no, em_chellan, pass_fail } = qualification
+
+console.log(pass_fail);
+
     const updateQualification = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })

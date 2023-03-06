@@ -75,6 +75,9 @@ import {
     updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
 import { getAppraisalData } from './AppraisalReducer'
+import { getExcelData } from './Payroll.Reducer'
+import { getEarnData } from './EarnDeductio.Reducer'
+import { getPaySlipData } from './Payroll.Reducer'
 
 
 const reducer = combineReducers({
@@ -153,7 +156,10 @@ const reducer = combineReducers({
     singleLeaveRequestFormState,
     getEmployeeInformationState,
     getEmployeeApprovalLevel,
-    getAppraisalData
+    getAppraisalData,
+    getExcelData,
+    getEarnData,
+    getPaySlipData
 })
 
 export default reducer;

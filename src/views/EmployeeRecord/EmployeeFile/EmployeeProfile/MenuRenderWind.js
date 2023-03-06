@@ -13,7 +13,7 @@ const Experience = React.lazy(() => import('./EmpMenus/Experience/ExperienceDeta
 const Statutory = React.lazy(() => import('./EmpMenus/Statutory/StatutoryInformation'))
 const CompanyInformation = React.lazy(() => import('./EmpMenus/CompanyInformation/CompanyInformtion'))
 const FineorDeduction = React.lazy(() => import('./EmpMenus/FineorDeduction/FineorDeduction'))
-const EarnDeductionDetails = React.lazy(() => import('./EmpMenus/EarnDeductionDetails/EarnDeductionDetails'))
+//const EarnDeductionDetails = React.lazy(() => import('./EmpMenus/EarnDeductionDetails/EarnDeductionDetails'))
 //const ContractInformation = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/ContractInformation'))
 const SalaryInformation = React.lazy(() => import('./EmpMenus/SalaryInformation/SalaryInformationDetail'))
 const AnnualLeave = React.lazy(() => import('./EmpMenus/AnnualLeaveInformation/AnnualLeaveInformation'))
@@ -27,6 +27,7 @@ const Vaccine = React.lazy(() => import('./EmpMenus/VaccinationInformation/Vacci
 const EndofService = React.lazy(() => import('./EmpMenus/EndofService/EndofService'))
 const TrainingInfo = React.lazy(() => import('./EmpMenus/TrainingInformation/TrainingInformation'))
 const LeaveProcess = React.lazy(() => import('./EmpMenus/LeaveProcess/LeaveProcessMainCard'))
+const EarnDeduct = React.lazy(() => import('./EmpMenus/EarnDeductionDetails/EarnDeduction'))
 
 
 const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
@@ -38,7 +39,7 @@ const MenuRenderWind = ({ slno, count, setCount, redirect }) => {
                     state === 108 ? <Statutory /> :
                         state === 109 ? <ContrtInfrmtion /> :
                             state === 110 ? <CompanyInformation /> :
-                                state === 111 ? <EarnDeductionDetails /> :
+                                state === 111 ? <EarnDeduct /> :
                                     state === 112 ? <SalaryInformation /> :
                                         state === 113 ? <AnnualLeave /> :
                                             state === 103 ? <LeaveProcess /> :

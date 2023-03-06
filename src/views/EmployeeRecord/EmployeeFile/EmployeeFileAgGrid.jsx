@@ -166,7 +166,7 @@ const EmployeeFileAgGrid = () => {
             headerName: 'Action', minWidth: 100, wrapText: true,
             cellRenderer: params =>
                 <Tooltip title="Profile View" followCursor placement='top' arrow >
-                    <IconButton sx={{ pb: 1 }} onClick={() => getEmployeeEmpNumber(params)}>
+                    <IconButton sx={{ size:'sm' }} onClick={() => getEmployeeEmpNumber(params)}>
                         <AccountCircleOutlinedIcon color='primary' />
                     </IconButton>
                 </Tooltip>
@@ -302,7 +302,7 @@ const EmployeeFileAgGrid = () => {
                         <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
                             height: 600,
                             width: "100%"
-                        }} rowHeight={30} headerHeight={30} />
+                        }} rowHeight={40} headerHeight={40} />
                     </Paper>
                 </Paper>
             </Box>
