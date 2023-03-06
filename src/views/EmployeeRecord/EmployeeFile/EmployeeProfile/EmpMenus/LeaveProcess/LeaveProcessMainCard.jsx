@@ -34,6 +34,7 @@ import { ToastContainer } from 'react-toastify'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import LeaveReduxFun from './Functions/LeaveReduxFun'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
+import { setPersonalData } from 'src/redux/actions/Profile.action'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -42,7 +43,7 @@ const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))
 const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'))
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'))
 
-const LeaveProcessMainCard = () => {
+const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const dispatch = useDispatch()
 
   const [empCategory, setEmpCategory] = useState({}) //emp_master category
@@ -60,12 +61,30 @@ const LeaveProcessMainCard = () => {
   const [processedLeave, setProcessedLeave] = useState([])
 
   const { id, no } = useParams()
-  const employeeIDs = useMemo(() => {
-    return {
+
+  const [employeeIDs, setEmployeeIDs] = useState({});
+
+  useEffect(() => {
+    let empDetl = {
       em_no: no,
       em_id: id,
     }
-  }, [id, no])
+    if (formStatus === true) {
+      const { empid } = empInfo;
+
+      setEmployeeIDs(empInfo)
+      dispatch(setPersonalData(empid));
+    } else {
+      setEmployeeIDs(empDetl)
+    }
+  }, [id, no, formStatus, empInfo])
+
+  // const employeeIDs = useMemo(() => {
+  //   return {
+  //     em_no: no,
+  //     em_id: id,
+  //   }
+  // }, [id, no])
 
   const updateStatus = useMemo(() => updateStat, [updateStat])
 
@@ -76,10 +95,6 @@ const LeaveProcessMainCard = () => {
   const leaveUpdateStat = useSelector((state) => state.updateCasualLeaveStatus, _.isEqual)
 
   const employeeDetl = useMemo(() => state, [state])
-
-  console.log(state)
-
-  console.log(leaveUpdateStat)
 
   const {
     contract_status,
@@ -380,7 +395,6 @@ const LeaveProcessMainCard = () => {
                   <Box sx={{ px: 0.5, pb: 0.5 }}>
                     {processedLeave &&
                       processedLeave.map((element, index) => {
-                        // console.log(element)
                         return element.value !== 2 ? (
                           <LeaveProcessCard key={index} data={element} category={category} />
                         ) : null

@@ -86,9 +86,9 @@ const Old_dataTo_copy = ({ id, no }) => {
                     </CssVarsProvider>
                 </Box>
                 {
-                    oldflag === 1 ? <Box sx={{ flex: 0, pt: 0.5 }}>
+                    oldflag === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
                         <CssVarsProvider>
-                            <Typography>
+                            <Typography sx={{ color: 'green' }}>
                                 Done!
                             </Typography>
                         </CssVarsProvider>

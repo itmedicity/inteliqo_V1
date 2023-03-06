@@ -12,7 +12,6 @@ import moment from 'moment';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 
-
 const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
 
     //use state for displaying existing contract details
@@ -117,16 +116,16 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     </CssVarsProvider>
                 </Box>
                 {
-                    view === 1 ? <Box sx={{ flex: 0, pt: 0.5 }}>
+                    view === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
                         <CssVarsProvider>
-                            <Typography>
+                            <Typography sx={{ color: 'green' }}>
                                 Done!
                             </Typography>
                         </CssVarsProvider>
                     </Box> : null
                 }
                 {
-                    view === 1 ? <Chip
+                    view === 1 ? <Box sx={{ flex: 0, }} ><Chip
                         icon={
                             <IconButton disabled
                                 className="p-1" >
@@ -135,7 +134,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                         }
                         label="Contract Close"
                         clickable={false}
-                    /> : <Box sx={{ flex: 0, pl: 0.3 }} >
+                    /> </Box> : <Box sx={{ flex: 0, pl: 0.3 }} >
                         <Chip
                             icon={
                                 <IconButton disabled
