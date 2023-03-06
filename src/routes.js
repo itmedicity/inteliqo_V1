@@ -128,7 +128,7 @@ const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprova
 const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
 const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
-const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
+//const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
@@ -205,6 +205,9 @@ const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal
 const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
 const PayrollAtendanceUpdation = React.lazy(() => import('./views/Payroll/AttendanceUpdation/AttendanceUpdation'))
 const PaySlipCalculation = React.lazy(() => import('./views/Payroll/PayslipCalculation/PaySlipCalculation'))
+const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettingNew'))
+const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDeduction/EarningsDeduction'))
+
 
 const routes = [
 
@@ -416,7 +419,8 @@ const routes = [
   { path: '/Home/ApprovedAppraisal', exact: true, name: 'Employee Appraisal List', component: CompletedAppraisal },
   { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
   { path: '/Home/PayrollAttendance', exact: true, name: 'Attendance Updation', component: PayrollAtendanceUpdation },
-  { path: '/Home/PaySlipCalculation', exact: true, name: 'PaySlip Calculation', component: PaySlipCalculation }
+  { path: '/Home/PaySlipCalculation', exact: true, name: 'PaySlip Calculation', component: PaySlipCalculation },
+  { path: '/Home/EmpEarnDeduction', exact: true, name: 'Employee Earn Deduction', component: EmpEarnDeduction },
 ]
 
 export default routes

@@ -12,7 +12,14 @@ import {
     singleLeaveRequestFormState,
     getEmpLeaveData,
     getEmployeeInformationState,
-    getEmployeeApprovalLevel
+    getEmployeeApprovalLevel,
+    getCreditedCasualLeave,
+    getCreitedCommonLeave,
+    getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave,
+    getCreditedEarnLeave,
+    getDutyPlannedShift,
+    leaveRequestSelectedEmployee
 } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
@@ -78,6 +85,8 @@ import { getAppraisalData } from './AppraisalReducer'
 import { getExcelData } from './Payroll.Reducer'
 import { getEarnData } from './EarnDeductio.Reducer'
 import { getPaySlipData } from './Payroll.Reducer'
+import { getLeaveType } from './LeaveType.Reducer'
+
 
 
 const reducer = combineReducers({
@@ -159,7 +168,15 @@ const reducer = combineReducers({
     getAppraisalData,
     getExcelData,
     getEarnData,
-    getPaySlipData
+    getPaySlipData,
+    getCreditedCasualLeave,
+    getCreitedCommonLeave,
+    getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave,
+    getCreditedEarnLeave,
+    getDutyPlannedShift,
+    leaveRequestSelectedEmployee,
+    getLeaveType
 })
 
 export default reducer;

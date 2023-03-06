@@ -7,7 +7,13 @@ const {
     FETCH_HOD_INCAHRGE_SECT_EMP_NAME,
     FETCH_COMMON_LEAVES_DATA,
     FETCH_EMPLOYEE_INFORMATION_FOR_LVE_REQ,
-    GET_EMPLOYEE_APPROVAL_LEVEL
+    GET_EMPLOYEE_APPROVAL_LEVEL,
+    FETCH_CREDITED_CASUAL_LEAVE_DETL,
+    FETCH_CREDITED_COMMON_LEAVE,
+    FETCH_CREDITED_HOLIDAYS_LEAVE,
+    FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
+    FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
+    FETCH_DUTY_PLANNED_SHIFT_HALF_DAY
 } = Actiontypes;
 
 export const getlevedata = (id) => async (dispatch) => {
@@ -92,5 +98,76 @@ export const getEmployeeApprovalLevel = (id) => async (dispatch) => {
         dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: data })
     } else {
         dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: [] })
+    }
+}
+
+// GET THE CRDITED CASUAL LEAVES 
+
+export const getCreditedCasualLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/allwbleCL/${id}`);
+    const { success, data } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_CREDITED_CASUAL_LEAVE_DETL, payload: data })
+    } else {
+        dispatch({ type: FETCH_CREDITED_CASUAL_LEAVE_DETL, payload: [] })
+    }
+}
+
+// GET THE CRDITED COMMON LEAVES 
+
+export const getCreitedCommonLeave = (iddata) => async (dispatch) => {
+    const result = await axioslogin.post('/yearleaveprocess/allowablcommon/allowableconleave/data/', iddata);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_CREDITED_COMMON_LEAVE, payload: data })
+    } else {
+        dispatch({ type: FETCH_CREDITED_COMMON_LEAVE, payload: [] })
+    }
+}
+
+// GET THE HOLIDAY LEAVES
+
+export const getCreitedHolidayLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_CREDITED_HOLIDAYS_LEAVE, payload: data })
+    } else {
+        dispatch({ type: FETCH_CREDITED_HOLIDAYS_LEAVE, payload: [] })
+    }
+}
+
+// GET THE COMPANSATORY OFF LEAVES
+
+export const getCreitedCompansatoryOffLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/common/getcoffDetl/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_CREDITED_COMPENSATORY_OFF_LEAVE, payload: data })
+    } else {
+        dispatch({ type: FETCH_CREDITED_COMPENSATORY_OFF_LEAVE, payload: [] })
+    }
+}
+
+// GET THE EARN LEAVES
+
+export const getCreditedEarnLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/allowableholiday/allowableearnleave/data/${id}`);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_CREDITED_EARNLEAVE_OFF_LEAVE, payload: data })
+    } else {
+        dispatch({ type: FETCH_CREDITED_EARNLEAVE_OFF_LEAVE, payload: [] })
+    }
+}
+
+//GET THE DUTY PLANNED BASED SHIFT INFORMATION FOR HALF DAY LEAVE REQUEST
+export const getDutyPlannedShiftForHalfDayRequest = (postData) => async (dispatch) => {
+    const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: data })
+    } else {
+        dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: [] })
     }
 }

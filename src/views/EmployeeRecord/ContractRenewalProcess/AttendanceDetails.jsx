@@ -4,7 +4,7 @@ import { addDays, differenceInDays, getDaysInMonth } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
@@ -13,6 +13,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 
 const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }) => {
     const [arrearSalary, setArrearSalary] = useState(0)
+    const [attandFlag, setAttancFlag] = useState(0)
     //useEffect for getting leave Details
     var date = new Date(em_cont_end);
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -88,7 +89,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
             type: Actiontypes.FETCH_CONT_CLOSE_ATTENDANCE, payload: {
                 em_id: no,
                 em_no: id,
-                attendance_marking_month: moment(new Date(em_cont_end)).format('MMM-YYYY'),
+                attendance_marking_month: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
                 total_working_days: attendanceDays,
                 tot_days_present: duty_worked,
                 total_leave: totalLeave,
@@ -99,15 +100,17 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                 contract_renew_date: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD')
             }
         })
+        succesNofity("Attandance Data Processed Successfully!!")
         //dispatching arrear data
         dispatch({
             type: Actiontypes.FETCH_CONTRACT_ARREAR, payload: {
                 em_id: no,
                 em_no: id,
                 arrear_amount: arrearSalary,
-                arrear_month: moment(new Date(em_cont_end)).format('MMM-YYYY')
+                arrear_month: moment(new Date(em_cont_end)).format('YYYY-MM-DD')
             }
         })
+        setAttancFlag(1)
     }
 
     return (
@@ -125,18 +128,40 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <Box sx={{ flex: 0 }} >
-                        <Chip
-                            icon={
-                                <IconButton className="p-1" >
-                                    <LibraryAddCheckOutlinedIcon className="text-info" size={22} />
-                                </IconButton>
-                            }
-                            label="Process Attendance"
-                            onClick={ProcessAttendance}
-                            clickable={true}
-                        />
-                    </Box>
+                    {
+                        attandFlag === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ color: 'green' }}>
+                                    Done!
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box> : null
+                    }
+                    {
+                        attandFlag === 1 ? <Box sx={{ flex: 0 }} >
+                            <Chip
+                                icon={
+                                    <IconButton className="p-1" >
+                                        <LibraryAddCheckOutlinedIcon size={22} />
+                                    </IconButton>
+                                }
+                                label="Process Attendance"
+                                clickable={false}
+                            />
+                        </Box> : <Box sx={{ flex: 0 }} >
+                            <Chip
+                                icon={
+                                    <IconButton className="p-1" >
+                                        <LibraryAddCheckOutlinedIcon className="text-info" size={22} />
+                                    </IconButton>
+                                }
+                                label="Process Attendance"
+                                onClick={ProcessAttendance}
+                                clickable={true}
+                            />
+                        </Box>
+                    }
+
                 </Paper>
 
                 <Paper square elevation={3} sx={{

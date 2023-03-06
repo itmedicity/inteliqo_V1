@@ -12,7 +12,11 @@ import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySe
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
 
 
-const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract, emp_retireDate, contractrenew, setContractrenew, contractTpPermanent, setcontractTpPermanent }) => {
+const Renew_Process = ({
+    em_cont_end, grace_period, newContract,
+    updateNewContract, emp_retireDate, contractrenew,
+    setContractrenew, contractTpPermanent, setcontractTpPermanent,
+}) => {
     const dispatch = useDispatch()
 
     const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
@@ -63,7 +67,6 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
         if (e.target.checked === true) {
             setContractrenew(true)
             setcontractTpPermanent(false)
-
         }
         else {
             setContractrenew(false)
@@ -92,7 +95,7 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
                         <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
                             <CommonCheckBox
                                 name="contractrenew"
-                                value={contractrenew}
+                                // value={contractrenew}
                                 checked={contractrenew}
                                 onChange={(e) => getContract(e)}
                             />
@@ -186,7 +189,7 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
                         <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
                             <CommonCheckBox
                                 name="contractTpPermanent"
-                                value={contractTpPermanent}
+                                // value={contractTpPermanent}
                                 checked={contractTpPermanent}
                                 onChange={(e) => getPermanent(e)}
                             />
@@ -268,7 +271,6 @@ const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContra
                                 disable={contractTpPermanent === true ? false : true}
                                 value={permanentcate}
                                 setValue={setpermanentcate}
-
                             />
                             {/* <EmployeeCategory style={SELECT_CMP_STYLE} disable={contractTpPermanent === true ? false : true} /> */}
                         </Box>

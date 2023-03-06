@@ -61,15 +61,15 @@ const ProbationEnd = () => {
     }, [empCate])
 
     const [columnDef] = useState([
-        { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 5, filter: true },
-        { headerName: 'Emp No ', field: 'em_no', filter: true },
-        { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Department ', field: 'dept_name', filter: true },
-        { headerName: 'Department Section ', field: 'sect_name', filter: true },
-        { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'Date of joining ', field: 'em_doj' },
+        // { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 50, filter: true },
+        { headerName: 'Emp No ', field: 'em_no', filter: true, minWidth: 100 },
+        { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 100 },
+        { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 100 },
+        { headerName: 'Department Section ', field: 'sect_name', filter: true, minWidth: 100 },
+        { headerName: 'Designation ', field: 'desg_name', minWidth: 100 },
+        { headerName: 'Date of joining ', field: 'em_doj', minWidth: 100 },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
-        { headerName: 'Probation End ', field: 'em_prob_end_date' },
+        { headerName: 'Probation End ', field: 'em_prob_end_date', minWidth: 100 },
         {
             headerName: 'Action',
             cellRenderer: params =>

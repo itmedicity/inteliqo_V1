@@ -2,7 +2,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, IconButton, Paper } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -17,16 +17,17 @@ import Renew_Process from './Renew_Process';
 import { addDays, format } from 'date-fns';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import ModelOldDataToCopy from './ModelOldDataToCopy';
-import ModelLeaveProcess from '../EmployeeFile/EmpFileComponent/ModelLeaveProcess';
-import { getProcessserialnum } from 'src/views/Constant/Constant';
+// import ModelOldDataToCopy from './ModelOldDataToCopy';
+// import ModelLeaveProcess from '../EmployeeFile/EmpFileComponent/ModelLeaveProcess';
+// import { getProcessserialnum } from 'src/views/Constant/Constant';
 import { useDispatch } from 'react-redux';
-import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
+// import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import moment from 'moment';
 import _ from 'underscore';
 import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, employeeUpdateExpTable, employeeUpdatePersonaltable, employeeUpdateQualificationTable, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
-import warning from 'warning';
+// import LeaveProcessCard from '../EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessCard';
+const LeaveProcess = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'));
 
 const ContractRenewalProcess = () => {
   const { id, no } = useParams()
@@ -42,45 +43,45 @@ const ContractRenewalProcess = () => {
   const [attendanceDays, setattendanceDays] = useState(0)
   const [newCatgeory, setnewCategory] = useState(0)
   const [oldCategory, setOldctaegory] = useState(0)
-  // to open model ModelLeaveProcess consition
-  const [modelvalue, setmodelvalue] = useState(0)
-  // use State foe serial number
-  const [processslno, setprocessslno] = useState(0)
-  const [castable, setcastable] = useState(0)
-  const [nodatacl, setnodatacl] = useState(0)
-  const [nodatahl, setnodatahl] = useState(0)
-  const [nodatael, setnodatael] = useState(0)
-  const [nodatafixed, setnodatafixed] = useState(0)
-  //  data based on employeee category
-  const [leavestate, setleavestate] = useState({
-    ecat_cl: 0,
-    ecat_confere: 0,
-    ecat_cont: 0,
-    ecat_doff_allow: 0,
-    ecat_el: 0,
-    ecat_esi_allow: 0,
-    ecat_fh: 0,
-    ecat_lop: 0,
-    ecat_mate: 0,
-    ecat_nh: 0,
-    ecat_prob: 0,
-    ecat_woff_allow: 0,
-    ecat_sl: 0,
-    em_category: 0,
-    em_doj: ''
-  })
-  const { ecat_cl, ecat_el, ecat_esi_allow,
-    ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
-  } = leavestate
 
-  const [open, setOpen] = useState(false)
-  const [openleavemodel, setOpenModel] = useState(false)
+  // const [modelvalue, setmodelvalue] = useState(0) // to open model ModelLeaveProcess consition
+  // const [processslno, setprocessslno] = useState(0) // use State foe serial number
+  // const [castable, setcastable] = useState(0)
+  // const [nodatacl, setnodatacl] = useState(0)
+  // const [nodatahl, setnodatahl] = useState(0)
+  // const [nodatael, setnodatael] = useState(0)
+  // const [nodatafixed, setnodatafixed] = useState(0)
+  //  data based on employeee category
+  // const [leavestate, setleavestate] = useState({
+  //   ecat_cl: 0,
+  //   ecat_confere: 0,
+  //   ecat_cont: 0,
+  //   ecat_doff_allow: 0,
+  //   ecat_el: 0,
+  //   ecat_esi_allow: 0,
+  //   ecat_fh: 0,
+  //   ecat_lop: 0,
+  //   ecat_mate: 0,
+  //   ecat_nh: 0,
+  //   ecat_prob: 0,
+  //   ecat_woff_allow: 0,
+  //   ecat_sl: 0,
+  //   em_category: 0,
+  //   em_doj: ''
+  // })
+  // const { ecat_cl, ecat_el, ecat_esi_allow,
+  //   ecat_lop, ecat_mate, ecat_nh, ecat_sl, em_category
+  // } = leavestate
+
+  // const [open, setOpen] = useState(false)
+  // const [openleavemodel, setOpenModel] = useState(false)
   const [probsataus, setProbstatus] = useState(0)// for setting probation status
   const [contstatus, setContrstatus] = useState(0)//for setting contract status
   const [attendanceata, setAttendanceData] = useState([])
 
   const [contractrenew, setContractrenew] = useState(false)//checkbox state for contract renewal
   const [contractTpPermanent, setcontractTpPermanent] = useState(false)//checkbox state for contract permanent
+  const [leaveprocess, setLeaveprocess] = useState(0)
 
   useEffect(() => {
     dispatch(setPersonalData(no))
@@ -102,34 +103,34 @@ const ContractRenewalProcess = () => {
     setnewCategory(newCategory.newEmpcat)
   }, [newCategory.newEmpcat])
 
-  useEffect(() => {
-    const getLeavedetails = async () => {
-      const result = await axioslogin.get(`/common/getannprocess/${no}`)
-      const { data } = result.data
-      setleavestate(data[0])
-    }
-    getLeavedetails();
-    getProcessserialnum().then((val) => {
-      setprocessslno(val)
-    }
-    )
-    // Get the Employee Joinng / Contract / category Details ( All Date Detail )
-    dispatch(setEmployeeProcessDetail(id))
+  // useEffect(() => {
+  //   const getLeavedetails = async () => {
+  //     const result = await axioslogin.get(`/common/getannprocess/${no}`)
+  //     const { data } = result.data
+  //     setleavestate(data[0])
+  //   }
+  //   getLeavedetails();
+  //   getProcessserialnum().then((val) => {
+  //     setprocessslno(val)
+  //   }
+  //   )
+  //   // Get the Employee Joinng / Contract / category Details ( All Date Detail )
+  //   dispatch(setEmployeeProcessDetail(id))
 
-    return (
-      dispatch(setEmployeeProcessDetail(id))
-    )
-  }, [newCatgeory, dispatch, id, no])
+  //   return (
+  //     dispatch(setEmployeeProcessDetail(id))
+  //   )
+  // }, [newCatgeory, dispatch, id, no])
 
 
-  //function for open leave model
-  const handleClose = () => {
-    setOpen(false)
-  }
-  const handleCloseModel = () => {
-    setmodelvalue(0)
-    setOpenModel(false)
-  }
+  // //function for open leave model
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
+  // const handleCloseModel = () => {
+  //   setmodelvalue(0)
+  //   setOpenModel(false)
+  // }
 
   //new contract details
   const [newContract, updateNewContract] = useState({
@@ -142,11 +143,13 @@ const ContractRenewalProcess = () => {
   const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
 
   //login employee number
-  const empno = useSelector((state) => {
+  const em_no = useSelector((state) => {
     //return state.getProfileData.ProfileData[0]
     return state.getProfileData.ProfileData[0].em_no
     //const status = state.getProfileData.lodingStatus
   })
+
+  const empno = useMemo(() => em_no, [em_no])
 
   //new entry contract details
   const newcontractdetl = {
@@ -234,11 +237,19 @@ const ContractRenewalProcess = () => {
 
   }, [no, contractstart, contractend])
 
+  const empInfo = {
+    empid: no,
+    empno: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo
+  }
+
   //function for saving new contract
   const RenewOldContract = async (e) => {
     e.preventDefault();
     if (Object.keys(contractclose.contCloseData).length === 0) {
       infoNofity("Please Close The First Contract")
+    }
+    else if ((contractTpPermanent === true) && (newCatgeory === 0 || permanentEmpNo === '')) {
+      warningNofity("Please Select Category & Change Employee Number")
     }
     else if (Object.keys(olDataTocopy.dataTocopy).length === 0) {
       infoNofity("Please Select Previous Data To Copy")
@@ -252,6 +263,12 @@ const ContractRenewalProcess = () => {
     else if (addDays(new Date(contractend), graceperiod) > new Date()) {
       warningNofity("Grace Period Not Completed")
     }
+    else if ((contractrenew === false) && (contractTpPermanent === false)) {
+      warningNofity("Please Change Category")
+    }
+    else if ((contractrenew === true) && (newCatgeory === 0 || newempId === '')) {
+      warningNofity("Please Select Category & Change Employee Number")
+    }
     else {
       const result = await axioslogin.post('/empmast/checkEmno/contracterenew', checkemid)
       const { data } = result.data
@@ -259,6 +276,7 @@ const ContractRenewalProcess = () => {
         warningNofity("Employee ID Already Exist")
       }
       else {
+
 
         //closing first contract
         const result = await axioslogin.patch('/empcontract/contractrenew', contractclose.contCloseData)
@@ -276,47 +294,87 @@ const ContractRenewalProcess = () => {
            *  d-> salary head split details (earning and deduction details)
            *  e-> contract log updation
            */
-          updateoldAttndanceDetail(attendancedetls).then((values) => {
-            const { status, message } = values;
-            if (status === 1) {
-              updateArrearSalary(arreardetails).then((values) => {
-                const { status, message } = values;
+
+          updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
+            const { modelStatus } = messsage;
+
+            if (modelStatus === 1 && contstatus === 0) {
+              employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                const { contrLogStatus, message } = values
+                if (contrLogStatus === 1) {
+                  employeeUpdatePersonaltable(newcontractdetl)
+                  employeeUpdateQualificationTable(newcontractdetl)
+                  employeeUpdateExpTable(newcontractdetl).then((values) => {
+                    const { expeStatus, message } = values
+                    if (expeStatus === 1) {
+                      updateoldAttndanceDetail(attendancedetls).then((values) => {
+                        const { status, message } = values;
+                        if (status === 1) {
+                          updateArrearSalary(arreardetails).then((values) => {
+                            if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                              employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+                                const { status } = values
+                                if (status === 1) {
+                                  history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                                  //setLeaveprocess(1)
+                                  // setmodelvalue(1)
+                                  // setOpenModel(true)
+                                  // setDisable(false)
+                                }
+                              })
+                            } else {
+                              history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                              //setLeaveprocess(1)
+                              // setmodelvalue(1)
+                              // setOpenModel(true)
+                              // setDisable(false)
+                            }
+                          })
+                        } else {
+                          warningNofity(message)
+                        }
+                      })
+                    } else {
+                      warningNofity(message)
+                    }
+                  })
+                } else {
+                  warningNofity(message)
+                }
+              })
+              /** 1 -> next category contain contract*/
+            } else if (modelStatus === 1 && contstatus === 1) {
+              employeeNewContractEntry(newcontractdetl).then((values) => {
+                const { status } = values
                 if (status === 1) {
-                  updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
-                    const { modelStatus, openStatus, disableStatus } = messsage;
-                    if (modelStatus === 1 && contstatus === 0) {
-                      employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
-                        const { contrLogStatus, message } = values
-                        if (contrLogStatus === 1) {
-                          employeeUpdatePersonaltable(newcontractdetl).then((values) => {
-                            const { persoStatus, message } = values
-                            if (persoStatus === 1) {
-                              employeeUpdateQualificationTable(newcontractdetl).then((values) => {
-                                const { qualifStatus, message } = values
-                                if (qualifStatus === 1) {
-                                  employeeUpdateExpTable(newcontractdetl).then((values) => {
-                                    const { expeStatus, message } = values
-                                    if (expeStatus === 1) {
-                                      if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                        employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
-                                          const { salaryUpdtStatus, message } = values
-                                          if (salaryUpdtStatus === 1) {
-                                            setmodelvalue(1)
-                                            setOpenModel(true)
-                                            setDisable(false)
-                                          }
-                                        })
-                                      } else {
-                                        setmodelvalue(1)
-                                        setOpenModel(true)
-                                        setDisable(false)
-                                      }
-                                    } else {
-                                      warningNofity(message)
+                  employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+                    const { contrLogStatus, message } = values
+                    if (contrLogStatus === 1) {
+                      employeeUpdatePersonaltable(newcontractdetl)
+                      employeeUpdateQualificationTable(newcontractdetl)
+                      employeeUpdateExpTable(newcontractdetl).then((values) => {
+                        const { expeStatus, message } = values
+                        if (expeStatus === 1) {
+                          updateoldAttndanceDetail(attendancedetls).then((values) => {
+                            const { status, message } = values;
+                            if (status === 1) {
+                              updateArrearSalary(arreardetails).then((values) => {
+                                if (olDataTocopy.dataTocopy.salaryinformation === true) {
+                                  employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+                                    const { status } = values
+                                    if (status === 1) {
+                                      history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                                      // setmodelvalue(1)
+                                      // setOpenModel(true)
+                                      // setDisable(false)
+                                      // history.push(`/Home/Prfle/${em_no}/${em_id}/${0}`)
                                     }
                                   })
                                 } else {
-                                  warningNofity(message)
+                                  history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                                  // setmodelvalue(1)
+                                  // setOpenModel(true)
+                                  // setDisable(false)
                                 }
                               })
                             } else {
@@ -328,72 +386,139 @@ const ContractRenewalProcess = () => {
                           warningNofity(message)
                         }
                       })
-                      /** 1 -> next category contain contract
-                  */
-                    } else if (modelStatus === 1 && contstatus === 1) {
-                      employeeNewContractEntry(newcontractdetl).then((message) => {
-                        if (status === 1) {
-                          employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
-                            const { contrLogStatus, message } = values
-                            if (contrLogStatus === 1) {
-                              employeeUpdatePersonaltable(newcontractdetl).then((values) => {
-                                const { persoStatus, message } = values
-                                if (persoStatus === 1) {
-                                  employeeUpdateQualificationTable(newcontractdetl).then((values) => {
-                                    const { qualifStatus, message } = values
-                                    if (qualifStatus === 1) {
-                                      employeeUpdateExpTable(newcontractdetl).then((values) => {
-                                        const { expeStatus, message } = values
-                                        if (expeStatus === 1) {
-                                          if (olDataTocopy.dataTocopy.salaryinformation === true) {
-                                            employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
-                                              if (status === 1) {
-                                                setmodelvalue(1)
-                                                setOpenModel(true)
-                                                setDisable(false)
-                                              }
-                                            })
-                                          } else {
-                                            setmodelvalue(1)
-                                            setOpenModel(true)
-                                            setDisable(false)
-                                          }
-                                        }
-                                        else {
-                                          warningNofity(message)
-                                        }
-                                      })
-                                    }
-                                    else {
-                                      warningNofity(message)
-                                    }
-                                  })
-                                }
-                                else {
-                                  warningNofity(message)
-                                }
-                              })
-                            }
-                            else {
-                              warningNofity("error while updation")
-                            }
-                          })
-                        } else {
-                          warningNofity("Error while adding new contract entry")
-                        }
-
-                      })
-
+                    }
+                    else {
+                      warningNofity(message)
                     }
                   })
                 } else {
-                  warningNofity(message)
+                  warningNofity("Error while adding new contract entry")
                 }
+
               })
-            } else {
-              warningNofity(message)
+
             }
           })
+
+          // updateoldAttndanceDetail(attendancedetls).then((values) => {
+          //   const { status, message } = values;
+          //   if (status === 1) {
+          //     updateArrearSalary(arreardetails).then((values) => {
+          //       const { status, message } = values;
+          //       if (status === 1) {
+          //         updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
+          //           const { modelStatus, openStatus, disableStatus } = messsage;
+          //           if (modelStatus === 1 && contstatus === 0) {
+          //             employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+          //               const { contrLogStatus, message } = values
+          //               if (contrLogStatus === 1) {
+          //                 employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+          //                   const { persoStatus, message } = values
+          //                   if (persoStatus === 1) {
+          //                     employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+          //                       const { qualifStatus, message } = values
+          //                       if (qualifStatus === 1) {
+          //                         employeeUpdateExpTable(newcontractdetl).then((values) => {
+          //                           const { expeStatus, message } = values
+          //                           if (expeStatus === 1) {
+          //                             if (olDataTocopy.dataTocopy.salaryinformation === true) {
+          //                               employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((values) => {
+          //                                 const { salaryUpdtStatus, message } = values
+          //                                 if (salaryUpdtStatus === 1) {
+          //                                   setmodelvalue(1)
+          //                                   setOpenModel(true)
+          //                                   setDisable(false)
+          //                                 }
+          //                               })
+          //                             } else {
+          //                               setmodelvalue(1)
+          //                               setOpenModel(true)
+          //                               setDisable(false)
+          //                             }
+          //                           } else {
+          //                             warningNofity(message)
+          //                           }
+          //                         })
+          //                       } else {
+          //                         warningNofity(message)
+          //                       }
+          //                     })
+          //                   } else {
+          //                     warningNofity(message)
+          //                   }
+          //                 })
+          //               }
+          //               else {
+          //                 warningNofity(message)
+          //               }
+          //             })
+          //             /** 1 -> next category contain contract
+          //         */
+          //           } else if (modelStatus === 1 && contstatus === 1) {
+          //             employeeNewContractEntry(newcontractdetl).then((values) => {
+          //               const { status } = values
+          //               if (status === 1) {
+          //                 employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
+          //                   const { contrLogStatus, message } = values
+          //                   if (contrLogStatus === 1) {
+          //                     employeeUpdatePersonaltable(newcontractdetl).then((values) => {
+          //                       const { persoStatus, message } = values
+          //                       if (persoStatus === 1) {
+          //                         employeeUpdateQualificationTable(newcontractdetl).then((values) => {
+          //                           const { qualifStatus, message } = values
+          //                           if (qualifStatus === 1) {
+          //                             employeeUpdateExpTable(newcontractdetl).then((values) => {
+          //                               const { expeStatus, message } = values
+          //                               if (expeStatus === 1) {
+          //                                 if (olDataTocopy.dataTocopy.salaryinformation === true) {
+          //                                   employeeRecordUpdationUserChoice(newcontractdetl, oldPersonalData).then((message) => {
+          //                                     if (status === 1) {
+          //                                       setmodelvalue(1)
+          //                                       setOpenModel(true)
+          //                                       setDisable(false)
+          //                                     }
+          //                                   })
+          //                                 } else {
+          //                                   setmodelvalue(1)
+          //                                   setOpenModel(true)
+          //                                   setDisable(false)
+          //                                 }
+          //                               }
+          //                               else {
+          //                                 warningNofity(message)
+          //                               }
+          //                             })
+          //                           }
+          //                           else {
+          //                             warningNofity(message)
+          //                           }
+          //                         })
+          //                       }
+          //                       else {
+          //                         warningNofity(message)
+          //                       }
+          //                     })
+          //                   }
+          //                   else {
+          //                     warningNofity("error while updation")
+          //                   }
+          //                 })
+          //               } else {
+          //                 warningNofity("Error while adding new contract entry")
+          //               }
+
+          //             })
+
+          //           }
+          //         })
+          //       } else {
+          //         warningNofity(message)
+          //       }
+          //     })
+          //   } else {
+          //     warningNofity(message)
+          //   }
+          //})
         }
       }
     }
@@ -402,26 +527,7 @@ const ContractRenewalProcess = () => {
   return (
     <Fragment>
       <ToastContainer />
-      {modelvalue === 1 && open === false ? <ModelLeaveProcess
-        open={openleavemodel}
-        dataleave={leavestate} // {Allowed Leaves based on category}
-        handleClose={handleCloseModel}
-        setOpen={setOpen}  //for open model
-        id={newempId}//employee id
-        no={no}//employee number
-        valuemessage={'Category Change You Want To Process Leave'}//model message
-        leaveprocessid={0} //current proceess details from the 
-        processslno={processslno}//processess serialno
-        olddata={1}// check value === 1 then this is the new process and 0 is not a new process
-        setcastable={setcastable}//casual leave table rerender
-        setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
-        setnodatael={setnodatael} //dataset render  for rerendering the earnleave
-        setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
-        setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
-        setmodelvalue={setmodelvalue}
-        nameel={attendanceata === undefined ? [] : attendanceata}
-      /> : null}
-      {open === true ? <ModelOldDataToCopy open={open} handleClose={handleClose} /> : null}
+
       <Box sx={{ width: "100%" }}>
         <Paper square elevation={2} sx={{ p: 0.5, flexDirection: "row" }} >
           <EXistContractDetl
@@ -435,7 +541,6 @@ const ContractRenewalProcess = () => {
             setattendanceDays={setattendanceDays}
             setOldctaegory={setOldctaegory}
           />
-
           {/*attendance details */}
           <Paper square elevation={3} sx={{
             display: "flex",
@@ -479,6 +584,7 @@ const ContractRenewalProcess = () => {
               setContractrenew={setContractrenew}
               contractTpPermanent={contractTpPermanent}
               setcontractTpPermanent={setcontractTpPermanent}
+
             />
           </Paper>
           <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
@@ -497,6 +603,28 @@ const ContractRenewalProcess = () => {
           </Paper >
         </Paper >
       </Box >
+
+      {/* {modelvalue === 1 && open === false ? <ModelLeaveProcess
+        open={openleavemodel}
+        dataleave={leavestate} // {Allowed Leaves based on category}
+        handleClose={handleCloseModel}
+        setOpen={setOpen}  //for open model
+        id={newempId}//employee id
+        no={no}//employee number
+        valuemessage={'Category Change You Want To Process Leave'}//model message
+        leaveprocessid={0} //current proceess details from the 
+        processslno={processslno}//processess serialno
+        olddata={1}// check value === 1 then this is the new process and 0 is not a new process
+        setcastable={setcastable}//casual leave table rerender
+        setnodatacl={setnodatacl}//dataset render  for rerendering the casual leave
+        setnodatael={setnodatael} //dataset render  for rerendering the earnleave
+        setnodatahl={setnodatahl}//dataset render  for rerendering the holiday
+        setnodatafixed={setnodatafixed}//dataset render  for rerendering the datafixed
+        setmodelvalue={setmodelvalue}
+        nameel={attendanceata === undefined ? [] : attendanceata}
+      /> : null}
+      {open === true ? <ModelOldDataToCopy open={open} handleClose={handleClose} /> : null} */}
+
     </Fragment >
   )
 }

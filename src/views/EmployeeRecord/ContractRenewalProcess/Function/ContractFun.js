@@ -1,4 +1,5 @@
 import { axioslogin } from "src/views/Axios/Axios"
+import { warningNofity } from "src/views/CommonCode/Commonfunc"
 
 export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
 
@@ -51,7 +52,7 @@ export const updateArrearSalary = async (arreardetails) => {
 }
 
 export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, newCatgeory, newempId, empno) => {
-    let messsage = { modelStatus: 0, openStatus: 0, disableStatus: 0 }
+    let messsage = { modelStatus: 0 }
     const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
     const { success } = result.data
     if (success === 6) {
@@ -74,12 +75,15 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
             const { success } = resultemployee.data;
             if (success === 1) {
                 if (oldCategory !== em_category) {
-                    return { ...messsage, modelStatus: 1, openStatus: 1, disableStatus: 0, message: "Data Inserted successfully" }
+                    return { ...messsage, modelStatus: 1, message: "Data Inserted successfully" }
                 }
                 else {
-                    return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
+                    return { ...messsage, modelStatus: 0, message: "Error Occured" }
                 }
 
+            }
+            else {
+                return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
             }
         }
     }
@@ -102,9 +106,9 @@ export const employeeUpdatePersonaltable = async (newcontractdetl) => {
     if (updatePersonalInfom.data.success === 2) {
         return { persoStatus: 1, message: "Update Personal Information Successfully" }
     } else {
+        warningNofity("Error While Updating Personal Table")
         return { persoStatus: 0, message: "Error While Updating Personal Table" }
     }
-
 }
 
 export const employeeUpdateQualificationTable = async (newcontractdetl) => {
@@ -115,6 +119,7 @@ export const employeeUpdateQualificationTable = async (newcontractdetl) => {
         return { qualifStatus: 1, message: "Update Qualification Successfully" }
     }
     else {
+        warningNofity("Error while updating Qualification Table")
         return { qualifStatus: 0, message: "Error while updating Qualification Table" }
     }
 }
@@ -126,6 +131,7 @@ export const employeeUpdateExpTable = async (newcontractdetl) => {
     if (updateExperience.data.success === 2) {
         return { expeStatus: 1, message: "Update Personal Information Successfully" }
     } else {
+        warningNofity("Error While Updating Experience Table")
         return { expeStatus: 0, message: "Error While Updating Experience Table" }
     }
 }

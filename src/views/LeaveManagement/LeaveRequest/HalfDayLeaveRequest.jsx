@@ -141,12 +141,12 @@ const HalfDayLeaveRequest = ({ sethalfday, em_id }) => {
     useEffect(() => {
         const formdataa = {
 
-            casullevemonth: casullevemonth,
+            casullevemonth: casullevemonth, //value
             checkIn: checkIn,
             checkOut: checkOut,
             startDate: startDate,
-            planslno: planslno,
-            monthleave: monthleave
+            planslno: planslno, // duty plan slno
+            monthleave: monthleave // value - innexr text name
         }
         sethalfday(formdataa)
     }, [casullevemonth, checkIn, checkOut, monthleave])

@@ -42,7 +42,7 @@ const EmployeeRecordTableView = ({ tableData }) => {
             actions={[
                 {
                     icon: () => <ModeEditOutlineIcon color='success' />,
-                    tooltip: "Click Here to Verify",
+                    tooltip: "Edit Employee",
                     onClick: (e, data) => ToProfile(data)
 
                 }

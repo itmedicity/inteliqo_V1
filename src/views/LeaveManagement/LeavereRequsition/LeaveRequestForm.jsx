@@ -1,32 +1,31 @@
 import { Button, Checkbox, CssVarsProvider } from '@mui/joy'
-import { Box, Grid, Paper, TextField } from '@mui/material'
+import { Box, Paper, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import React, { lazy, useCallback } from 'react'
 import { useState } from 'react'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CommonLeaveOptionCmp from './Func/CommonLeaveOptionCmp'
-import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { memo } from 'react'
 import moment from 'moment'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { differenceInCalendarDays, intervalToDuration } from 'date-fns'
-import { useMemo } from 'react'
+import { differenceInCalendarDays } from 'date-fns'
 import _ from 'underscore'
-import { axioslogin } from 'src/views/Axios/Axios'
-import { useEffect } from 'react'
-
 
 const SingleLeaveRequestForm = lazy(() => import('./SingleLeaveRequestForm'));
 const MultiLeaveRequestForm = lazy(() => import('./MultiLeaveRequestForm'));
+
+const BlankForm = () => {
+    return (<Box></Box>)
+}
 
 const LeaveRequestForm = () => {
     const { FETCH_SINGLE_LEAVE_REQ_FORM_DATA } = Actiontypes;
 
     const dispatch = useDispatch()
-    const [requestFomOne, setRequestFom] = useState(false)
+    const [requestFomOne, setRequestFom] = useState(0)
 
     const [dateCheckBox, setCheckBx] = useState(false)
     const [singleLeveTypeCheck, setSgleCheck] = useState(false)
@@ -39,9 +38,11 @@ const LeaveRequestForm = () => {
         setSgleCheck(e.target.checked)
     })
 
+    // console.log(singleLeveTypeCheck)
     const leaveRequestSubmitFun = useCallback(async () => {
 
         if (singleLeveTypeCheck === true) {
+            // console.log('single leaves')
             if (commnLevType === 0) {
                 warningNofity("Please Select The Leave Type")
             } else {
@@ -83,17 +84,42 @@ const LeaveRequestForm = () => {
             }
         } else {
             setRequestFom(false)
+            // console.log('multi leave ')
             //Not a single Leave type Leave Selection
             if (dateCheckBox === true) {
                 //Single Date Selected
                 let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                let postFormDataSgleDate = {
+                    dateRangeCheck: dateCheckBox,
+                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                    toDate: moment(toDate).format('YYYY-MM-DD'),
+                    singleLevCheck: singleLeveTypeCheck,
+                    singleLeaveType: commnLevType,
+                    singleLeaveDesc: commnLevDesc,
+                    totalDays: totalDays + 1,
+                    formSubmit: true
+                }
+
+                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
             } else {
                 //Date Rage selected
                 let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                let postFormDataSgleDate = {
+                    dateRangeCheck: dateCheckBox,
+                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                    toDate: moment(fromDate).format('YYYY-MM-DD'),
+                    singleLevCheck: singleLeveTypeCheck,
+                    singleLeaveType: commnLevType,
+                    singleLeaveDesc: commnLevDesc,
+                    totalDays: totalDays + 1,
+                    formSubmit: true
+                }
+
+                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
             }
         }
 
-    })
+    }, [fromDate, toDate, singleLeveTypeCheck, commnLevType, dateCheckBox])
 
     return (
         <Box>
@@ -152,7 +178,7 @@ const LeaveRequestForm = () => {
                             size="lg"
                             variant="outlined"
                             checked={singleLeveTypeCheck}
-                            onChange={useCallback((e) => singleLeaveTypeCheckOption(e))}
+                            onChange={(e) => singleLeaveTypeCheckOption(e)}
                         />
                     </CssVarsProvider>
                 </Box>
@@ -180,7 +206,7 @@ const LeaveRequestForm = () => {
                 </Box>
             </Paper >
             {
-                requestFomOne === true ? < SingleLeaveRequestForm /> : <MultiLeaveRequestForm />
+                requestFomOne === true ? < SingleLeaveRequestForm /> : requestFomOne === false ? <MultiLeaveRequestForm /> : <BlankForm />
             }
         </Box>
     )

@@ -1,4 +1,3 @@
-import { Checkbox, FormControlLabel } from '@material-ui/core'
 import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
@@ -13,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper, Tooltip } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Paper, Tooltip } from '@mui/material'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CloseIcon from '@mui/icons-material/Close';
@@ -166,13 +165,13 @@ const EmployeeFileAgGrid = () => {
             headerName: 'Action', minWidth: 100, wrapText: true,
             cellRenderer: params =>
                 <Tooltip title="Profile View" followCursor placement='top' arrow >
-                    <IconButton sx={{ size:'sm' }} onClick={() => getEmployeeEmpNumber(params)}>
-                        <AccountCircleOutlinedIcon color='primary' />
+                    <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getEmployeeEmpNumber(params)}>
+                        <AccountCircleOutlinedIcon />
                     </IconButton>
                 </Tooltip>
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 90, filter: true },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 90, filter: true },
+        // { headerName: 'Emp Id ', field: 'em_id', minWidth: 90, filter: true },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Gender', field: 'gender', minWidth: 90 },
         { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
@@ -190,11 +189,7 @@ const EmployeeFileAgGrid = () => {
         <Fragment>
             <Box sx={{ width: "100%" }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -203,27 +198,10 @@ const EmployeeFileAgGrid = () => {
                             </CssVarsProvider>
                         </Box>
                     </Paper>
-                    <Paper square elevation={3} sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        alignItems: "center",
-                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }} >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flex: 1,
-                        }}>
+                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
+                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, }}>
                             {/* First Row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                            }}>
-                                {/* <Box sx={{ display: "flex", flex: 2, p: 2 }}>
-                                    <BrnachMastSelection style={SELECT_CMP_STYLE} />
-                                </Box> */}
+                            <Box sx={{ display: "flex", flexDirection: "row", }}>
                                 <Box sx={{ display: "flex", flex: 2, p: 2 }} >
                                     <DepartmentSelect style={SELECT_CMP_STYLE} />
                                 </Box>
@@ -251,54 +229,19 @@ const EmployeeFileAgGrid = () => {
                                             <SearchIcon />
                                         </IconButton>
                                     </CssVarsProvider>
-
-                                    {/* <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                        className="ml-1"
-                                        onClick={getEmployeeList}
-                                    >
-                                        Search
-                                    </Button> */}
                                 </Box>
                                 <Box sx={{ display: "flex", flex: 1, py: 2, pl: 2 }}>
-
                                     <CssVarsProvider>
                                         <IconButton variant="outlined" size='sm' color="danger" onClick={toSettings}>
                                             <CloseIcon />
                                         </IconButton>
                                     </CssVarsProvider>
-
-
-                                    {/* <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        className="ml-2"
-                                        onClick={toSettings}
-                                    >
-                                        Close
-                                    </Button> */}
                                 </Box>
                             </Box>
                             {/* First Row end */}
                         </Box>
-
-
                     </Paper>
-                    <Paper square elevation={0} sx={{
-                        pt: 1,
-                        mt: 0.5,
-                        display: 'flex',
-                        //alignItems: "center",
-                        //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        //backgroundColor: "lightcyan",
-                        flexDirection: "column"
-                    }} >
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                         <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
                             height: 600,
                             width: "100%"
