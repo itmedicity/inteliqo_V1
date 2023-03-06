@@ -88,10 +88,10 @@ const EmployeeRecordEdit = () => {
     const [oldprob_status, setOld_prob_Status] = useState(0)
 
     // to redirection and dispatch the updated details to the Leave Process Component
-    const redirectionOnUpdation = (id, no) => {
-        dispatch(setPersonalData(no));
-        history.push(`/Home/LeaveProcess/${id}/${no}`);
-    }
+    // const redirectionOnUpdation = (id, no) => {
+    //     dispatch(setPersonalData(no));
+    //     history.push(`/Home/LeaveProcess/${id}/${no}`);
+    // }
 
     // use state intialization
     const [employeerecord, getFormdata] = useState({
@@ -544,7 +544,7 @@ const EmployeeRecordEdit = () => {
         if (probdate > today && cont_date > today && oldContract_Status === 1 && oldprob_status === 1 && oldCategory !== getemployeecategory) {
             //contract training or probation employee to other
             submitFunction(submitdata);
-            history.push(`/Home/LeaveProcess/${id}/${no}`);
+            history.push(`/Home/Prfle/${id}/${no}/${0}`)
         }
         else if (probdate < today && cont_date < today && oldContract_Status === 1 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
@@ -557,34 +557,38 @@ const EmployeeRecordEdit = () => {
         }
         //employee in a permanent probation
         else if (oldContract_Status === 0 && oldprob_status === 1 && oldCategory !== getemployeecategory) {
-            //perm prob to contract
+            //permanent probation to contract
             if (contractflag === 1) {
                 UpdateFunction(submitdata).then((values) => {
-                    redirectionOnUpdation(id, no)
-                })
-                // history.push(`/Home/LeaveProcess/${id}/${no}`);
-            }
-            else {
-                //perm to perm
-                submit(submitdata).then((values) => {
-                    redirectionOnUpdation(id, no)
-                })
-                // history.push(`/Home/LeaveProcess/${id}/${no}`);
-            }
-        }
-        //employee with permanent or permanent confirmation
-        else if (oldContract_Status === 0 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
-            //perm or perm conf to contract
-            if (contractflag === 1) {
-                UpdateFunction(submitdata).then((values) => {
-                    redirectionOnUpdation(id, no)
+                    //redirectionOnUpdation(id, no)
+                    history.push(`/Home/Prfle/${id}/${no}/${0}`)
                 })
                 // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
             else {
                 //permanent to permanent
                 submit(submitdata).then((values) => {
-                    redirectionOnUpdation(id, no)
+                    // redirectionOnUpdation(id, no)
+                    history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
+            }
+        }
+        //employee with permanent or permanent confirmation
+        else if (oldContract_Status === 0 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
+            //permanent or permamnent conf to contract
+            if (contractflag === 1) {
+                UpdateFunction(submitdata).then((values) => {
+                    // redirectionOnUpdation(id, no)
+                    history.push(`/Home/Prfle/${id}/${no}/${0}`)
+                })
+                // history.push(`/Home/LeaveProcess/${id}/${no}`);
+            }
+            else {
+                //permanent to permanent
+                submit(submitdata).then((values) => {
+                    //redirectionOnUpdation(id, no)
+                    history.push(`/Home/Prfle/${id}/${no}/${0}`)
                 })
                 // history.push(`/Home/LeaveProcess/${id}/${no}`);
             }
@@ -592,7 +596,8 @@ const EmployeeRecordEdit = () => {
         else if (probdate < today && cont_date > today && oldContract_Status === 1 && oldprob_status === 0 && oldCategory !== getemployeecategory) {
             //contract confirmation to any
             submitFunction(submitdata).then((values) => {
-                redirectionOnUpdation(id, no)
+                //redirectionOnUpdation(id, no)
+                history.push(`/Home/Prfle/${id}/${no}/${0}`)
             })
             // history.push(`/Home/LeaveProcess/${id}/${no}`);
         }

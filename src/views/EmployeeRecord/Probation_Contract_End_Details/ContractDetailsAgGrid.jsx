@@ -224,7 +224,7 @@ const ContractDetailsAgGrid = () => {
             </Fragment>
         },
         { headerName: 'Slno', field: 'slno', width: 100 },
-        { headerName: 'Emp Id ', field: 'em_id', minWidth: 10, filter: true },
+        { headerName: 'Emp No ', field: 'em_no', minWidth: 10, filter: true },
         { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Department', field: 'dept_name', wrapText: true },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true },

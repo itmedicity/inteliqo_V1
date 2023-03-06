@@ -25,15 +25,15 @@ const AnnualAppraisalList = () => {
 
     /** columns for table */
     const [columnDef] = useState([
-        { headerName: 'Slno', field: 'slno', width: 100 },
-        { headerName: 'ID', field: 'em_id', wrapText: true, width: 100, filter: true },
-        { headerName: 'Emp No ', field: 'em_no', wrapText: true, width: 150, filter: true },
-        { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Department ', field: 'dept_name', filter: true },
-        { headerName: 'Department Section ', field: 'sect_name', wrapText: true, minWidth: 250, filter: true },
-        { headerName: 'Designation ', field: 'desg_name', filter: true },
-        { headerName: 'Date of joining ', field: 'em_doj', filter: true },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 350, filter: true },
+        { headerName: 'Slno', field: 'slno', minWidth: 50 },
+        //{ headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 100, filter: true },
+        { headerName: 'Emp No ', field: 'em_no', wrapText: true, minWidth: 50, filter: true },
+        { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 100 },
+        { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 150 },
+        { headerName: 'Department Section ', field: 'sect_name', wrapText: true, minWidth: 150, filter: true },
+        { headerName: 'Designation ', field: 'desg_name', filter: true, minWidth: 100 },
+        { headerName: 'Date of joining ', field: 'em_doj', filter: true, minWidth: 100 },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params =>

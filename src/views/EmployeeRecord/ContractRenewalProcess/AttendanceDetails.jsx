@@ -129,9 +129,9 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                         </CssVarsProvider>
                     </Box>
                     {
-                        attandFlag === 1 ? <Box sx={{ flex: 0, pt: 0.5 }}>
+                        attandFlag === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
                             <CssVarsProvider>
-                                <Typography>
+                                <Typography sx={{ color: 'green' }}>
                                     Done!
                                 </Typography>
                             </CssVarsProvider>

@@ -1,4 +1,4 @@
-import { Box, Card, CardMedia, CardContent } from '@mui/material'
+import { Box, Card, CardMedia, CardContent, Paper } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { CssVarsProvider, Typography } from '@mui/joy';
 import Avatar from '@mui/joy/Avatar'
@@ -75,7 +75,11 @@ const ProfileCard = () => {
                 </CardMedia>
                 <CardContent sx={{ pb: { lg: 0.5 } }} >
                     <CssVarsProvider>
-                        <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', flexDirection: 'column' }} >
+                        <Box sx={{
+                            display: "flex", height: 100, justifyContent: 'center',
+                            flexDirection: 'column', overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }
+                        }} >
                             <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }} >
                                 <Typography level="h2" fontSize="lg" textColor="#414349" mb={1} sx={{ textTransform: "capitalize" }}  >
                                     {Name}
