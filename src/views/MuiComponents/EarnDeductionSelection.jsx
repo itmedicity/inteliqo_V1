@@ -13,34 +13,34 @@ const EarnDeductionSelection = ({ style, value, setValue }) => {
     const dispatch = useDispatch()
     useEffect(() => dispatch(getEarnDeduction()), [dispatch])
 
-    const Earn = useSelector((state) => state.getEarnData.DataList,_.isEqual);
+    const Earn = useSelector((state) => state.getEarnData.DataList, _.isEqual);
     const EarnValues = useMemo(() => Earn, [Earn])
 
 
-  return (
-    <Box sx={{width:'100%'}}>
-        <FormControl fullWidth size="small"  >
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'            
-            sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
-            // sx={{ ...style, minWidth: 100 }}
-        >
-            <MenuItem value={0} disabled >Select Wage Type</MenuItem>
-            {
-                EarnValues && EarnValues.map((val, index) => {
-                    return <MenuItem key={index} value={val.earnded_id}>{val.earnded_name}</MenuItem>
-                })
-            }
-        </Select>
-        </FormControl>
-    </Box >
-  )
+    return (
+        <Box sx={{ width: '100%' }}>
+            <FormControl fullWidth size="small"  >
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    size="small"
+                    fullWidth
+                    variant='outlined'
+                // sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
+                // sx={{ ...style, minWidth: 100 }}
+                >
+                    <MenuItem value={0} disabled >Select Wage Type</MenuItem>
+                    {
+                        EarnValues && EarnValues.map((val, index) => {
+                            return <MenuItem key={index} value={val.earnded_id}>{val.earnded_name}</MenuItem>
+                        })
+                    }
+                </Select>
+            </FormControl>
+        </Box >
+    )
 }
 
 export default memo(EarnDeductionSelection)

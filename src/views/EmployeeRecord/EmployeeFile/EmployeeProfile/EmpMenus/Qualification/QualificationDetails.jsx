@@ -67,8 +67,6 @@ const QualificationDetails = () => {
     //destructuring
     const { em_mark_grade, em_reg_no, em_chellan, pass_fail } = qualification
 
-console.log(pass_fail);
-
     const updateQualification = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setQualification({ ...qualification, [e.target.name]: value })
@@ -424,13 +422,8 @@ console.log(pass_fail);
                 '::-webkit-scrollbar': { display: "none" }
             }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-
                     {/* Heading Section Start */}
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -442,44 +435,28 @@ console.log(pass_fail);
                     {/* Heading Section End */}
 
                     {/* Main Section Start */}
-                    <Paper square elevation={3} sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        alignItems: "center",
-                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }} >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flex: 1,
-                        }}>
+                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
+                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, }}>
                             {/* First Row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', px: 20 }}>
+                                <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Education
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <EducationSelection style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary">
                                             Course
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <CourseSelection
                                         disable={coursedisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -488,33 +465,27 @@ console.log(pass_fail);
                             {/* First Row end */}
 
                             {/* Second Row Start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', px: 20 }}>
+                                <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Specialization
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ width: '30%', pt: 0.5 }} >
                                     <SpecializationSelection
                                         disable={specdisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             University
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5, pt: 0 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <UniversitySelection
                                         disable={unidisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -523,33 +494,27 @@ console.log(pass_fail);
                             {/* Second Row End */}
 
                             {/* Third Row Start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                                <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Board
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <BoardMastSelection
                                         disable={boarddisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 1 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Year
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 1, pl: 0.5 }} >
+                                <Box sx={{ width: '30%', pt: 1 }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
                                             views={['year']}
@@ -574,32 +539,17 @@ console.log(pass_fail);
                             </Box>
                             {/* Third Row End */}
                             {/* Fourth Row Start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    //backgroundColor: "yellow",
-                                    width: '20%',
-                                    pt: 0.5
-                                }}
-                                >
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                                <Box sx={{ width: '20%', pt: 0.5 }} >
                                     <CommonCheckBox
                                         name="pass_fail"
-                                        value={pass_fail}
+                                        //value={pass_fail}
                                         checked={pass_fail}
                                         onChange={(e) => updateQualification(e)}
                                         label="Pass or Fail"
                                     />
                                 </Box>
-                                <Box sx={{
-                                    // display: "flex",
-                                    flex: 1,
-                                    pt: 0.5
-                                    //backgroundColor: "red"
-                                }}>
+                                <Box sx={{ width: '30%', pt: 0.5 }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -610,24 +560,14 @@ console.log(pass_fail);
 
                                     />
                                 </Box>
-                                <Box sx={{
-                                    display: 'flex',
-                                    width: '20%',
-                                    //backgroundColor: "green",
-                                    pl: 0.5
-                                }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Registration Type
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{
-                                    display: "flex",
-                                    flex: 1,
-                                    //backgroundColor: "blue"
-                                }} >
+                                <Box sx={{ width: '30%', }} >
                                     <RegistrationTypeSelection
                                         disable={regTypedisable}
                                         style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} />
@@ -636,11 +576,8 @@ console.log(pass_fail);
                             {/* Fourth Row End */}
 
                             {/* 5th Row start */}
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                            }}><Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, }}>
+                                <Box sx={{ width: '20%', pt: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Registration Number
@@ -648,7 +585,7 @@ console.log(pass_fail);
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -659,15 +596,14 @@ console.log(pass_fail);
                                         changeTextValue={(e) => updateQualification(e)}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5, pt: 0.5 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Registration End Date
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -684,13 +620,8 @@ console.log(pass_fail);
                             </Box>
                             {/* 5th row end */}
 
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                pt: 0.5,
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5, px: 20 }}>
+                                <Box sx={{ width: '20%', pt: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Challan Number
@@ -698,7 +629,7 @@ console.log(pass_fail);
 
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -709,14 +640,14 @@ console.log(pass_fail);
                                         changeTextValue={(e) => updateQualification(e)}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Challan End Date
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5, pb: 0.5 }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -733,15 +664,7 @@ console.log(pass_fail);
                             </Box>
                         </Box>
                     </Paper>
-                    <Paper square elevation={0} sx={{
-                        pt: 1,
-                        mt: 0.5,
-                        display: 'flex',
-                        //alignItems: "center",
-                        //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        //backgroundColor: "lightcyan",
-                        flexDirection: "column"
-                    }} >
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                         <QualificationAgGridTable update={count} getDataTable={getDataTable} />
                     </Paper>
                 </Paper>
