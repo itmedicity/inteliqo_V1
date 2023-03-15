@@ -43,7 +43,7 @@ const Employeerecord = [
     {
         men_slno: 221,
         component: CNavItem,
-        name: 'Employee Earn Deduction',
+        name: 'Earning/Deduction',
         to: '/Home/EmpEarnDeduction',
     },
     // {

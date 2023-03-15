@@ -245,7 +245,7 @@ const EmployeeFileAgGrid = () => {
                         <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
                             height: 600,
                             width: "100%"
-                        }} rowHeight={30} headerHeight={30} />
+                        }} rowHeight={40} headerHeight={40} />
                     </Paper>
                 </Paper>
             </Box>

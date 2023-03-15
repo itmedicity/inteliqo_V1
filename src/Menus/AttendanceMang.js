@@ -16,13 +16,13 @@ const AttendanceManagement = [
     {
         men_slno: 24,
         component: CNavItem,
-        name: 'Attendance Updation',
+        name: 'Punch In/Out Marking',
         to: '/Home/ShiftUpdation',
     },
     {
         men_slno: 125,
         component: CNavItem,
-        name: 'Attendance Marking',
+        name: 'Attendance Process',
         to: '/Home/AttendanceMarking',
     },
     {
