@@ -37,8 +37,14 @@ const Employeerecord = [
     {
         men_slno: 21,
         component: CNavItem,
-        name: 'Allowance/Deduction',
+        name: 'Wage Bulk Updation',
         to: '/Home/AllowanceDeduction',
+    },
+    {
+        men_slno: 221,
+        component: CNavItem,
+        name: 'Earning/Deduction',
+        to: '/Home/EmpEarnDeduction',
     },
     // {
     //     component: CNavItem,

@@ -52,7 +52,7 @@ export const updateArrearSalary = async (arreardetails) => {
 }
 
 export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, newCatgeory, newempId, empno) => {
-    let messsage = { modelStatus: 0, openStatus: 0, disableStatus: 0 }
+    let messsage = { modelStatus: 0 }
     const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
     const { success } = result.data
     if (success === 6) {
@@ -75,10 +75,10 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
             const { success } = resultemployee.data;
             if (success === 1) {
                 if (oldCategory !== em_category) {
-                    return { ...messsage, modelStatus: 1, openStatus: 1, disableStatus: 0, message: "Data Inserted successfully" }
+                    return { ...messsage, modelStatus: 1, message: "Data Inserted successfully" }
                 }
                 else {
-                    return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
+                    return { ...messsage, modelStatus: 0, message: "Error Occured" }
                 }
 
             }

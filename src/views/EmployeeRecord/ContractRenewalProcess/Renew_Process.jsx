@@ -12,7 +12,11 @@ import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySe
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
 
 
-const Renew_Process = ({ em_cont_end, grace_period, newContract, updateNewContract, emp_retireDate, contractrenew, setContractrenew, contractTpPermanent, setcontractTpPermanent }) => {
+const Renew_Process = ({
+    em_cont_end, grace_period, newContract,
+    updateNewContract, emp_retireDate, contractrenew,
+    setContractrenew, contractTpPermanent, setcontractTpPermanent,
+}) => {
     const dispatch = useDispatch()
 
     const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract

@@ -82,7 +82,11 @@ import {
     updateCasualLeaveStatus
 } from './LeaveProcess.Reducer'
 import { getAppraisalData } from './AppraisalReducer'
+import { getExcelData } from './Payroll.Reducer'
+import { getEarnData } from './EarnDeductio.Reducer'
+import { getPaySlipData } from './Payroll.Reducer'
 import { getLeaveType } from './LeaveType.Reducer'
+
 
 
 const reducer = combineReducers({
@@ -162,6 +166,9 @@ const reducer = combineReducers({
     getEmployeeInformationState,
     getEmployeeApprovalLevel,
     getAppraisalData,
+    getExcelData,
+    getEarnData,
+    getPaySlipData,
     getCreditedCasualLeave,
     getCreitedCommonLeave,
     getCreitedHolidayLeave,

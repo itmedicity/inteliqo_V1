@@ -96,6 +96,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const religion = emp.religion && emp.religion.toLowerCase();
     const bank = emp.bank && emp.bank.toLowerCase()
+    const blood = emp.bloodgroup && emp.bloodgroup.toLowerCase()
 
     return (
         <Box sx={{
@@ -414,7 +415,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ display: 'flex', width: "60%", }} >{emp.bloodgroup === false ? notUpdated : emp.bloodgroup.toLowerCase()}</Box>
+                                    <Box sx={{ display: 'flex', width: "60%", }} >{blood === false ? notUpdated : blood}</Box>
                                 </Box>
                             </Grid>
                             <Grid item xl={4} lg={6} md={6} sm={12} xs={12} >

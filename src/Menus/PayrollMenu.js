@@ -3,8 +3,14 @@ const PayrollMenu = [
     {
         men_slno: 36,
         component: CNavItem,
-        name: 'Attendance Updation',
-        to: '/homes',
+        name: 'Attendance Marking Manual',
+        to: '/Home/PayrollAttendance',
+    },
+    {
+        men_slno: 220,
+        component: CNavItem,
+        name: 'Payslip Calculation',
+        to: '/Home/PaySlipCalculation',
     },
     {
         men_slno: 37,

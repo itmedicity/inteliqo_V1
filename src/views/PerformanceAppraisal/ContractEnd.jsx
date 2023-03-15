@@ -32,7 +32,7 @@ const ContractEnd = () => {
             headerName: 'Action',
             cellRenderer: params =>
                 <Fragment>
-                    <Tooltip title="Direct Contract Confirmation" followCursor placement='top' arrow >
+                    <Tooltip title="Direct Contract Close" followCursor placement='top' arrow >
                         <IconButton sx={{ pb: 1 }} onClick={() => addtoProcess(params)}>
                             <PublishedWithChangesIcon color='primary' />
                         </IconButton>

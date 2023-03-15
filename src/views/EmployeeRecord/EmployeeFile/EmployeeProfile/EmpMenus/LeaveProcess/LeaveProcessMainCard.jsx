@@ -35,6 +35,7 @@ import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDro
 import LeaveReduxFun from './Functions/LeaveReduxFun'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
 import { useCallback } from 'react'
+import { setPersonalData } from 'src/redux/actions/Profile.action'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -43,7 +44,7 @@ const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))
 const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'))
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'))
 
-const LeaveProcessMainCard = () => {
+const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const dispatch = useDispatch()
 
   const [empCategory, setEmpCategory] = useState({}) //emp_master category
@@ -61,12 +62,30 @@ const LeaveProcessMainCard = () => {
   const [processedLeave, setProcessedLeave] = useState([])
 
   const { id, no } = useParams()
-  const employeeIDs = useMemo(() => {
-    return {
+
+  const [employeeIDs, setEmployeeIDs] = useState({});
+
+  useEffect(() => {
+    let empDetl = {
       em_no: no,
       em_id: id,
     }
-  }, [id, no])
+    if (formStatus === true) {
+      const { empid } = empInfo;
+
+      setEmployeeIDs(empInfo)
+      dispatch(setPersonalData(empid));
+    } else {
+      setEmployeeIDs(empDetl)
+    }
+  }, [id, no, formStatus, empInfo])
+
+  // const employeeIDs = useMemo(() => {
+  //   return {
+  //     em_no: no,
+  //     em_id: id,
+  //   }
+  // }, [id, no])
 
   const updateStatus = useMemo(() => updateStat, [updateStat])
 

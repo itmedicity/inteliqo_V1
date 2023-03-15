@@ -95,31 +95,31 @@ const HRList = () => {
                     </Tooltip>
                 </Fragment>
         },
-        { headerName: 'Slno', field: 'slno', filter: true, width:100 },
-        { headerName: 'Emp Id', field: 'em_id', filter: true, width:150},
-        { headerName: 'Emp No ', field: 'em_no', filter: true, width:150 },
+        { headerName: 'Slno', field: 'slno', filter: true, width: 100 },
+        // { headerName: 'Emp Id', field: 'em_id', filter: true, width:150},
+        { headerName: 'Emp No ', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department  ', field: 'dept_name', filter: true },
         { headerName: 'Department Section  ', field: 'sect_name', },
         { headerName: 'Designation ', field: 'desg_name', },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, }, 
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
     ])
 
 
     //for displaying column heading with status
     const [pendingCol] = useState([
-        { headerName: 'Emp Id', field: 'em_id', filter: true },
+        // { headerName: 'Emp Id', field: 'em_id', filter: true },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department ', field: 'dept_name', filter: true },
-        { headerName: 'Department Section', field:'sect_name'},
+        { headerName: 'Department Section', field: 'sect_name' },
         { headerName: 'Designation ', field: 'desg_name', },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
         { headerName: 'Status ', field: 'status', wrapText: true, minWidth: 250, },
     ])
     //for displaying column with all appraisal list
     const [column] = useState([
-        { headerName: 'Emp Id', field: 'em_id', filter: true },
+        //{ headerName: 'Emp Id', field: 'em_id', filter: true },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department', field: 'dept_name', filter: true },

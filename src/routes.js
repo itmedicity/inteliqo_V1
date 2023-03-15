@@ -203,7 +203,11 @@ const LeaveRequesitionMainCard = React.lazy(() => import('./views/LeaveManagemen
 const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
 const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal/CompletedAppraisalList'))
 const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
+const PayrollAtendanceUpdation = React.lazy(() => import('./views/Payroll/AttendanceUpdation/AttendanceUpdation'))
+const PaySlipCalculation = React.lazy(() => import('./views/Payroll/PayslipCalculation/PaySlipCalculation'))
 const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettingNew'))
+const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDeduction/EarningsDeduction'))
+
 
 const routes = [
 
@@ -414,6 +418,9 @@ const routes = [
   { path: '/Home/HRAppraisalList', exact: true, name: 'Employee Appraisal List', component: HRAppraisalList },
   { path: '/Home/ApprovedAppraisal', exact: true, name: 'Employee Appraisal List', component: CompletedAppraisal },
   { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
+  { path: '/Home/PayrollAttendance', exact: true, name: 'Attendance Updation', component: PayrollAtendanceUpdation },
+  { path: '/Home/PaySlipCalculation', exact: true, name: 'PaySlip Calculation', component: PaySlipCalculation },
+  { path: '/Home/EmpEarnDeduction', exact: true, name: 'Employee Earn Deduction', component: EmpEarnDeduction },
 ]
 
 export default routes
