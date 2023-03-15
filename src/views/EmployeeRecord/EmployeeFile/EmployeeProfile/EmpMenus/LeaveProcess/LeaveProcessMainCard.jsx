@@ -34,6 +34,7 @@ import { ToastContainer } from 'react-toastify'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import LeaveReduxFun from './Functions/LeaveReduxFun'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
+import { useCallback } from 'react'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
@@ -220,7 +221,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const { leaveData } = processedLeaveDetl
 
   //Leave Process onClick Process Button Function
-  const leaveProcessOption = async () => {
+  const leaveProcessOption = useCallback(async () => {
     setOpen(true)
     /****
      * 1-> employee is under contract or not
@@ -249,7 +250,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
     if (contractStatus.status === true) {
       // 4->
       if (processedLveDetl.newProcess === true) {
-        //new Process --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
+        //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
         // new employee data for insert to DB
         insertNewLeaveProcessData(newEmployeeProcesedData)
           .then((insertMessage) => {
@@ -351,7 +352,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setOpen(false)
       warningNofity(contractStatus.message)
     }
-  }
+  })
 
   return (
     <CustomLayout title="Leave Process">

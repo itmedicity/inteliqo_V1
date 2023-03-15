@@ -14,11 +14,13 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LeaveRequestDocModal from './LeaveRequestDocModal'
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { add, differenceInCalendarDays, format } from 'date-fns'
+import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns'
 import { getleaverequest } from 'src/views/Constant/Constant'
 import { useCallback } from 'react'
 
 import { Actiontypes } from 'src/redux/constants/action.type'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { fetchleaveInformationFun } from './Func/LeaveFunction'
 
 const SingleLeaveRequestForm = () => {
 
@@ -32,6 +34,8 @@ const SingleLeaveRequestForm = () => {
         dispatch({ type: LEAVE_REQ_DEFAULT })
     }
 
+    const [drop, setDropOpen] = useState(false)
+
     const [singleLeaveState, setSingleLeaveState] = useState({});
     const [levRequestNo, setLevRequestNo] = useState(0);
     const [open, setOpen] = useState(false);
@@ -41,14 +45,12 @@ const SingleLeaveRequestForm = () => {
     const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
-
-    // console.log(hod, incharge)
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
 
     const {
         em_no, em_id,
@@ -79,17 +81,22 @@ const SingleLeaveRequestForm = () => {
 
     const leaveRequestSubmitFun = useCallback(async () => {
 
-        let postDataLeaveDetlInform = [{
-            leaveid: levRequestNo,
-            lveDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-            caulmnth: singleLeaveType,
-            lveType: singleLeaveType,
-            status: 1,
-            levtypename: singleLeaveDesc,
-            leave: singleLeaveDesc,
-            nof_leave: totalDays,
-            singleleave: 1
-        }]
+        const dates = eachDayOfInterval({ start: new Date(fromDate), end: new Date(toDate) }).map(val => moment(val).format('YYYY-MM-DD HH:mm:ss'))
+
+        let postDataLeaveDetlInform = dates?.map((val) => {
+            return {
+                leaveid: levRequestNo,
+                lveDate: val,
+                caulmnth: singleLeaveType,
+                lveType: singleLeaveType,
+                status: 1,
+                levtypename: singleLeaveDesc,
+                leave: singleLeaveDesc,
+                nof_leave: totalDays,
+                empNo: em_no,
+                singleleave: 1
+            }
+        })
 
         let postDataForGetAttendMarking = {
             empNo: em_no,
@@ -134,6 +141,7 @@ const SingleLeaveRequestForm = () => {
                     if (reason === '') {
                         warningNofity("Reason for request is Mandatory")
                     } else {
+                        setDropOpen(true)
                         const postData = {
                             leaveid: levRequestNo,
                             em_id: em_id,
@@ -150,13 +158,16 @@ const SingleLeaveRequestForm = () => {
                                         (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                             incapprv_status:
                                 (authorization_incharge === 1 && incharge === 1) ? 1 :
-                                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                                    (hod === 1) ? 1 :
+                                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                             inc_apprv_cmnt:
                                 (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                                    (hod === 1) ? "DIRECT" :
+                                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
                             inc_apprv_time:
                                 (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                                    (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                             hod_apprv_req:
                                 (authorization_hod === 1 && hod === 1) ? 1 :
                                     (authorization_hod === 1 && hod === 0) ? 1 :
@@ -173,7 +184,8 @@ const SingleLeaveRequestForm = () => {
                             hr_aprrv_requ: 1,
                             ceo_req_status: empHodStat === 1 ? 1 : 0,
                             resonforleave: reason,
-                            no_of_leave: numberOfDays
+                            no_of_leave: numberOfDays,
+                            singleLeave: 1
                         }
 
                         // insert the single leave request 
@@ -184,14 +196,22 @@ const SingleLeaveRequestForm = () => {
                             const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDataLeaveDetlInform);
                             const { success, message } = await insertDetlTable.data;
                             if (success === 1) {
+                                setDropOpen(false)
                                 succesNofity(message);
                                 changeForm()
+                                fetchleaveInformationFun(dispatch, em_id)
                             } else {
-                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                setDropOpen(false)
+                                warningNofity(`${JSON.stringify(message)}`)
                                 changeForm()
                             }
+                        } else if (success === 2) {
+                            setDropOpen(false)
+                            warningNofity(message)
+                            changeForm()
                         } else {
-                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                            setDropOpen(false)
+                            warningNofity(`${JSON.stringify(message)}`)
                             changeForm()
                         }
                     }
@@ -200,13 +220,14 @@ const SingleLeaveRequestForm = () => {
                 warningNofity("Allowed Leave is Not Enough For This Leave Request")
             }
         }
-    }, [CommonLeaveType, em_no, fromDate, toDate, reason, singleLeaveState])
+    }, [CommonLeaveType, em_no, fromDate, toDate, reason, singleLeaveState, hod, incharge, authorization_incharge, authorization_hod])
 
     return (
         <Paper
             variant="outlined"
             sx={{ display: "flex", flex: 1, p: 0.5, mb: 0.5, alignItems: 'center', backgroundColor: '#EBEDEF', flexDirection: 'column' }}
         >
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <Box
                 sx={{ display: 'flex', flex: 1, width: '100%', my: 0.3 }}
                 component={Grid}

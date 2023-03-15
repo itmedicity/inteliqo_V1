@@ -9,7 +9,6 @@ import { FormControl, MenuItem, Select } from '@mui/material';
 
 const HalfDayCasualLeaveOption = ({ disable, handleChange, value }) => {
     const [casualLeve, setCasualLeave] = useState([]);
-    const [name, setName] = useState('')
 
     const casulLeves = useSelector((state) => state.getCreditedCasualLeave, _.isEqual);
     const casualLve = useMemo(() => casulLeves, [casulLeves])
@@ -19,7 +18,6 @@ const HalfDayCasualLeaveOption = ({ disable, handleChange, value }) => {
         setCasualLeave(casualLeave);
     }, [casualLve])
 
-    console.log(name)
     return (
         <FormControl
             fullWidth={true}
@@ -36,12 +34,14 @@ const HalfDayCasualLeaveOption = ({ disable, handleChange, value }) => {
                 disabled={disable}
                 value={value}
                 onChange={handleChange}
-                name={name}
             >
                 <MenuItem value={0} disabled>Select Leave Name</MenuItem>
                 {
                     casualLeve?.map((val, index) => {
-                        return <MenuItem value={val.hrm_cl_slno} key={index} onClick={() => setName(val.cl_lv_mnth)} >{`${val.cl_lv_mnth} - ${val.cl_bal_leave}`}</MenuItem>
+                        return <MenuItem
+                            value={val.hrm_cl_slno}
+                            key={index}
+                            disabled={val.hl_lv_tkn_status === 1 ? true : false} >{`${val.cl_lv_mnth} - ${val.cl_bal_leave}`}</MenuItem>
                     })
                 }
             </Select>

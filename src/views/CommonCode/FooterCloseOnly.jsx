@@ -1,31 +1,24 @@
 import React from 'react'
-import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
-import { IconButton } from '@mui/material';
-// import { MdOutlineAddTask } from 'react-icons/md'
-import Chip from '@mui/material/Chip'
+import { Box } from '@mui/material';
+import { memo } from 'react';
+import { Button, CssVarsProvider } from '@mui/joy';
+import CloseIcon from '@mui/icons-material/Close';
 
 const FooterCloseOnly = (props) => {
     return (
-        <div className="col-md-2 col-lg-1 d-flex flex-row justify-content-md-between">
-            <div style={{ marginRight: "0.5rem" }}>
-                <Chip
-                    icon={
-                        <IconButton className="p-1" >
-                            <WrongLocationOutlinedIcon className="text-info" size={22} />
-                        </IconButton>
-                    }
-                    label="Close"
+        <Box sx={{ display: "flex" }} >
+            <CssVarsProvider>
+                <Button
+                    aria-label="Like"
+                    variant="outlined"
+                    color="danger"
                     onClick={props.redirect}
-                    clickable={true}
-                    sx={{
-                        minWidth: '100%',
-                        maxWidth: '105%',
-                        width: '105%'
-                    }}
-                />
-            </div>
-        </div>
+                >
+                    <CloseIcon />
+                </Button>
+            </CssVarsProvider>
+        </Box>
     )
 }
 
-export default FooterCloseOnly
+export default memo(FooterCloseOnly) 

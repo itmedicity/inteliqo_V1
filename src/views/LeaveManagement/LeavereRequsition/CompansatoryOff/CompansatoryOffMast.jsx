@@ -60,12 +60,12 @@ const CompansatoryOffMast = () => {
 
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel[0]
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel;
 
     const {
         em_no, em_id,
@@ -213,13 +213,16 @@ const CompansatoryOffMast = () => {
                                 (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                     incapprv_status:
                         (authorization_incharge === 1 && incharge === 1) ? 1 :
-                            (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                            (hod === 1) ? 1 :
+                                (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                     inc_apprv_cmnt:
                         (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                            (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                            (hod === 1) ? "DIRECT" :
+                                (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
                     inc_apprv_time:
                         (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                            (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                            (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                     hod_apprv_req:
                         (authorization_hod === 1 && hod === 1) ? 1 :
                             (authorization_hod === 1 && hod === 0) ? 1 :
@@ -296,7 +299,7 @@ const CompansatoryOffMast = () => {
                             onChange={handleChangeCoffType}
                         >
                             <MenuItem value={0} disabled>Select Request Type</MenuItem>
-                            <MenuItem value={1} >Covert Over Time To COFF</MenuItem>
+                            {/* <MenuItem value={1} >Covert Over Time To COFF</MenuItem> */}
                             <MenuItem value={2} >Compansatory Off Day</MenuItem>
                         </Select>
                     </FormControl>

@@ -54,6 +54,7 @@ const EarnLeaveSelected = ({ handleChange, index, date }) => {
                     return <option
                         key={index}
                         value={val.hrm_ernlv_slno}
+                        disabled={val.hl_lv_tkn_status === 1 ? true : false}
                     >
                         {val.ernlv_mnth}
                     </option>

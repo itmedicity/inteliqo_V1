@@ -176,6 +176,7 @@ const reducer = combineReducers({
     getCreditedEarnLeave,
     getDutyPlannedShift,
     leaveRequestSelectedEmployee,
+    // resetSelectedBoxCounter,
     getLeaveType
 })
 
