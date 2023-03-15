@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     getCommonLeaveData, getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    getCreitedCompansatoryOffLeave, getCreditedEarnLeave
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
 } from 'src/redux/actions/LeaveReqst.action';
 import { getannualleave } from 'src/redux/actions/Profile.action';
 import _ from 'underscore';

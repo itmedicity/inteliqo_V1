@@ -13,6 +13,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { differenceInCalendarDays } from 'date-fns'
 import _ from 'underscore'
+import { useEffect } from 'react'
 
 const SingleLeaveRequestForm = lazy(() => import('./SingleLeaveRequestForm'));
 const MultiLeaveRequestForm = lazy(() => import('./MultiLeaveRequestForm'));
@@ -38,21 +39,68 @@ const LeaveRequestForm = () => {
         setSgleCheck(e.target.checked)
     })
 
-    // console.log(singleLeveTypeCheck)
+    //for hide the single and multiple leave request form while checking the check box
+    useEffect(() => {
+        if (singleLeveTypeCheck === false || singleLeveTypeCheck === true) {
+            setRequestFom(0)
+        }
+    }, [singleLeveTypeCheck, dateCheckBox])
+
     const leaveRequestSubmitFun = useCallback(async () => {
 
-        if (singleLeveTypeCheck === true) {
-            // console.log('single leaves')
-            if (commnLevType === 0) {
-                warningNofity("Please Select The Leave Type")
+        if (fromDate > toDate && dateCheckBox === true) {
+            warningNofity("To Date Should be Greater Than From Date")
+        } else {
+
+            if (singleLeveTypeCheck === true) {
+                // console.log('single leaves')
+                if (commnLevType === 0) {
+                    warningNofity("Please Select The Leave Type")
+                } else {
+                    setRequestFom(true)
+                    //single Leave type Leave Selection
+                    if (dateCheckBox === true) {
+                        //Single Date Selected
+
+                        let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                        let postFormDataDbleDate = {
+                            dateRangeCheck: dateCheckBox,
+                            fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                            toDate: moment(toDate).format('YYYY-MM-DD'),
+                            singleLevCheck: singleLeveTypeCheck,
+                            singleLeaveType: commnLevType,
+                            singleLeaveDesc: commnLevDesc,
+                            totalDays: totalDays + 1,
+                            formSubmit: true
+                        }
+
+                        dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataDbleDate })
+                    } else {
+                        let totalDays = differenceInCalendarDays(new Date(fromDate), new Date(fromDate))
+                        //Date Rage selected
+                        let postFormDataSgleDate = {
+                            dateRangeCheck: dateCheckBox,
+                            fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                            toDate: moment(fromDate).format('YYYY-MM-DD'),
+                            singleLevCheck: singleLeveTypeCheck,
+                            singleLeaveType: commnLevType,
+                            singleLeaveDesc: commnLevDesc,
+                            totalDays: totalDays + 1,
+                            formSubmit: true
+                        }
+
+                        dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
+                    }
+
+                }
             } else {
-                setRequestFom(true)
-                //single Leave type Leave Selection
+                setRequestFom(false)
+                // console.log('multi leave ')
+                //Not a single Leave type Leave Selection
                 if (dateCheckBox === true) {
                     //Single Date Selected
-
                     let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
-                    let postFormDataDbleDate = {
+                    let postFormDataSgleDate = {
                         dateRangeCheck: dateCheckBox,
                         fromDate: moment(fromDate).format('YYYY-MM-DD'),
                         toDate: moment(toDate).format('YYYY-MM-DD'),
@@ -63,10 +111,10 @@ const LeaveRequestForm = () => {
                         formSubmit: true
                     }
 
-                    dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataDbleDate })
+                    dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
                 } else {
-                    let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
                     //Date Rage selected
+                    let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
                     let postFormDataSgleDate = {
                         dateRangeCheck: dateCheckBox,
                         fromDate: moment(fromDate).format('YYYY-MM-DD'),
@@ -80,44 +128,9 @@ const LeaveRequestForm = () => {
 
                     dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
                 }
-
-            }
-        } else {
-            setRequestFom(false)
-            // console.log('multi leave ')
-            //Not a single Leave type Leave Selection
-            if (dateCheckBox === true) {
-                //Single Date Selected
-                let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
-                let postFormDataSgleDate = {
-                    dateRangeCheck: dateCheckBox,
-                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                    toDate: moment(toDate).format('YYYY-MM-DD'),
-                    singleLevCheck: singleLeveTypeCheck,
-                    singleLeaveType: commnLevType,
-                    singleLeaveDesc: commnLevDesc,
-                    totalDays: totalDays + 1,
-                    formSubmit: true
-                }
-
-                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
-            } else {
-                //Date Rage selected
-                let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
-                let postFormDataSgleDate = {
-                    dateRangeCheck: dateCheckBox,
-                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                    toDate: moment(fromDate).format('YYYY-MM-DD'),
-                    singleLevCheck: singleLeveTypeCheck,
-                    singleLeaveType: commnLevType,
-                    singleLeaveDesc: commnLevDesc,
-                    totalDays: totalDays + 1,
-                    formSubmit: true
-                }
-
-                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
             }
         }
+
 
     }, [fromDate, toDate, singleLeveTypeCheck, commnLevType, dateCheckBox])
 

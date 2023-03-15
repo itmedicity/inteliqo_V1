@@ -60,7 +60,8 @@ const HolidayLeaveSelected = ({ handleChange, index, date }) => {
                 holiday?.map((val, index) => {
                     return <option
                         key={index}
-                        value={val.hd_slno}
+                        value={val.hrm_hl_slno}
+                        disabled={val.hl_lv_tkn_status === 1 ? true : false}
                     >
                         {val.hld_desc}
                     </option>

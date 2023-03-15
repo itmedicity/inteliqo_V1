@@ -95,9 +95,9 @@ export const getEmployeeApprovalLevel = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/common/getapproval/levels/${id}`);
     const { success, data } = result.data;
     if (success === 1) {
-        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: data })
+        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: data[0] })
     } else {
-        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: [] })
+        dispatch({ type: GET_EMPLOYEE_APPROVAL_LEVEL, payload: {} })
     }
 }
 

@@ -161,12 +161,12 @@ export const getEmployeeInformationState = (state = employeeInfomState, { type, 
     }
 }
 
-const employeeApprovalLevel = []
+const employeeApprovalLevel = {}
 
 export const getEmployeeApprovalLevel = (state = employeeApprovalLevel, { type, payload }) => {
     switch (type) {
         case GET_EMPLOYEE_APPROVAL_LEVEL:
-            return [...state, payload[0]]
+            return { ...state, payload }
         default:
             return state
     }
