@@ -114,7 +114,11 @@ export const getleaverequestget = async (getDeptSection) => {
                 hrreq: val.hr_aprrv_requ,
                 increq: val.inc_apprv_req,
                 incaprv: val.incapprv_status,
-                longleave_spclleave: val.longleave_spclleave
+                longleave_spclleave: val.longleave_spclleave,
+                inStatus: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0) ? 'CEO Approval Pending' : 'Approved'
             }
             return data1
         })
@@ -148,7 +152,11 @@ export const getnopunchrequst = async (getDeptSection) => {
                 hr_apprv: val.np_hr_apprv_status,
                 hrreq: val.np_hr_aprrv_requ,
                 increq: val.np_inc_apprv_req,
-                incaprv: val.np_incapprv_status
+                incaprv: val.np_incapprv_status,
+                inStatus: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0) ? 'CEO Approval Pending' : 'Approved'
             }
             return data2
         })
@@ -183,7 +191,11 @@ export const halfdayrequest = async (getDeptSection) => {
                 hr_apprv: val.hf_hr_apprv_status,
                 hrreq: val.hf_hr_aprrv_requ,
                 increq: val.hf_inc_apprv_req,
-                incaprv: val.hf_incapprv_status
+                incaprv: val.hf_incapprv_status,
+                inStatus: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0) ? 'CEO Approval Pending' : 'Approved'
             }
             return data3
         })
@@ -216,7 +228,11 @@ export const compensatory = async (getDeptSection) => {
                 hr_apprv: val.cf_hr_apprv_status,
                 hrreq: val.cf_hr_aprrv_requ,
                 increq: val.cf_inc_apprv_req,
-                incaprv: val.cf_incapprv_status
+                incaprv: val.cf_incapprv_status,
+                inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'CEO Approval Pending' : 'Approved'
             }
             return data4
         })
@@ -248,7 +264,11 @@ export const ceoLeavereq = async () => {
                 hrreq: val.hr_aprrv_requ,
                 increq: val.inc_apprv_req,
                 incaprv: val.incapprv_status,
-                longleave_spclleave: val.longleave_spclleave
+                longleave_spclleave: val.longleave_spclleave,
+                inStatus: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0) ? 'CEO Approval Pending' : 'Approved'
             }
             return data4
         })
@@ -280,7 +300,12 @@ export const HrLeave = async () => {
                 hrreq: val.hr_aprrv_requ,
                 increq: val.inc_apprv_req,
                 incaprv: val.incapprv_status,
-                longleave_spclleave: val.longleave_spclleave
+                longleave_spclleave: val.longleave_spclleave,
+                inStatus: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0) ? 'HR Approval Pending' :
+                                'Approved'
             }
             return data4
         })
@@ -313,7 +338,11 @@ export const CEohalfdayrequest = async () => {
                 hr_apprv: val.hf_hr_apprv_status,
                 hrreq: val.hf_hr_aprrv_requ,
                 increq: val.hf_inc_apprv_req,
-                incaprv: val.hf_incapprv_status
+                incaprv: val.hf_incapprv_status,
+                inStatus: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data3
         })
@@ -344,7 +373,11 @@ export const Hrhalfdayrequest = async () => {
                 hr_apprv: val.hf_hr_apprv_status,
                 hrreq: val.hf_hr_aprrv_requ,
                 increq: val.hf_inc_apprv_req,
-                incaprv: val.hf_incapprv_status
+                incaprv: val.hf_incapprv_status,
+                inStatus: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data3
         })
@@ -376,7 +409,11 @@ export const getCEOnopunchrequst = async () => {
                 hr_apprv: val.np_hr_apprv_status,
                 hrreq: val.np_hr_aprrv_requ,
                 increq: val.np_inc_apprv_req,
-                incaprv: val.np_incapprv_status
+                incaprv: val.np_incapprv_status,
+                inStatus: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data2
         })
@@ -409,7 +446,11 @@ export const getHRnopunchrequst = async () => {
                 hr_apprv: val.np_hr_apprv_status,
                 hrreq: val.np_hr_aprrv_requ,
                 increq: val.np_inc_apprv_req,
-                incaprv: val.np_incapprv_status
+                incaprv: val.np_incapprv_status,
+                inStatus: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data2
         })
@@ -443,7 +484,11 @@ export const compensatoryCeo = async (getDeptSection) => {
                 hr_apprv: val.cf_hr_apprv_status,
                 hrreq: val.cf_hr_aprrv_requ,
                 increq: val.cf_inc_apprv_req,
-                incaprv: val.cf_incapprv_status
+                incaprv: val.cf_incapprv_status,
+                inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data4
         })
@@ -476,7 +521,11 @@ export const compensatoryHr = async () => {
                 hr_apprv: val.cf_hr_apprv_status,
                 hrreq: val.cf_hr_aprrv_requ,
                 increq: val.cf_inc_apprv_req,
-                incaprv: val.cf_incapprv_status
+                incaprv: val.cf_incapprv_status,
+                inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
             }
             return data4
         })
@@ -496,4 +545,122 @@ export const getDayDiffrence = (x, y) => {
     }
     return 0;
 }
+
+
+export const getAll = async (DeptSect) => {
+    const result = await axioslogin.post('/LeaveRequestApproval/Allreq/list', DeptSect)
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: val.reqtype,
+                SlNo: val.ROW_NUM,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.sect_name,
+                dept_section: val.sect_name,
+                inStatus: val.typename,
+                increq: val.increq,
+                incaprv: val.incaprv
+                // inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                //         (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        return []
+    }
+}
+
+export const getAllHod = async (DeptSect) => {
+    const result = await axioslogin.post('/LeaveRequestApproval/allHod/list', DeptSect)
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: val.reqtype,
+                SlNo: val.ROW_NUM,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.sect_name,
+                dept_section: val.sect_name,
+                inStatus: val.typename,
+                hod_req: val.hod_req,
+                hodaprv: val.hodaprv
+                // inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                //         (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        return []
+    }
+}
+export const getAllCeo = async (DeptSect) => {
+    const result = await axioslogin.post('/LeaveRequestApproval/allceo/list')
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: val.reqtype,
+                SlNo: val.ROW_NUM,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.sect_name,
+                dept_section: val.sect_name,
+                inStatus: val.typename,
+                ceo_req: val.ceo_req,
+                ceo_apprv: val.ceo_apprv
+                // inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                //         (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        return []
+    }
+}
+
+export const getAllHr = async (DeptSect) => {
+    const result = await axioslogin.post('/LeaveRequestApproval/allHr/list',)
+    const { success, data } = result.data;
+    if (success === 1) {
+        const compensatory = data.map((val) => {
+            const data4 = {
+                req_type: val.reqtype,
+                SlNo: val.ROW_NUM,
+                Emp_no: val.em_no,
+                Employee_name: val.em_name,
+                Department_section: val.sect_name,
+                dept_section: val.sect_name,
+                inStatus: val.typename,
+                hrreq: val.hrreq,
+                hr_apprv: val.hr_apprv
+                // inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                //         (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved'
+            }
+            return data4
+        })
+        return compensatory
+    }
+    else {
+        return []
+    }
+}
+
+
 
