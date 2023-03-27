@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState, } from 'react'
+import React, { Fragment, useEffect, useState, } from 'react'
 import { useHistory } from 'react-router'
 import { ceoLeavereq, getleaverequest, CEohalfdayrequest, getCEOnopunchrequst, compensatoryCeo, getAllCeo } from 'src/views/CommonCode/Commonfunc';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
@@ -10,11 +10,10 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { format } from 'date-fns';
 import LeavRqModel from '../LeaveCommonComponent/LeavRqModel'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel'
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel'
 import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel'
-import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
 import _ from 'underscore';
 
 const ApprovalCEO = () => {

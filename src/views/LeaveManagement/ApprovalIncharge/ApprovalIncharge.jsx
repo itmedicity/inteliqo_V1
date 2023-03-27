@@ -22,7 +22,7 @@ const ApprovalIncharge = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
-    const [allData, setalldata] = useState([])
+    const [allData, setalldata] = useState([]);//list of all data 
     const [leaverequesttype, setleaverequesttype] = useState([]);//leave type list
     const [deptSect, setDeptSect] = useState(0)
     const [DeptSect, updateDeptSect] = useState([])
@@ -63,18 +63,17 @@ const ApprovalIncharge = () => {
         NOP: false,
     })
     const { COFF, HDLR, LR, NOP } = levtpevaluearry
-    const [leaveremastdata, setleavereqmastdata] =
-        useState([
-            {
-                emno: '',
-                leave_date: '',
-                leavetodate: '',
-                nodays: '',
-                reqtype: '',
-                lve_uniq_no: '',
-                leave_reason: ''
-            }
-        ])
+    const [leaveremastdata, setleavereqmastdata] = useState([
+        {
+            emno: '',
+            leave_date: '',
+            leavetodate: '',
+            nodays: '',
+            reqtype: '',
+            lve_uniq_no: '',
+            leave_reason: ''
+        }
+    ])
 
     // to set reqtype 
     const [reqtype, setreqtype] = useState([])
@@ -115,12 +114,12 @@ const ApprovalIncharge = () => {
         if (arraydepsect.length !== 0) {
             dispatch(getlevedata(arraydepsect))
 
-            //get leave request databse data
+            //get leave request database data
             getleaverequestget(arraydepsect).then((val) => {
                 setleavereqst(val)
                 setmastleavereqst(val)
             })
-            //no punch request databse data
+            //no punch request database data
             getnopunchrequst(arraydepsect).then((val) => {
                 setmastnopunch(val)
                 setnopunch(val)
@@ -140,7 +139,8 @@ const ApprovalIncharge = () => {
                 setalldata(val)
             })
         }
-    }, [DeptSect, count]);
+        dispatch(getlevedata(arraydepsect))
+    }, [DeptSect, count, dispatch]);
 
 
 
@@ -203,7 +203,8 @@ const ApprovalIncharge = () => {
             })
             setDeptCoff(filtercompen)
         }
-    }, [deptSect, levtpevalue, leavereq, halfday, nopunch, compensetory])
+    }, [deptSect, levtpevalue, leavereq, halfday, nopunch, compensetory, leavereqmast,
+        halfdaymast, nopunchmast, compensetorymast])
 
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'SlNo', filter: true, minWidth: 100 },
@@ -270,6 +271,7 @@ const ApprovalIncharge = () => {
                 sethalfdata(data)
             }
             setOpenhalf(true)
+            // if leave request type is no punch
         } else if (req_type === 3) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
             const { success, data } = result.data;
@@ -277,7 +279,7 @@ const ApprovalIncharge = () => {
                 setnopunch(data)
             }
             setOpennopunch(true)
-        }
+        }// if leave request type is compansatory leave
         else if (req_type === 4) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/com/compensatory/compensatoryoffdata/${SlNo}`)
             const { success, data } = result.data;
