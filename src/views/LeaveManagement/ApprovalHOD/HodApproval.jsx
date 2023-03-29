@@ -1,39 +1,45 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { useHistory } from 'react-router'
-import { Checkbox, Typography } from '@mui/joy'
-import { compensatory, getAll, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
-import { useDispatch, useSelector } from 'react-redux'
-import { getlevedata } from '../../../redux/actions/LeaveReqst.action'
-import { memo } from 'react'
+import { CssVarsProvider, Typography, Checkbox } from '@mui/joy'
 import { Box, IconButton, Paper, Tooltip } from '@mui/material'
-import { CssVarsProvider } from '@mui/joy'
-import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection'
+import React, { Fragment, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { compensatory, getAllHod, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc'
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { axioslogin } from 'src/views/Axios/Axios'
+import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { axioslogin } from 'src/views/Axios/Axios'
 import { format } from 'date-fns';
 import LeavRqModel from '../LeaveCommonComponent/LeavRqModel'
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel'
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel'
 import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel'
+import { useSelector } from 'react-redux'
 
-const ApprovalIncharge = () => {
+const HodApproval = () => {
     const history = useHistory()
-    const dispatch = useDispatch()
 
-    const [allData, setalldata] = useState([]);//list of all data 
-    const [leaverequesttype, setleaverequesttype] = useState([]);//leave type list
+    const [allData, setalldata] = useState([])
     const [deptSect, setDeptSect] = useState(0)
     const [DeptSect, updateDeptSect] = useState([])
 
-    // for get leave requesst details
+    const [leaverequesttype, setleaverequesttype] = useState([]);
+    const [levtpevalue, setleavetypevalue] = useState([])
     const [leavereqstAll, setLeavRqstAll] = useState([])
     const [leavereq, setleavereqst] = useState([])
     const [leavereqmast, setmastleavereqst] = useState([])
     const [deptlvRqst, setDptlvRqst] = useState([])
-    const [levtpevalue, setleavetypevalue] = useState([])
     const [leavestatedetail, setleavestatedetails] = useState([])
+
+    const [levtpevaluearry, setleavetypevaluearry] = useState({
+        COFF: false,
+        HDLR: false,
+        LR: false,
+        NOP: false,
+    })
+    const { COFF, HDLR, LR, NOP } = levtpevaluearry
+
+    const [reqtype, setreqtype] = useState([])
+
     // get halfdayrequest
     const [halfday, sethalfday] = useState([])
     const [halfdaymast, setmasthalfday] = useState([])
@@ -54,15 +60,6 @@ const ApprovalIncharge = () => {
     const [deptCoff, setDeptCoff] = useState([])
     const [comoffsetdata, setcomoff] = useState([])
 
-    // to get the ype leave request
-
-    const [levtpevaluearry, setleavetypevaluearry] = useState({
-        COFF: false,
-        HDLR: false,
-        LR: false,
-        NOP: false,
-    })
-    const { COFF, HDLR, LR, NOP } = levtpevaluearry
     const [leaveremastdata, setleavereqmastdata] = useState([
         {
             emno: '',
@@ -75,15 +72,15 @@ const ApprovalIncharge = () => {
         }
     ])
 
-    // to set reqtype 
-    const [reqtype, setreqtype] = useState([])
-    const [count, setcount] = useState(0)
-
     const [openleave, setOpenleave] = useState(false);
     const [opennopunch, setOpennopunch] = useState(false);
     const [opencompen, setOpencompen] = useState(false);
     const [openhalf, setOpenhalf] = useState(false);
+    const [count, setcount] = useState(0)
 
+    const RedirectToProfilePage = () => {
+        history.push(`/Home`)
+    }
 
     const em_id = useSelector((state) => {
         return state?.getProfileData?.ProfileData[0]?.em_id ?? 0;
@@ -102,72 +99,35 @@ const ApprovalIncharge = () => {
         setleavetypevalue(e.target.value)
     }
 
-    const RedirectToProfilePage = () => {
-        history.push(`/Home`)
-    }
-
     useEffect(() => {
-        getleaverequest().then((val) => {
-            setleaverequesttype(val)
-        })
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
         if (arraydepsect.length !== 0) {
-            dispatch(getlevedata(arraydepsect))
-
-            //get leave request database data
+            //dispatch(getHighLevelData(arraydepsect))
             getleaverequestget(arraydepsect).then((val) => {
                 setleavereqst(val)
                 setmastleavereqst(val)
             })
-            //no punch request database data
+            getleaverequest(arraydepsect).then((val) => {
+                setleaverequesttype(val)
+            })
             getnopunchrequst(arraydepsect).then((val) => {
                 setmastnopunch(val)
                 setnopunch(val)
             })
-            //half day request employees
             halfdayrequest(arraydepsect).then((val) => {
                 sethalfday(val)
                 setmasthalfday(val)
             })
-            //compensatory request employees from database
             compensatory(arraydepsect).then((val) => {
                 setcompensetory(val)
                 setmastcompensetory(val)
             })
-            setcount(0)
-            getAll(arraydepsect).then((val) => {
+            getAllHod(arraydepsect).then((val) => {
                 setalldata(val)
             })
+            setcount(0)
         }
-        dispatch(getlevedata(arraydepsect))
-    }, [DeptSect, count, dispatch]);
-
-
-
-    // const handleChange = async (e) => {
-    // depsection change filter based on dept section leave request
-    // const filterleavereq = await leavereqmast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setleavereqst(filterleavereq)
-    // // depsection change filter based on dept section no punch
-    // const filternopunch = await nopunchmast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setnopunch(filternopunch)
-    // // depsection change filter based on dept section halfday
-    // const filterhalfday = await halfdaymast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // sethalfday(filterhalfday)
-    // // depsection change filter based on dept section setcompensetory
-    // const filtercompen = await compensetorymast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setcompensetory(filtercompen)
-    //  }
-
-
+    }, [DeptSect, count]);
 
     useEffect(() => {
         if (levtpevalue === '1' && deptSect === 0) {
@@ -203,8 +163,7 @@ const ApprovalIncharge = () => {
             })
             setDeptCoff(filtercompen)
         }
-    }, [deptSect, levtpevalue, leavereq, halfday, nopunch, compensetory, leavereqmast,
-        halfdaymast, nopunchmast, compensetorymast])
+    }, [deptSect, levtpevalue, leavereq, halfday, nopunch, compensetory])
 
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'SlNo', filter: true, minWidth: 100 },
@@ -215,9 +174,9 @@ const ApprovalIncharge = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.incaprv === 1 || params.data.incaprv === 2) {
+                if (params.data.hodaprv === 1 || params.data.hodaprv === 2) {
                     return <IconButton
-                        sx={{ paddingY: 0.5 }} >
+                        sx={{ paddingY: 0.5 }}  >
                         <CheckCircleOutlineIcon />
                     </IconButton>
                 } else {
@@ -263,7 +222,7 @@ const ApprovalIncharge = () => {
                 }
                 setOpenleave(true)
             }
-        } // if leave request type is half day 
+        }
         else if (req_type === 2) {
             const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${SlNo}`)
             const { success, data } = result.data;
@@ -271,15 +230,15 @@ const ApprovalIncharge = () => {
                 sethalfdata(data)
             }
             setOpenhalf(true)
-            // if leave request type is no punch
-        } else if (req_type === 3) {
+        }
+        else if (req_type === 3) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setnopunch(data)
             }
             setOpennopunch(true)
-        }// if leave request type is compansatory leave
+        }
         else if (req_type === 4) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/com/compensatory/compensatoryoffdata/${SlNo}`)
             const { success, data } = result.data;
@@ -289,6 +248,7 @@ const ApprovalIncharge = () => {
             setOpencompen(true);
         }
     }
+
     const handleClose = () => {
         setOpenleave(false);
         setOpennopunch(false);
@@ -299,13 +259,14 @@ const ApprovalIncharge = () => {
     return (
         <Fragment>
             {
-                reqtype === 1 ? <LeavRqModel open={openleave} handleClose={handleClose} DeptSect={DeptSect} leaveremastdata={leaveremastdata} leavestatedetail={leavestatedetail} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                    : reqtype === 2 ? <HaldayRqModel open={openhalf} handleClose={handleClose} hafdaydata={hafdaydata} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} handleClose={handleClose} hafdaydata={nopunch} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                            : reqtype === 4 ? <CompOffRqModel open={opencompen} handleClose={handleClose} hafdaydata={comoffsetdata} authority={1} em_id={em_id} count={count} setcount={setcount} /> : null
+                reqtype === 1 ? <LeavRqModel open={openleave} handleClose={handleClose} DeptSect={DeptSect} leaveremastdata={leaveremastdata} leavestatedetail={leavestatedetail} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                    : reqtype === 2 ? <HaldayRqModel open={openhalf} handleClose={handleClose} hafdaydata={hafdaydata} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} handleClose={handleClose} hafdaydata={nopunch} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                            : reqtype === 4 ? <CompOffRqModel open={opencompen} handleClose={handleClose} hafdaydata={comoffsetdata} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                                : null
             }
             <PageLayoutCloseOnly
-                heading="Leave Approval Incharge"
+                heading="Leave Approval HOD"
                 redirect={RedirectToProfilePage}
             >
                 <Paper variant="outlined" square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center' }} >
@@ -359,7 +320,5 @@ const ApprovalIncharge = () => {
         </Fragment >
     )
 }
-export default memo(ApprovalIncharge)
 
-
-
+export default HodApproval
