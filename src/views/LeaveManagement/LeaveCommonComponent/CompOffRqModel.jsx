@@ -64,27 +64,61 @@ const CompOffRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setco
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/HodApprvlcoff', sumbcompens)
-            const { success, message } = result.data
+            const result = await axioslogin.get(`/LeaveRequestApproval/leave/com/compensatory/compensatoryoffdata/${hafdaydata[0].cmp_off_reqid}`)
+            const { success, data } = result.data;
             if (success === 1) {
+                const { cf_inc_apprv_req, cf_incapprv_status } = data[0]
+                if (cf_inc_apprv_req === 1 && cf_incapprv_status === 0) {
+                    const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvcoff', sumbcompens)
+                    const { success } = result.data
+                    if (success === 1) {
+                        const result = await axioslogin.patch('./LeaveRequestApproval/HodApprvlcoff', sumbcompens)
+                        const { success, message } = result.data
+                        if (success === 1) {
 
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+                            const ob1 = {
+                                apprv: false,
+                                reject: false
 
+                            }
+                            setstatus(ob1)
+                            setreason('')
+                            setcount(count + 1)
+                            succesNofity(message)
+                            handleClose()
+                        }
+                        else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    const result = await axioslogin.patch('./LeaveRequestApproval/HodApprvlcoff', sumbcompens)
+                    const { success, message } = result.data
+                    if (success === 1) {
+
+                        const ob1 = {
+                            apprv: false,
+                            reject: false
+
+                        }
+                        setstatus(ob1)
+                        setreason('')
+                        setcount(count + 1)
+                        succesNofity(message)
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                succesNofity(message)
-                handleClose()
             }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
+
         }
         else if (authority === 3) {
             const result = await axioslogin.patch('./LeaveRequestApproval/Ceocoff', sumbcompens)

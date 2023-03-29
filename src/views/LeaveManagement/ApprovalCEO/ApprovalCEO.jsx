@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, } from 'react'
 import { useHistory } from 'react-router'
-import { ceoLeavereq, getleaverequest, CEohalfdayrequest, getCEOnopunchrequst, compensatoryCeo, getAllCeo } from 'src/views/CommonCode/Commonfunc';
+import { ceoLeavereq, getleaverequest, CEohalfdayrequest, getCEOnopunchrequst, compensatoryCeo, getAllCeo, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
 import { Box, IconButton, Paper, Tooltip } from '@mui/material';
 import { Checkbox, CssVarsProvider, Typography } from '@mui/joy';
@@ -140,13 +140,31 @@ const ApprovalCEO = () => {
             })
             setDeptCoff(filtercompen)
         } else if (levtpevalue === '1' && deptsect === 0) {
-            setLeavRqstAll(leavereq)
+            if (Object.keys(leavereq).length > 0) {
+                setLeavRqstAll(leavereq)
+            } else {
+                infoNofity("No Leave request pending!!")
+            }
+
         } else if (levtpevalue === '2' && deptsect === 0) {
-            setHalfdayAll(halfday)
+            if (Object.keys(halfday).length > 0) {
+                setHalfdayAll(halfday)
+            } else {
+                infoNofity("No Leave request pending!!")
+            }
         } else if (levtpevalue === '3' && deptsect === 0) {
-            setnopunchall(nopunch)
+            if (Object.keys(nopunch).length > 0) {
+                setnopunchall(nopunch)
+            } else {
+                infoNofity("No Leave request pending!!")
+            }
+
         } else if (levtpevalue === '4' && deptsect === 0) {
-            setCoffAll(compensetory)
+            if (Object.keys(compensetory).length > 0) {
+                setCoffAll(compensetory)
+            } else {
+                infoNofity("No Leave request pending!!")
+            }
         }
     }, [deptsect, levtpevalue, leavereq, halfday, nopunch, compensetory,])
 

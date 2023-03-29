@@ -70,26 +70,59 @@ const LeavRqModel = ({ open, handleClose, leaveremastdata, leavestatedetail, aut
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
-            const { success, message } = result.data;
+            const result = await axioslogin.get(`/LeaveRequestApproval/${leave_slno}`)
+            const { success, data } = result.data;
             if (success === 1) {
-                succesNofity(message)
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+                const { inc_apprv_req, incapprv_status } = data[0]
+                if (inc_apprv_req === 1 && incapprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', postleavedata)
+                    const { success } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            succesNofity(message)
+                            const ob1 = {
+                                apprv: false,
+                                reject: false
 
+                            }
+                            setstatus(ob1)
+                            setreason('')
+                            setcount(count + 1)
+                            handleClose()
+
+                        } else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        const ob1 = {
+                            apprv: false,
+                            reject: false
+
+                        }
+                        setstatus(ob1)
+                        setreason('')
+                        setcount(count + 1)
+                        handleClose()
+
+                    } else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                handleClose()
+            }
 
-            } else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
         }
         else if (authority === 3) {
             const result = await axioslogin.patch('/LeaveRequestApproval/CeoApprvLeave', postleavedata)
@@ -113,42 +146,301 @@ const LeavRqModel = ({ open, handleClose, leaveremastdata, leavestatedetail, aut
                 errorNofity(message)
             }
         } else if (authority === 4) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+
+            const result = await axioslogin.get(`/LeaveRequestApproval/${leave_slno}`)
             const { success, data, message } = result.data;
             if (success === 1) {
-                const post = data.map((val) => {
-                    const postData = {
-                        date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
-                        req_type: 'LV',
-                        leave: val.leave_typeid,
-                        leave_subreq: val.leave_processid,
-                        em_no: emno,
-                    }
-                    return postData
-                })
-                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
-                const { success, message } = results.data
-                if (success === 1) {
-                    succesNofity("Updated")
-                    const ob1 = {
-                        apprv: false,
-                        reject: false
+                const { inc_apprv_req, incapprv_status, hod_apprv_req, hod_apprv_status,
+                    ceo_req_status, ceo_apprv_status } = data[0]
+                if (inc_apprv_req === 1 && incapprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', postleavedata)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.get(`/LeaveRequestApproval/${leave_slno}`)
+                        const { success, data } = result.data;
+                        if (success === 1) {
+                            const { inc_apprv_req, incapprv_status, hod_apprv_req, hod_apprv_status,
+                                ceo_req_status, ceo_apprv_status } = data[0]
+                            if (hod_apprv_req === 1 && hod_apprv_status === 0) {
+                                const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
+                                const { success, message } = result.data;
+                                if (success === 1) {
+                                    const result = await axioslogin.get(`/LeaveRequestApproval/${leave_slno}`)
+                                    const { success, data, message } = result.data;
+                                    if (success === 1) {
+                                        const { ceo_req_status, ceo_apprv_status } = data[0]
+                                        if (ceo_req_status === 1 && ceo_apprv_status === 0) {
+                                            const result = await axioslogin.patch('/LeaveRequestApproval/CeoApprvLeave', postleavedata)
+                                            const { success } = result.data;
+                                            if (success === 1) {
+                                                const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                                                const { success, data, message } = result.data;
+                                                if (success === 1) {
+                                                    const post = data.map((val) => {
+                                                        const postData = {
+                                                            date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                                            req_type: 'LV',
+                                                            leave: val.leave_typeid,
+                                                            leave_subreq: val.leave_processid,
+                                                            em_no: emno,
+                                                        }
+                                                        return postData
+                                                    })
+                                                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                                                    const { success, message } = results.data
+                                                    if (success === 1) {
+                                                        succesNofity("Updated")
+                                                        const ob1 = {
+                                                            apprv: false,
+                                                            reject: false
 
+                                                        }
+                                                        setstatus(ob1)
+                                                        setreason('')
+                                                        setcount(count + 1)
+                                                        handleClose()
+                                                    }
+                                                    else if (success === 2) {
+                                                        warningNofity(message)
+                                                    }
+                                                    else {
+                                                        errorNofity(message)
+                                                    }
+                                                }
+                                                else {
+                                                    errorNofity(message)
+                                                }
+                                            }
+                                        } else {
+                                            const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                                            const { success, data, message } = result.data;
+                                            if (success === 1) {
+                                                const post = data.map((val) => {
+                                                    const postData = {
+                                                        date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                                        req_type: 'LV',
+                                                        leave: val.leave_typeid,
+                                                        leave_subreq: val.leave_processid,
+                                                        em_no: emno,
+                                                    }
+                                                    return postData
+                                                })
+                                                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                                                const { success, message } = results.data
+                                                if (success === 1) {
+                                                    succesNofity("Updated")
+                                                    const ob1 = {
+                                                        apprv: false,
+                                                        reject: false
+
+                                                    }
+                                                    setstatus(ob1)
+                                                    setreason('')
+                                                    setcount(count + 1)
+                                                    handleClose()
+                                                }
+                                                else if (success === 2) {
+                                                    warningNofity(message)
+                                                }
+                                                else {
+                                                    errorNofity(message)
+                                                }
+                                            }
+                                            else {
+                                                errorNofity(message)
+                                            }
+                                        }
+                                    } else {
+                                        warningNofity(message)
+                                    }
+                                } else {
+                                    warningNofity(message)
+                                }
+                            }
+                        }
+                    } else {
+                        warningNofity(message)
                     }
-                    setstatus(ob1)
-                    setreason('')
-                    setcount(count + 1)
-                    handleClose()
-                }
-                else if (success === 2) {
-                    warningNofity(message)
+
+                } else if (hod_apprv_req === 1 && hod_apprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlLeave', postleavedata)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.get(`/LeaveRequestApproval/${leave_slno}`)
+                        const { success, data, message } = result.data;
+                        if (success === 1) {
+                            const { ceo_req_status, ceo_apprv_status } = data[0]
+                            if (ceo_req_status === 1 && ceo_apprv_status === 0) {
+                                const result = await axioslogin.patch('/LeaveRequestApproval/CeoApprvLeave', postleavedata)
+                                const { success } = result.data;
+                                if (success === 1) {
+                                    const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                                    const { success, data, message } = result.data;
+                                    if (success === 1) {
+                                        const post = data.map((val) => {
+                                            const postData = {
+                                                date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                                req_type: 'LV',
+                                                leave: val.leave_typeid,
+                                                leave_subreq: val.leave_processid,
+                                                em_no: emno,
+                                            }
+                                            return postData
+                                        })
+                                        const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                                        const { success, message } = results.data
+                                        if (success === 1) {
+                                            succesNofity("Updated")
+                                            const ob1 = {
+                                                apprv: false,
+                                                reject: false
+
+                                            }
+                                            setstatus(ob1)
+                                            setreason('')
+                                            setcount(count + 1)
+                                            handleClose()
+                                        }
+                                        else if (success === 2) {
+                                            warningNofity(message)
+                                        }
+                                        else {
+                                            errorNofity(message)
+                                        }
+                                    }
+                                    else {
+                                        errorNofity(message)
+                                    }
+                                }
+                            } else {
+                                const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                                const { success, data, message } = result.data;
+                                if (success === 1) {
+                                    const post = data.map((val) => {
+                                        const postData = {
+                                            date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                            req_type: 'LV',
+                                            leave: val.leave_typeid,
+                                            leave_subreq: val.leave_processid,
+                                            em_no: emno,
+                                        }
+                                        return postData
+                                    })
+                                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                                    const { success, message } = results.data
+                                    if (success === 1) {
+                                        succesNofity("Updated")
+                                        const ob1 = {
+                                            apprv: false,
+                                            reject: false
+
+                                        }
+                                        setstatus(ob1)
+                                        setreason('')
+                                        setcount(count + 1)
+                                        handleClose()
+                                    }
+                                    else if (success === 2) {
+                                        warningNofity(message)
+                                    }
+                                    else {
+                                        errorNofity(message)
+                                    }
+                                }
+                                else {
+                                    errorNofity(message)
+                                }
+                            }
+                        } else {
+                            warningNofity(message)
+                        }
+                    } else {
+                        warningNofity(message)
+                    }
+                } else if (ceo_req_status === 1 && ceo_apprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/CeoApprvLeave', postleavedata)
+                    const { success } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                        const { success, data, message } = result.data;
+                        if (success === 1) {
+                            const post = data.map((val) => {
+                                const postData = {
+                                    date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                    req_type: 'LV',
+                                    leave: val.leave_typeid,
+                                    leave_subreq: val.leave_processid,
+                                    em_no: emno,
+                                }
+                                return postData
+                            })
+                            const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                            const { success, message } = results.data
+                            if (success === 1) {
+                                succesNofity("Updated")
+                                const ob1 = {
+                                    apprv: false,
+                                    reject: false
+
+                                }
+                                setstatus(ob1)
+                                setreason('')
+                                setcount(count + 1)
+                                handleClose()
+                            }
+                            else if (success === 2) {
+                                warningNofity(message)
+                            }
+                            else {
+                                errorNofity(message)
+                            }
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
                 }
                 else {
-                    errorNofity(message)
+                    const result = await axioslogin.patch('/LeaveRequestApproval/HRLeaveApprv', postleavedata)
+                    const { success, data, message } = result.data;
+                    if (success === 1) {
+                        const post = data.map((val) => {
+                            const postData = {
+                                date: moment(new Date(val.leave_dates)).format('YYYY-MM-DD'),
+                                req_type: 'LV',
+                                leave: val.leave_typeid,
+                                leave_subreq: val.leave_processid,
+                                em_no: emno,
+                            }
+                            return postData
+                        })
+                        const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuch', post)
+                        const { success, message } = results.data
+                        if (success === 1) {
+                            succesNofity("Updated")
+                            const ob1 = {
+                                apprv: false,
+                                reject: false
+
+                            }
+                            setstatus(ob1)
+                            setreason('')
+                            setcount(count + 1)
+                            handleClose()
+                        }
+                        else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
-            }
-            else {
-                errorNofity(message)
+            } else {
+                warningNofity(message)
             }
         }
     }

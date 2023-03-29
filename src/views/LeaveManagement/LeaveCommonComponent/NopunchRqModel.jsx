@@ -64,48 +64,59 @@ const NopunchRqModel = ({ open, handleClose, hafdaydata, authority, em_id, count
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlnopunch', submitpunch)
-            const { success, message } = result.data
+            const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${hafdaydata[0].nopunch_slno}`)
+            const { success, data } = result.data;
             if (success === 1) {
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+                const { np_inc_apprv_req, np_incapprv_status } = data[0]
+                if (np_inc_apprv_req === 1 && np_incapprv_status === 0) {
+                    const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvnopunch', submitpunch)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlnopunch', submitpunch)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            const ob1 = {
+                                apprv: false,
+                                reject: false
 
-                }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                succesNofity(message)
-                handleClose()
-            }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
-        }
-        else if (authority === 3) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/Ceonopunch', submitpunch)
-            const { success, message } = result.data
-            if (success === 1) {
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+                            }
+                            setstatus(ob1)
+                            setreason('')
+                            setcount(count + 1)
+                            succesNofity(message)
+                            handleClose()
+                        }
+                        else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlnopunch', submitpunch)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        const ob1 = {
+                            apprv: false,
+                            reject: false
 
+                        }
+                        setstatus(ob1)
+                        setreason('')
+                        setcount(count + 1)
+                        succesNofity(message)
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                succesNofity(message)
-                handleClose()
             }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
+
         }
         else if (authority === 3) {
             const result = await axioslogin.patch('./LeaveRequestApproval/Ceonopunch', submitpunch)
