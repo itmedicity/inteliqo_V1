@@ -120,7 +120,7 @@ const ApprovalIncharge = () => {
                     <Box sx={{ display: 'flex', flex: 2 }}>
                         <CssVarsProvider>
                             {
-                                leaverequesttype && leaverequesttype?.map((val, idx) => {
+                                leaverequesttype?.map((val, idx) => {
                                     return <Checkbox
                                         label={<Typography level="h2" fontSize="sm" sx={{ mb: 0 }} color="neutral" >{val.lrequest_type}</Typography>}
                                         key={idx}
