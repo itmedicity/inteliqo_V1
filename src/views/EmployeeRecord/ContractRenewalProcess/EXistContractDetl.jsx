@@ -2,16 +2,15 @@ import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
-import { addDays, differenceInDays, eachDayOfInterval } from 'date-fns'
+import { addDays, differenceInDays } from 'date-fns'
 import React, { Fragment, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
 import moment from 'moment';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
-
 
 const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
 
@@ -28,6 +27,8 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
         desg_name: '',
         sect_name: ''
     })
+    const [view, setView] = useState(0)
+
     //destructuring
     const { em_cont_start, em_cont_end, em_no, em_id, em_name, ecat_name, grace_period, dept_name, desg_name, sect_name } = formData
     //use effect for getting existing contract details
@@ -36,19 +37,19 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             const result = await axioslogin.get(`/empcontract/${no}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_cont_start, em_cont_end, em_no, em_id, em_cont_close,
+                const { em_cont_start, em_cont_end, em_no, em_id,
                     em_category, em_name, ecat_name, cont_grace, dept_name, desg_name, sect_name } = data[0]
                 const frmData = {
-                    em_cont_start: em_cont_start,
-                    em_cont_end: em_cont_end,
+                    em_cont_start: em_cont_start === null ? 'NOT UPDATED' : em_cont_start,
+                    em_cont_end: em_cont_end === null ? 'NOT UPDATED' : em_cont_end,
                     em_no: em_no,
                     em_id: em_id,
-                    em_name: em_name,
-                    ecat_name: ecat_name,
-                    grace_period: cont_grace,
-                    dept_name: dept_name,
-                    desg_name: desg_name,
-                    sect_name: sect_name
+                    em_name: em_name === null ? 'NOT UPDATED' : em_name,
+                    ecat_name: ecat_name === null ? 'NOT UPDATED' : ecat_name,
+                    grace_period: cont_grace === null ? 'NOT UPDATED' : cont_grace,
+                    dept_name: dept_name === null ? 'NOT UPDATED' : dept_name,
+                    desg_name: desg_name === null ? 'NOT UPDATED' : desg_name,
+                    sect_name: sect_name === null ? 'NOT UPDATED' : sect_name
                 }
                 setFormData(frmData)
                 setContractEnd(em_cont_end)
@@ -95,21 +96,18 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                 }
             })
             succesNofity("Contract Closed Successfully")
+            setView(1)
         }
         else {
             warningNofity("Grace Period Not Completed")
+            setView(0)
         }
-
     }, [em_cont_end, grace_period])
 
 
     return (
         <Fragment>
-            <Paper square elevation={0} sx={{
-                display: "flex",
-                p: 1,
-
-            }}  >
+            <Paper square elevation={0} sx={{ display: "flex", p: 1, }}  >
                 <Box sx={{ flex: 1 }}>
                     <CssVarsProvider>
                         <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
@@ -117,41 +115,43 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                         </Typography>
                     </CssVarsProvider>
                 </Box>
-                <Box sx={{ flex: 0 }} >
-                    <Chip
+                {
+                    view === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
+                        <CssVarsProvider>
+                            <Typography sx={{ color: 'green' }}>
+                                Done!
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box> : null
+                }
+                {
+                    view === 1 ? <Box sx={{ flex: 0, }} ><Chip
                         icon={
-                            <IconButton className="p-1" >
-                                <WrongLocationRoundedIcon className="text-info" size={22} />
+                            <IconButton disabled
+                                className="p-1" >
+                                <WrongLocationRoundedIcon size={22} />
                             </IconButton>
                         }
                         label="Contract Close"
-                        onClick={ContractClose}
-                        clickable={true}
-                    />
-                </Box>
+                        clickable={false}
+                    /> </Box> : <Box sx={{ flex: 0, pl: 0.3 }} >
+                        <Chip
+                            icon={
+                                <IconButton disabled
+                                    className="p-1" >
+                                    <WrongLocationRoundedIcon className="text-info" size={22} />
+                                </IconButton>
+                            }
+                            label="Contract Close"
+                            onClick={ContractClose}
+                            clickable={true}
+                        />
+                    </Box>
+                }
             </Paper>
-            <Paper sx={{
-                p: 0.5,
-                mt: 0.5,
-                display: 'flex',
-                width: '100%',
-                justifyContent: "space-evenly",
-                flexDirection: { xl: "row", lg: "row", md: "row", sm: 'row', xs: "row" }
-                // backgroundColor: "lightcyan"
-            }}
-            >
+            <Paper sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '100%', justifyContent: "space-evenly", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'row', xs: "row" } }}>
                 <Paper square elevation={3}
-                    sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        width: '50%',
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                        flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }}
-                >
+                    sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }}>
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
@@ -214,17 +214,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     </Box>
                 </Paper>
                 <Paper square elevation={3}
-                    sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        width: '50%',
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                        flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }}
-                >
+                    sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>

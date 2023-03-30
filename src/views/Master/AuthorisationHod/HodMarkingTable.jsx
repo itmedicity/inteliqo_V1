@@ -20,10 +20,10 @@ const HodMarkingTable = ({ update }) => {
             title: 'Authorization post', field: 'auth_post'
         },
         {
-            title: 'Employee Department Section', field: 'dept_name_post'
+            title: 'Hod / Incharge Department', field: 'dept_name_post'
         },
         {
-            title: 'Employee Name', field: 'name_emp'
+            title: 'Hod / Incharge Name', field: 'name_emp'
         },
     ]
 

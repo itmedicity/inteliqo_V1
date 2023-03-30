@@ -4,8 +4,26 @@ const Leavemanagement = [
         men_slno: 25,
         component: CNavItem,
         name: 'Leave Request',
-        to: '/Home/LeaveRequest',
+        to: '/Home/LeaveRequsition',
     },
+    {
+        men_slno: 29,
+        component: CNavItem,
+        name: 'Night Off Request',
+        to: '/Home/NightOffRequest',
+    },
+    {
+        men_slno: 31,
+        component: CNavItem,
+        name: 'Overtime Request',
+        to: '/Home/OTRequest',
+    },
+    // {
+    //     men_slno: 25,
+    //     component: CNavItem,
+    //     name: 'Leave Request',
+    //     to: '/Home/LeaveRequest',
+    // },
     {
         men_slno: 26,
         component: CNavItem,
@@ -35,18 +53,6 @@ const Leavemanagement = [
         component: CNavItem,
         name: 'Leave Cancel - HR',
         to: '/Home/LeaveCancelHR',
-    },
-    {
-        men_slno: 29,
-        component: CNavItem,
-        name: 'Night Off Request',
-        to: '/Home/NightOffRequest',
-    },
-    {
-        men_slno: 31,
-        component: CNavItem,
-        name: 'Overtime Request',
-        to: '/Home/OTRequest',
     },
     {
         men_slno: 32,

@@ -3,13 +3,13 @@ const PerformanceApproval = [
     {
         men_slno: 49,
         component: CNavItem,
-        name: 'Performance Appraisal List',
-        to: '/Home/PerformanceAppraisal',
+        name: 'Completed Appraisal',
+        to: '/Home/ApprovedAppraisal',
     },
     {
         men_slno: 50,
         component: CNavItem,
-        name: 'Self Appraisal Entry',
+        name: 'Employee Appraisal Approve',
         to: '/Home/SelfAppraisalApproval',
     },
     {

@@ -1,7 +1,11 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core';
+// import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React, { Fragment, useContext, useEffect, memo } from 'react'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 
 const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, updateDeptSect }) => {
     const { employeedetails, authorization } = useContext(PayrolMasterContext)
@@ -22,34 +26,28 @@ const ResignationApprovalSection = ({ name, select, style, onChange, DeptSect, u
     }, [is_incharge, em_id])
 
     return (
-        <div>
-            <Fragment>
-                <FormControl
-                    fullWidth
-                    margin="dense"
-                    className="mt-1 mb-0"
-                >
-                    <Select
-                        name={name}
-                        onChange={(e) => onChange(e.target.value)}
-                        fullWidth
-                        variant="outlined"
-                        className="ml-0"
-                        defaultValue={0}
-                        style={style}
-                    >
-                        <MenuItem value={0} >
-                            All Department Section
-                        </MenuItem>
-                        {
-                            DeptSect && DeptSect.map((val, index) => {
-                                return <MenuItem key={index} value={val.dept_section}>{val.sect_name}</MenuItem>
-                            })
-                        }
-                    </Select>
-                </FormControl>
-            </Fragment>
-        </div>
+        <FormControl
+            fullWidth
+            size='small'
+        >
+            <Select
+                name={name}
+                onChange={(e) => onChange(e.target.value)}
+                fullWidth
+                variant="outlined"
+                defaultValue={0}
+            >
+                <MenuItem value={0} >
+                    All Department Section
+                </MenuItem>
+                {
+                    DeptSect && DeptSect.map((val, index) => {
+                        return <MenuItem key={index} value={val.dept_section}>{val.sect_name}</MenuItem>
+                    })
+                }
+            </Select>
+        </FormControl>
+
     )
 }
 

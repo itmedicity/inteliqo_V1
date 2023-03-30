@@ -4,8 +4,6 @@ import LeaveTypeSelect from 'src/views/CommonCode/LeaveTypeSelect'
 import SessionCheck from "src/views/Axios/SessionCheck"
 import { ToastContainer } from "react-toastify"
 import { PayrolMasterContext } from "src/Context/MasterContext"
-import { DatePicker, LocalizationProvider } from "@mui/lab"
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment';
 import { useStyles } from "src/views/CommonCode/MaterialStyle"
 import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
@@ -15,6 +13,8 @@ import YearlyLeaveCalendarTable from "./YearlyLeaveCalendarTable"
 import { useHistory } from "react-router"
 import { employeeNumber } from "src/views/Constant/Constant"
 import { lastDayOfYear, startOfYear } from "date-fns"
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const YearlyLeaveCalendarMast = () => {
     const classes = useStyles()

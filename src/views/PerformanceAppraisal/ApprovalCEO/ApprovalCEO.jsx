@@ -1,130 +1,132 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
-import { Paper, Box, Grid } from '@mui/material'
-import DeptSectionSingleSelect from 'src/views/CommonCode/DeptSectionSingleSelect'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { axioslogin } from 'src/views/Axios/Axios'
-import EditIcon from '@mui/icons-material/Edit';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
-import ApprovalCEOTable from './ApprovalCEOTable'
-// import ApprovalHODTable from './ApprovalHODTable'
+import { CssVarsProvider, Typography } from '@mui/joy'
+import { Box, Paper, Tooltip } from '@mui/material'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import IconButton from '@mui/joy/IconButton';
+import { useHistory } from 'react-router-dom';
+import PerformanceAppraisal from '../PerformanceAppraisal';
+import CloseIcon from '@mui/icons-material/Close';
+import { onClickSubmit, SubmitComptency } from '../AppraisalFunctions';
 
 const ApprovalCEO = () => {
-    const [dept, setdept] = useState(0)
-    const [value, setvalue] = useState([])
-    const [tableData, settableData] = useState([])
 
     const history = useHistory()
-    const RedirectToProfilePage = () => {
+    const [flag, setFlag] = useState(0)//setting flag=1 for open performance appraisal page
+    const [empno, setEmpno] = useState(0)
+    const [empid, setempid] = useState(0)
+    const [show, setShow] = useState(0)
+
+    const Redirect = async () => {
         history.push(`/Home`)
     }
 
-    // const login = useSelector((state) => {
-    //     return state.getProfileData.ProfileData[0]
-    // })
+    const newState = useSelector((state) => {
+        return state.getAppraisalData.appraisalCeo.appraisalCeoList
+    })
 
-    // const { hod, em_dept_section } = login
+    const [columnDef] = useState([
+        { headerName: 'ID', field: 'em_id', filter: true },
+        { headerName: 'Emp No ', field: 'em_no', filter: true },
+        { headerName: 'Name ', field: 'em_name', filter: true },
+        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
+        { headerName: 'Designation ', field: 'desg_name' },
+        { headerName: 'Date of joining ', field: 'em_doj' },
+        {
+            headerName: 'Action',
+            cellRenderer: params =>
+                <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => toAppraisal(params)}>
+                        <VisibilityIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
+        },
+    ])
 
-    useEffect(() => {
-        const getCEODeptSect = async () => {
-            const result = await axioslogin.get(`/Performance/CEO/DeptList`);
-            const { success, data } = result.data
-            if (success === 1) {
-                setvalue(data)
-            }
-            else {
-                setvalue([])
-            }
+    const toAppraisal = async (params) => {
+        setShow(1)
+        const data = params.api.getSelectedRows()
+        const { em_department, em_dept_section, em_designation, em_no, em_id } = data[0]
+        const checkid = {
+            designation: em_designation,
+            dept_id: em_department,
+            sect_id: em_dept_section
         }
-        getCEODeptSect()
-    }, [])
-    console.log(value);
+        //function for checking and inserting performance to each employee
+        onClickSubmit(checkid, em_id).then((values) => {
+            const { Status } = values
+            if (Status === 1) {
+                //function for checking and inserting competency to each employee
+                SubmitComptency(checkid, em_id).then((values) => {
+                    const { Status } = values
+                    if (Status === 1) {
+                        setFlag(1)//for open performance appraisal components
+                    } else {
+                        setFlag(1)
+                    }
+                })
+            } else {
+                SubmitComptency(checkid, em_id).then((values) => {
+                    const { Status } = values
+                    if (Status === 1) {
+                        setFlag(1)
+                    } else {
+                        setFlag(1)
+                    }
+                })
+            }
+        })
+        setempid(em_id)
+        setEmpno(em_no)
+    }
 
-    // const postData = useMemo(() => {
-    //     return {
-    //         sect_id: em_dept_section,
-    //         level2_sect_id: em_dept_section
-    //     }
-    // }, [em_dept_section])
-
-    // const getHODAppraisalList = useCallback((e) => {
-    //     const getdatafromtable = async (postData) => {
-    //         const result = await axioslogin.post('/Performance/HOD/appraisalList', postData)
-    //         const { success, data } = result.data
-    //         if (success === 1) {
-    //             settableData(data)
-    //         }
-    //         else {
-    //             settableData([])
-    //         }
-    //     }
-    //     if (postData !== 0) {
-    //         getdatafromtable(postData)
-    //     }
-    //     else {
-    //         warningNofity("No data")
-    //     }
-
-    // }, [postData])
-
-    // if (dept !== 0) {
-    //     getHODAppraisalList(postData)
-    // }
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Performance Appraisal Approval HOD"
-                redirect={RedirectToProfilePage}
-            >
-                <Box>
-                    <Paper square elevation={2} sx={{ p: 0.5, }}>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                pt: 2
-                            }}>
-                                <Grid
-                                    sx={{
-                                        width: 300
-                                    }}
-                                >
-                                    <DeptSectionSingleSelect
-                                        value={dept}
-                                        setValue={setdept}
-                                        data={value}
-                                        label={"Select Department"}
-                                        style={SELECT_CMP_STYLE}
-                                    />
-                                </Grid>
+            <Box sx={{ width: "100%" }} >
+                {
+                    flag === 1 ? <PerformanceAppraisal
+                        setFlag={setFlag}
+                        empno={empno}
+                        empid={empid}
+                        show={show}
+                        setShow={setShow}
+                    /> : <Paper square elevation={2} sx={{ p: 0.5, }}>
+                        <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                            <Box sx={{ flex: 1 }} >
+                                <CssVarsProvider>
+                                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                        Performance Appraisal CEO Approval List
+                                    </Typography>
+                                </CssVarsProvider>
                             </Box>
-                            <Box sx={{
-                                pt: 5
-                            }}>
-                                <Grid>
-                                    <ApprovalCEOTable />
-
-
-                                </Grid>
+                            <Box sx={{ pl: 1 }}>
+                                <IconButton variant="outlined" size='sm' onClick={Redirect} sx={{ color: 'red' }}>
+                                    <CloseIcon />
+                                </IconButton>
                             </Box>
-                        </Box>
+                        </Paper>
+                        <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                            <CommonAgGrid
+                                columnDefs={columnDef}
+                                tableData={newState}
+                                sx={{
+                                    height: 600,
+                                    width: "100%"
+                                }}
+                                rowHeight={30}
+                                headerHeight={30}
+                            ></CommonAgGrid>
+                        </Paper>
                     </Paper>
-                </Box>
-
-            </PageLayoutCloseOnly>
+                }
+            </Box>
         </Fragment>
     )
 }
 
-export default ApprovalCEO
+export default memo(ApprovalCEO)
 
 
 

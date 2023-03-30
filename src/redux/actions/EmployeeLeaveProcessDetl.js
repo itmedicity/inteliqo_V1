@@ -9,6 +9,8 @@ export const setEmployeeProcessDetail = (no) => {
         const { success, data } = result.data;
         if (success === 1) {
             dispatch({ type: FETCH_EMP_LEAVE_PROCESS_DETL, payload: data[0] })
+        } else {
+            dispatch({ type: FETCH_EMP_LEAVE_PROCESS_DETL, payload: [] })
         }
     }
 }

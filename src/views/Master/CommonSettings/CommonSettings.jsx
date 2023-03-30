@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom'
 import { Checkbox, FormControlLabel } from '@material-ui/core'
 import ShiftSelectByRedux from 'src/views/MuiComponents/ShiftSelectByRedux'
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import LeaveTypeMultipeSelect from 'src/views/MuiComponents/LeaveTypeMultipeSelect'
 
 const CommonSettings = () => {
     const history = useHistory()
@@ -39,17 +40,25 @@ const CommonSettings = () => {
         esi_limit: '',
         esi_employee: '',
         esi_employer: '',
-        verification_level: 0
+        verification_level: 0,
+        salary_above: ''
     })
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
-        pf_employee, pf_age, max_salary, verification_level } = FormData
+        pf_employee, pf_age, max_salary, verification_level, salary_above } = FormData
+
+    const [levaetype, setLeaveType] = useState([])
 
     //getting form data
     const updateCommonSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...FormData, [e.target.name]: value })
     }
+    // const getdata = async (e) => {
+    //     setsalary_above(e.target.value)
+    // }
+
+
     //setting data to form
     useEffect(() => {
         const getCommonSettings = async () => {
@@ -58,7 +67,8 @@ const CommonSettings = () => {
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
-                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift, week_off_day } = data[0]
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift,
+                    notapplicable_shift, week_off_day, salary_above } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -80,6 +90,7 @@ const CommonSettings = () => {
                     esi_employee: esi_employee,
                     esi_employer: esi_employer,
                     verification_level: verification_level,
+                    salary_above: salary_above
                 }
                 setFormData(frmData)
                 setDefShift(default_shift === null ? 0 : default_shift)
@@ -116,13 +127,17 @@ const CommonSettings = () => {
         esi_limit: esi_limit,
         esi_employee: esi_employee,
         esi_employer: esi_employer,
-        creat_user: em_id,
+        noofadvanceinyear: 0,
         verification_level: verification_level,
         default_shift: defshift,
         notapplicable_shift: notappshift,
-        week_off_day: workoff
-
+        week_off_day: workoff,
+        salary_above: salary_above,
+        creat_user: em_id,
+        leavetype_multiple: levaetype
     }
+
+
     //data to edit
     const postDataEdit = {
         cmmn_grace_period: commn_grace,
@@ -147,19 +162,23 @@ const CommonSettings = () => {
         verification_level: verification_level,
         default_shift: defshift,
         notapplicable_shift: notappshift,
-        week_off_day: workoff
+        week_off_day: workoff,
+        salary_above: salary_above,
+        leavetype_multiple: levaetype
+
     }
 
     //save
     const submitFormData = async (e) => {
         e.preventDefault();
         if (value === 0) {
+            console.log(postData);
             const result = await axioslogin.post('/commonsettings', postData)
             const { success, message } = result.data
-            if (success === 1) {
+            if (success === 2) {
                 succesNofity(message)
             }
-            else if (success === 2) {
+            else if (success === 1) {
                 warningNofity(message)
             }
             else {
@@ -186,6 +205,8 @@ const CommonSettings = () => {
     const RedirectToprofilePage = () => {
         history.push(`/Home/Settings`)
     }
+
+
     return (
         <Fragment>
             <PageLayoutProcess
@@ -315,6 +336,25 @@ const CommonSettings = () => {
                                             </div>
                                             <div className="col-md-4 pt-1">
                                                 <Typography>In Numbers</Typography>
+                                            </div>
+                                        </div>
+                                        <div className="row g-2 pt-2">
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>Holiday Salary Setting</Typography>
+                                            </div>
+                                            <div className="col-md-2">
+                                                <TextInput
+                                                    type="text"
+                                                    classname="form-control form-control-sm"
+                                                    Placeholder=""
+                                                    name="salary_above"
+                                                    value={salary_above}
+                                                    changeTextValue={(e) => updateCommonSettings(e)}
+                                                />
+                                            </div>
+                                            <div className="col-md-4 pt-1">
+                                                <Typography>In Rupees</Typography>
                                             </div>
                                         </div>
                                     </div>
@@ -616,12 +656,35 @@ const CommonSettings = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-            </PageLayoutProcess>
+                                <div className="col-md-5">
+                                    <div className="card">
+                                        <div className="card-header pb-0 border  text-black">
+                                            <h6>Allowed Half Day Leave Type</h6>
+                                        </div>
+                                        <div className="card-body">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-1"></div>
+                                                    <div className="col-md-3 pt-1">
+                                                        <Typography>Leave Type</Typography>
+                                                    </div>
+                                                    <div className="col-md-8">
+                                                        {/* <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} /> */}
+                                                        <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div >
+                        </div >
+                    </div >
+                </div >
+
+            </PageLayoutProcess >
         </Fragment >
     )
 }

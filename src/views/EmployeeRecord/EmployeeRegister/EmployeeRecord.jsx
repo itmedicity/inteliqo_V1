@@ -26,6 +26,7 @@ import FooterClosebtn from 'src/views/CommonCode/FooterClosebtn'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
 import { ToastContainer } from 'react-toastify'
+import CustomHeaderCmpOnly from 'src/views/Component/MuiCustomComponent/CustomHeaderCmpOnly'
 
 const EmployeeRecord = () => {
     // use state intialization
@@ -508,10 +509,11 @@ const EmployeeRecord = () => {
             <SessionCheck />
             <ToastContainer />
             <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
+                {/* <div className="card-header bg-dark pb-0 border border-dark text-white">
                     <h5>Employee Register</h5>
-                </div>
-                <form className={classes.empRecordStyle} onSubmit={submitemployeerecord} >
+                </div> */}
+                <CustomHeaderCmpOnly title="Employee Register" displayClose={true} />
+                <form className={classes.empRecordStyle} onSubmit={submitemployeerecord}  >
                     <div className="card-body">
                         <div className="row">
                             <div className="col-md-12">

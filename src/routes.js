@@ -56,7 +56,7 @@ const StateMastEdit = React.lazy(() => import('./views/Master/State/StateMastEdi
 const StateSelection = React.lazy(() => import('./views/CommonCode/StateSelect'))
 const District = React.lazy(() => import('./views/Master/District/DistrictMaster'))
 const DistrictMastEdit = React.lazy(() => import('./views/Master/District/DistrictMastEdit'))
-const University = React.lazy(() => import('./views/Master/University/UniversityMast'));
+const University = React.lazy(() => import('./views/Master/University/UniversityMast'))
 const EducationMaster = React.lazy(() => import('./views/Master/EducationMaster/EducationMaster'))
 const EducationTableEdit = React.lazy(() => import('./views/Master/EducationMaster/EducationTableEdit'))
 const CourseMaster = React.lazy(() => import('./views/Master/CourseMaster/CourseMaster'))
@@ -96,9 +96,10 @@ const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/Shif
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
 const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
+const Dutyplan = React.lazy(() => import('./views/Attendance/DutyPlan/DutyPlanMainCard'))
 const LeaveRequest = React.lazy(() => import('./views/LeaveManagement/LeaveRequest/LeaveRequest'))
 const ApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/ApprovalIncharge/ApprovalIncharge'))
-const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/ApprovalHod'))
+//const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/ApprovalHod'))
 const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/ApprovalHR'))
 const CancelEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveCancelEmployee/LeaveCancelEmploye'))
 const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/LeaveCancelHr'))
@@ -127,7 +128,7 @@ const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprova
 const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
 const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
 const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
-const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
+//const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
 const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
@@ -173,19 +174,10 @@ const EmpProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/
 const ContractRenewalProcess = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/ContractRenewalProcess'))
 const Direct_Contract_Close = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/Direct_Contract_Close'))
 const ContractRenewApprovalList = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractRenewApprovalList'))
-const PerformanceGrade = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGrade'))
-const PerformanceGradeEdit = React.lazy(() => import('./views/Master/PerformanceGradeMaster/PerformanceGradeEdit'))
-const PerformanceAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/PerformanceAppraisalList')))
 const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
 const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
 const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
-const PerformanceAppraisalRights = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRights')))
-const PerformanceAppraisalRightsEdit = React.lazy(() => (import('./views/Master/PerformanceAppraisalRights/PerformanceAppraisalRightsEdit')))
 const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/TrainingEnd'))
-const HODInchargeMaster = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeMaster'))
-const HODInchargeEdit = React.lazy(() => import('./views/Master/HODInchargeMaster/HODInchargeEdit'))
-const HighLevelMaster = React.lazy(() => import('./views/Master/HighLevelMaster/HighLevelMaster'))
-const HierarchyLevel = React.lazy(() => import('./views/Master/HierarchyLevelMaster/HierarchyLevelMaster'))
 const AppraisalApproveIncharge = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalIncharge/AppraisalApproveIncharge'))
 const AppraisalApprovalHOD = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalHOD/ApprovalHOD'))
 const AppraisalApprovalCEO = React.lazy(() => import('./views/PerformanceAppraisal/ApprovalCEO/ApprovalCEO'))
@@ -206,6 +198,17 @@ const ContractOneYear = React.lazy(() => import('./views/HrReports/ContractRepor
 const PermanentEmployeeReport = React.lazy(() => import('./views/HrReports/PermanentEmployeeReports/PermanentEmployeeReport'))
 const ContractReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractReport'))
 const EmployeeRegistrationReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/EmpRegisteration'))
+const LeaveProcessNew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'))
+const LeaveRequesitionMainCard = React.lazy(() => import('./views/LeaveManagement/LeavereRequsition/LeaveRequestMainCard'))
+const HRAppraisalList = React.lazy(() => import('./views/PerformanceAppraisal/HRList'))
+const CompletedAppraisal = React.lazy(() => import('./views/PerformanceAppraisal/CompletedAppraisalList'))
+const NoExperienceReport = React.lazy(() => import('./views/HrReports/ExperienceReports/NoExpReport'))
+const PayrollAtendanceUpdation = React.lazy(() => import('./views/Payroll/AttendanceUpdation/AttendanceUpdation'))
+const PaySlipCalculation = React.lazy(() => import('./views/Payroll/PayslipCalculation/PaySlipCalculation'))
+const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettingNew'))
+const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDeduction/EarningsDeduction'))
+const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/HodApproval'))
+
 
 const routes = [
 
@@ -308,6 +311,7 @@ const routes = [
   { path: '/Home/FineAndDeductionTableEdit/:slno/:id/:no', exact: true, name: 'Fine Deduction Table Edit', component: FineDeductionTableEdit },
   { path: '/Home/AllowanceDeduction', exact: true, name: 'Allowance Deducation', component: AllowanceDeducation },
   { path: '/Home/Dutyplanning', exact: true, name: 'Duty Planning', component: Dutyplanning },
+  { path: '/Home/Dutyplan', exact: true, name: 'Duty Planning', component: Dutyplan },
   { path: '/Home/LeaveRequest', exact: true, name: 'Leave Request', component: LeaveRequest },
   { path: '/Home/ApprovalIncharge', exact: true, name: ' Leave Approval Incharge', component: ApprovalIncharge },
   { path: '/Home/ApprovalHOD', exact: true, name: 'Leave Approval HOD', component: ApprovalHOD },
@@ -385,19 +389,10 @@ const routes = [
   { path: '/Home/ContractRenewalProcess/:id/:no', exact: true, name: 'Contract Renewal Process', component: ContractRenewalProcess },
   { path: '/Home/Direct_Contract_Close/:id/:no', exact: true, name: 'Direct Contract Close', component: Direct_Contract_Close },
   { path: '/Home/ContractRenewApprovalList', exact: true, name: 'Contract Renew Approval List', component: ContractRenewApprovalList },
-  { path: '/Home/PerformanceGradeMaster', exact: true, name: 'Performance Grade', component: PerformanceGrade },
-  { path: '/Home/PerformanceGradeEdit/:id', exact: true, name: 'Performance Grade', component: PerformanceGradeEdit },
-  { path: '/Home/PerformanceAppraisal', exact: true, name: 'Performance Appraisal', component: PerformanceAppraisalList },
   { path: '/Home/ProbationEnd', exact: true, name: 'Probation End List', component: ProbationEnd },
   { path: '/Home/AnnualAppraisalList', exact: true, name: 'Annual Appraisal List', component: AnnualAppraisalList },
   { path: '/Home/ContractEnd', exact: true, name: 'Contract End List', component: ContractEnd },
-  { path: '/Home/PerformanceAppraisalRights', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRights },
-  { path: '/Home/PerformanceAppraisalRightsEdit/:id', exact: true, name: 'Performance Appraisal Rights', component: PerformanceAppraisalRightsEdit },
   { path: '/Home/TrainingEnd', exact: true, name: 'Training End List', component: TrainingEnd },
-  { path: '/Home/HODInchargeMaster', exact: true, name: 'HOD/Incharge Master', component: HODInchargeMaster },
-  { path: '/Home/HODInchargeEdit/:id', exact: true, name: 'HOD/Incharge Master', component: HODInchargeEdit },
-  { path: '/Home/HighLevelMaster', exact: true, name: 'High Level Master', component: HighLevelMaster },
-  { path: '/Home/HierarchyLevel', exact: true, name: 'Hierarchy Level Master', component: HierarchyLevel },
   { path: '/Home/AppraisalApproveIncharge', exact: true, name: 'Appraisal Approve Incharge', component: AppraisalApproveIncharge },
   { path: '/Home/AppraisalApprovalHOD', exact: true, name: 'Appraisal Approve HOD', component: AppraisalApprovalHOD },
   { path: '/Home/AppraisalApprovalCEO', exact: true, name: 'Appraisal Approve CEO', component: AppraisalApprovalCEO },
@@ -418,7 +413,15 @@ const routes = [
   { path: '/Home/PermanentEmployeeReport', exact: true, name: 'Permanent Employee Report', component: PermanentEmployeeReport },
   { path: '/Home/ContractReport', eaxct: true, name: 'ContractReport', component: ContractReport },
   { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
-
+  { path: '/Home/LeaveProcess/:id/:no', exact: true, name: 'Employee Leave Process', component: LeaveProcessNew },
+  { path: '/Home/LeaveRequsition', exact: true, name: 'Employee Leave Requsition', component: LeaveRequesitionMainCard },
+  { path: '/Home/EmployeeRegistrationReport', exact: true, name: 'Employee Registration Report', component: EmployeeRegistrationReport },
+  { path: '/Home/HRAppraisalList', exact: true, name: 'Employee Appraisal List', component: HRAppraisalList },
+  { path: '/Home/ApprovedAppraisal', exact: true, name: 'Employee Appraisal List', component: CompletedAppraisal },
+  { path: '/Home/NoExperienceReport', exact: true, name: 'No ExperienceReport', component: NoExperienceReport },
+  { path: '/Home/PayrollAttendance', exact: true, name: 'Attendance Updation', component: PayrollAtendanceUpdation },
+  { path: '/Home/PaySlipCalculation', exact: true, name: 'PaySlip Calculation', component: PaySlipCalculation },
+  { path: '/Home/EmpEarnDeduction', exact: true, name: 'Employee Earn Deduction', component: EmpEarnDeduction },
 ]
 
 export default routes
