@@ -34,7 +34,6 @@ const DepartmentSelect = ({ style, disabled }) => {
 
     }
 
-
     return (
         <Fragment>
             <FormControl

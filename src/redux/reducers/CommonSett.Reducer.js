@@ -1,6 +1,8 @@
+import moment from 'moment';
 import { Actiontypes } from '../constants/action.type';
 
-const { FETCH_COMMON_SETTING } = Actiontypes;
+const { FETCH_COMMON_SETTING, SELECTED_DEPT_VAL, FETCH_DEPT_SECTION_DETL, FETCH_EMPLOYEE_DETL, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, FETCH_PUNCH_MASTER_DATA,
+    UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
 
 
 const commonSetting = {
@@ -32,6 +34,108 @@ export const getCommonSettings = (state = commonSetting, { type, payload }) => {
     switch (type) {
         case FETCH_COMMON_SETTING:
             return { ...state, ...payload }
+        default:
+            return state;
+    }
+}
+
+//GET DEPARTMENT ID 
+
+const selectedDept = {
+    dept: 0
+}
+
+export const selectedDeptCode = (state = selectedDept, { type, payload }) => {
+    switch (type) {
+        case SELECTED_DEPT_VAL:
+            return { ...state, dept: payload }
+        default:
+            return state;
+    }
+}
+
+
+//GET THE DEPT SECTION 
+
+const deptSection = {
+    section: []
+}
+
+export const getDepartmentSection = (state = deptSection, { type, payload }) => {
+    switch (type) {
+        case FETCH_DEPT_SECTION_DETL:
+            return { ...state, section: payload }
+        default:
+            return state;
+    }
+}
+
+//GET THE EMPLOYEE DETAILS
+
+const empBasedSection = {
+    emp: []
+}
+
+export const getEmployeeBasedSection = (state = empBasedSection, { type, payload }) => {
+    switch (type) {
+        case FETCH_EMPLOYEE_DETL:
+            return { ...state, emp: payload }
+        default:
+            return state;
+    }
+}
+
+const punchData = {
+    punchDta: []
+}
+
+export const getPunchData = (state = punchData, { type, payload }) => {
+    switch (type) {
+        case FETCH_PUNCH_DATA:
+            return { ...state, punchDta: payload }
+        default:
+            return state;
+    }
+}
+
+
+const shiftData = {
+    shiftData: []
+}
+
+export const getShiftData = (state = shiftData, { type, payload }) => {
+    switch (type) {
+        case FETCH_SHIFT_DATA:
+            return { ...state, shiftData: payload }
+        default:
+            return state;
+    }
+}
+
+//GET PUNCH MASTER DATA DATE & EMP WISE
+
+const punchMasterData = {
+    punchMaster: []
+}
+
+export const getPunchMasterData = (state = punchMasterData, { type, payload }) => {
+    switch (type) {
+        case FETCH_PUNCH_MASTER_DATA:
+            return { ...state, punchMaster: payload }
+        default:
+            return state;
+    }
+}
+
+//UPDATED PUNCHMASTER DATA 
+const updatedPunchInOutData = {
+    puMaData: {}
+}
+
+export const fetchupdatedPunchInOutData = (state = updatedPunchInOutData, { type, payload }) => {
+    switch (type) {
+        case UPDATE_PUNCHMASTER_TABLE:
+            return { ...state, puMaData: payload }
         default:
             return state;
     }
