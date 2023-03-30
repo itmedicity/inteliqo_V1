@@ -86,7 +86,7 @@ import { getExcelData } from './Payroll.Reducer'
 import { getEarnData } from './EarnDeductio.Reducer'
 import { getPaySlipData } from './Payroll.Reducer'
 import { getLeaveType } from './LeaveType.Reducer'
-
+import { getloginDeptSection } from './AuthorizatioDeptSectionReducer'
 
 
 const reducer = combineReducers({
@@ -184,7 +184,8 @@ const reducer = combineReducers({
     getPunchData,
     getShiftData,
     getPunchMasterData,
-    fetchupdatedPunchInOutData
+    fetchupdatedPunchInOutData,
+    getloginDeptSection
 })
 
 export default reducer;
