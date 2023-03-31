@@ -141,304 +141,42 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
             }
         }
         else if (authority === 4) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${hafdaydata[0].half_slno}`)
+            const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
             const { success, data, message } = result.data;
             if (success === 1) {
-                const { hf_inc_apprv_req, hf_incapprv_status, hf_hod_apprv_req, hf_hod_apprv_status,
-                    hf_ceo_req_status, hf_ceo_apprv_status } = data[0]
-                if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
-                    const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${hafdaydata[0].half_slno}`)
-                        const { success, data, message } = result.data;
-                        if (success === 1) {
-                            const { hf_hod_apprv_req, hf_hod_apprv_status } = data[0]
-                            if (hf_hod_apprv_req === 1 && hf_hod_apprv_status === 0) {
-                                const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
-                                const { success, message } = result.data
-                                if (success === 1) {
-                                    const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${hafdaydata[0].half_slno}`)
-                                    const { success, data, message } = result.data;
-                                    if (success === 1) {
-                                        const { hf_ceo_req_status, hf_ceo_apprv_status } = data[0]
-                                        if (hf_ceo_req_status === 1 && hf_ceo_apprv_status === 0) {
-                                            const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
-                                            const { success, message } = result.data
-                                            if (success === 1) {
-                                                const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                                                const { success, data, message } = result.data;
-                                                if (success === 1) {
-                                                    const post = data.map((val) => {
-                                                        const postData = {
-                                                            date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                                            req_type: 'HL',
-                                                            leave: 1,
-                                                            leave_subreq: val.planslno,
-                                                            em_no: hafdaydata[0].em_no,
-                                                        }
-                                                        return postData
-                                                    })
-                                                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                                                    const { success, message } = results.data
-                                                    if (success === 1) {
-                                                        succesNofity("Updated")
-                                                        const ob1 = {
-                                                            apprv: false,
-                                                            reject: false
-
-                                                        }
-                                                        setstatus(ob1)
-                                                        setreason('')
-                                                        setcount(count + 1)
-                                                        handleClose()
-                                                    }
-                                                    else if (success === 2) {
-                                                        warningNofity(message)
-                                                    }
-                                                    else {
-                                                        errorNofity(message)
-                                                    }
-                                                }
-                                                else {
-                                                    errorNofity(message)
-                                                }
-                                            } else {
-                                                warningNofity(message)
-                                            }
-                                        } else {
-                                            const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                                            const { success, data, message } = result.data;
-                                            if (success === 1) {
-                                                const post = data.map((val) => {
-                                                    const postData = {
-                                                        date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                                        req_type: 'HL',
-                                                        leave: 1,
-                                                        leave_subreq: val.planslno,
-                                                        em_no: hafdaydata[0].em_no,
-                                                    }
-                                                    return postData
-                                                })
-                                                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                                                const { success, message } = results.data
-                                                if (success === 1) {
-                                                    succesNofity("Updated")
-                                                    const ob1 = {
-                                                        apprv: false,
-                                                        reject: false
-
-                                                    }
-                                                    setstatus(ob1)
-                                                    setreason('')
-                                                    setcount(count + 1)
-                                                    handleClose()
-                                                }
-                                                else if (success === 2) {
-                                                    warningNofity(message)
-                                                }
-                                                else {
-                                                    errorNofity(message)
-                                                }
-                                            }
-                                            else {
-                                                errorNofity(message)
-                                            }
-                                        }
-                                    } else {
-                                        warningNofity(message)
-                                    }
-                                } else {
-                                    warningNofity(message)
-                                }
-
-                            }
-                        }
+                const post = data.map((val) => {
+                    const postData = {
+                        date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
+                        req_type: 'HL',
+                        leave: 1,
+                        leave_subreq: val.planslno,
+                        em_no: hafdaydata[0].em_no,
                     }
+                    return postData
+                })
+                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
+                const { success, message } = results.data
+                if (success === 1) {
+                    succesNofity("Updated")
+                    const ob1 = {
+                        apprv: false,
+                        reject: false
 
-                } else if (hf_hod_apprv_req === 1 && hf_hod_apprv_status === 0) {
-                    const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${hafdaydata[0].half_slno}`)
-                        const { success, data, message } = result.data;
-                        if (success === 1) {
-                            const { hf_ceo_req_status, hf_ceo_apprv_status } = data[0]
-                            if (hf_ceo_req_status === 1 && hf_ceo_apprv_status === 0) {
-                                const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
-                                const { success, message } = result.data
-                                if (success === 1) {
-                                    const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                                    const { success, data, message } = result.data;
-                                    if (success === 1) {
-                                        const post = data.map((val) => {
-                                            const postData = {
-                                                date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                                req_type: 'HL',
-                                                leave: 1,
-                                                leave_subreq: val.planslno,
-                                                em_no: hafdaydata[0].em_no,
-                                            }
-                                            return postData
-                                        })
-                                        const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                                        const { success, message } = results.data
-                                        if (success === 1) {
-                                            succesNofity("Updated")
-                                            const ob1 = {
-                                                apprv: false,
-                                                reject: false
-
-                                            }
-                                            setstatus(ob1)
-                                            setreason('')
-                                            setcount(count + 1)
-                                            handleClose()
-                                        }
-                                        else if (success === 2) {
-                                            warningNofity(message)
-                                        }
-                                        else {
-                                            errorNofity(message)
-                                        }
-                                    }
-                                    else {
-                                        errorNofity(message)
-                                    }
-                                } else {
-                                    warningNofity(message)
-                                }
-                            } else {
-                                const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                                const { success, data, message } = result.data;
-                                if (success === 1) {
-                                    const post = data.map((val) => {
-                                        const postData = {
-                                            date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                            req_type: 'HL',
-                                            leave: 1,
-                                            leave_subreq: val.planslno,
-                                            em_no: hafdaydata[0].em_no,
-                                        }
-                                        return postData
-                                    })
-                                    const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                                    const { success, message } = results.data
-                                    if (success === 1) {
-                                        succesNofity("Updated")
-                                        const ob1 = {
-                                            apprv: false,
-                                            reject: false
-
-                                        }
-                                        setstatus(ob1)
-                                        setreason('')
-                                        setcount(count + 1)
-                                        handleClose()
-                                    }
-                                    else if (success === 2) {
-                                        warningNofity(message)
-                                    }
-                                    else {
-                                        errorNofity(message)
-                                    }
-                                }
-                                else {
-                                    errorNofity(message)
-                                }
-                            }
-                        } else {
-                            warningNofity(message)
-                        }
-                    } else {
-                        warningNofity(message)
                     }
-
-                } else if (hf_ceo_req_status === 1 && hf_ceo_apprv_status === 0) {
-                    const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                        const { success, data, message } = result.data;
-                        if (success === 1) {
-                            const post = data.map((val) => {
-                                const postData = {
-                                    date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                    req_type: 'HL',
-                                    leave: 1,
-                                    leave_subreq: val.planslno,
-                                    em_no: hafdaydata[0].em_no,
-                                }
-                                return postData
-                            })
-                            const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                            const { success, message } = results.data
-                            if (success === 1) {
-                                succesNofity("Updated")
-                                const ob1 = {
-                                    apprv: false,
-                                    reject: false
-
-                                }
-                                setstatus(ob1)
-                                setreason('')
-                                setcount(count + 1)
-                                handleClose()
-                            }
-                            else if (success === 2) {
-                                warningNofity(message)
-                            }
-                            else {
-                                errorNofity(message)
-                            }
-                        }
-                        else {
-                            errorNofity(message)
-                        }
-                    } else {
-                        warningNofity(message)
-                    }
-                } else {
-                    const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-                    const { success, data, message } = result.data;
-                    if (success === 1) {
-                        const post = data.map((val) => {
-                            const postData = {
-                                date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                                req_type: 'HL',
-                                leave: 1,
-                                leave_subreq: val.planslno,
-                                em_no: hafdaydata[0].em_no,
-                            }
-                            return postData
-                        })
-                        const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                        const { success, message } = results.data
-                        if (success === 1) {
-                            succesNofity("Updated")
-                            const ob1 = {
-                                apprv: false,
-                                reject: false
-
-                            }
-                            setstatus(ob1)
-                            setreason('')
-                            setcount(count + 1)
-                            handleClose()
-                        }
-                        else if (success === 2) {
-                            warningNofity(message)
-                        }
-                        else {
-                            errorNofity(message)
-                        }
-                    }
-                    else {
-                        errorNofity(message)
-                    }
+                    setstatus(ob1)
+                    setreason('')
+                    setcount(count + 1)
+                    handleClose()
                 }
-            } else {
-                warningNofity(message)
+                else if (success === 2) {
+                    warningNofity(message)
+                }
+                else {
+                    errorNofity(message)
+                }
+            }
+            else {
+                errorNofity(message)
             }
 
         }
@@ -469,7 +207,7 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
                 fullWidth
                 maxWidth='sm'
             >
-                <DialogTitle>{"No Punch Request Approval/Reject"}</DialogTitle>
+                <DialogTitle>{"Halfday Request Approval"}</DialogTitle>
                 <DialogContent sx={{
                     width: '100%',
                     height: 600

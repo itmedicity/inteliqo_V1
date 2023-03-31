@@ -13,7 +13,7 @@ import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { format } from 'date-fns';
 import LeavRqModel from '../LeaveCommonComponent/LeavRqModel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel';
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel';
 import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel';
@@ -21,6 +21,7 @@ import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel';
 
 const ApprovalHR = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const [deptsect, setDeptSect] = useState(0)
 
@@ -178,6 +179,26 @@ const ApprovalHR = () => {
         setleavetypevalue(e.target.value)
     }
 
+
+    //redux
+
+    // useEffect(() => {
+    //     dispatch(getLeaveRequestAll())
+    //     dispatch(getHalfdayRqstAll())
+    //     dispatch(getNopunchRqstAll())
+    //     dispatch(getCompOffRqstAll())
+    // }, [dispatch])
+
+    // const state = useSelector((state) => {
+    //     //console.log(state.setAllLeaveApproval.halfdayRqData.halfdayRqList);
+    //     // console.log(state.setAllLeaveApproval.leaveRqData.leaveRqList);
+    //     //console.log(state.setAllLeaveApproval.nopunchRqData.nopunchRqList)
+    //     console.log(state.setAllLeaveApproval.compOffrqData.compOffRqList)
+    // })
+
+
+
+
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'SlNo', filter: true, minWidth: 100 },
         { headerName: 'ID#', field: 'Emp_no', filter: true, minWidth: 100 },
@@ -227,7 +248,7 @@ const ApprovalHR = () => {
                         return d1
                     })
                 setleavereqmastdata(leaveredat)
-                // get leave detail data
+                // api for getting leave request details from hrm_leave_request_detl
                 const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${SlNo}`)
                 if (resultdel.data.success === 1) {
                     setleavestatedetails(resultdel.data.data)
@@ -242,6 +263,7 @@ const ApprovalHR = () => {
                 sethalfdata(data)
             }
             setOpenhalf(true)
+            //if no punch request
         } else if (req_type === 3) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
             const { success, data } = result.data;
@@ -250,6 +272,7 @@ const ApprovalHR = () => {
             }
             setOpennopunch(true)
         }
+        //if compensatory leave request
         else if (req_type === 4) {
             const result = await axioslogin.get(`/LeaveRequestApproval/leave/com/compensatory/compensatoryoffdata/${SlNo}`)
             const { success, data } = result.data;

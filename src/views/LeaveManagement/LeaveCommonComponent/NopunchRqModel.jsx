@@ -12,6 +12,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NopunchRqModel = ({ open, handleClose, hafdaydata, authority, em_id, count, setcount }) => {
     const [npreason, setnpreason] = useState('')
+    const [formdata, setFormData] = useState({
+
+    })
+
     useEffect(() => {
         if (hafdaydata.length === 1) {
             const { np_reason } = hafdaydata[0]
@@ -241,14 +245,8 @@ const NopunchRqModel = ({ open, handleClose, hafdaydata, authority, em_id, count
                 maxWidth='sm'
             >
                 <DialogTitle>{"No Punch Request Approval/Reject"}</DialogTitle>
-                <DialogContent sx={{
-                    width: '100%',
-                    height: 600
-                }}>
-                    <Box sx={{
-                        width: "100%",
-                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
-                    }} >
+                <DialogContent sx={{ width: '100%', height: 'auto' }}>
+                    <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                             <TableContainer sx={{ maxHeight: 440 }}>
                                 <Table sx={{ minWidth: 50 }} size="small">
