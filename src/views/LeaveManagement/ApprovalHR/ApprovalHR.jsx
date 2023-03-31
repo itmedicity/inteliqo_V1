@@ -306,14 +306,14 @@ const ApprovalHR = () => {
                         </CssVarsProvider>
                     </Box>
                     <Box sx={{ display: 'flex', }}>
-                        <CommonCheckBox
+                        {/* <CommonCheckBox
                             label="SP"
                             size="lg"
                             name="specialapproval"
                             value={specialapproval === false ? 5 : 0}
                             checked={specialapproval}
                             onChange={(e) => leverequesttypechange(e)}
-                        />
+                        /> */}
                         {/* <FormControlLabel
                             control={
                                 <Tooltip title="Special Approval">
