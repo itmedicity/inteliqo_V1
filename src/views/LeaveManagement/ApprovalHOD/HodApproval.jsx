@@ -1,4 +1,4 @@
-import { CssVarsProvider, Typography, Checkbox } from '@mui/joy'
+import { CssVarsProvider } from '@mui/joy'
 import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -14,6 +14,7 @@ import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel'
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel'
 import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel'
 import { useSelector } from 'react-redux'
+import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox'
 
 const HodApproval = () => {
     const history = useHistory()
@@ -23,20 +24,12 @@ const HodApproval = () => {
     const [DeptSect, updateDeptSect] = useState([])
 
     const [leaverequesttype, setleaverequesttype] = useState([]);
-    const [levtpevalue, setleavetypevalue] = useState([])
+    const [levtpevalue, setleavetypevalue] = useState(1)
     const [leavereqstAll, setLeavRqstAll] = useState([])
     const [leavereq, setleavereqst] = useState([])
     const [leavereqmast, setmastleavereqst] = useState([])
     const [deptlvRqst, setDptlvRqst] = useState([])
     const [leavestatedetail, setleavestatedetails] = useState([])
-
-    const [levtpevaluearry, setleavetypevaluearry] = useState({
-        COFF: false,
-        HDLR: false,
-        LR: false,
-        NOP: false,
-    })
-    const { COFF, HDLR, LR, NOP } = levtpevaluearry
 
     const [reqtype, setreqtype] = useState([])
 
@@ -86,19 +79,6 @@ const HodApproval = () => {
         return state?.getProfileData?.ProfileData[0]?.em_id ?? 0;
     })
 
-    //to get checkbox checked value
-    const leverequesttypechange = async (e) => {
-        const ob1 = {
-            COFF: false,
-            HDLR: false,
-            LR: false,
-            NOP: false,
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setleavetypevaluearry({ ...ob1, [e.target.name]: value })
-        setleavetypevalue(e.target.value)
-    }
-
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
         if (arraydepsect.length !== 0) {
@@ -130,33 +110,33 @@ const HodApproval = () => {
     }, [DeptSect, count]);
 
     useEffect(() => {
-        if (levtpevalue === '1' && deptSect === 0) {
+        if (levtpevalue === 1 && deptSect === 0) {
             setLeavRqstAll(leavereq)
-        } else if (levtpevalue === '1' && deptSect !== 0) {
+        } else if (levtpevalue === 1 && deptSect !== 0) {
             const filterleavereq = leavereqmast && leavereqmast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setDptlvRqst(filterleavereq)
-        } else if (levtpevalue === '2' && deptSect === 0) {
+        } else if (levtpevalue === 2 && deptSect === 0) {
             setHalfdayAll(halfday)
-        } else if (levtpevalue === '2' && deptSect !== 0) {
+        } else if (levtpevalue === 2 && deptSect !== 0) {
             //depsection change filter based on dept section halfday
             const filterhalfday = halfdaymast && halfdaymast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setDepthlfday(filterhalfday)
-        } else if (levtpevalue === '3' && deptSect === 0) {
+        } else if (levtpevalue === 3 && deptSect === 0) {
             setnopunchall(nopunch)
-        } else if (levtpevalue === '3' && deptSect !== 0) {
+        } else if (levtpevalue === 3 && deptSect !== 0) {
             //depsection change filter based on dept section no punch
             const filternopunch = nopunchmast && nopunchmast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setdeptNopunch(filternopunch)
         }
-        else if (levtpevalue === '4' && deptSect === 0) {
+        else if (levtpevalue === 4 && deptSect === 0) {
             setCoffAll(compensetory)
-        } else if (levtpevalue === '4' && deptSect !== 0) {
+        } else if (levtpevalue === 4 && deptSect !== 0) {
             //depsection change filter based on dept section setcompensetory
             const filtercompen = compensetorymast && compensetorymast.filter((val) => {
                 return (val.dept_section === deptSect)
@@ -277,20 +257,20 @@ const HodApproval = () => {
                         <CssVarsProvider>
                             {
                                 leaverequesttype && leaverequesttype?.map((val, idx) => {
-                                    return <Checkbox
-                                        label={<Typography level="h2" fontSize="sm" sx={{ mb: 0 }} color="neutral" >{val.lrequest_type}</Typography>}
-                                        key={idx}
-                                        size="lg"
-                                        sx={{ flex: 1 }}
-                                        value={val.lrequest_slno}
-                                        name={val.lrequest_short}
-                                        checked={val.lrequest_short === 'LR' ? LR :
-                                            val.lrequest_short === 'HDLR' ? HDLR :
-                                                val.lrequest_short === 'NOP' ? NOP :
-                                                    val.lrequest_short === 'COFF' ? COFF : false
-                                        }
-                                        onChange={(e) => leverequesttypechange(e)}
-                                    />
+                                    return <Box sx={{
+                                        display: 'flex', p: 1,
+                                        width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" }
+                                    }}
+                                        key={val.lrequest_slno}
+                                    >
+                                        <MappingCheckbox
+                                            label={val.lrequest_short}
+                                            name={val.lrequest_short}
+                                            value={val.lrequest_slno}
+                                            onChange={setleavetypevalue}
+                                            checkedValue={levtpevalue}
+                                        />
+                                    </Box>
                                 })
                             }
                         </CssVarsProvider>
@@ -300,14 +280,14 @@ const HodApproval = () => {
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={
-                            levtpevalue === '1' && deptSect === 0 ? leavereqstAll :
-                                levtpevalue === '1' && deptSect !== 0 ? deptlvRqst :
-                                    levtpevalue === '2' && deptSect === 0 ? halfdayAll :
-                                        levtpevalue === '2' && deptSect !== 0 ? depthlfday :
-                                            levtpevalue === '3' && deptSect === 0 ? nopunchall :
-                                                levtpevalue === '3' && deptSect !== 0 ? deptnopunch :
-                                                    levtpevalue === '4' && deptSect === 0 ? coffAll :
-                                                        levtpevalue === '4' && deptSect !== 0 ? deptCoff : allData}
+                            levtpevalue === 1 && deptSect === 0 ? leavereqstAll :
+                                levtpevalue === 1 && deptSect !== 0 ? deptlvRqst :
+                                    levtpevalue === 2 && deptSect === 0 ? halfdayAll :
+                                        levtpevalue === 2 && deptSect !== 0 ? depthlfday :
+                                            levtpevalue === 3 && deptSect === 0 ? nopunchall :
+                                                levtpevalue === 3 && deptSect !== 0 ? deptnopunch :
+                                                    levtpevalue === 4 && deptSect === 0 ? coffAll :
+                                                        levtpevalue === 4 && deptSect !== 0 ? deptCoff : allData}
                         sx={{
                             height: 600,
                             width: "100%"

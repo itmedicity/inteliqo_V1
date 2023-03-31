@@ -4,16 +4,38 @@ import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
+import { CssVarsProvider, Typography } from '@mui/joy';
+import moment from 'moment';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const CompOffRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcount, count }) => {
-    const [coffreason, setcoffreason] = useState('')
+
+    const [formdata, setformData] = useState({
+        coffreason: '',
+        emp_name: '',
+        emp_id: '',
+        requestdate: '',
+        leavedate: '',
+        leavetype: '',
+        durationpunch: ''
+    })
+    const { coffreason, emp_name, emp_id, requestdate, leavedate, leavetype, durationpunch } = formdata;
+
     useEffect(() => {
         if (hafdaydata.length === 1) {
-            const { cf_reason } = hafdaydata[0]
-            setcoffreason(cf_reason)
+            const { cf_reason, em_name, em_no, reqestdate, leave_date, reqtype_name, durationpunch } = hafdaydata[0]
+            const formdata = {
+                coffreason: cf_reason,
+                emp_name: em_name,
+                emp_id: em_no,
+                requestdate: moment(new Date(reqestdate)).format('YYYY-MM-DD'),
+                leavedate: moment(new Date(leave_date)).format('YYYY-MM-DD'),
+                leavetype: reqtype_name,
+                durationpunch: durationpunch
+            }
+            setformData(formdata)
         }
     }, [hafdaydata])
     const [reason, setreason] = useState('')
@@ -200,53 +222,88 @@ const CompOffRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setco
                 fullWidth
                 maxWidth='sm'
             >
-                <DialogTitle>{"Leave Approval/Reject"}</DialogTitle>
-                <DialogContent sx={{
-                    width: '100%',
-                    height: 600
-                }}>
-                    <Box sx={{
-                        width: "100%",
-                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
-                    }} >
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                            <TableContainer sx={{ maxHeight: 440 }}>
-                                <Table sx={{ minWidth: 50 }} size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Day</TableCell>
-                                            <TableCell align="center">Duty Hour</TableCell>
-                                            <TableCell align="center">Type</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {
-                                            hafdaydata && hafdaydata.map((val, index) => {
-                                                const tr = <TableRow key={index}>
-                                                    <TableCell align="center">{format(new Date(val.leave_date), 'dd-MM-yyyy')}</TableCell>
-                                                    <TableCell align="center">{`${Math.floor(val.durationpunch / 60)}:${val.durationpunch % 60}`}</TableCell>
-                                                    <TableCell align="center">{val.reqtype_name}</TableCell>
-                                                </TableRow>
-
-                                                return tr
-                                            })
-                                        }
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
-                        <Box sx={{ width: "100%", pt: 1 }}>
-                            <Tooltip title="Reason" followCursor placement='top' arrow>
-                                <TextField
-                                    fullWidth
-                                    id="fullWidth" size="small"
-                                    disabled
-                                    value={coffreason}
-                                />
-                            </Tooltip>
+                <DialogTitle>{"Compensatory Off Approval"}</DialogTitle>
+                <DialogContent sx={{ width: '100%', height: 'auto' }}>
+                    <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                        <Box sx={{ display: "flex", width: "100%" }} >
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Emp. ID</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {emp_id}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Name</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", textTransform: "capitalize" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {emp_name.toLowerCase()}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", width: "100%" }} >
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Request Date</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {requestdate}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Leave Type</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {leavetype}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", width: "100%" }} >
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Leave Date</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {leavedate}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Duty Hour</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {`${Math.floor(durationpunch / 60)}:${durationpunch % 60}`}</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: "flex", width: "100%" }} >
+                            <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Leave Reason</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> {coffreason}</Typography>
+                                </CssVarsProvider>
+                            </Box>
                         </Box>
                         <Box sx={{ width: "100%", display: 'flex', flexDirection: 'row', pt: 0.5, justifyContent: 'space-between' }}>
-
                             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
                                 <FormControlLabel
                                     control={
@@ -283,8 +340,13 @@ const CompOffRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setco
                                 />
                             </Box>
                         </Box>
-                        <Box sx={{ width: "100%", pt: 1 }}>
-                            <Tooltip title="Remark" followCursor placement='top' arrow>
+                        <Box sx={{ width: "100%", pt: 1, display: 'flex', flexDirection: 'row' }}>
+                            <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography level="body1"> Leave Reason</Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
                                 <TextField
                                     id="fullWidth"
                                     size="small"
@@ -294,7 +356,7 @@ const CompOffRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setco
                                     name="reasonautho"
                                     onChange={(e) => setreason(e.target.value)}
                                 />
-                            </Tooltip>
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent >

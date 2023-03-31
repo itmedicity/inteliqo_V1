@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { useHistory } from 'react-router'
 import { Checkbox, Typography } from '@mui/joy'
-import { compensatory, getAll, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest } from 'src/views/CommonCode/Commonfunc';
+import { compensatory, getAll, getleaverequest, getleaverequestget, getnopunchrequst, halfdayrequest, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { useDispatch, useSelector } from 'react-redux'
 import { getlevedata } from '../../../redux/actions/LeaveReqst.action'
 import { memo } from 'react'
@@ -17,24 +17,24 @@ import LeavRqModel from '../LeaveCommonComponent/LeavRqModel'
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel'
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel'
 import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel'
+import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
+import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqstAll } from 'src/redux/actions/LeaveApprovalAction';
 
 const ApprovalIncharge = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
-    const [allData, setalldata] = useState([]);//list of all data 
     const [leaverequesttype, setleaverequesttype] = useState([]);//leave type list
-    const [deptSect, setDeptSect] = useState(0)
-    const [DeptSect, updateDeptSect] = useState([])
+    const [deptSect, setDeptSect] = useState(0)//select box selected department section
+    const [DeptSect, updateDeptSect] = useState([])//logined incharge dept section list
 
-    // for get leave requesst details
-    const [leavereqstAll, setLeavRqstAll] = useState([])
-    const [leavereq, setleavereqst] = useState([])
-    const [leavereqmast, setmastleavereqst] = useState([])
-    const [deptlvRqst, setDptlvRqst] = useState([])
-    const [levtpevalue, setleavetypevalue] = useState([])
-    const [leavestatedetail, setleavestatedetails] = useState([])
-    // get halfdayrequest
+    const [leavereqstAll, setLeavRqstAll] = useState([])//all leave request
+    const [leavereq, setleavereqst] = useState([])//all leave request from databse
+    const [leavereqmast, setmastleavereqst] = useState([])//all leave request for mapping
+    const [deptlvRqst, setDptlvRqst] = useState([])//dept section wise leave request
+    const [levtpevalue, setleavetypevalue] = useState(1)//selected checkbox
+    const [leavestatedetail, setleavestatedetails] = useState([])//selected employee leave request detail
+
     const [halfday, sethalfday] = useState([])
     const [halfdaymast, setmasthalfday] = useState([])
     const [halfdayAll, setHalfdayAll] = useState([])
@@ -54,15 +54,6 @@ const ApprovalIncharge = () => {
     const [deptCoff, setDeptCoff] = useState([])
     const [comoffsetdata, setcomoff] = useState([])
 
-    // to get the ype leave request
-
-    const [levtpevaluearry, setleavetypevaluearry] = useState({
-        COFF: false,
-        HDLR: false,
-        LR: false,
-        NOP: false,
-    })
-    const { COFF, HDLR, LR, NOP } = levtpevaluearry
     const [leaveremastdata, setleavereqmastdata] = useState([
         {
             emno: '',
@@ -76,7 +67,7 @@ const ApprovalIncharge = () => {
     ])
 
     // to set reqtype 
-    const [reqtype, setreqtype] = useState([])
+    const [reqtype, setreqtype] = useState(0)
     const [count, setcount] = useState(0)
 
     const [openleave, setOpenleave] = useState(false);
@@ -84,27 +75,31 @@ const ApprovalIncharge = () => {
     const [opencompen, setOpencompen] = useState(false);
     const [openhalf, setOpenhalf] = useState(false);
 
-
+    //login incharge id
     const em_id = useSelector((state) => {
         return state?.getProfileData?.ProfileData[0]?.em_id ?? 0;
     })
 
-    //to get checkbox checked value
-    const leverequesttypechange = async (e) => {
-        const ob1 = {
-            COFF: false,
-            HDLR: false,
-            LR: false,
-            NOP: false,
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setleavetypevaluearry({ ...ob1, [e.target.name]: value })
-        setleavetypevalue(e.target.value)
-    }
-
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
+
+    useEffect(() => {
+        dispatch(getLeaveRequestAll())
+        dispatch(getHalfdayRqstAll())
+        dispatch(getNopunchRqstAll())
+        dispatch(getCompOffRqstAll())
+    }, [dispatch])
+
+    const state = useSelector((state) => {
+        //console.log(state.setAllLeaveApproval.halfdayRqData.halfdayRqList);
+        // console.log(state.setAllLeaveApproval.leaveRqData.leaveRqList);
+        //console.log(state.setAllLeaveApproval.nopunchRqData.nopunchRqList)
+        console.log(state.setAllLeaveApproval.compOffrqData.compOffRqList)
+    })
+
+
+
 
     useEffect(() => {
         getleaverequest().then((val) => {
@@ -135,76 +130,55 @@ const ApprovalIncharge = () => {
                 setmastcompensetory(val)
             })
             setcount(0)
-            getAll(arraydepsect).then((val) => {
-                setalldata(val)
-            })
         }
         dispatch(getlevedata(arraydepsect))
     }, [DeptSect, count, dispatch]);
 
-
-
-    // const handleChange = async (e) => {
-    // depsection change filter based on dept section leave request
-    // const filterleavereq = await leavereqmast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setleavereqst(filterleavereq)
-    // // depsection change filter based on dept section no punch
-    // const filternopunch = await nopunchmast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setnopunch(filternopunch)
-    // // depsection change filter based on dept section halfday
-    // const filterhalfday = await halfdaymast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // sethalfday(filterhalfday)
-    // // depsection change filter based on dept section setcompensetory
-    // const filtercompen = await compensetorymast.filter((val) => {
-    //     return (val.dept_section === e)
-    // })
-    // setcompensetory(filtercompen)
-    //  }
-
-
-
     useEffect(() => {
-        if (levtpevalue === '1' && deptSect === 0) {
+        if (levtpevalue === 1 && deptSect === 0) {
             setLeavRqstAll(leavereq)
-        } else if (levtpevalue === '1' && deptSect !== 0) {
+        } else if (levtpevalue === 1 && deptSect !== 0) {
             const filterleavereq = leavereqmast && leavereqmast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setDptlvRqst(filterleavereq)
-        } else if (levtpevalue === '2' && deptSect === 0) {
+        } else if (levtpevalue === 2 && deptSect === 0) {
             setHalfdayAll(halfday)
-        } else if (levtpevalue === '2' && deptSect !== 0) {
+        } else if (levtpevalue === 2 && deptSect !== 0) {
             //depsection change filter based on dept section halfday
             const filterhalfday = halfdaymast && halfdaymast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setDepthlfday(filterhalfday)
-        } else if (levtpevalue === '3' && deptSect === 0) {
+        } else if (levtpevalue === 3 && deptSect === 0) {
+
             setnopunchall(nopunch)
-        } else if (levtpevalue === '3' && deptSect !== 0) {
+        } else if (levtpevalue === 3 && deptSect !== 0) {
             //depsection change filter based on dept section no punch
             const filternopunch = nopunchmast && nopunchmast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
             setdeptNopunch(filternopunch)
         }
-        else if (levtpevalue === '4' && deptSect === 0) {
+        else if (levtpevalue === 4 && deptSect === 0) {
             setCoffAll(compensetory)
-        } else if (levtpevalue === '4' && deptSect !== 0) {
+        } else if (levtpevalue === 4 && deptSect !== 0) {
             //depsection change filter based on dept section setcompensetory
             const filtercompen = compensetorymast && compensetorymast.filter((val) => {
                 return (val.dept_section === deptSect)
             })
-            setDeptCoff(filtercompen)
+            if (Object.keys(filtercompen).length > 0) {
+                setDeptCoff(filtercompen)
+            } else {
+                infoNofity("No Leave request pending for this department!!")
+            }
+
         }
+        //else {
+        //     setLeavRqstAll(leavereq)
+        // }
     }, [deptSect, levtpevalue, leavereq, halfday, nopunch, compensetory, leavereqmast,
-        halfdaymast, nopunchmast, compensetorymast])
+        halfdaymast, nopunchmast, compensetorymast, deptSect])
 
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'SlNo', filter: true, minWidth: 100 },
@@ -316,20 +290,20 @@ const ApprovalIncharge = () => {
                         <CssVarsProvider>
                             {
                                 leaverequesttype?.map((val, idx) => {
-                                    return <Checkbox
-                                        label={<Typography level="h2" fontSize="sm" sx={{ mb: 0 }} color="neutral" >{val.lrequest_type}</Typography>}
-                                        key={idx}
-                                        size="lg"
-                                        sx={{ flex: 1 }}
-                                        value={val.lrequest_slno}
-                                        name={val.lrequest_short}
-                                        checked={val.lrequest_short === 'LR' ? LR :
-                                            val.lrequest_short === 'HDLR' ? HDLR :
-                                                val.lrequest_short === 'NOP' ? NOP :
-                                                    val.lrequest_short === 'COFF' ? COFF : false
-                                        }
-                                        onChange={(e) => leverequesttypechange(e)}
-                                    />
+                                    return <Box sx={{
+                                        display: 'flex', p: 1,
+                                        width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" }
+                                    }}
+                                        key={val.lrequest_slno}
+                                    >
+                                        <MappingCheckbox
+                                            label={val.lrequest_short}
+                                            name={val.lrequest_short}
+                                            value={val.lrequest_slno}
+                                            onChange={setleavetypevalue}
+                                            checkedValue={levtpevalue}
+                                        />
+                                    </Box>
                                 })
                             }
                         </CssVarsProvider>
@@ -339,14 +313,14 @@ const ApprovalIncharge = () => {
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={
-                            levtpevalue === '1' && deptSect === 0 ? leavereqstAll :
-                                levtpevalue === '1' && deptSect !== 0 ? deptlvRqst :
-                                    levtpevalue === '2' && deptSect === 0 ? halfdayAll :
-                                        levtpevalue === '2' && deptSect !== 0 ? depthlfday :
-                                            levtpevalue === '3' && deptSect === 0 ? nopunchall :
-                                                levtpevalue === '3' && deptSect !== 0 ? deptnopunch :
-                                                    levtpevalue === '4' && deptSect === 0 ? coffAll :
-                                                        levtpevalue === '4' && deptSect !== 0 ? deptCoff : allData}
+                            levtpevalue === 1 && deptSect === 0 ? leavereqstAll :
+                                levtpevalue === 1 && deptSect !== 0 ? deptlvRqst :
+                                    levtpevalue === 2 && deptSect === 0 ? halfdayAll :
+                                        levtpevalue === 2 && deptSect !== 0 ? depthlfday :
+                                            levtpevalue === 3 && deptSect === 0 ? nopunchall :
+                                                levtpevalue === 3 && deptSect !== 0 ? deptnopunch :
+                                                    levtpevalue === 4 && deptSect === 0 ? coffAll :
+                                                        levtpevalue === 4 && deptSect !== 0 ? deptCoff : leavereqstAll}
                         sx={{
                             height: 600,
                             width: "100%"

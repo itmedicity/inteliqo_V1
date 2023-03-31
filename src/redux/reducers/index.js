@@ -53,12 +53,8 @@ import { getActiveCountemp } from '../reducers/ActiveCountReducers';
 import { getPunchCount } from '../reducers/PunchdataCountreducers';
 import { getMenuRenderCompRights } from './CardMenuSlnoRender';
 import { getContractClosedata } from '../reducers/ContractRenewalReducers'
-import { getUserRights } from '../reducers/EmpUserRights.Reducer'
-import { getHighLevelData } from '../reducers/HighLevel.Reducer'
-// import { getUserRights } from '../reducers/EmpUserRights.Reducer'
 import { getBirthdayList } from '../reducers/Birthday.Reducer'
 import { getGradeList } from '../reducers/Grade.Reducer'
-import { getHODInchargeNameList } from '../reducers/HodIncharge.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList, getShiftPlanDetl, getShiftDateFormat, getUpdatedShiftId, updatedShiftDetlOnModel } from '../reducers/Shift.Reducer'
@@ -87,6 +83,7 @@ import { getEarnData } from './EarnDeductio.Reducer'
 import { getPaySlipData } from './Payroll.Reducer'
 import { getLeaveType } from './LeaveType.Reducer'
 import { getloginDeptSection } from './AuthorizatioDeptSectionReducer'
+import { setAllLeaveApproval } from './LeaveApprovalReducer'
 
 
 const reducer = combineReducers({
@@ -128,12 +125,9 @@ const reducer = combineReducers({
     getActiveCountemp,
     getPunchCount,
     getMenuRenderCompRights,
-    getHODInchargeNameList,
     getGradeList,
     getContractClosedata,
     getBirthdayList,
-    getUserRights,
-    getHighLevelData,
     getdept,
     getDeptSecList,
     getShiftList,
@@ -185,7 +179,8 @@ const reducer = combineReducers({
     getShiftData,
     getPunchMasterData,
     fetchupdatedPunchInOutData,
-    getloginDeptSection
+    getloginDeptSection,
+    setAllLeaveApproval
 })
 
 export default reducer;
