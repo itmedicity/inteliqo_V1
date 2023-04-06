@@ -1,23 +1,48 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, Slide, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel, Paper, Slide, TextField } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment'
-import { ImGift } from 'react-icons/im';
+import { CssVarsProvider, Typography } from '@mui/joy';
+import _ from 'underscore';
+import { useSelector } from 'react-redux';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcount, count }) => {
-    const [halfreason, setHalfreason] = useState('')
+const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, slno }) => {
+
+    //redux data all halfday request
+    const halfdayRqData = useSelector((state) => state?.setAllLeaveApproval?.halfdayRqData?.halfdayRqList, _.isEqual)
+    const [formdata, setformData] = useState({
+        emp_name: '',
+        emp_id: '',
+        halfdayareason: '',
+        leavedate: '',
+        requestdate: '',
+        month: ''
+    })
+    const { emp_name, emp_id, halfdayareason, leavedate, requestdate, month } = formdata;
+
     useEffect(() => {
-        if (hafdaydata.length === 1) {
-            const { hf_reason } = hafdaydata[0]
-            setHalfreason(hf_reason)
+        if (Object.keys(halfdayRqData).length > 0) {
+            //filtering selected row from all halfday request
+            const array = halfdayRqData && halfdayRqData.filter((val) => val.half_slno === slno)
+            const { em_name, em_no, hf_reason, month, requestdate, leavedate } = array[0]
+            const formdata = {
+                emp_id: em_no,
+                emp_name: em_name,
+                halfdayareason: hf_reason,
+                requestdate: moment(new Date(requestdate)).format('DD-MM-YYYY'),
+                month: month,
+                leavedate: moment(new Date(leavedate)).format('DD-MM-YYYY'),
+            }
+            setformData(formdata)
         }
-    }, [hafdaydata])
+    }, [halfdayRqData, slno])
+
     const [reason, setreason] = useState('')
     const [status, setstatus] = useState({
         apprv: false,
@@ -37,10 +62,11 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
         const submhalfday = {
             status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
             comment: reason,
-            slno: hafdaydata[0].half_slno,
+            slno: slno,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
             us_code: em_id
         }
+        //incharge approval
         if (authority === 1) {
             const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
             const { success, message } = result.data
@@ -63,8 +89,9 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
                 errorNofity(message)
             }
         }
+        //hod approval
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${hafdaydata[0].half_slno}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
@@ -116,8 +143,8 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
                     }
                 }
             }
-
         }
+        //ceo approval
         else if (authority === 3) {
             const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
             const { success, message } = result.data
@@ -139,46 +166,6 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
             else {
                 errorNofity(message)
             }
-        }
-        else if (authority === 4) {
-            const result = await axioslogin.patch('/LeaveRequestApproval/Hrhalfday', submhalfday)
-            const { success, data, message } = result.data;
-            if (success === 1) {
-                const post = data.map((val) => {
-                    const postData = {
-                        date: moment(new Date(val.leavedate)).format('YYYY-MM-DD'),
-                        req_type: 'HL',
-                        leave: 1,
-                        leave_subreq: val.planslno,
-                        em_no: hafdaydata[0].em_no,
-                    }
-                    return postData
-                })
-                const results = await axioslogin.patch('/LeaveRequestApproval/updatehrPuchhalfday', post)
-                const { success, message } = results.data
-                if (success === 1) {
-                    succesNofity("Updated")
-                    const ob1 = {
-                        apprv: false,
-                        reject: false
-
-                    }
-                    setstatus(ob1)
-                    setreason('')
-                    setcount(count + 1)
-                    handleClose()
-                }
-                else if (success === 2) {
-                    warningNofity(message)
-                }
-                else {
-                    errorNofity(message)
-                }
-            }
-            else {
-                errorNofity(message)
-            }
-
         }
         // else if (authority === 5) {
         //     const result = await axioslogin.patch('./LeaveRequestApproval/halfdaycancelReq', submhalfday)
@@ -207,109 +194,156 @@ const HaldayRqModel = ({ open, handleClose, hafdaydata, authority, em_id, setcou
                 fullWidth
                 maxWidth='sm'
             >
-                <DialogTitle>{"Halfday Request Approval"}</DialogTitle>
-                <DialogContent sx={{
-                    width: '100%',
-                    height: 600
-                }}>
-                    <Box sx={{
-                        width: "100%",
-                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
-                    }} >
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                            <TableContainer sx={{ maxHeight: 440 }}>
-                                <Table sx={{ minWidth: 50 }} size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Days</TableCell>
-                                            <TableCell align="center">Leave Type</TableCell>
-                                            <TableCell align="center">Month of Leaves</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-
-                                        {
-                                            hafdaydata.map((val, index) => {
-                                                const tr = <TableRow key={index}>
-                                                    <TableCell align="center">{format(new Date(val.leavedate), 'dd-MM-yyyy')}</TableCell>
-                                                    <TableCell align="center">Casual Leave</TableCell>
-                                                    <TableCell align="center">{val.month}</TableCell>
-                                                </TableRow>
-
-                                                return tr
-                                            })
+                <DialogContent sx={{ width: '100%', height: 'auto' }}>
+                    <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
+                        <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                <CssVarsProvider>
+                                    <Typography fontSize="xl" level="body1">Halfday Request Approval </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
+                                <Box sx={{ display: "flex", width: "100%" }} >
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Emp. ID</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> : {emp_id}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Name</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", textTransform: "capitalize" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> : {emp_name}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: "flex", width: "100%" }} >
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Request Date</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> : {requestdate}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Leave Type</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">: Casual leave</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: "flex", width: "100%" }} >
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Leave Date</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">: {leavedate}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Month of Leave</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> : {month}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: "flex", width: "100%" }} >
+                                    <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Leave Reason</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> : {halfdayareason}</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                            <Box sx={{ width: "100%", display: 'flex', flexDirection: 'row', pt: 0.5, justifyContent: 'space-between' }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="apprv"
+                                                color="primary"
+                                                value={apprv}
+                                                checked={apprv}
+                                                onChange={(e) =>
+                                                    updateHalfdatereq(e)
+                                                }
+                                            />
                                         }
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
-                        <Box sx={{ width: "100%", pt: 1 }}>
-                            <Tooltip title="Reason" followCursor placement='top' arrow>
-                                <TextField
-                                    fullWidth
-                                    id="fullWidth" size="small"
-                                    disabled
-                                    value={halfreason}
-                                />
-                            </Tooltip>
-                        </Box>
-                        <Box sx={{ width: "100%", display: 'flex', flexDirection: 'row', pt: 0.5, justifyContent: 'space-between' }}>
+                                        label="Halfday Request Approve"
+                                    />
+                                </Box>
 
-                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="apprv"
-                                            color="primary"
-                                            value={apprv}
-                                            checked={apprv}
-                                            onChange={(e) =>
-                                                updateHalfdatereq(e)
-                                            }
-                                        />
-                                    }
-                                    label="Approve"
-                                />
+                                <Box sx={{ width: '100%', }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="reject"
+                                                color="primary"
+                                                value={reject}
+                                                checked={reject}
+
+                                                className="ml-2 "
+                                                onChange={(e) =>
+                                                    updateHalfdatereq(e)
+                                                }
+                                            />
+                                        }
+                                        label="Halfday Request Reject"
+                                    />
+                                </Box>
                             </Box>
-
-                            <Box sx={{ width: '100%', }}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="reject"
-                                            color="primary"
-                                            value={reject}
-                                            checked={reject}
-
-                                            className="ml-2 "
-                                            onChange={(e) =>
-                                                updateHalfdatereq(e)
-                                            }
-                                        />
-                                    }
-                                    label="Reject"
-                                />
+                            <Box sx={{ width: "100%", pt: 1, display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                                    <CssVarsProvider>
+                                        <Typography level="body1"> Remark</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
+                                    <TextField
+                                        id="fullWidth"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        value={reason}
+                                        name="reasonautho"
+                                        onChange={(e) => setreason(e.target.value)}
+                                    />
+                                </Box>
                             </Box>
                         </Box>
-                        <Box sx={{ width: "100%", pt: 1 }}>
-                            <Tooltip title="Remark" followCursor placement='top' arrow>
-                                <TextField
-                                    id="fullWidth"
-                                    size="small"
-                                    type="text"
-                                    fullWidth
-                                    value={reason}
-                                    name="reasonautho"
-                                    onChange={(e) => setreason(e.target.value)}
-                                />
-                            </Tooltip>
-                        </Box>
-                    </Box>
+                        <DialogActions>
+                            <Button color="primary" onClick={submithaday} >SAVE</Button>
+                            <Button onClick={handleClose} color="primary" >CLOSE</Button>
+                        </DialogActions>
+                    </Paper>
                 </DialogContent >
-                <DialogActions>
-                    <Button color="primary" onClick={submithaday} >Submit</Button>
-                    <Button onClick={handleClose} color="primary" >Cancel</Button>
-                </DialogActions>
             </Dialog >
         </Fragment >
     )
