@@ -6,20 +6,177 @@ import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { useState } from 'react';
-import { ModalDialog } from '@mui/joy';
+import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { useEffect } from 'react';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import { useCallback } from 'react';
 
-const LeaveRequestModal = ({ open, setOpen, data }) => {
-    console.log(data)
+import { employeeNumber } from 'src/views/Constant/Constant';
+import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+
+const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
+    //STATES
+    const [reqDetl, setReqDetl] = useState([]);
+    const [reason, setReason] = useState('');
+
     //DISPLAY THE DATA 
+    const { slno, emno, name, section, status, hrstatus, code, reqDate, fromDate, toDate } = data;
     //GET THE DETAILED TABLE DATA USING API
+    const getLeaveReqDetl = async (slno) => {
+        const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${slno}`);
+        const { success, data } = resultdel?.data;
+        if (success === 1) {
+            setReqDetl(data)
+        }
+    }
+
+    useEffect(() => {
+        if (slno !== null && slno !== undefined) {
+            getLeaveReqDetl(slno)
+        }
+    }, [slno])
 
     //UPDATE LEAVE FUNCTION 
-    const { slno, emno, name, section, status, hrstatus, code, reqDate } = data;
-    // console.log(reqdata)
+    // console.log(reqDetl)
+
+    const handleApproverequest = useCallback(async () => {
+
+        //CASUAL LEAVE 
+        const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
+            return { ...val, emno: emno }
+        });
+        //NATIONAL HOLIDAY
+        const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
+            return { ...val, emno: emno }
+        });
+        //EARN LEAVE
+        const earnLeave = reqDetl?.filter(val => val.leave_typeid === 8)?.map(val => {
+            return { ...val, emno: emno }
+        });
+        //COMPENSATORY OFF
+        const compansatoryOff = reqDetl?.filter(val => val.leave_typeid === 11)?.map(val => {
+            return { ...val, emno: emno }
+        });
+
+        //COMMON LEAVES 
+        const commonLeaves = reqDetl?.filter((val) => val.leave_typeid !== 1 &&
+            val.leave_typeid !== 3 &&
+            val.leave_typeid !== 4 &&
+            val.leave_typeid !== 8 &&
+            val.leave_typeid !== 11
+        ).map(val => {
+            return { ...val, emno: emno }
+        });
+
+        const formData = {
+            status: 1,
+            comment: reason,
+            apprvdate: moment().format('YYYY-MM-DD HH:mm'),
+            us_code: employeeNumber(),
+            slno: slno
+        }
+
+        //UPDATE LEAVE MASTER TABLE
+        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
+        console.log(resultdel)
+        const { success, message } = await resultdel.data;
+        if (success === 1) {
+
+            /**** UPDATE LEAVE TABLES****/
+            //UPDATE CASUAL LEAVE TABLE
+            const casualLeavePromise = new Promise(async (resolve, reject) => {
+                if (casualLev?.length > 0) {
+                    console.log(casualLev)
+                    const resultcl = await axioslogin.post(`/LeaveRequestApproval/updateCasualLeaveTable`, casualLev);
+                    const { success, message } = resultcl.data;
+                    if (success === 1) {
+                        resolve('Casual Leave Request Updated')
+                    } else {
+                        reject(`CL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //UPDATE HOLIDAY 
+            const holidayLeavePromise = new Promise(async (resolve, reject) => {
+                if (Holiday?.length > 0) {
+                    console.log(Holiday)
+                    const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
+                    const { success, message } = resulthl.data;
+                    if (success === 1) {
+                        resolve('Holiday Leave Request updated')
+                    } else {
+                        reject(`HL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //EARN LEAVE 
+            const earnLeavePromise = new Promise(async (resolve, reject) => {
+                if (earnLeave?.length > 0) {
+                    console.log(earnLeave)
+                    const resultel = await axioslogin.post(`/LeaveRequestApproval/updateEarnLeaveTable`, earnLeave);
+                    const { success, message } = resultel.data;
+                    if (success === 1) {
+                        resolve('Earn Leave Request updated')
+                    } else {
+                        reject(`EL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //COFF UPDATION
+            const coffLeavePromise = new Promise(async (resolve, reject) => {
+                if (compansatoryOff?.length > 0) {
+                    console.log(earnLeave)
+                    const resultcoff = await axioslogin.post(`/LeaveRequestApproval/updatecOffTable`, compansatoryOff);
+                    console.log(resultcoff)
+                    const { success, message } = resultcoff.data;
+                    if (success === 1) {
+                        resolve('COFF Request Approved')
+                    } else {
+                        reject(`COFF Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            /**** UPDATE PUNCH MASTER TABLE ****/
+            const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6);
+            const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5);
+            const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6);
+
+
+
+            Promise.all([casualLeavePromise, holidayLeavePromise, earnLeavePromise, coffLeavePromise]).then(result => {
+                if (result) {
+                    setCount(Math.random())
+                    succesNofity('Leave Request Approved')
+                    setOpen(false)
+                }
+            }).catch(error => {
+                setCount(Math.random())
+                errorNofity('Error Updating Leave Request')
+                setOpen(false)
+            })
+        }
+    }, [slno, reqDetl])
+
+    const handleRegectRequest = async () => {
+
+    }
 
     return (
         <Modal
@@ -30,7 +187,7 @@ const LeaveRequestModal = ({ open, setOpen, data }) => {
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
         >
-            <ModalDialog size="lg" >
+            <ModalDialog size="lg"  >
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -83,41 +240,83 @@ const LeaveRequestModal = ({ open, setOpen, data }) => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
                     <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
                         <Typography
-                            level="h6"
+                            level="body1"
                             justifyContent="center"
                         >
                             Request Date
                         </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />}>
+                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
                             {moment(reqDate).format('DD-MM-YYYY')}
                         </Typography>
                     </Box>
-                    {/* <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
+                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
                         <Typography
-                            level="h6"
+                            level="body1"
                             justifyContent="center"
                         >
-                            Request Date
+                            Request From
                         </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />}>
-                            {moment(reqDate).format('DD-MM-YYYY')}
+                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
+                            {moment(fromDate).format('DD-MM-YYYY')}
                         </Typography>
-                    </Box> */}
+                    </Box>
+                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
+                        <Typography
+                            level="body1"
+                            justifyContent="center"
+                        >
+                            Request To
+                        </Typography>
+                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
+                            {moment(toDate).format('DD-MM-YYYY')}
+                        </Typography>
+                    </Box>
                 </Box>
-                {/* <Typography
-                    component="h3"
-                    id="modal-title"
-                    level="h4"
-                    textColor="inherit"
-                    fontWeight="lg"
-                    mb={1}
-                >
-                    Information Technology
-                </Typography>
-                <Typography id="modal-desc" textColor="text.tertiary">
-                    Make sure to use <code>aria-labelledby</code> on the modal dialog with an
-                    optional <code>aria-describedby</code> attribute.
-                </Typography> */}
+                <Box sx={{ flex: 1, py: 1 }}>
+                    <Typography
+                        level="body2"
+                        startDecorator={<InfoOutlined />}
+                        sx={{ alignItems: 'center', wordBreak: 'break-all', }}
+                    >
+                        Requested Leave Information.
+                    </Typography>
+                </Box>
+                <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
+                    {
+                        reqDetl?.map((val, idx) => {
+                            return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
+                                    {moment(val.leave_dates).format('DD-MM-YYYY')}
+                                </Typography>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                    {val.leavetype_name}
+                                </Typography>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                    {val.leave_name}
+                                </Typography>
+                            </Box>
+                        })
+                    }
+
+                </Paper>
+                <Divider>
+                    <Chip variant="outlined" color="info" size="sm">
+                        HR Use Only
+                    </Chip>
+                </Divider>
+                <Box sx={{ pt: 0.5 }} >
+                    <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+                        <Button variant="solid" color="success" onClick={handleApproverequest}>
+                            Leave Request Approve
+                        </Button>
+                        <Button variant="solid" color="danger" onClick={handleRegectRequest}>
+                            Leave Request Reject
+                        </Button>
+                    </Box>
+                </Box>
             </ModalDialog>
         </Modal>
     )

@@ -32,12 +32,14 @@ const ApprovalHR = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
+    const [count, setCount] = useState(0)
+
     useEffect(() => {
         dispatch(getLeaveRequestAll())
         dispatch(getHalfdayRqstAll())
         dispatch(getNopunchRqstAll())
         dispatch(getCompOffRqstAll())
-    }, [dispatch])
+    }, [dispatch, count])
 
     //API DATA 
     const halfdayRqList = useSelector(state => state.setAllLeaveApproval.halfdayRqData.halfdayRqList, _.isEqual);
@@ -85,7 +87,9 @@ const ApprovalHR = () => {
                                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved',
                         hrstatus: val.hr_apprv_status,
                         code: 1,
-                        reqDate: val.leave_date
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
                     }
                 })
 
@@ -108,7 +112,9 @@ const ApprovalHR = () => {
                                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved',
                         hrstatus: val.hf_hr_apprv_status,
                         code: 2,
-                        reqDate: val.leave_date
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
                     }
                 })
 
@@ -131,7 +137,9 @@ const ApprovalHR = () => {
                                     (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved',
                         hrstatus: val.np_hr_apprv_status,
                         code: 3,
-                        reqDate: val.leave_date
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
                     }
                 })
 
@@ -155,7 +163,9 @@ const ApprovalHR = () => {
                                     (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved',
                         hrstatus: val.cf_hr_apprv_status,
                         code: 4,
-                        reqDate: val.leave_date
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
                     }
                 })
 
@@ -181,7 +191,9 @@ const ApprovalHR = () => {
                                 (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0) ? 'HR Approval Pending' : 'Approved',
                     hrstatus: val.hr_apprv_status,
                     code: 1,
-                    reqDate: val.leave_date
+                    reqDate: val.request_date,
+                    fromDate: val.leave_date,
+                    toDate: val.leavetodate
                 }
             })
 
@@ -469,10 +481,10 @@ const ApprovalHR = () => {
     return (
         <Fragment>
             <Suspense>
-                <LeaveRequestModal open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} />
-                <CompansatoryOff open={coffReqModal} setOpen={setcoffReqModal} data={coffData} />
-                <NoPunchLeaveRequest open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} />
-                <HalfDayLeaveRequest open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} />
+                <LeaveRequestModal open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} setCount={setCount} />
+                <CompansatoryOff open={coffReqModal} setOpen={setcoffReqModal} data={coffData} setCount={setCount} />
+                <NoPunchLeaveRequest open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} setCount={setCount} />
+                <HalfDayLeaveRequest open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
             </Suspense>
             <PageLayoutCloseOnly
                 heading="Leave Approval HR"
