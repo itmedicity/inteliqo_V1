@@ -245,7 +245,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
     }, [slno, reqDetl])
 
     const handleRegectRequest = async () => {
-
+        //handle function for reject the leave
     }
 
     return (
