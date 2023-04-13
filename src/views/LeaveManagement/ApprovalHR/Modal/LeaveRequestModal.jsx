@@ -18,11 +18,14 @@ import { useCallback } from 'react';
 
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
     //STATES
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
+
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     //DISPLAY THE DATA 
     const { slno, emno, name, section, status, hrstatus, code, reqDate, fromDate, toDate } = data;
@@ -45,7 +48,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
     // console.log(reqDetl)
 
     const handleApproverequest = useCallback(async () => {
-
+        setOpenBkDrop(true)
         //CASUAL LEAVE 
         const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
             return { ...val, emno: emno }
@@ -83,7 +86,6 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
 
         //UPDATE LEAVE MASTER TABLE
         const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
-        console.log(resultdel)
         const { success, message } = await resultdel.data;
         if (success === 1) {
 
@@ -123,7 +125,6 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             //EARN LEAVE 
             const earnLeavePromise = new Promise(async (resolve, reject) => {
                 if (earnLeave?.length > 0) {
-                    console.log(earnLeave)
                     const resultel = await axioslogin.post(`/LeaveRequestApproval/updateEarnLeaveTable`, earnLeave);
                     const { success, message } = resultel.data;
                     if (success === 1) {
@@ -154,14 +155,75 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             })
 
             /**** UPDATE PUNCH MASTER TABLE ****/
-            const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6);
-            const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5);
-            const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6);
+            const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6)?.map(val => {
+                return { ...val, emno: emno }
+            });
+            const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5)?.map(val => {
+                return { ...val, emno: emno }
+            });
+            const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6)?.map(val => {
+                return { ...val, emno: emno }
+            });
 
+            //UPDATE PUNCH MASTER TABLE ESI LEAVE
+            const updateEsiLeavePunchMaster = new Promise(async (resolve, reject) => {
+                if (esiLeave?.length > 0) {
+                    const esiPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateEsiLeave`, esiLeave);
+                    console.log(esiPunchMasterUpdate)
+                    const { success, message } = esiPunchMasterUpdate.data;
+                    if (success === 1) {
+                        resolve('ESI Leave Updated')
+                    } else {
+                        reject(`Esi Punch Master Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
 
+            //UPDATE PUNCH MASTER TABLE LWP LEAVE 
+            const updateLwpPunchMaster = new Promise(async (resolve, reject) => {
+                if (lwfLeave?.length > 0) {
+                    const lwfPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLwfLeave`, lwfLeave);
+                    console.log(lwfPunchMasterUpdate)
+                    const { success, message } = lwfPunchMasterUpdate.data;
+                    if (success === 1) {
+                        resolve('LWF Leave Updated')
+                    } else {
+                        reject(`LWP Punch Master Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
 
-            Promise.all([casualLeavePromise, holidayLeavePromise, earnLeavePromise, coffLeavePromise]).then(result => {
+            //UPDATE PUNCH MASTER TABLE BALANCE ALL LEAVE 
+            const updateLeavePunchMasterTable = new Promise(async (resolve, reject) => {
+                if (withOutesilwf?.length > 0) {
+                    const leaveUpdationPunchMaster = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLeave`, withOutesilwf);
+                    console.log(leaveUpdationPunchMaster)
+                    const { success, message } = leaveUpdationPunchMaster.data;
+                    if (success === 1) {
+                        resolve('Leave Updation')
+                    } else {
+                        reject(`Leave Updation with OUT ESI and LWP Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            Promise.all([
+                casualLeavePromise,
+                holidayLeavePromise,
+                earnLeavePromise,
+                coffLeavePromise,
+                updateEsiLeavePunchMaster,
+                updateLwpPunchMaster,
+                updateLeavePunchMasterTable
+            ]).then(result => {
                 if (result) {
+                    setOpenBkDrop(false)
                     setCount(Math.random())
                     succesNofity('Leave Request Approved')
                     setOpen(false)
@@ -169,6 +231,14 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             }).catch(error => {
                 setCount(Math.random())
                 errorNofity('Error Updating Leave Request')
+                const errorLog = {
+                    error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                    error_log: error,
+                    em_no: emno,
+                    formName: 'Leave Approval Modal Approval HR Page'
+                }
+                axioslogin.post(`/common/errorLog`, errorLog);
+                setOpenBkDrop(false)
                 setOpen(false)
             })
         }
@@ -179,146 +249,149 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
     }
 
     return (
-        <Modal
-            aria-labelledby="modal-title"
-            aria-describedby="modal-desc"
-            open={open}
-            onClose={() => setOpen(false)}
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        <>
+            <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={open}
+                onClose={() => setOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
-        >
-            <ModalDialog size="lg"  >
-                <ModalClose
-                    variant="outlined"
-                    sx={{
-                        top: 'calc(-1/4 * var(--IconButton-size))',
-                        right: 'calc(-1/4 * var(--IconButton-size))',
-                        boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                        borderRadius: '50%',
-                        bgcolor: 'background.body',
-                    }}
-                />
-                <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
-                    <Typography
-                        fontSize="xl2"
-                        lineHeight={1}
-                        startDecorator={
-                            <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
-                        }
-                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
-                    >
-                        {name}
-                    </Typography>
-                    <Typography
-                        lineHeight={1}
-                        component="h3"
-                        id="modal-title"
-                        level="h5"
-                        textColor="inherit"
-                        fontWeight="md"
-                        // mb={1}
-                        endDecorator={<Typography
-                            level="h6"
-                            justifyContent="center"
-                            alignItems="center"
-                            alignContent='center'
+            >
+                <ModalDialog size="lg"  >
+                    <ModalClose
+                        variant="outlined"
+                        sx={{
+                            top: 'calc(-1/4 * var(--IconButton-size))',
+                            right: 'calc(-1/4 * var(--IconButton-size))',
+                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                            borderRadius: '50%',
+                            bgcolor: 'background.body',
+                        }}
+                    />
+                    <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                        <Typography
+                            fontSize="xl2"
                             lineHeight={1}
+                            startDecorator={
+                                <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
+                            }
+                            sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {emno}
-                        </Typography>}
-                        sx={{ color: 'neutral.400', display: 'flex', }}
-                    >
-                        {`employee #`}
-                    </Typography>
-                    <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{section}</Typography>
-                </Box>
-                <Box sx={{ mt: 0.5, pt: 1 }} >
-                    <Typography variant="outlined" color="success">
-                        {status}
-                    </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                        <Typography
-                            level="body1"
-                            justifyContent="center"
-                        >
-                            Request Date
+                            {name}
                         </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                            {moment(reqDate).format('DD-MM-YYYY')}
+                        <Typography
+                            lineHeight={1}
+                            component="h3"
+                            id="modal-title"
+                            level="h5"
+                            textColor="inherit"
+                            fontWeight="md"
+                            // mb={1}
+                            endDecorator={<Typography
+                                level="h6"
+                                justifyContent="center"
+                                alignItems="center"
+                                alignContent='center'
+                                lineHeight={1}
+                            >
+                                {emno}
+                            </Typography>}
+                            sx={{ color: 'neutral.400', display: 'flex', }}
+                        >
+                            {`employee #`}
+                        </Typography>
+                        <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{section}</Typography>
+                    </Box>
+                    <Box sx={{ mt: 0.5, pt: 1 }} >
+                        <Typography variant="outlined" color="success">
+                            {status}
                         </Typography>
                     </Box>
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
+                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
+                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
+                            <Typography
+                                level="body1"
+                                justifyContent="center"
+                            >
+                                Request Date
+                            </Typography>
+                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
+                                {moment(reqDate).format('DD-MM-YYYY')}
+                            </Typography>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
+                        <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
+                            <Typography
+                                level="body1"
+                                justifyContent="center"
+                            >
+                                Request From
+                            </Typography>
+                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
+                                {moment(fromDate).format('DD-MM-YYYY')}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
+                            <Typography
+                                level="body1"
+                                justifyContent="center"
+                            >
+                                Request To
+                            </Typography>
+                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
+                                {moment(toDate).format('DD-MM-YYYY')}
+                            </Typography>
+                        </Box>
+                    </Box>
+                    <Box sx={{ flex: 1, py: 1 }}>
                         <Typography
-                            level="body1"
-                            justifyContent="center"
+                            level="body2"
+                            startDecorator={<InfoOutlined />}
+                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
                         >
-                            Request From
-                        </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
-                            {moment(fromDate).format('DD-MM-YYYY')}
+                            Requested Leave Information.
                         </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
-                        <Typography
-                            level="body1"
-                            justifyContent="center"
-                        >
-                            Request To
-                        </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
-                            {moment(toDate).format('DD-MM-YYYY')}
-                        </Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ flex: 1, py: 1 }}>
-                    <Typography
-                        level="body2"
-                        startDecorator={<InfoOutlined />}
-                        sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                    >
-                        Requested Leave Information.
-                    </Typography>
-                </Box>
-                <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                    {
-                        reqDetl?.map((val, idx) => {
-                            return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
-                                    {moment(val.leave_dates).format('DD-MM-YYYY')}
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
-                                    {val.leavetype_name}
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
-                                    {val.leave_name}
-                                </Typography>
-                            </Box>
-                        })
-                    }
+                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
+                        {
+                            reqDetl?.map((val, idx) => {
+                                return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
+                                        {moment(val.leave_dates).format('DD-MM-YYYY')}
+                                    </Typography>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                        {val.leavetype_name}
+                                    </Typography>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                        {val.leave_name}
+                                    </Typography>
+                                </Box>
+                            })
+                        }
 
-                </Paper>
-                <Divider>
-                    <Chip variant="outlined" color="info" size="sm">
-                        HR Use Only
-                    </Chip>
-                </Divider>
-                <Box sx={{ pt: 0.5 }} >
-                    <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                        <Button variant="solid" color="success" onClick={handleApproverequest}>
-                            Leave Request Approve
-                        </Button>
-                        <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                            Leave Request Reject
-                        </Button>
+                    </Paper>
+                    <Divider>
+                        <Chip variant="outlined" color="info" size="sm">
+                            HR Use Only
+                        </Chip>
+                    </Divider>
+                    <Box sx={{ pt: 0.5 }} >
+                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+                            <Button variant="solid" color="success" onClick={handleApproverequest}>
+                                Leave Request Approve
+                            </Button>
+                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
+                                Leave Request Reject
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-            </ModalDialog>
-        </Modal>
+                </ModalDialog>
+            </Modal>
+        </>
     )
 }
 
