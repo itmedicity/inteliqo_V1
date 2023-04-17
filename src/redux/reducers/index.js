@@ -84,7 +84,7 @@ import { getPaySlipData } from './Payroll.Reducer'
 import { getLeaveType } from './LeaveType.Reducer'
 import { getloginDeptSection } from './AuthorizatioDeptSectionReducer'
 import { setAllLeaveApproval } from './LeaveApprovalReducer'
-
+import { getOTApprovalData } from './OTReducer'
 
 const reducer = combineReducers({
     changeState,
@@ -180,7 +180,8 @@ const reducer = combineReducers({
     getPunchMasterData,
     fetchupdatedPunchInOutData,
     getloginDeptSection,
-    setAllLeaveApproval
+    setAllLeaveApproval,
+    getOTApprovalData
 })
 
 export default reducer;
