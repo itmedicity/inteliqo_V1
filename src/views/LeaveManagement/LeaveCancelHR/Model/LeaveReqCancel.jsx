@@ -1,4 +1,4 @@
-import React, { useState, memo, useCallback } from 'react'
+import React, { useState, Fragment, memo, useCallback } from 'react'
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -15,14 +15,14 @@ import { employeeNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
-const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
+const LeaveReqCancel = ({ open, setOpen, data, setCount }) => {
     //STATES
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
 
     //DISPLAY THE DATA 
-    const { slno, emno, name, section, status, reqDate, fromDate, toDate } = data;
+    const { slno, emno, name, section, hrstatus, reqDate, fromDate, toDate } = data;
     //GET THE DETAILED TABLE DATA USING API
     const getLeaveReqDetl = async (slno) => {
         const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${slno}`);
@@ -38,195 +38,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
         }
     }, [slno])
 
-    //UPDATE LEAVE FUNCTION 
-    const handleApproverequest = useCallback(async () => {
-        setOpenBkDrop(true)
-        //CASUAL LEAVE 
-        const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: emno }
-        });
-        //NATIONAL HOLIDAY
-        const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
-            return { ...val, emno: emno }
-        });
-        //EARN LEAVE
-        const earnLeave = reqDetl?.filter(val => val.leave_typeid === 8)?.map(val => {
-            return { ...val, emno: emno }
-        });
-        //COMPENSATORY OFF
-        const compansatoryOff = reqDetl?.filter(val => val.leave_typeid === 11)?.map(val => {
-            return { ...val, emno: emno }
-        });
-
-        const formData = {
-            status: 1,
-            comment: reason,
-            apprvdate: moment().format('YYYY-MM-DD HH:mm'),
-            us_code: employeeNumber(),
-            slno: slno
-        }
-
-        //UPDATE LEAVE MASTER TABLE
-        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
-        const { success } = await resultdel.data;
-        if (success === 1) {
-            /**** UPDATE LEAVE TABLES****/
-            //UPDATE CASUAL LEAVE TABLE
-            const casualLeavePromise = new Promise(async (resolve, reject) => {
-                if (casualLev?.length > 0) {
-                    const resultcl = await axioslogin.post(`/LeaveRequestApproval/updateCasualLeaveTable`, casualLev);
-                    const { success, message } = resultcl.data;
-                    if (success === 1) {
-                        resolve('Casual Leave Request Updated')
-                    } else {
-                        reject(`CL Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            //UPDATE HOLIDAY 
-            const holidayLeavePromise = new Promise(async (resolve, reject) => {
-                if (Holiday?.length > 0) {
-                    const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
-                    const { success, message } = resulthl.data;
-                    if (success === 1) {
-                        resolve('Holiday Leave Request updated')
-                    } else {
-                        reject(`HL Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            //EARN LEAVE 
-            const earnLeavePromise = new Promise(async (resolve, reject) => {
-                if (earnLeave?.length > 0) {
-                    const resultel = await axioslogin.post(`/LeaveRequestApproval/updateEarnLeaveTable`, earnLeave);
-                    const { success, message } = resultel.data;
-                    if (success === 1) {
-                        resolve('Earn Leave Request updated')
-                    } else {
-                        reject(`EL Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            //COFF UPDATION
-            const coffLeavePromise = new Promise(async (resolve, reject) => {
-                if (compansatoryOff?.length > 0) {
-                    const resultcoff = await axioslogin.post(`/LeaveRequestApproval/updatecOffTable`, compansatoryOff);
-                    const { success, message } = resultcoff.data;
-                    if (success === 1) {
-                        resolve('COFF Request Approved')
-                    } else {
-                        reject(`COFF Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            /**** UPDATE PUNCH MASTER TABLE ****/
-            const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6)?.map(val => {
-                return { ...val, emno: emno }
-            });
-            const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5)?.map(val => {
-                return { ...val, emno: emno }
-            });
-            const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6)?.map(val => {
-                return { ...val, emno: emno }
-            });
-
-            //UPDATE PUNCH MASTER TABLE ESI LEAVE
-            const updateEsiLeavePunchMaster = new Promise(async (resolve, reject) => {
-                if (esiLeave?.length > 0) {
-                    const esiPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateEsiLeave`, esiLeave);
-                    const { success, message } = esiPunchMasterUpdate.data;
-                    if (success === 1) {
-                        resolve('ESI Leave Updated')
-                    } else {
-                        reject(`Esi Punch Master Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            //UPDATE PUNCH MASTER TABLE LWP LEAVE 
-            const updateLwpPunchMaster = new Promise(async (resolve, reject) => {
-                if (lwfLeave?.length > 0) {
-                    const lwfPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLwfLeave`, lwfLeave);
-                    const { success, message } = lwfPunchMasterUpdate.data;
-                    if (success === 1) {
-                        resolve('LWF Leave Updated')
-                    } else {
-                        reject(`LWP Punch Master Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            //UPDATE PUNCH MASTER TABLE BALANCE ALL LEAVE 
-            const updateLeavePunchMasterTable = new Promise(async (resolve, reject) => {
-                if (withOutesilwf?.length > 0) {
-                    const leaveUpdationPunchMaster = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLeave`, withOutesilwf);
-                    const { success, message } = leaveUpdationPunchMaster.data;
-                    if (success === 1) {
-                        resolve('Leave Updation')
-                    } else {
-                        reject(`Leave Updation with OUT ESI and LWP Updation ! Error ${message}`)
-                    }
-                } else {
-                    resolve(1)
-                }
-            })
-
-            Promise.all([
-                casualLeavePromise,
-                holidayLeavePromise,
-                earnLeavePromise,
-                coffLeavePromise,
-                updateEsiLeavePunchMaster,
-                updateLwpPunchMaster,
-                updateLeavePunchMasterTable
-            ]).then(result => {
-                if (result) {
-                    setOpenBkDrop(false)
-                    setCount(Math.random())
-                    succesNofity('Leave Request Approved')
-                    setOpen(false)
-                }
-            }).catch(error => {
-                setCount(Math.random())
-                errorNofity('Error Updating Leave Request')
-                const errorLog = {
-                    error_log_table: 'punch_master,leave_request,leave_reqdetl',
-                    error_log: error,
-                    em_no: emno,
-                    formName: 'Leave Approval Modal Approval HR Page'
-                }
-                axioslogin.post(`/common/errorLog`, errorLog);
-                setOpenBkDrop(false)
-                setOpen(false)
-            })
-        }
-    }, [slno, reqDetl])
-
-    const LeaveRejectdata = {
-        hr_apprv_status: 2,
-        hr_apprv_cmnt: reason,
-        hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
-        hr_uscode: employeeNumber(),
-        lve_uniq_no: slno
-    }
-
-    const handleRegectRequest = useCallback(async () => {
+    const Cancelrequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
             return { ...val, emno: emno }
@@ -254,127 +66,227 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             return { ...val, emno: emno }
         });
 
-        /**** UPDATE LEAVE TABLES****/
 
-        //UPDATE HOLIDAY 
-        const holidayLeavePromise = new Promise(async (resolve, reject) => {
-            if (Holiday?.length > 0) {
-                const resulthl = await axioslogin.post(`/LeaveRequestApproval/CancelHolidayLeave`, Holiday);
-                const { success, message } = resulthl.data;
-                if (success === 1) {
-                    resolve('Holiday Leave Request updated')
-                } else {
-                    reject(`HL Updation ! Error ${message}`)
-                }
-            } else {
-                resolve(1)
-            }
-        })
+        const LeaveCanceldata = {
+            lv_cancel_cmnt: reason,
+            lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
+            lv_cancel_us_code: employeeNumber(),
+            lve_uniq_no: slno
+        }
 
-        //UPDATE CASUAL LEAVE TABLE
-        const casualLeavePromise = new Promise(async (resolve, reject) => {
-            if (casualLev?.length > 0) {
-                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, casualLev);
-                const { success, message } = resultcl.data;
-                if (success === 1) {
-                    resolve('Casual Leave Request Updated')
-                } else {
-                    reject(`CL Updation ! Error ${message}`)
-                }
-            } else {
-                resolve(1)
-            }
-        })
-
-        //EARN LEAVE 
-        const earnLeavePromise = new Promise(async (resolve, reject) => {
-            if (earnLeave?.length > 0) {
-                const resultel = await axioslogin.post(`/LeaveRequestApproval/CancelEarnLeave`, earnLeave);
-                const { success, message } = resultel.data;
-                if (success === 1) {
-                    resolve('Earn Leave Request updated')
-                } else {
-                    reject(`EL Updation ! Error ${message}`)
-                }
-            } else {
-                resolve(1)
-            }
-        })
-
-
-        //COFF UPDATION
-        const coffLeavePromise = new Promise(async (resolve, reject) => {
-            if (compansatoryOff?.length > 0) {
-                const resultcoff = await axioslogin.post(`/LeaveRequestApproval/CancelCoffLeave`, compansatoryOff);
-                const { success, message } = resultcoff.data;
-                if (success === 1) {
-                    resolve('COFF Request Approved')
-                } else {
-                    reject(`COFF Updation ! Error ${message}`)
-                }
-            } else {
-                resolve(1)
-            }
-        })
-
-        //UPDATE COMMON LEAVE TABLE
-        const commonLeavePromise = new Promise(async (resolve, reject) => {
-            if (commonLeaves?.length > 0) {
-                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
-                const { success, message } = resultcl.data;
-                if (success === 1) {
-                    resolve('Casual Leave Request Updated')
-                } else {
-                    reject(`CL Updation ! Error ${message}`)
-                }
-            } else {
-                resolve(1)
-            }
-        })
-
-        //handle function for reject the leave
-        const result = await axioslogin.patch(`/LeaveRequestApproval/lveReqRejectHr`, LeaveRejectdata);
+        const result = await axioslogin.patch(`/LeaveRequestApproval/lveReqCanclHr`, LeaveCanceldata);
         const { success } = result.data
         if (success === 1) {
-            Promise.all([
-                casualLeavePromise,
-                holidayLeavePromise,
-                earnLeavePromise,
-                coffLeavePromise,
-                commonLeavePromise
 
-            ]).then(result => {
-                if (result) {
-                    setOpenBkDrop(false)
-                    setCount(Math.random())
-                    succesNofity('Leave Request Approved')
-                    setOpen(false)
+
+            //UPDATE HOLIDAY 
+            const holidayLeavePromise = new Promise(async (resolve, reject) => {
+                if (Holiday?.length > 0) {
+                    const resulthl = await axioslogin.post(`/LeaveRequestApproval/CancelHolidayLeave`, Holiday);
+                    const { success, message } = resulthl.data;
+                    if (success === 1) {
+                        resolve('Holiday Leave Request updated')
+                    } else {
+                        reject(`HL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
                 }
-            }).catch(error => {
-                setCount(Math.random())
-                errorNofity('Error Updating Leave Request')
-                const errorLog = {
-                    error_log_table: 'punch_master,leave_request,leave_reqdetl',
-                    error_log: error,
-                    em_no: emno,
-                    formName: 'Leave Approval Modal Approval HR Page'
-                }
-                axioslogin.post(`/common/errorLog`, errorLog);
-                setOpenBkDrop(false)
-                setOpen(false)
             })
 
+            //UPDATE CASUAL LEAVE TABLE
+            const casualLeavePromise = new Promise(async (resolve, reject) => {
+                if (casualLev?.length > 0) {
+                    const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, casualLev);
+                    const { success, message } = resultcl.data;
+                    if (success === 1) {
+                        resolve('Casual Leave Request Updated')
+                    } else {
+                        reject(`CL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //EARN LEAVE 
+            const earnLeavePromise = new Promise(async (resolve, reject) => {
+                if (earnLeave?.length > 0) {
+                    const resultel = await axioslogin.post(`/LeaveRequestApproval/CancelEarnLeave`, earnLeave);
+                    const { success, message } = resultel.data;
+                    if (success === 1) {
+                        resolve('Earn Leave Request updated')
+                    } else {
+                        reject(`EL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+
+            //COFF UPDATION
+            const coffLeavePromise = new Promise(async (resolve, reject) => {
+                if (compansatoryOff?.length > 0) {
+                    const resultcoff = await axioslogin.post(`/LeaveRequestApproval/CancelCoffLeave`, compansatoryOff);
+                    const { success, message } = resultcoff.data;
+                    if (success === 1) {
+                        resolve('COFF Request Approved')
+                    } else {
+                        reject(`COFF Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //UPDATE COMMON LEAVE TABLE
+            const commonLeavePromise = new Promise(async (resolve, reject) => {
+                if (commonLeaves?.length > 0) {
+                    const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
+                    const { success, message } = resultcl.data;
+                    if (success === 1) {
+                        resolve('Casual Leave Request Updated')
+                    } else {
+                        reject(`CL Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            /**** UPDATE PUNCH MASTER TABLE ****/
+            const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6)?.map(val => {
+                return { ...val, emno: emno }
+            });
+            const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5)?.map(val => {
+                return { ...val, emno: emno }
+            });
+            const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6)?.map(val => {
+                return { ...val, emno: emno }
+            });
+
+            //UPDATE PUNCH MASTER TABLE ESI LEAVE
+            const updateEsiLeavePunchMaster = new Promise(async (resolve, reject) => {
+                if (esiLeave?.length > 0) {
+                    const esiPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/CancelpunchMastEsiLeave`, esiLeave);
+                    const { success, message } = esiPunchMasterUpdate.data;
+                    if (success === 1) {
+                        resolve('ESI Leave Updated')
+                    } else {
+                        reject(`Esi Punch Master Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //UPDATE PUNCH MASTER TABLE LWP LEAVE 
+            const updateLwpPunchMaster = new Promise(async (resolve, reject) => {
+                if (lwfLeave?.length > 0) {
+                    const lwfPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/CancelpunchMastLwfLeave`, lwfLeave);
+                    const { success, message } = lwfPunchMasterUpdate.data;
+                    if (success === 1) {
+                        resolve('LWF Leave Updated')
+                    } else {
+                        reject(`LWP Punch Master Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            //UPDATE PUNCH MASTER TABLE BALANCE ALL LEAVE 
+            const updateLeavePunchMasterTable = new Promise(async (resolve, reject) => {
+                if (withOutesilwf?.length > 0) {
+                    const leaveUpdationPunchMaster = await axioslogin.post(`/LeaveRequestApproval/CancelpunchMastLeave`, withOutesilwf);
+                    const { success, message } = leaveUpdationPunchMaster.data;
+                    if (success === 1) {
+                        resolve('Leave Updation')
+                    } else {
+                        reject(`Leave Updation with OUT ESI and LWP Updation ! Error ${message}`)
+                    }
+                } else {
+                    resolve(1)
+                }
+            })
+
+            if (hrstatus === 1) {
+
+                Promise.all([
+                    casualLeavePromise,
+                    holidayLeavePromise,
+                    earnLeavePromise,
+                    coffLeavePromise,
+                    commonLeavePromise,
+                    updateEsiLeavePunchMaster,
+                    updateLwpPunchMaster,
+                    updateLeavePunchMasterTable
+                ]).then(result => {
+                    if (result) {
+                        setOpenBkDrop(false)
+                        setCount(Math.random())
+                        succesNofity('Leave Request Approved')
+                        setOpen(false)
+                    }
+                }).catch(error => {
+                    setCount(Math.random())
+                    errorNofity('Error Updating Leave Request')
+                    const errorLog = {
+                        error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                        error_log: error,
+                        em_no: emno,
+                        formName: 'Leave Approval Modal Approval HR Page'
+                    }
+                    axioslogin.post(`/common/errorLog`, errorLog);
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                })
+
+            }
+
+            else {
+                Promise.all([
+                    casualLeavePromise,
+                    holidayLeavePromise,
+                    earnLeavePromise,
+                    coffLeavePromise,
+                    commonLeavePromise
+
+                ]).then(result => {
+                    if (result) {
+                        setOpenBkDrop(false)
+                        setCount(Math.random())
+                        succesNofity('Leave Request Approved')
+                        setOpen(false)
+                    }
+                }).catch(error => {
+                    setCount(Math.random())
+                    errorNofity('Error Updating Leave Request')
+                    const errorLog = {
+                        error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                        error_log: error,
+                        em_no: emno,
+                        formName: 'Leave Approval Modal Approval HR Page'
+                    }
+                    axioslogin.post(`/common/errorLog`, errorLog);
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                })
+
+            }
         }
-        else {
-            setOpenBkDrop(false)
-            setOpen(false)
-            setCount(Math.random())
-            errorNofity('Error Updating Leave Request')
-        }
-    }, [slno, reqDetl])
+
+    }, [slno, reqDetl, reason])
+
+    // Half Day Request Cancel Close
+    const handleClose = () => {
+        setOpen(false)
+        setOpenBkDrop(false)
+    }
 
     return (
-        <>
+        <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <Modal
                 aria-labelledby="modal-title"
@@ -431,7 +343,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                     </Box>
                     <Box sx={{ mt: 0.5, pt: 1 }} >
                         <Typography variant="outlined" color="success">
-                            {status}
+                            Leave Request Cancel
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
@@ -505,18 +417,18 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                            <Button variant="solid" color="success" onClick={handleApproverequest}>
-                                Leave Request Approve
+                            <Button variant="solid" color="success" onClick={Cancelrequest}>
+                                Save
                             </Button>
-                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                                Leave Request Reject
+                            <Button variant="solid" color="danger" onClick={handleClose}>
+                                Close
                             </Button>
                         </Box>
                     </Box>
                 </ModalDialog>
             </Modal>
-        </>
+        </Fragment>
     )
 }
 
-export default memo(LeaveRequestModal)
+export default memo(LeaveReqCancel)

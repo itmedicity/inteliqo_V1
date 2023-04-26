@@ -12,32 +12,49 @@ import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
-const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
+const NoPunchCancel = ({ open, setOpen, data, setCount }) => {
 
     //STATES
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
-    const [planSlno, setPlanslno] = useState(0)
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    const [leaveDate, setleaveDate] = useState('')
+    const [punchslno, setPuncslno] = useState(0)
+    const [nopunch, setNopunch] = useState({
+        nopunchdate: '',
+        shft_desc: '',
+        creteddate: '',
+        np_reason: '',
+        np_hr_apprv_status: ''
+    })
+    const [miss, setMis] = useState('');
     //DISPLAY THE DATA 
-    const { slno, emno, name, section, status, reqDate } = data;
+    const { slno, emno, name, section } = data;
 
     //GET THE DETAILED TABLE DATA USING API
     const getLeaveReqDetl = async (slno) => {
-        const resultdel = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`);
+        const resultdel = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`);
         const { success, data } = resultdel?.data;
         if (success === 1) {
-            const { planslno, leavedate } = data[0]
-            console.log((data));
-            setPlanslno(planslno)
-            setleaveDate(leavedate)
+            const { nopunchdate, shft_desc, np_reason, creteddate, checkinflag, checkintime, checkoutflag,
+                checkouttime, punslno, np_hr_apprv_status } = data[0]
             setReqDetl(data)
+            const formData = {
+                nopunchdate: nopunchdate,
+                shft_desc: shft_desc,
+                creteddate: creteddate,
+                np_reason: np_reason,
+                np_hr_apprv_status: np_hr_apprv_status
+            }
+            setNopunch(formData)
+            setMis(checkinflag === 1 ? checkintime : checkoutflag === 1 ? checkouttime : null)
+            setPuncslno(punslno)
         }
     }
+
+    const { nopunchdate, shft_desc, np_reason, creteddate, np_hr_apprv_status } = nopunch
 
     useEffect(() => {
         if (slno !== null && slno !== undefined) {
@@ -48,17 +65,18 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
     const handleApproverequest = useCallback(async () => {
         setOpenBkDrop(true)
         const formData = {
-            hf_hr_apprv_status: 1,
-            hf_hr_apprv_cmnt: reason,
-            hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
-            hf_hr_uscode: employeeNumber(),
-            half_slno: slno,
-            duty_day: leaveDate,
-            em_no: emno
+            lv_cancel_cmnt: reason,
+            lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
+            lv_cancel_us_code: employeeNumber(),
+            nopunch_slno: slno,
+            hrstatus: np_hr_apprv_status,
+            punch_in: null,
+            punch_out: null,
+            punch_slno: punchslno
         }
 
         //UPDATE LEAVE MASTER TABLE
-        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/Hrhalfday`, formData);
+        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/NoPunchReqCancelHr`, formData);
         const { success, message } = await resultdel.data;
         if (success === 1) {
             setOpenBkDrop(false)
@@ -70,30 +88,11 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             succesNofity(message)
         }
     })
-    const LeaveRejectdata = {
-        hf_hr_apprv_status: 2,
-        hf_hr_apprv_cmnt: reason,
-        hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
-        hf_hr_uscode: employeeNumber(),
-        half_slno: slno,
-        hrm_cl_slno: planSlno
-    }
-    // HALF DAY LEAVE HR REJECT
-    const handleRegectRequest = async () => {
-        const result = await axioslogin.patch(`/LeaveRequestApproval/HalfDayReqRejectHr`, LeaveRejectdata);
-        const { success } = result.data
-        if (success === 1) {
-            setOpenBkDrop(false)
-            setOpen(false)
-            setCount(Math.random())
-            succesNofity('Leave Request Reject')
-        }
-        else {
-            setOpenBkDrop(false)
-            setOpen(false)
-            setCount(Math.random())
-            errorNofity('Error Updating Leave Request')
-        }
+
+    // No Punch Request Close
+    const handleClose = () => {
+        setOpen(false)
+        setOpenBkDrop(false)
     }
 
     return (
@@ -153,7 +152,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                     </Box>
                     <Box sx={{ mt: 0.5, pt: 1 }} >
                         <Typography variant="outlined" color="success">
-                            {status}
+                            No Punch Cancel
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
@@ -165,7 +164,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 Request Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(reqDate).format('DD-MM-YYYY')}
+                                {moment(creteddate).format('DD-MM-YYYY')}
                             </Typography>
                         </Box>
                     </Box>
@@ -175,10 +174,10 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Leave Date
+                                No Punch Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(reqDate).format('DD-MM-YYYY')}
+                                {moment(nopunchdate).format('DD-MM-YYYY')}
                             </Typography>
                         </Box>
                     </Box>
@@ -197,24 +196,26 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 return <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }} key={idx} >
                                     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
                                         <Typography fontSize="sm" fontWeight="lg"  >
-                                            Check In:
+                                            Shift:
                                         </Typography>
                                         <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {moment(val.checkIn).format('hh:mm:ss')}
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ pl: 2 }} >
-                                            Check Out:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {moment(val.checkOut).format('hh:mm:ss')}
+                                            {shft_desc}
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
                                         <Typography fontSize="sm" fontWeight="lg"  >
-                                            Month of Leave:
+                                            Time:
                                         </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
-                                            {val.month}
+                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                            {miss}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                        <Typography fontSize="sm" fontWeight="lg"  >
+                                            Reason:
+                                        </Typography>
+                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                            {np_reason}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -231,10 +232,10 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                             variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
-                                Leave Request Approve
+                                Save
                             </Button>
-                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                                Leave Request Reject
+                            <Button variant="solid" color="danger" onClick={handleClose}>
+                                Close
                             </Button>
                         </Box>
                     </Box>
@@ -245,5 +246,4 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
     )
 }
 
-export default memo(HalfDayLeaveRequest)
-
+export default memo(NoPunchCancel)
