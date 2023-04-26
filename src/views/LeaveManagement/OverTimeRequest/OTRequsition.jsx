@@ -277,8 +277,10 @@ const OTRequsition = () => {
         ot_remarks: ot_remark,
         ot_convert: 0,
         ot_amount: amount,
-        ot_inch_require: ((incharge === 1) || (hod === 1)) ? 0 : authorization_incharge,
-        ot_hod_require: hod === 1 ? 0 : authorization_hod,
+        ot_inch_require: ((incharge === 1) || (hod === 1)) ? 1 : authorization_incharge,
+        ot_inch_status: ((incharge === 1) || (hod === 1)) ? 1 : 0,
+        ot_hod_require: hod === 1 ? 1 : authorization_hod,
+        ot_hod_status: hod === 1 ? 1 : 0,
         ot_hr_require: 1,
         ot_ceo_require: co_assign,
         ot_deptsec_id: em_dept_section,
@@ -425,36 +427,6 @@ const OTRequsition = () => {
         setShift(ot_shift_id)
         setOt_remark(ot_remarks)
         setOt_reason(ot_reson)
-
-
-        // const result = await axioslogin.get(`/overtimerequest/select/${ot_slno}`)
-        // const { success, data } = result.data;
-        // if (success === 1) {
-        //     const { ot_days, shft_code, shft_slno, shft_chkin_time, shft_chkout_time, check_in, check_out, ot_reson, ot_remarks } = data[0]
-        //     const frmdata = {
-        //         date: ot_days,
-        //         shift: shft_code,
-        //         shft_slno: shft_slno,
-        //         shift_Start: format(new Date(shft_chkin_time), "HH:mm:ss"),
-        //         shift_end: format(new Date(shft_chkout_time), "HH:mm:ss"),
-        //         in_time: format(new Date(check_in), "HH:mm:ss"),
-        //         out_time: format(new Date(check_out), "HH:mm:ss")
-        //     }
-        //     const set = {
-        //         otDate: '',
-        //         ot_reson: ot_reson,
-        //         ot_remarks: ot_remarks,
-        //         shft_slno: shft_slno,
-        //         checkin: check_in,
-        //         checkout: check_out,
-        //         shiftcheckout: shft_chkout_time,
-        //         shiftcheckin: shft_chkin_time,
-        //         ot_slno: ot_slno
-        //     }
-        //     setTableData(frmdata);
-        //     setrequest(set)
-        //     setflag(1)
-
     }
 
     return (
@@ -700,7 +672,7 @@ const OTRequsition = () => {
                         </TableContainer> : null
                     }
                 </Box>
-                <Box sx={{ wisth: '100%', display: 'flex', flexDirection: 'row' }}>
+                <Box sx={{ wisth: '100%', display: 'flex', flexDirection: 'row', }}>
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <TextField
                             placeholder="Over Time Reason"
@@ -722,13 +694,13 @@ const OTRequsition = () => {
                             onChange={(e) => setOt_remark(e.target.value)}
                         />
                     </Box>
-                    <Box sx={{ mt: 0 }}>
+                    <Box sx={{ px: 0.5, mt: 0.2 }}>
                         <CssVarsProvider>
                             <Tooltip title="Save Request" variant="outlined" color="info" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
-                                    size="lg"
+                                    size="md"
                                     color="primary"
                                     onClick={submitRequest}
                                 >

@@ -13,7 +13,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const OtHrApprovalModel = ({ open, handleClose, rowData, inchid, count, setCount }) => {
-
     const {
         em_no,
         em_name,
@@ -343,4 +342,4 @@ const OtHrApprovalModel = ({ open, handleClose, rowData, inchid, count, setCount
     )
 }
 
-export default OtHrApprovalModel
+export default memo(OtHrApprovalModel)

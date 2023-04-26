@@ -75,7 +75,7 @@ const OtHrApproval = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.ot_hr_status === 1) {
+                if (params.data.ot_hr_status === 1 || params.data.ot_ceo_status === 0) {
                     return <Fragment>
                         <IconButton
                             sx={{ paddingY: 0.5 }} >
@@ -117,7 +117,6 @@ const OtHrApproval = () => {
         setApprvFlag(1)
     }
     const Cancel = async (params) => {
-        console.log("cancel");
         const data = params.api.getSelectedRows()
         setRowData(data)
         setCancelOpen(true)
@@ -133,6 +132,7 @@ const OtHrApproval = () => {
         setCanclFlag(0)
         setRowData(0)
     }
+
     return (
         <CustomLayout title="OT HR Approval" displayClose={true} >
             <ToastContainer />

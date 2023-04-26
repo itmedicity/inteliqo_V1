@@ -5,7 +5,8 @@ const {
     FETCH_ALL_OT_INCHARGE,
     FETCH_ALL_OT_HOD,
     FETCH_ALL_OT_CEO_APPROVAL,
-    FETCH_ALL_OT_HR_APPROVAL
+    FETCH_ALL_OT_HR_APPROVAL,
+    FETCH_OT_UPDATION_LIST
 } = Actiontypes;
 
 export const getAllInchrgeApprvl = (postData) => async (dispatch) => {
@@ -43,5 +44,14 @@ export const getAllHrApprvl = () => async (dispatch) => {
         dispatch({ type: FETCH_ALL_OT_HR_APPROVAL, payload: data, status: true })
     } else {
         dispatch({ type: FETCH_ALL_OT_HR_APPROVAL, payload: 0, status: false })
+    }
+}
+export const getOtUpdationList = () => async (dispatch) => {
+    const result = await axioslogin.get('/overtimerequest/otupdation/list')
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_OT_UPDATION_LIST, payload: data, status: true })
+    } else {
+        dispatch({ type: FETCH_OT_UPDATION_LIST, payload: 0, status: false })
     }
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useState } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { CssVarsProvider, Textarea, Typography } from '@mui/joy'
 import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Slide } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
@@ -10,9 +10,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 const OtCnclModel = ({ open, handleClose, rowData, count, setCount, logEmpid, apprvlname }) => {
-    const { em_no, em_name, ot_date, ot_days, over_time, ot_reson, shft_desc, emp_id, ot_slno } = rowData[0]
+    const { em_no, em_name, ot_date, ot_days, over_time, ot_reson, shft_desc, ot_slno, check_in, check_out } = rowData[0]
 
     const [cancel, setCancel] = useState('')
+    const [array, setArray] = useState([])
 
     const patchdata = {
         ot_status: 1,
@@ -22,15 +23,37 @@ const OtCnclModel = ({ open, handleClose, rowData, count, setCount, logEmpid, ap
         ot_slno: ot_slno
     }
 
+    useEffect(() => {
+        if (check_in !== 0 && check_out !== 0) {
+            const obj = {
+                punch_taken: 0,
+                emp_code: em_no,
+                punch_time: check_in
+            }
+            const obj2 = {
+                punch_taken: 0,
+                emp_code: em_no,
+                punch_time: check_out
+            }
+            setArray([...array, obj, obj2])
+        }
+    }, [check_in, check_out])
+
     const submitCancel = async (e) => {
         e.preventDefault()
         const result1 = await axioslogin.patch('/overtimerequest/cancelot/dept', patchdata)
         const { success, message } = result1.data
         if (success === 2) {
-            succesNofity(message);
-            setCancel('')
-            setCount(count + 1)
-            handleClose()
+            const result1 = await axioslogin.patch('/overtimerequest/inactive/punch', array)
+            const { success, message } = result1.data
+            if (success === 1) {
+                succesNofity("Ot Approval Incharge Rejected ");
+                setCancel('')
+                setCount(count + 1)
+                handleClose()
+            } else {
+                infoNofity(message)
+            }
         } else if (success === 1) {
             infoNofity(message.sqlMessage);
         } else {
