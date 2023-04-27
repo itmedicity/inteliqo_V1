@@ -1,9 +1,8 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper, Tooltip } from '@mui/material'
+import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
 import CommonAgGrid from '../Component/CommonAgGrid';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -19,7 +18,6 @@ import {
 import AppraisalView from './AppraisalComponents/AppraisalView';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { setAccademicData } from 'src/redux/actions/Profile.action';
-
 
 const HRList = () => {
 
@@ -73,23 +71,17 @@ const HRList = () => {
             cellRenderer: params =>
                 <Fragment>
                     <Tooltip title="Direct Contract Close" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }}
-                            onClick={() => DirectContractClose(params)}
-                        >
+                        <IconButton sx={{ paddingY: 0.5 }} onClick={() => DirectContractClose(params)} >
                             <CancelIcon color='primary' />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Category Change" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }}
-                            onClick={() => toCategory(params)}
-                        >
+                        <IconButton sx={{ paddingY: 0.5 }} onClick={() => toCategory(params)} >
                             <NextPlanIcon color='primary' />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Appraisal View" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }}
-                            onClick={() => toAppraisalView(params)}
-                        >
+                        <IconButton sx={{ paddingY: 0.5 }} onClick={() => toAppraisalView(params)} >
                             <InsertDriveFileIcon color='primary' />
                         </IconButton>
                     </Tooltip>
@@ -192,7 +184,7 @@ const HRList = () => {
                         <Paper square elevation={0} sx={{ p: 0.5, }}><Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
                             <Box sx={{ flex: 1 }} >
                                 <CssVarsProvider>
-                                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                         Employee Appraisl List (Completed/Pending)
                                     </Typography>
                                 </CssVarsProvider>
@@ -205,11 +197,11 @@ const HRList = () => {
                                 </CssVarsProvider>
                             </Box>
                             <Box>
-                                <CssVarsProvider>
-                                    <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
-                                        <CloseIcon color="danger" />
-                                    </IconButton>
-                                </CssVarsProvider>
+                                {/* <CssVarsProvider> */}
+                                <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
+                                    <CloseIcon color="danger" />
+                                </IconButton>
+                                {/* </CssVarsProvider> */}
                             </Box>
                         </Paper>
 

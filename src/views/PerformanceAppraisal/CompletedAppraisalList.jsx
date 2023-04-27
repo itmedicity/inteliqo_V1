@@ -93,7 +93,7 @@ const CompletedAppraisalList = () => {
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Dept Name ', field: 'dept_name', filter: true },
         { headerName: 'Designation ', field: 'desg_name', },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },    
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
     ])
 
     //Direct Contract close
@@ -115,9 +115,9 @@ const CompletedAppraisalList = () => {
 
 
     const toAppraisalView = (params) => {
-      
+
         const data = params.api.getSelectedRows()
-        const { em_no, em_id} = data[0]
+        const { em_no, em_id } = data[0]
         setempno(em_no)
         setEmpid(em_id)
         setAppraisalview(1)

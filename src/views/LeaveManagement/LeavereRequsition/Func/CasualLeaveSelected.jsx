@@ -56,6 +56,7 @@ const CasualLeaveSelected = ({ handleChange, index, date }) => {
                     return <option
                         key={index}
                         value={val.hrm_cl_slno}
+                        disabled={val.hl_lv_tkn_status === 1 ? true : false}
                     >
                         {`${val.cl_lv_mnth} - ${val.cl_bal_leave}`}
                     </option>

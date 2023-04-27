@@ -154,7 +154,7 @@ const DutyPlanTopCard = () => {
             variant="outlined"
             sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
         >
-            <CustomBackDrop open={open} />
+            <CustomBackDrop open={open} text="Please Wait" />
             <Box
                 sx={{
                     display: 'flex',

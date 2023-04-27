@@ -15,6 +15,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const MissPunchRequest = () => {
 
@@ -30,6 +31,8 @@ const MissPunchRequest = () => {
     const [fromDate, setFromDate] = useState(moment())
     const [shiftData, setShiftData] = useState({})
 
+    const [drop, setDropOpen] = useState(false)
+
     const [shiftDesc, setShiftDesc] = useState('Data Not Found');
     const [checkIn, setCheckin] = useState('00:00');
     const [checkOut, setCheckOut] = useState('00:00');
@@ -41,12 +44,12 @@ const MissPunchRequest = () => {
 
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
 
     // console.log(hod, incharge)
 
@@ -115,6 +118,8 @@ const MissPunchRequest = () => {
     })
 
     const handleChangeMissPunchRequest = useCallback(async () => {
+        setDropOpen(true)
+
         if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
             warningNofity("Duty Not Planned For the Selected Date")
         } else if (checkInCheck === false && checkOutCheck === false) {
@@ -142,13 +147,16 @@ const MissPunchRequest = () => {
                             (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                 incapprv_status:
                     (authorization_incharge === 1 && incharge === 1) ? 1 :
-                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                        (hod === 1) ? 1 :
+                            (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                 inc_apprv_cmnt:
                     (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                        (hod === 1) ? "DIRECT" :
+                            (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
                 inc_apprv_time:
                     (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                        (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                            (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                 hod_apprv_req:
                     (authorization_hod === 1 && hod === 1) ? 1 :
                         (authorization_hod === 1 && hod === 0) ? 1 :
@@ -185,15 +193,17 @@ const MissPunchRequest = () => {
                 if (success === 1) {
                     succesNofity(message)
                     changeForm()
+                    setDropOpen(false)
                 } else if (success === 2) {
                     warningNofity(message)
                     changeForm()
+                    setDropOpen(false)
                 } else {
                     errorNofity(` Contact IT ${JSON.stringify(message)}`)
                     changeForm()
+                    setDropOpen(false)
                 }
             }
-
         }
     }, [shiftInformation, reason, checkInCheck, checkOutCheck])
 
@@ -202,6 +212,7 @@ const MissPunchRequest = () => {
             variant="outlined"
             sx={{ display: "flex", flex: 1, p: 0.5, mb: 0.5, flexDirection: 'column' }}
         >
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <Box sx={{ display: "flex", flex: 1, p: 0.5, alignItems: 'center' }} >
 
                 <Box sx={{ display: "flex", p: 0.5 }} >

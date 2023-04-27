@@ -114,9 +114,9 @@ const LeaveProcessCard = ({ data, category }) => {
                             } else {
                                 warningNofity(message)
                             }
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 117' + err) })
 
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -119' + err) })
 
                 } else if (leaveName === 2) {
 
@@ -133,9 +133,9 @@ const LeaveProcessCard = ({ data, category }) => {
                                 } else {
                                     warningNofity(message)
                                 }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 136' + err) })
                         }
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 138' + err) })
 
                 } else if (leaveName === 3) {
                     // Earn Leave Process and Leave Crediting
@@ -149,19 +149,20 @@ const LeaveProcessCard = ({ data, category }) => {
                             } else {
                                 warningNofity(message)
                             }
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -152' + err) })
 
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 154' + err) })
 
                 } else if (leaveName === 4) {
 
                     // National And Festival Holiday
-                    updateHolidayLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no).then((value) => {
-
+                    updateHolidayLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj).then((value) => {
                         //insert function holiday
                         let { status, data } = value;
                         if (status === 0) {
                             warningNofity("Holiday List Not Updted For Current Year")
+                        } else if (Object.keys(data).length === 0) {
+                            warningNofity("Holidays Not Available For Updates")
                         } else {
                             Object.keys(value).length > 0 && insertHolidayFun(data, lv_process_slno).then((values) => {
                                 let { status, message } = values;
@@ -171,15 +172,15 @@ const LeaveProcessCard = ({ data, category }) => {
                                 } else {
                                     warningNofity(message)
                                 }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -174 ' + err) })
 
                         }
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!line 177' + err) })
 
                 }
             }
 
-        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!' + err) })
+        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -182' + err) })
     }
 
     return (

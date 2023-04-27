@@ -30,15 +30,14 @@ const LeaveCalanderEmp = () => {
                                     <TableCell align="right" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }}>Allowed</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }}>Credited</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }}>Taken</TableCell>
+                                    <TableCell align="right" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }}>Request</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }}>Balance</TableCell>
                                 </TableRow>
                             </TableHead>
-
                             <TableBody>
                                 {
                                     data?.map((val) => {
                                         const leaveType = val.typeleve;
-
                                         return < TableRow
                                             key={val.typeleve}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -49,6 +48,7 @@ const LeaveCalanderEmp = () => {
                                             <TableCell align="right">{val.allowed}</TableCell>
                                             <TableCell align="right">{val.credited}</TableCell>
                                             <TableCell align="right">{val.taken}</TableCell>
+                                            <TableCell align="right">{val.req}</TableCell>
                                             <TableCell align="right">{val.balance}</TableCell>
                                         </TableRow>
                                     })

@@ -184,9 +184,12 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      (ecat_cont === 1 && moment(em_contract_end_date) <= moment(lastDayOfYear(new Date()))) ? em_contract_end_date :
-        (ecat_prob === 1 && moment(em_prob_end_date) <= moment(lastDayOfYear(new Date()))) ? em_prob_end_date :
-          moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+      ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
+        ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+          ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+            ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+              ((ecat_cont === 0 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+                moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
   }
 }
 
@@ -262,9 +265,15 @@ export const categoryChangedNewObject = async (
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      (ecat_cont === 1 && moment(em_contract_end_date) <= moment(lastDayOfYear(new Date()))) ? em_contract_end_date :
-        (ecat_prob === 1 && moment(em_prob_end_date) <= moment(lastDayOfYear(new Date()))) ? em_prob_end_date :
-          moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+      ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
+        ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+          ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+            ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+              ((ecat_cont === 0 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+                moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+    // (ecat_cont === 1 && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
+    //   (ecat_prob === 1 && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+    //     moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
     // "next_updatedate"  if employee is in contract "contract end date" : if is in probation "probation end date" other wise last day of year
   }
 }
@@ -604,12 +613,16 @@ export const getEmployeeProcessStartAndEndDate = async (empCategoryProcessDetl) 
 //Update Casual Leave Based on process
 
 export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, em_id, em_no) => {
+
   const { startDate, endDate } = calulatedProcessDate
+
+  console.log(new Date(startDate), new Date(endDate))
 
   let casualLeaveDateRange = eachMonthOfInterval({
     start: new Date(startDate),
     end: new Date(endDate),
   })
+
   let processedCasualLeaveList = casualLeaveDateRange && casualLeaveDateRange.map((value, index) => {
     const today = moment().format('YYYY-MM');
     const checkDate = moment(value).format('YYYY-MM');
@@ -632,6 +645,7 @@ export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, e
     // }
     // return casualLeveList
   }).filter((val) => val !== false)
+  console.log(processedCasualLeaveList)
   return processedCasualLeaveList
 }
 
@@ -670,7 +684,7 @@ export const casualLeaveInsertFun = async (value, lv_process_slno) => {
 
 //update holiday based on saved Holiday
 
-export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no) => {
+export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj) => {
   const { startDate, endDate } = calulatedProcessDate;
   let messages = { status: 0, data: [] }
   const holidayList = await axioslogin.get('/yearleaveprocess/year/holiday');
@@ -683,7 +697,7 @@ export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno,
       const holidayDate = moment(val.hld_date).format('YYYY-MM-DD');
 
       // console.log(today, holidayDate)
-      return (holidayDate >= today) ? {
+      return (holidayDate >= today && holidayDate >= em_doj) ? {
         em_no: em_no,
         hd_slno: val.hld_slno,
         hl_lv_year: val.hld_date,
@@ -732,7 +746,6 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 
 //Update Common Leaves 
 export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow) => {
-
   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
@@ -754,7 +767,7 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
         cmn_lv_year: moment().format('YYYY-MM-DD')
       }
       return commonleave
-    })
+    }).filter((val) => ecat_esi_allow === 0 && val.llvetype_slno !== 6 || ecat_esi_allow === 1 && val.llvetype_slno !== 7)
     return { ...commonLeaveMessage, status: 1, data: commondata }
   } else {
     return { ...commonLeaveMessage, status: 0, data: [] }

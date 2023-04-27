@@ -27,7 +27,7 @@ const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMai
 const LeaveRequestMainCard = () => {
 
     const dispatch = useDispatch();
-    const { LEAVE_REQ_DEFAULT } = Actiontypes;
+    const { LEAVE_REQ_DEFAULT, GET_EMPLOYEE_APPROVAL_LEVEL } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
@@ -48,6 +48,7 @@ const LeaveRequestMainCard = () => {
             dispatch(getEmployeeInformation(em_id))
         }
         dispatch(getEmployeeApprovalLevel(em_id))
+
     }, [hod, incharge, em_id])
 
     useEffect(() => {
@@ -57,7 +58,7 @@ const LeaveRequestMainCard = () => {
             dispatch(getEmpNameHodSectionBased());
             dispatch(getannualleave())
             dispatch(getEmployeeInformation())
-            dispatch(getEmployeeApprovalLevel())
+            dispatch(getEmployeeApprovalLevel(0))
         }
     }, [])
 
@@ -68,10 +69,10 @@ const LeaveRequestMainCard = () => {
                 <LeaveRequestEmployeeSelection />
                 <Suspense fallback={<LinearProgreeBar />} >
                     {
-                        requestType === 1 ? <LeaveRequestFormPage /> :
-                            requestType === 2 ? <HalfDayLeaveRequest /> :
-                                requestType === 3 ? <MissPunchRequest /> :
-                                    requestType === 4 ? <CompansatoryOffMast /> : null
+                        requestType === 1 ? <LeaveRequestFormPage em_id={em_id} /> :
+                            requestType === 2 ? <HalfDayLeaveRequest em_id={em_id} /> :
+                                requestType === 3 ? <MissPunchRequest em_id={em_id} /> :
+                                    requestType === 4 ? <CompansatoryOffMast em_id={em_id} /> : null
                     }
                 </Suspense>
                 <LeaveTableContainer />

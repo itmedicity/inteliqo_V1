@@ -3,7 +3,7 @@ import { Button, CssVarsProvider, Textarea, Tooltip, Typography } from '@mui/joy
 import { Box, Grid, Paper, TextField, FormControl, MenuItem, Select } from '@mui/material'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { useState } from 'react'
-import { getDutyPlannedShiftForHalfDayRequest } from 'src/redux/actions/LeaveReqst.action'
+import { getCreditedCasualLeave, getDutyPlannedShiftForHalfDayRequest } from 'src/redux/actions/LeaveReqst.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { memo } from 'react'
 import moment from 'moment'
@@ -17,6 +17,8 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import HalfDayCasualLeaveOption from '../Func/HalfDayCasualLeaveOption'
 import { Actiontypes } from 'src/redux/constants/action.type'
+import { getannualleave } from 'src/redux/actions/Profile.action'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const HaldayRequetsMainForm = () => {
 
@@ -43,14 +45,16 @@ const HaldayRequetsMainForm = () => {
     const [reason, setReason] = useState('')
     const [name, setName] = useState('')
 
+    const [drop, setDropOpen] = useState(false)
+
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel;
 
     // console.log(hod, incharge)
 
@@ -143,14 +147,15 @@ const HaldayRequetsMainForm = () => {
     })
 
     //ONCHAGE LEAVE NAME
-    const handleChangeLeaveName = useCallback(async (e) => {
-        setName(e.target.name)
+    const handleChangeLeaveName = useCallback(async (e, { props }) => {
+        setName(props.children)
         setLeaveName(e.target.value)
     })
 
     // SAVE HALF DAY LEAVE REQUEST 
 
     const handleSaveHalfDayLeaveRequest = useCallback(async () => {
+        setDropOpen(true)
         let postDataForGetAttendMarking = {
             empNo: empIdInform.em_no,
             fromDate: moment(fromDate).format('YYYY-MM-DD'),
@@ -192,13 +197,16 @@ const HaldayRequetsMainForm = () => {
                                 (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                     incapprv_status:
                         (authorization_incharge === 1 && incharge === 1) ? 1 :
-                            (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                            (hod === 1) ? 1 :
+                                (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
                     inc_apprv_cmnt:
                         (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                            (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                            (hod === 1) ? "DIRECT" :
+                                (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
                     inc_apprv_time:
                         (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                            (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                            (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
                     hod_apprv_req:
                         (authorization_hod === 1 && hod === 1) ? 1 :
                             (authorization_hod === 1 && hod === 0) ? 1 :
@@ -222,21 +230,34 @@ const HaldayRequetsMainForm = () => {
                 if (success === 1) {
                     succesNofity(message)
                     changeForm()
+                    setDropOpen(false)
+                    dispatch(getCreditedCasualLeave(em_id))
+                } else if (success === 2) {
+                    warningNofity(message)
+                    changeForm()
+                    setDropOpen(false)
                 } else {
                     warningNofity(`Contact EDP ${JSON.stringify(message)}`)
                     changeForm()
+                    setDropOpen(false)
                 }
             }
         }
 
-    }, [name])
+    }, [name, reason])
+
+    useEffect(() => {
+        return () => {
+            dispatch(getannualleave(em_id));
+        }
+    }, [em_id])
 
     return (
         <Paper
             variant="outlined"
             sx={{ display: "flex", flex: 1, p: 0.5, mb: 0.5, flexDirection: 'column' }}
         >
-
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <Box sx={{ display: "flex", flex: 1, p: 0.5, alignItems: 'center' }} >
 
                 <Box sx={{ display: "flex", p: 0.5 }} >

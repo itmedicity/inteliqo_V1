@@ -1,203 +1,397 @@
-import React, { Fragment, useContext, useEffect, useState, } from 'react'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
+import React, { Fragment, memo, useCallback, useEffect, useState, lazy } from 'react'
 import { useHistory } from 'react-router'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import Tooltip from "@material-ui/core/Tooltip";
-import { HrLeave, getleaverequest, Hrhalfdayrequest, getHRnopunchrequst, compensatoryHr } from 'src/views/CommonCode/Commonfunc';
-import ApprovalInchargeTable from '../ApprovalIncharge/ApprovalInchargeTable';
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect';
+import { getleaverequest, infoNofity } from 'src/views/CommonCode/Commonfunc';
+import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly';
+import { Box, IconButton, Paper } from '@mui/material';
+import { CssVarsProvider, Radio, RadioGroup } from '@mui/joy';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqstAll } from 'src/redux/actions/LeaveApprovalAction';
+import _ from 'underscore';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import { Suspense } from 'react';
+const LeaveRequestModal = lazy(() => import('./Modal/LeaveRequestModal'));
+const CompansatoryOff = lazy(() => import('./Modal/CompansatoryOff'));
+const NoPunchLeaveRequest = lazy(() => import('./Modal/NoPunchLeaveRequest'));
+const HalfDayLeaveRequest = lazy(() => import('./Modal/HalfDayLeaveRequest'));
+
 const ApprovalHR = () => {
+
     const history = useHistory()
-    const { updateleaverequest, getDeptSection } = useContext(PayrolMasterContext)
-    // type of leave request 
-    const [leaverequesttype, setleaverequesttype] = useState([]);
-    // to get the ype leave request
-    const [levtpevalue, setleavetypevalue] = useState([])
-    const [levtpevaluearry, setleavetypevaluearry] = useState({
-        COFF: false,
-        HDLR: false,
-        LR: false,
-        NOP: false,
-        specialapproval: false
-    }
-    )
-    const { COFF, HDLR, LR, NOP, specialapproval } = levtpevaluearry
-    // for get leave requesst details
-    const [leavereq, setleavereqst] = useState([])
-    const [leavereqmast, setmastleavereqst] = useState([])
-    // get nopunch request
-    const [nopunch, setnopunch] = useState([])
-    const [nopunchmast, setmastnopunch] = useState([])
-    // get halfdayrequest
-    const [halfday, sethalfday] = useState([])
-    const [halfdaymast, setmasthalfday] = useState([])
-    //compensatory off details
-    const [compensetory, setcompensetory] = useState([])
-    const [compensetorymast, setmastcompensetory] = useState([])
-    //for hr special approval for long leave
-    const [spclapproval, setspclapproval] = useState([])
-    //use effect for getting pending leave requests
+    const dispatch = useDispatch()
+
+    const [count, setCount] = useState(0)
+
     useEffect(() => {
-        HrLeave().then((val) => {
-            setleavereqst(val)
-            setmastleavereqst(val)
-        })
+        dispatch(getLeaveRequestAll())
+        dispatch(getHalfdayRqstAll())
+        dispatch(getNopunchRqstAll())
+        dispatch(getCompOffRqstAll())
+    }, [dispatch, count])
+
+    //API DATA 
+    const halfdayRqList = useSelector(state => state.setAllLeaveApproval.halfdayRqData.halfdayRqList, _.isEqual);
+    const leaveRqList = useSelector(state => state.setAllLeaveApproval.leaveRqData.leaveRqList, _.isEqual);
+    const nopunchRqList = useSelector(state => state.setAllLeaveApproval.nopunchRqData.nopunchRqList, _.isEqual);
+    const compOffRqList = useSelector(state => state.setAllLeaveApproval.compOffrqData.compOffRqList, _.isEqual);
+
+    // HR APPROVLA REQUEST FORM DATA STATE
+    const [leaverequesttype, setleaverequesttype] = useState([]);
+    const [value, setValue] = useState(1);
+    const [tableData, setTableData] = useState([])
+
+    //LEAVE TYPE GET FUNCTION FROM DB
+    useEffect(() => {
         getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-        getHRnopunchrequst().then((val) => {
-            setnopunch(val)
-            setmastnopunch(val)
-        })
-        Hrhalfdayrequest().then((val) => {
-            sethalfday(val)
-            setmasthalfday(val)
-        })
-        compensatoryHr().then((val) => {
-            setcompensetory(val)
-            setmastcompensetory(val)
-        })
-        HrLeave().then((val) => {
-            setspclapproval(val)
-        })
-        return (
-            updateleaverequest(0)
-        )
-    }, [updateleaverequest]);
-    //use effect for filtering pending leave request against department section
-    useEffect(() => {
-        if (getDeptSection !== 0) {
-            // depsection change filter based on dept section leave request
-            const filterleavereq = leavereqmast.filter((val) => {
-                return (val.dept_section === getDeptSection)
-            })
-            setleavereqst(filterleavereq)
-            // depsection change filter based on dept section no punch
-            const filternopunch = nopunchmast.filter((val) => {
-                return (val.dept_section === getDeptSection)
-            })
-            setnopunch(filternopunch)
+    }, [getleaverequest, setleaverequesttype])
 
-            // depsection change filter based on dept section halfday
-            const filterhalfday = halfdaymast.filter((val) => {
-                return (val.dept_section === getDeptSection)
-            })
-            sethalfday(filterhalfday)
+    //RADIO BUTTON HANDLE FUNCTION
+    const handleChangeRadioBtn = useCallback(async (event) => {
+        let radioBtnVal = event.target.value;
+        setValue(radioBtnVal);
+        //CALCULATE AND FILTER THE FUNCTION
 
-            // depsection change filter based on dept section setcompensetory
-            const filtercompen = compensetorymast.filter((val) => {
-                return (val.dept_section === getDeptSection)
-            })
-            setcompensetory(filtercompen)
+        // {lrequest_slno: 1, lrequest_short: 'LR', lrequest_type: 'LEAVE REQUEST'}
+        // {lrequest_slno: 2, lrequest_short: 'HDLR', lrequest_type: 'HALF DAY LEAVE REQUEST'}
+        // {lrequest_slno: 3, lrequest_short: 'NOP', lrequest_type: 'NO PUNCH'}
+        // {lrequest_slno: 4, lrequest_short: 'COFF', lrequest_type: 'COMPANSATORY OFF'}
+        if (radioBtnVal === '1') {
+            //LEAVE REQUEST 
+            if (Object.keys(leaveRqList).length > 0) {
+                const leaveRequestList = await leaveRqList?.map((val) => {
+                    return {
+                        slno: val.lve_uniq_no,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        hrstatus: val.hr_apprv_status,
+                        code: 1,
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
+                    }
+                })
+
+                setTableData(leaveRequestList)
+            } else {
+                infoNofity('No Leave Request Found')
+            }
+        } else if (radioBtnVal === '2') {
+            //HALF DAY LEAVE REQUEST
+            if (Object.keys(halfdayRqList).length > 0) {
+                const leaveRequestList = await halfdayRqList?.map((val) => {
+                    return {
+                        slno: val.half_slno,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                            (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        hrstatus: val.hf_hr_apprv_status,
+                        code: 2,
+                        reqDate: val.requestdate,
+                        leaveDate: val.leave_date
+
+                    }
+                })
+
+                setTableData(leaveRequestList)
+            } else {
+                infoNofity('No Leave Request Found')
+            }
+        } else if (radioBtnVal === '3') {
+            //NO PUNCH
+            if (Object.keys(nopunchRqList).length > 0) {
+                const leaveRequestList = await nopunchRqList?.map((val) => {
+                    return {
+                        slno: val.nopunch_slno,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        hrstatus: val.np_hr_apprv_status,
+                        code: 3,
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
+                    }
+                })
+
+                setTableData(leaveRequestList)
+            } else {
+                infoNofity('No Leave Request Found')
+            }
+
+        } else if (radioBtnVal === '4') {
+            //COMPANSATORY OFF
+            if (Object.keys(compOffRqList).length > 0) {
+                const leaveRequestList = await compOffRqList?.map((val) => {
+                    return {
+                        slno: val.cmp_off_reqid,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        hrstatus: val.cf_hr_apprv_status,
+                        code: 4,
+                        reqDate: val.request_date,
+                        fromDate: val.leave_date,
+                        toDate: val.leavetodate
+                    }
+                })
+
+                setTableData(leaveRequestList)
+            } else {
+                infoNofity('No Leave Request Found')
+            }
         }
-    }, [getDeptSection])
-    //return to home page
+
+    }, [halfdayRqList, leaveRqList, nopunchRqList, compOffRqList, value, count]);
+
+
+    // console.log(leaveRqList)
+    useEffect(async () => {
+        if (Object.keys(leaveRqList).length > 0) {
+            const leaveRequestList = await leaveRqList?.map((val) => {
+                return {
+                    slno: val.lve_uniq_no,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.dept_name,
+                    status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                    hrstatus: val.hr_apprv_status,
+                    code: 1,
+                    reqDate: val.request_date,
+                    fromDate: val.leave_date,
+                    toDate: val.leavetodate
+                }
+            })
+            setTableData(leaveRequestList)
+        }
+
+    }, [leaveRqList])
+
+    useEffect(async () => {
+        if (Object.keys(halfdayRqList).length > 0) {
+            const leaveRequestList = await halfdayRqList?.map((val) => {
+                return {
+                    slno: val.half_slno,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.dept_name,
+                    status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                    hrstatus: val.hf_hr_apprv_status,
+                    code: 2,
+                    reqDate: val.requestdate,
+                    leaveDate: val.leave_date
+
+                }
+            })
+            setTableData(leaveRequestList)
+        }
+
+    }, [halfdayRqList])
+
+    useEffect(async () => {
+        if (Object.keys(nopunchRqList).length > 0) {
+            const leaveRequestList = await nopunchRqList?.map((val) => {
+                return {
+                    slno: val.nopunch_slno,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.dept_name,
+                    status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                    hrstatus: val.np_hr_apprv_status,
+                    code: 3,
+                    reqDate: val.request_date,
+                    fromDate: val.leave_date,
+                    toDate: val.leavetodate
+                }
+            })
+            setTableData(leaveRequestList)
+        }
+
+    }, [nopunchRqList])
+
+    useEffect(async () => {
+        if (Object.keys(compOffRqList).length > 0) {
+            const leaveRequestList = await compOffRqList?.map((val) => {
+                return {
+                    slno: val.cmp_off_reqid,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.dept_name,
+                    status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                    hrstatus: val.cf_hr_apprv_status,
+                    code: 4,
+                    reqDate: val.request_date,
+                    fromDate: val.leave_date,
+                    toDate: val.leavetodate
+                }
+            })
+
+            setTableData(leaveRequestList)
+        }
+
+    }, [compOffRqList])
+
+    const [columnDef] = useState([
+        { headerName: 'Slno', field: 'slno', filter: true, minWidth: 100 },
+        { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
+        { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
+        { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        {
+            headerName: 'Action',
+            cellRenderer: params => {
+                if (params.data.hrstatus === 1) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                        <Tooltip title="Approved Request">
+                            <BeenhereIcon />
+                        </Tooltip>
+                    </IconButton>
+                } else {
+                    return <IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ paddingY: 0.5 }} >
+                        <Tooltip title="Click Here to Approve / Reject">
+                            <CheckCircleOutlineIcon color='primary' />
+                        </Tooltip>
+                    </IconButton>
+                }
+            }
+        },
+    ])
+
+
+    //MODAL STATES FOR RENDERING OPEN MODAL & UPDATE DATA
+    const [leaveReqModal, setleaveReqModal] = useState(false);
+    const [coffReqModal, setcoffReqModal] = useState(false);
+    const [halfDayReqModal, sethalfDayReqModal] = useState(false);
+    const [noPunchReqModal, setnoPunchReqModal] = useState(false);
+
+    //UPDATE DATA
+    const [lveData, setlveData] = useState({});
+    const [coffData, setcoffData] = useState({});
+    const [halfData, sethalfData] = useState({});
+    const [noPunchData, setnoPunchData] = useState({});
+
+    //MODAL OPENING FUNCTION
+    let handleClickIcon = useCallback(async (table) => {
+        const { code } = table.data;
+        if (code === 1) {
+            setlveData(table.data)
+            setleaveReqModal(true)
+        } else if (code === 2) {
+            sethalfData(table.data)
+            sethalfDayReqModal(true)
+        } else if (code === 3) {
+            setnoPunchData(table.data)
+            setnoPunchReqModal(true)
+        } else if (code === 4) {
+            setcoffData(table.data)
+            setcoffReqModal(true)
+        }
+    }, [])
+
     const RedirectToProfilePage = () => {
         history.push(`/Home`)
     }
-    const leverequesttypechange = async (e) => {
-        const ob1 = {
-            COFF: false,
-            HDLR: false,
-            LR: false,
-            NOP: false,
-            specialapproval: false
 
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setleavetypevaluearry({ ...ob1, [e.target.name]: value })
-        setleavetypevalue(e.target.value)
-    }
     return (
         <Fragment>
-            <PageLayoutSave
+            <Suspense>
+                <LeaveRequestModal open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} setCount={setCount} />
+                <CompansatoryOff open={coffReqModal} setOpen={setcoffReqModal} data={coffData} setCount={setCount} />
+                <NoPunchLeaveRequest open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} setCount={setCount} />
+                <HalfDayLeaveRequest open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
+            </Suspense>
+            <PageLayoutCloseOnly
                 heading="Leave Approval HR"
                 redirect={RedirectToProfilePage}
             >
-                <div className="row g-2">
-                    <div className="col-md-12 col-sm-12 col-xs-12">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col-md-5 col-sm-12 col-xs-12">
-                                        <div className="d-flex justify-content-around">
-                                            {
-                                                leaverequesttype && leaverequesttype.map((val) => {
-                                                    return <div className="pt-0" key={val.lrequest_slno} >
-                                                        <FormControlLabel
-                                                            control={
-                                                                <Tooltip title={val.lrequest_type}>
-                                                                    <Checkbox
-                                                                        name={val.lrequest_short}
-                                                                        color="secondary"
-                                                                        value={val.lrequest_slno}
-                                                                        checked={val.lrequest_short === 'LR' ? LR :
-                                                                            val.lrequest_short === 'HDLR' ? HDLR :
-                                                                                val.lrequest_short === 'NOP' ? NOP :
-                                                                                    val.lrequest_short === 'COFF' ? COFF : false
-
-                                                                        }
-                                                                        onChange={(e) => leverequesttypechange(e)}
-                                                                    />
-                                                                </Tooltip>
-                                                            }
-                                                            label={val.lrequest_short}
-                                                        />
-                                                    </div>;
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="col-md-1">
-                                        <FormControlLabel
-                                            control={
-                                                <Tooltip title="Special Approval">
-                                                    <Checkbox
-                                                        name="specialapproval"
-                                                        color="secondary"
-                                                        value={specialapproval === false ? 5 : 0}
-                                                        checked={specialapproval}
-                                                        onChange={(e) => leverequesttypechange(e)}
-                                                    />
-                                                </Tooltip>
-                                            }
-                                            label="SP"
-                                        />
-                                    </div>
-                                    <div className="col-md-6 col-sm-12 col-xs-12">
-                                        <div className="col-md-5  col-sm-12 pt-1">
-                                            <DeptSectionMastSelect
-                                                style={SELECT_CMP_STYLE}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card ">
-                        <div className="col-md-12">
-                            <ApprovalInchargeTable leavereq={levtpevalue === '1' ? leavereq :
-                                levtpevalue === '2' ? halfday :
-                                    levtpevalue === '4' ? compensetory :
-                                        levtpevalue === '3' ? nopunch :
-                                            levtpevalue === '5' ? spclapproval : []
-                            } levtpevalue={levtpevalue} authority={levtpevalue === '5' ? 6 : 4}
-                                setleavereq={levtpevalue === '1' ? setleavereqst :
-                                    levtpevalue === '2' ? sethalfday :
-                                        levtpevalue === '4' ? setcompensetory :
-                                            levtpevalue === '3' ? setnopunch :
-                                                levtpevalue === '5' ? setspclapproval : null}
-                                DeptSect={getDeptSection}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </PageLayoutSave>
+                <Paper variant="outlined" square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center' }} >
+                    <Box sx={{ display: 'flex', flex: 2 }}>
+                        <CssVarsProvider>
+                            {
+                                <RadioGroup
+                                    defaultValue="female"
+                                    name="controlled-radio-buttons-group"
+                                    value={value}
+                                    onChange={handleChangeRadioBtn}
+                                    sx={{ display: 'flex', flexDirection: 'row', flex: 1 }}
+                                    size="lg"
+                                >
+                                    {
+                                        leaverequesttype && leaverequesttype?.map((val, idx) => {
+                                            return <Box key={idx} sx={{ display: 'flex', flex: 1 }}>
+                                                <Radio
+                                                    value={val.lrequest_slno}
+                                                    label={val.lrequest_type}
+                                                    color="success"
+                                                    variant="outlined"
+                                                />
+                                            </Box>
+                                        })
+                                    }
+                                </RadioGroup>
+                            }
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
+                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                    <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={tableData}
+                        sx={{
+                            height: 600,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    />
+                </Paper>
+            </PageLayoutCloseOnly>
         </Fragment >
     )
 }
 
-export default ApprovalHR
+export default memo(ApprovalHR)

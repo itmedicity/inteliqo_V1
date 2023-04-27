@@ -17,6 +17,9 @@ import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { getleaverequest } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { Actiontypes } from 'src/redux/constants/action.type'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import { getannualleave } from 'src/redux/actions/Profile.action';
+import { fetchleaveInformationFun } from './Func/LeaveFunction';
 // lazy import 
 // const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
 const MuliLeaveMapCmp = lazy(() => import('./MuliLeaveMapCmp'));
@@ -28,6 +31,7 @@ const MultiLeaveRequestForm = () => {
     const [newData, setnewData] = useState([]);
     const [levRequestNo, setLevRequestNo] = useState(0);
     const [reason, setReason] = useState('');
+    const [drop, setDropOpen] = useState(false)
 
     const changeForm = () => {
         let requestType = { requestType: 0 };
@@ -42,14 +46,15 @@ const MultiLeaveRequestForm = () => {
 
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
+
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel[0]
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
 
     const {
         em_no, em_id,
@@ -137,7 +142,7 @@ const MultiLeaveRequestForm = () => {
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
-
+        setDropOpen(true)
         // requested form information
         const { fromDate, toDate } = multiLeaveTypeData;
 
@@ -158,13 +163,16 @@ const MultiLeaveRequestForm = () => {
                         (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
             incapprv_status:
                 (authorization_incharge === 1 && incharge === 1) ? 1 :
-                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                    (hod === 1) ? 1 :
+                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
             inc_apprv_cmnt:
                 (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                    (hod === 1) ? "DIRECT" :
+                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
             inc_apprv_time:
                 (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                    (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
             hod_apprv_req:
                 (authorization_hod === 1 && hod === 1) ? 1 :
                     (authorization_hod === 1 && hod === 0) ? 1 :
@@ -191,8 +199,10 @@ const MultiLeaveRequestForm = () => {
 
         if (checkIfSelectedLeveReqType?.length > 0 || checkIfSelectedLeve?.length > 0 || checkIfAnyLeaveSelected?.length > 0) {
             warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
+            setDropOpen(false)
         } else if (reason === '') {
             warningNofity("Leave Request Reason is Blank")
+            setDropOpen(false)
         } else {
             // 
             const findSingleTypeLeave = newData?.filter((val) => val.singleLeave === 1);
@@ -233,6 +243,7 @@ const MultiLeaveRequestForm = () => {
                                 levtypename: val.leaveTypeName,
                                 leave: val.singleLeave === 1 ? val.leaveTypeName : val.selectedLeaveName,
                                 nof_leave: 1,
+                                empNo: em_no,
                                 singleleave: 0
                             }
                         })
@@ -247,18 +258,22 @@ const MultiLeaveRequestForm = () => {
                             if (success === 1) {
                                 succesNofity(message);
                                 changeForm()
+                                setDropOpen(false)
                             } else {
                                 warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
                                 changeForm()
+                                setDropOpen(false)
                             }
                         } else {
                             warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
                             changeForm()
+                            setDropOpen(false)
                         }
                     }
 
                 } else {
                     warningNofity('Common Leave Not Selected ! Select the Leave and Check')
+                    setDropOpen(false)
                 }
 
             } else {
@@ -273,6 +288,7 @@ const MultiLeaveRequestForm = () => {
                         levtypename: val.leaveTypeName,
                         leave: val.singleLeave === 1 ? val.leaveTypeName : val.selectedLeaveName,
                         nof_leave: 1,
+                        empNo: em_no,
                         singleleave: 0
                     }
                 })
@@ -287,13 +303,17 @@ const MultiLeaveRequestForm = () => {
                     if (success === 1) {
                         succesNofity(message);
                         changeForm()
+                        setDropOpen(false)
+                        fetchleaveInformationFun(dispatch, em_id)
                     } else {
                         warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
                         changeForm()
+                        setDropOpen(false)
                     }
                 } else {
                     warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
                     changeForm()
+                    setDropOpen(false)
                 }
             }
         }
@@ -311,6 +331,7 @@ const MultiLeaveRequestForm = () => {
                 flexDirection: 'column',
             }}
         >
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <Box sx={{
                 flex: 1,
                 display: "flex",
