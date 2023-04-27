@@ -3,8 +3,45 @@ const PayrollMenu = [
     {
         men_slno: 36,
         component: CNavItem,
-        name: 'Attendance Marking Manual',
+        name: 'Attendance Marking ',
         to: '/Home/PayrollAttendance',
+    },
+    {
+        men_slno: 35,
+        component: CNavItem,
+        name: 'OT Updation',
+        to: '/Home/OTUpdation',
+    },
+    {
+        men_slno: 225,
+        component: CNavItem,
+        name: 'OT Updated List',
+        to: '/Home/OTUpdatedList',
+    },
+    {
+        men_slno: 41,
+        component: CNavItem,
+        name: 'Advance Settlement',
+        to: '/homes',
+    },
+    {
+        men_slno: 38,
+        component: CNavItem,
+        name: 'Loan/Advance Deduction',
+        to: '/homes',
+    },
+
+    {
+        men_slno: 39,
+        component: CNavItem,
+        name: 'Tax Calculation',
+        to: '/homes',
+    },
+    {
+        men_slno: 42,
+        component: CNavItem,
+        name: 'Professional Tax',
+        to: '/Home/ProffessionalTax',
     },
     {
         men_slno: 220,
@@ -18,36 +55,15 @@ const PayrollMenu = [
         name: 'Allowance/Deduction',
         to: '/homes',
     },
-    {
-        men_slno: 38,
-        component: CNavItem,
-        name: 'Loan/Advance Deduction',
-        to: '/homes',
-    },
-    {
-        men_slno: 39,
-        component: CNavItem,
-        name: 'Tax Calculation',
-        to: '/homes',
-    },
+
     {
         men_slno: 40,
         component: CNavItem,
         name: 'LOP Refund',
         to: '/homes',
     },
-    {
-        men_slno: 41,
-        component: CNavItem,
-        name: 'Advance Settlement',
-        to: '/homes',
-    },
-    {
-        men_slno: 42,
-        component: CNavItem,
-        name: 'Professional Tax',
-        to: '/Home/ProffessionalTax',
-    },
+
+
     {
         men_slno: 43,
         component: CNavItem,
