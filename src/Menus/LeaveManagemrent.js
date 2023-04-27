@@ -79,12 +79,12 @@ const Leavemanagement = [
         to: '/Home/OTApprovalHR',
     },
 
-    {
-        men_slno: 35,
-        component: CNavItem,
-        name: 'OT Updation',
-        to: '/Home/OTUpdation',
-    },
+    // {
+    //     men_slno: 35,
+    //     component: CNavItem,
+    //     name: 'OT Updation',
+    //     to: '/Home/OTUpdation',
+    // },
 
 ]
 

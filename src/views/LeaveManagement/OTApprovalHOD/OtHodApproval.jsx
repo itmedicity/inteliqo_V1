@@ -146,8 +146,10 @@ const OtHodApproval = () => {
             }
             <Paper sx={{ width: '100%' }}>
                 <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
-                    <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, px: 70, }} >
+                    <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                         <ApprovalDeptSectSelection em_id={em_id} value={deptSect} setValue={setDeptSect} updateDeptSect={updateDeptSect} />
+                    </Box>
+                    <Box sx={{ display: 'flex', flex: 3, pt: 0.4, pr: 0.8, }} >
                     </Box>
                 </Paper>
                 <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >

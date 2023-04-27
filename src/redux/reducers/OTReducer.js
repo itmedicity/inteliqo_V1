@@ -4,7 +4,8 @@ const {
     FETCH_ALL_OT_INCHARGE,
     FETCH_ALL_OT_HOD,
     FETCH_ALL_OT_CEO_APPROVAL,
-    FETCH_ALL_OT_HR_APPROVAL
+    FETCH_ALL_OT_HR_APPROVAL,
+    FETCH_OT_UPDATION_LIST
 } = Actiontypes;
 
 const OtApprovaldata = {
@@ -23,6 +24,10 @@ const OtApprovaldata = {
     approvalHr: {
         approvalHrList: [],
         approvalHrStatus: false
+    },
+    otUpdation: {
+        otUpdationList: [],
+        otUpdationStatus: false
     }
 }
 
@@ -62,6 +67,15 @@ export const getOTApprovalData = (state = OtApprovaldata, { type, payload }) => 
                     ...state.approvalHr,
                     approvalHrList: payload,
                     approvalHrStatus: true
+                }
+            }
+        case FETCH_OT_UPDATION_LIST:
+            return {
+                ...state,
+                otUpdation: {
+                    ...state.otUpdation,
+                    otUpdationList: payload,
+                    otUpdationStatus: true
                 }
             }
         default:
