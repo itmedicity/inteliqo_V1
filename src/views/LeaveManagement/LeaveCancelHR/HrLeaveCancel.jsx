@@ -12,13 +12,12 @@ import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqs
 import _ from 'underscore';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import { Suspense } from 'react';
-const LeaveRequestModal = lazy(() => import('./Modal/LeaveRequestModal'));
-const CompansatoryOff = lazy(() => import('./Modal/CompansatoryOff'));
-const NoPunchLeaveRequest = lazy(() => import('./Modal/NoPunchLeaveRequest'));
-const HalfDayLeaveRequest = lazy(() => import('./Modal/HalfDayLeaveRequest'));
+const LeaveRequestModal = lazy(() => import('./Model/LeaveReqCancel'));
+const CompansatoryOff = lazy(() => import('./Model/CompansatoryOffCancel'));
+const NoPunchLeaveRequest = lazy(() => import('./Model/NoPunchCancel'));
+const HalfDayLeaveRequest = lazy(() => import('./Model/HalfdayCancel'));
 
-const ApprovalHR = () => {
-
+const HrLeaveCancel = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -55,10 +54,6 @@ const ApprovalHR = () => {
         setValue(radioBtnVal);
         //CALCULATE AND FILTER THE FUNCTION
 
-        // {lrequest_slno: 1, lrequest_short: 'LR', lrequest_type: 'LEAVE REQUEST'}
-        // {lrequest_slno: 2, lrequest_short: 'HDLR', lrequest_type: 'HALF DAY LEAVE REQUEST'}
-        // {lrequest_slno: 3, lrequest_short: 'NOP', lrequest_type: 'NO PUNCH'}
-        // {lrequest_slno: 4, lrequest_short: 'COFF', lrequest_type: 'COMPANSATORY OFF'}
         if (radioBtnVal === '1') {
             //LEAVE REQUEST 
             if (Object.keys(leaveRqList).length > 0) {
@@ -191,6 +186,7 @@ const ApprovalHR = () => {
                     toDate: val.leavetodate
                 }
             })
+
             setTableData(leaveRequestList)
         }
 
@@ -258,9 +254,10 @@ const ApprovalHR = () => {
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                             (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
-                    hrstatus: val.cf_hr_apprv_status,
+                                (val.lv_cancel_status === 1) ? 'Cancel' :
+                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                    cancelstatus: val.lv_cancel_status,
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -270,7 +267,6 @@ const ApprovalHR = () => {
 
             setTableData(leaveRequestList)
         }
-
     }, [compOffRqList])
 
     const [columnDef] = useState([
@@ -282,17 +278,17 @@ const ApprovalHR = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hrstatus === 1) {
+                if (params.data.cancelstatus === 1) {
                     return <IconButton
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Approved Request">
+                        <Tooltip title="Cancel Request">
                             <BeenhereIcon />
                         </Tooltip>
                     </IconButton>
                 } else {
                     return <IconButton onClick={() => handleClickIcon(params)}
                         sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Click Here to Approve / Reject">
+                        <Tooltip title="Click Here to Cancel">
                             <CheckCircleOutlineIcon color='primary' />
                         </Tooltip>
                     </IconButton>
@@ -300,7 +296,6 @@ const ApprovalHR = () => {
             }
         },
     ])
-
 
     //MODAL STATES FOR RENDERING OPEN MODAL & UPDATE DATA
     const [leaveReqModal, setleaveReqModal] = useState(false);
@@ -345,7 +340,7 @@ const ApprovalHR = () => {
                 <HalfDayLeaveRequest open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
             </Suspense>
             <PageLayoutCloseOnly
-                heading="Leave Approval HR"
+                heading="Leave Cancel HR"
                 redirect={RedirectToProfilePage}
             >
                 <Paper variant="outlined" square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center' }} >
@@ -394,4 +389,4 @@ const ApprovalHR = () => {
     )
 }
 
-export default memo(ApprovalHR)
+export default memo(HrLeaveCancel)
