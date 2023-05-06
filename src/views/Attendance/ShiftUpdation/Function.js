@@ -1,14 +1,18 @@
-import { addDays, differenceInMinutes, format, formatDuration, intervalToDuration, isValid } from "date-fns";
+import {
+    addDays, addMinutes, differenceInMinutes, format, formatDuration, intervalToDuration,
+    isAfter, isBefore, isValid, subMinutes
+} from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
-import { Actiontypes } from "src/redux/constants/action.type";
 import { getPunchMasterData } from "src/redux/actions/Common.Action";
 
-const { FETCH_PUNCH_MASTER_DATA } = Actiontypes;
 
-const CaluculatePunchinandOut = async (punchData, punchMaster, shiftData) => {
+const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+    gross_salary, punchMaster, InsertedPunchMasterData, shiftData) => {
 
     const punchTimeData = punchData?.map(val => new Date(val.punch_time))
+
+
     const result = await punchMaster?.map((val) => {
         //FIND THE CROSS DAY
         const crossDay = shiftData?.find(shft => shft.shft_slno === val.shift_id);
@@ -38,6 +42,14 @@ const CaluculatePunchinandOut = async (punchData, punchMaster, shiftData) => {
             { lateIn: differenceInMinutes(new Date(punchIn), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(punchOut)) }
             : { lateIn: 0, earlyOut: 0 };
 
+
+        const HoliDay = holidaydata.find((holi) => {
+            if (holi.hld_date === val.duty_day) {
+                return holi
+            }
+        })
+
+
         return {
             duty_day: val.duty_day,
             em_no: val.em_no,
@@ -51,23 +63,67 @@ const CaluculatePunchinandOut = async (punchData, punchMaster, shiftData) => {
             shift_in: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
             shift_out: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
-            earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0
+            earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
+            duty_status: HoliDay !== undefined ? 1 : 0,
+            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "P" : "A ",
+            holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
+            holiday_status: HoliDay !== undefined ? 1 : 0,
+            woff: val.shift_id === 3 ? 1 : 0
         }
+    })
+
+    const resultduty = InsertedPunchMasterData.map((val) => {
+
+        let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
+        //Grace period calculation
+        const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_late_in_grace), 'yyyy-MM-dd H:mm:ss')
+        const CheckGraceIn = isAfter(new Date(relaxTime), new Date(val.punch_in))// true correct punch
+
+        //Late Punch After 30 Min
+        const LateTime = format(addMinutes(new Date(shiftIn), 30), 'yyyy-MM-dd H:mm:ss')
+        const CheckLateIn = isAfter(new Date(LateTime), new Date(val.punch_in))// true correct punch
+        let shiftOut = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
+        const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out_grace), 'yyyy-MM-dd H:mm:ss')
+        const CheckEarlyOut = isBefore(new Date(earlyGo), new Date(val.punch_out))// true correct punch
+
+        const HoliDay = holidaydata.find((holi) => {
+            if (holi.hld_date === val.duty_day) {
+                return holi
+
+            }
+        })
+
+        return {
+            punch_slno: val.punch_slno,
+            duty_status: CheckGraceIn === true && CheckEarlyOut === true ? 1 :
+                CheckGraceIn === true && CheckEarlyOut === true && HoliDay !== undefined && gross_salary < 25000 ? 2 :
+                    HoliDay !== undefined ? 1 : 0.5,
+            duty_desc: CheckGraceIn === true && CheckEarlyOut === true ? "P" :
+                CheckGraceIn === true && CheckEarlyOut === true && HoliDay !== undefined ? "HP" :
+                    CheckLateIn === false ? "HFD" :
+                        CheckGraceIn === true && CheckEarlyOut === false ? "EG" : "LC",
+            holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
+            holiday_status: HoliDay !== undefined ? 1 : 0,
+        }
+
     })
 
     //UPDATE INTO THE PUNCH MASTER TABLE 
     const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMasterData/", result);
     const { success, message } = updatePunchMaster.data;
     if (success === 1) {
-        return { status: 1, message: message, resData: result }
+        const updatePunchMastDuty = await axioslogin.post("/attendCal/updatePunchMastDuty/", resultduty);
+        const { succes, messagee } = updatePunchMastDuty.data;
+        return { status: 1, message: messagee, resData: result }
     } else {
         return { status: 0, message: message, resData: [] }
     }
+
 }
 
-
 //GET AND UPDATE PUNCH IN / OUT DATA
-export const getAndUpdatePunchingData = async (postData, empInform, dispatch) => {
+export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+    gross_salary, empInform, dispatch) => {
     // `RECIVE THE COMMON SETTING DATA SHIFT`
     /******
      * ######  PROCESS FLOW OF FUN #######
@@ -87,40 +143,50 @@ export const getAndUpdatePunchingData = async (postData, empInform, dispatch) =>
     const punch_data = await axioslogin.post("/attendCal/getPunchData/", postData);
     const { success, data } = punch_data.data;
     if (success === 1) {
+        const Shift_data = await axioslogin.post("/attendCal/getDutyPlan/", postData);
+        const { succes, shiftdetail } = Shift_data.data;
+        if (succes === 1) {
+            //GET THE DUTY PLAN PUCH MASTER FROM PUNCH_MASTER TABLE
+            const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
+            const { success, planData } = punch_master_data.data;
 
-        //GET THE DUTY PLAN PUCH MASTER FROM PUNCH_MASTER TABLE
-        const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
-        const { success, planData } = punch_master_data.data;
-        if (success === 1) {
-            //UPDATE IN AND OUT PUNCH IN PUNCH MASTER 
-
-            const getShift = planData?.map(val => val.shift_id);
-            //REMOVE DUPLICATES
-            const shift = [...new Set(getShift)]
-            //GET THE SHIFT DETAILS FROM DB
-            const shift_master = await axioslogin.post("/attendCal/getShiftData/", shift);
-            const { success, shiftData } = shift_master.data;
             if (success === 1) {
-                // console.log(planData)
-                //FILTER THE null COLUMN (punch_in,punch_out) FROM THE PUNCH MASTER TABLE
-                const notUpdatedPunchMasterData = await planData?.filter((val) => val.punch_in === null || val.punch_out === null)
-                //CALCULATE FUNCTION (IN PUNCH AND OUT PUNCH )
-                const dataResult = await CaluculatePunchinandOut(data, notUpdatedPunchMasterData, shiftData);
-                // const dataResult = await CaluculatePunchinandOut(data, planData, shiftData);
-                // message, resData
-                const { status } = await dataResult;
-                if (status === 1) {
-                    dispatch(getPunchMasterData(postData))
-                    return { status: 1, message: "Attendance Data Updated SuccessFully", shift: shiftData, punch_data: data }
-                } else {
-                    return { status: 0, message: "Err !, Update Attendance Data ,Contact HRD/IT", shift: shiftData, punch_data: data }
+                //UPDATE IN AND OUT PUNCH IN PUNCH MASTER 
+
+                const getShift = planData?.map(val => val.shift_id);
+                //REMOVE DUPLICATES
+                const shift = [...new Set(getShift)]
+                //GET THE SHIFT DETAILS FROM DB
+                const shift_master = await axioslogin.post("/attendCal/getShiftData/", shift);
+                const { success, shiftData } = shift_master.data;
+                if (success === 1) {
+                    //FILTER THE null COLUMN (punch_in,punch_out) FROM THE PUNCH MASTER TABLE
+                    const notUpdatedPunchMasterData = await planData?.filter((val) => val.punch_in === null || val.punch_out === null)
+                    const InsertedPunchMasterData = await planData?.filter((val) => val.punch_in !== null || val.punch_out !== null)
+                    //CALCULATE FUNCTION (IN PUNCH AND OUT PUNCH )
+                    const dataResult = await CaluculatePunchinandOut(data, shiftdetail, holidaydata, cmmn_late_in_grace,
+                        cmmn_early_out_grace, gross_salary, notUpdatedPunchMasterData, InsertedPunchMasterData,
+                        shiftData);
+                    // const dataResult = await CaluculatePunchinandOut(data, planData, shiftData);
+                    // message, resData
+                    const { status } = await dataResult;
+                    if (status === 1) {
+                        dispatch(getPunchMasterData(postData))
+                        return { status: 1, message: "Attendance Data Updated SuccessFully", shift: shiftData, punch_data: data }
+                    } else {
+                        return { status: 0, message: "Err !, Update Attendance Data ,Contact HRD/IT", shift: shiftData, punch_data: data }
+                    }
                 }
+            } else if (success === 2) {
+                // DUTY PLAN NOT MARKED
+                return { status: 2, message: "Duty not Planned" }
+            } else {
+                return { status: 0, message: "Error Getting Punch Master Data" }
             }
-        } else if (success === 2) {
-            // DUTY PLAN NOT MARKED
-            return { status: 2, message: "Duty not Planned" }
-        } else {
-            return { status: 0, message: "Error Getting Punch Master Data" }
+        }
+        else if (success === 2) {
+            // NO PUNCH DATA FOUND IN PUNCH MASTER TABLE
+            return { status: 2, message: "Punch Data Not Found" }
         }
     } else if (success === 2) {
         // NO PUNCH DATA FOUND IN PUNCH MASTER TABLE

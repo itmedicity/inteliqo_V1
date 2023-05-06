@@ -9,7 +9,7 @@ import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect';
 import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { useState } from 'react';
-import { addDays, addMonths, differenceInMinutes, format, formatDuration, getMonth, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
+import { addDays, addMonths, differenceInMinutes, format, formatDuration, getMonth, getYear, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import moment from 'moment';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { infoNofity, getDayDiffrence, errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -18,7 +18,7 @@ import EmployeeNameSelect from 'src/views/CommonCode/EmployeeNameSelect';
 import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection';
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
 import { styled } from '@mui/system';
-
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -48,6 +48,7 @@ const TableRows = lazy(() => import('./TableRows'))
 
 const ShiftUpdation = () => {
     const dispatch = useDispatch();
+    const [openBkDrop, setOpenBkDrop] = useState(false)
     const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
     // dispatch the department data
     useEffect(() => {
@@ -64,18 +65,21 @@ const ShiftUpdation = () => {
     const [dept, changeDept] = useState(0);
     const [section, changeSection] = useState(0);
     const [emply, getEmployee] = useState(0);
-
     const [tableArray, setTableArray] = useState([]);
 
     //HANDLE FETCH PUNCH DETAILS AGINST EMPLOYEE SELECTION
     const handleOnClickFuntion = useCallback(async () => {
+        setOpenBkDrop(true)
         setTableArray([])
-        const selectedDate = moment(value).format('YYYY-MM-DD');
+        // const selectedDate = moment(value).format('YYYY-MM-DD');
         // const startDate = format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd');
         // const endDate = format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd');
 
-        if (dept !== 0 && section !== 0) {
+        const selectedDate = moment(value).format('YYYY-MM-DD');
 
+        if (dept !== 0 && section !== 0 && emply !== 0) {
+
+            const { em_id } = emply
             const postData = {
                 fromDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 preFromDate: format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd 00:00:00'),
@@ -87,8 +91,27 @@ const ShiftUpdation = () => {
             }
 
             // dispatch(getPunchMasterData(postData));
+            const resultdel = await axioslogin.get(`/common/getgrossSalary/${em_id}`);
+            const { dataa } = resultdel.data
+            const { gross_salary } = dataa[0]
 
-            const result = await getAndUpdatePunchingData(postData, empInform, dispatch)
+            const gracePeriod = await axioslogin.get('/commonsettings')
+            const { data } = gracePeriod.data
+            const { cmmn_late_in_grace, cmmn_early_out_grace } = data[0]
+
+            const SelectMonth = getMonth(new Date(selectedDate))
+            const SelectYear = getYear(new Date(selectedDate))
+
+            const getHolidayPost = {
+                month: SelectMonth + 1,
+                year: SelectYear
+            }
+            const holiday_data = await axioslogin.post("/attendCal/getHolidayDate/", getHolidayPost);
+            const { holidaydata } = holiday_data.data;
+
+
+            const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+                gross_salary, empInform, dispatch)
             const { status, message, shift, punch_data } = result;
             if (status === 1) {
                 dispatch({ type: FETCH_PUNCH_DATA, payload: punch_data })
@@ -96,7 +119,6 @@ const ShiftUpdation = () => {
                 const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
                 const { success, planData } = punch_master_data.data;
 
-                // // console.log(punchMasterData)
                 // if (await punchMasterData.length > 0) {
 
                 // }
@@ -134,14 +156,19 @@ const ShiftUpdation = () => {
                     }
 
                 })
-
+                setOpenBkDrop(false)
 
                 setTableArray(tableData)
                 succesNofity(message)
             } else {
                 errorNofity(message)
+                setOpenBkDrop(false)
             }
 
+        }
+
+        else {
+            warningNofity("Please Select All Fields")
         }
 
     }, [value, dept, section, emply, empInform])
@@ -165,8 +192,11 @@ const ShiftUpdation = () => {
         }
     }, [updatedDataPunchInOut])
 
+
+
     return (
         <Fragment>
+            <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <PageLayoutCloseOnly
                 heading="Attendance Marking"
                 redirect={() => { }}
