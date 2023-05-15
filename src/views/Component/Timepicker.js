@@ -1,6 +1,7 @@
-import { LocalizationProvider, TimePicker } from '@mui/lab'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+
 import { TextField } from '@mui/material'
+import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import React from 'react'
 import { useStyles } from '../CommonCode/MaterialStyle'
 

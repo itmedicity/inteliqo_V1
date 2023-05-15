@@ -1,15 +1,13 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Alert, Box, Grid, Paper, } from '@mui/material'
-import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material'
+import React, { Fragment, memo, Suspense, useEffect, useMemo, useState } from 'react'
 import PayslipTopCard from './PayslipTopCard'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
-import VirtualTable from './PaySlipComponents/VirtualTable';
-import { Virtuoso } from 'react-virtuoso';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import TableView from './PaySlipComponents/TableView';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import CommonCheckBox from 'src/views/Component/CommonCheckBox';
 
 const PaySlipCalculation = () => {
 
@@ -20,25 +18,14 @@ const PaySlipCalculation = () => {
   const pyaSlipData = useMemo(() => data, [data]);
   const dispatch = useDispatch();
   useEffect(() => dispatch(setCommonSetting()), [])
-  // const arr=pyaSlipData.map((val)=>{
-  //   // console.log(val);
-  //   const array=pyaSlipData.filter((values)=>val.em_no===values.em_no?values:null)
-  //   console.log(array.length);
-  // })
 
   useEffect(() => {
-    console.log(pyaSlipData);
     if (Object.keys(pyaSlipData).length > 0) {
       setPlan(pyaSlipData)
-      setView(1)
-      //const { em_no } = pyaSlipData[0]
-      //console.log(em_no);
     } else {
-
+      setPlan([])
     }
   }, [pyaSlipData])
-
-  console.log(plan);
 
   return (
     <Fragment>
@@ -54,130 +41,46 @@ const PaySlipCalculation = () => {
             </Box>
           </Paper>
           <PayslipTopCard setView={setView} />
-          <Paper square variant="outlined" sx={{
-            display: 'flex', p: 0.5, flex: 1, flexDirection: 'column',
-            overflow: 'auto',
-            '::-webkit-scrollbar': {
-              height: 8,
-            },
-            '::-webkit-scrollbar-track': {
-              boxShadow: 'inset 0 0 5px rgb(255, 251, 251)',
-              borderRadius: '0px',
-            },
-
-            '::-webkit-scrollbar-thumb': {
-              // background: '#077DFA',
-              borderRadius: '0px',
-            },
-
-            '::-webkit-scrollbar-thumb:hover': {
-              //   background: 'rgb(255, 251, 251)',
-            },
-          }}>
-            <Box sx={{ display: "flex", flexDirection: "row", px: 1, width: '100%' }}>
-              <Box border={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Name
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '5%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    ID #
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '5%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Total Days
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Calculated Work Days
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Fixed Wages
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Earnings
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Deduction
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Gross Salary
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    ESI
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    PF
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-              <Box borderTop={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                <CssVarsProvider>
-                  <Typography >
-                    Net Salary
-                  </Typography>
-                </CssVarsProvider>
-              </Box>
-            </Box>
-
-            {
-              view === 1 ? <TableView plan={plan} /> : null
-            }
-
-
-
-
-            {/* 
-            <Virtuoso
-              style={{ height: 400, width: '100%' }}
-              data={plan}
-
-              itemContent={(index, user) => {
-                //return <div> {user.make}</ div>
-
-                return <VirtualTable user={user} />
-              }}
-            /> */}
-          </Paper>
-
+          <Box sx={{ flex: 1, pt: 0.5 }} >
+            <TableContainer component={Paper}>
+              <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
+                <TableHead>
+                  <TableRow sx={{ color: '#003A75' }} hover >
+                    {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>
+                      <CommonCheckBox />
+                    </TableCell> */}
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }} > Name </TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }} >ID #</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Total Days</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Total Pay Days</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Fixed Wages</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>#</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Earnings</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>#</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Deduction</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>#</TableCell>
+                    {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>ESI Employer</TableCell> */}
+                    {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>PF Employer</TableCell> */}
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Gross Amount</TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Net Amount</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <Suspense>
+                    {
+                      plan?.map((val, ind) => {
+                        return <TableView key={ind} val={val} />
+                      })
+                    }
+                  </Suspense>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
         </Paper>
       </Box>
     </Fragment >
   )
 }
 
-export default memo(PaySlipCalculation) 
+export default memo(PaySlipCalculation)

@@ -174,12 +174,29 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
             const result = await axioslogin.post('/empearndeduction', postData)
             const { message, success } = result.data;
             if (success === 1) {
-                setCount(count + 1)
-                succesNofity(message);
-                setWageType(resetForm);
-                setWage(0)
-                setlastWage(0)
-
+                const result = await axioslogin.get(`/payrollprocess/grosssalarybyid/${empId}`)
+                const { message, success, data } = result.data;
+                if (success === 1) {
+                    const { em_id, gross_salary } = data[0]
+                    const updatedata = {
+                        gross_salary: gross_salary,
+                        em_id: em_id
+                    }
+                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
+                    const { message, success } = result.data;
+                    if (success === 2) {
+                        setCount(count + 1)
+                        succesNofity(message);
+                        setWageType(resetForm);
+                        setWage(0)
+                        setlastWage(0)
+                    } else {
+                        infoNofity(message)
+                    }
+                }
+                else {
+                    infoNofity(message)
+                }
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
@@ -191,11 +208,29 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
             const result = await axioslogin.patch('/empearndeduction', updateData)
             const { message, success } = result.data;
             if (success === 2) {
-                setCount(count + 1)
-                succesNofity(message);
-                setWageType(resetForm);
-                setWage(0)
-                setlastWage(0)
+                const result = await axioslogin.get(`/payrollprocess/grosssalarybyid/${empId}`)
+                const { message, success, data } = result.data;
+                if (success === 1) {
+                    const { em_id, gross_salary } = data[0]
+                    const updatedata = {
+                        gross_salary: gross_salary,
+                        em_id: em_id
+                    }
+                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
+                    const { message, success } = result.data;
+                    if (success === 2) {
+                        setCount(count + 1)
+                        succesNofity(message);
+                        setWageType(resetForm);
+                        setWage(0)
+                        setlastWage(0)
+                    } else {
+                        infoNofity(message)
+                    }
+                }
+                else {
+                    infoNofity(message)
+                }
             } else if (success === 0) {
                 infoNofity(message.sqlMessage);
             } else {
