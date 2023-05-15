@@ -28,6 +28,7 @@ export const py_setting_two = [
     { to: '/Home/LeaveRequestType', name: 'Leave Request Type Master', slno: 94 },
     { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
     { to: '/Home/CarryForwardSetting', name: 'Carry Forward Setting', slno: 126 },
+    { to: '/Home/PunchTransfer', name: 'Punch Transfer Manual', slno: 229 },
 ]
 
 export const py_setting_three = [

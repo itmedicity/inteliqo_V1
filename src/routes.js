@@ -221,7 +221,7 @@ const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/Co
 const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDeduction/EarningsDeduction'))
 const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/HodApproval'))
 const OTUpdatedList = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdatedList'))
-
+const PunchTransfer = React.lazy(() => import('./views/Master/PunchTransfer/PunchTransfer'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -435,6 +435,7 @@ const routes = [
   { path: '/Home/PaySlipCalculation', exact: true, name: 'PaySlip Calculation', component: PaySlipCalculation },
   { path: '/Home/EmpEarnDeduction', exact: true, name: 'Employee Earn Deduction', component: EmpEarnDeduction },
   { path: '/Home/OTUpdatedList', exact: true, name: 'Over Time Updated List', component: OTUpdatedList },
+  { path: '/Home/PunchTransfer', exact: true, name: 'Punch Transfer Manual', component: PunchTransfer }
 ]
 
 export default routes
