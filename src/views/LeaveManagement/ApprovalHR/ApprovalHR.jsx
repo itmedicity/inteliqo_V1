@@ -83,6 +83,8 @@ const ApprovalHR = () => {
 
                 setTableData(leaveRequestList)
             } else {
+
+                setTableData([])
                 infoNofity('No Leave Request Found')
             }
         } else if (radioBtnVal === '2') {
@@ -110,6 +112,7 @@ const ApprovalHR = () => {
 
                 setTableData(leaveRequestList)
             } else {
+                setTableData([])
                 infoNofity('No Leave Request Found')
             }
         } else if (radioBtnVal === '3') {
@@ -136,6 +139,8 @@ const ApprovalHR = () => {
 
                 setTableData(leaveRequestList)
             } else {
+
+                setTableData([])
                 infoNofity('No Leave Request Found')
             }
 
@@ -163,6 +168,8 @@ const ApprovalHR = () => {
 
                 setTableData(leaveRequestList)
             } else {
+
+                setTableData([])
                 infoNofity('No Leave Request Found')
             }
         }
@@ -193,7 +200,9 @@ const ApprovalHR = () => {
             })
             setTableData(leaveRequestList)
         }
-
+        else {
+            setTableData([])
+        }
     }, [leaveRqList])
 
     useEffect(async () => {
