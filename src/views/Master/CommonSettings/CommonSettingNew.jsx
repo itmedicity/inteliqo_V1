@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel,  Paper } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material'
 import React, { Fragment, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -45,14 +45,15 @@ const CommonSettingNew = () => {
         esi_limit: '',
         esi_employee: '',
         esi_employer: '',
-        verification_level: 0
+        verification_level: 0,
+        salary_above: ''
     })
     const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
-        pf_employee, pf_age, max_salary, verification_level } = FormData
+        pf_employee, pf_age, max_salary, verification_level, salary_above } = FormData
 
-    const [levaetype,setLeaveType]=useState([])
-    const [count,setCount]=useState(0)
+    const [levaetype, setLeaveType] = useState([])
+    const [count, setCount] = useState(0)
 
 
     //getting form data
@@ -68,8 +69,8 @@ const CommonSettingNew = () => {
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
-                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift, 
-                    week_off_day,leavetype_multiple } = data[0]
+                    pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
+                    week_off_day, leavetype_multiple, salary_above } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -91,10 +92,11 @@ const CommonSettingNew = () => {
                     esi_employee: esi_employee,
                     esi_employer: esi_employer,
                     verification_level: verification_level,
+                    salary_above: salary_above
                 }
-                const obj=JSON.parse(leavetype_multiple)
+                const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj)
-                
+
                 setFormData(frmData)
                 setDefShift(default_shift === null ? 0 : default_shift)
                 setnoappshift(notapplicable_shift === null ? 0 : notapplicable_shift)
@@ -136,7 +138,8 @@ const CommonSettingNew = () => {
         default_shift: defshift,
         notapplicable_shift: notappshift,
         week_off_day: workoff,
-        leavetype_multiple:levaetype
+        leavetype_multiple: levaetype,
+        salary_above: salary_above,
     }
 
 
@@ -165,7 +168,8 @@ const CommonSettingNew = () => {
         default_shift: defshift,
         notapplicable_shift: notappshift,
         week_off_day: workoff,
-        leavetype_multiple:levaetype
+        leavetype_multiple: levaetype,
+        salary_above: salary_above,
     }
 
     //save
@@ -177,7 +181,7 @@ const CommonSettingNew = () => {
             if (success === 1) {
                 succesNofity(message)
                 setLeaveType([])
-                setCount(count+1)
+                setCount(count + 1)
             }
             else if (success === 2) {
                 warningNofity(message)
@@ -192,7 +196,7 @@ const CommonSettingNew = () => {
             if (success === 2) {
                 succesNofity(message)
                 setLeaveType([])
-                setCount(count+1)
+                setCount(count + 1)
             }
             else if (success === 1) {
                 warningNofity(message)
@@ -209,164 +213,186 @@ const CommonSettingNew = () => {
     const RedirectToprofilePage = () => {
         history.push(`/Home/Settings`)
     }
-  return (
-    <Fragment>
-        <ToastContainer/>
-        <Box sx={{ width: "100%" }} >
-            <Paper square elevation={2} sx={{ p: 0.5, }}>
-                <Paper square elevation={3} sx={{display: "flex",p: 1, alignItems: "center"}}>
-                    <Box sx={{ flex: 1 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Common Settings
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{}}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' color="danger" onClick={RedirectToprofilePage}>
-                                <CloseIcon color='info' />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
-                <Box sx={{width:'100%',display:'flex', flexDirection:'row'}}>
-                    <Box sx={{width:'50%'}}>
-                        <Paper square variant="outlined" sx={{p: 0.5, mt: 0.5,  display: 'flex', alignItems: "center",flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                            <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                                <CssVarsProvider>
-                                    <Typography level="body1" sx={{  fontWeight: 500,color: '#4f5d73'  }}> Common Settings</Typography>
-                                </CssVarsProvider>
+    return (
+        <Fragment>
+            <ToastContainer />
+            <Box sx={{ width: "100%" }} >
+                <Paper square elevation={2} sx={{ p: 0.5, }}>
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}>
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Common Settings
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{}}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' color="danger" onClick={RedirectToprofilePage}>
+                                    <CloseIcon color='info' />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                    </Paper>
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> Common Settings</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Common Grace Period</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="commn_grace"
+                                            value={commn_grace}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> In Minutes</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Common Late In</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="commn_latein"
+                                            value={commn_latein}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Minutes</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Late In Grace Period</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="commn_latein_grace"
+                                            value={commn_latein_grace}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Minutes</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Early Out Grace Period</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="commn_earlyout_grace"
+                                            value={commn_earlyout_grace}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Minutes</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Verification Level</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="verification_level"
+                                            value={verification_level}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Numbers</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Holiday Salary Setting</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="salary_above"
+                                            value={salary_above}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Rupees</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
                             </Paper>
+                        </Box>
 
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
+                        <Box sx={{ width: '50%', pl: 1 }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
                                     <CssVarsProvider>
-                                        <Typography level="body1"> Common Grace Period</Typography>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> CarryForward Leave Setting</Typography>
                                     </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="commn_grace"
-                                        value={commn_grace}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1"> In Minutes</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1"> Common Late In</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="commn_latein"
-                                        value={commn_latein}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">In Minutes</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
+                                </Paper>
 
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">Late In Grace Period</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="commn_latein_grace"
-                                        value={commn_latein_grace}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">In Minutes</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">Early Out Grace Period</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="commn_earlyout_grace"
-                                        value={commn_earlyout_grace}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">In Minutes</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">Verification Level</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="verification_level"
-                                        value={verification_level}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">In Numbers</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Box>
-
-                    <Box sx={{width:'50%', pl:1}}>
-                        <Paper square variant="outlined" sx={{p: 0.5, mt: 0.5,display: 'flex',alignItems: "center",flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                            <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                                <CssVarsProvider>
-                                    <Typography level="body1" sx={{ fontWeight: 500,color: '#4f5d73' }}> CarryForward Leave Setting</Typography>
-                                </CssVarsProvider>
-                            </Paper>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <FormControlLabel
-                                        className="pb-0 mb-0"
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
                                                     name="carry_hl"
@@ -377,12 +403,12 @@ const CommonSettingNew = () => {
                                                     onChange={(e) => updateCommonSettings(e)}
                                                 />
                                             }
-                                        label="National Holiday"
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <FormControlLabel
-                                        className="pb-0 mb-0"
+                                            label="National Holiday"
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
                                                     name="carry_cl"
@@ -393,30 +419,30 @@ const CommonSettingNew = () => {
                                                     onChange={(e) => updateCommonSettings(e)}
                                                 />
                                             }
-                                        label="Casual Leave"
-                                    />
+                                            label="Casual Leave"
+                                        />
+                                    </Box>
                                 </Box>
-                            </Box>
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <FormControlLabel
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <FormControlLabel
                                             className="pb-0 mb-0"
-                                                control={
-                                                    <Checkbox
-                                                        name="carry_el"
-                                                        color="primary"
-                                                        value={carry_el}
-                                                        checked={carry_el}
-                                                        className="ml-2"
-                                                        onChange={(e) => updateCommonSettings(e)}
-                                                    />
+                                            control={
+                                                <Checkbox
+                                                    name="carry_el"
+                                                    color="primary"
+                                                    value={carry_el}
+                                                    checked={carry_el}
+                                                    className="ml-2"
+                                                    onChange={(e) => updateCommonSettings(e)}
+                                                />
                                             }
-                                        label="Earn Leave"
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <FormControlLabel
-                                        className="pb-0 mb-0"
+                                            label="Earn Leave"
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <FormControlLabel
+                                            className="pb-0 mb-0"
                                             control={
                                                 <Checkbox
                                                     name="carry_sl"
@@ -427,266 +453,266 @@ const CommonSettingNew = () => {
                                                     onChange={(e) => updateCommonSettings(e)}
                                                 />
                                             }
-                                        label="Sick Leave"
-                                    />
+                                            label="Sick Leave"
+                                        />
+                                    </Box>
                                 </Box>
-                            </Box>
 
-                            
-                        </Paper>
-                    </Box>
-                </Box>
-                <Box sx={{width:'100%',display:'flex', flexDirection:'row'}}>
-                    <Box sx={{width:'50%'}}>
-                        <Paper square variant="outlined" sx={{p: 0.5,mt: 0.5,display: 'flex',alignItems: "center",flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                            <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                                <CssVarsProvider>
-                                    <Typography level="body1" sx={{ fontWeight: 500,color: '#4f5d73' }}>PF Setting</Typography>
-                                </CssVarsProvider>
+
                             </Paper>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1"> Salary Limit</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="min_salary"
-                                        value={min_salary}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">-----</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1,  px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="max_salary"
-                                        value={max_salary}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">PF Age Limit</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="pf_age"
-                                        value={pf_age}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                </Box>
-                            </Box>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">PF % Employee</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="pf_employee"
-                                        value={pf_employee}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}  >
-                                </Box>
-                            </Box>
-
-                            <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">PF % Employer</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder=""
-                                        name="pf_employer"
-                                        value={pf_employer}
-                                        changeTextValue={(e) => updateCommonSettings(e)}
-                                    />
-                                </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }}  >
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }}  >
-                            </Box>
                         </Box>
-                    </Paper>
-                </Box>
+                    </Box>
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>PF Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
 
-                <Box sx={{width:'50%', pl:1, }}>
-                    <Paper square variant="outlined" sx={{ p: 0.5,  mt: 0.5, display: 'flex', alignItems: "center",flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                        <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                            <CssVarsProvider>
-                                <Typography level="body1" sx={{ fontWeight: 500,color: '#4f5d73' }}>ESI Setting</Typography>
-                            </CssVarsProvider>
-                        </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Salary Limit</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="min_salary"
+                                            value={min_salary}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">-----</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="max_salary"
+                                            value={max_salary}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">PF Age Limit</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="pf_age"
+                                            value={pf_age}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                </Box>
 
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> ESI Limit</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="esi_limit"
-                                    value={esi_limit}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </Box>
-                        </Box>
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">ESI % Employee</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="esi_employee"
-                                    value={esi_employee}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">PF % Employee</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="pf_employee"
+                                            value={pf_employee}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">PF % Employer</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="pf_employer"
+                                            value={pf_employer}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                    </Box>
+                                </Box>
+                            </Paper>
                         </Box>
 
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">ESI % Employer</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <TextInput
-                                    type="text"
-                                    classname="form-control form-control-sm"
-                                    Placeholder=""
-                                    name="esi_employer"
-                                    value={esi_employer}
-                                    changeTextValue={(e) => updateCommonSettings(e)}
-                                />
-                            </Box>
+                        <Box sx={{ width: '50%', pl: 1, }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>ESI Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> ESI Limit</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_limit"
+                                            value={esi_limit}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">ESI % Employee</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_employee"
+                                            value={esi_employee}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">ESI % Employer</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_employer"
+                                            value={esi_employer}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Paper>
                         </Box>
-                    </Paper>
-                </Box>
+                    </Box>
+
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', }}>
+                        <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Shift Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Default Shift</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Not Applicable</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Week OFF</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+
+                        <Box sx={{ width: '50%', pl: 1 }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Allowed Half Day Leave Type</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ width: '50%', px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Leave Type</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ width: '50%', px: 0.5, pt: 0.5 }} >
+                                        <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType} />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+                    </Box>
+                </Paper>
+                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
+                    <Box sx={{ flex: 0, pl: 2 }} >
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='sm' onClick={submitFormData}>
+                                <LibraryAddCheckOutlinedIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
             </Box>
-
-            <Box sx={{width:'100%',display:'flex', flexDirection:'row', }}>
-                <Box sx={{width:'50%'}}>
-                    <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5,display: 'flex', alignItems: "center",flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                        <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                            <CssVarsProvider>
-                                <Typography level="body1" sx={{ fontWeight: 500,color: '#4f5d73' }}>Shift Setting</Typography>
-                            </CssVarsProvider>
-                        </Paper>
-
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> Default Shift</Typography>
-                                </CssVarsProvider>
-                            </Box>
-
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
-                            </Box>
-                        </Box>
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Not Applicable</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
-                            </Box>
-                        </Box>
-
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row',px:10}}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Week OFF</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
-                            </Box>
-                        </Box>
-                    </Paper>
-                </Box>
-
-                <Box sx={{width:'50%', pl:1}}>
-                    <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }}} >
-                        <Paper  variant="outlined" sx={{width:'100%', pl:0.5}}>
-                            <CssVarsProvider>
-                                <Typography level="body1" sx={{ fontWeight: 500,color: '#4f5d73'}}>Allowed Half Day Leave Type</Typography>
-                            </CssVarsProvider>
-                        </Paper>
-
-                        <Box sx={{width:'100%', display:'flex', flexDirection:'row', px:10}}>
-                            <Box sx={{ width:'50%', px: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Leave Type</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{width:'50%', px: 0.5, pt:0.5 }} >
-                                <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType}/>
-                            </Box>
-                        </Box>
-                    </Paper>
-                </Box>
-                </Box>
-            </Paper>
-            <Paper square sx={{ backgroundColor: "#F8F8F8",display: "flex", flexDirection: "row"}}>
-                <Box sx={{ flex: 0 ,pl:2}} >
-                    <CssVarsProvider>
-                        <IconButton variant="outlined" size='sm' onClick={submitFormData}>
-                            <LibraryAddCheckOutlinedIcon />
-                        </IconButton>
-                    </CssVarsProvider>
-                </Box>
-            </Paper>
-        </Box>
-    </Fragment>
-  )
+        </Fragment>
+    )
 }
 
 export default CommonSettingNew

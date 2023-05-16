@@ -1,34 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import { axioslogin } from 'src/views/Axios/Axios'
+import { Popover, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import React from 'react'
 
-const Deduction = ({ emno }) => {
+const Deduction = ({ open, anchorEl, setAnchorEl, data }) => {
 
-
-  const [deduction, setDeduction] = useState([])
-
-  const postData = {
-    em_no: emno
+  const { deduction } = data
+  const handleClose = () => {
+    setAnchorEl(null)
   }
-
-  useEffect(() => {
-    // const getFixed = async () => {
-    //   const result = await axioslogin.post("/payrollprocess/empDeduction", postData)
-    //   const { success, data } = result.data;
-    //   if (success === 1) {
-    //     console.log(data);
-    //     setDeduction(data)
-    //   } else {
-    //     setDeduction([])
-    //   }
-    // }
-    // getFixed()
-
-  }, [postData])
-
-
-  console.log("wer");
   return (
-    <div>Deduction</div>
+    <>
+      <Popover
+        id={open ? "simple-popover" : undefined}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        transformOrigin={{
+          horizontal: "center",
+          vertical: "top",
+        }}
+        anchorOrigin={{
+          horizontal: "center",
+          vertical: "bottom",
+        }}
+      >
+        <TableContainer sx={{ maxHeight: 150 }}>
+          <Table size="small" >
+            <TableHead>
+              <TableRow >
+                <TableCell align="center">Type</TableCell>
+                <TableCell align="center">Amount</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
+                deduction?.map((val, index) => {
+                  return <TableRow key={index}>
+                    <TableCell align="center" sx={{ textTransform: 'lowercase' }}>{val.earnded_name}</TableCell>
+                    <TableCell align="center" sx={{ textTransform: 'lowercase' }}>{val.amount}</TableCell>
+                  </TableRow>
+
+                })
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Popover>
+    </>
   )
 }
 

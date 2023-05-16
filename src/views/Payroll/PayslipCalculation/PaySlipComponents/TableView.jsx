@@ -1,143 +1,85 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { memo, useState } from 'react'
+import { IconButton, TableCell, TableRow } from '@mui/material'
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
+import Earnings from './Earnings';
+import Fixed from './Fixed';
+import Deduction from './Deduction';
+import CommonCheckBox from 'src/views/Component/CommonCheckBox';
 
-const TableView = ({ plan }) => {
+const TableView = ({ val }) => {
+
+    //to open popover box
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const [fixdata, setFixData] = useState({})
+
+    const handleClick = (e, val) => {
+        setFixData(val)
+        setAnchorEl(e.currentTarget);
+    };
+
+    const [earnAnchorEl, setEarnAnchorEl] = useState(null)
+    const open1 = Boolean(earnAnchorEl);
+    const [earnData, setEarnData] = useState({})
+
+    const getEarningDetls = (e, val) => {
+        setEarnData(val)
+        setEarnAnchorEl(e.currentTarget)
+    }
+
+    const [deductAnchorEl, setDeductAnchorEl] = useState(null)
+    const open2 = Boolean(deductAnchorEl);
+    const [deductData, setdeductData] = useState({})
+
+    const getdeductDetls = (e, val) => {
+        setdeductData(val)
+        setDeductAnchorEl(e.currentTarget)
+    }
+
     return (
-        <Fragment>
-            {
-                plan && plan.map((val, index) => {
-                    return < Box sx={{ display: "flex", flexDirection: "row", px: 1, width: '100%' }} key={index} >
-                        <Box borderLeft={1} borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.em_name}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '5%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.em_no}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '5%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.total_working_days}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.calculated_worked}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                            {
-                                val.fixedSalary.map((val, id) => {
-                                    return <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }} key={id}>
-                                        <Box sx={{ width: '60%', }} >
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.earnded_name}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box sx={{ width: '30%', }}>
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.em_amount}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                    </Box>
+        <>
+            <Fixed open={open} anchorEl={anchorEl} setAnchorEl={setAnchorEl} data={fixdata} />
+            <Earnings open={open1} anchorEl={earnAnchorEl} setAnchorEl={setEarnAnchorEl} data={earnData} />
+            <Deduction open={open2} anchorEl={deductAnchorEl} setAnchorEl={setDeductAnchorEl} data={deductData} />
+            <TableRow  >
+                {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ minHeight: 25, fontWeight: 550 }}>
+                    <CommonCheckBox />
+                </TableCell> */}
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.em_name}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} >  {val.em_no}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.total_working_days}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} >{val.total_days} </TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.fixedValue}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
+                    <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
 
-                                })
-                            }
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                            {
-                                val.earnings.map((val, id) => {
-                                    return <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }} key={id}>
-                                        <Box sx={{ width: '60%', }} >
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.earnded_name}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box sx={{ width: '30%', }}>
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.em_amount}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                    </Box>
+                        onClick={(e) => handleClick(e, val)} >
+                        <ListAltOutlinedIcon />
+                    </IconButton>
+                </TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} >{val.earningvalue}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
+                    <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
 
-                                })
-                            }
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', flexDirection: 'column', width: '10%' }} >
-                            {
-                                val.deduction.map((val, id) => {
-                                    return <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }} key={id}>
-                                        <Box sx={{ width: '60%', }} >
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.earnded_name}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box sx={{ width: '30%', }}>
-                                            <CssVarsProvider >
-                                                <Typography >
-                                                    {val.em_amount}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                    </Box>
+                        onClick={(e) => getEarningDetls(e, val)} >
+                        <ListAltOutlinedIcon />
+                    </IconButton>
+                </TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} >{val.deductValue}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
+                    <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
 
-                                })
-                            }
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.gross_salary}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.esiValue}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.pfValue}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box borderRight={1} borderBottom={1} sx={{ display: "flex", justifyContent: "center", height: 'auto', width: '10%' }} >
-                            <CssVarsProvider>
-                                <Typography >
-                                    {val.netSalary}
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                })
-            }
-        </Fragment>
+                        onClick={(e) => getdeductDetls(e, val)} >
+                        <ListAltOutlinedIcon />
+                    </IconButton>
+                </TableCell>
+                {/* <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allesiemployer}</TableCell> */}
+                {/* <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allpfemployer}</TableCell> */}
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.gross}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.net}</TableCell>
+            </TableRow>
+
+        </>
     )
 }
-
-export default TableView
+export default memo(TableView) 

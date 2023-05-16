@@ -178,10 +178,10 @@ const ExperienceDetails = () => {
     return (
 
         <Fragment>
-            <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" }}} >
+            <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     {/* heading Section start */}
-                    <Paper square elevation={3} sx={{display: "flex", p: 1,alignItems: "center"}}  >
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -192,18 +192,18 @@ const ExperienceDetails = () => {
                     </Paper>
                     {/* headig section end */}
 
-                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center",flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }}} >
+                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
                         <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                             {/* first row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20}}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                                <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Institution Name
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -213,7 +213,7 @@ const ExperienceDetails = () => {
                                         name="institution_name"
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 5 }} >
+                                <Box sx={{ width: '50%', pl: 5 }} >
                                     <FormControlLabel
                                         className=""
                                         control={
@@ -234,25 +234,25 @@ const ExperienceDetails = () => {
                             </Box>
                             {/* first row end */}
 
-                            <Box sx={{display: "flex", flexDirection: "row", px: 20}}>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                                <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Designation
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
+                                <Box sx={{ width: '30%', pt: 0.5 }} >
                                     <DesignationMast style={SELECT_CMP_STYLE} />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Work Start Date
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -267,15 +267,15 @@ const ExperienceDetails = () => {
                                 </Box>
                             </Box>
                             {/* second row start */}
-                            <Box sx={{ display: "flex",flexDirection: "row", pt: 0.5,px: 20}}>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5, px: 20 }}>
+                                <Box sx={{ width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Work End Date
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="date"
                                         classname="form-control form-control-sm"
@@ -289,15 +289,14 @@ const ExperienceDetails = () => {
                                         }}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                                <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Total Year Experience
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
+                                <Box sx={{ width: '30%' }} >
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -310,15 +309,15 @@ const ExperienceDetails = () => {
                             </Box>
                             {/* second row end */}
                             {/* third row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row",px: 20, py: 1}}>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, py: 1 }}>
+                                <Box sx={{ width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Gross Salary
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }}>
+                                <Box sx={{ width: '80%', }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -327,12 +326,12 @@ const ExperienceDetails = () => {
                                         value={gross_salary}
                                         name="gross_salary"
                                     />
-                                </Box>                 
+                                </Box>
                             </Box>
                         </Box>
                         {/* third row end */}
                     </Paper>
-                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex',flexDirection: "column"}} >
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                         <ExperienceAgGridtable update={count} getTableData={getTableData} />
                     </Paper>
                 </Paper>
