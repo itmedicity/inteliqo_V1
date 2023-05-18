@@ -221,7 +221,7 @@ const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/Co
 const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDeduction/EarningsDeduction'))
 const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/HodApproval'))
 const OTUpdatedList = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdatedList'))
-const AttendanceAutomatic = React.lazy(() => import('./views/Payroll/AttendanceAutomatic/AttendanceAutomatic'))
+const AttendanceAutomatic = React.lazy(() => import('./views/Payroll/AttendanceAutomatic/AttendanceGenerateAuto'))
 const PunchTransfer = React.lazy(() => import('./views/Master/PunchTransfer/PunchTransfer'))
 
 const routes = [
