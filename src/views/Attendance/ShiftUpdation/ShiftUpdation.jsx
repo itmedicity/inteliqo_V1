@@ -66,6 +66,9 @@ const ShiftUpdation = () => {
     const [section, changeSection] = useState(0);
     const [emply, getEmployee] = useState(0);
     const [tableArray, setTableArray] = useState([]);
+    const [disable, setDisable] = useState(false)
+    const { em_no } = emply
+
 
     //HANDLE FETCH PUNCH DETAILS AGINST EMPLOYEE SELECTION
     const handleOnClickFuntion = useCallback(async () => {
@@ -76,101 +79,112 @@ const ShiftUpdation = () => {
         // const endDate = format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd');
 
         const selectedDate = moment(value).format('YYYY-MM-DD');
-
         if (dept !== 0 && section !== 0 && emply !== 0) {
 
-            const { em_id } = emply
-            const postData = {
-                fromDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                preFromDate: format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd 00:00:00'),
-                toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                preToDate: format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59'),
-                dept: dept,
-                section: section,
-                empId: emply
+            const postdata = {
+                em_no: em_no,
+                attendance_marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
             }
 
-            // dispatch(getPunchMasterData(postData));
-            const resultdel = await axioslogin.get(`/common/getgrossSalary/${em_id}`);
-            const { dataa } = resultdel.data
-            const { gross_salary } = dataa[0]
-
-            const gracePeriod = await axioslogin.get('/commonsettings')
-            const { data } = gracePeriod.data
-            const { cmmn_late_in_grace, cmmn_early_out_grace } = data[0]
-
-            const SelectMonth = getMonth(new Date(selectedDate))
-            const SelectYear = getYear(new Date(selectedDate))
-
-            const getHolidayPost = {
-                month: SelectMonth + 1,
-                year: SelectYear
+            const dataExist = await axioslogin.post("/attendCal/checkAttendanceProcess/", postdata);
+            const { success } = dataExist.data
+            if (success === 1) {
+                warningNofity("Attendance procees Already Done")
+                setDisable(true)
+                setOpenBkDrop(false)
             }
-            const holiday_data = await axioslogin.post("/attendCal/getHolidayDate/", getHolidayPost);
-            const { holidaydata } = holiday_data.data;
+
+            else {
+                const { em_id } = emply
+                const postData = {
+                    fromDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    preFromDate: format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd 00:00:00'),
+                    toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    preToDate: format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59'),
+                    dept: dept,
+                    section: section,
+                    empId: emply
+                }
+
+                // dispatch(getPunchMasterData(postData));
+                const resultdel = await axioslogin.get(`/common/getgrossSalary/${em_id}`);
+                const { dataa } = resultdel.data
+                const { gross_salary } = dataa[0]
+
+                const gracePeriod = await axioslogin.get('/commonsettings')
+                const { data } = gracePeriod.data
+                const { cmmn_late_in_grace, cmmn_early_out_grace } = data[0]
+
+                const SelectMonth = getMonth(new Date(selectedDate))
+                const SelectYear = getYear(new Date(selectedDate))
+
+                const getHolidayPost = {
+                    month: SelectMonth + 1,
+                    year: SelectYear
+                }
+                const holiday_data = await axioslogin.post("/attendCal/getHolidayDate/", getHolidayPost);
+                const { holidaydata } = holiday_data.data;
 
 
-            const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
-                gross_salary, empInform, dispatch)
-            const { status, message, shift, punch_data } = result;
-            if (status === 1) {
-                dispatch({ type: FETCH_PUNCH_DATA, payload: punch_data })
-                dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
-                const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
-                const { success, planData } = punch_master_data.data;
+                const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+                    gross_salary, empInform, dispatch)
+                const { status, message, shift, punch_data } = result;
+                if (status === 1) {
+                    dispatch({ type: FETCH_PUNCH_DATA, payload: punch_data })
+                    dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
+                    const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
+                    const { success, planData } = punch_master_data.data;
 
-                // if (await punchMasterData.length > 0) {
+                    // if (await punchMasterData.length > 0) {
 
-                // }
-                const tableData = planData?.map((data) => {
-                    //FIND THE CROSS DAY
-                    const crossDay = shift?.find(shft => shft.shft_slno === data.shift_id);
-                    const crossDayStat = crossDay?.shft_cross_day ?? 0;
+                    // }
 
-                    let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
-                    let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
-                        `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}`;
+                    if (success === 1) {
 
-                    // GET THE HOURS WORKED IN MINITS
-                    let interVal = intervalToDuration({
-                        start: isValid(new Date(data.punch_in)) ? new Date(data.punch_in) : 0,
-                        end: isValid(new Date(data.punch_out)) ? new Date(data.punch_out) : 0
-                    })
+                        const tableData = planData?.map((data) => {
+                            //FIND THE CROSS DAY
+                            const crossDay = shift?.find(shft => shft.shft_slno === data.shift_id);
+                            const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
-                    return {
-                        punch_slno: data.punch_slno,
-                        duty_day: data.duty_day,
-                        shift_id: data.shift_id,
-                        emp_id: data.emp_id,
-                        em_no: data.em_no,
-                        punch_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_in,
-                        punch_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_out,
-                        shift_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                        shift_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
-                        hrs_worked: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
-                            formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                        hrsWrkdInMints: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
-                            differenceInMinutes(new Date(data.punch_out), new Date(data.punch_in)) : 0,
-                        late_in: data.late_in,
-                        early_out: data.early_out
+                            let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
+                                `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}`;
+
+                            // GET THE HOURS WORKED IN MINITS
+                            let interVal = intervalToDuration({
+                                start: isValid(new Date(data.punch_in)) ? new Date(data.punch_in) : 0,
+                                end: isValid(new Date(data.punch_out)) ? new Date(data.punch_out) : 0
+                            })
+
+                            return {
+                                punch_slno: data.punch_slno,
+                                duty_day: data.duty_day,
+                                shift_id: data.shift_id,
+                                emp_id: data.emp_id,
+                                em_no: data.em_no,
+                                punch_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_in,
+                                punch_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_out,
+                                shift_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                shift_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                hrs_worked: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
+                                    formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                hrsWrkdInMints: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
+                                    differenceInMinutes(new Date(data.punch_out), new Date(data.punch_in)) : 0,
+                                late_in: data.late_in,
+                                early_out: data.early_out
+                            }
+                        })
+                        setOpenBkDrop(false)
+                        setTableArray(tableData)
+                        succesNofity(message)
                     }
-
-                })
-                setOpenBkDrop(false)
-
-                setTableArray(tableData)
-                succesNofity(message)
-            } else {
-                errorNofity(message)
-                setOpenBkDrop(false)
+                } else {
+                    setTableArray([])
+                    errorNofity(message)
+                    setOpenBkDrop(false)
+                }
             }
-
         }
-
-        else {
-            warningNofity("Please Select All Fields")
-        }
-
     }, [value, dept, section, emply, empInform])
 
     //ATTENDANCE TABLE UPDATION FUNCTION
@@ -193,12 +207,11 @@ const ShiftUpdation = () => {
     }, [updatedDataPunchInOut])
 
 
-
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <PageLayoutCloseOnly
-                heading="Attendance Marking"
+                heading="Punch In/Out Marking"
                 redirect={() => { }}
             >
                 <Box sx={{ display: 'flex', py: 0.5, flex: 1 }}>
@@ -251,7 +264,6 @@ const ShiftUpdation = () => {
                                 variant="outlined"
                                 color="neutral"
                                 fullWidth
-                                // onClick={props.redirect}
                                 startDecorator={<CleaningServicesOutlinedIcon />}
                                 sx={{ mx: 0.5 }}
                             >
@@ -290,7 +302,8 @@ const ShiftUpdation = () => {
                                 <Suspense>
                                     {
                                         tableArray?.map((val, ind) => {
-                                            return <TableRows key={ind} data={val} />
+                                            return <TableRows key={ind} data={val}
+                                                disable={disable} />
                                         })
                                     }
                                 </Suspense>

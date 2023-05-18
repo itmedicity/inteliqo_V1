@@ -7,9 +7,10 @@ import { useState } from 'react';
 
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
-const TableRows = ({ data }) => {
+const TableRows = ({ data, disable }) => {
     //MODAL OPEN STATE
     const [open, setOpen] = useState(false);
+
     return (
         <>
             <Suspense>
@@ -17,9 +18,14 @@ const TableRows = ({ data }) => {
             </Suspense>
             <TableRow hover >
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    <IconButton aria-label="delete" size="small" sx={{ p: 0 }} onClick={() => setOpen(true)} >
+                    {disable === true ? <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
+                        disabled
+                    >
                         <ArticleOutlinedIcon />
-                    </IconButton>
+                    </IconButton> : <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
+                        onClick={() => setOpen(true)} >
+                        <ArticleOutlinedIcon />
+                    </IconButton>}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
                     {data.duty_day}</TableCell>
