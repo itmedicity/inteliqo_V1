@@ -56,14 +56,16 @@ const HaldayRequetsMainForm = () => {
 
     const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel;
 
-    // console.log(hod, incharge)
+
+
+    console.log(hod, incharge)
 
     const {
         em_no, em_id,
         em_department, em_dept_section,
         hod: empHodStat, incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0] || {};
-
+    console.log(em_id);
 
     //SELECTED EMPLOYEE EMP_ID AND EMP_NO DETAILS
     const empInformation = useSelector((state) => state.leaveRequestSelectedEmployee, _.isEqual)
@@ -94,7 +96,7 @@ const HaldayRequetsMainForm = () => {
     useEffect(() => {
         const postData = {
             startDate: moment(fromDate).format('YYYY-MM-DD'),
-            em_id: empIdInform.em_id
+            em_id: hod === 0 && incharge === 0 ? em_id : empIdInform.em_id
         }
         dispatch(getDutyPlannedShiftForHalfDayRequest(postData));
         setShiftTime(0)

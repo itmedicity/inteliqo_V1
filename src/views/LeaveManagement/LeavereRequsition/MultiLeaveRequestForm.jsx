@@ -20,6 +20,11 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { getannualleave } from 'src/redux/actions/Profile.action';
 import { fetchleaveInformationFun } from './Func/LeaveFunction';
+import {
+    getCommonLeaveData, getEmployeeInformation,
+    getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
+} from 'src/redux/actions/LeaveReqst.action';
 // lazy import 
 // const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
 const MuliLeaveMapCmp = lazy(() => import('./MuliLeaveMapCmp'));
@@ -45,11 +50,11 @@ const MultiLeaveRequestForm = () => {
     // const { em_no, requestType, deptSection } = reqEmpDetl;
 
     //get the employee details for taking the HOd and Incharge Details
-    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
+    const getEmployeeInformations = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
 
-    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
+    const selectedEmployeeDetl = useMemo(() => getEmployeeInformations, [getEmployeeInformations])
 
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
@@ -61,6 +66,18 @@ const MultiLeaveRequestForm = () => {
         em_department, em_dept_section,
         hod: empHodStat, incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
+
+
+    useEffect(() => {
+        const data = { em_id: em_id }
+        dispatch(getCreditedCasualLeave(em_id));
+        dispatch(getCreitedCommonLeave(data));
+        dispatch(getCreitedHolidayLeave(em_id));
+        dispatch(getCreitedCompansatoryOffLeave(em_id));
+        dispatch(getCreditedEarnLeave(em_id));
+        dispatch(getannualleave(em_id))
+        dispatch(getEmployeeInformation(em_id))
+    }, [hod === 0 && incharge === 0])
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))
@@ -108,7 +125,9 @@ const MultiLeaveRequestForm = () => {
 
         //filter the leaves for duplication and get the post data
         const duplicateLeaveSelection = newData?.map((val) => val.selectedLveSlno).includes(leaveDetl?.selectedLveSlno);
-        if (duplicateLeaveSelection === true) {
+        const duplicateLeaveSelections = newData?.map((val) => val.lveTypeName).includes(leaveDetl?.lveTypeName);
+
+        if (duplicateLeaveSelection === true && duplicateLeaveSelections === true) {
             warningNofity("You are Already Selected This Leaves");
         } else {
             // leave add to the map
