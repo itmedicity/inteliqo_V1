@@ -27,7 +27,7 @@ const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMai
 const LeaveRequestMainCard = () => {
 
     const dispatch = useDispatch();
-    const { LEAVE_REQ_DEFAULT, GET_EMPLOYEE_APPROVAL_LEVEL } = Actiontypes;
+    const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
@@ -37,8 +37,6 @@ const LeaveRequestMainCard = () => {
     const state = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
     const { requestType } = state;
 
-    // const [deptSection, setDeptSection] = useState(0);
-    // const [employeeID, setEmployeeID] = useState(0);
     useEffect(() => {
         if (hod === 1 || incharge === 1) {
             dispatch(getHodBasedDeptSectionName(em_id));
@@ -62,6 +60,9 @@ const LeaveRequestMainCard = () => {
         }
     }, [])
 
+    //Leave Request in HOD/INcharge Selected employes Empid get Reducer function
+    const SelectEmp = useSelector((state) => state.leaveRequestSelectedEmployee.em_id, _.isEqual);
+
     return (
         <CustomLayout title="Leave Requsition" displayClose={true} >
             <ToastContainer />
@@ -69,10 +70,10 @@ const LeaveRequestMainCard = () => {
                 <LeaveRequestEmployeeSelection />
                 <Suspense fallback={<LinearProgreeBar />} >
                     {
-                        requestType === 1 ? <LeaveRequestFormPage em_id={em_id} /> :
-                            requestType === 2 ? <HalfDayLeaveRequest em_id={em_id} /> :
-                                requestType === 3 ? <MissPunchRequest em_id={em_id} /> :
-                                    requestType === 4 ? <CompansatoryOffMast em_id={em_id} /> : null
+                        requestType === 1 ? <LeaveRequestFormPage em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
+                            requestType === 2 ? <HalfDayLeaveRequest em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
+                                requestType === 3 ? <MissPunchRequest em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
+                                    requestType === 4 ? <CompansatoryOffMast em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> : null
                     }
                 </Suspense>
                 <LeaveTableContainer />
