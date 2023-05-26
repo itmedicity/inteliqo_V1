@@ -1,7 +1,6 @@
-import { compareAsc, differenceInCalendarYears, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
+import { compareAsc, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
 
 const loggerUser = employeeNumber()
@@ -109,6 +108,8 @@ export const checkContractStatus = async (
   em_prob_end_date,
   des_type,
   emp_type,
+  probation_status
+
 ) => {
   /***
    * designation type ->Probation ->1,training->2,Confirmation -> 3 (des_type)
@@ -119,7 +120,7 @@ export const checkContractStatus = async (
   const dateOfJoin = moment(em_doj).isValid() ? moment(em_doj) : 0
   const probationEndDate = moment(em_prob_end_date).isValid() ? moment(em_prob_end_date) : 0
 
-  if (contract_status === 1) {
+  if (contract_status === 1 && probation_status === 0) {
     if (moment(contrctEndDate).isValid()) {
       if (new Date(contrctEndDate) > new Date()) {
         return {
@@ -138,7 +139,30 @@ export const checkContractStatus = async (
         status: false,
       }
     }
-  } else if ((des_type === 1 || des_type === 2) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
+  }
+  else if (contract_status === 1 && probation_status === 1) {
+    if (moment(probationEndDate).isValid() && moment(contrctEndDate).isValid()) {
+      if (new Date(probationEndDate) > new Date() && new Date(contrctEndDate) > new Date()) {
+        return {
+          message: 'Contract Date Not Exceeded',
+          status: true,
+        }
+      }
+      else {
+        return {
+          message: 'Probation end Date Exceeded Please Do the Probation Conformation',
+          status: false,
+        }
+      }
+    } else {
+      return {
+        message: 'Contract End Date Showing is a Invalid Date, Please Contract HRD',
+        status: false,
+      }
+    }
+
+  }
+  else if ((des_type === 1 || des_type === 2) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
     return {
       message: 'Probation || Training Confirmation Pending,Do the Process First',
       status: false,
@@ -616,8 +640,6 @@ export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, e
 
   const { startDate, endDate } = calulatedProcessDate
 
-  console.log(new Date(startDate), new Date(endDate))
-
   let casualLeaveDateRange = eachMonthOfInterval({
     start: new Date(startDate),
     end: new Date(endDate),
@@ -627,7 +649,6 @@ export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, e
     const today = moment().format('YYYY-MM');
     const checkDate = moment(value).format('YYYY-MM');
 
-    // console.log(today, checkDate)
     const leaveDay = moment(value).format('YYYY-MM-DD');
 
     // if (checkDate >= today) {
@@ -645,7 +666,6 @@ export const updateCasualLeave = async (calulatedProcessDate, lv_process_slno, e
     // }
     // return casualLeveList
   }).filter((val) => val !== false)
-  console.log(processedCasualLeaveList)
   return processedCasualLeaveList
 }
 
@@ -696,7 +716,6 @@ export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno,
       const today = moment().format('YYYY-MM-DD');
       const holidayDate = moment(val.hld_date).format('YYYY-MM-DD');
 
-      // console.log(today, holidayDate)
       return (holidayDate >= today && holidayDate >= em_doj) ? {
         em_no: em_no,
         hd_slno: val.hld_slno,
@@ -850,8 +869,6 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
 
   const yearDiffrence = differenceInYears(new Date(), new Date(em_doj))
 
-
-  // console.log(lastYearDate, lastYear, resulta, yeardiff)
   let data = {
     currentYear: currentYear,
     creditYear: lastYear,
