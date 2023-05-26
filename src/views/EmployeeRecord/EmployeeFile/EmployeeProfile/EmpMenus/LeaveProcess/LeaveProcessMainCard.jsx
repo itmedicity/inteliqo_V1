@@ -105,6 +105,8 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
     em_cont_start,
     em_cont_end,
     em_doj,
+    probation_status
+
   } = employeeDetl
 
   useEffect(() => {
@@ -244,7 +246,8 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       em_doj,
       em_prob_end_date,
       des_type,
-      emp_type,
+      emp_type, probation_status
+
     )
 
     if (contractStatus.status === true) {
