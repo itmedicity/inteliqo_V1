@@ -9,7 +9,6 @@ import { getPunchMasterData } from "src/redux/actions/Common.Action";
 
 const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
     gross_salary, punchMaster, InsertedPunchMasterData, shiftData) => {
-
     const punchTimeData = punchData?.map(val => new Date(val.punch_time))
 
 
@@ -47,7 +46,6 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                 return holi
             }
         })
-
         if (val.shift_id === 3) {
             const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
                 const getpunchFromTo = {
@@ -76,7 +74,6 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             const wDay = format(new Date(weekDay), 'yyyy-MM-dd')
             calculateNoWorkday(val.duty_day, wDay, val.em_no, val.punch_slno);
         }
-
         return {
             duty_day: val.duty_day,
             em_no: val.em_no,
@@ -91,9 +88,15 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             shift_out: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
             earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
-            duty_status: HoliDay !== undefined || val.shift_id === 3 ?
-                1 : 0,
-            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" : "A ",
+            duty_status: CaluculateLateInOut.lateIn >= 30 || CaluculateLateInOut.earlyOut > 0 ? 0.5 :
+                HoliDay !== undefined || val.shift_id === 3 ? 1 :
+                    CaluculateLateInOut.lateIn <= cmmn_late_in_grace &&
+                        CaluculateLateInOut.earlyOut === 0 ? 1 :
+                        0,
+            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
+                CaluculateLateInOut.lateIn > cmmn_late_in_grace ? "LC" :
+                    CaluculateLateInOut.earlyOut > cmmn_early_out_grace ? "EG" :
+                        CaluculateLateInOut.lateIn >= 30 || CaluculateLateInOut.earlyOut > 0 ? "HFD" : "P",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
             woff: val.shift_id === 3 ? 1 : 0
@@ -144,10 +147,6 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             { lateIn: differenceInMinutes(new Date(punchIn), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(punchOut)) }
             : { lateIn: 0, earlyOut: 0 };
 
-        if (val.shift_id === 3) {
-            console.log("Punch exist");
-        }
-
         return {
             punch_slno: val.punch_slno,
             punch_in: isValid(new Date(punchIn)) ? format(new Date(punchIn), 'yyyy-MM-dd HH:mm') : null,
@@ -167,6 +166,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         }
     })
 
+
     //UPDATE INTO THE PUNCH MASTER TABLE 
     const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMasterData/", result);
     const { success, message } = updatePunchMaster.data;
@@ -183,6 +183,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
 //GET AND UPDATE PUNCH IN / OUT DATA
 export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
     gross_salary, empInform, dispatch) => {
+
     // `RECIVE THE COMMON SETTING DATA SHIFT`
     /******
      * ######  PROCESS FLOW OF FUN #######
@@ -195,8 +196,6 @@ export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_late_
      * #-< UPDATE THE PUNCH MASTER USING THE CORRECT IN/OUT DATA 
      * #-< AFTER UPDATE GET THE COMPLETE DATA BASED WITH CURRENT DATE ( FROM PUNCH MASTER DATA ) AND GIVE TO RETURN
      */
-
-    const { fromDate, preFromDate, toDate, preToDate, dept, section, empId } = postData;
 
     //GET THE PUNCH IN / OUT INFORMATION
     const punch_data = await axioslogin.post("/attendCal/getPunchData/", postData);

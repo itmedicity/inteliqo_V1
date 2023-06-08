@@ -85,7 +85,7 @@ import { getLeaveType } from './LeaveType.Reducer'
 import { getloginDeptSection } from './AuthorizatioDeptSectionReducer'
 import { setAllLeaveApproval } from './LeaveApprovalReducer'
 import { getOTApprovalData } from './OTReducer'
-
+import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -181,7 +181,8 @@ const reducer = combineReducers({
     fetchupdatedPunchInOutData,
     getloginDeptSection,
     setAllLeaveApproval,
-    getOTApprovalData
+    getOTApprovalData,
+    getEmpUnderDeptsecList
 })
 
 export default reducer;

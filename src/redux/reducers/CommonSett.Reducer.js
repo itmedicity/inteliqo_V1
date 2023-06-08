@@ -28,7 +28,8 @@ const commonSetting = {
     pf_employer: 0,
     verification_level: 0,
     week_off_day: 0,
-    salary_above: 0
+    salary_above: 0,
+    noff_count: 0
 }
 
 export const getCommonSettings = (state = commonSetting, { type, payload }) => {

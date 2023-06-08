@@ -1,7 +1,6 @@
 import React from 'react'
 import { memo } from 'react'
 import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import Autocomplete from '@mui/joy/Autocomplete';
 import { useEffect } from 'react';
@@ -16,13 +15,32 @@ const SectionBsdEmployee = ({ getEmploy }) => {
     const [value, setValue] = useState(empInfm[0]);
     const [inputValue, setInputValue] = useState('');
 
-    useEffect(() => {
-        empInform.length > 0 && setEmpInform(empInform)
-        empInform.length === 0 && setEmpInform(empInform)
+    // useEffect(() => {
+    //     empInform.length > 0 && setEmpInform(empInform)
+    //     empInform.length === 0 && setEmpInform(empInform)
 
-        empInform.length === 0 && setValue([{ em_id: 0, em_name: 'Employee Name' }])
-        empInform.length === 0 && setInputValue('')
-    }, [empInform])
+    //     empInform.length === 0 && setValue([{ em_id: 0, em_name: 'Employee Name' }])
+    //     empInform.length === 0 && setInputValue('')
+    // }, [empInform])
+
+    useEffect(() => {
+        if (empInform.length !== 0) {
+            setEmpInform(empInform)
+            if (value !== null) {
+                getEmploy(value)
+            }
+            else {
+                getEmploy(0)
+                return
+            }
+        }
+        else {
+
+            setEmpInform([])
+            return
+        }
+    }, [empInform, value])
+
 
     return (
         <Autocomplete
@@ -31,7 +49,7 @@ const SectionBsdEmployee = ({ getEmploy }) => {
             clearOnBlur
             onChange={(event, newValue) => {
                 setValue(newValue);
-                getEmploy(newValue)
+                // getEmploy(newValue)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
