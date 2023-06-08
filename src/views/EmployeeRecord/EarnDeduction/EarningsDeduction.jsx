@@ -1,5 +1,5 @@
 import { Button, } from '@mui/joy'
-import { Box, IconButton, TextField, Tooltip } from '@mui/material'
+import { Box, IconButton, TextField, FormControlLabel, Checkbox, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux';
@@ -11,6 +11,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import EarnDeductionModel from './EarnDeductionModel';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
 
 const EarningsDeduction = () => {
 
@@ -21,12 +22,51 @@ const EarningsDeduction = () => {
     const [model, setModel] = useState(0)
     const [open, setOpen] = useState(false)
     const [empId, setEmpId] = useState(0)
-
+    const [newEmp, setNewEmp] = useState(true)
+    const [recomendeSalary, setRecomendSalary] = useState(0)
     const getEmpNO = async (e) => {
         setEmpNo(e.target.value)
     }
 
+    const updateNewEmp = (e) => {
+        if (e.target.checked === true) {
+            setNewEmp(true)
+        } else {
+            setNewEmp(false)
+        }
+    }
+
+    useEffect(() => {
+        const getdata = async () => {
+            const result = await axioslogin.get('/empearndeduction/newRecommended/allEmp')
+            const { success, data } = result.data
+            if (success === 1) {
+                setnameList(data);
+            } else {
+                setnameList([]);
+            }
+        }
+        if (dept === 0 && deptSection === 0 && Empno === '' && newEmp === true) {
+            getdata()
+        }
+        else if (dept !== 0 && deptSection !== 0) {
+            setNewEmp(false)
+            setnameList([]);
+        }
+        else if (dept !== 0 && deptSection !== 0 && Empno !== '') {
+            setNewEmp(false)
+            setnameList([]);
+        }
+        else if (Empno !== '') {
+            setNewEmp(false)
+            setnameList([]);
+        }
+
+
+    }, [dept, deptSection, Empno])
     const dataDisplay = async () => {
+
+
         if (dept !== 0 && deptSection !== 0 && Empno === '') {
             const postData = {
                 em_department: dept,
@@ -69,9 +109,10 @@ const EarningsDeduction = () => {
 
     const toOpenModel = async (params) => {
         const data = params.api.getSelectedRows()
-        const { em_id, em_no } = data[0]
+        const { em_id, em_no, recomend_salary } = data[0]
         setEmpId(em_id)
         setEmpNo(em_no)
+        setRecomendSalary(recomend_salary)
         setModel(1)
         setOpen(true)
     }
@@ -107,6 +148,7 @@ const EarningsDeduction = () => {
                     heading='Employee earn Deduction'
                     Empno={Empno}
                     empId={empId}
+                    recomendeSalary={recomendeSalary}
                     setEmpNo={setEmpNo}
                     setModel={setModel}
                 /> : null
@@ -128,6 +170,21 @@ const EarningsDeduction = () => {
                                 />
                             </Box>
                         </Tooltip>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, ml: 1 }}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        color="secondary"
+                                        name="newEmp"
+                                        value={newEmp}
+                                        checked={newEmp}
+                                        className="ml-2"
+                                        onChange={(e) => { updateNewEmp(e) }}
+                                    />
+                                }
+                                label="New Employees"
+                            />
+                        </Box>
                         <Box sx={{ flex: 1, px: 0.3 }}>
                             <Button aria-label="Like" variant="outlined" color="neutral"
                                 onClick={dataDisplay}
@@ -139,7 +196,33 @@ const EarningsDeduction = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", pt: 1, width: "100%" }}>
-                        <CommonAgGrid
+
+                        {
+                            newEmp === true ?
+                                <CommonAgGrid
+                                    columnDefs={columnDef}
+                                    tableData={nameList}
+                                    sx={{
+                                        height: 600,
+                                        width: "100%"
+                                    }}
+                                    rowHeight={30}
+                                    headerHeight={30} />
+                                :
+                                <CommonAgGrid
+                                    columnDefs={columnDef}
+                                    tableData={nameList}
+                                    sx={{
+                                        height: 600,
+                                        width: "100%"
+                                    }}
+                                    rowHeight={30}
+                                    headerHeight={30} />
+
+                        }
+
+
+                        {/* <CommonAgGrid
                             columnDefs={columnDef}
                             tableData={nameList}
                             sx={{
@@ -147,7 +230,8 @@ const EarningsDeduction = () => {
                                 width: "100%"
                             }}
                             rowHeight={30}
-                            headerHeight={30} />
+                            headerHeight={30} /> */}
+
                     </Box>
                 </Box>
             </CustomLayout>
