@@ -1,6 +1,6 @@
 import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
 import { addDays, addYears } from 'date-fns'
-import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, memo, useState } from 'react'
 import { useHistory } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -47,7 +47,8 @@ const EmployeeRecord = () => {
         dateofbirth: '',
         dateofjoining: '',
         empstatus: false,
-        presPincode: ''
+        presPincode: '',
+        recomend_salary: 0
     });
     const defaultstate = {
         empName: '',
@@ -66,7 +67,8 @@ const EmployeeRecord = () => {
         dateofbirth: '',
         dateofjoining: '',
         empstatus: false,
-        presPincode: ''
+        presPincode: '',
+        recomend_salary: 0
     }
     // usestate
     const [cont_perioddate, setcont_perioddate] = useState(0)
@@ -154,7 +156,8 @@ const EmployeeRecord = () => {
 
     // destructuring employeerecord
     const { empName, empNo, addressPresent1, addressPresent2, perPincode, mobileNo, landPhone, email,
-        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype } = employeerecord
+        addressPermnt1, addressPermnt2, dateofbirth, dateofjoining, Selectgender, empstatus, presPincode, doctortype,
+        recomend_salary } = employeerecord
     // data for sumbimssion
     const submitdata = useMemo(() => {
         return {
@@ -194,14 +197,15 @@ const EmployeeRecord = () => {
             em_age_day: dayge,
             hrm_religion: getreligion,
             contractflag: emptype === 2 ? contractflag : 0,
-            probation_status: destype === 1 || destype === 2 ? prob_status : 0
+            probation_status: destype === 1 || destype === 2 ? prob_status : 0,
+            recomend_salary: recomend_salary
         }
 
     }, [empNo, selectSalutation, empName, Selectgender, dateofbirth, yearage, dateofjoining, mobileNo, landPhone,
         email, selectBranchMast, selectedDept, selectDeptSection, selectInstiType, selectDesignation, doctortype,
         getDoctype, getemployeecategory, probationendate, cont_gracedate, retirementyear, cont_perioddate, empstatus,
         addressPermnt1, addressPermnt2, perPincode, getregion, addressPresent1, addressPresent2, presPincode,
-        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag, destype, emptype, prob_status])
+        getregion2, getbloodgroup, mnthage, dayge, getreligion, contractflag, destype, emptype, prob_status, recomend_salary])
 
     useEffect(() => {
         return (
@@ -824,7 +828,19 @@ const EmployeeRecord = () => {
                                                 />
                                             </div>
                                             <div className="row">
-                                                <div className="col-md-12">
+                                                <div className="col-md-2">
+                                                    <ReactTooltip id="toolTip1" />
+                                                    <TextInput
+                                                        type="text"
+                                                        classname="form-control form-control-sm"
+                                                        Placeholder="Recommended Salary"
+                                                        changeTextValue={(e) => updateFormData(e)}
+                                                        value={recomend_salary}
+                                                        name="recomend_salary"
+                                                    //  disabled={true}
+                                                    />
+                                                </div>
+                                                <div className="col-md-4">
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
@@ -843,10 +859,6 @@ const EmployeeRecord = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row col-md-12">
-
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -857,10 +869,9 @@ const EmployeeRecord = () => {
                         />
                     </div>
                 </form>
-
             </div>
         </Fragment>
     )
 }
 
-export default EmployeeRecord
+export default memo(EmployeeRecord)

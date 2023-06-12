@@ -1,6 +1,6 @@
 import { FormControl, MenuItem, Select, TextField, FormControlLabel, Checkbox } from '@material-ui/core'
-import { addDays, addYears, differenceInDays, isValid } from 'date-fns'
-import React, { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { addDays, addYears } from 'date-fns'
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, memo, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import moment from 'moment'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
@@ -27,16 +27,12 @@ import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import ReactTooltip from 'react-tooltip';
 import { ToastContainer } from 'react-toastify'
 import CustomHeaderCmpOnly from 'src/views/Component/MuiCustomComponent/CustomHeaderCmpOnly'
-import { useDispatch } from 'react-redux'
-import { setPersonalData } from 'src/redux/actions/Profile.action'
 
 const EmployeeRecordEdit = () => {
 
     const { id, no } = useParams();
     const classes = useStyles();
     const history = useHistory()
-
-    const dispatch = useDispatch();
 
     // Context API
     const { selectedDept,
@@ -111,14 +107,15 @@ const EmployeeRecordEdit = () => {
         dateofbirth: '',
         dateofjoining: '',
         empstatus: false,
-        presPincode: ''
+        presPincode: '',
+        recomend_salary: 0
     });
     // destructuring employeerecord
     const { empName, empNo, addressPresent1, addressPresent2,
         perPincode, mobileNo, landPhone, email,
         addressPermnt1, addressPermnt2, dateofbirth,
         dateofjoining, Selectgender, empstatus,
-        presPincode, doctortype } = employeerecord
+        presPincode, doctortype, recomend_salary } = employeerecord
 
     const defaultstate = {
         empName: '',
@@ -137,7 +134,8 @@ const EmployeeRecordEdit = () => {
         dateofbirth: '',
         dateofjoining: '',
         empstatus: false,
-        presPincode: ''
+        presPincode: '',
+        recomend_salary: 0
     }
     // usestate for age
     const [agestate, agesetstate] = useState({
@@ -167,7 +165,7 @@ const EmployeeRecordEdit = () => {
                     em_dept_section, em_institution_type,
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
-                    contract_status, probation_status } = data[0]
+                    contract_status, probation_status, recomend_salary } = data[0]
                 const frmdata = {
                     empName: em_name,
                     empNo: em_no,
@@ -185,7 +183,8 @@ const EmployeeRecordEdit = () => {
                     dateofbirth: em_dob,
                     dateofjoining: em_doj,
                     empstatus: true,
-                    presPincode: hrm_pin2
+                    presPincode: hrm_pin2,
+                    recomend_salary: recomend_salary
                 }
                 const age = {
                     yearage: em_age_year,
@@ -291,7 +290,8 @@ const EmployeeRecordEdit = () => {
             em_age_day: dayge,
             hrm_religion: getreligion,
             contractflag: emptype === 2 ? contractflag : 0,
-            probation_status: destype === 1 || destype === 2 ? prob_status : 0
+            probation_status: destype === 1 || destype === 2 ? prob_status : 0,
+            recomend_salary: recomend_salary
         }
 
     }, [empNo, selectSalutation, empName, Selectgender,
@@ -303,7 +303,7 @@ const EmployeeRecordEdit = () => {
         cont_perioddate, empstatus, addressPermnt1,
         addressPermnt2, perPincode, getregion, addressPresent1,
         addressPresent2, presPincode, getregion2, getbloodgroup,
-        mnthage, dayge, getreligion, contractflag, prob_status, destype, emptype])
+        mnthage, dayge, getreligion, contractflag, prob_status, destype, emptype, recomend_salary])
 
     useEffect(() => {
         return (
@@ -999,7 +999,19 @@ const EmployeeRecordEdit = () => {
                                                 />
                                             </div>
                                             <div className="row">
-                                                <div className="col-md-12">
+                                                <div className="col-md-2">
+                                                    <ReactTooltip id="toolTip1" />
+                                                    <TextInput
+                                                        type="text"
+                                                        classname="form-control form-control-sm"
+                                                        Placeholder="Recommended Salary"
+                                                        changeTextValue={(e) => updateFormData(e)}
+                                                        value={recomend_salary}
+                                                        name="recomend_salary"
+                                                    //  disabled={true}
+                                                    />
+                                                </div>
+                                                <div className="col-md-4">
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
@@ -1038,4 +1050,4 @@ const EmployeeRecordEdit = () => {
     )
 }
 
-export default EmployeeRecordEdit
+export default memo(EmployeeRecordEdit)

@@ -146,9 +146,11 @@ const AttendanceGenerateAuto = () => {
             const result = await axioslogin.post("/payrollprocess/create/manual", array1)
             const { success, message } = result.data
             if (success === 1) {
+                console.log(dutyLock);
                 const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
                 const { success } = result1.data
                 if (success === 1) {
+                    console.log("dfghjk");
                     succesNofity("Attendance Marking Done")
                 }
                 else {

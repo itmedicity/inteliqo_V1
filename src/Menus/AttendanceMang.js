@@ -20,6 +20,12 @@ const AttendanceManagement = [
         to: '/Home/ShiftUpdation',
     },
     {
+        men_slno: 235,
+        component: CNavItem,
+        name: 'Punch Marking HR',
+        to: '/Home/PunchMarkingHR',
+    },
+    {
         men_slno: 125,
         component: CNavItem,
         name: 'Attendance Process',

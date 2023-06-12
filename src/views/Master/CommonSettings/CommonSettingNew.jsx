@@ -48,12 +48,19 @@ const CommonSettingNew = () => {
         verification_level: 0,
         salary_above: '',
         pf_employee_amount: '',
-        pf_employer_amount: ''
+        pf_employer_amount: '',
+        noff_count: 0
     })
-    const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
+
+    const {
+        slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above,
-        pf_employee_amount, pf_employer_amount } = FormData
+        pf_employee_amount, pf_employer_amount, noff_count
+    } = FormData
+
+
+
 
     const [levaetype, setLeaveType] = useState([])
     const [count, setCount] = useState(0)
@@ -73,7 +80,8 @@ const CommonSettingNew = () => {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
-                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount } = data[0]
+                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count } = data[0]
+
 
                 const frmData = {
                     slno: setting_slno,
@@ -97,7 +105,9 @@ const CommonSettingNew = () => {
                     verification_level: verification_level,
                     salary_above: salary_above,
                     pf_employee_amount: pf_employee_amount,
-                    pf_employer_amount: pf_employer_amount
+                    pf_employer_amount: pf_employer_amount,
+                    noff_count: noff_count
+
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj)
@@ -147,6 +157,8 @@ const CommonSettingNew = () => {
         salary_above: salary_above,
         pf_employee_amount: pf_employee_amount,
         pf_employer_amount: pf_employer_amount,
+        noff_count: noff_count
+
     }
 
 
@@ -179,6 +191,8 @@ const CommonSettingNew = () => {
         pf_employee_amount: pf_employee_amount,
         pf_employer_amount: pf_employer_amount,
         setting_slno: slno,
+        noff_count: noff_count
+
     }
 
     //save
@@ -728,6 +742,39 @@ const CommonSettingNew = () => {
                             </Paper>
                         </Box>
                     </Box>
+
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', }}>
+                        <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>NOFF Count Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Min Days Of NOFF</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="noff_count"
+                                            value={noff_count}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+                    </Box>
+
+
+
                 </Paper>
                 <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0, pl: 2 }} >

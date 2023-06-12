@@ -228,6 +228,8 @@ const WageRegister = React.lazy(() => import('./views/Payroll/WageRegister/WageR
 const AttandanceRegister = React.lazy(() => import('./views/Payroll/AttendanceRegister/AttandaceRegisterPage'))
 const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement/SalaryStatementPage'))
 const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
+const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
+
 
 const routes = [
 
@@ -449,7 +451,7 @@ const routes = [
   { path: '/Home/AttandanceRegister', exact: true, name: 'Attandance Register', component: AttandanceRegister },
   { path: '/Home/SalaryStatement', exact: true, name: 'Attandance Register', component: SalaryStatement },
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
-
+  { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR }
 
 ]
 
