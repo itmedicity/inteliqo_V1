@@ -64,7 +64,7 @@ const Employeerecord = [
         to: '/Home/Hrm_message',
     },
     {
-        men_slno: 129,
+        men_slno: 231,
         component: CNavItem,
         name: 'Hrm Announcement',
         to: '/Home/Hrm_Announcement',
@@ -82,12 +82,12 @@ const Employeerecord = [
         name: 'Contract End List',
         to: '/Home/Contract_end_details',
     },
-    {
-        men_slno: 129,
-        component: CNavItem,
-        name: 'Approved Contract Renew',
-        to: '/Home/ContractRenewApprovalList',
-    },
+    // {
+    //     men_slno: 129,
+    //     component: CNavItem,
+    //     name: 'Approved Contract Renew',
+    //     to: '/Home/ContractRenewApprovalList',
+    // },
 
 ]
 

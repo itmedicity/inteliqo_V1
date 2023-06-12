@@ -7,17 +7,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import TableView from './PaySlipComponents/TableView';
-import CommonCheckBox from 'src/views/Component/CommonCheckBox';
 
 const PaySlipCalculation = () => {
 
   const [plan, setPlan] = useState([])
-  const [view, setView] = useState(0)
 
   const data = useSelector((state) => state.getPaySlipData.dataList, _.isEqual)
   const pyaSlipData = useMemo(() => data, [data]);
   const dispatch = useDispatch();
-  useEffect(() => dispatch(setCommonSetting()), [])
+  useEffect(() => dispatch(setCommonSetting()), [dispatch])
 
   useEffect(() => {
     if (Object.keys(pyaSlipData).length > 0) {
@@ -40,7 +38,7 @@ const PaySlipCalculation = () => {
               </CssVarsProvider>
             </Box>
           </Paper>
-          <PayslipTopCard setView={setView} />
+          <PayslipTopCard />
           <Box sx={{ flex: 1, pt: 0.5 }} >
             <TableContainer component={Paper}>
               <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
@@ -59,8 +57,8 @@ const PaySlipCalculation = () => {
                     <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>#</TableCell>
                     <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Deduction</TableCell>
                     <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>#</TableCell>
-                    {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>ESI Employer</TableCell> */}
-                    {/* <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>PF Employer</TableCell> */}
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>ESI </TableCell>
+                    <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>PF </TableCell>
                     <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Gross Amount</TableCell>
                     <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550 }}>Net Amount</TableCell>
                   </TableRow>

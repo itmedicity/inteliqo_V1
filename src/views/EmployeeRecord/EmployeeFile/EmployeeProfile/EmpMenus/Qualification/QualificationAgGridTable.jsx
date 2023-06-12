@@ -38,36 +38,20 @@ const QualificationAgGridTable = ({ update, getDataTable }) => {
     }
     const [columnDef] = useState([
         {
-            headerName: '',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
-        {
             headerName: 'Sl No',
-            field: 'emqual_slno'
+            field: 'slno', wrapText: true, minWidth: 100
         },
-        { headerName: 'Education ', field: 'edu_desc' },
-        { headerName: 'Course ', field: 'cour_desc' },
-        { headerName: 'Specialization ', field: 'spec_desc' },
-        { headerName: 'Pass/Fail', field: 'pass' },
+        { headerName: 'Education ', field: 'edu_desc', wrapText: true, minWidth: 200 },
+        { headerName: 'Course ', field: 'cour_desc', wrapText: true, minWidth: 450 },
+        { headerName: 'Specialization ', field: 'spec_desc', wrapText: true, minWidth: 450 },
+        { headerName: 'Pass/Fail', field: 'pass', wrapText: true, minWidth: 200 },
         {
-            headerName: 'Edit', cellRenderer: params =>
+            headerName: 'Edit', minWidth: 200, cellRenderer: params =>
                 <EditIcon onClick={() =>
                     getDataTable(params)
                 }
                 />
         },
-        // {
-        //     headerName: 'Delete', cellRenderer: params =>
-        //         <DeleteOutlineOutlined onClick={() =>
-        //             InactiveData(params)
-        //         }
-        //         />
-        // },
-
     ])
 
     //Get Data
@@ -85,28 +69,6 @@ const QualificationAgGridTable = ({ update, getDataTable }) => {
         }
         getQualification();
     }, [id, update]);
-
-
-
-    //For Edit
-    // const getDataTable = (data) => {
-
-
-    //     const { emqual_slno } = data
-    //     history.push(`/Home/QualificationTableEdit/${emqual_slno}/${id}/${no}`)
-    //     // history.push(`/Home/Prfle/${id}/${no}`)
-    // }
-    // const InactiveData = async (data) => {
-    //     const result = await axioslogin.delete(`/qualify/${data.emqual_slno}`)
-    //     const { success, message } = result.data
-    //     if (success === 1) {
-    //         succesNofity(message)
-    //         setcount(update + 1)
-    //     }
-    //     else {
-    //         errorNofity("Error Occured!!!Please Contact EDP")
-    //     }
-    // }
 
     return (
         <Fragment>

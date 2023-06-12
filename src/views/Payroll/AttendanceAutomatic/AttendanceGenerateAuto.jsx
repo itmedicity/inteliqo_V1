@@ -65,8 +65,8 @@ const AttendanceGenerateAuto = () => {
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
                         const calculatedlop = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
                         const lwp = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 1)).length
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves - (lwp - lossofpay) :
-                            calculated + offdays + holiday + leaves - (lwp - lossofpay)
+                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves - lwp - lossofpay :
+                            calculated + offdays + holiday + leaves - lwp - lossofpay
 
                         const obj = {
                             em_id: val.em_id,
@@ -147,7 +147,7 @@ const AttendanceGenerateAuto = () => {
             const { success, message } = result.data
             if (success === 1) {
                 const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
-                const { success, message } = result1.data
+                const { success } = result1.data
                 if (success === 1) {
                     succesNofity("Attendance Marking Done")
                 }
@@ -187,71 +187,71 @@ const AttendanceGenerateAuto = () => {
                 <Paper square variant="outlined" sx={{ display: 'flex', p: 0.5, flex: 1 }}>
                     {/* employee Name Section */}
                     <Box sx={{ width: '100%' }}>
-                        <TableContainer>
-                            <Table size="small">
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                            <Table size="small" stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Name
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 ID #
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Total Days
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Actual Worked
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Calculated Worked
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 OFF Days
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Leaves
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Leave Without Pay
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Loss Of Pay
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Calculated LOP
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
                                                 Holiday
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Holiday Worked
                                             </Box>
                                         </TableCell>
-                                        <TableCell sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
                                                 Total Pay Day
                                             </Box>
@@ -261,99 +261,102 @@ const AttendanceGenerateAuto = () => {
                                 <TableBody>
                                     {final.map((val, index) => (
                                         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, backgroundColor: '#f1faee', width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
-                                                <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, backgroundColor: '#f1faee', width: 200, border: 0.1, borderColor: '#E1E6E1' }} >
+                                                {/* component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, backgroundColor: '#f1faee', width: 100, border: 0.1, borderColor: '#E1E6E1' }} */}
+                                                <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 200, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.em_name}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.em_no}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.total}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.actual}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.calculated}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.offdays}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.leaves}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.lwp}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.lossofpay}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.calculatedlop}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.holiday}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.holidayworked}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell component="th" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1', }}>
                                                 <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {val.paydays}
+                                                        {val.paydays < 0 ? 0 : val.paydays}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
                                     ))}
+                                    <TableRow>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </TableContainer>

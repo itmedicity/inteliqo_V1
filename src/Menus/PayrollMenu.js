@@ -94,11 +94,35 @@ const PayrollMenu = [
         name: 'Payslip Calculation',
         to: '/Home/PaySlipCalculation',
     },
+    // {
+    //     men_slno: 46,
+    //     component: CNavItem,
+    //     name: 'Payroll Process',
+    //     to: '/Home/PayrollProcess',
+    // },
     {
-        men_slno: 46,
+        men_slno: 232,
         component: CNavItem,
-        name: 'Payroll Process',
-        to: '/Home/PayrollProcess',
+        name: 'Attendance Register',
+        to: '/Home/AttandanceRegister',
+    },
+    {
+        men_slno: 233,
+        component: CNavItem,
+        name: 'Wage Register',
+        to: '/Home/WageRegister',
+    },
+    {
+        men_slno: 234,
+        component: CNavItem,
+        name: 'Salary Statement',
+        to: '/Home/SalaryStatement',
+    },
+    {
+        men_slno: 230,
+        component: CNavItem,
+        name: 'Pay Slip Print',
+        to: '/Home/PaySlipprint',
     },
     {
         men_slno: 48,

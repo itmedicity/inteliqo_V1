@@ -1,23 +1,23 @@
-import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material'
-import React, { Fragment, memo, useContext, useEffect, useMemo, useState } from 'react'
+import { Box, Checkbox, FormControlLabel, Paper, TextField } from '@mui/material'
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import GradeSelect from 'src/views/CommonCode/GradeSelect'
-import TextInput from 'src/views/Component/TextInput'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton'
+import GradeSelectRedux from 'src/views/MuiComponents/GradeSelectRedux'
 
 const StatutoryInformation = () => {
 
-    //const classes = useStyles()
-    //const history = useHistory()
     const { id, no } = useParams()
-    const [Esiallowed, setEsiallowed] = useState(0)
+    const [Esiallowed, setEsiallowed] = useState(0)//for setting employee category have esi allowed
+    const [selectGrade, UpdateGrade] = useState(0)//for grade select
+    const [enable, Setenable] = useState(true)//use state for enable fields on clicking edit button
+    const [value, setValue] = useState(1) //use state for setting serail no for edit
+
     //setting initial state
     const [formData, SetformData] = useState({
         pf: false,
@@ -25,20 +25,18 @@ const StatutoryInformation = () => {
         esi: false,
         esino: '',
         uanno: '',
+        nps: false,
+        npsfixedamount: '',
+        npsamount: ''
     })
-    //destructuring
-    const { pf, pfno, esi, esino, uanno } = formData
-    //grade select list
-    const { selectGrade, UpdateGrade } = useContext(PayrolMasterContext)
+    const { pf, pfno, esi, esino, uanno, nps, npsfixedamount, npsamount } = formData
+
     //getting data from the form
     const updateStatutoryInformation = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         SetformData({ ...formData, [e.target.name]: value })
     }
-    //use state for enable fields on clicking edit button
-    const [enable, Setenable] = useState(true)
-    //use state for setting serail no for edit
-    const [value, setValue] = useState(1)
+
     //useEffect For Checking esi is allowed for this employee
     useEffect(() => {
         const getesiallowed = async () => {
@@ -46,11 +44,14 @@ const StatutoryInformation = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setEsiallowed(data[0].ecat_esi_allow === 0 ? 2 : data[0].ecat_esi_allow)
+            } else {
+                setEsiallowed(2)
             }
-
         }
         getesiallowed()
     }, [no])
+
+
     //useEffect
     useEffect(() => {
         const getpfesi = async () => {
@@ -58,18 +59,22 @@ const StatutoryInformation = () => {
                 const result = await axioslogin.get(`/empesipf/${id}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { esi_slno, em_pf_status, em_pf_no, em_uan_no, em_esi_status, em_esi_no, em_grade } =
-                        data[0]
+                    const { esi_slno, em_pf_status, em_pf_no, em_uan_no,
+                        em_esi_status, em_esi_no, em_grade, nps, npsfixedamount, npsamount } = data[0]
                     const formData = {
                         pf: em_pf_status === 1 ? true : false,
-                        pfno: em_pf_no,
-                        uanno: em_uan_no,
+                        pfno: em_pf_no === null ? 0 : em_pf_no,
+                        uanno: em_uan_no === null ? 0 : em_uan_no,
                         esi: em_esi_status === 1 ? true : false,
-                        esino: em_esi_no,
+                        esino: em_esi_no === null ? 0 : em_esi_no,
+                        nps: nps === 1 ? true : false,
+                        npsfixedamount: npsfixedamount === null ? 0 : npsfixedamount,
+                        npsamount: npsamount === null ? 0 : npsamount
                     }
-                    UpdateGrade(em_grade)
+                    UpdateGrade(em_grade === null ? 0 : em_grade)
                     SetformData(formData)
                     setValue(esi_slno)
+                    Setenable(false)
                 } else {
                     Setenable(false)
                     setValue(0)
@@ -77,6 +82,30 @@ const StatutoryInformation = () => {
             }
             else if (Esiallowed === 2) {
                 infoNofity("Esi Is Not Allowed For This Employee")
+                const result = await axioslogin.get(`/empesipf/${id}`)
+                const { success, data } = result.data
+                console.log(data);
+                if (success === 1) {
+                    const { esi_slno, em_pf_status, em_pf_no, em_uan_no,
+                        em_esi_status, em_esi_no, em_grade, nps, npsfixedamount, npsamount } = data[0]
+                    const formData = {
+                        pf: em_pf_status === 1 ? true : false,
+                        pfno: em_pf_no === null ? 0 : em_pf_no,
+                        uanno: em_uan_no === null ? 0 : em_uan_no,
+                        esi: em_esi_status === 1 ? true : false,
+                        esino: em_esi_no === null ? 0 : em_esi_no,
+                        nps: nps === null ? false : true,
+                        npsfixedamount: npsfixedamount === null ? 0 : npsfixedamount,
+                        npsamount: npsamount === null ? 0 : npsamount
+                    }
+                    UpdateGrade(em_grade === null ? 0 : em_grade)
+                    SetformData(formData)
+                    setValue(esi_slno)
+                    //Setenable(false)
+                } else {
+                    //Setenable(false)
+                    setValue(1)
+                }
                 Setenable(true)
             }
             else {
@@ -84,11 +113,8 @@ const StatutoryInformation = () => {
             }
         }
         getpfesi()
-    }, [UpdateGrade, id, Esiallowed])
+    }, [id, Esiallowed])
 
-    const reset = () => {
-        Setenable(false)
-    }
     //postData
     const postData = useMemo(() => {
         return {
@@ -101,8 +127,12 @@ const StatutoryInformation = () => {
             em_esi_no: esino,
             em_grade: selectGrade,
             create_user: employeeNumber(),
+            edit_user: employeeNumber(),
+            nps: nps === false ? 0 : 1,
+            npsfixedamount: npsfixedamount,
+            npsamount: npsamount,
         }
-    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade])
+    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade, nps, npsfixedamount, npsamount])
     //editing esi pf
     const postDataEdit = useMemo(() => {
         return {
@@ -116,12 +146,26 @@ const StatutoryInformation = () => {
             esi_slno: value,
             edit_user: employeeNumber(),
         }
-    })
+    }, [no, pf, pfno, uanno, esi, esino, selectGrade, value])
+
+
+    const postNps = useMemo(() => {
+        return {
+            em_no: id,
+            em_id: no,
+            nps: nps === false ? 0 : 1,
+            npsfixedamount: npsfixedamount,
+            npsamount: npsamount,
+            create_user: employeeNumber(),
+            edit_user: employeeNumber(),
+        }
+    }, [id, no, nps, npsfixedamount, npsamount])
+
 
     //saving form data
     const submitFormData = async (e) => {
         e.preventDefault()
-        if (value === 0) {
+        if (value === 0 && Esiallowed === 1) {
             const result = await axioslogin.post('/empesipf', postData)
             const { success, message } = result.data
             if (success === 1) {
@@ -129,7 +173,16 @@ const StatutoryInformation = () => {
             } else {
                 errorNofity('Error Occured!!!Please Contact EDP')
             }
-        } else {
+        } else if (value === 1 && Esiallowed === 2) {
+            const result = await axioslogin.post('/empesipf/create', postNps)
+            const { success, message } = result.data
+            if (success === 1) {
+                succesNofity(message)
+            } else {
+                errorNofity('Error Occured!!!Please Contact EDP')
+            }
+        }
+        else {
             const result = await axioslogin.patch('/empesipf', postDataEdit)
             const { success, message } = result.data
             if (success === 2) {
@@ -145,15 +198,11 @@ const StatutoryInformation = () => {
         }
     }
 
-    // const RedirectToProfilePage = () => {
-    //     history.push(`/Home/Profile/${id}/${no}`)
-    // }
-
     return (
         <Fragment>
             <Box sx={{ width: "100%" }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{display: "flex", p: 1, alignItems: "center",}}  >
+                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -162,10 +211,10 @@ const StatutoryInformation = () => {
                             </CssVarsProvider>
                         </Box>
                     </Paper>
-                    <Paper square elevation={3} sx={{sp: 0.5,mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }}} >
-                        <Box sx={{ display: "flex",flexDirection: "column",flex: 1, px: 0.5, }}>
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, pt: 0.5}}>
-                                <Box sx={{ flex: 1, }} >
+                    <Paper square elevation={3} sx={{ sp: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
+                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
+                                <Box sx={{ flex: 1 }} >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -182,14 +231,15 @@ const StatutoryInformation = () => {
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="PF Number"
-                                        changeTextValue={(e) => updateStatutoryInformation(e)}
-                                        value={pfno}
+                                    <TextField
+                                        placeholder="PF Number"
                                         disabled={enable}
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={pfno}
                                         name="pfno"
+                                        onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
@@ -209,47 +259,94 @@ const StatutoryInformation = () => {
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="ESI Number"
-                                        changeTextValue={(e) => updateStatutoryInformation(e)}
-                                        value={esino}
+                                    <TextField
+                                        placeholder="ESI Number"
                                         disabled={enable}
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={esino}
                                         name="esino"
+                                        onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "row",px: 20,}}>
-                                <Box sx={{ display: 'flex', flex: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                                <Box sx={{ flex: 1 }}>
                                     <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
+                                        <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
                                             Universal Account Number
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="UAN Number"
-                                        changeTextValue={(e) => updateStatutoryInformation(e)}
-                                        value={uanno}
+                                <Box sx={{ flex: 1 }} >
+                                    <TextField
+                                        placeholder="UAN Number"
                                         disabled={enable}
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={uanno}
                                         name="uanno"
+                                        onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, pl: 1, }}>
+                                <Box sx={{ flex: 1 }}>
                                     <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
+                                        <Typography textColor="text.secondary" sx={{ fontWeight: 550 }} >
                                             Grade
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
-                                    <GradeSelect
-                                        style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }}
-                                        disable={enable}
+                                <Box sx={{ flex: 1 }} >
+                                    <GradeSelectRedux value={selectGrade} setValue={UpdateGrade} />
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                                <Box sx={{ flex: 1 }} >
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="nps"
+                                                color="primary"
+                                                value={nps}
+                                                checked={nps}
+                                                className="ml-1"
+                                                onChange={(e) => updateStatutoryInformation(e)}
+                                            />
+                                        }
+                                        label="NPS Number(PRAN)"
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1 }} >
+                                    <TextField
+                                        placeholder="NPS Fixed Amount"
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={npsfixedamount}
+                                        name="npsfixedamount"
+                                        onChange={(e) => updateStatutoryInformation(e)}
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                    <Box sx={{ flex: 1 }}>
+                                        <CssVarsProvider>
+                                            <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
+                                                Employee Amount
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
+                                    <TextField
+                                        placeholder="NPS Employee Amount"
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={npsamount}
+                                        name="npsamount"
+                                        onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                             </Box>

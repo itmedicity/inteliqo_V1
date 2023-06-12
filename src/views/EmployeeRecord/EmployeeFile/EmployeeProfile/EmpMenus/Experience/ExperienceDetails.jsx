@@ -195,7 +195,7 @@ const ExperienceDetails = () => {
                     <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
                         <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                             {/* first row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", }}>
                                 <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -234,7 +234,7 @@ const ExperienceDetails = () => {
                             </Box>
                             {/* first row end */}
 
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
                                 <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -267,7 +267,7 @@ const ExperienceDetails = () => {
                                 </Box>
                             </Box>
                             {/* second row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5, px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                                 <Box sx={{ width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -309,7 +309,7 @@ const ExperienceDetails = () => {
                             </Box>
                             {/* second row end */}
                             {/* third row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, py: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", py: 1 }}>
                                 <Box sx={{ width: '20%', pt: 0.5, }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >

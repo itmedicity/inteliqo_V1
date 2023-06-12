@@ -223,6 +223,11 @@ const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD
 const OTUpdatedList = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdatedList'))
 const AttendanceAutomatic = React.lazy(() => import('./views/Payroll/AttendanceAutomatic/AttendanceGenerateAuto'))
 const PunchTransfer = React.lazy(() => import('./views/Master/PunchTransfer/PunchTransfer'))
+const PaySlipprint = React.lazy(() => import('./views/Payroll/PaySlipPrint/Payslipprint'))
+const WageRegister = React.lazy(() => import('./views/Payroll/WageRegister/WageRegisterPage'))
+const AttandanceRegister = React.lazy(() => import('./views/Payroll/AttendanceRegister/AttandaceRegisterPage'))
+const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement/SalaryStatementPage'))
+const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
 
 const routes = [
 
@@ -438,7 +443,14 @@ const routes = [
   { path: '/Home/EmpEarnDeduction', exact: true, name: 'Employee Earn Deduction', component: EmpEarnDeduction },
   { path: '/Home/OTUpdatedList', exact: true, name: 'Over Time Updated List', component: OTUpdatedList },
   { path: '/Home/AttendanceAutomatic', exact: true, name: 'Attendance Marking Automatic', component: AttendanceAutomatic },
-  { path: '/Home/PunchTransfer', exact: true, name: 'Punch Transfer Manual', component: PunchTransfer }
+  { path: '/Home/PunchTransfer', exact: true, name: 'Punch Transfer Manual', component: PunchTransfer },
+  { path: '/Home/PaySlipprint', exact: true, name: 'Pay Slip Print', component: PaySlipprint },
+  { path: '/Home/WageRegister', exact: true, name: 'Wage Register', component: WageRegister },
+  { path: '/Home/AttandanceRegister', exact: true, name: 'Attandance Register', component: AttandanceRegister },
+  { path: '/Home/SalaryStatement', exact: true, name: 'Attandance Register', component: SalaryStatement },
+  { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
+
+
 ]
 
 export default routes

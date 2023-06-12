@@ -61,7 +61,7 @@ const CompletedAppraisalList = () => {
 
     const [complteCol] = useState([
         {
-            headerName: 'Action',
+            headerName: 'Action', minWidth: 200,
             cellRenderer: params =>
                 <Fragment>
                     <Tooltip title="Direct Contract Close" followCursor placement='top' arrow >
@@ -87,13 +87,13 @@ const CompletedAppraisalList = () => {
                     </Tooltip>
                 </Fragment>
         },
-        { headerName: 'Slno', field: 'slno', filter: true },
-        { headerName: 'Emp Id', field: 'em_id', filter: true },
-        { headerName: 'Emp No ', field: 'em_no', filter: true },
-        { headerName: 'Name ', field: 'em_name', filter: true },
-        { headerName: 'Dept Name ', field: 'dept_name', filter: true },
-        { headerName: 'Designation ', field: 'desg_name', },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
+        { headerName: 'Slno', field: 'slno', filter: true, wrapText: true, minWidth: 100, },
+        //{ headerName: 'Emp Id', field: 'em_id', filter: true, wrapText: true, minWidth: 100, },
+        { headerName: 'Emp No ', field: 'em_no', filter: true, wrapText: true, minWidth: 100 },
+        { headerName: 'Name ', field: 'em_name', filter: true, wrapText: true, minWidth: 200 },
+        { headerName: 'Dept Name ', field: 'dept_name', filter: true, wrapText: true, minWidth: 250 },
+        { headerName: 'Designation ', field: 'desg_name', wrapText: true, minWidth: 250, },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 300, },
     ])
 
     //Direct Contract close

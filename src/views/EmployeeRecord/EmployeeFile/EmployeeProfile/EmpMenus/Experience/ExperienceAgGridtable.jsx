@@ -38,23 +38,15 @@ const ExperienceAgGridtable = ({ update, setcount, getTableData }) => {
         ].join(','),
     }
     const [columnDef] = useState([
-        {
-            headerName: '',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
-        { headerName: 'Emp No', field: 'em_no' },
-        { headerName: 'Institution ', field: 'em_institution' },
-        { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'start Date ', field: 'em_from' },
-        { headerName: 'End Date', field: 'em_to' },
-        { headerName: 'Total Year', field: 'year' },
-        { headerName: 'Total Month ', field: 'month' },
-        { headerName: 'Total Days', field: 'day' },
-        { headerName: 'Gross salary', field: 'em_salary' },
+        { headerName: 'Emp No', field: 'em_no', wrapText: true, minWidth: 90 },
+        { headerName: 'Institution ', field: 'em_institution', wrapText: true, minWidth: 400 },
+        { headerName: 'Designation ', field: 'desg_name', wrapText: true, minWidth: 200 },
+        { headerName: 'Start Date ', field: 'em_from', wrapText: true, minWidth: 150 },
+        { headerName: 'End Date', field: 'em_to', minWidth: 150 },
+        { headerName: 'Total Year', field: 'year', minWidth: 150 },
+        { headerName: 'Total Month ', field: 'month', minWidth: 150 },
+        { headerName: 'Total Days', field: 'day', minWidth: 150 },
+        { headerName: 'Gross salary', field: 'em_salary', minWidth: 150 },
         {
             headerName: 'Edit', cellRenderer: params =>
                 <EditIcon onClick={() =>

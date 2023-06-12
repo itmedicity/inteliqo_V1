@@ -12,7 +12,7 @@ import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import { useReducer } from 'react'
 import { lastDayOfMonth } from 'date-fns/esm'
 import { useDispatch, useSelector } from 'react-redux'
-import { CssVarsProvider, Button } from '@mui/joy'
+import { CssVarsProvider, Button, Tooltip } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
 import {
@@ -29,6 +29,8 @@ import _ from 'underscore'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { ExporttoExcel } from './ExportToExcel'
 
 const UpdationTopCard = () => {
 
@@ -80,7 +82,6 @@ const UpdationTopCard = () => {
             } else {
                 warningNofity("Please Select Only Excel Files!!!")
             }
-
         }
         else {
             infoNofity('Please Select File!')
@@ -101,9 +102,11 @@ const UpdationTopCard = () => {
                     em_department: deptName,
                     em_dept_section: deptSecName,
                 }
+                //getting employee details
                 getEmployeeDetlDutyPlanBased(postData).then((emplyDataArray) => {
                     const { status, data } = emplyDataArray;
                     if (status === 1) {
+                        //comparing excel file data with database employee list
                         const array = excelFile && excelFile.map((val) => {
                             const arr = data.find((value) => value.em_no === val.EmployeeNo)
                             return {
@@ -112,8 +115,8 @@ const UpdationTopCard = () => {
                         })
                         let a = array.map((val) => {
                             if (val.salary < commonSettings.salary_above) {
-                                //console.log(val.EmployeeName,"-",val.CalculatedWorked+val.off+val.holiday+val.holidayworked-val.Leave-val.lwp-val.lop);
-                                let total_pay_day = val.CalculatedWorked + val.off + val.holiday + val.holidayworked + val.Leave - (val.lwp - val.lop)
+                                //calculation for employee working day
+                                let total_pay_day = val.CalculatedWorked + val.off + val.holiday + val.holidayworked + val.Leave - val.lwp - val.lop
                                 const obj = {
                                     total_p_day: total_pay_day
                                 }
@@ -122,7 +125,7 @@ const UpdationTopCard = () => {
                                 }
 
                             } else {
-                                let total_pay_day = val.CalculatedWorked + val.off + val.holiday + val.Leave - (val.lwp - val.lop)
+                                let total_pay_day = val.CalculatedWorked + val.off + val.holiday + val.Leave - val.lwp - val.lop
                                 const obj = {
                                     total_p_day: total_pay_day
                                 }
@@ -135,8 +138,6 @@ const UpdationTopCard = () => {
                         reduxDispatch({ type: GET_EXCEL_DATA, payload: a, status: false })
                     }
                 })
-
-                // reduxDispatch({ type: GET_EXCEL_DATA, payload: excelFile, status: false })
             }
             else {
                 reduxDispatch({ type: GET_EXCEL_DATA, payload: [], status: false })
@@ -185,6 +186,12 @@ const UpdationTopCard = () => {
                 errorNofity(message)
             }
         }
+    }
+
+    //to download excel format
+    const downloadFormat = async () => {
+        const fileName = "Excelformat"
+        ExporttoExcel(fileName)
     }
 
     return (
@@ -238,29 +245,38 @@ const UpdationTopCard = () => {
             </Box>
             <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
                 <CssVarsProvider>
+                    <Tooltip title="Download Excel Format" followCursor placement='top' arrow >
+                        <Box sx={{ p: 0.2 }}>
+                            <Button aria-label="Like" variant="outlined" color="neutral"
+                                onClick={downloadFormat}
+                                sx={{ color: '#90caf9' }} >
+                                <FileDownloadIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
                     <Box sx={{ pl: 0.2, pt: 1 }} >
                         <input type='file' onChange={uploadFile} required></input>
                         <input type='file' style={{ display: 'none' }}></input>
                     </Box>
-                    <Box sx={{ p: 0.2 }}>
-                        <Button aria-label="Like" variant="outlined" color="neutral"
-                            onClick={handleSubmit}
-                            sx={{ color: '#90caf9' }} >
-                            <UploadIcon />
-                        </Button>
-                    </Box>
-                    <Box sx={{ p: 0.2 }}>
-                        <Button aria-label="Like" variant="outlined" color="neutral"
-                            onClick={onClickSave}
-                            sx={{ color: '#81c784' }}>
-                            <SaveIcon />
-                        </Button>
-                    </Box>
+                    <Tooltip title="Upload Excel" followCursor placement='top' arrow >
+                        <Box sx={{ p: 0.2 }}>
+                            <Button aria-label="Like" variant="outlined" color="neutral"
+                                onClick={handleSubmit}
+                                sx={{ color: '#90caf9' }} >
+                                <UploadIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
+                    <Tooltip title="Save" followCursor placement='top' arrow >
+                        <Box sx={{ p: 0.2 }}>
+                            <Button aria-label="Like" variant="outlined" color="neutral"
+                                onClick={onClickSave}
+                                sx={{ color: '#81c784' }}>
+                                <SaveIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
                 </CssVarsProvider>
-                {/* <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
-        </Button>
-        <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
-        </Button> */}
             </Box>
         </Paper>
     )
