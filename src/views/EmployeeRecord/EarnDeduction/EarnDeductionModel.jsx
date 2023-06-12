@@ -16,7 +16,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
+const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setModel }) => {
 
     const [wage, setWage] = useState(0)
     const [LastWage, setlastWage] = useState(0)
@@ -112,9 +112,6 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
                     </Tooltip>
                 </IconButton>
 
-            // <Fragment>
-            //     <EditIcon onClick={() => EditProcess(params)} color='primary' />
-            // </Fragment>
 
         },
     ])
@@ -180,7 +177,8 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
                     const { em_id, gross_salary } = data[0]
                     const updatedata = {
                         gross_salary: gross_salary,
-                        em_id: em_id
+                        em_id: em_id,
+                        salary_split_flag: 1
                     }
                     const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
                     const { message, success } = result.data;
@@ -351,6 +349,17 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, setModel }) => {
                                         size="small"
                                         disabled
                                         value={LastWage}
+                                    />
+                                </Box>
+                            </Tooltip>
+                            <Tooltip title="Recommended Salary" followCursor placement='top' arrow>
+                                <Box sx={{ display: "flex", width: '25%', px: 0.3 }}>
+                                    <TextField fullWidth
+                                        //label="Last Amount"
+                                        id="fullWidth"
+                                        size="small"
+                                        disabled
+                                        value={recomendeSalary}
                                     />
                                 </Box>
                             </Tooltip>

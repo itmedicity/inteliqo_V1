@@ -8,6 +8,7 @@ import { useState } from 'react';
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable }) => {
+
     //MODAL OPEN STATE
     const [open, setOpen] = useState(false);
 
@@ -41,8 +42,8 @@ const TableRows = ({ data, disable }) => {
                     {data.punch_out}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.hrs_worked}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.late_in}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.early_out}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.late_in !== null ? data.late_in : 0}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.early_out !== null ? data.early_out : 0}</TableCell>
             </TableRow>
         </>
     )

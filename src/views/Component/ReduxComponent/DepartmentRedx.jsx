@@ -7,12 +7,9 @@ import { Actiontypes } from 'src/redux/constants/action.type';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
 
 const DepartmentRedx = ({ getDept }) => {
-
     const dispatch = useDispatch();
     const { SELECTED_DEPT_VAL } = Actiontypes;
-
     const departments = useSelector((state) => state.getDepartmentList.empDepartmentList)
-
     const [dept, setDept] = useState([{ dept_id: 0, dept_name: 'Select Department' }])
 
     const [value, setValue] = useState(dept[0]);
@@ -31,7 +28,6 @@ const DepartmentRedx = ({ getDept }) => {
         return
     }, [value])
 
-
     useEffect(() => {
         departments.length > 0 && setDept(departments)
     }, [departments])
@@ -42,7 +38,6 @@ const DepartmentRedx = ({ getDept }) => {
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-
                 setValue(newValue);
             }}
             inputValue={inputValue}
