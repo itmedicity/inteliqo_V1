@@ -30,7 +30,7 @@ const commonSetting = {
     week_off_day: 0,
     salary_above: 0,
     pf_employee_amount: 0,
-    pf_employer_amount: 0
+    pf_employer_amount: 0,
     noff_count: 0
 
 }
