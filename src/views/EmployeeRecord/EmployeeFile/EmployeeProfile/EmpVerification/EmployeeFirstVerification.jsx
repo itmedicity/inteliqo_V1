@@ -39,19 +39,11 @@ const EmployeeFirstVerification = () => {
     }
 
     const [columnDef] = useState([
-        {
-            headerName: '',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
         { headerName: 'ID', field: 'em_no', filter: true },
-        { headerName: 'Emp Name ', field: 'em_name', filter: true },
-        { headerName: 'Branch ', field: 'branch_name' },
-        { headerName: 'Department ', field: 'dept_name' },
-        { headerName: 'Dept Section ', field: 'sect_name' },
+        { headerName: 'Emp Name ', field: 'em_name', filter: true, minWidth: 200 },
+        // { headerName: 'Branch ', field: 'branch_name' },
+        { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 200 },
+        { headerName: 'Dept Section ', field: 'sect_name', filter: true, minWidth: 200 },
         { headerName: 'Date of Join ', field: 'em_doj' },
         { headerName: 'Verification Remark ', field: 'verification_Remark' },
         {

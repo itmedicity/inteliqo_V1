@@ -1,11 +1,10 @@
-import { Box, Paper, TextField } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import React, { memo, useReducer, useState } from 'react'
 import moment from 'moment'
 import { ToastContainer } from 'react-toastify'
 import { dutyPlanInitialState, dutyPlanReducer, planInitialState } from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun'
-import { lastDayOfMonth } from 'date-fns'
+import { lastDayOfMonth, startOfMonth } from 'date-fns'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import { Button, CssVarsProvider, Input, Typography } from '@mui/joy'
@@ -20,14 +19,14 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { addMonths } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const PayslipTopCard = ({ setView }) => {
+const PayslipTopCard = () => {
 
     const reduxDispatch = useDispatch()
     const { FETCH_PAYSLIP_TABLEDATA } = Actiontypes;
     const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
     const { fromDate, toDate, deptName, deptSecName } = planState
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
-    const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
+    const { DEPT_NAME, DEPT_SEC_NAME } = planInitialState
 
     const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
     const setDepartSecName = (deptSecSlno) => dispatch({ type: DEPT_SEC_NAME, deptSecSlno })
@@ -48,13 +47,13 @@ const PayslipTopCard = ({ setView }) => {
             const postData = {
                 dept_id: deptName,
                 sect_id: deptSecName,
-                attendance_marking_month: moment(value).format('YYYY-MM-01')
+                attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
             }
 
             const checkdatas = {
                 em_department: deptName,
                 em_dept_section: deptSecName,
-                attendance_marking_month: moment(value).format('YYYY-MM-01')
+                attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
             }
 
             getEmployeeData(postData).then((values) => {
@@ -83,8 +82,7 @@ const PayslipTopCard = ({ setView }) => {
 
                             //calculating esi and pf of employee and employer related to worked days
                             const arr = array.map((i) => {
-                                if (i.include_esi === 1 && i.em_esi_status === 1) {
-
+                                if (i.include_esi === 1 && i.em_esi_status === 1 && i.em_earning_type !== 3) {
                                     const value = Number(i.worked_amount) * state.esi_employee / 100
                                     const esivalue = Number(i.worked_amount) * state.esi_employer / 100
                                     const obj = {
@@ -96,15 +94,17 @@ const PayslipTopCard = ({ setView }) => {
                                     }
                                     return obj
                                 }
-                                else if (i.include_pf === 1 && i.em_pf_status === 1) {
+                                else if (i.include_pf === 1 && i.em_pf_status === 1 && i.em_earning_type !== 3) {
                                     const value2 = Number(i.worked_amount) * state.pf_employee / 100
                                     const pfvalue2 = Number(i.worked_amount) * state.pf_employer / 100
+
+
                                     const obj = {
                                         ...i,
                                         esiValue: 0,
                                         esiemployer: 0,
-                                        pfValue: Math.round(value2 / 10) * 10,
-                                        pfemployer: Math.round(pfvalue2 / 10) * 10
+                                        pfValue: value2 < state.pf_employee_amount ? Math.round(value2 / 10) * 10 : state.pf_employee_amount,
+                                        pfemployer: pfvalue2 < state.pf_employer_amount ? Math.round(pfvalue2 / 10) * 10 : state.pf_employer_amount
                                     }
                                     return obj
                                 }
@@ -159,16 +159,15 @@ const PayslipTopCard = ({ setView }) => {
                             }
                             const newEmp = empData?.map(newFun)
                             setPayrollData(newEmp)
+
                             reduxDispatch({ type: FETCH_PAYSLIP_TABLEDATA, payload: newEmp, status: false })
                         } else {
-                            setView(0)
                             infoNofity("No data found")
                         }
                     })
                 }
                 else {
                     reduxDispatch({ type: FETCH_PAYSLIP_TABLEDATA, payload: [], status: false })
-                    setView(0)
                     infoNofity("No data found")
                 }
             })
@@ -193,7 +192,9 @@ const PayslipTopCard = ({ setView }) => {
                 esi_employee: val.allesiemployee,
                 esi_employer: val.allesiemployer,
                 pf_employee: val.allpfemployee,
-                pf_employer: val.allpfemployer
+                pf_employer: val.allpfemployer,
+                total_lop: val.total_lop,
+                calculated_lop: val.calculated_lop
             }
             return obje
         })
@@ -214,18 +215,28 @@ const PayslipTopCard = ({ setView }) => {
             return obj
         })
 
-        const result = await axioslogin.post("/payrollprocess/create/payslip", array1)
-        const { success, message } = result.data
+        const checkdate = {
+            attendance_marking_month: moment(value).format('YYYY-MM-01'),
+        }
+        const result = await axioslogin.post("/payrollprocess/check/payslip", checkdate)
+        const { success } = result.data
         if (success === 1) {
-            const result = await axioslogin.post("/payrollprocess/create/detail", array2)
+            infoNofity("Payslip for this month already created!")
+        }
+        else {
+            const result = await axioslogin.post("/payrollprocess/create/payslip", array1)
             const { success, message } = result.data
             if (success === 1) {
-                succesNofity(message)
+                const result = await axioslogin.post("/payrollprocess/create/detail", array2)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                } else {
+                    errorNofity(message)
+                }
             } else {
                 errorNofity(message)
             }
-        } else {
-            errorNofity(message)
         }
     }
 
@@ -263,44 +274,6 @@ const PayslipTopCard = ({ setView }) => {
                         />
                     </LocalizationProvider>
                 </Box>
-
-
-
-
-
-                {/* <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            // maxDate={moment(calanderMaxDate)}
-                            inputFormat="DD-MM-YYYY"
-                            value={fromDate}
-                            onChange={(date) =>
-                                dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
-                            }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box> */}
-                {/* <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }}  >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            minDate={moment(fromDate)}
-                            maxDate={moment(calanderMaxDate)}
-                            inputFormat="DD-MM-YYYY"
-                            value={toDate}
-                            onChange={(date) =>
-                                dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
-                            }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box> */}
                 <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
                     <DeptSelectByRedux setValue={setDepartment} value={deptName} />
                 </Box>

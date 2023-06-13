@@ -49,6 +49,13 @@ const AttendanceManagement = [
         name: 'Department Section Change',
         to: '/Home/DeptSecChange',
     },
+    {
+        men_slno: 237,
+        component: CNavItem,
+        name: 'Attendance View',
+        to: '/Home/AttendanceView',
+    },
+
 ]
 
 export default AttendanceManagement;

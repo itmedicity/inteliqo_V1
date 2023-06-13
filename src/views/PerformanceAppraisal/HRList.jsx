@@ -100,7 +100,7 @@ const HRList = () => {
 
     //for displaying column heading with status
     const [pendingCol] = useState([
-        // { headerName: 'Emp Id', field: 'em_id', filter: true },
+        { headerName: 'Slno', field: 'slno', filter: true, width: 100 },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department ', field: 'dept_name', filter: true },
@@ -111,7 +111,7 @@ const HRList = () => {
     ])
     //for displaying column with all appraisal list
     const [column] = useState([
-        //{ headerName: 'Emp Id', field: 'em_id', filter: true },
+        { headerName: 'Slno', field: 'slno', filter: true, width: 100 },
         { headerName: 'Emp No ', field: 'em_no', filter: true },
         { headerName: 'Name ', field: 'em_name', filter: true },
         { headerName: 'Department', field: 'dept_name', filter: true },

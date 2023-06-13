@@ -47,11 +47,20 @@ const CommonSettingNew = () => {
         esi_employer: '',
         verification_level: 0,
         salary_above: '',
+        pf_employee_amount: '',
+        pf_employer_amount: '',
         noff_count: 0
     })
-    const { slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
+
+    const {
+        slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
-        pf_employee, pf_age, max_salary, verification_level, salary_above, noff_count } = FormData
+        pf_employee, pf_age, max_salary, verification_level, salary_above,
+        pf_employee_amount, pf_employer_amount, noff_count
+    } = FormData
+
+
+
 
     const [levaetype, setLeaveType] = useState([])
     const [count, setCount] = useState(0)
@@ -71,7 +80,8 @@ const CommonSettingNew = () => {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
-                    week_off_day, leavetype_multiple, salary_above, noff_count } = data[0]
+                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count } = data[0]
+
 
                 const frmData = {
                     slno: setting_slno,
@@ -94,7 +104,10 @@ const CommonSettingNew = () => {
                     esi_employer: esi_employer,
                     verification_level: verification_level,
                     salary_above: salary_above,
+                    pf_employee_amount: pf_employee_amount,
+                    pf_employer_amount: pf_employer_amount,
                     noff_count: noff_count
+
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj)
@@ -142,7 +155,10 @@ const CommonSettingNew = () => {
         week_off_day: workoff,
         leavetype_multiple: levaetype,
         salary_above: salary_above,
+        pf_employee_amount: pf_employee_amount,
+        pf_employer_amount: pf_employer_amount,
         noff_count: noff_count
+
     }
 
 
@@ -166,14 +182,17 @@ const CommonSettingNew = () => {
         esi_employee: esi_employee,
         esi_employer: esi_employer,
         update_user: em_id,
-        setting_slno: slno,
         verification_level: verification_level,
         default_shift: defshift,
         notapplicable_shift: notappshift,
         week_off_day: workoff,
         leavetype_multiple: levaetype,
         salary_above: salary_above,
+        pf_employee_amount: pf_employee_amount,
+        pf_employer_amount: pf_employer_amount,
+        setting_slno: slno,
         noff_count: noff_count
+
     }
 
     //save
@@ -194,7 +213,7 @@ const CommonSettingNew = () => {
                 errorNofity("Error Occured!!!!! Please Contact EDP")
             }
         }
-        else if (value === 1) {
+        else {
             const result = await axioslogin.patch('/commonsettings', postDataEdit)
             const { success, message } = result.data
             if (success === 2) {
@@ -208,9 +227,6 @@ const CommonSettingNew = () => {
             else {
                 errorNofity("Error Occured!!!!! Please Contact EDP")
             }
-        }
-        else {
-
         }
     }
 
@@ -546,8 +562,19 @@ const CommonSettingNew = () => {
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">PF Employee Amount</Typography>
+                                        </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="pf_employee_amount"
+                                            value={pf_employee_amount}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
                                     </Box>
                                 </Box>
 
@@ -568,8 +595,19 @@ const CommonSettingNew = () => {
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">PF Employer Amount</Typography>
+                                        </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="pf_employer_amount"
+                                            value={pf_employer_amount}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
                                     </Box>
                                 </Box>
                             </Paper>
@@ -692,12 +730,12 @@ const CommonSettingNew = () => {
                                 </Paper>
 
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ width: '50%', px: 0.5 }} >
+                                    <Box sx={{ width: '30%', px: 0.5 }} >
                                         <CssVarsProvider>
                                             <Typography level="body1">Leave Type</Typography>
                                         </CssVarsProvider>
                                     </Box>
-                                    <Box sx={{ width: '50%', px: 0.5, pt: 0.5 }} >
+                                    <Box sx={{ width: '70%', px: 0.5, pt: 0.5 }} >
                                         <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType} />
                                     </Box>
                                 </Box>

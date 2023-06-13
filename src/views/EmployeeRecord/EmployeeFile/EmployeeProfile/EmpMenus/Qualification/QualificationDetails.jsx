@@ -436,9 +436,9 @@ const QualificationDetails = () => {
 
                     {/* Main Section Start */}
                     <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
-                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, }}>
+                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, p: 1 }}>
                             {/* First Row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', }}>
                                 <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -465,7 +465,7 @@ const QualificationDetails = () => {
                             {/* First Row end */}
 
                             {/* Second Row Start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", width: '100%', }}>
                                 <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -494,7 +494,7 @@ const QualificationDetails = () => {
                             {/* Second Row End */}
 
                             {/* Third Row Start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
                                 <Box sx={{ width: '20%' }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -539,7 +539,7 @@ const QualificationDetails = () => {
                             </Box>
                             {/* Third Row End */}
                             {/* Fourth Row Start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
                                 <Box sx={{ width: '20%', pt: 0.5 }} >
                                     <CommonCheckBox
                                         name="pass_fail"
@@ -576,7 +576,7 @@ const QualificationDetails = () => {
                             {/* Fourth Row End */}
 
                             {/* 5th Row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", px: 20, }}>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
                                 <Box sx={{ width: '20%', pt: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
@@ -620,7 +620,7 @@ const QualificationDetails = () => {
                             </Box>
                             {/* 5th row end */}
 
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5, px: 20 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                                 <Box sx={{ width: '20%', pt: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >

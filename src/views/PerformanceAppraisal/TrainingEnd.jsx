@@ -41,7 +41,7 @@ const TrainingEnd = () => {
         { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 200 },
         { headerName: 'Designation ', field: 'desg_name', minWidth: 200 },
         { headerName: 'Date of joining ', field: 'em_doj', minWidth: 200 },
-        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 200 },
+        { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 300 },
         { headerName: 'Training End Date', field: 'training_end', minWidth: 200 },
         {
             headerName: 'Action', minWidth: 200,

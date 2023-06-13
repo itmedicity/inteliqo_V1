@@ -23,7 +23,7 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
     }
     const postData = {
         verification_status: 1,
-        verification_Remark: '',
+        verification_Remark: "verified",
         em_id: modeopen
     }
 
@@ -60,29 +60,29 @@ const ProfileVerificationModal = ({ open, handleClose, modeopen, setOpen, count,
             <ToastContainer />
             {open1 === true ? <ProfileNotverifiedModal open1={open1} handlClose2={handlClose2}
                 modeopen={modeopen} slno={slno} count={count} setCount={setCount} /> : null}
+
             <Dialog
                 open={open}
                 onClose={handleClose}
                 TransitionComponent={Transition}
-                keepMounted
-                aria-describedby="alert-dialog-slide-descriptiona"
+                fullWidth
+                maxWidth='sm'
             >
                 <DialogTitle>
                     {"Employee File Verification"}
                 </DialogTitle>
-                <DialogContent sx={{
-                    minWidth: 800,
-                    maxWidth: 800,
-                    width: 800,
-                }}>
-                    <DialogContentText id="alert-dialog-description" color='textPrimary' >
-                        Do you want to verify This Employee File
+                <DialogContent id="alert-dialog-slide-descriptiona"
+                    sx={{
+                        width: '100%',
+                        height: 100
+                    }}>
+                    <DialogContentText id="alert-dialog-slide-descriptiona">
+                        Do You Want To Verify This Employee File
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={updateVerify}>Verified</Button>
-                    <Button autoFocus onClick={OpenNotVerified}> Not Verified</Button>
-
+                    <Button color="secondary" onClick={updateVerify}>Verify</Button>
+                    <Button color="secondary" onClick={OpenNotVerified}> Not Verify</Button>
                 </DialogActions>
             </Dialog>
         </Fragment>

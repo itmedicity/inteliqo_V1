@@ -4,7 +4,6 @@ import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
 import Earnings from './Earnings';
 import Fixed from './Fixed';
 import Deduction from './Deduction';
-import CommonCheckBox from 'src/views/Component/CommonCheckBox';
 
 const TableView = ({ val }) => {
 
@@ -73,8 +72,8 @@ const TableView = ({ val }) => {
                         <ListAltOutlinedIcon />
                     </IconButton>
                 </TableCell>
-                {/* <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allesiemployer}</TableCell> */}
-                {/* <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allpfemployer}</TableCell> */}
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allesiemployee}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.allpfemployee}</TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.gross}</TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25, fontWeight: 550 }} > {val.net}</TableCell>
             </TableRow>

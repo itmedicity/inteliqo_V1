@@ -226,8 +226,6 @@ const CompanyInformtion = () => {
 
     const probationEndDate = moment(em_prob_end_date);
 
-    console.log(probationEndDate > new Date())
-
 
     //update Data
     const submitCompany = async (e) => {
