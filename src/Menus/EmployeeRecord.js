@@ -88,6 +88,12 @@ const Employeerecord = [
     //     name: 'Approved Contract Renew',
     //     to: '/Home/ContractRenewApprovalList',
     // },
+    {
+        men_slno: 202,
+        component: CNavItem,
+        name: 'Company Information',
+        to: '/Home/CompanyInfo',
+    },
 
 ]
 
