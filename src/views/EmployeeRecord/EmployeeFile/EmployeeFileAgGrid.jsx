@@ -1,31 +1,28 @@
-import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import { useHistory } from 'react-router'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-// import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import { Actiontypes } from 'src/redux/constants/action.type'
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { CssVarsProvider } from '@mui/joy'
 import { Box, Checkbox, FormControlLabel, Paper, Tooltip } from '@mui/material'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { useMemo } from 'react'
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
+import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 
 const EmployeeFileAgGrid = () => {
 
-    //const classes = useStyles()
     const history = useHistory()
     const [tableData, setTableData] = useState([])
     const dispatch = useDispatch()
+
+    const [deptName, setDepartment] = useState(0)
+    const [deptSecName, setDepartSecName] = useState(0)
 
     const employeeRecordList = useSelector((state) => {
         return state.getEmployeeRecordList.empRecordData;
@@ -38,25 +35,16 @@ const EmployeeFileAgGrid = () => {
         }
     }, [employeeRecordList])
 
-    const {
-        selectedDept,
-        selectDeptSection,
-    } = useContext(PayrolMasterContext)
-
     const postData = useMemo(() => {
         return {
-            dept_id: selectedDept,
-            sect_id: selectDeptSection,
-            //branch_slno: selectBranchMast
+            dept_id: deptName,
+            sect_id: deptSecName
         }
-    }, [selectedDept, selectDeptSection])
-    // const postDataBranch = {
-    //     branch_slno: selectBranchMast
-    // }
+    }, [deptName, deptSecName])
+
     const postDataDept = useMemo(() => {
-        //branch_slno: selectBranchMast,
-        return { dept_id: selectedDept }
-    }, [selectedDept])
+        return { dept_id: deptName }
+    }, [deptName])
 
     const [active, updateactive] = useState({
         activestatus: true
@@ -71,7 +59,7 @@ const EmployeeFileAgGrid = () => {
     const getEmployeeList = useCallback((e) => {
         e.preventDefault()
         const submitfunc = async () => {
-            if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === true) {
+            if (deptName !== 0 && deptSecName !== 0 && activestatus === true) {
                 const result = await axioslogin.post('/empmast/getEmpDet', postData)
                 const { success, data, message } = result.data
                 if (success === 1) {
@@ -82,7 +70,7 @@ const EmployeeFileAgGrid = () => {
                     warningNofity(message)
                 }
             }
-            else if (selectedDept !== 0 && selectDeptSection === 0 && activestatus === true) {
+            else if (deptName !== 0 && deptSecName === 0 && activestatus === true) {
                 const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
                 const { success, data, message } = result.data
                 if (success === 1) {
@@ -93,7 +81,7 @@ const EmployeeFileAgGrid = () => {
                     warningNofity(message)
                 }
             }
-            else if (selectedDept !== 0 && selectDeptSection !== 0 && activestatus === false) {
+            else if (deptName !== 0 && deptSecName !== 0 && activestatus === false) {
                 const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
                 const { success, data, message } = result.data
                 if (success === 1) {
@@ -109,48 +97,7 @@ const EmployeeFileAgGrid = () => {
             }
         }
         submitfunc()
-    }, [postDataDept, postData, selectedDept, selectDeptSection, activestatus, dispatch])
-
-    // if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === true) {
-    //     const result = await axioslogin.post('/empmast/getEmpDet', postData)
-    //     const { success, data } = result.data
-    //     if (success === 1) {
-    //         setTableData(data)
-    //         dispatch(setEmployeeList(data))
-    //     }
-    // } else if (selectedDept !== 0 && selectDeptSection !== 0 && selectBranchMast !== 0 && activestatus === false) {
-    //     const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
-    //     const { success, data } = result.data
-    //     if (success === 1) {
-    //         setTableData(data)
-    //         dispatch(setEmployeeList(data))
-    //     }
-    // }
-    // else if (selectedDept === 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByBranch', postDataBranch)
-    //     const { success, data } = result.data
-    //     if (success === 1) {
-    //         setTableData(data)
-    //         dispatch(setEmployeeList(data))
-    //     }
-    // }
-    // else if (selectedDept !== 0 && selectDeptSection === 0 && selectBranchMast !== 0 && activestatus === true) {
-    //     const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
-    //     const { success, data } = result.data
-    //     if (success === 1) {
-    //         setTableData(data)
-    //         dispatch(setEmployeeList(data))
-    //     }
-    // }
-    // else {
-    //     warningNofity("Choose All Option")
-    // }
-
-
-    const toSettings = () => {
-        dispatch({ type: Actiontypes.FETCH_EMP_RECORD_LIST, payload: [] })
-        history.push('/Home')
-    }
+    }, [postDataDept, postData, deptName, deptSecName, activestatus, dispatch])
 
     // Route to Empl Record
     const getEmployeeEmpNumber = (params) => {
@@ -171,7 +118,6 @@ const EmployeeFileAgGrid = () => {
                 </Tooltip>
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 90, filter: true },
-        // { headerName: 'Emp Id ', field: 'em_id', minWidth: 90, filter: true },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Gender', field: 'gender', minWidth: 90 },
         { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
@@ -186,70 +132,51 @@ const EmployeeFileAgGrid = () => {
     ])
 
     return (
-        <Fragment>
-            <Box sx={{ width: "100%" }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
-                        <Box sx={{ flex: 1 }} >
+        <CustomLayout title="Employee Record File" displayClose={true} >
+            <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+                <Paper square elevation={1}  >
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1, justifyItems: 'flex-start' }}>
+                        <Box sx={{ p: 1 }} >
+                            <DeptSelectByRedux setValue={setDepartment} value={deptName} />
+                        </Box>
+                        <Box sx={{ p: 1 }}>
+                            <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
+                        </Box>
+                        <Box sx={{ p: 1 }} >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        color="secondary"
+                                        name="activestatus"
+                                        value={activestatus}
+                                        checked={activestatus}
+                                        className="ml-2"
+                                        onChange={(e) => { updateFormData(e) }}
+                                    />
+                                }
+                                label="Active"
+                            />
+                        </Box>
+                        <Box sx={{ p: 1 }}>
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Employee Record File
-                                </Typography>
+                                <IconButton variant="outlined" size='sm' color="danger" onClick={getEmployeeList}>
+                                    <SearchIcon />
+                                </IconButton>
                             </CssVarsProvider>
                         </Box>
-                    </Paper>
-                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
-                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, }}>
-                            {/* First Row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", }}>
-                                <Box sx={{ display: "flex", flex: 2, p: 2 }} >
-                                    <DepartmentSelect style={SELECT_CMP_STYLE} />
-                                </Box>
-                                <Box sx={{ display: "flex", flex: 2, p: 2 }}>
-                                    <DepartmentSectionSelect style={SELECT_CMP_STYLE} />
-                                </Box>
-                                <Box sx={{ display: "flex", flex: 1, }} >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                color="secondary"
-                                                name="activestatus"
-                                                value={activestatus}
-                                                checked={activestatus}
-                                                className="ml-2"
-                                                onChange={(e) => { updateFormData(e) }}
-                                            />
-                                        }
-                                        label="Active"
-                                    />
-                                </Box>
-                                <Box sx={{ display: "flex", justifyItems: "center", py: 2 }}>
-                                    <CssVarsProvider>
-                                        <IconButton variant="outlined" size='sm' color="danger" onClick={getEmployeeList}>
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ display: "flex", flex: 1, py: 2, pl: 2 }}>
-                                    <CssVarsProvider>
-                                        <IconButton variant="outlined" size='sm' color="danger" onClick={toSettings}>
-                                            <CloseIcon />
-                                        </IconButton>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            {/* First Row end */}
-                        </Box>
-                    </Paper>
-                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                        <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
-                            height: 600,
-                            width: "100%"
-                        }} rowHeight={40} headerHeight={40} />
-                    </Paper>
+                    </Box>
+                    {/* First Row end */}
+
                 </Paper>
+                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                    <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
+                        height: 600,
+                        width: "100%"
+                    }} rowHeight={40} headerHeight={40} />
+                </Paper>
+
             </Box>
-        </Fragment >
+        </CustomLayout>
     )
 }
 

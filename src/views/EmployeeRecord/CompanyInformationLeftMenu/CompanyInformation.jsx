@@ -65,7 +65,7 @@ const CompanyInformation = () => {
     return (
         <CustomLayout title="Company Information" displayClose={true} >
             {
-                open === 1 ? <CompanyPage emno={emno} empid={empid} /> : <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+                open === 1 ? <CompanyPage emno={emno} empid={empid} setOpen={setOpen} /> : <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
                             <DeptSelectByRedux setValue={setDept} value={dept} />

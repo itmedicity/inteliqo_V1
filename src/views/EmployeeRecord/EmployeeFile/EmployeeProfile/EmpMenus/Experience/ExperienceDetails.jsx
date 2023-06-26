@@ -1,42 +1,33 @@
-import { getYear } from 'date-fns'
-import React, { Fragment, memo, useCallback, useContext, useMemo, useState } from 'react'
+import { differenceInMonths, differenceInYears, getYear } from 'date-fns'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import moment from 'moment';
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import DesignationMast from 'src/views/CommonCode/DesignationMast'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material';
-import ExperienceAgGridtable from './ExperienceAgGridtable';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import IconButton from '@mui/joy/IconButton';
 import { useSelector } from 'react-redux';
+import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ExperienceDetails = () => {
 
     //const classes = useStyles()
     const { id, no } = useParams();
-
-    // const history = useHistory();
-    //use state for incrementing count
-    const [count, setCount] = useState(0)
-    //use state for updation submission
-    const [flag, setflag] = useState(0)
-
+    const [count, setCount] = useState(0)//table row refreshing
+    const [flag, setflag] = useState(0)//setting flag=1 for updation
+    const [desg, setDesg] = useState(0)//designation 
     const [slno, setslno] = useState(0)
-
-    //designation select list
-    const { selectDesignation,
-        updateDesignation } = useContext(PayrolMasterContext)
-    const reset = () => {
-        updateDesignation(0)
-    }
     const [totyear, settotyear] = useState(0)
+    const [data, setData] = useState([])
+    const [totmonth, setTotmonth] = useState(0)
+
     //Initial State
     const [formData, setformData] = useState({
         institution_name: "",
@@ -59,11 +50,11 @@ const ExperienceDetails = () => {
     const updateEmployeeExpFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setformData({ ...formData, [e.target.name]: value })
-        //calculating total working year
-        const startdate = getYear(new Date(workstartdate))
-        const enddate = getYear(new Date(workenddate))
-        const expyear = enddate - startdate
+        const expyear = differenceInYears(new Date(workenddate), new Date(workstartdate))
         settotyear(expyear)
+        const monthdiff = differenceInMonths(new Date(workenddate), new Date(workstartdate))
+        const month = monthdiff % 12
+        setTotmonth(month)
     }
 
     const empno = useSelector((state) => {
@@ -71,14 +62,13 @@ const ExperienceDetails = () => {
         //const status = state.getProfileData.lodingStatus
     })
 
-
     //postData
     const postData = useMemo(() => {
         return {
             em_no: id,
             em_id: no,
             em_institution: institution_name,
-            em_designation: selectDesignation,
+            em_designation: desg,
             em_from: moment(workstartdate).format('YYYY-MM-DD'),
             em_to: moment(workenddate).format('YYYY-MM-DD'),
             em_total_year: totyear,
@@ -86,7 +76,7 @@ const ExperienceDetails = () => {
             create_user: empno,
             tmch_exp: tmch_exp === true ? 1 : 0
         }
-    }, [id, no, institution_name, selectDesignation, totyear, gross_salary, tmch_exp, workenddate, workstartdate, empno])
+    }, [id, no, institution_name, desg, totyear, gross_salary, tmch_exp, workenddate, workstartdate, empno])
 
     //function for getting selected row to edit
     const getTableData = useCallback((params) => {
@@ -100,11 +90,11 @@ const ExperienceDetails = () => {
             workenddate: em_to,
             tmch_exp: is_tmch === 1 ? true : false,
         }
-        updateDesignation(em_designation)
+        setDesg(em_designation)
         setformData(frmData)
         settotyear(em_total_year)
         setslno(emexp_slno)
-    }, [updateDesignation])
+    }, [])
 
     //patchdata for updating
     const patchData = useMemo(() => {
@@ -114,14 +104,14 @@ const ExperienceDetails = () => {
             emexp_slno: slno,
             em_institution: institution_name,
             tmch_exp: tmch_exp === false ? 0 : 1,
-            em_designation: selectDesignation,
+            em_designation: desg,
             em_from: moment(workstartdate).format('YYYY-MM-DD'),
             em_to: moment(workenddate).format('YYYY-MM-DD'),
             em_total_year: totyear,
             em_salary: gross_salary,
             create_user: no
         }
-    }, [id, no, slno, institution_name, tmch_exp, selectDesignation, workenddate, workstartdate, totyear, gross_salary])
+    }, [id, no, slno, institution_name, tmch_exp, desg, workenddate, workstartdate, totyear, gross_salary])
 
     //saving formdata
     const submitFormData = useCallback((e) => {
@@ -134,7 +124,7 @@ const ExperienceDetails = () => {
                 setformData(defaultState)
                 setCount(count + 1)
                 settotyear(0)
-                reset()
+                setDesg(0)
             }
             else if (success === 2) {
                 warningNofity(message)
@@ -152,31 +142,60 @@ const ExperienceDetails = () => {
                 setformData(defaultState)
                 setCount(count + 1)
                 settotyear(0)
-                //history.push(`/Home/EmployeeExperience/${id}/${no}`)
                 succesNofity(message)
-                reset()
             }
             else {
-                errorNofity('Error Occured!!!Please Contact EDP')
+                infoNofity(message)
             }
         }
         if (flag === 1) {
-
             submitUpdateData(patchData)
-        }
-        else {
-            submitformadata(postData)
-        }
+        } else {
+            if (workstartdate === workenddate) {
+                warningNofity("Please Select Experience Year")
+            } else {
+                submitformadata(postData)
+            }
 
+        }
     }, [postData, patchData, flag, count])
 
-    //redirecting to home page
-    // const RedirectToProfilePage = () => {
-    //     history.push(`/Home/Profile/${id}/${no}`)
-    // }
+    const [columnDef] = useState([
+        { headerName: 'Emp No', field: 'em_no', wrapText: true, minWidth: 90 },
+        { headerName: 'Institution ', field: 'em_institution', wrapText: true, minWidth: 400 },
+        { headerName: 'Designation ', field: 'desg_name', wrapText: true, minWidth: 200 },
+        { headerName: 'Start Date ', field: 'em_from', wrapText: true, minWidth: 150 },
+        { headerName: 'End Date', field: 'em_to', minWidth: 150 },
+        { headerName: 'Total Year', field: 'year', minWidth: 150 },
+        { headerName: 'Total Month ', field: 'month', minWidth: 150 },
+        { headerName: 'Total Days', field: 'day', minWidth: 150 },
+        { headerName: 'Gross salary', field: 'em_salary', minWidth: 150 },
+        {
+            headerName: 'Edit', minWidth: 150, cellRenderer: params =>
+                <EditIcon onClick={() =>
+                    getTableData(params)
+                }
+                />
+        },
+    ])
+
+    useEffect(() => {
+        const getTableData = async () => {
+            const results = await axioslogin.get(`/experience/select/${id}`)
+            const { success, data } = results.data
+            if (success === 1) {
+                setData(data)
+            } else if (success === 0) {
+                infoNofity("No Experience Is added to This Employee")
+            }
+            else {
+                errorNofity("Error Occured,Please Contact EDP")
+            }
+        }
+        getTableData()
+    }, [id, count])
 
     return (
-
         <Fragment>
             <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
@@ -242,8 +261,9 @@ const ExperienceDetails = () => {
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ width: '30%', pt: 0.5 }} >
-                                    <DesignationMast style={SELECT_CMP_STYLE} />
+                                <Box sx={{ width: '30%', pt: 1 }} >
+                                    {/* <DesignationMast style={SELECT_CMP_STYLE} /> */}
+                                    <DesignationSelectRedux value={desg} setValue={setDesg} />
                                 </Box>
                                 <Box sx={{ width: '20%', pl: 0.5 }}>
                                     <CssVarsProvider>
@@ -310,14 +330,31 @@ const ExperienceDetails = () => {
                             {/* second row end */}
                             {/* third row start */}
                             <Box sx={{ display: "flex", flexDirection: "row", py: 1 }}>
-                                <Box sx={{ width: '20%', pt: 0.5, }}>
+                                <Box sx={{ width: '20%' }}>
+                                    <CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Total Month Experience
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ width: '30%' }} >
+                                    <TextInput
+                                        type="text"
+                                        classname="form-control form-control-sm"
+                                        Placeholder="Total Month"
+                                        value={totmonth}
+                                        name="totmonth"
+                                        disabled={true}
+                                    />
+                                </Box>
+                                <Box sx={{ width: '20%', pt: 0.5, pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Gross Salary
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
-                                <Box sx={{ width: '80%', }}>
+                                <Box sx={{ width: '30%', }}>
                                     <TextInput
                                         type="text"
                                         classname="form-control form-control-sm"
@@ -332,7 +369,16 @@ const ExperienceDetails = () => {
                         {/* third row end */}
                     </Paper>
                     <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                        <ExperienceAgGridtable update={count} getTableData={getTableData} />
+                        {/* <ExperienceAgGridtable update={count} getTableData={getTableData} /> */}
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={data}
+                            sx={{
+                                height: 600,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30} />
                     </Paper>
                 </Paper>
                 <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>

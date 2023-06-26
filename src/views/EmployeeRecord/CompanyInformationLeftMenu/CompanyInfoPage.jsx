@@ -1,6 +1,6 @@
 import { CssVarsProvider, IconButton, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { addDays, format } from 'date-fns'
+import { addDays, format, isAfter, isBefore, isEqual } from 'date-fns'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -17,9 +17,12 @@ import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutl
 import { ToastContainer } from 'react-toastify'
 import moment from 'moment'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import { useDispatch, useSelector } from 'react-redux'
+import CloseIcon from '@mui/icons-material/Close';
+import { useHistory } from 'react-router-dom'
 
-const CompanyInfoPage = ({ emno, empid }) => {
+const CompanyInfoPage = ({ emno, empid, setOpen }) => {
+
+    const history = useHistory()
 
     const empNo = useMemo(() => emno, [emno]);
     const empId = useMemo(() => empid, [empid])
@@ -38,19 +41,17 @@ const CompanyInfoPage = ({ emno, empid }) => {
 
     const [empstatus, setempStatus] = useState(0)
     const [probsataus, setProbstatus] = useState(0)
-    const [contractStatus, setContractStatus] = useState(0)
 
     const [probationperiod, setProbationPeriod] = useState('');
     const [oldprob_end_date, setProb_end_date] = useState('')
 
-    const [contractend, setContractEnd] = useState('')
     const [oldContractEnd, setOldContractEnd] = useState('')
 
     const [emptype, setEmptype] = useState(0)
     const [oldemptype, setoldEmptype] = useState(0)
-
-    const [desgtype, setDesgtype] = useState(0)
-    const [oldDesgtype, setOldDesgType] = useState(0)
+    const [count, setCount] = useState(0)
+    const [data, setTableData] = useState();
+    const [emname, setEmname] = useState('')
 
     const getDate = useCallback((e) => {
         var startdate = e.target.value
@@ -72,16 +73,32 @@ const CompanyInfoPage = ({ emno, empid }) => {
         { headerName: 'Update User ', field: 'edit_user' },
     ])
 
+
+    //Get Data
+    useEffect(() => {
+        const getTable = async (empNo) => {
+            const result = await axioslogin.get(`/common/getcompanylog/${empNo}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else if (success === 0) {
+                infoNofity("No update is done against this employee")
+            } else {
+                warningNofity(" Error occured contact EDP")
+            }
+        }
+        getTable(empNo);
+    }, [empNo, count]);
+
     //Get data
     useEffect(() => {
         const getCompany = async (empNo) => {
             const result = await axioslogin.get(`/common/getcompanydetails/${empNo}`)
             const { success, data } = result.data
             if (success === 1) {
-                console.log(data);
                 const { em_branch, em_department, em_prob_end_date,
                     em_dept_section, em_institution_type, em_category,
-                    em_designation, contract_status, em_contract_end_date } = data[0]
+                    em_designation, em_contract_end_date, em_name } = data[0]
                 setBranch(em_branch === null ? 0 : em_branch)
                 setDept(em_department === null ? 0 : em_department)
                 setDeptSection(em_dept_section === null ? 0 : em_dept_section)
@@ -93,7 +110,7 @@ const CompanyInfoPage = ({ emno, empid }) => {
                 setProbationPeriod(em_prob_end_date === null ? '' : em_prob_end_date)
                 setProb_end_date(em_prob_end_date === null ? '' : em_prob_end_date)
                 setOldContractEnd(em_contract_end_date === null ? '' : em_contract_end_date)
-                setContractStatus(contract_status)
+                setEmname(em_name)
 
             } else {
                 setBranch(0)
@@ -115,10 +132,8 @@ const CompanyInfoPage = ({ emno, empid }) => {
                 const result = await axioslogin.get(`/empcat/${category}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    console.log(data);
                     const { ecat_cont_period, ecat_prob_period, emp_type, des_type } = data[0]
                     setEmptype(emp_type)
-                    setDesgtype(des_type)
                     setProbationPeriod(addDays(new Date, ecat_prob_period))
                     if (ecat_cont_period > 0) {
                         setempStatus(1)
@@ -141,13 +156,10 @@ const CompanyInfoPage = ({ emno, empid }) => {
                 const result = await axioslogin.get(`/empcat/${oldCate}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    console.log(data);
-                    const { ecat_cont_period, ecat_prob_period, emp_type, des_type } = data[0]
+                    const { emp_type } = data[0]
                     setoldEmptype(emp_type)
-                    setOldDesgType(des_type)
                 } else {
                     setoldEmptype(0)
-                    setOldDesgType(0)
                 }
             }
             getOldEmptype()
@@ -185,13 +197,21 @@ const CompanyInfoPage = ({ emno, empid }) => {
 
 
     const submitCompany = async () => {
-        console.log(oldprob_end_date);
-        console.log(updateData);
-        console.log(oldDesg, designation)
-        console.log(oldCate, category);
 
-        console.log("new", emptype, desgtype)
-        console.log("old", oldemptype, oldDesgtype);
+        const submitData = async () => {
+            const result = await axioslogin.post('/empmast/company', updateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                setCount(count + 1)
+                succesNofity(message);
+                history.push(`/Home/Prfle/${empNo}/${empId}`)
+                setOpen(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
 
         if (oldDesg !== designation && ineffectdate === '') {
             warningNofity("Fill the Designation With Effective Date")
@@ -204,14 +224,17 @@ const CompanyInfoPage = ({ emno, empid }) => {
             } else if (oldemptype === 1 && emptype === 2) {
                 warningNofity("Cannot Change Employee Category Permanent to Contract")
             } else {
-                if (oldContractEnd > today) {
+                if (isBefore(new Date(oldContractEnd), new Date()) && isAfter(new Date(oldprob_end_date), new Date())) {
                     warningNofity("Cannot change Category contract end date exceeded")
-                } else {
-
                 }
-
+                else {
+                    submitData()
+                }
             }
         }
+    }
+    const close = async () => {
+        setOpen(0)
     }
 
     return (
@@ -223,6 +246,22 @@ const CompanyInfoPage = ({ emno, empid }) => {
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" }
             }} >
+                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                    <Box sx={{ flex: 1, pl: 20, fontWeight: 500, }} >
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary" >
+                                Employee Number : {empNo}
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ flex: 1, fontWeight: 500, }}>
+                        <CssVarsProvider>
+                            <Typography textColor="text.secondary" >
+                                Employee Name : {emname}
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
                 <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", width: "100" }} >
                     <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                         <Box sx={{ display: "flex", flexDirection: "row", width: "100" }}>
@@ -348,7 +387,7 @@ const CompanyInfoPage = ({ emno, empid }) => {
                 <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
-                        //tableData={nameList}
+                        tableData={data}
                         sx={{
                             height: 600,
                             width: "100%"
@@ -365,6 +404,13 @@ const CompanyInfoPage = ({ emno, empid }) => {
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' onClick={submitCompany} >
                                 <LibraryAddCheckOutlinedIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ flex: 0, p: 0.3 }} >
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='sm' onClick={close} >
+                                <CloseIcon />
                             </IconButton>
                         </CssVarsProvider>
                     </Box>

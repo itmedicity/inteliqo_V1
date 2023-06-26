@@ -146,11 +146,9 @@ const AttendanceGenerateAuto = () => {
             const result = await axioslogin.post("/payrollprocess/create/manual", array1)
             const { success, message } = result.data
             if (success === 1) {
-                console.log(dutyLock);
                 const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
                 const { success } = result1.data
                 if (success === 1) {
-                    console.log("dfghjk");
                     succesNofity("Attendance Marking Done")
                 }
                 else {
@@ -194,67 +192,67 @@ const AttendanceGenerateAuto = () => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Name
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 ID #
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Total Days
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Actual Worked
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Calculated Worked
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 OFF Days
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Leaves
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Leave Without Pay
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Loss Of Pay
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Calculated LOP
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 30, maxHeight: 30, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Holiday
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Holiday Worked
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2 }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Total Pay Day
                                             </Box>
                                         </TableCell>

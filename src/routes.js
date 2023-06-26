@@ -110,7 +110,7 @@ const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/
 //const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdation'))
 // const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/LeaveCancelHr'))
 // const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OTRequest'))
-const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OTRequsition'))
+const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OtReqestMainPage'))
 //const OTApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/OTApprovalIncharge/OTApprovalIncharge'))
 const OTApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/OTApprovalIncharge/OtInchargeApproval'))
 // const OTApprovalHOD = React.lazy(() => import('./views/LeaveManagement/OTApprovalHOD/OTApprovalHOD'))
@@ -137,8 +137,9 @@ const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenc
 const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/DueClearence'))
 // const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OtCeoApproval'))
-const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
-const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
+//const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OTWageMaster'))
+const OTWageMaster = React.lazy(() => import('./views/Master/OTWageMaster/OtMaster'))
+// const OTWageMasterEdit = React.lazy(() => import('./views/Master/OTWageMaster/OTWageTableEdit'))
 const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO/ApprovalCEO'))
 //const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
@@ -363,7 +364,7 @@ const routes = [
   { path: '/Home/DueClearence', exact: true, name: 'Due Clearence', component: DueClearence },
   { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
   { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
-  { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
+  // { path: '/Home/OTWageMasterEdit/:id', exact: true, name: 'OT Wage Table Edit', component: OTWageMasterEdit },
   { path: '/Home/ApprovalCEO', exact: true, name: 'Approval CEO', component: ApprovalCEO },
   { path: '/Home/CommonSettings', exact: true, name: 'Common Settings', component: CommonSettings },
   { path: '/Home/DueClearenceHR', exact: true, name: 'DueClearence HR', component: DueClearenceHR },

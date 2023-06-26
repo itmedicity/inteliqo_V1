@@ -56,10 +56,6 @@ const HaldayRequetsMainForm = () => {
 
     const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel;
 
-
-
-    console.log(hod, incharge)
-
     const {
         em_no, em_id,
         em_department, em_dept_section,

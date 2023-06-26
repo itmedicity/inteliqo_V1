@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setempDeptSect } from 'src/redux/actions/AuthorizationDeptSectionAction';
 import _ from 'underscore';
 
-const DeptSectionSelect = ({ em_id, value, setValue, updateDeptSect }) => {
+const DeptSectionSelect = ({ em_id, value, setValue }) => {
 
     const dispatch = useDispatch()
     const [deptSectValues, setDeptSectValues] = useState([])
@@ -16,10 +16,8 @@ const DeptSectionSelect = ({ em_id, value, setValue, updateDeptSect }) => {
 
         if (Object.keys(DeptSect).length > 0) {
             setDeptSectValues(DeptSect)
-            // updateDeptSect(DeptSect)
         } else {
             setDeptSectValues([])
-            // updateDeptSect([])
         }
     }, [DeptSect])
 
@@ -36,7 +34,7 @@ const DeptSectionSelect = ({ em_id, value, setValue, updateDeptSect }) => {
                 variant='outlined'
             >
                 <MenuItem value={0} >
-                    All Department Section
+                    Select Department Section
                 </MenuItem>
                 {
                     deptSectValues && deptSectValues.map((val, index) => {

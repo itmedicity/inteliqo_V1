@@ -100,7 +100,7 @@ const OtUpdtnCalculation = () => {
                 setTableData([])
             }
         }
-    }, [employeeDetl, dept, section, empNo, count])
+    }, [employeeDetl, dept, section, empNo])
     const getAll = useCallback(() => {
         const filterdata = employeeDetl && employeeDetl.filter((val) => {
             return (val.ot_updation_status === 0)
@@ -124,7 +124,7 @@ const OtUpdtnCalculation = () => {
         } else {
 
         }
-    }, [rows])
+    }, [rows, value])
 
 
     const SaveAll = async () => {
