@@ -1,98 +1,94 @@
-import { Box, FormControl, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import { Button, Checkbox, CssVarsProvider, Sheet, Tooltip } from '@mui/joy';
+import { Box, FormControl, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import moment from 'moment';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, getTotalShiftHours, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { Button, Checkbox, CssVarsProvider, Sheet, Tooltip } from '@mui/joy';
+import moment from 'moment'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import DeptSectionSelect from '../NightOff/DeptSectionSelect'
+import EmployeeUderDeptSec from '../NightOff/EmployeeUderDeptSec'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { add } from 'date-fns';
-import { addHours, differenceInMinutes, format, subHours } from 'date-fns'
-import { ToastContainer } from 'react-toastify';
-import _, { object } from 'underscore';
-import { getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action';
-import CommonAgGrid from 'src/views/Component/CommonAgGrid';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { errorNofity, getTotalShiftHours, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { addHours, format, subHours } from 'date-fns'
+import _ from 'underscore';
+import { useDispatch, useSelector } from 'react-redux';
+import { getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action';
+import { ToastContainer } from 'react-toastify';
 
-const OTRequsition = () => {
+const InchargeHodPage = ({ em_id, em_department }) => {
+    const hodid = useMemo(() => em_id, [em_id])
+    const dept = useMemo(() => em_department, [em_department])
 
     const dispatch = useDispatch();
-    const [fromDate, setFromDate] = useState(moment())
-    const [deptShift, setDeptShift] = useState([])
-
-    const [selectedShift, setShift] = useState(0)
+    const [empid, setEmpid] = useState(0)
+    const [deptSection, setDeptSection] = useState(0)
+    const [employee, setEmployee] = useState(0)
+    const [desgname, setDesgname] = useState('')
+    const [fromDate, setFromDate] = useState(moment(new Date()))
+    const [selectedShift, setSelectedShift] = useState(0)
     const [shiftname, setShiftname] = useState('')
+    const [deptShift, setDeptShift] = useState([])
+    const [disableCheck, setDisableCheck] = useState(true)
 
+    const [checkinBox, setCheckIn] = useState(false)
+    const [checkoutBox, setCheckOut] = useState(false)
 
-    const [shift_start, setShiftstart] = useState('')
-    const [shift_end, setShiftend] = useState('')
+    const [disableIn, setDisableIn] = useState(true)
+    const [disableOut, setDisableOut] = useState(true)
+
+    const [punchDetl, setPunchDetl] = useState([])
+    const [punchInTime, setPunchInTime] = useState(0);
+    const [punchOutTime, setPunchOutTime] = useState(0);
+
+    const [tableData, setTabledata] = useState([])
+    const [table, setTable] = useState(false)
+    const [count, setCount] = useState(0)
 
     const [ot_reason, setOt_reason] = useState('')
     const [ot_remark, setOt_remark] = useState('')
     const [ot_amount, setOt_amount] = useState(0)
 
-    const [disableCheck, setDisableCheck] = useState(true)
-    const [table, setTable] = useState(false)
-
-
-    const [checkinBox, setCheckIn] = useState(false)
-    const [checkoutBox, setCheckOut] = useState(false)
-
-
-    const [disableIn, setDisableIn] = useState(true)
-    const [disableOut, setDisableOut] = useState(true)
-
+    const [shift_start, setShiftstart] = useState('')
+    const [shift_end, setShiftend] = useState('')
     const [shiftTiming, setShiftTiming] = useState([])
     const [selectedShiftTiming, setselectedShiftTiming] = useState({})
 
-    const [punchDetl, setPunchDetl] = useState([])
-    const [punchInTime, setPunchInTime] = useState(0);
-    const [punchOutTime, setPunchOutTime] = useState(0);
+    const [approvalrights, setapprovalrights] = useState({})
+    const [saveArray, setSaveArray] = useState([])
     const [dutyday, setdutyday] = useState(new Date())
-
-
-    const [tableData, setTabledata] = useState([])
-    const [count, setCount] = useState(0)
     const [update, setUpdate] = useState(0)
     const [editslno, setEditslno] = useState(0)
 
-    const [saveArray, setSaveArray] = useState([])
+    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
+    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
+    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = approvalrights;
 
-    //login employee details
-    const empData = useSelector((state) => {
-        return state?.getProfileData?.ProfileData[0];
-    })
-    const { em_no, em_id, em_name, sect_name, em_dept_section, desg_name, em_department } = empData
-
-    const handleChangeCheckInCheck = useCallback((e) => {
-        const checkin = e.target.checked;
-        setCheckIn(checkin)
-        setDisableIn(!checkin)
-    })
-
-    const handleChangeCheckOutCheck = useCallback((e) => {
-        const checkout = e.target.checked;
-        setCheckOut(checkout)
-        setDisableOut(!checkout)
-    })
-
-    const checkpost = {
-        punch_in: punchInTime,
-        punch_out: punchOutTime,
-        emp_id: em_id
-    }
-
-    // GET DEPARTMENT WISE SHIFT
     useEffect(() => {
+        const getEmployeedetails = async (employee) => {
+            const result = await axioslogin.get(`/overtimerequest/empmast/details/${employee}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { ot_amount, desg_name, em_id } = data[0]
+                setDesgname(desg_name)
+                setEmpid(em_id)
+                setOt_amount(ot_amount)
+            } else {
+                setDesgname('')
+                setEmpid(0)
+                setOt_amount(0)
+            }
+        }
+        getEmployeedetails(employee)
+
         const getdepartmentShift = async () => {
-            if (em_department !== 0 && em_dept_section !== 0) {
+            if (dept !== 0 && deptSection !== 0) {
                 const postData = {
-                    dept_id: em_department,
-                    sect_id: em_dept_section
+                    dept_id: dept,
+                    sect_id: deptSection
                 }
                 const result = await axioslogin.post('/departmentshift/shift', postData)
                 const { success, data, message } = await result.data;
@@ -102,7 +98,6 @@ const OTRequsition = () => {
                     setDeptShift(obj);
                     //get shift timing
                     const shiftSlno = await obj?.map(val => val.shiftcode)
-
                     const shiftArray = await axioslogin.post('/departmentshift/getShiftTiming', shiftSlno);
                     const { succ, result } = await shiftArray.data;
                     if (succ === 1) {
@@ -116,18 +111,52 @@ const OTRequsition = () => {
             }
         }
         getdepartmentShift();
-        const getotamount = async () => {
-            const result = await axioslogin.get(`/common/getotwage/${em_id}`)
-            const { success, data } = result.data;
-            if (success === 1) {
-                const { ot_amount } = data[0]
-                setOt_amount(ot_amount)
+
+        dispatch(getEmployeeApprovalLevel(empid))
+    }, [employee, dispatch, empid])
+
+    //Get Data
+    useEffect(() => {
+        if (empid !== 0) {
+            const getBoard = async () => {
+                const result = await axioslogin.get(`overtimerequest/details/${empid}`)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setTabledata(data);
+                    setCount(0)
+                } else if (success === 0) {
+                    infoNofity("No Over Time requested to this employee")
+                } else {
+                    warningNofity(" Error occured contact EDP")
+                }
             }
-            else {
-                setOt_amount(0)
-            }
+            getBoard();
         }
-        getotamount()
+    }, [empid, count]);
+
+    useEffect(() => {
+        if (punchInTime !== 0 && punchOutTime !== 0) {
+            setTable(true)
+        } else {
+            setTable(false)
+        }
+        if (empApprovalLevel !== undefined) {
+            setapprovalrights(empApprovalLevel)
+        } else {
+            setapprovalrights({})
+        }
+        const editdata = punchDetl.filter((val) => {
+            if (val.punch_time === punchInTime || val.punch_time === punchOutTime) {
+                return val
+            }
+        })
+        setSaveArray(editdata)
+
+        const checkpost = {
+            punch_in: punchInTime,
+            punch_out: punchOutTime,
+            emp_id: empid
+        }
         const checkpuch = async () => {
             const result = await axioslogin.post('/common/getdutydaycheck', checkpost)
             const { success, data } = result.data;
@@ -141,72 +170,7 @@ const OTRequsition = () => {
             }
         }
         checkpuch()
-        dispatch(getEmployeeApprovalLevel(em_id))
-    }, [em_department, em_dept_section, em_id])
-
-    const getShiftdetail = async () => {
-        if (selectedShift === 0) {
-            warningNofity("Please Select Any Shift!!")
-        } else {
-            //GET SHIFT DATA 
-            const postData = {
-                emp_id: em_id,
-                duty_day: moment(fromDate).format('YYYY-MM-DD')
-            }
-            const result = await axioslogin.post('overtimerequest/shiftdata/', postData);
-            const { success, data, message } = result.data;
-            if (success === 1) {
-                const { ot_request_flag, punch_slno } = data[0];
-                // setPunchSlno(punch_slno)
-                const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time } = selectedShiftTiming[0]
-
-                const inTime = moment(shft_chkin_time).format('HH:mm:ss');
-                const outTime = moment(shft_chkout_time).format('HH:mm:ss');
-
-                setShiftstart(inTime)
-                setShiftend(outTime)
-
-                const selecteShiftData = {
-                    inCheck: shft_chkin_time,
-                    outCheck: shft_chkout_time
-                }
-                setselectedShiftTiming(selecteShiftData);
-
-                const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
-                const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
-
-                if (ot_request_flag === 1) {
-                    warningNofity('Selected Date Already Raised A COFF Request')
-                    setDisableCheck(true)
-                } else {
-                    //TO FETCH PUNCH DATA FROM TABLE
-                    const postDataForpunchMaster = {
-                        date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                        date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
-                        em_no: em_no
-                    }
-                    //FETCH THE PUNCH TIME FROM PUNCH DATA
-                    const result = await axioslogin.post('overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                    const { success, data } = result.data;
-                    if (success === 1) {
-                        setPunchDetl(data)
-                        setDisableCheck(false)
-                        succesNofity('Done , Select The Punching Info')
-                    } else if (success === 0) {
-                        //no record
-                        warningNofity('Punching Data Not Found')
-                        setDisableCheck(true)
-                    } else {
-                        // error
-                        errorNofity(message)
-                    }
-                }
-            } else {
-                warningNofity('Duty Plan Not Done')
-            }
-        }
-    }
+    }, [punchInTime, punchOutTime, empApprovalLevel, empid])
 
     //Shift Hours
     const inTime = moment(selectedShiftTiming.inCheck).format("YYYY-MM-DD HH:mm:ss")
@@ -229,6 +193,7 @@ const OTRequsition = () => {
     var remove = Math.floor(otminute / 1);
     const finaltime = `${othour}:${remove}`;
 
+
     //over time rate calculation
     var minRate = 0;
     var hrRate = (othour * ot_amount)
@@ -237,141 +202,81 @@ const OTRequsition = () => {
     } else { }
     var amount = hrRate + minRate
 
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
-    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
-    const [approvalrights, setapprovalrights] = useState({})
+    const handleChangeCheckInCheck = useCallback((e) => {
+        const checkin = e.target.checked;
+        setCheckIn(checkin)
+        setDisableIn(!checkin)
+    })
 
-    useEffect(() => {
-        if (punchInTime !== 0 && punchOutTime !== 0) {
-            setTable(true)
+    const handleChangeCheckOutCheck = useCallback((e) => {
+        const checkout = e.target.checked;
+        setCheckOut(checkout)
+        setDisableOut(!checkout)
+    })
+
+    const getShiftdetail = async () => {
+        if (selectedShift === 0) {
+            warningNofity("Please Select Any Shift!!")
         } else {
-            setTable(false)
-        }
-        if (empApprovalLevel !== undefined) {
-            setapprovalrights(empApprovalLevel)
-        } else {
-            setapprovalrights({})
-        }
-        const editdata = punchDetl.filter((val) => {
-            if (val.punch_time === punchInTime || val.punch_time === punchOutTime) {
-                return val
+            //GET SHIFT DATA 
+            const postData = {
+                emp_id: empid,
+                duty_day: moment(fromDate).format('YYYY-MM-DD')
             }
-        })
-        setSaveArray(editdata)
+            const result = await axioslogin.post('/overtimerequest/shiftdata/', postData);
+            const { success, data, message } = result.data;
+            if (success === 1) {
+                const { punch_slno } = data[0];
+                // setPunchSlno(punch_slno)
+                const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
+                const { shft_chkin_time, shft_chkout_time } = selectedShiftTiming[0]
 
-    }, [punchInTime, punchOutTime, empApprovalLevel])
+                const inTime = moment(shft_chkin_time).format('HH:mm:ss');
+                const outTime = moment(shft_chkout_time).format('HH:mm:ss');
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = approvalrights;
+                setShiftstart(inTime)
+                setShiftend(outTime)
 
-    //post Data
-    const postData = {
-        emp_id: em_id,
-        em_no: em_no,
-        ot_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
-        ot_days: moment(fromDate).format('YYYY-MM-DD'),
-        ot_shift_id: selectedShift,
-        check_in: punchInTime,
-        check_out: punchOutTime,
-        over_time: overTime,
-        ot_reson: ot_reason,
-        ot_remarks: ot_remark,
-        ot_convert: 0,
-        ot_amount: amount,
-        ot_inch_require: ((incharge === 1) || (hod === 1)) ? 1 : authorization_incharge,
-        ot_inch_status: ((incharge === 1) || (hod === 1)) ? 1 : 0,
-        ot_hod_require: hod === 1 ? 1 : authorization_hod,
-        ot_hod_status: hod === 1 ? 1 : 0,
-        ot_hr_require: 1,
-        ot_ceo_require: co_assign,
-        ot_deptsec_id: em_dept_section,
-        duty_day: moment(dutyday).format("YYYY-MM-DD")
-    }
+                const selecteShiftData = {
+                    inCheck: shft_chkin_time,
+                    outCheck: shft_chkout_time
+                }
+                setselectedShiftTiming(selecteShiftData);
 
-    const patchData = {
-        ot_reson: ot_reason,
-        ot_remarks: ot_remark,
-        ot_slno: editslno
-    }
+                const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
+                const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
 
-    const submitRequest = async () => {
-        const obj = {
-            punch_taken: 2
-        }
-        const array = saveArray.map((item) => item.punch_taken === 0 ? { ...item, ...obj } : item);
-
-        if (update === 0) {
-            if (overTime >= 60) {
-                const result = await axioslogin.post('/overtimerequest', postData)
-                const { message, success } = result.data;
-                if (success === 1) {
-                    const result = await axioslogin.patch('/overtimerequest/update/punch', array)
-                    const { message, success } = result.data;
-                    if (success === 1) {
-                        succesNofity("Over Time Requested Successfully");
-                        setTable(false)
-                        setShift(0)
-                        setCount(count + 1)
-                        setDisableCheck(true)
-                        setOt_reason('')
-                        setOt_remark('')
-                        setdutyday(new Date())
-                    } else {
-                        infoNofity(message)
+                if (punch_slno === 0) {
+                    warningNofity('No Punch Details')
+                    setDisableCheck(true)
+                } else {
+                    //TO FETCH PUNCH DATA FROM TABLE
+                    const postDataForpunchMaster = {
+                        date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
+                        date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                        em_no: employee
                     }
-
-                } else if (success === 0) {
-                    infoNofity(message.sqlMessage);
-                } else {
-                    infoNofity(message)
+                    //FETCH THE PUNCH TIME FROM PUNCH DATA
+                    const result = await axioslogin.post('overtimerequest/punchdatabydate/', postDataForpunchMaster)
+                    const { success, data } = result.data;
+                    if (success === 1) {
+                        setPunchDetl(data)
+                        setDisableCheck(false)
+                        succesNofity('Done , Select The Punching Info')
+                    } else if (success === 0) {
+                        //no record
+                        warningNofity('Punching Data Not Found')
+                        setDisableCheck(true)
+                    } else {
+                        // error
+                        errorNofity(message)
+                    }
                 }
-            }
-            else {
-                warningNofity(" Over Time Less Than 1 Hour so do not applay for OT")
-                setTable(false)
-                setShift(0)
-                setDisableCheck(true)
-                setOt_reason('')
-                setOt_remark('')
-                setdutyday(new Date())
-            }
-        } else {
-            const result = await axioslogin.patch('/overtimerequest', patchData)
-            const { message, success } = result.data;
-            if (success === 2) {
-                succesNofity(message);
-                setTable(false)
-                setShift(0)
-                setCount(count + 1)
-                setDisableCheck(true)
-                setOt_reason('')
-                setOt_remark('')
-                setdutyday(new Date())
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
             } else {
-                infoNofity(message)
+                warningNofity('Duty Plan Not Done')
             }
         }
     }
-
-    //Get Data
-    useEffect(() => {
-        if (em_id !== 0) {
-            const getBoard = async () => {
-                const result = await axioslogin.get(`overtimerequest/details/${em_id}`)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setTabledata(data);
-                    setCount(0)
-                } else if (success === 0) {
-                    infoNofity("No Over Time requested to this employee")
-                } else {
-                    warningNofity(" Error occured contact EDP")
-                }
-            }
-            getBoard();
-        }
-    }, [em_id, count]);
 
     const [column] = useState([
         { headerName: 'Slno ', field: 'slno', filter: true },
@@ -413,33 +318,157 @@ const OTRequsition = () => {
             succesNofity(message);
         } else {
             warningNofity(" Error occured contact EDP")
+            setCount(0)
         }
     }
-
     const getData = async (params) => {
-        setTable(0)
+
+        setTable(false)
         setUpdate(1)
         const data = params.api.getSelectedRows()
         const { ot_slno, ot_days, ot_shift_id,
             ot_reson, ot_remarks, } = data[0]
         setEditslno(ot_slno)
         setFromDate(ot_days)
-        setShift(ot_shift_id)
+        setSelectedShift(ot_shift_id)
         setOt_remark(ot_remarks)
         setOt_reason(ot_reson)
     }
 
+    //post Data
+    const postData = useMemo(() => {
+        return {
+            emp_id: empid,
+            em_no: employee,
+            ot_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+            ot_days: moment(fromDate).format('YYYY-MM-DD'),
+            ot_shift_id: selectedShift,
+            check_in: punchInTime,
+            check_out: punchOutTime,
+            over_time: overTime,
+            ot_reson: ot_reason,
+            ot_remarks: ot_remark,
+            ot_convert: 0,
+            ot_amount: amount,
+            ot_inch_require: (authorization_incharge === 1 && incharge === 1) ? 1 :
+                (authorization_incharge === 1 && incharge === 0) ? 1 :
+                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+            ot_inch_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
+                (authorization_incharge === 1 && incharge === 0) ? 1 :
+                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+            ot_inch_remark: (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
+                (authorization_incharge === 1 && incharge === 0) ? "DIRECT" :
+                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+            ot_hod_require: (authorization_hod === 1 && hod === 1) ? 1 :
+                (authorization_hod === 1 && hod === 0) ? 1 :
+                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
+            ot_hod_status: (authorization_hod === 1 && hod === 1) ? 1 :
+                (authorization_hod === 1 && hod === 0) ? 1 :
+                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
+            ot_hod_remark: (authorization_hod === 1 && hod === 1) ? "DIRECT" :
+                (authorization_hod === 1 && hod === 0) ? 'DIRECT' :
+                    (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
+            ot_hr_require: 1,
+            ot_ceo_require: co_assign === undefined ? 0 : co_assign,
+            ot_deptsec_id: deptSection,
+            duty_day: moment(dutyday).format("YYYY-MM-DD")
+        }
+    }, [empid, co_assign, employee, fromDate, selectedShift, punchInTime,
+        punchOutTime, overTime, ot_reason, ot_remark, amount, incharge, hod,
+        authorization_incharge, authorization_hod, deptSection, dutyday])
+
+    const patchData = useMemo(() => {
+        return {
+            ot_reson: ot_reason,
+            ot_remarks: ot_remark,
+            ot_slno: editslno
+        }
+    }, [ot_reason, ot_remark, editslno])
+
+    const submitRequest = async () => {
+        const obj = {
+            punch_taken: 2
+        }
+        const array = saveArray.map((item) => item.punch_taken === 0 ? { ...item, ...obj } : item);
+        if (update === 0) {
+            if (overTime >= 60) {
+                const result = await axioslogin.post('/overtimerequest/create', postData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    const result = await axioslogin.patch('/overtimerequest/update/punch', array)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        succesNofity("Over Time Requested Successfully");
+                        setTable(false)
+                        setSelectedShift(0)
+                        setCount(count + 1)
+                        setDisableCheck(true)
+                        setOt_reason('')
+                        setOt_remark('')
+                        setdutyday(new Date())
+                        setDeptSection(0)
+                        setEmployee(0)
+                        setFromDate(new Date())
+                    } else {
+                        infoNofity(message)
+                    }
+
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            }
+            else {
+                warningNofity(" Over Time Less Than 1 Hour so do not applay for OT")
+                setTable(false)
+                setSelectedShift(0)
+                setDisableCheck(true)
+                setOt_reason('')
+                setOt_remark('')
+                setdutyday(new Date())
+                setDeptSection(0)
+                setEmployee(0)
+                setFromDate(new Date())
+            }
+        } else {
+            const result = await axioslogin.patch('/overtimerequest', patchData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                succesNofity(message);
+                setTable(false)
+                setSelectedShift(0)
+                setCount(count + 1)
+                setDisableCheck(true)
+                setOt_reason('')
+                setOt_remark('')
+                setdutyday(new Date())
+                setUpdate(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
+    }
+
     return (
-        <CustomLayout title="OT Requsition" displayClose={true} >
+        <CustomLayout title="Over Time request" displayClose={true} >
             <ToastContainer />
-            <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
+            <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+                <Paper elevation={0} sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                    <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
+                        <DeptSectionSelect em_id={hodid} value={deptSection} setValue={setDeptSection} />
+                    </Box>
+                    <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
+                        <EmployeeUderDeptSec value={employee} setValue={setEmployee} deptSect={deptSection} />
+                    </Box>
+                    <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
                         <TextField
+                            variant="outlined"
                             fullWidth
-                            id="fullWidth"
                             size="small"
-                            value={em_no}
+                            value={employee}
                             disabled
                         />
                     </Box>
@@ -448,29 +477,11 @@ const OTRequsition = () => {
                             variant="outlined"
                             fullWidth
                             size="small"
-                            value={em_name}
+                            value={desgname}
                             disabled
                         />
                     </Box>
-                    <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            value={sect_name}
-                            disabled
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            value={desg_name}
-                            disabled
-                        />
-                    </Box>
-                </Box>
+                </Paper>
                 <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                     <Box sx={{ width: '15%', p: 0.5, mt: 0.2 }} >
                         <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -499,7 +510,7 @@ const OTRequsition = () => {
                                 defaultValue={0}
                                 value={selectedShift}
                                 onChange={(e, { props }) => {
-                                    setShift(e.target.value)
+                                    setSelectedShift(e.target.value)
                                     setShiftname(props.children)
                                 }}
                             >
@@ -641,7 +652,6 @@ const OTRequsition = () => {
                         </Box >
                     </Box>
                 </Box>
-
                 <Box>
                     {
                         table === true ? <TableContainer sx={{ maxHeight: 150 }}>
@@ -722,10 +732,9 @@ const OTRequsition = () => {
                         headerHeight={30}
                     />
                 </Paper>
-            </Paper>
-
+            </Box>
         </CustomLayout>
     )
 }
 
-export default OTRequsition
+export default InchargeHodPage

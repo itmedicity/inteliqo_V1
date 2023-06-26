@@ -8,18 +8,23 @@ import { CssVarsProvider, Typography } from '@mui/joy';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
-import CommonAgGrid from '../Component/CommonAgGrid';
 import CompanyChange from './CompanyChange';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CheckIdExists, InsertAppraisal } from './AppraisalFunctions';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
 import NextPlanIcon from '@mui/icons-material/NextPlan';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CustomeToolTip from '../Component/CustomeToolTip';
+import CusIconButton from '../Component/CusIconButton';
+import DownloadIcon from '@mui/icons-material/Download'
+import CustomAgGridRptFormatOne from '../Component/CustomAgGridRptFormatOne';
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const ProbationEnd = () => {
 
     const history = useHistory()
+    const dispatch = useDispatch()
     const [tableData, setTableData] = useState([]);
     const [empno, setempno] = useState(0)
     const [flag, setFlag] = useState(0)
@@ -31,6 +36,7 @@ const ProbationEnd = () => {
 
     /** back to home page */
     const RedirectToHome = () => {
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         history.push(`/Home`)
     }
 
@@ -41,13 +47,15 @@ const ProbationEnd = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
+                dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
                 setCount(0)
             } else if (success === 0) {
+                dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
                 setTableData([])
             }
         }
         aprobationEndList()
-    }, [count])
+    }, [count, dispatch])
 
     /** to get employee category details from redux */
     const empCate = useSelector((state) => {
@@ -62,7 +70,7 @@ const ProbationEnd = () => {
 
     const [columnDef] = useState([
         // { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 50, filter: true },
-        { headerName: 'Emp No ', field: 'em_no', filter: true, minWidth: 100 },
+        { headerName: 'Emp ID# ', field: 'em_no', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 100 },
         { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 100 },
         { headerName: 'Department Section ', field: 'sect_name', filter: true, minWidth: 100 },
@@ -90,17 +98,19 @@ const ProbationEnd = () => {
     //redirect to company information page
     const addtoProcess = useCallback((params) => {
         setFlag(1)//to open company information page
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const data = params.api.getSelectedRows()
         const { em_no, em_id, em_name } = data[0]
         setEmpid(em_id)
         setempno(em_no)
         setname(em_name)
-    }, [])
+    }, [dispatch])
 
     //appraisal process
     const toAppraisal = async (params) => {
 
         const data = params.api.getSelectedRows()
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const { sect_id, hod, incharge, em_no, em_id, dept_id, } = data[0]
 
         const getAuthorizationDetails = async (postData) => {
@@ -248,13 +258,23 @@ const ProbationEnd = () => {
         }
     }
 
+
+    const onExportClick = useCallback(() => {
+        if (tableData.length === 0) {
+            warningNofity("There is no data")
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+        }
+        else {
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
+        }
+    }, [tableData.length, dispatch])
     return (
         <Fragment>
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 {
                     flag === 1 ? <CompanyChange empid={empid} setFlag={setFlag} empno={empno} display={display} name={name} /> : <Paper square elevation={2} sx={{ p: 0.5, }}>
-                        <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                        <Paper square elevation={1} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                             <Box sx={{ flex: 1, }} >
                                 <CssVarsProvider>
                                     <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -262,7 +282,14 @@ const ProbationEnd = () => {
                                     </Typography>
                                 </CssVarsProvider>
                             </Box>
-                            <Box >
+                            <CustomeToolTip title="Download" placement="bottom">
+                                <Box >
+                                    <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
+                                        <DownloadIcon />
+                                    </CusIconButton>
+                                </Box>
+                            </CustomeToolTip>
+                            <Box sx={{ pl: 0.5 }}>
                                 <CssVarsProvider>
                                     <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
                                         <CloseIcon />
@@ -271,9 +298,9 @@ const ProbationEnd = () => {
                             </Box>
                         </Paper>
                         <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                            <CommonAgGrid
-                                columnDefs={columnDef}
-                                tableData={tableData}
+                            <CustomAgGridRptFormatOne
+                                columnDefMain={columnDef}
+                                tableDataMain={tableData}
                                 sx={{
                                     height: 600,
                                     width: "100%"

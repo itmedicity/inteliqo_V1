@@ -202,12 +202,12 @@ const CommonSettingNew = () => {
             const result = await axioslogin.post('/commonsettings', postData)
             const { success, message } = result.data
             if (success === 1) {
-                succesNofity(message)
+                warningNofity(message)
                 setLeaveType([])
-                setCount(count + 1)
             }
             else if (success === 2) {
-                warningNofity(message)
+                succesNofity(message)
+                setCount(count + 1)
             }
             else {
                 errorNofity("Error Occured!!!!! Please Contact EDP")
@@ -298,6 +298,29 @@ const CommonSettingNew = () => {
                                             Placeholder=""
                                             name="commn_latein"
                                             value={commn_latein}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">In Minutes</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Common Early Out</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="commn_earlyout"
+                                            value={commn_earlyout}
                                             changeTextValue={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>

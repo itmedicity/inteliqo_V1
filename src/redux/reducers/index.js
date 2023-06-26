@@ -86,6 +86,7 @@ import { getloginDeptSection } from './AuthorizatioDeptSectionReducer'
 import { setAllLeaveApproval } from './LeaveApprovalReducer'
 import { getOTApprovalData } from './OTReducer'
 import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
+import { getPinWiseRegionData } from './RegionReducers'
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -182,7 +183,8 @@ const reducer = combineReducers({
     getloginDeptSection,
     setAllLeaveApproval,
     getOTApprovalData,
-    getEmpUnderDeptsecList
+    getEmpUnderDeptsecList,
+    getPinWiseRegionData
 })
 
 export default reducer;

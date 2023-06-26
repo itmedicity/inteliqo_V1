@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { API_URL } from '../Constant/Static';
+import { API_URL, DEV_API_URL } from '../Constant/Static';
 // const accessToken = token();
 
 export const axioslogin = Axios.create({
@@ -12,6 +12,24 @@ export const axioslogin = Axios.create({
 });
 
 axioslogin.interceptors.request.use(function (config) {
+    const userinfo = sessionStorage.getItem('userDetl');
+    const accessToken = userinfo ? JSON.parse(sessionStorage.getItem('userDetl')).token : 0;
+    config.headers.Authorization = `Bearer ${accessToken}`;
+    return config;
+}, function (err) {
+    console.log(err);
+})
+
+export const axiosellider = Axios.create({
+    baseURL: DEV_API_URL,
+    headers: {
+        "Content-Type": 'application/json',
+        "Accept": 'application/json',
+        "Accept-Language": "en-GB,en"
+    }
+});
+
+axiosellider.interceptors.request.use(function (config) {
     const userinfo = sessionStorage.getItem('userDetl');
     const accessToken = userinfo ? JSON.parse(sessionStorage.getItem('userDetl')).token : 0;
     config.headers.Authorization = `Bearer ${accessToken}`;

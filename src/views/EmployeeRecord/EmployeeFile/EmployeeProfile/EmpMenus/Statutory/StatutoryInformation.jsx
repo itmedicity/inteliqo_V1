@@ -26,10 +26,14 @@ const StatutoryInformation = () => {
         esino: '',
         uanno: '',
         nps: false,
-        npsfixedamount: '',
-        npsamount: ''
+        npsnumber: '',
+        npsamount: '',
+        lwf: false,
+        lwfnumber: '',
+        lwfamount: ''
     })
-    const { pf, pfno, esi, esino, uanno, nps, npsfixedamount, npsamount } = formData
+    const { pf, pfno, esi, esino, uanno, nps,
+        npsnumber, npsamount, lwf, lwfnumber, lwfamount } = formData
 
     //getting data from the form
     const updateStatutoryInformation = async (e) => {
@@ -51,7 +55,6 @@ const StatutoryInformation = () => {
         getesiallowed()
     }, [no])
 
-
     //useEffect
     useEffect(() => {
         const getpfesi = async () => {
@@ -60,7 +63,8 @@ const StatutoryInformation = () => {
                 const { success, data } = result.data
                 if (success === 1) {
                     const { esi_slno, em_pf_status, em_pf_no, em_uan_no,
-                        em_esi_status, em_esi_no, em_grade, nps, npsfixedamount, npsamount } = data[0]
+                        em_esi_status, em_esi_no, em_grade, nps, npsnumber, npsamount,
+                        lwf_status, lwfnumber, lwfamount } = data[0]
                     const formData = {
                         pf: em_pf_status === 1 ? true : false,
                         pfno: em_pf_no === null ? 0 : em_pf_no,
@@ -68,8 +72,11 @@ const StatutoryInformation = () => {
                         esi: em_esi_status === 1 ? true : false,
                         esino: em_esi_no === null ? 0 : em_esi_no,
                         nps: nps === 1 ? true : false,
-                        npsfixedamount: npsfixedamount === null ? 0 : npsfixedamount,
-                        npsamount: npsamount === null ? 0 : npsamount
+                        npsnumber: npsnumber === null ? 0 : npsnumber,
+                        npsamount: npsamount === null ? 0 : npsamount,
+                        lwf: lwf_status === 1 ? true : false,
+                        lwfnumber: lwfnumber === null ? 0 : lwfnumber,
+                        lwfamount: lwfamount === null ? 0 : lwfamount
                     }
                     UpdateGrade(em_grade === null ? 0 : em_grade)
                     SetformData(formData)
@@ -84,10 +91,10 @@ const StatutoryInformation = () => {
                 infoNofity("Esi Is Not Allowed For This Employee")
                 const result = await axioslogin.get(`/empesipf/${id}`)
                 const { success, data } = result.data
-                console.log(data);
                 if (success === 1) {
                     const { esi_slno, em_pf_status, em_pf_no, em_uan_no,
-                        em_esi_status, em_esi_no, em_grade, nps, npsfixedamount, npsamount } = data[0]
+                        em_esi_status, em_esi_no, em_grade, nps, npsnumber,
+                        npsamount, lwf_status, lwfnumber, lwfamount } = data[0]
                     const formData = {
                         pf: em_pf_status === 1 ? true : false,
                         pfno: em_pf_no === null ? 0 : em_pf_no,
@@ -95,8 +102,11 @@ const StatutoryInformation = () => {
                         esi: em_esi_status === 1 ? true : false,
                         esino: em_esi_no === null ? 0 : em_esi_no,
                         nps: nps === null ? false : true,
-                        npsfixedamount: npsfixedamount === null ? 0 : npsfixedamount,
-                        npsamount: npsamount === null ? 0 : npsamount
+                        npsnumber: npsnumber === null ? 0 : npsnumber,
+                        npsamount: npsamount === null ? 0 : npsamount,
+                        lwf: lwf_status === 1 ? true : false,
+                        lwfnumber: lwfnumber === null ? 0 : lwfnumber,
+                        lwfamount: lwfamount === null ? 0 : lwfamount
                     }
                     UpdateGrade(em_grade === null ? 0 : em_grade)
                     SetformData(formData)
@@ -129,10 +139,14 @@ const StatutoryInformation = () => {
             create_user: employeeNumber(),
             edit_user: employeeNumber(),
             nps: nps === false ? 0 : 1,
-            npsfixedamount: npsfixedamount,
+            npsnumber: npsnumber,
             npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount
         }
-    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade, nps, npsfixedamount, npsamount])
+    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade,
+        nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
     //editing esi pf
     const postDataEdit = useMemo(() => {
         return {
@@ -145,8 +159,15 @@ const StatutoryInformation = () => {
             em_grade: selectGrade,
             esi_slno: value,
             edit_user: employeeNumber(),
+            nps: nps === false ? 0 : 1,
+            npsnumber: npsnumber,
+            npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount
         }
-    }, [no, pf, pfno, uanno, esi, esino, selectGrade, value])
+    }, [no, pf, pfno, uanno, esi, esino, selectGrade, value,
+        nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
 
     const postNps = useMemo(() => {
@@ -154,13 +175,29 @@ const StatutoryInformation = () => {
             em_no: id,
             em_id: no,
             nps: nps === false ? 0 : 1,
-            npsfixedamount: npsfixedamount,
+            npsnumber: npsnumber,
             npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount,
             create_user: employeeNumber(),
             edit_user: employeeNumber(),
         }
-    }, [id, no, nps, npsfixedamount, npsamount])
+    }, [id, no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
+    const postNpsEdit = useMemo(() => {
+        return {
+            em_id: no,
+            edit_user: employeeNumber(),
+            nps: nps === false ? 0 : 1,
+            npsnumber: npsnumber,
+            npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount,
+            esi_slno: value,
+        }
+    }, [no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
     //saving form data
     const submitFormData = async (e) => {
@@ -183,17 +220,33 @@ const StatutoryInformation = () => {
             }
         }
         else {
-            const result = await axioslogin.patch('/empesipf', postDataEdit)
-            const { success, message } = result.data
-            if (success === 2) {
-                succesNofity(message)
-                Setenable(true)
-            }
-            else if (success === 3) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity('Error Occured !!! Plaese Contact EDP')
+            if (Esiallowed === 2) {
+                const result = await axioslogin.patch('/empesipf/npsupdate', postNpsEdit)
+                const { success, message } = result.data
+                if (success === 2) {
+                    succesNofity(message)
+                    Setenable(true)
+                }
+                else if (success === 3) {
+                    warningNofity(message)
+                }
+                else {
+                    errorNofity('Error Occured !!! Plaese Contact EDP')
+                }
+
+            } else {
+                const result = await axioslogin.patch('/empesipf', postDataEdit)
+                const { success, message } = result.data
+                if (success === 2) {
+                    succesNofity(message)
+                    Setenable(true)
+                }
+                else if (success === 3) {
+                    warningNofity(message)
+                }
+                else {
+                    errorNofity('Error Occured !!! Plaese Contact EDP')
+                }
             }
         }
     }
@@ -320,12 +373,12 @@ const StatutoryInformation = () => {
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
                                     <TextField
-                                        placeholder="NPS Fixed Amount"
+                                        placeholder="NPS Number"
                                         fullWidth
                                         id="fullWidth"
                                         size="small"
-                                        value={npsfixedamount}
-                                        name="npsfixedamount"
+                                        value={npsnumber}
+                                        name="npsnumber"
                                         onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
@@ -333,7 +386,7 @@ const StatutoryInformation = () => {
                                     <Box sx={{ flex: 1 }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
-                                                Employee Amount
+                                                NPS Amount
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
@@ -346,6 +399,54 @@ const StatutoryInformation = () => {
                                         size="small"
                                         value={npsamount}
                                         name="npsamount"
+                                        onChange={(e) => updateStatutoryInformation(e)}
+                                    />
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                                <Box sx={{ flex: 1 }} >
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="lwf"
+                                                color="primary"
+                                                value={lwf}
+                                                checked={lwf}
+                                                className="ml-1"
+                                                onChange={(e) => updateStatutoryInformation(e)}
+                                            />
+                                        }
+                                        label="LWF Number"
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1 }} >
+                                    <TextField
+                                        placeholder="LWF Number"
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={lwfnumber}
+                                        name="lwfnumber"
+                                        onChange={(e) => updateStatutoryInformation(e)}
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, pl: 0.5 }} >
+                                    <Box sx={{ flex: 1 }}>
+                                        <CssVarsProvider>
+                                            <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
+                                                LWF Amount
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ flex: 1, }} >
+                                    <TextField
+                                        placeholder=" LWF Amount"
+                                        fullWidth
+                                        id="fullWidth"
+                                        size="small"
+                                        value={lwfamount}
+                                        name="lwfamount"
                                         onChange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>

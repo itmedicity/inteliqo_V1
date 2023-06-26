@@ -200,7 +200,6 @@ const HrLeaveCancel = () => {
 
             if (Object.keys(halfdayRqList).length > 0) {
                 const leaveRequestList = await halfdayRqList?.map((val) => {
-                    console.log("nk");
                     return {
                         slno: val.half_slno,
                         emno: val.em_no,

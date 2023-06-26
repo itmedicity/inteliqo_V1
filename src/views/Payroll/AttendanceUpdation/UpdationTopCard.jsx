@@ -173,6 +173,14 @@ const UpdationTopCard = () => {
             attendance_marking_month: fromDate
         }
 
+        const dutyLock = array1 && array1.map((val, index) => {
+            const obje = {
+                em_no: val.em_no,
+                from: fromDate,
+                to: toDate
+            }
+            return obje
+        })
         const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
         const { success } = result.data
         if (success === 1) {
@@ -181,7 +189,14 @@ const UpdationTopCard = () => {
             const result = await axioslogin.post("/payrollprocess/create/manual", array1)
             const { success, message } = result.data
             if (success === 1) {
-                succesNofity(message)
+                const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
+                const { success } = result1.data
+                if (success === 1) {
+                    succesNofity("Attendance Marking Done")
+                }
+                else {
+                    errorNofity("Error occure in duty plan lock")
+                }
             } else {
                 errorNofity(message)
             }

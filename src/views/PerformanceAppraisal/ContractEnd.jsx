@@ -94,7 +94,7 @@ const ContractEnd = () => {
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Employee Contract End List
+                                    Employee Contract Closed List
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
