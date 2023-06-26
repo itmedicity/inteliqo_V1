@@ -96,7 +96,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
                 CaluculateLateInOut.lateIn > cmmn_late_in_grace ? "LC" :
                     CaluculateLateInOut.earlyOut > cmmn_early_out_grace ? "EG" :
-                        CaluculateLateInOut.lateIn >= 30 || CaluculateLateInOut.earlyOut > 0 ? "HFD" : "P",
+                        CaluculateLateInOut.lateIn >= 30 || CaluculateLateInOut.earlyOut > 0 ? "HFD" : "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
             woff: val.shift_id === 3 ? 1 : 0

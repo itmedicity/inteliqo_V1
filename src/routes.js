@@ -230,7 +230,7 @@ const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement
 const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
-
+const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
 
 const routes = [
 
@@ -453,8 +453,8 @@ const routes = [
   { path: '/Home/SalaryStatement', exact: true, name: 'Attandance Register', component: SalaryStatement },
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
   { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
-  { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo }
-
+  { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
+  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList }
 ]
 
 export default routes

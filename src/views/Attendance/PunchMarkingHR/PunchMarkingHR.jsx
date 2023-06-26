@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, memo, useCallback } from 'react'
+import React, { Fragment, useEffect, useState, memo, useMemo, useCallback } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import moment from 'moment';
@@ -15,27 +15,41 @@ import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/Department
 import { addDays, addMonths, format, getMonth, getYear, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import { getAndUpdatePunchingData } from '../ShiftUpdation/Function';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
-import CleaningServicesOutlinedIcon from '@mui/icons-material/CleaningServicesOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { Actiontypes } from 'src/redux/constants/action.type';
+import PunchSavedHrView from './PunchSavedHrView';
+import { useHistory } from 'react-router-dom'
+import _ from 'underscore'
+
 
 const PunchMarkingHR = () => {
     const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA } = Actiontypes;
     const dispatch = useDispatch();
-
+    const history = useHistory()
     const [openBkDrop, setOpenBkDrop] = useState(false)
     //FORM DATA 
     const [value, setValue] = useState(moment(new Date()));
     const [dept, changeDept] = useState(0);
     const [section, changeSection] = useState(0);
+    const [flag, setFlag] = useState(0)
+    //get the employee details for taking the HOd and Incharge Details
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
 
-
+    const { em_no } = employeeProfileDetl
     // dispatch the department data
     useEffect(() => {
         dispatch(setDepartment());
     }, [])
 
+    useEffect(() => {
+        if (dept !== 0) {
+            setFlag(0)
+        }
+
+    }, [dept])
     //EMPLOYEE INFOR BASED ON SELECTED DEPT & SECTION
     const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
     const [msg, setmsg] = useState(0)
@@ -120,25 +134,18 @@ const PunchMarkingHR = () => {
 
                                     const { success } = result1.data
                                     if (success === 1) {
-                                        setOpenBkDrop(false)
                                         setmsg(2)
-                                        changeDept(0)
-                                        changeSection(0)
                                         return { status: 2 }
                                     }
                                 }
                             } else {
                                 errorNofity(message)
                                 setOpenBkDrop(false)
-                                changeDept(0)
-                                changeSection(0)
                             }
                         }
                         else {
                             setOpenBkDrop(false)
                             setmsg(1)
-                            changeDept(0)
-                            changeSection(0)
                         }
                     }
                 }
@@ -150,17 +157,44 @@ const PunchMarkingHR = () => {
         }
     })
 
+    const [nextstage, setNextStage] = useState(0)
     useEffect(() => {
-
         if (msg === 1) {
             errorNofity("Duty Doesnot Planed, Please do Duty Plan")
         } else if (msg === 2) {
-            succesNofity("Punch Updated Successfully")
+            setNextStage(1)
         } else if (msg === 3) {
             warningNofity("Attendance procees Already Done")
         }
-    }, [msg])
+    }, [msg, setFlag])
 
+    const punchMarkSave = async (saveDta) => {
+        const result = await axioslogin.post('/payrollprocess/Insert/PunchInOutHr', saveDta)
+        const { success } = result.data
+        if (success === 1) {
+            succesNofity("Punch Updated Successfully")
+            setOpenBkDrop(false)
+            setFlag(1)
+        }
+    }
+
+    useEffect(() => {
+        if (nextstage === 1) {
+            const saveDta = {
+                marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                dept_slno: dept,
+                deptsec_slno: section,
+                create_user: em_no,
+                edit_user: em_no,
+                status: 1
+            }
+            punchMarkSave(saveDta)
+        }
+    }, [nextstage])
+
+    const handleView = useCallback(() => {
+        history.push('/Home/PunchDoneList');
+    })
 
     return (
         <Fragment>
@@ -195,14 +229,11 @@ const PunchMarkingHR = () => {
                     <Box sx={{ display: 'flex', py: 0.5, width: '50%', }}>
 
                         <Box sx={{ flex: 1, px: 0.5 }}>
-                            <DepartmentDropRedx getDept={changeDept} />
+                            <DepartmentDropRedx getDept={changeDept} deptslno={dept} />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <DepartmentSectionRedx getSection={changeSection} />
                         </Box>
-                        {/* <Box sx={{ flex: 1, px: 0.5 }}>
-                            <SectionBsdEmployee getEmploy={getEmployee} />
-                        </Box> */}
                     </Box>
 
                     <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
@@ -223,15 +254,17 @@ const PunchMarkingHR = () => {
                                 variant="outlined"
                                 color="neutral"
                                 fullWidth
-                                startDecorator={<CleaningServicesOutlinedIcon />}
+                                onClick={handleView}
+                                startDecorator={<RemoveRedEyeOutlinedIcon />}
                                 sx={{ mx: 0.5 }}
                             >
-                                Clear
+                                View
                             </Button>
-
                         </CssVarsProvider>
                     </Box>
                 </Box>
+                {flag === 1 ? <PunchSavedHrView value={value} dept={dept} section={section}
+                /> : null}
             </PageLayoutCloseOnly>
         </Fragment>
     )
