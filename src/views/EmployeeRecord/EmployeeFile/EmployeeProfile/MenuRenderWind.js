@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material'
-import React, { Fragment, memo, Suspense, useEffect } from 'react'
+import React, { Fragment, memo, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify';
 import SessionCheck from 'src/views/Axios/SessionCheck';
@@ -9,7 +9,7 @@ import _ from 'underscore';
 const ProfileMenus = React.lazy(() => import('./EmpMenus/Profile/ProfileMenus'));
 const PersonalInformation = React.lazy(() => import('./EmpMenus/PersonalInformation/Personaldetails'));
 //const PersonalInformation = React.lazy(() => import('./EmpMenus/PersonalInformation/PersonalInfrom'));
-const Qualification = React.lazy(() => import('./EmpMenus/Qualification/QualificationDetails'))
+const Qualification = React.lazy(() => import('./EmpMenus/Qualification/QualificationPage'))
 const Experience = React.lazy(() => import('./EmpMenus/Experience/ExperienceDetails'))
 const Statutory = React.lazy(() => import('./EmpMenus/Statutory/StatutoryInformation'))
 // const CompanyInformation = React.lazy(() => import('./EmpMenus/CompanyInformation/CompanyInformtion'))

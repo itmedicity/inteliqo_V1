@@ -1,4 +1,4 @@
-import { differenceInMonths, differenceInYears, getYear } from 'date-fns'
+import { differenceInMonths, differenceInYears } from 'date-fns'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import moment from 'moment';
 import { useParams } from 'react-router'
@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
-import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Paper, TextField } from '@mui/material';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import EditIcon from '@mui/icons-material/Edit';
-
+import _ from 'underscore';
 const ExperienceDetails = () => {
 
     //const classes = useStyles()
@@ -32,20 +32,20 @@ const ExperienceDetails = () => {
     const [formData, setformData] = useState({
         institution_name: "",
         gross_salary: "",
+        tmch_exp: false,
         workstartdate: format(new Date(), "yyyy-MM-dd"),
         workenddate: format(new Date(), "yyyy-MM-dd"),
-        tmch_exp: false,
     })
     //defaultState
     const defaultState = {
         institution_name: "",
         gross_salary: "",
+        tmch_exp: false,
         workstartdate: format(new Date(), "yyyy-MM-dd"),
         workenddate: format(new Date(), "yyyy-MM-dd"),
-        tmch_exp: false
     }
     //Destructuring
-    const { institution_name, gross_salary, workstartdate, workenddate, tmch_exp } = formData
+    const { institution_name, gross_salary, tmch_exp, workstartdate, workenddate } = formData
     //getting form data
     const updateEmployeeExpFormData = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -57,10 +57,7 @@ const ExperienceDetails = () => {
         setTotmonth(month)
     }
 
-    const empno = useSelector((state) => {
-        return state.getProfileData.ProfileData[0].em_no
-        //const status = state.getProfileData.lodingStatus
-    })
+    const empno = useSelector((state) => state.getProfileData.ProfileData[0].em_no, _.isEqual)
 
     //postData
     const postData = useMemo(() => {
@@ -158,7 +155,7 @@ const ExperienceDetails = () => {
             }
 
         }
-    }, [postData, patchData, flag, count])
+    }, [postData, patchData, flag, count, workstartdate, workenddate])
 
     const [columnDef] = useState([
         { headerName: 'Emp No', field: 'em_no', wrapText: true, minWidth: 90 },
@@ -198,188 +195,180 @@ const ExperienceDetails = () => {
     return (
         <Fragment>
             <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    {/* heading Section start */}
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
-                        <Box sx={{ flex: 1 }} >
+                {/* heading Section start */}
+                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                    <Box sx={{ flex: 1 }} >
+                        <CssVarsProvider>
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                Experience Information
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
+                {/* headig section end */}
+                <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
+                    {/* first row start */}
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                        <Box sx={{ width: '20%' }}>
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Experience Information
+                                <Typography textColor="text.secondary" >
+                                    Institution Name
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                    </Paper>
-                    {/* headig section end */}
-
-                    <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
-                        <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
-                            {/* first row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", }}>
-                                <Box sx={{ width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Institution Name
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%' }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Institution Name"
-                                        changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                        value={tmch_exp === true ? "Travancore Medicity" : institution_name}
-                                        name="institution_name"
-                                    />
-                                </Box>
-                                <Box sx={{ width: '50%', pl: 5 }} >
-                                    <FormControlLabel
-                                        className=""
-                                        control={
-                                            <Checkbox
-                                                name="tmch_exp"
-                                                color="secondary"
-                                                value={tmch_exp}
-                                                checked={tmch_exp}
-                                                className="pl-2 pt-1 pb-1"
-                                                onChange={(e) => {
-                                                    updateEmployeeExpFormData(e)
-                                                }}
-
-                                            />
-                                        } label="Medicity Experience"
-                                    />
-                                </Box>
-                            </Box>
-                            {/* first row end */}
-
-                            <Box sx={{ display: "flex", flexDirection: "row" }}>
-                                <Box sx={{ width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Designation
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%', pt: 1 }} >
-                                    {/* <DesignationMast style={SELECT_CMP_STYLE} /> */}
-                                    <DesignationSelectRedux value={desg} setValue={setDesg} />
-                                </Box>
-                                <Box sx={{ width: '20%', pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Work Start Date
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%' }} >
-                                    <TextInput
-                                        type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Start Date"
-                                        max={moment(new Date()).format('YYYY-MM-DD')}
-                                        value={workstartdate}
-                                        name="workstartdate"
-                                        changeTextValue={(e) => {
-                                            updateEmployeeExpFormData(e)
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-                            {/* second row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
-                                <Box sx={{ width: '20%', pt: 0.5, }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Work End Date
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%' }} >
-                                    <TextInput
-                                        type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Start Date"
-                                        min={moment(workstartdate).format('YYYY-MM-DD')}
-                                        max={moment(new Date()).format('YYYY-MM-DD')}
-                                        value={workenddate}
-                                        name="workenddate"
-                                        changeTextValue={(e) => {
-                                            updateEmployeeExpFormData(e)
-                                        }}
-                                    />
-                                </Box>
-                                <Box sx={{ width: '20%', pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Total Year Experience
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%' }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Total Year"
-                                        value={totyear}
-                                        name="totyear"
-                                        disabled={true}
-                                    />
-                                </Box>
-                            </Box>
-                            {/* second row end */}
-                            {/* third row start */}
-                            <Box sx={{ display: "flex", flexDirection: "row", py: 1 }}>
-                                <Box sx={{ width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Total Month Experience
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%' }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Total Month"
-                                        value={totmonth}
-                                        name="totmonth"
-                                        disabled={true}
-                                    />
-                                </Box>
-                                <Box sx={{ width: '20%', pt: 0.5, pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Gross Salary
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ width: '30%', }}>
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Gross Salary"
-                                        changeTextValue={(e) => updateEmployeeExpFormData(e)}
-                                        value={gross_salary}
-                                        name="gross_salary"
-                                    />
-                                </Box>
-                            </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <TextField fullWidth
+                                placeholder='Institution Name'
+                                size="small"
+                                id='institution_name'
+                                value={tmch_exp === true ? "Travancore Medicity" : institution_name}
+                                name="institution_name"
+                                onChange={(e) => updateEmployeeExpFormData(e)}
+                            />
                         </Box>
-                        {/* third row end */}
-                    </Paper>
-                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                        {/* <ExperienceAgGridtable update={count} getTableData={getTableData} /> */}
-                        <CommonAgGrid
-                            columnDefs={columnDef}
-                            tableData={data}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30} />
-                    </Paper>
+                        <Box sx={{ width: '50%', pl: 5 }} >
+                            <FormControlLabel
+                                className=""
+                                control={
+                                    <Checkbox
+                                        name="tmch_exp"
+                                        color="secondary"
+                                        value={tmch_exp}
+                                        checked={tmch_exp}
+                                        className="pl-2 pt-1 pb-1"
+                                        onChange={(e) => {
+                                            updateEmployeeExpFormData(e)
+                                        }}
+                                    />
+                                } label="Medicity Experience"
+                            />
+                        </Box>
+                    </Box>
+                    {/* first row end */}
+
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                        <Box sx={{ width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Designation
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <DesignationSelectRedux value={desg} setValue={setDesg} />
+                        </Box>
+                        <Box sx={{ width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Gross Salary
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%', }}>
+                            <TextField fullWidth
+                                placeholder='Gross Salary'
+                                size="small"
+                                id='gross_salary'
+                                value={gross_salary}
+                                name="gross_salary"
+                                onChange={(e) => updateEmployeeExpFormData(e)}
+                            />
+                        </Box>
+                    </Box>
+                    {/* second row start */}
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
+                        <Box sx={{ width: '20%', pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Work Start Date
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <TextInput
+                                type="date"
+                                classname="form-control form-control-lg"
+                                Placeholder="Start Date"
+                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                value={workstartdate}
+                                name="workstartdate"
+                                changeTextValue={(e) => {
+                                    updateEmployeeExpFormData(e)
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ width: '20%', }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Work End Date
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <TextInput
+                                type="date"
+                                classname="form-control form-control-lg"
+                                Placeholder="Start Date"
+                                min={moment(workstartdate).format('YYYY-MM-DD')}
+                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                value={workenddate}
+                                name="workenddate"
+                                changeTextValue={(e) => {
+                                    updateEmployeeExpFormData(e)
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                    {/* second row end */}
+                    {/* third row start */}
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                        <Box sx={{ width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Total Year Experience
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <TextField fullWidth
+                                placeholder='Total Year'
+                                size="small"
+                                id='totyear'
+                                value={totyear}
+                                name="totyear"
+                                disabled={true}
+                            />
+                        </Box>
+                        <Box sx={{ width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Total Month Experience
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ width: '30%' }} >
+                            <TextField fullWidth
+                                placeholder='Total Month'
+                                size="small"
+                                id='totmonth'
+                                value={totmonth}
+                                name="totmonth"
+                                disabled={true}
+                            />
+                        </Box>
+                    </Box>
+                </Box>
+                {/* third row end */}
+                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                    <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={data}
+                        sx={{
+                            height: 600,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30} />
                 </Paper>
                 <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0, p: 0.3 }} >

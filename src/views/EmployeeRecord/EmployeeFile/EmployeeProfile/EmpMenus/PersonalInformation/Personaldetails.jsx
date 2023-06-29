@@ -1,6 +1,6 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import ReligionSelectRedux from 'src/views/MuiComponents/ReligionSelectRedux';
@@ -32,10 +32,8 @@ const Personaldetails = () => {
     const [mrdnumber, setMrdnumber] = useState('')
     const [permanent_addr1, setPermanent_addr1] = useState('')
     const [addressPermnt2, setaddressPermnt2] = useState('')
-    const [pin, setPin] = useState('')
     const [contactaddress1, setcontactaddress1] = useState('')
     const [contactaddress2, setcontactaddress2] = useState('')
-    const [contactpin1, setcontactpin1] = useState('')
     const [mobile, setmobile] = useState(0)
     const [land_no, setland_no] = useState(0)
     const [passp_no, setpassp_no] = useState('')
@@ -127,10 +125,8 @@ const Personaldetails = () => {
             } else {
                 setPermanent_addr1('')
                 setaddressPermnt2('')
-                setPin('')
                 setcontactaddress1('')
                 setcontactaddress2('')
-                setcontactpin1('')
                 setGender(0)
                 setmobile('')
                 setland_no('')
@@ -281,7 +277,8 @@ const Personaldetails = () => {
         <Fragment>
             <Suspense>
                 <DetailsModel open={open} setOpen={setOpen} family_details={family_details}
-                    empid={no} emno={id} relation={relation} count={count} setCount={setCount} />
+                    empid={no} emno={id} relation={relation} count={count} setCount={setCount}
+                    setMrdnumber={setMrdnumber} setRelation={setRelation} />
             </Suspense>
             <Box sx={{ width: "100%", height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 {/* <Paper square elevation={0} > */}

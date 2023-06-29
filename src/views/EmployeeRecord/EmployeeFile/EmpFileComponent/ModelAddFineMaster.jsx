@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useContext, useState } from 'react'
+import React, { Fragment, memo, useState } from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,14 +9,12 @@ import Slide from '@mui/material/Slide';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { employeeNumber } from 'src/views/Constant/Constant';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const ModelAddFineMaster = ({ open, handleClose }) => {
+const ModelAddFineMaster = ({ open, handleClose, upfineCount, setUpdateFine }) => {
     const [count, setcount] = useState(0);
-    const { finecount, updatefinecount } = useContext(PayrolMasterContext)
     const [desc, setDesc] = useState({
         fine_desc: ''
     })
@@ -44,7 +42,7 @@ const ModelAddFineMaster = ({ open, handleClose }) => {
             succesNofity(message);
             setcount(count + 1)
             setDesc(resetForm);
-            updatefinecount(finecount + 1)
+            setUpdateFine(upfineCount + 1)
             handleClose()
         } else if (success === 0) {
             infoNofity(message.sqlMessage);

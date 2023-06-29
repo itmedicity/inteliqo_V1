@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
-//import './EmpStyle.css'
+import { useParams } from 'react-router'
 import SalaryIncrementMainCard from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/SalaryIncrementMainCard'
 import FixedWagesSalaryIncre from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/FixedWagesSalaryIncre'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -11,11 +10,8 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 
 const SalaryIncrementProcess = () => {
 
-    const history = useHistory()
     const { id, no } = useParams()
-    // const RedirectToProfilePage = () => {
-    //     history.push(`/Home/Profile/${id}/${no}`)
-    // }
+
     const [fixedWages, setFixedwages] = useState([])
     const [Earnings, setEarnings] = useState([])
     const [Deduction, setDeduction] = useState([])

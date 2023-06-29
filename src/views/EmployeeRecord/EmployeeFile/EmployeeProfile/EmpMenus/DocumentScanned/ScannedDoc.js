@@ -1,32 +1,32 @@
 import {
     CssVarsProvider,
     Typography,
-    Button,
+    // Button,
     List,
-    ListItemDecorator,
-    Sheet,
-    ListItemContent,
-    ListDivider
+    // ListItemDecorator,
+    // Sheet,
+    // ListItemContent,
+    // ListDivider
 } from '@mui/joy'
 import IconButton from '@mui/joy/IconButton';
 import { Box, Paper } from '@mui/material'
 import React, { memo } from 'react'
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import FilePresentIcon from '@mui/icons-material/FilePresent';
-import Switch, { switchClasses } from '@mui/joy/Switch';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRightRounded';
-import Flight from '@mui/icons-material/Flight';
-import Wifi from '@mui/icons-material/Wifi';
-import Bluetooth from '@mui/icons-material/Bluetooth';
-import Podcasts from '@mui/icons-material/Podcasts';
+//import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+//import FilePresentIcon from '@mui/icons-material/FilePresent';
+//import Switch, { switchClasses } from '@mui/joy/Switch';
+//import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRightRounded';
+//import Flight from '@mui/icons-material/Flight';
+//import Wifi from '@mui/icons-material/Wifi';
+//import Bluetooth from '@mui/icons-material/Bluetooth';
+//import Podcasts from '@mui/icons-material/Podcasts';
 import ListItem, { listItemClasses } from '@mui/joy/ListItem';
 import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import ReceiptLong from '@mui/icons-material/ReceiptLong';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import Overview from './Overview';
-import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+//import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
+//import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const ScannedDoc = () => {
 
@@ -36,50 +36,50 @@ const ScannedDoc = () => {
     const [open4, setOpen4] = useState(false);
     const [open5, setOpen5] = useState(false);
 
-    const [empfile, setEmpfile] = useState(0)
-    const [ApplicationEmployment, setApplicationEmployment] = useState(0)
-    const [biodata, setBiodata] = useState(0)
-    const [interviewAssessment, setInterviewAssessment] = useState(0)
-    const [offerletter, setOfferletter] = useState(0)
-    const [preEmploymentHealth, setPreEmploymentHealth] = useState(0)
+    // const [empfile, setEmpfile] = useState(0)
+    // const [ApplicationEmployment, setApplicationEmployment] = useState(0)
+    // const [biodata, setBiodata] = useState(0)
+    // const [interviewAssessment, setInterviewAssessment] = useState(0)
+    // const [offerletter, setOfferletter] = useState(0)
+    // const [preEmploymentHealth, setPreEmploymentHealth] = useState(0)
 
-    const [personalData, setPersonaldata] = useState(0)
-    const [accademicCertificate, setAccademicCertificate] = useState(0)
-    const [regCertificate, setRegCertficate] = useState(0)
-    const [expCertificate, setExpCertificate] = useState(0)
-    const [photoidproof, setPhotoidproof] = useState(0)
-    const [antecedentVerify, setAntecedentVerify] = useState(0)
-    const [credentialverify, setCredentialVerify] = useState(0)
-    const [credentailprivilg, setCredenailPrivilg] = useState(0)
-    const [jobDescription, setJobDescription] = useState(0)
-    const [appointmentletter, setappointmentletter] = useState(0)
-    const [joiningletter, setjoiningletter] = useState(0)
-    const [compLetter, setCompLetter] = useState(0)
-    const [statutoryRecord, setstatutoryRecord] = useState(0)
-    const [inductionRecord, setInductionRecord] = useState(0)
-    const [deptOreintn, setdeptOrientation] = useState(0)
-    const [empRights, setemprights] = useState(0)
-    const [vaccination, setVaccination] = useState(0)
-    const [reviewProbation, setReviewprobation] = useState(0)
-    const [confimLetter, setConfirmLetter] = useState(0)
+    // const [personalData, setPersonaldata] = useState(0)
+    // const [accademicCertificate, setAccademicCertificate] = useState(0)
+    // const [regCertificate, setRegCertficate] = useState(0)
+    // const [expCertificate, setExpCertificate] = useState(0)
+    // const [photoidproof, setPhotoidproof] = useState(0)
+    // const [antecedentVerify, setAntecedentVerify] = useState(0)
+    // const [credentialverify, setCredentialVerify] = useState(0)
+    // const [credentailprivilg, setCredenailPrivilg] = useState(0)
+    // const [jobDescription, setJobDescription] = useState(0)
+    // const [appointmentletter, setappointmentletter] = useState(0)
+    // const [joiningletter, setjoiningletter] = useState(0)
+    // const [compLetter, setCompLetter] = useState(0)
+    // const [statutoryRecord, setstatutoryRecord] = useState(0)
+    // const [inductionRecord, setInductionRecord] = useState(0)
+    // const [deptOreintn, setdeptOrientation] = useState(0)
+    // const [empRights, setemprights] = useState(0)
+    // const [vaccination, setVaccination] = useState(0)
+    // const [reviewProbation, setReviewprobation] = useState(0)
+    // const [confimLetter, setConfirmLetter] = useState(0)
 
-    const [trainingRecord, setTrainingRecord] = useState(0)
-    const [training, setTraining] = useState(0)
-    const [performanceAppraisal, setperformaceAppraisal] = useState(0)
-    const [annualhealth, setAnnualHeath] = useState(0)
+    // const [trainingRecord, setTrainingRecord] = useState(0)
+    // const [training, setTraining] = useState(0)
+    // const [performanceAppraisal, setperformaceAppraisal] = useState(0)
+    // const [annualhealth, setAnnualHeath] = useState(0)
 
-    const [disciplinerecord, setDisciplinerecord] = useState(0)
-    const [grievancerecord, setGrievancerecord] = useState(0)
-    const [otherrecord, setOtherrecord] = useState(0)
+    // const [disciplinerecord, setDisciplinerecord] = useState(0)
+    // const [grievancerecord, setGrievancerecord] = useState(0)
+    // const [otherrecord, setOtherrecord] = useState(0)
 
-    const [dueclearence, setDueClrearence] = useState(0)
-    const [exitquestin, setExitquestion] = useState(0)
+    // const [dueclearence, setDueClrearence] = useState(0)
+    // const [exitquestin, setExitquestion] = useState(0)
 
-    const Array = [
-        { dueslno: 1, duename: 'Yes' },
-        { dueslno: 2, duename: 'No' },
-        { dueslno: 3, duename: 'NA' }
-    ]
+    // const Array = [
+    //     { dueslno: 1, duename: 'Yes' },
+    //     { dueslno: 2, duename: 'No' },
+    //     { dueslno: 3, duename: 'NA' }
+    // ]
 
 
     return (

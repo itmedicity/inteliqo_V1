@@ -1,6 +1,6 @@
 
 import { CssVarsProvider } from '@mui/joy';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, Modal, Paper, Slide, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Slide, Typography } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
 import { useMemo } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -9,7 +9,8 @@ import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, count, setCount }) => {
+const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, count, setCount,
+    setRelation, setMrdnumber }) => {
 
     const empno = useMemo(() => emno, [emno])
     const emp_id = useMemo(() => empid, [empid])
@@ -62,12 +63,16 @@ const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, co
 
     const saveDetails = async () => {
         const result = await axioslogin.post('/personaldetl/family', postData);
-        const { success, message } = result.data;
+        const { success } = result.data;
         if (success === 1) {
             succesNofity("Data Added Successfully")
             setCount(count + 1)
+            setMrdnumber('')
+            setRelation(0)
             setOpen(false)
         } else {
+            setMrdnumber('')
+            setRelation(0)
             setOpen(false)
         }
     }

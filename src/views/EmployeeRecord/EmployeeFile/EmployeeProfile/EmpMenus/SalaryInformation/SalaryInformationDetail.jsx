@@ -2,7 +2,7 @@ import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import React, { Fragment, memo, useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import AmendmentStatus from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/AmendmentStatus';
 //import DeductedWages from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/DeductedWages';
 import DeductedWages from 'src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/SalaryInformation/DeductedWages'
@@ -20,11 +20,11 @@ import PreviousAmendChanges from 'src/views/EmployeeRecord/EmployeeFile/Employee
 import WageStatus from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/WageStatus';
 
 const SalaryInformationDetail = () => {
-    const history = useHistory()
+    //const history = useHistory()
     const { id, no } = useParams()
-    const RedirectToProfilePage = () => {
-        history.push(`/Home/Profile/${id}/${no}`)
-    }
+    // const RedirectToProfilePage = () => {
+    //     history.push(`/Home/Profile/${id}/${no}`)
+    // }
     //use State For sum of fixe wages
     const [sumfixedwages, setSumfixedwages] = useState(0)
     //use State For sum of earning
