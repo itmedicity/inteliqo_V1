@@ -197,7 +197,7 @@ const StatutoryInformation = () => {
             lwfamount: lwfamount,
             esi_slno: value,
         }
-    }, [no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
+    }, [no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount, value])
 
     //saving form data
     const submitFormData = async (e) => {

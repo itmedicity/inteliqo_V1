@@ -92,6 +92,10 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
         history.push(`/Home/HRAppraisalList`)
     }
 
+    const EsiNotAddedEmp = () => {
+        history.push(`/Home`)
+    }
+
     const notificationListWindow = (slno) => {
 
         return slno === 133 && Leaverequest ||
@@ -122,7 +126,8 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 215 && AppraisalHod ||
             slno === 216 && AppraisalIncharge ||
             slno === 217 && AppraisalCEO ||
-            slno === 219 && HrAppraisal
+            slno === 219 && HrAppraisal ||
+            slno === 238 && EsiNotAddedEmp
     }
 
     return (
