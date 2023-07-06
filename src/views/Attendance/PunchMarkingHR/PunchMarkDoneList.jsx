@@ -30,7 +30,6 @@ const PunchMarkDoneList = () => {
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_no } = employeeProfileDetl
-
     const [columnDef] = useState([
         { headerName: "SlNo", field: "slno", minWidth: 100 },
         { headerName: "Department", field: "dept_name", autoHeight: true, wrapText: true, filter: "true", minWidth: 150 },
@@ -81,14 +80,15 @@ const PunchMarkDoneList = () => {
                 const dutyLock = data && data.map((val, index) => {
                     const obje = {
                         em_no: val.em_no,
-                        from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                        to: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
+                        from: format(startOfMonth(new Date(marking_month)), 'yyyy-MM-dd'),
+                        to: format(lastDayOfMonth(new Date(marking_month)), 'yyyy-MM-dd')
                     }
                     return obje
                 })
                 DutyPlanUnlock(dutyLock).then((result) => {
                     const { success } = result
                     if (success === 1) {
+                        setCount(count + 1)
                         punchMarkSaveCancel(saveDta)
                     }
                 })
@@ -134,15 +134,10 @@ const PunchMarkDoneList = () => {
         if (count > 0) {
             getTableData(postdata)
         }
-
-
     }, [count, setDeptList])
 
     const handleClose = () => {
-
-
         history.push('/Home/PunchMarkingHR');
-
     }
     return (
         <Fragment>
