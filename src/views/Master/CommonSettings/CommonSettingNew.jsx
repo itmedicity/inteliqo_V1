@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, memo, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useContext } from 'react'
@@ -49,14 +49,15 @@ const CommonSettingNew = () => {
         salary_above: '',
         pf_employee_amount: '',
         pf_employer_amount: '',
-        noff_count: 0
+        noff_count: 0,
+        onHourRq_no: 0
     })
 
     const {
         slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above,
-        pf_employee_amount, pf_employer_amount, noff_count
+        pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no
     } = FormData
 
 
@@ -80,7 +81,7 @@ const CommonSettingNew = () => {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
-                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count } = data[0]
+                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count } = data[0]
 
 
                 const frmData = {
@@ -106,12 +107,12 @@ const CommonSettingNew = () => {
                     salary_above: salary_above,
                     pf_employee_amount: pf_employee_amount,
                     pf_employer_amount: pf_employer_amount,
-                    noff_count: noff_count
+                    noff_count: noff_count,
+                    onHourRq_no: onehour_rqst_count
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj)
-
                 setFormData(frmData)
                 setDefShift(default_shift === null ? 0 : default_shift)
                 setnoappshift(notapplicable_shift === null ? 0 : notapplicable_shift)
@@ -157,7 +158,8 @@ const CommonSettingNew = () => {
         salary_above: salary_above,
         pf_employee_amount: pf_employee_amount,
         pf_employer_amount: pf_employer_amount,
-        noff_count: noff_count
+        noff_count: noff_count,
+        onehour_rqst_count: onHourRq_no
 
     }
 
@@ -191,7 +193,8 @@ const CommonSettingNew = () => {
         pf_employee_amount: pf_employee_amount,
         pf_employer_amount: pf_employer_amount,
         setting_slno: slno,
-        noff_count: noff_count
+        noff_count: noff_count,
+        onehour_rqst_count: onHourRq_no
 
     }
 
@@ -763,6 +766,31 @@ const CommonSettingNew = () => {
                                     </Box>
                                 </Box>
                             </Paper>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> One Hour Request Count Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">No. of One Hour Request/month</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="onHourRq_no"
+                                            value={onHourRq_no}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Paper>
                         </Box>
                     </Box>
 
@@ -813,4 +841,4 @@ const CommonSettingNew = () => {
     )
 }
 
-export default CommonSettingNew
+export default memo(CommonSettingNew) 

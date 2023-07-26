@@ -1,7 +1,7 @@
 
 import { CssVarsProvider } from '@mui/joy';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, Modal, Paper, Slide, Typography } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
+import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Slide, Typography } from '@mui/material'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useMemo } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -62,7 +62,7 @@ const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, co
 
     const saveDetails = async () => {
         const result = await axioslogin.post('/personaldetl/family', postData);
-        const { success, message } = result.data;
+        const { success } = result.data;
         if (success === 1) {
             succesNofity("Data Added Successfully")
             setCount(count + 1)
@@ -225,4 +225,4 @@ const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, co
     )
 }
 
-export default DetailsModel
+export default memo(DetailsModel)

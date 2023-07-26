@@ -25,6 +25,7 @@ const DutyRespos = React.lazy(() => import('./DutyResponsWithAgGrid'));
 const Performance = React.lazy(() => import('./PerformanceWithAgGrid'))
 const Competency = React.lazy(() => import('./CompetencyWithAgGrid'))
 const Generic = React.lazy(() => import('./Generic'));
+const Skill = React.lazy(() => import('./SkillsWithAgGrid'))
 
 const Progress = () => {
     return (
@@ -158,6 +159,16 @@ const JobDescription = () => {
                             setjobEdit={setjobEdit}
                         />
 
+                    </Suspense>
+                    {/* Skills */}
+                    <Suspense fallback={<Progress />} >
+
+                        <Skill
+                            selectDesignation={selectDesignation}
+                            selectedDept={selectedDept}
+                            jobedit={jobedit}
+                            selectDeptSection={selectDeptSection}
+                        />
                     </Suspense>
 
                     {/* Job Specification : Performance */}

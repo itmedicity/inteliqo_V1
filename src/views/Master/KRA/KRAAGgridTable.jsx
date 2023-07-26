@@ -1,13 +1,10 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { Fragment, memo, useState, useEffect, } from 'react'
+import React, { Fragment, useState, useEffect, } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
-import { useParams } from 'react-router-dom'
-import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import EditIcon from '@mui/icons-material/Edit';
 const KRAAGgridTable = ({ count, getDataTable }) => {
 

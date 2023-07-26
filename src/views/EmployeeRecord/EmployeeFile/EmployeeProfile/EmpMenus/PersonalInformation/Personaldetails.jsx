@@ -1,6 +1,6 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import ReligionSelectRedux from 'src/views/MuiComponents/ReligionSelectRedux';
@@ -18,6 +18,8 @@ import RegionSelectRedux from 'src/views/MuiComponents/RegionSelectRedux';
 import { useDispatch } from 'react-redux';
 import { setRegionByPin } from 'src/redux/actions/Region.Action';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ToastContainer } from 'react-toastify';
 
 const Personaldetails = () => {
 
@@ -32,10 +34,8 @@ const Personaldetails = () => {
     const [mrdnumber, setMrdnumber] = useState('')
     const [permanent_addr1, setPermanent_addr1] = useState('')
     const [addressPermnt2, setaddressPermnt2] = useState('')
-    const [pin, setPin] = useState('')
     const [contactaddress1, setcontactaddress1] = useState('')
     const [contactaddress2, setcontactaddress2] = useState('')
-    const [contactpin1, setcontactpin1] = useState('')
     const [mobile, setmobile] = useState(0)
     const [land_no, setland_no] = useState(0)
     const [passp_no, setpassp_no] = useState('')
@@ -57,6 +57,26 @@ const Personaldetails = () => {
     const [region1, setRegion1] = useState(0)
     const [region2, setRegion2] = useState(0)
 
+    const [malayala_read, setMalayalam_read] = useState(false)
+    const [malayala_write, setMalayalam_write] = useState(false)
+    const [malayala_speak, setMalayalam_speak] = useState(false)
+
+    const [english_read, setEnglish_read] = useState(false)
+    const [english_write, setEnglish_write] = useState(false)
+    const [english_speak, setEnglish_speak] = useState(false)
+
+    const [hindi_read, setHindi_read] = useState(false)
+    const [hindi_write, setHindi_write] = useState(false)
+    const [hindi_speak, setHindi_speak] = useState(false)
+
+    const [tamil_read, setTamil_read] = useState(false)
+    const [tamil_write, setTamil_write] = useState(false)
+    const [tamil_speak, setTamil_speak] = useState(false)
+
+    const [arabic_read, setArabic_read] = useState(false)
+    const [arabic_write, setArabci_write] = useState(false)
+    const [arabic_speak, setArabic_speak] = useState(false)
+
     const dispatch = useDispatch();
 
     const pinValue = useMemo(() => presnt_pin, [presnt_pin])
@@ -68,7 +88,7 @@ const Personaldetails = () => {
         } else {
             dispatch(setRegionByPin(0));
         }
-    }, [contPin])
+    }, [contPin, dispatch])
 
     const getRegion = useCallback(() => {
         if (pinValue !== null) {
@@ -127,10 +147,8 @@ const Personaldetails = () => {
             } else {
                 setPermanent_addr1('')
                 setaddressPermnt2('')
-                setPin('')
                 setcontactaddress1('')
                 setcontactaddress2('')
-                setcontactpin1('')
                 setGender(0)
                 setmobile('')
                 setland_no('')
@@ -153,6 +171,58 @@ const Personaldetails = () => {
             }
         }
         getemployeedetails()
+
+        const getLanguages = async () => {
+            const result = await axioslogin.get(`/personaldetl/language/byno/${id}`);
+            const { success, data } = result.data
+            if (success === 1) {
+                const { malayalam_speak, malayalam_read, malayalam_write,
+                    hindi_write, hindi_speak, hindi_read, english_write, english_speak,
+                    english_read, tamil_write, tamil_speak, tamil_read, arabic_write,
+                    arabic_speak, arabic_read } = data[0]
+                setMalayalam_read(malayalam_read === 1 ? true : false)
+                setMalayalam_speak(malayalam_speak === 1 ? true : false)
+                setMalayalam_write(malayalam_write === 1 ? true : false)
+
+                setEnglish_read(english_read === 1 ? true : false)
+                setEnglish_speak(english_speak === 1 ? true : false)
+                setEnglish_write(english_write === 1 ? true : false)
+
+                setHindi_read(hindi_read === 1 ? true : false)
+                setHindi_speak(hindi_speak === 1 ? true : false)
+                setHindi_write(hindi_write === 1 ? true : false)
+
+                setTamil_read(tamil_read === 1 ? true : false)
+                setTamil_speak(tamil_speak === 1 ? true : false)
+                setTamil_write(tamil_write === 1 ? true : false)
+
+                setArabci_write(arabic_write === 1 ? true : false)
+                setArabic_read(arabic_read === 1 ? true : false)
+                setArabic_speak(arabic_speak === 1 ? true : false)
+
+            } else {
+                setMalayalam_read(false)
+                setMalayalam_speak(false)
+                setMalayalam_write(false)
+
+                setEnglish_read(false)
+                setEnglish_speak(false)
+                setEnglish_write(false)
+
+                setHindi_read(false)
+                setHindi_speak(false)
+                setHindi_write(false)
+
+                setTamil_read(false)
+                setTamil_speak(false)
+                setTamil_write(false)
+
+                setArabci_write(false)
+                setArabic_read(false)
+                setArabic_speak(false)
+            }
+        }
+        getLanguages()
     }, [id])
 
     //getting banl serial number for finding ifsc code
@@ -173,10 +243,11 @@ const Personaldetails = () => {
     }, [bank])
 
     const getFamilyDetails = async () => {
-        if (relation === 0 || mrdnumber === '') {
+        let uppercasetext = mrdnumber.toUpperCase();
+        if (relation === 0 || uppercasetext === '') {
             warningNofity('Please Select Relation & MRD Number')
         } else {
-            const result = await axiosellider.get(`/admission/patientInfo/${mrdnumber}`)
+            const result = await axiosellider.get(`/admission/patientInfo/${uppercasetext}`)
             const { success, data } = result.data
             if (success === 1) {
                 setFamily_details(data);
@@ -202,6 +273,31 @@ const Personaldetails = () => {
         }
         FamilyDetails()
     }, [no, count])
+
+    const insertLang = useMemo(() => {
+        return {
+            em_id: no,
+            em_no: id,
+            malayalam_speak: malayala_speak === true ? 1 : 0,
+            malayalam_read: malayala_read === true ? 1 : 0,
+            malayalam_write: malayala_write === true ? 1 : 0,
+            hindi_write: hindi_write === true ? 1 : 0,
+            hindi_speak: hindi_speak === true ? 1 : 0,
+            hindi_read: hindi_read === true ? 1 : 0,
+            english_write: english_write === true ? 1 : 0,
+            english_speak: english_speak === true ? 1 : 0,
+            english_read: english_read === true ? 1 : 0,
+            tamil_write: tamil_write === true ? 1 : 0,
+            tamil_speak: tamil_speak === true ? 1 : 0,
+            tamil_read: tamil_read === true ? 1 : 0,
+            arabic_write: arabic_write === true ? 1 : 0,
+            arabic_speak: arabic_speak === true ? 1 : 0,
+            arabic_read: arabic_read === true ? 1 : 0
+        }
+    }, [no, id, malayala_read, malayala_write, malayala_speak, hindi_read, hindi_speak, hindi_write,
+        english_write, english_speak, english_read, tamil_write, tamil_speak, tamil_read, arabic_write,
+        arabic_speak, arabic_read])
+
 
     const personaldataSubmit = async () => {
         const submitpersonal = {
@@ -268,7 +364,13 @@ const Personaldetails = () => {
             const updateempmast = await axioslogin.patch('/empmast', submitempmast);
             const { success, message } = updateempmast.data;
             if (success === 2) {
-                succesNofity("Data Saved Successfully")
+                const result = await axioslogin.post('/personaldetl/langauge', insertLang);
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity("Data Saved Successfully")
+                } else {
+                    errorNofity(message)
+                }
             } else {
                 errorNofity(message)
             }
@@ -277,8 +379,24 @@ const Personaldetails = () => {
         }
     }
 
+    const deleteData = async (e, val) => {
+        const { details_slno } = val;
+        const result = await axioslogin.delete(`/personaldetl/${details_slno}`);
+        const { success, message } = result.data
+        if (success === 2) {
+            succesNofity(message)
+            setCount(count + 1)
+        } else {
+            errorNofity(message)
+            setCount(count + 1)
+        }
+
+    }
+
+
     return (
         <Fragment>
+            <ToastContainer />
             <Suspense>
                 <DetailsModel open={open} setOpen={setOpen} family_details={family_details}
                     empid={no} emno={id} relation={relation} count={count} setCount={setCount} />
@@ -746,15 +864,21 @@ const Personaldetails = () => {
                                             <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550, width: 200 }} > Relation </TableCell>
                                             <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550, width: 200 }} >Name</TableCell>
                                             <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550, width: 200 }}>MRD Number</TableCell>
+                                            <TableCell size='medium' padding='none' align="center" rowSpan={2} sx={{ fontWeight: 550, width: 200 }}>Delete</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {
-                                            familArray?.map((e, idx) => (
+                                            familArray?.map((item, idx) => (
                                                 <TableRow key={idx} >
-                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{e.relation_number === 1 ? 'Self' : e.relation_number === 2 ? 'Father' : e.relation_number === 3 ? 'Mother' : e.relation_number === 4 ? 'Brother' : e.relation_number === 5 ? 'Sister' : e.relation_number === 6 ? 'Spouse' : 'Children'}</TableCell>
-                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{e.patient_name}</TableCell>
-                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{e.mrd_number}</TableCell>
+                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{item.relation_number === 1 ? 'Self' : item.relation_number === 2 ? 'Father' : item.relation_number === 3 ? 'Mother' : item.relation_number === 4 ? 'Brother' : item.relation_number === 5 ? 'Sister' : item.relation_number === 6 ? 'Spouse' : 'Children'}</TableCell>
+                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{item.patient_name}</TableCell>
+                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}>{item.mrd_number}</TableCell>
+                                                    <TableCell size='small' padding='none' align="center" sx={{ minHeight: 25 }}> <IconButton aria-label="delete" size="small" sx={{ p: 0 }}
+
+                                                        onClick={(e) => deleteData(e, item)} >
+                                                        <DeleteIcon />
+                                                    </IconButton></TableCell>
                                                 </TableRow>
                                             ))
                                         }
@@ -813,19 +937,25 @@ const Personaldetails = () => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="malwrite" sx={{
-                                        padding: 0
-                                    }} />
+                                    <Checkbox
+                                        color="secondary"
+                                        name="malwrite"
+                                        sx={{ padding: 0 }}
+                                        onChange={(e) => setMalayalam_write(e.target.checked)}
+                                        checked={malayala_write}
+                                    />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
                                     <Checkbox color="secondary" name="malspeak" sx={{
                                         padding: 0
-                                    }} />
+                                    }}
+                                        onChange={(e) => setMalayalam_speak(e.target.checked)}
+                                        checked={malayala_speak} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="malread" sx={{
-                                        padding: 0
-                                    }} />
+                                    <Checkbox color="secondary" name="malread" sx={{ padding: 0 }}
+                                        onChange={(e) => setMalayalam_read(e.target.checked)}
+                                        checked={malayala_read} />
                                 </Box>
                             </Box>
                         </Box>
@@ -839,17 +969,20 @@ const Personaldetails = () => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="hindiwrite" sx={{
-                                        padding: 0
-                                    }} />
+                                    <Checkbox color="secondary" name="hindiwrite" sx={{ padding: 0 }}
+                                        onChange={(e) => setHindi_write(e.target.checked)}
+                                        checked={hindi_write}
+                                    />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="hindispeak" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="hindispeak" sx={{ padding: 0 }}
+                                        onChange={(e) => setHindi_speak(e.target.checked)}
+                                        checked={hindi_speak} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="hindiread" sx={{
-                                        padding: 0
-                                    }} />
+                                    <Checkbox color="secondary" name="hindiread" sx={{ padding: 0 }}
+                                        onChange={(e) => setHindi_read(e.target.checked)}
+                                        checked={hindi_read} />
                                 </Box>
                             </Box>
                         </Box>
@@ -863,13 +996,19 @@ const Personaldetails = () => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="engwrite" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="engwrite" sx={{ padding: 0 }}
+                                        onChange={(e) => setEnglish_write(e.target.checked)}
+                                        checked={english_write} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="engspeak" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="engspeak" sx={{ padding: 0 }}
+                                        onChange={(e) => setEnglish_speak(e.target.checked)}
+                                        checked={english_speak} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="engread" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="engread" sx={{ padding: 0 }}
+                                        onChange={(e) => setEnglish_read(e.target.checked)}
+                                        checked={english_read} />
                                 </Box>
                             </Box>
                         </Box>
@@ -883,13 +1022,19 @@ const Personaldetails = () => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="tamilwrite" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="tamilwrite" sx={{ padding: 0 }}
+                                        onChange={(e) => setTamil_write(e.target.checked)}
+                                        checked={tamil_write} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="tamilspeak" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="tamilspeak" sx={{ padding: 0 }}
+                                        onChange={(e) => setTamil_speak(e.target.checked)}
+                                        checked={tamil_speak} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="tamilread" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="tamilread" sx={{ padding: 0 }}
+                                        onChange={(e) => setTamil_read(e.target.checked)}
+                                        checked={tamil_read} />
                                 </Box>
                             </Box>
                         </Box>
@@ -903,13 +1048,19 @@ const Personaldetails = () => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="arabicwrite" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="arabicwrite" sx={{ padding: 0 }}
+                                        onChange={(e) => setArabci_write(e.target.checked)}
+                                        checked={arabic_write} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="arabicspeak" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="arabicspeak" sx={{ padding: 0 }}
+                                        onChange={(e) => setArabic_speak(e.target.checked)}
+                                        checked={arabic_speak} />
                                 </Box>
                                 <Box borderRight={1} sx={{ display: "flex", flex: 1, justifyContent: "center", borderColor: "lightgray" }}>
-                                    <Checkbox color="secondary" name="arabicread" sx={{ padding: 0 }} />
+                                    <Checkbox color="secondary" name="arabicread" sx={{ padding: 0 }}
+                                        onChange={(e) => setArabic_read(e.target.checked)}
+                                        checked={arabic_read} />
                                 </Box>
                             </Box>
                         </Box>
