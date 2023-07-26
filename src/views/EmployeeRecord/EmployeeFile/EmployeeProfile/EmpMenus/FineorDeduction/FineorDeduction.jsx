@@ -1,11 +1,9 @@
-import { Box, Chip, Paper } from '@mui/material'
-import React, { Fragment, memo, useCallback, useContext, useEffect, useState } from 'react'
+import { Box, Chip, Paper, TextField } from '@mui/material'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { MdOutlineAddCircleOutline } from 'react-icons/md'
 import { useParams } from 'react-router'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
-import FineTypeSelection from 'src/views/CommonCode/FineTypeSelection'
 import TextInput from 'src/views/Component/TextInput'
-import { getFineSlno, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { getFineSlno } from 'src/views/Constant/Constant'
 import ModelAddFineMaster from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelAddFineMaster'
 import { eachMonthOfInterval, format } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -16,13 +14,14 @@ import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutl
 import FineorDeductionTable from './FineorDeductionTable'
 import IconButton from '@mui/joy/IconButton'
 import { useMemo } from 'react'
+import FinetypeSelectRedux from 'src/views/MuiComponents/FinetypeSelectRedux'
+import { useSelector } from 'react-redux'
+import _ from 'underscore'
 
 const FineorDeduction = () => {
     //const history = useHistory()
     const [open, setOpen] = useState(false);
     const { id, no } = useParams();
-    const { selectFine, updateFine, employeedetails } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
     const [finestart, setMonthstart] = useState(format(new Date(), "yyyy-MM-dd"));
     const [fineend, setMonthend] = useState(format(new Date(), "yyyy-MM-dd"));
     const [count, setcount] = useState()
@@ -35,13 +34,17 @@ const FineorDeduction = () => {
         fine_remark: '',
         fine_status: ''
     })
+    //Destructuring
+    const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
     const [times, setTimes] = useState(0)
+    const [fine, setFine] = useState(0)
+    const [updatefine, setUpdateFine] = useState(0)
 
     //use state for updation 
     const [flag, setflag] = useState(0)
 
-    //Destructuring
-    const { fine_descp, fine_status, fine_amount, fine_remark } = fineDed
+    const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
+
     const updateFineDed = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.value : e.target.value;
         setFineDed({ ...fineDed, [e.target.name]: value })
@@ -91,7 +94,7 @@ const FineorDeduction = () => {
             fine_emp_no: id,
             fine_emp_id: no,
             fine_slno: serialno,
-            fine_type: selectFine,
+            fine_type: fine,
             fine_descp: fine_descp,
             fine_amount: fine_amount,
             fine_start: finestart,
@@ -101,7 +104,7 @@ const FineorDeduction = () => {
             fine_create_user: em_id,
             fine_status: '0'
         }
-    }, [id, no, serialno, selectFine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id])
+    }, [id, no, serialno, fine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id])
 
 
     const resetForm = {
@@ -112,7 +115,7 @@ const FineorDeduction = () => {
     }
 
     const reset = () => {
-        updateFine(0);
+        setFine(0);
         setPeriod(0);
         setTimes(0)
         setMonthstart(format(new Date(), "yyyy-MM-dd"));
@@ -146,17 +149,17 @@ const FineorDeduction = () => {
             fine_remark: fine_remark,
         }
         setupdateid(fine_slno)
-        updateFine(fine_type)
+        setFine(fine_type)
         setMonthstart(format(new Date(fine_start), "yyyy-MM-dd"))
         setMonthend(format(new Date(fine_end), "yyyy-MM-dd"))
         setTimes(fine_period)
         setFineDed(formdata)
-    }, [updateFine])
+    }, [])
 
     // update postdata for submit
     const updateData = useMemo(() => {
         return {
-            fine_type: selectFine,
+            fine_type: fine,
             fine_descp: fine_descp,
             fine_amount: fine_amount,
             fine_start: finestart,
@@ -166,11 +169,11 @@ const FineorDeduction = () => {
             fine_edit_user: em_id,
             fine_slno: updateid
         }
-    }, [selectFine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id, updateid])
+    }, [fine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id, updateid])
 
     //fine detl data
     var finedetlupdatemap = [];
-    for (var i = 0; i < period.length; i++) {
+    for (var j = 0; j < period.length; j++) {
         const postdata1 = {
             fine_emp_no: id,
             fine_emp_id: no,
@@ -232,7 +235,7 @@ const FineorDeduction = () => {
             submitUpdate(updateData)
 
         }
-    }, [postData, updateData, finedetlmap, finedetlupdatemap])
+    }, [postData, updateData, finedetlmap, finedetlupdatemap, flag, count, updateid])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -247,278 +250,227 @@ const FineorDeduction = () => {
 
     return (
         <Fragment>
-            <ModelAddFineMaster open={open} handleClose={handleClose} />
-            <Box sx={{
-                width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
-                overflow: 'auto',
-                '::-webkit-scrollbar': { display: "none" }
-            }} >
-
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
-                        <Box sx={{ flex: 1 }} >
+            <ModelAddFineMaster open={open} handleClose={handleClose} setUpdateFine={setUpdateFine} upfineCount={updatefine} />
+            <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                    <Box sx={{ flex: 1 }} >
+                        <CssVarsProvider>
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                Fine And Other Deduction
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
+                <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, pb: 0.5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", px: 20 }}>
+                        <Box sx={{ display: 'flex', width: '20%', pt: 1 }}>
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Fine And Other Deduction
+                                <Typography textColor="text.secondary" >
+                                    Fine or Deduction
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                    </Paper>
-                    <Paper square elevation={3} sx={{
-                        p: 0.5,
-                        mt: 0.5,
-                        display: 'flex',
-                        alignItems: "center",
-                        flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        // backgroundColor: "lightcyan"
-                    }} >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flex: 1, px: 0.5, pb: 0.5
-                        }}>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Fine or Deduction
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, pt: 0.5 }} >
-                                    <FineTypeSelection
-                                        select="Fine Or Deducation Master Drop Down"
-                                        style={SELECT_CMP_STYLE}
-                                    />
-                                </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Create New Fine Master
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 0, }} >
-                                    <CssVarsProvider>
-                                        <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
-                                            <MdOutlineAddCircleOutline className="text-info" size={30}
-                                            />
-                                        </IconButton>
-                                    </CssVarsProvider>
-                                </Box>
-
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Description
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Description"
-                                        value={fine_descp}
-                                        name="fine_descp"
-                                        changeTextValue={(e) => updateFineDed(e)}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                px: 20,
-                                pt: 1
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Fine Amount
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Amount"
-                                        value={fine_amount}
-                                        name="fine_amount"
-                                        changeTextValue={(e) => updateFineDed(e)}
-                                    />
-                                </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Time Period
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Period"
-                                        disabled="disabled"
-                                        value={times}
-                                        name="times"
-                                    //changeTextValue={(e) => updateFineDed(e)}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row", pt: 1,
-                                px: 20
-                            }}>
-                                <Box sx={{ display: 'flex', width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Fine Date start
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Start Date"
-                                        min={new Date()}
-                                        value={finestart}
-                                        name="finestart"
-                                        changeTextValue={(e) => {
-                                            getstart(e)
-                                        }}
-                                    />
-                                </Box>
-                                <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Fine Date End
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="End Date"
-                                        value={fineend}
-                                        min={finestart}
-                                        name="fineend"
-                                        changeTextValue={(e) => {
-                                            getend(e)
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row", pt: 1,
-                                px: 20
-                            }}>
-
-                                <Box sx={{ display: 'flex', width: '20%' }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Remark
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <TextInput
-                                        type="text"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Remark"
-                                        value={fine_remark}
-                                        name="fine_remark"
-                                        changeTextValue={(e) => updateFineDed(e)}
-                                    />
-                                    <input
-                                        type="text"
-                                        className="hiddenvalue"
-                                        value={fine_status}
-                                        name="fine_status"
-                                        hidden
-                                        onChange={(e) => updateFineDed(e)}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row", pt: 1,
-                                px: 20
-                            }}>
-                                <Box sx={{ flex: 1, }} >
-                                    <Chip
-                                        size="small"
-                                        // icon={fine_status === 0 ? <IoCheckmarkDoneSharp /> : <IoBan />}
-                                        label="Collected"
-                                        color="secondary"
-                                        variant="outlined"
-                                        clickable={true}
-                                        onClick={(e) => updateStatusCollect(e)}
-                                        sx={{
-                                            minWidth: '90%',
-                                            maxWidth: '90%'
-                                        }}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, }} >
-                                    <Chip
-                                        size="small"
-                                        //icon={fine_status === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
-                                        label="Pending"
-                                        color="secondary"
-                                        variant="outlined"
-                                        clickable={true}
-                                        onClick={(e) => updateStatusPending(e)}
-                                        sx={{
-                                            minWidth: '90%',
-                                            maxWidth: '90%'
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-                            <Box>
-
-                            </Box>
+                        <Box sx={{ flex: 1, pt: 0.5 }} >
+                            <FinetypeSelectRedux value={fine} setValue={setFine} updatefine={updatefine} />
                         </Box>
-                    </Paper>
-                    <Paper square elevation={0} sx={{
-                        pt: 1,
-                        mt: 0.5,
-                        display: 'flex',
-                        //alignItems: "center",
-                        //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
-                        //backgroundColor: "lightcyan",
-                        flexDirection: "column"
+                        <Box sx={{ display: 'flex', width: '20%', pt: 0.5, pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Create New Fine Master
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 0, }} >
+                            <CssVarsProvider>
+                                <IconButton aria-label="add" style={{ padding: "0rem" }} onClick={handleClickOpen}  >
+                                    <MdOutlineAddCircleOutline className="text-info" size={30}
+                                    />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", px: 20, pt: 1 }}>
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Description
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <TextField fullWidth
+                                placeholder='Description'
+                                size="small"
+                                id='fine_descp'
+                                value={fine_descp}
+                                name="fine_descp"
+                                onChange={(e) => updateFineDed(e)}
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", px: 20, pt: 1 }}>
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Fine Amount
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <TextField fullWidth
+                                placeholder='Amount'
+                                size="small"
+                                id='fine_amount'
+                                value={fine_amount}
+                                name="fine_amount"
+                                onChange={(e) => updateFineDed(e)}
+                            />
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Time Period
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
 
-                    }} >
-                        <FineorDeductionTable update={count}
-                            collected={status} getDataTable={getDataTable} />
-                    </Paper>
+                            <TextField
+                                fullWidth
+                                placeholder='Period'
+                                size="small"
+                                id='times'
+                                value={times}
+                                name="times"
+                                disabled={true}
+
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5, px: 20 }}>
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Fine Date start
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <TextInput
+                                type="date"
+                                classname="form-control form-control-md"
+                                Placeholder="Start Date"
+                                min={new Date()}
+                                value={finestart}
+                                name="finestart"
+                                changeTextValue={(e) => {
+                                    getstart(e)
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '20%', pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Fine Date End
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <TextInput
+                                type="date"
+                                classname="form-control form-control-md"
+                                Placeholder="End Date"
+                                value={fineend}
+                                min={finestart}
+                                name="fineend"
+                                changeTextValue={(e) => {
+                                    getend(e)
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "row", pt: 1,
+                        px: 20
+                    }}>
+
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Remark
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <TextField fullWidth
+                                placeholder='Remark'
+                                size="small"
+                                id='fine_remark'
+                                value={fine_remark}
+                                name="fine_remark"
+                                onChange={(e) => updateFineDed(e)}
+                            />
+                            <input
+                                type="text"
+                                className="hiddenvalue"
+                                value={fine_status}
+                                name="fine_status"
+                                hidden
+                                onChange={(e) => updateFineDed(e)}
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1, px: 20 }}>
+                        <Box sx={{ flex: 1, }} >
+                            <Chip
+                                size="small"
+                                // icon={fine_status === 0 ? <IoCheckmarkDoneSharp /> : <IoBan />}
+                                label="Collected"
+                                color="secondary"
+                                variant="outlined"
+                                clickable={true}
+                                onClick={(e) => updateStatusCollect(e)}
+                                sx={{
+                                    minWidth: '90%',
+                                    maxWidth: '90%'
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1, }} >
+                            <Chip
+                                size="small"
+                                //icon={fine_status === 1 ? <IoCheckmarkDoneSharp /> : <IoBan />}
+                                label="Pending"
+                                color="secondary"
+                                variant="outlined"
+                                clickable={true}
+                                onClick={(e) => updateStatusPending(e)}
+                                sx={{
+                                    minWidth: '90%',
+                                    maxWidth: '90%'
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                    <Box>
+
+                    </Box>
+                </Box>
+                <Paper square elevation={0} sx={{
+                    pt: 1,
+                    mt: 0.5,
+                    display: 'flex',
+                    //alignItems: "center",
+                    //flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
+                    //backgroundColor: "lightcyan",
+                    flexDirection: "column"
+
+                }} >
+                    <FineorDeductionTable update={count}
+                        collected={status} getDataTable={getDataTable} />
                 </Paper>
-                <Paper square sx={{
-                    backgroundColor: "#F8F8F8",
-                    display: "flex",
-                    flexDirection: "row"
-                }}>
+                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0 }} >
                         <CssVarsProvider>
                             <IconButton variant="outlined" size='sm' sx={theme => ({
@@ -528,15 +480,6 @@ const FineorDeduction = () => {
                             </IconButton>
                         </CssVarsProvider>
                     </Box>
-                    {/* <Box sx={{ pl: 1 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={RedirectToProfilePage}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box> */}
                 </Paper>
             </Box>
         </Fragment >

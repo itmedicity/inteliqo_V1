@@ -15,6 +15,9 @@ import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Co
 import moment from 'moment';
 import { CheckIdExists, InsertAppraisal } from 'src/views/PerformanceAppraisal/AppraisalFunctions';
 import { ToastContainer } from 'react-toastify';
+import DownloadIcon from '@mui/icons-material/Download';
+import { ContractExcel } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
+
 
 const ContractDetailsAgGrid = () => {
     const history = useHistory()
@@ -258,6 +261,22 @@ const ContractDetailsAgGrid = () => {
         }
     };
 
+    const toDownload = async () => {
+        const fileName = "Contractend"
+        const array = tableData.map((val) => {
+            return {
+                "EmpID": val.em_no,
+                "Name": val.em_name,
+                "Department": val.dept_name,
+                "DepartmentSection": val.sect_name,
+                "Designation": val.desg_name,
+                "DateOfJoining": val.em_doj,
+                "Category": val.ecat_name
+            }
+        })
+        ContractExcel(array, fileName)
+    }
+
     return (
         <Fragment>
             <ToastContainer />
@@ -275,7 +294,14 @@ const ContractDetailsAgGrid = () => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                        <Box sx={{}}>
+                        <Box sx={{ pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' sx={{ color: 'green' }} onClick={toDownload}>
+                                    <DownloadIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ pl: 0.5 }}>
                             <CssVarsProvider>
                                 <IconButton variant="outlined" size='sm' color="danger" onClick={toSettings}>
                                     <CloseIcon />

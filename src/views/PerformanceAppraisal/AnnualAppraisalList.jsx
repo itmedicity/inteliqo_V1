@@ -11,23 +11,18 @@ import { CheckIdExists, InsertAppraisal } from './AppraisalFunctions';
 import { infoNofity, succesNofity, warningNofity } from '../CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CustomeToolTip from '../Component/CustomeToolTip';
-import CusIconButton from '../Component/CusIconButton';
-import DownloadIcon from '@mui/icons-material/Download'
-import CustomAgGridRptFormatOne from '../Component/CustomAgGridRptFormatOne';
-import { Actiontypes } from 'src/redux/constants/action.type'
-import { useDispatch } from 'react-redux';
+import CommonAgGrid from '../Component/CommonAgGrid';
+import DownloadIcon from '@mui/icons-material/Download';
+import { AnnualExcel } from '../Payroll/AttendanceUpdation/ExportToExcel';
 
 const AnnualAppraisalList = () => {
 
     const history = useHistory()
-    const dispatch = useDispatch()
     const [tableData, setTableData] = useState([])
     const today = moment(new Date).format('YYYY-MM-DD')
     const [count, setCount] = useState(0)
 
     const RedirectToHome = () => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         history.push(`/Home`)
     }
 
@@ -67,20 +62,17 @@ const AnnualAppraisalList = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
-                dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
                 setCount(0)
             } else {
-                dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
                 setTableData([])
             }
         }
         annualList()
-    }, [count, dispatch])
+    }, [count])
 
     const toAppraisal = useCallback((params) => {
 
         const data = params.api.getSelectedRows()
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         const { sect_id, hod, incharge, em_no, em_id, dept_id, } = data[0]
 
         const getAuthorizationDetails = async (postData) => {
@@ -225,16 +217,23 @@ const AnnualAppraisalList = () => {
             })
 
         }
-    }, [count, today, dispatch])
+    }, [count, today])
 
-    const onExportClick = useCallback(() => {
-        if (tableData.length === 0) {
-            warningNofity("There is no data")
-        }
-        else {
-            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 1 })
-        }
-    }, [tableData.length, dispatch])
+    const toDownload = async () => {
+        const fileName = "AnnualAppraisal"
+        const array = tableData.map((val) => {
+            return {
+                "EmpID": val.em_no,
+                "Name": val.em_name,
+                "Department": val.dept_name,
+                "DepartmentSection": val.sect_name,
+                "Designation": val.desg_name,
+                "DateOfJoining": val.em_doj,
+                "Category": val.ecat_name
+            }
+        })
+        AnnualExcel(array, fileName)
+    }
 
     return (
 
@@ -250,13 +249,13 @@ const AnnualAppraisalList = () => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                        <CustomeToolTip title="Download" placement="bottom">
-                            <Box >
-                                <CusIconButton variant="outlined" size="sm" color="success" onClick={onExportClick}>
+                        <Box sx={{ pl: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' sx={{ color: 'green' }} onClick={toDownload}>
                                     <DownloadIcon />
-                                </CusIconButton>
-                            </Box>
-                        </CustomeToolTip>
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
                         <Box sx={{ pl: 0.5 }}>
                             <CssVarsProvider>
                                 <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
@@ -266,17 +265,16 @@ const AnnualAppraisalList = () => {
                         </Box>
                     </Paper>
                     <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                        <CustomAgGridRptFormatOne
-                            columnDefMain={columnDef}
-                            tableDataMain={tableData}
-                        // sx={{
-                        //     height: 600,
-                        //     width: "100%"
-                        // }}
-                        // rowHeight={30}
-                        // headerHeight={30}
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 600,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
                         />
-
                     </Paper>
                 </Paper>
             </Box>

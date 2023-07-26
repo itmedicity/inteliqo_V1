@@ -27,6 +27,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import BuilShiftUpdationModal from './DutyPlanFun/BuilShiftUpdationModal'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 
 const DutyPlanMainCard = () => {
     const [plan, setPlan] = useState([])
@@ -100,16 +101,32 @@ const DutyPlanMainCard = () => {
 
     }, [updatedPlanfrmModel])
 
-
-
-    // console.log(updatedPlanDetl)
-    // console.log(plan)
-
     //open modal for bulk shift updation
     const [emNo, setEmno] = useState(0);
     const builkShiftUpdation = async (em_no) => {
-        setEmno(em_no)
-        setOpen(true)
+        const pendingTckt = shiftPlanData.filter((val) => {
+            return val.em_no === em_no
+        })
+        const { plan } = pendingTckt[0]
+        const xx = plan[0].map((val) => {
+            const { attendance_update_flag } = val
+            if (attendance_update_flag === 1) {
+                const obj = { flag: 1 }
+                return obj
+            }
+            else {
+                const obj = { flag: 0 }
+                return obj
+            }
+        })
+        const { flag } = xx[0]
+        if (flag === 1) {
+            warningNofity("Punch In/Out Marking Done By HR, Do not change Duty plan")
+        }
+        else {
+            setEmno(em_no)
+            setOpen(true)
+        }
     }
 
     return (

@@ -28,7 +28,8 @@ import {
     getAppraisalHod,
     getAppraisalIncharge,
     getAppraisalCeo,
-    getAllAppraisal
+    getAllAppraisal,
+    getesiNotAddedEmp
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
@@ -74,6 +75,7 @@ const DashAlertCmp = () => {
         dispatch(getAppraisalIncharge(em_id))
         dispatch(getAppraisalCeo())
         dispatch(getAllAppraisal())
+        dispatch(getesiNotAddedEmp())
     }, [em_id])
 
     const data = Object.values(notificationNewState);

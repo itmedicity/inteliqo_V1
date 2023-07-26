@@ -24,8 +24,8 @@ const {
     FETCH_HOD_APPRAISAL_COUNT,
     FETCH_INCHARGE_APPARAISAL_COUNT,
     FETCH_CEO_APPRAISAL_COUNT,
-    FETCH_APPRAISAL_COMPLETE
-
+    FETCH_APPRAISAL_COMPLETE,
+    FETCH_NOTADDED_ESIEMP_LIST
 } = Actiontypes;
 
 
@@ -63,6 +63,7 @@ const dashBoadNotify = {
     216: { slno: 216, name: "Appraisal Incharge", count: 0, status: true },
     217: { slno: 217, name: "Appraisal CEO", count: 0, status: true },
     219: { slno: 219, name: "Appraisal HR", count: 0, status: true },
+    238: { slno: 238, name: "Esi Not Added Employee List", count: 0, status: true },
 }
 
 export const getDashboardNotification = (state = dashBoadNotify, { type, payload, status }) => {
@@ -116,6 +117,8 @@ export const getDashboardNotification = (state = dashBoadNotify, { type, payload
             return { ...state, 217: { slno: 217, name: "Appraisal CEO", count: payload, status: false } }
         case FETCH_APPRAISAL_COMPLETE:
             return { ...state, 219: { slno: 219, name: "Appraisal HR", count: payload, status: false } }
+        case FETCH_NOTADDED_ESIEMP_LIST:
+            return { ...state, 238: { slno: 238, name: "Esi Not Added Employee List", count: payload, status: false } }
         default:
             return state;
     }

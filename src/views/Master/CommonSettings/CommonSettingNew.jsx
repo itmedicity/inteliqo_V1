@@ -112,7 +112,7 @@ const CommonSettingNew = () => {
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
-                setLeaveType(obj)
+                setLeaveType(obj === null ? 0 : obj)
                 setFormData(frmData)
                 setDefShift(default_shift === null ? 0 : default_shift)
                 setnoappshift(notapplicable_shift === null ? 0 : notapplicable_shift)

@@ -399,7 +399,8 @@ const Personaldetails = () => {
             <ToastContainer />
             <Suspense>
                 <DetailsModel open={open} setOpen={setOpen} family_details={family_details}
-                    empid={no} emno={id} relation={relation} count={count} setCount={setCount} />
+                    empid={no} emno={id} relation={relation} count={count} setCount={setCount}
+                    setMrdnumber={setMrdnumber} setRelation={setRelation} />
             </Suspense>
             <Box sx={{ width: "100%", height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 {/* <Paper square elevation={0} > */}

@@ -9,7 +9,8 @@ import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
-const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, count, setCount }) => {
+const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, count, setCount,
+    setRelation, setMrdnumber }) => {
 
     const empno = useMemo(() => emno, [emno])
     const emp_id = useMemo(() => empid, [empid])
@@ -66,8 +67,12 @@ const DetailsModel = ({ open, setOpen, family_details, emno, empid, relation, co
         if (success === 1) {
             succesNofity("Data Added Successfully")
             setCount(count + 1)
+            setMrdnumber('')
+            setRelation(0)
             setOpen(false)
         } else {
+            setMrdnumber('')
+            setRelation(0)
             setOpen(false)
         }
     }
