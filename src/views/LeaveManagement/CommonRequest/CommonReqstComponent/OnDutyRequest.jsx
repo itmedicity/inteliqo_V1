@@ -1,5 +1,5 @@
 import { Button, CssVarsProvider, Typography } from '@mui/joy'
-import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Tooltip } from '@mui/material'
+import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import moment from 'moment'
@@ -17,7 +17,7 @@ const OnDutyRequest = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
 
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat, incharge: empInchrgStat } = selectedEmployeeDetl?.[0];
+    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
 
     const [fromDate, setFromDate] = useState(moment(new Date()))
     const [toDate, setToDate] = useState(moment(new Date()))
@@ -52,7 +52,7 @@ const OnDutyRequest = () => {
 
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
     const Displaydata = async () => {
         var dateArray = [];
@@ -128,6 +128,7 @@ const OnDutyRequest = () => {
             todate: moment(toDate).format('YYYY-MM-DD'),
             em_no: em_no
         }
+
         const result = await axioslogin.post('/CommonReqst/check/attendance', postData)
         const { data } = result.data
         if (data.length === 0) {

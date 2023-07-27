@@ -17,7 +17,7 @@ const MissPunchrequest = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
 
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat, incharge: empInchrgStat } = selectedEmployeeDetl?.[0];
+    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
 
     const dispatch = useDispatch();
 
@@ -34,14 +34,12 @@ const MissPunchrequest = () => {
 
     useEffect(() => {
         if (moment(fromDate).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) {
-            console.log("equal");
             setShiftDesc('Data Not Found')
             setCheckin('00:00')
             setCheckOut('00:00')
             setCheckInCheck(false)
             setCheckOutCheck(false)
         } else {
-            console.log("not equal");
             const postData = {
                 startDate: moment(fromDate).format('YYYY-MM-DD'),
                 em_id: em_id

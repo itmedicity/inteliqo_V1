@@ -42,7 +42,7 @@ const CommonReqstMainPage = () => {
             dispatch(getEmployeeInformation(em_id))
         }
         dispatch(getEmployeeApprovalLevel(em_id))
-    }, [em_id, dispatch, selectedEmp])
+    }, [em_id, dispatch, selectedEmp, hod, incharge])
 
     const reqstArray = [
         { reqNo: 1, name: 'Enable Miss Punch for OT' },
@@ -59,11 +59,10 @@ const CommonReqstMainPage = () => {
         } else {
             dispatch(getEmployeeInformation(em_id))
         }
-    }, [reqestType, em_no, em_dept_section, hod, incharge])
+    }, [reqestType, em_no, em_dept_section, hod, incharge, dispatch, em_id])
 
     const requestEntry = (e) => {
         if (hod === 0 || incharge === 0) {
-            console.log(reqestType);
             // normal employee
             if (reqestType === 0) {
                 warningNofity("Request Type Not Selected")
@@ -99,8 +98,6 @@ const CommonReqstMainPage = () => {
             }
         }
     }
-
-    console.log(show);
 
     return (
         <Fragment>

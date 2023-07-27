@@ -1,4 +1,4 @@
-import { Box, IconButton, Paper, Tooltip } from '@mui/material'
+import { IconButton, Paper, Tooltip } from '@mui/material'
 import moment from 'moment'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,12 +11,9 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const TableViewPage = ({ show }) => {
-    console.log(show);
-
     const dispatch = useDispatch();
     const [count, setCount] = useState(0)
     const [tableData, setTableData] = useState([])
-    const [table, setTable] = useState([])
 
     useEffect(() => {
         dispatch(getGeneralRqst())
@@ -29,8 +26,7 @@ const TableViewPage = ({ show }) => {
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge, em_id, em_no } = employeeProfileDetl;
-    console.log(hod, incharge);
+    const { hod, incharge, em_id } = employeeProfileDetl;
 
     const state = useSelector((state) => state.hodAuthorisedSection.sectionDetal, _.isEqual);
     const authorizationBasedDeptSection = useMemo(() => state, [state]);
@@ -115,7 +111,6 @@ const TableViewPage = ({ show }) => {
             })
             setTableData([...newEnable, ...newOnduty, ...newOne])
         } else {
-            console.log("employee");
             let array = punchEnable.filter((value) => {
                 return authorizationBasedDeptSection.find((val) => {
                     return value.dept_sect_id === val.dept_section;
@@ -191,13 +186,7 @@ const TableViewPage = ({ show }) => {
 
             setTableData([...newEnable, ...newOnduty, ...newOne])
         }
-
-
-
-    }, [genrealReqst, punchEnable, onduty, OneData, authorizationBasedDeptSection])
-
-
-
+    }, [genrealReqst, punchEnable, onduty, OneData, authorizationBasedDeptSection, em_id, hod, incharge])
 
     const [column] = useState([
         { headerName: 'Slno ', field: 'serialno', filter: true },
@@ -290,13 +279,27 @@ const TableViewPage = ({ show }) => {
                 }
             }
         }
-    }, [])
+    }, [count])
 
     const deleteGene = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
-        console.log(data);
-    }, [])
-
+        const { hrstatus, slno } = data[0]
+        if (hrstatus === 1) {
+            warningNofity("HR Approval is Already done! You can't delete request")
+        } else {
+            const Ids = {
+                slno: slno
+            }
+            const result = await axioslogin.patch('/CommonReqst/cancel/general', Ids)
+            const { message, success } = result.data
+            if (success === 1) {
+                succesNofity(message)
+                setCount(count + 1)
+            } else {
+                warningNofity(message)
+            }
+        }
+    }, [count])
 
     useEffect(() => {
         if (show === 4) {
@@ -316,10 +319,7 @@ const TableViewPage = ({ show }) => {
             })
             setTableData(arr);
         }
-    }, [show, genrealReqst])
-
-
-
+    }, [show, genrealReqst, em_id])
 
     return (
         <Paper square sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >

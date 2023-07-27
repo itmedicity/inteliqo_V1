@@ -59,7 +59,7 @@ export const getovertimeCount = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { othrcount } = data[0]
-        dispatch({ type: FETCH_OVERTIME_COUNT, payload: othrcount, status: false })
+        dispatch({ type: FETCH_OVERTIME_COUNT, payload: othrcount, status: true })
     } else {
         dispatch({ type: FETCH_OVERTIME_COUNT, payload: 0, status: false })
     }
@@ -70,7 +70,7 @@ export const getovertimeCountIncharge = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { otcountincharge } = data[0]
-        dispatch({ type: FETCH_OVERTIME_INCHARGE, payload: otcountincharge, status: false })
+        dispatch({ type: FETCH_OVERTIME_INCHARGE, payload: otcountincharge, status: true })
     } else {
         dispatch({ type: FETCH_OVERTIME_INCHARGE, payload: 0, status: false })
     }
@@ -81,7 +81,7 @@ export const getovertimeCountHOD = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { othodcount } = data[0]
-        dispatch({ type: FETCH_OVERTIME_COUNT_HOD, payload: othodcount, status: false })
+        dispatch({ type: FETCH_OVERTIME_COUNT_HOD, payload: othodcount, status: true })
     } else {
         dispatch({ type: FETCH_OVERTIME_COUNT_HOD, payload: 0, status: false })
     }
@@ -92,7 +92,7 @@ export const getovertimeCountCEO = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { otceocount } = data[0]
-        dispatch({ type: FETCH_OVERTIME_COUNT_CEO, payload: otceocount, status: false })
+        dispatch({ type: FETCH_OVERTIME_COUNT_CEO, payload: otceocount, status: true })
     } else {
         dispatch({ type: FETCH_OVERTIME_COUNT_CEO, payload: 0, status: false })
     }
@@ -103,7 +103,7 @@ export const getovertimeCountUser = (em_id) => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { otusercount } = data[0]
-        dispatch({ type: FETCH_OVERTIME_COUNT_USER, payload: otusercount, status: false })
+        dispatch({ type: FETCH_OVERTIME_COUNT_USER, payload: otusercount, status: true })
     } else {
         dispatch({ type: FETCH_OVERTIME_COUNT_USER, payload: 0, status: false })
     }
@@ -114,7 +114,7 @@ export const getleavereqCountIncharge = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { leaveinchargecount } = data[0]
-        dispatch({ type: FETCH_LEAVE_REQ_COUNT_INCHARGE, payload: leaveinchargecount, status: false })
+        dispatch({ type: FETCH_LEAVE_REQ_COUNT_INCHARGE, payload: leaveinchargecount, status: true })
     } else {
         dispatch({ type: FETCH_LEAVE_REQ_COUNT_INCHARGE, payload: 0, status: false })
     }
@@ -125,7 +125,7 @@ export const getleavereqCountHOD = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { leavehodcount } = data[0]
-        dispatch({ type: FETCH_LEAVE_REQ_COUNT_HOD, payload: leavehodcount, status: false })
+        dispatch({ type: FETCH_LEAVE_REQ_COUNT_HOD, payload: leavehodcount, status: true })
     } else {
         dispatch({ type: FETCH_LEAVE_REQ_COUNT_HOD, payload: 0, status: false })
     }
@@ -136,7 +136,7 @@ export const getleavereqCountCEO = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { leaveceocount } = data[0]
-        dispatch({ type: FETCH_LEAVE_REQ_COUNT_CEO, payload: leaveceocount, status: false })
+        dispatch({ type: FETCH_LEAVE_REQ_COUNT_CEO, payload: leaveceocount, status: true })
     } else {
         dispatch({ type: FETCH_LEAVE_REQ_COUNT_CEO, payload: 0, status: false })
     }
@@ -147,7 +147,7 @@ export const getleavereqCountHR = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { leavehrcount } = data[0]
-        dispatch({ type: FETCH_GET_LEAVE_REQ_COUNT_HR, payload: leavehrcount, status: false })
+        dispatch({ type: FETCH_GET_LEAVE_REQ_COUNT_HR, payload: leavehrcount, status: true })
     } else {
         dispatch({ type: FETCH_GET_LEAVE_REQ_COUNT_HR, payload: 0, status: false })
     }
@@ -158,7 +158,7 @@ export const getLeaveRequestCountUser = (em_id) => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { leaveusercount } = data[0]
-        dispatch({ type: FETCH_LEAVE_REQ_COUNT_USER, payload: leaveusercount, status: false })
+        dispatch({ type: FETCH_LEAVE_REQ_COUNT_USER, payload: leaveusercount, status: true })
     } else {
         dispatch({ type: FETCH_LEAVE_REQ_COUNT_USER, payload: 0, status: false })
     }
@@ -169,7 +169,7 @@ export const getresignreqCountIncharge = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { resigncountincharge } = data[0]
-        dispatch({ type: FETCH_RESIGN_REQ_COUNT_INCHARGE, payload: resigncountincharge, status: false })
+        dispatch({ type: FETCH_RESIGN_REQ_COUNT_INCHARGE, payload: resigncountincharge, status: true })
     } else {
         dispatch({ type: FETCH_RESIGN_REQ_COUNT_INCHARGE, payload: 0, status: false })
     }
@@ -180,7 +180,7 @@ export const getresignreqCountHOD = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { resigncounthod } = data[0]
-        dispatch({ type: FETCH_RESIGN_REQ_COUNT_HOD, payload: resigncounthod, status: false })
+        dispatch({ type: FETCH_RESIGN_REQ_COUNT_HOD, payload: resigncounthod, status: true })
     } else {
         dispatch({ type: FETCH_RESIGN_REQ_COUNT_HOD, payload: 0, status: false })
     }
@@ -191,7 +191,7 @@ export const getresignreqCountCEO = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { resigncountceo } = data[0]
-        dispatch({ type: FETCH_RESIGN_REQ_COUNT_CEO, payload: resigncountceo, status: false })
+        dispatch({ type: FETCH_RESIGN_REQ_COUNT_CEO, payload: resigncountceo, status: true })
     } else {
         dispatch({ type: FETCH_RESIGN_REQ_COUNT_CEO, payload: 0, status: false })
     }
@@ -201,7 +201,7 @@ export const getContractRenewalCount = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/contractcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: data.length, status: false })
+        dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: 0, status: false })
     }
@@ -212,7 +212,7 @@ export const getTrainingCount = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         // const { trainingcount } = data[0]
-        dispatch({ type: FETCH_TRAIN_COUNT, payload: data.length, status: false })
+        dispatch({ type: FETCH_TRAIN_COUNT, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_TRAIN_COUNT, payload: 0, status: false })
     }
@@ -223,7 +223,7 @@ export const getRegistRenew = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         const { RegistrationRenewCount } = data[0]
-        dispatch({ type: FETCH_REGISTER_RENEW, payload: RegistrationRenewCount, status: false })
+        dispatch({ type: FETCH_REGISTER_RENEW, payload: RegistrationRenewCount, status: true })
     } else {
         dispatch({ type: FETCH_REGISTER_RENEW, payload: 0, status: false })
     }
@@ -233,7 +233,7 @@ export const getProbation = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/probCount/list')
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_PROBATION, payload: data.length, status: false })
+        dispatch({ type: FETCH_PROBATION, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_PROBATION, payload: 0, status: false })
     }
@@ -243,7 +243,7 @@ export const getAnnual = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/annualempcount/list')
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_ANNUAL, payload: data.length, status: false })
+        dispatch({ type: FETCH_ANNUAL, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_ANNUAL, payload: 0, status: false })
     }
@@ -253,8 +253,8 @@ export const getAppraisalHod = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/Performance/hodData/${id}`)
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_HOD_APPRAISAL_LIST, payload: data, status: false })
-        dispatch({ type: FETCH_HOD_APPRAISAL_COUNT, payload: data.length, status: false })
+        dispatch({ type: FETCH_HOD_APPRAISAL_LIST, payload: data, status: true })
+        dispatch({ type: FETCH_HOD_APPRAISAL_COUNT, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_HOD_APPRAISAL_LIST, payload: [], status: false })
         dispatch({ type: FETCH_HOD_APPRAISAL_COUNT, payload: 0, status: false })
@@ -265,8 +265,8 @@ export const getAppraisalIncharge = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/Performance/inchargeData/${id}`)
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_INCHARGE_APPARAISAL_LIST, payload: data, status: false })
-        dispatch({ type: FETCH_INCHARGE_APPARAISAL_COUNT, payload: data.length, status: false })
+        dispatch({ type: FETCH_INCHARGE_APPARAISAL_LIST, payload: data, status: true })
+        dispatch({ type: FETCH_INCHARGE_APPARAISAL_COUNT, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_INCHARGE_APPARAISAL_LIST, payload: [], status: false })
         dispatch({ type: FETCH_INCHARGE_APPARAISAL_COUNT, payload: 0, status: false })
@@ -277,8 +277,8 @@ export const getAppraisalCeo = () => async (dispatch) => {
     const result = await axioslogin.get('/Performance/ceodata')
     const { success, data } = result.data
     if (success === 1) {
-        dispatch({ type: FETCH_CEO_APPRAISAL_LIST, payload: data, status: false })
-        dispatch({ type: FETCH_CEO_APPRAISAL_COUNT, payload: data.length, status: false })
+        dispatch({ type: FETCH_CEO_APPRAISAL_LIST, payload: data, status: true })
+        dispatch({ type: FETCH_CEO_APPRAISAL_COUNT, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_CEO_APPRAISAL_LIST, payload: [], status: false })
         dispatch({ type: FETCH_CEO_APPRAISAL_COUNT, payload: 0, status: false })
@@ -290,7 +290,7 @@ export const getAllAppraisal = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_APPRAISAL_COMPLETE_LIST, payload: data, status: true })
-        dispatch({ type: FETCH_APPRAISAL_COMPLETE, payload: data.length, status: false })
+        dispatch({ type: FETCH_APPRAISAL_COMPLETE, payload: data.length, status: true })
     } else {
         dispatch({ type: FETCH_APPRAISAL_COMPLETE_LIST, payload: [], status: false })
         dispatch({ type: FETCH_APPRAISAL_COMPLETE, payload: 0, status: false })
@@ -301,7 +301,7 @@ export const getesiNotAddedEmp = () => async (dispatch) => {
     const { success, data } = result.data
     if (success === 1) {
         // dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: data, status: true })
-        dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: data.length, status: false })
+        dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: data.length, status: true })
     } else {
         // dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: [], status: false })
         dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: 0, status: false })

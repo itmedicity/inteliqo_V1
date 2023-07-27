@@ -33,12 +33,12 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
             ceoComment: '',
             checkIn: '',
             checkOut: '',
-            shiftId: 0,
             emid: 0
         }
     )
     const { slno, emno, name, section, status, reqDate, dutyDate, reason, shft_desc,
-        inchargeComment, hodComment, ceoComment, shiftId } = details;
+        inchargeComment, hodComment, ceoComment } = details;
+
     const [shiftData, setShiftData] = useState({})
 
     const shiftInformation = useSelector((state) => state.getDutyPlannedShift.shiftInformation, _.isEqual);
@@ -84,10 +84,6 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
         }
 
     }, [data])
-
-
-
-
 
     const rejectData = useMemo(() => {
         return {
@@ -171,7 +167,7 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
             hr_empId: employeeNumber(),
             onduty_slno: slno
         }
-    }, [remark, slno, inTime, dutyDate, outTime])
+    }, [remark, slno, inTime, dutyDate, outTime, emno])
 
     const handleRejectRequest = async () => {
         if (authority === 1) {
@@ -464,4 +460,4 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
     )
 }
 
-export default OndutyReqstModal
+export default memo(OndutyReqstModal) 

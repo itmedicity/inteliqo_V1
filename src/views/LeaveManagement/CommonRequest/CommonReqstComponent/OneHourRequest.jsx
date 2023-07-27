@@ -11,13 +11,16 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
 import { addHours, format, subHours } from 'date-fns'
+// import { CalculationFun } from './CommonRqstFun'
 
 const OneHourRequest = () => {
 
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
 
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat, incharge: empInchrgStat } = selectedEmployeeDetl?.[0];
+    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
+
+    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
 
     const [fromDate, setFromDate] = useState(moment(new Date()))
     const [deptShift, setDeptShift] = useState([])
@@ -97,7 +100,7 @@ const OneHourRequest = () => {
                 duty_day: moment(fromDate).format('YYYY-MM-DD')
             }
             const result = await axioslogin.post('/overtimerequest/shiftdata/', postData);
-            const { success, data } = result.data;
+            const { success } = result.data;
             if (success === 1) {
 
                 // GET SHIFT DATA
@@ -135,13 +138,6 @@ const OneHourRequest = () => {
             }
         }
     }
-
-    useEffect(() => {
-        console.log(checkinBox, checkoutBox);
-        console.log(punchDetl);
-        console.log(punchInTime, punchOutTime);
-
-    }, [checkinBox, checkoutBox, punchInTime, punchOutTime])
 
     const postData = useMemo(() => {
         return {
@@ -183,7 +179,7 @@ const OneHourRequest = () => {
         }
     }, [em_no, em_id, em_department, em_dept_section, reason, punchInTime, punchOutTime, fromDate,
         selectedShift, authorization_incharge, authorization_hod, hod, incharge,
-        checkinBox, checkoutBox])
+        checkinBox, checkoutBox, empHodStat])
 
     const submitRequest = async () => {
         if (checkinBox === false && checkoutBox === false) {
@@ -193,6 +189,7 @@ const OneHourRequest = () => {
             warningNofity("Reason Is Mandatory")
         }
         else {
+            // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
             const result = await axioslogin.post('/CommonReqst', postData)
             const { message, success } = result.data;
             if (success === 1) {

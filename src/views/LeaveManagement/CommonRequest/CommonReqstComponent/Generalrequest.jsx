@@ -1,28 +1,23 @@
 import { Button, CssVarsProvider } from '@mui/joy'
-import { Box, IconButton, Paper, TextareaAutosize, Tooltip } from '@mui/material'
+import { Box, TextareaAutosize, } from '@mui/material'
 import moment from 'moment'
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, memo, useState } from 'react'
 import { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { getGeneralRqst } from 'src/redux/actions/CommonReqst.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import GeneralrequestSelect from 'src/views/MuiComponents/GeneralrequestSelect'
 import _ from 'underscore'
-import DeleteIcon from '@mui/icons-material/Delete';
 
 const Generalrequest = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
 
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat, incharge: empInchrgStat } = selectedEmployeeDetl?.[0];
+    const { em_no, em_id, em_department, em_dept_section } = selectedEmployeeDetl?.[0];
 
     const [requsttype, setRequestType] = useState(0)
     const [comments, setComments] = useState('')
-    const [tableData, setTableData] = useState([])
-    const [count, setCount] = useState(0)
 
     const postData = useMemo(() => {
         return {
@@ -53,76 +48,6 @@ const Generalrequest = () => {
             }
         }
     }
-
-    // useEffect(() => {
-    //     dispatch(getGeneralRqst())
-    // }, [dispatch, count])
-
-    // const generalData = useSelector((state) => state?.setCommonreqstAll?.generalData?.generalDataList, _.isEqual)
-    // const genrealReqst = useMemo(() => generalData, [generalData])
-
-    // useEffect(() => {
-    //     if (Object.keys(genrealReqst).length > 0) {
-    //         const filterArray = genrealReqst && genrealReqst.filter((val) => {
-    //             return (val.em_id === empId)
-    //         })
-    //         const arr = filterArray.map((val) => {
-    //             return {
-    //                 slno: val.general_slno,
-    //                 serialno: val.serialno,
-    //                 reqDate: moment(val.request_date).format('DD-MM-YYYY'),
-    //                 dutyDate: moment(val.miss_punch_day).format('DD-MM-YYYY'),
-    //                 requestname: val.request_name,
-    //                 hrstatus: val.hr_status,
-    //                 status: (val.hr_status === 1) ? 'HR Approved' : 'HR Approval Pending'
-    //             }
-    //         })
-    //         setTableData(arr);
-    //     } else {
-    //         setTableData([])
-    //     }
-    // }, [genrealReqst])
-
-
-    // const [column] = useState([
-    //     { headerName: 'Slno ', field: 'serialno', filter: true },
-    //     { headerName: 'Request Date', field: 'reqDate', filter: true },
-    //     { headerName: 'Request Type  ', field: 'requestname', },
-    //     { headerName: 'Status', field: 'status', filter: true },
-    //     {
-    //         headerName: 'Action',
-    //         cellRenderer: params =>
-    //             <Fragment>
-    //                 <Tooltip title="Delete" followCursor placement='top' arrow >
-    //                     <IconButton sx={{ paddingY: 0.5 }}
-    //                         onClick={() => deleteRequest(params)}
-    //                     >
-    //                         <DeleteIcon color='primary' />
-    //                     </IconButton>
-    //                 </Tooltip>
-    //             </Fragment>
-    //     },
-    // ])
-
-    // const deleteRequest = useCallback(async (params) => {
-    //     const data = params.api.getSelectedRows()
-    //     const { hrstatus, slno } = data[0]
-    //     if (hrstatus === 1) {
-    //         warningNofity("HR Approval is Already done! You can't delete request")
-    //     } else {
-    //         const Ids = {
-    //             slno: slno
-    //         }
-    //         const result = await axioslogin.patch('/CommonReqst/cancel/general', Ids)
-    //         const { message, success } = result.data
-    //         if (success === 1) {
-    //             succesNofity(message)
-    //             setCount(count + 1)
-    //         } else {
-    //             warningNofity(message)
-    //         }
-    //     }
-    // }, [])
 
     return (
         <Fragment>
