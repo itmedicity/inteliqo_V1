@@ -87,6 +87,9 @@ import { setAllLeaveApproval } from './LeaveApprovalReducer'
 import { getOTApprovalData } from './OTReducer'
 import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
 import { getPinWiseRegionData } from './RegionReducers'
+import { setCommonreqstAll } from './CommonReqst.Reducer'
+
+
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -184,7 +187,8 @@ const reducer = combineReducers({
     setAllLeaveApproval,
     getOTApprovalData,
     getEmpUnderDeptsecList,
-    getPinWiseRegionData
+    getPinWiseRegionData,
+    setCommonreqstAll
 })
 
 export default reducer;

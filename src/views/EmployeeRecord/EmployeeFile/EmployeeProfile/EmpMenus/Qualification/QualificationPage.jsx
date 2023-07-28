@@ -178,9 +178,9 @@ const QualificationPage = () => {
             em_reg_type: registrtype,
             em_reg_no: em_reg_no,
             create_user: em_id,
-            em_exp_date: em_reg_no === "" ? null : expyear,
+            em_exp_date: em_reg_no === "" ? null : moment(expyear).format('YYYY-MM-DD'),
             em_chellan: em_chellan,
-            em_chellan_exp_date: em_chellan === "" ? null : chellan,
+            em_chellan_exp_date: em_chellan === "" ? null : moment(chellan).format('YYYY-MM-DD'),
             pass_fail: pass_fail === true ? 0 : 1
         }
     }, [id, no, education, course, Specialization, university, board, qual_year, em_mark_grade,
@@ -231,9 +231,9 @@ const QualificationPage = () => {
             em_reg_type: registrtype !== 0 ? registrtype : null,
             em_reg_no: em_reg_no,
             edit_user: em_id,
-            em_exp_date: em_reg_no === "" ? null : expyear,
+            em_exp_date: em_reg_no === "" ? null : moment(expyear).format('YYYY-MM-DD'),
             em_chellan: em_chellan,
-            em_chellan_exp_date: em_chellan === "" ? null : chellan,
+            em_chellan_exp_date: em_chellan === "" ? null : moment(chellan).format('YYYY-MM-DD'),
             emqual_slno: slno,
             pass_fail: pass_fail === true ? 0 : 1
         }
@@ -570,7 +570,7 @@ const QualificationPage = () => {
                                     minDate={new Date()}
                                     disabled={regNodisable}
                                     //maxDate={new Date('2022')}
-                                    onChange={(e) => { updateexpdate(e) }}
+                                    onChange={setExpyear}
                                     renderInput={(params) => (
                                         <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />
                                     )}
@@ -614,7 +614,7 @@ const QualificationPage = () => {
                                     value={chellan}
                                     minDate={new Date()}
                                     disabled={regNodisable}
-                                    onChange={(e) => { updatechellandate(e) }}
+                                    onChange={setChellan}
                                     renderInput={(params) => (
                                         <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />
                                     )}

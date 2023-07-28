@@ -564,7 +564,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                         variant="outlined"
                                         uncheckedIcon={<FemaleOutlinedIcon />}
                                         name="female"
-                                        value={female}
+                                        // value={female}
                                         checked={female}
                                         onChange={(e) => updateGeneric(e)}
                                     />
@@ -584,7 +584,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
                                         variant="outlined"
                                         uncheckedIcon={<MaleOutlinedIcon />}
                                         name="male"
-                                        value={male}
+                                        //value={male}
                                         checked={male}
                                         onChange={(e) => updateGeneric(e)}
                                     />

@@ -232,6 +232,13 @@ const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceVie
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
 const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
+const CommonReqst = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstMainPage'))
+const CommonRequstMaster = React.lazy(() => import('./views/Master/CommonRequstMaster/CommonRequestMast'))
+const CommonReqstInchargeApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/InchargeApproval'))
+const CommonReqstHodApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HodApproval'))
+const CommonReqstCeoApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/CeoApproval'))
+const CommonReqstHrApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HrApproval'))
+const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstHrView'))
 
 const routes = [
 
@@ -455,7 +462,16 @@ const routes = [
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
   { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
   { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
-  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList }
+  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
+  { path: '/Home/CommonReqst', exact: true, name: 'Common Request', component: CommonReqst },
+  { path: '/Home/CommonRequstMaster', exact: true, name: 'Common Request Master', component: CommonRequstMaster },
+  { path: '/Home/CommonReqstInchargeApprvl', exact: true, name: 'Common Request Incharge Approval', component: CommonReqstInchargeApprvl },
+  { path: '/Home/CommonReqstHodApprvl', exact: true, name: 'Common Request Hod Approval', component: CommonReqstHodApprvl },
+  { path: '/Home/CommonReqstCeoApprvl', exact: true, name: 'Common Request Ceo Approval', component: CommonReqstCeoApprvl },
+  { path: '/Home/CommonReqstHrApprvl', exact: true, name: 'Common Request Hr Approval', component: CommonReqstHrApprvl },
+  { path: '/Home/CommonReqstHrView', exact: true, name: 'Common Request Hr View', component: CommonReqstHrView },
+
+
 ]
 
 export default routes
