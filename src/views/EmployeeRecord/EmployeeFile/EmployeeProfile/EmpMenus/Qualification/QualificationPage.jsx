@@ -491,7 +491,7 @@ const QualificationPage = () => {
                                     views={['year']}
                                     name="year"
                                     value={year}
-                                    minDate={new Date('1990')}
+                                    minDate={new Date('1960')}
                                     maxDate={new Date('2022')}
                                     onChange={(e) => { updateYear(e) }}
                                     renderInput={(params) => (
