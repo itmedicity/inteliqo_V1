@@ -175,26 +175,29 @@ const EarnDeduction = () => {
             const result = await axioslogin.post('/empearndeduction', postData)
             const { message, success } = result.data;
             if (success === 1) {
-                const result = await axioslogin.post('/empearndeduction/getwage', postData)
-                const { success, data } = result.data
+                const result = await axioslogin.get(`/payrollprocess/grosssalarybyid/${no}`)
+                const { message, success, data } = result.data;
                 if (success === 1) {
-                    var sum = 0;
-                    data[0].forEach(value => {
-                        sum += value.em_amount;
-                    });
-                    const postData2 = {
-                        em_no: id,
-                        em_id: no,
-                        gross_salary: sum,
-                        updated_user: employeeNumber(),
+                    const { em_id, gross_salary } = data[0]
+                    const updatedata = {
+                        gross_salary: gross_salary,
+                        em_id: em_id,
+                        salary_split_flag: 1
                     }
-                    const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
-                    const { success, message } = result2.data
-                    if (success === 1) {
-                        succesNofity(message);
+                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
+                    const { message, success } = result.data;
+                    if (success === 2) {
                         setcount(count + 1)
+                        succesNofity(message);
                         setWageType(resetForm);
+                        setWage(0)
+                        setflag(0)
+                    } else {
+                        infoNofity(message)
                     }
+                }
+                else {
+                    infoNofity(message)
                 }
 
             } else if (success === 0) {
@@ -209,26 +212,28 @@ const EarnDeduction = () => {
             const result = await axioslogin.patch('/empearndeduction', updateData)
             const { message, success } = result.data;
             if (success === 2) {
-                const result = await axioslogin.post('/empearndeduction/getwage', updateData)
-                const { success, data } = result.data
+                const result = await axioslogin.get(`/empearndeduction/grosssalarybyid/${id}`)
+                const { message, success, data } = result.data;
                 if (success === 1) {
-                    var sum = 0;
-                    data[0].forEach(value => {
-                        sum += value.em_amount;
-                    });
-                    const postData2 = {
-                        em_no: id,
-                        em_id: no,
-                        gross_salary: sum,
-                        updated_user: employeeNumber(),
+                    const { em_id, gross_salary } = data[0]
+                    const updatedata = {
+                        gross_salary: gross_salary,
+                        em_id: em_id
                     }
-                    const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
-                    const { success, message } = result2.data
-                    if (success === 1) {
-                        succesNofity(message);
+                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
+                    const { message, success } = result.data;
+                    if (success === 2) {
                         setcount(count + 1)
+                        succesNofity(message);
                         setWageType(resetForm);
+                        setWage(0)
+                        setlastWage(0)
+                    } else {
+                        infoNofity(message)
                     }
+                }
+                else {
+                    infoNofity(message)
                 }
 
             } else if (success === 0) {
@@ -267,11 +272,12 @@ const EarnDeduction = () => {
 
     //Get Data
     useEffect(() => {
-        const getCourse = async () => {
+        const getData = async () => {
             const result = await axioslogin.get(`/empearndeduction/${id}`)
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data);
+                setcount(0)
             }
             else if (success === 0) {
                 infoNofity("No Allowance is added to this employee")
@@ -279,7 +285,7 @@ const EarnDeduction = () => {
                 warningNofity(" Error occured contact EDP")
             }
         }
-        getCourse();
+        getData();
     }, [id, count]);
 
     return (

@@ -27,10 +27,10 @@ const StatutoryInformation = () => {
         uanno: '',
         nps: false,
         npsnumber: '',
-        npsamount: '',
+        npsamount: 0,
         lwf: false,
         lwfnumber: '',
-        lwfamount: ''
+        lwfamount: 0
     })
     const { pf, pfno, esi, esino, uanno, nps,
         npsnumber, npsamount, lwf, lwfnumber, lwfamount } = formData

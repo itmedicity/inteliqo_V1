@@ -6,7 +6,7 @@ const ManpowerRequest = React.lazy(() => import('./views/recruitment/manpowerReq
 const Vacancy = React.lazy(() => import('./views/recruitment/VacancyAnounce/Vacancy'));
 const Settings = React.lazy(() => import('./Menus/Settings'));
 const Reports = React.lazy(() => import('./Menus/Reports'));
-const Departmentmaster = React.lazy(() => import('./views/Master/Departmentmaster'));
+const Departmentmaster = React.lazy(() => import('./views/Master/DepartmentMaster/DepartmentMasterPage'));
 const DepatmentEdit = React.lazy(() => import('./views/Master/DepartmentMaster/DeptEdit'));
 const DepartmentSectionMast = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSectionMast'));
 const DepartmentSectionEdit = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSecEdit'));

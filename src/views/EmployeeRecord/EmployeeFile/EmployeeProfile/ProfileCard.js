@@ -25,6 +25,7 @@ const ProfileCard = () => {
     }, [no, dispatch])
 
     const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
+
     useEffect(() => {
         const getEmpIdforProfilePic = async () => {
             if (no > 0) {
@@ -32,7 +33,6 @@ const ProfileCard = () => {
 
                 urlExist(profilePic, (status) => {
                     if (status === true) {
-                        console.log(status)
                         const picUrl = JSON.parse(profilePic)
                         setSrc(picUrl)
                     }
@@ -45,6 +45,7 @@ const ProfileCard = () => {
     const Name = state.em_name.toLowerCase();
     const Designation = state.desg_name.toLowerCase();
     const Department = state.dept_name.toLowerCase();
+    const category = state.ecat_name.toLowerCase();
 
     return (
         <Box sx={{ display: 'flex', width: '100%' }} >
@@ -67,7 +68,7 @@ const ProfileCard = () => {
                                 src={src}
                                 sx={{
                                     flex: 1,
-                                    "--Avatar-size": { xl: '150px', lg: '150px', md: '120px', sm: '120px', xs: '120px' },
+                                    "--Avatar-size": { xl: '100px', lg: '100px', md: '70px', sm: '90px', xs: '70px' },
                                 }}
                             />
                         </CssVarsProvider>
@@ -78,21 +79,31 @@ const ProfileCard = () => {
                         <Box sx={{
                             display: "flex", height: 100, justifyContent: 'center',
                             flexDirection: 'column', overflow: 'auto',
-                            '::-webkit-scrollbar': { display: "none" }
+                            '::-webkit-scrollbar': { display: "none" },
                         }} >
                             <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }} >
-                                <Typography level="h2" fontSize="lg" textColor="#414349" mb={1} sx={{ textTransform: "capitalize" }}  >
+                                <Typography level='h2' fontSize="md" textColor="#414349" sx={{ textTransform: "capitalize" }}  >
                                     {Name}
                                 </Typography>
                             </Box>
+                            <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }} >
+                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }} fontSize="sm">
+                                    ID# {state.em_no}
+                                </Typography>
+                            </Box>
                             <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }}>
-                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }} >
+                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }} fontSize="sm" >
                                     {Designation}
                                 </Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }}>
-                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }}>
+                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }} fontSize="sm">
                                     {Department}
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: "flex", flex: 1, justifyContent: 'center', }}>
+                                <Typography textColor="neutral.400" sx={{ textTransform: "capitalize" }} fontSize="sm">
+                                    {category}
                                 </Typography>
                             </Box>
                         </Box>

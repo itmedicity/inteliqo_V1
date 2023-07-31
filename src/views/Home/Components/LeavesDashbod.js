@@ -4,6 +4,7 @@ import React, { Fragment, Suspense, useEffect, useState } from 'react'
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import { useDispatch, useSelector } from 'react-redux';
 import { getannualleave } from 'src/redux/actions/Profile.action';
+import moment from 'moment';
 const ListItems = React.lazy(() => import('./ListItemCmp'));
 
 
@@ -33,6 +34,9 @@ const LeavesDashbod = () => {
         fontWeight: 700
     }
 
+    const today = new Date();
+    const tdyformat = moment(today).format('YYYY')
+
     return (
         <Fragment>
             <Grid item sx={{
@@ -50,7 +54,7 @@ const LeavesDashbod = () => {
                             }}
                             action={
                                 <Typography variant='subtitle2' sx={{ display: "block", paddingY: 0.5, paddingRight: 4, fontSize: 12.5, fontWeight: 600 }}  >
-                                    Year - 2022
+                                    Year - {tdyformat}
                                 </Typography>
                             }
                         />
