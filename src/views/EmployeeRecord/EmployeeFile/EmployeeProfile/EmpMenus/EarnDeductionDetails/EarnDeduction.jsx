@@ -4,18 +4,19 @@ import { useParams } from 'react-router'
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import ModalOne from 'src/views/CommonCode/ModalOne'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { Box, Paper, TextField } from '@mui/material'
+import { Box, IconButton, Paper, TextField } from '@mui/material'
 import moment from 'moment';
 import { employeeNumber } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import IconButton from '@mui/joy/IconButton'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
 import Close from '@mui/icons-material/Close';
 import EarnDeductionSelection from 'src/views/MuiComponents/EarnDeductionSelection'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { insertWage, updateEmpmaster } from './Functions';
 
 const EarnDeduction = () => {
 
@@ -121,6 +122,183 @@ const EarnDeduction = () => {
         end_month: false
     }
 
+    // post data for update
+    const updateData = useMemo(() => {
+        return {
+            em_id: no,
+            em_no: id,
+            em_salary_desc: wage,
+            em_amount: em_amount,
+            em_start_date: month_start,
+            em_end_date: month_end,
+            edit_user: employeeNumber(),
+            last_wage: LastWage,
+            ernded_slno: slno,
+        }
+
+    }, [no, id, wage, em_amount, LastWage, month_end, month_start, slno])
+
+    //Submit data
+    const submitAllowance = useCallback((e) => {
+        e.preventDefault();
+        const submitData = async (postData) => {
+            const result = await axioslogin.get(`/empearndeduction/${id}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const arr = data?.map((val) => {
+                    const obj = {
+                        emp_id: val.em_id,
+                        em_no: val.em_no,
+                        em_salary_desc: val.em_salary_desc,
+                        earning_type: val.em_earning_type,
+                        last_wage: val.em_amount,
+                        new_wage: val.em_amount,
+                        entry_desc: 'I'
+                    }
+                    return obj
+                })
+                const result = await axioslogin.post('/empearndeduction/create/newentry', postData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    insertWage(arr).then((values) => {
+                        const { status, message } = values
+                        if (status === 1) {
+                            updateEmpmaster(no).then((values) => {
+                                const { status, message } = values
+                                if (status === 1) {
+                                    succesNofity(message);
+                                    setcount(count + 1)
+                                    setWageType(resetForm);
+                                    setWage(0)
+                                    setflag(0)
+                                } else {
+                                    infoNofity(message)
+                                }
+                            })
+                        } else {
+                            infoNofity(message)
+                        }
+                    })
+                } else {
+                    infoNofity(message)
+                    setWageType(resetForm);
+                    setWage(0)
+                    setflag(0)
+                }
+            } else {
+                const result = await axioslogin.post('/empearndeduction/create/newentry', postData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setcount(count + 1)
+                    succesNofity(message);
+                    setWageType(resetForm);
+                    setWage(0)
+                    setflag(0)
+                } else {
+                    infoNofity(message)
+                    setWageType(resetForm);
+                    setWage(0)
+                    setflag(0)
+                }
+            }
+        }
+
+        //submit update data
+        const updateSubmit = async (updateData) => {
+            const result = await axioslogin.get(`/empearndeduction/${id}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const arr = data?.map((val) => {
+                    const obj = {
+                        emp_id: val.em_id,
+                        em_no: val.em_no,
+                        em_salary_desc: val.em_salary_desc,
+                        earning_type: val.em_earning_type,
+                        last_wage: val.em_amount,
+                        new_wage: val.em_amount,
+                        entry_desc: 'U'
+                    }
+                    return obj
+                })
+                const result = await axioslogin.patch('/empearndeduction/update/new', updateData)
+                const { message, success } = result.data;
+                if (success === 2) {
+                    insertWage(arr).then((values) => {
+                        const { status, message } = values
+                        if (status === 1) {
+                            updateEmpmaster(no).then((values) => {
+                                const { status, message } = values
+                                if (status === 1) {
+                                    succesNofity(message);
+                                    setcount(count + 1)
+                                    setWageType(resetForm);
+                                    setWage(0)
+                                    setflag(0)
+                                } else {
+                                    infoNofity(message)
+                                }
+                            })
+                        } else {
+                            infoNofity(message)
+                        }
+                    })
+                } else if (success === 0) {
+                    infoNofity(message.sqlMessage);
+                } else {
+                    infoNofity(message)
+                }
+            } else { }
+        }
+        if (flag === 0) {
+            submitData(postData)
+        }
+        else {
+            updateSubmit(updateData)
+        }
+    }, [updateData, postData, id, no, count, flag, resetForm])
+
+    //Redirection
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    //Get Data
+    useEffect(() => {
+        const getData = async () => {
+            const result = await axioslogin.get(`/empearndeduction/${id}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setcount(0)
+            }
+            else if (success === 0) {
+                infoNofity("No Allowance is added to this employee")
+            } else {
+                warningNofity(" Error occured contact EDP")
+            }
+        }
+        getData();
+    }, [id, count]);
+
+    const [columnDef] = useState([
+        { headerName: 'SlNo', field: 'slno' },
+        { headerName: 'Wage Description ', field: 'earnded_name' },
+        { headerName: 'Wage Type ', field: 'earning_type_name' },
+        { headerName: 'Amount', field: 'em_amount' },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+        {
+            headerName: 'Delete', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDelete(params)} >
+                    <DeleteIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
     const getDataTable = useCallback((params) => {
         setflag(1)
         if (params.api.getSelectedRows() !== 0) {
@@ -148,145 +326,55 @@ const EarnDeduction = () => {
             //getDetails(ernded_slno)
         }
     }, [])
-    //updateWage(0)
 
-
-    // post data for update
-    const updateData = useMemo(() => {
-        return {
-            em_id: no,
-            em_no: id,
-            em_salary_desc: wage,
-            em_amount: em_amount,
-            em_start_date: month_start,
-            em_end_date: month_end,
-            edit_user: employeeNumber(),
-            last_wage: LastWage,
-            ernded_slno: slno,
-        }
-
-    }, [no, id, wage, em_amount, LastWage, month_end, month_start, slno])
-
-    //Submit data
-    const submitAllowance = useCallback((e) => {
-        e.preventDefault();
-
-        const submitData = async (postData) => {
-            const result = await axioslogin.post('/empearndeduction', postData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                const result = await axioslogin.get(`/payrollprocess/grosssalarybyid/${no}`)
-                const { message, success, data } = result.data;
-                if (success === 1) {
-                    const { em_id, gross_salary } = data[0]
-                    const updatedata = {
-                        gross_salary: gross_salary,
-                        em_id: em_id,
-                        salary_split_flag: 1
-                    }
-                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
-                    const { message, success } = result.data;
-                    if (success === 2) {
-                        setcount(count + 1)
-                        succesNofity(message);
-                        setWageType(resetForm);
-                        setWage(0)
-                        setflag(0)
-                    } else {
-                        infoNofity(message)
-                    }
+    const getDelete = useCallback(async (params) => {
+        const data1 = params.api.getSelectedRows()
+        const { ernded_slno } = data1[0]
+        const result = await axioslogin.get(`/empearndeduction/${id}`)
+        const { success, data } = result.data;
+        if (success === 1) {
+            const arr = data?.map((val) => {
+                const obj = {
+                    emp_id: val.em_id,
+                    em_no: val.em_no,
+                    em_salary_desc: val.em_salary_desc,
+                    earning_type: val.em_earning_type,
+                    last_wage: val.em_amount,
+                    new_wage: val.em_amount,
+                    entry_desc: 'D'
                 }
-                else {
-                    infoNofity(message)
-                }
-
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
-            }
-        }
-
-        //submit update data
-        const updateSubmit = async (updateData) => {
-            const result = await axioslogin.patch('/empearndeduction', updateData)
-            const { message, success } = result.data;
+                return obj
+            })
+            const result = await axioslogin.delete(`/empearndeduction/delete/${ernded_slno}`)
+            const { success, message } = result.data;
             if (success === 2) {
-                const result = await axioslogin.get(`/empearndeduction/grosssalarybyid/${id}`)
-                const { message, success, data } = result.data;
-                if (success === 1) {
-                    const { em_id, gross_salary } = data[0]
-                    const updatedata = {
-                        gross_salary: gross_salary,
-                        em_id: em_id
-                    }
-                    const result = await axioslogin.patch('/empearndeduction/update/empmaster', updatedata)
-                    const { message, success } = result.data;
-                    if (success === 2) {
-                        setcount(count + 1)
-                        succesNofity(message);
-                        setWageType(resetForm);
-                        setWage(0)
-                        setlastWage(0)
+                insertWage(arr).then((values) => {
+                    const { status, message } = values
+                    if (status === 1) {
+                        updateEmpmaster(no).then((values) => {
+                            const { status, message } = values
+                            if (status === 1) {
+                                succesNofity(message);
+                                setcount(count + 1)
+                                setWageType(resetForm);
+                                setWage(0)
+                                setflag(0)
+                            } else {
+                                infoNofity(message)
+                            }
+                        })
                     } else {
                         infoNofity(message)
                     }
-                }
-                else {
-                    infoNofity(message)
-                }
-
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
+                })
             } else {
                 infoNofity(message)
             }
-        }
-        if (flag === 0) {
-            submitData(postData)
-        }
-        else {
 
-            updateSubmit(updateData)
+        } else {
+
         }
-    }, [updateData, postData, id, no, count, flag, setcount])
-
-    //Redirection
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const [columnDef] = useState([
-        { headerName: 'SlNo', field: 'slno' },
-        { headerName: 'Wage Description ', field: 'earnded_name' },
-        { headerName: 'Wage Type ', field: 'earning_type_name' },
-        { headerName: 'Amount', field: 'em_amount' },
-        {
-            headerName: 'Edit', cellRenderer: params =>
-                <EditIcon onClick={() =>
-                    getDataTable(params)
-                }
-                />
-        },
-    ])
-
-    //Get Data
-    useEffect(() => {
-        const getData = async () => {
-            const result = await axioslogin.get(`/empearndeduction/${id}`)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data);
-                setcount(0)
-            }
-            else if (success === 0) {
-                infoNofity("No Allowance is added to this employee")
-            } else {
-                warningNofity(" Error occured contact EDP")
-            }
-        }
-        getData();
-    }, [id, count]);
+    }, [count, id, no])
 
     return (
         <Fragment>
@@ -420,11 +508,9 @@ const EarnDeduction = () => {
                         </Paper>
                         <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                             <Box sx={{ flex: 0, p: 0.3 }} >
-                                <CssVarsProvider>
-                                    <IconButton variant="outlined" size='sm' onClick={submitAllowance} >
-                                        <LibraryAddCheckOutlinedIcon />
-                                    </IconButton>
-                                </CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' onClick={submitAllowance} >
+                                    <LibraryAddCheckOutlinedIcon />
+                                </IconButton>
                             </Box>
                         </Paper>
                     </Box>

@@ -63,7 +63,7 @@ const EarningsDeduction = () => {
         }
 
 
-    }, [dept, deptSection, Empno])
+    }, [dept, deptSection, Empno, newEmp])
     const dataDisplay = async () => {
 
 
