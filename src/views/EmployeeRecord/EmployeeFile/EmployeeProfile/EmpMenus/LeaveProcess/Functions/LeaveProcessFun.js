@@ -475,6 +475,7 @@ export const insertNewLeaveProcessData = async (newObj) => {
 // CONTRACT AND REGULAR EMPLOYEE START AND END DATE FOR LEAVE PROCESS
 
 export const getEmployeeProcessStartAndEndDate = async (empCategoryProcessDetl) => {
+
   //employee category and contract detailed based on after hrm_leave_process
   const {
     date_of_join,
@@ -764,7 +765,7 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 }
 
 //Update Common Leaves 
-export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow) => {
+export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow, statutory_esi) => {
   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
@@ -776,7 +777,7 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
       const commonleave = {
         em_no: em_no,
         llvetype_slno: val.lvetype_slno,
-        cmn_lv_allowedflag: ecat_esi_allow === 1 ? 1 : 0,
+        cmn_lv_allowedflag: statutory_esi === 1 ? 1 : 0,
         cmn_lv_allowed: val.leave_credit_policy_count,
         cmn_lv_taken: 0,
         cmn_lv_balance: val.leave_credit_policy_count,
@@ -786,7 +787,8 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
         cmn_lv_year: moment().format('YYYY-MM-DD')
       }
       return commonleave
-    }).filter((val) => ecat_esi_allow === 0 && val.llvetype_slno !== 6 || ecat_esi_allow === 1 && val.llvetype_slno !== 7)
+    }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 || statutory_esi === 1 && val.llvetype_slno !== 7)
+
     return { ...commonLeaveMessage, status: 1, data: commondata }
   } else {
     return { ...commonLeaveMessage, status: 0, data: [] }

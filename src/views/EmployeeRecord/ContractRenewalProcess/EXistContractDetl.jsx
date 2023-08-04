@@ -30,7 +30,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
     const [view, setView] = useState(0)
 
     //destructuring
-    const { em_cont_start, em_cont_end, em_no, em_id, em_name, ecat_name, grace_period, dept_name, desg_name, sect_name } = formData
+    const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period, desg_name, sect_name } = formData
     //use effect for getting existing contract details
     useEffect(() => {
         const getcontractInformation = async () => {
@@ -78,7 +78,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
         }
         getFinedetl()
 
-    }, [id])
+    }, [no])
 
     //function for Closing first contract
     const dispatch = useDispatch()

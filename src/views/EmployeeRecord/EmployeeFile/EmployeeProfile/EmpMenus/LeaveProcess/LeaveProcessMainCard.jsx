@@ -36,6 +36,7 @@ import LeaveReduxFun from './Functions/LeaveReduxFun'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl'
 import { useCallback } from 'react'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
+import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action'
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -72,12 +73,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
     }
     if (formStatus === true) {
       const { empid } = empInfo;
-
       setEmployeeIDs(empInfo)
       dispatch(setPersonalData(empid));
+      dispatch(getStatutoryInfo(id));
     } else {
       setEmployeeIDs(empDetl)
     }
+    dispatch(getStatutoryInfo(id));
   }, [id, no, formStatus, empInfo])
 
   // const employeeIDs = useMemo(() => {

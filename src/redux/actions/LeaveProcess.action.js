@@ -10,6 +10,7 @@ const {
     FETCH_PRIVILEGE_LEAVE_LIST,
     FETCH_CARRY_FORWARD_LEAVE_LIST,
     FETCH_CREDIT_LEAVE_LIST,
+    FETCH_EMP_ESI_PF_DATA
 } = Actiontypes;
 
 //gET tHE hOLIDAY lIST (cURRENT yEAR)
@@ -120,5 +121,16 @@ export const getCreditedCreditedLeaves = (em_id) => async (dispatch) => {
         dispatch({ type: FETCH_CREDIT_LEAVE_LIST, payload: data })
     } else {
         dispatch({ type: FETCH_CREDIT_LEAVE_LIST, payload: [] })
+    }
+}
+
+//statutory
+export const getStatutoryInfo = (em_no) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/esidetails/${em_no}`);
+    const { success, data } = result.data;
+    if (success === 0) {
+        dispatch({ type: FETCH_EMP_ESI_PF_DATA, payload: data })
+    } else {
+        dispatch({ type: FETCH_EMP_ESI_PF_DATA, payload: [] })
     }
 }
