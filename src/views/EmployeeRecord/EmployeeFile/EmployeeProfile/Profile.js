@@ -19,6 +19,7 @@ import {
 } from 'src/redux/actions/Profile.action';
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { Actiontypes } from 'src/redux/constants/action.type';
+import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action';
 
 const theme = createTheme({
     breakpoints: {
@@ -72,6 +73,7 @@ const Profile = () => {
         dispatch(notify(no))
         dispatch(getContractDetlEmp(no))
         dispatch(setDept())
+        dispatch(getStatutoryInfo(id));
     }, [id, no, count])
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }

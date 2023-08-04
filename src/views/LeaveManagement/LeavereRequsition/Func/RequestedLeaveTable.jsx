@@ -92,7 +92,8 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.hf_hr_apprv_status,
                     code: 2,
                     reqDate: val.requestdate,
-                    leaveDate: val.leave_date
+                    leaveDate: val.leavedate,
+                    fromDate: val.leavedate,
 
                 }
             })
@@ -108,7 +109,7 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.np_hr_apprv_status,
                     code: 3,
                     reqDate: val.request_date,
-                    fromDate: val.leave_date,
+                    fromDate: val.nopunchdate,
                     toDate: val.leavetodate
                 }
             })
@@ -167,7 +168,8 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.hf_hr_apprv_status,
                     code: 2,
                     reqDate: val.requestdate,
-                    leaveDate: val.leave_date
+                    leaveDate: val.leavedate,
+                    fromDate: val.leavedate,
 
                 }
             })
@@ -187,7 +189,7 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.np_hr_apprv_status,
                     code: 3,
                     reqDate: val.request_date,
-                    fromDate: val.leave_date,
+                    fromDate: val.nopunchdate,
                     toDate: val.leavetodate
                 }
             })
@@ -245,7 +247,7 @@ const RequestedLeaveTable = () => {
                 <LeaveCancelEmp open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} setCount={setCount} />
                 <HalfdayCancelEmp open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
                 <NopunchCancelEmp open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} setCount={setCount} />
-                <CompOffCancelEmp open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
+                <CompOffCancelEmp open={coffReqModal} setOpen={setcoffReqModal} data={coffData} setCount={setCount} />
             </Suspense>
             <Box sx={{
                 flex: 1, p: 0.5,

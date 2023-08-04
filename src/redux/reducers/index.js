@@ -88,6 +88,7 @@ import { getOTApprovalData } from './OTReducer'
 import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
 import { getPinWiseRegionData } from './RegionReducers'
 import { setCommonreqstAll } from './CommonReqst.Reducer'
+import { setStatutoryInfo } from './LeaveProcess.Reducer'
 
 
 const reducer = combineReducers({
@@ -188,7 +189,8 @@ const reducer = combineReducers({
     getOTApprovalData,
     getEmpUnderDeptsecList,
     getPinWiseRegionData,
-    setCommonreqstAll
+    setCommonreqstAll,
+    setStatutoryInfo
 })
 
 export default reducer;

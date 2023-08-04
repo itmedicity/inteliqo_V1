@@ -2,13 +2,13 @@ import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { addDays, differenceInDays, getDaysInMonth } from 'date-fns';
 import moment from 'moment';
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
 
 const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }) => {
@@ -17,69 +17,80 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     //useEffect for getting leave Details
     var date = new Date(em_cont_end);
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const data = {
-        emp_id: no,
-        em_no: id,
-        start: moment(firstDay).format('YYYY-MM-DD'),
-        end: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
-    }
+
+    const data = useMemo(() => {
+        return {
+            emp_id: no,
+            em_no: id,
+            start: moment(firstDay).format('YYYY-MM-DD'),
+            end: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
+        }
+    }, [firstDay, em_cont_end])
+
     const [attendanceData, setattendanceData] = useState({
         duty_worked: 0,
         total_lop: 0,
         totalLeave: 0,
         total_days: 0
     })
-    const { duty_worked, total_lop, totalLeave, total_days } = attendanceData
+    const { duty_worked, total_lop, totalLeave, total_days } = attendanceData;
+
     useEffect(() => {
         const getattnsdata = async () => {
             const result = await axioslogin.post('/attandancemarking/getattendancetotal', data)
             const { success, message } = result.data
             if (success === 1) {
-                const { duty_statuslop, duty_worked, leave_type } = message[0]
+                const { duty_statuslop, duty_status, noofleaves, gross_salary } = message[0]
                 const frmData = {
                     duty_worked: differenceInDays(new Date(em_cont_end), new Date(firstDay)) + 1,
                     total_lop: duty_statuslop,
-                    totalLeave: leave_type,
-                    total_days: parseFloat(duty_worked) + parseFloat(leave_type) - parseFloat(duty_statuslop)
+                    totalLeave: noofleaves,
+                    total_days: duty_status
+                    //total_days: parseFloat(duty_worked) + parseFloat(duty_statuslop) - parseFloat(duty_statuslop)
                 }
                 setattendanceData(frmData)
-            }
-            else if (success === 0) {
-
+                const daysInMonth = getDaysInMonth(new Date(em_cont_end))
+                const arrearsalary = gross_salary * duty_status / daysInMonth
+                const salary = Math.round(arrearsalary / 10) * 10
+                setArrearSalary(salary)
             }
             else {
-                errorNofity("Error Occurred!!!Please Contact EDP")
+                setattendanceData({})
             }
+
         }
         getattnsdata()
     }, [em_cont_end])
+
     //getting attendance of the grace period
-    useEffect(() => {
-        const dataarrear = {
-            emp_id: no,
-            em_no: id,
-            start: moment(em_cont_end).format('YYYY-MM-DD'),
-            end: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD'),
-        }
-        const getattnsdata = async () => {
-            const result = await axioslogin.post('/attandancemarking/getattendancetotal', dataarrear)
-            const { success, message } = result.data
-            if (success === 1) {
-                const { duty_worked, leave_type, gross_salary, duty_statuslop } = message[0]
-                const totaldays = parseFloat(duty_worked) + parseFloat(leave_type) - parseFloat(duty_statuslop)
-                const daysinamonth = getDaysInMonth(new Date(em_cont_end))
-                const arrearsalary = parseFloat(gross_salary) * parseFloat(totaldays) / daysinamonth
-                setArrearSalary(arrearsalary)
-            }
-            else if (success === 0) {
-                setArrearSalary(0)
-            }
-            else {
-                errorNofity("Error Occurred!!!Please Contact EDP")
-            }
-        }
-        getattnsdata()
-    }, [em_cont_end, grace_period])
+    // useEffect(() => {
+    //     const dataarrear = {
+    //         emp_id: no,
+    //         em_no: id,
+    //         start: moment(em_cont_end).format('YYYY-MM-DD'),
+    //         end: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD'),
+    //     }
+    //     const getattnsdata = async () => {
+    //         const result = await axioslogin.post('/attandancemarking/getattendancetotal', dataarrear)
+    //         const { success, message } = result.data
+    //         if (success === 1) {
+    //             const { duty_worked, leave_type, gross_salary, duty_statuslop } = message[0]
+    //             const totaldays = parseFloat(duty_worked) + parseFloat(leave_type) - parseFloat(duty_statuslop)
+    //             const daysinamonth = getDaysInMonth(new Date(em_cont_end))
+    //             const arrearsalary = parseFloat(gross_salary) * parseFloat(totaldays) / daysinamonth
+    //             setArrearSalary(arrearsalary)
+    //         }
+    //         else if (success === 0) {
+    //             setArrearSalary(0)
+    //         }
+    //         else {
+    //             errorNofity("Error Occurred!!!Please Contact EDP")
+    //         }
+    //     }
+    //     getattnsdata()
+    // }, [em_cont_end, grace_period])
+
+
     //function for process attendance
     const dispatch = useDispatch()
     const ProcessAttendance = async () => {
@@ -216,4 +227,4 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     )
 }
 
-export default AttendanceDetails
+export default memo(AttendanceDetails) 
