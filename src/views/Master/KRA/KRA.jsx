@@ -35,7 +35,7 @@ const KRA = () => {
             krastatus: krastatus === false ? 0 : 1
         }
 
-    })
+    }, [kra, krastatus])
 
     const getDataTable = useCallback((params) => {
         setvalue(1)
@@ -47,7 +47,7 @@ const KRA = () => {
         }
         setFormData(formData)
         setslno(kra_slno)
-    })
+    }, [])
 
     const postupdateData = useMemo(() => {
         return {
@@ -55,7 +55,7 @@ const KRA = () => {
             kra_status: krastatus === false ? 0 : 1,
             kra_slno: slno
         }
-    })
+    }, [kra, krastatus, slno])
 
     //saving form Data
     const SubmitFormData = useCallback((e) => {
@@ -100,7 +100,7 @@ const KRA = () => {
         else {
             update(postupdateData)
         }
-    }, [postData, postupdateData])
+    }, [postData, postupdateData, count, value])
     const RedirectToMasterPage = () => {
         history.push('/Home/Settings');
     }

@@ -6,7 +6,7 @@ const ManpowerRequest = React.lazy(() => import('./views/recruitment/manpowerReq
 const Vacancy = React.lazy(() => import('./views/recruitment/VacancyAnounce/Vacancy'));
 const Settings = React.lazy(() => import('./Menus/Settings'));
 const Reports = React.lazy(() => import('./Menus/Reports'));
-const Departmentmaster = React.lazy(() => import('./views/Master/Departmentmaster'));
+const Departmentmaster = React.lazy(() => import('./views/Master/DepartmentMaster/DepartmentMasterPage'));
 const DepatmentEdit = React.lazy(() => import('./views/Master/DepartmentMaster/DeptEdit'));
 const DepartmentSectionMast = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSectionMast'));
 const DepartmentSectionEdit = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSecEdit'));
@@ -243,9 +243,13 @@ const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingSchedul
 const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
 const TrainingUpdate = React.lazy(() => import('./views/TrainingDevelopment/TrainingUpdate/TrainingUpdate'))
 const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
-
-
-
+const CommonReqst = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstMainPage'))
+const CommonRequstMaster = React.lazy(() => import('./views/Master/CommonRequstMaster/CommonRequestMast'))
+const CommonReqstInchargeApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/InchargeApproval'))
+const CommonReqstHodApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HodApproval'))
+const CommonReqstCeoApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/CeoApproval'))
+const CommonReqstHrApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HrApproval'))
+const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstHrView'))
 
 const routes = [
 
@@ -482,6 +486,15 @@ const routes = [
   { path: '/Home/DepartmentalTrainingSchedule', exact: true, name: 'Departmental Training Schedule', component: DepartmentalTrainingSchedule },
   { path: '/Home/TrainingUpdate', exact: true, name: 'Training Update', component: TrainingUpdate },
   { path: '/Home/TrainingEmployeeSchedule', exact: true, name: 'Training Employee Schedule', component: TrainingEmployeeSchedule },
+  { path: '/Home/CommonReqst', exact: true, name: 'Common Request', component: CommonReqst },
+  { path: '/Home/CommonRequstMaster', exact: true, name: 'Common Request Master', component: CommonRequstMaster },
+  { path: '/Home/CommonReqstInchargeApprvl', exact: true, name: 'Common Request Incharge Approval', component: CommonReqstInchargeApprvl },
+  { path: '/Home/CommonReqstHodApprvl', exact: true, name: 'Common Request Hod Approval', component: CommonReqstHodApprvl },
+  { path: '/Home/CommonReqstCeoApprvl', exact: true, name: 'Common Request Ceo Approval', component: CommonReqstCeoApprvl },
+  { path: '/Home/CommonReqstHrApprvl', exact: true, name: 'Common Request Hr Approval', component: CommonReqstHrApprvl },
+  { path: '/Home/CommonReqstHrView', exact: true, name: 'Common Request Hr View', component: CommonReqstHrView },
+
 
 ]
+
 export default routes

@@ -53,14 +53,7 @@ export const py_setting_three = [
     { to: '/Home/TrainingType', name: 'Training Type Master', slno: 222 },
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
     { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 252 },
-
-
-
-
-
-
-
-
+    { to: '/Home/CommonRequstMaster', name: 'Common Request Master', slno: 240 },
 
 ]
 

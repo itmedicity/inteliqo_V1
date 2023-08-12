@@ -25,8 +25,6 @@ const EarnDectEdit = () => {
         inclu_pf: false,
         inclu_protx: false,
         earndec_status: false
-
-
     });
 
     // use context
@@ -47,11 +45,9 @@ const EarnDectEdit = () => {
                     inclu_protx: include_protax === 1 ? true : false,
                     earndec_status: earnded_status === 1 ? true : false
                 }
-
                 setearnDeduct(frmdata)
                 setEarnTypecontext(erning_type_id)
             }
-
         }
         getiddetl();
     }, [id, setEarnTypecontext])
@@ -70,7 +66,6 @@ const EarnDectEdit = () => {
     // on change function 
     const updateFormData = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-
         setearnDeduct({ ...earndecData, [e.target.name]: value })
     }
 
@@ -85,7 +80,6 @@ const EarnDectEdit = () => {
 
     }
 
-
     // on submit
     const eandeduct = {
         earnded_name: ern_deducttype,
@@ -97,31 +91,24 @@ const EarnDectEdit = () => {
         earnded_status: earndec_status === true ? 1 : 0,
         edit_user: employeeNumber(),
         earnded_id: id
-
-
     }
 
     const submitearndeductupdate = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/earn', eandeduct)
         const { success, message } = result.data;
-
-
-
         if (success === 0 && success === 1) {
             infoNofity(message);
         } else if (success === 2) {
             succesNofity(message);
             setearnDeduct(deful)
-            // history.push(`/Home/EarnDeduct`)
+            history.push(`/Home/EarnDeduct`)
             setEarnTypecontext(0)
             setcount(count + 1);
         } else {
             errorNofity(message);
         }
     }
-
-
 
     return (
         <Fragment>

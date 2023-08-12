@@ -2,7 +2,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, IconButton, Paper } from '@mui/material'
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, memo, useMemo } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,7 +27,7 @@ import _ from 'underscore';
 import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, employeeUpdateExpTable, employeeUpdatePersonaltable, employeeUpdateQualificationTable, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 // import LeaveProcessCard from '../EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessCard';
-const LeaveProcess = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'));
+//const LeaveProcess = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/LeaveProcessMainCard'));
 
 const ContractRenewalProcess = () => {
   const { id, no } = useParams()
@@ -81,7 +81,7 @@ const ContractRenewalProcess = () => {
 
   const [contractrenew, setContractrenew] = useState(false)//checkbox state for contract renewal
   const [contractTpPermanent, setcontractTpPermanent] = useState(false)//checkbox state for contract permanent
-  const [leaveprocess, setLeaveprocess] = useState(0)
+  //const [leaveprocess, setLeaveprocess] = useState(0)
 
   useEffect(() => {
     dispatch(setPersonalData(no))
@@ -629,4 +629,4 @@ const ContractRenewalProcess = () => {
   )
 }
 
-export default ContractRenewalProcess
+export default memo(ContractRenewalProcess) 

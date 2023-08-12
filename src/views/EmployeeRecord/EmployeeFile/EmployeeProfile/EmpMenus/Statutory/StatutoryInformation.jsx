@@ -18,6 +18,8 @@ const StatutoryInformation = () => {
     const [enable, Setenable] = useState(true)//use state for enable fields on clicking edit button
     const [value, setValue] = useState(1) //use state for setting serail no for edit
 
+    const [leaveProcessdata, setleaveProcessdata] = useState({})
+
     //setting initial state
     const [formData, SetformData] = useState({
         pf: false,
@@ -27,10 +29,10 @@ const StatutoryInformation = () => {
         uanno: '',
         nps: false,
         npsnumber: '',
-        npsamount: '',
+        npsamount: 0,
         lwf: false,
         lwfnumber: '',
-        lwfamount: ''
+        lwfamount: 0
     })
     const { pf, pfno, esi, esino, uanno, nps,
         npsnumber, npsamount, lwf, lwfnumber, lwfamount } = formData
@@ -54,6 +56,25 @@ const StatutoryInformation = () => {
         }
         getesiallowed()
     }, [no])
+
+    useEffect(() => {
+        const LeaveProcess = async (id) => {
+            const result = await axioslogin.get(`/yearleaveprocess/leaveproccess/data/${id}`)
+            const { data, success } = result.data
+            if (success === 0) {
+                const arr = data.find((val) => val.llvetype_slno === 7)
+                setleaveProcessdata(arr)
+            } else {
+                setleaveProcessdata({})
+            }
+        }
+
+        if (esi === true) {
+            LeaveProcess(id)
+        } else {
+        }
+    }, [esi, id])
+
 
     //useEffect
     useEffect(() => {
@@ -206,9 +227,15 @@ const StatutoryInformation = () => {
             const result = await axioslogin.post('/empesipf', postData)
             const { success, message } = result.data
             if (success === 1) {
-                succesNofity(message)
+                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', leaveProcessdata)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                } else {
+                    errorNofity(message)
+                }
             } else {
-                errorNofity('Error Occured!!!Please Contact EDP')
+                errorNofity(message)
             }
         } else if (value === 1 && Esiallowed === 2) {
             const result = await axioslogin.post('/empesipf/create', postNps)

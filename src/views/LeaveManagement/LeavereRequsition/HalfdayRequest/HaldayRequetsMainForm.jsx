@@ -142,7 +142,8 @@ const HaldayRequetsMainForm = () => {
     //ONCHAGE LEAVE TYPE FUNCTION
     const handleChangeLeaveType = useCallback(async (e) => {
         setLeveTypeState(e.target.value)
-    })
+        dispatch(getCreditedCasualLeave(em_id))
+    }, [em_id])
 
     //ONCHAGE LEAVE NAME
     const handleChangeLeaveName = useCallback(async (e, { props }) => {

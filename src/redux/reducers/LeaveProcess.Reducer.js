@@ -9,7 +9,8 @@ const {
     FETCH_PRIVILEGE_LEAVE_LIST,
     FETCH_CARRY_FORWARD_LEAVE_LIST,
     FETCH_CREDIT_LEAVE_LIST,
-    UPDATE_CASUAL_LEAVE
+    UPDATE_CASUAL_LEAVE,
+    FETCH_EMP_ESI_PF_DATA
 } = Actiontypes;
 
 const holiday = {
@@ -116,6 +117,21 @@ export const updateCasualLeaveStatus = (state = casualLeaveStatus, { type }) => 
     switch (type) {
         case UPDATE_CASUAL_LEAVE:
             return state + 1
+        default:
+            return state
+    }
+}
+
+
+const statutoryData = {
+    status: false,
+    dataList: []
+};
+
+export const setStatutoryInfo = (state = creditLeaveList, { type, payload }) => {
+    switch (type) {
+        case FETCH_EMP_ESI_PF_DATA:
+            return { ...state, data: payload }
         default:
             return state
     }

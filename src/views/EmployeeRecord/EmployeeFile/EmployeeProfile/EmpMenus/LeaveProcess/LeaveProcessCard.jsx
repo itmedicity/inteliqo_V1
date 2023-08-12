@@ -29,6 +29,7 @@ const LeaveProcessCard = ({ data, category }) => {
 
     const [btnState, setBtnState] = useState(false)
     const [labelState, setLabelState] = useState(false)
+    const [statutory_esi, setStatutoryEsi] = useState(0)
 
     const holiday = useSelector((state) => state.getHolidayList, _.isEqual)
     const commonLve = useSelector((state) => state.getCommonLeave, _.isEqual)
@@ -37,6 +38,22 @@ const LeaveProcessCard = ({ data, category }) => {
         (state) => state.getEmployeeProcessRecord.ProcessRecord,
         _.isEqual,
     )
+
+    const statutory = useSelector((state) => state.setStatutoryInfo.data, _.isEqual)
+    const esiInfo = useMemo(() => statutory, [statutory])
+
+    useEffect(() => {
+
+        if (Object.keys(esiInfo).length !== 0) {
+            const { em_esi_status } = esiInfo[0]
+            setStatutoryEsi(em_esi_status)
+        } else {
+            setStatutoryEsi(0)
+        }
+
+    }, [esiInfo])
+
+
 
     const LeaveProcessedData = useMemo(() => data, [data])
     const categoryData = useMemo(() => category, [category])
@@ -119,9 +136,8 @@ const LeaveProcessCard = ({ data, category }) => {
                     }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -119' + err) })
 
                 } else if (leaveName === 2) {
-
                     //Common Off days Leave Credit option
-                    updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow).then((values) => {
+                    updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow, statutory_esi).then((values) => {
                         const { status, data } = values;
                         //insert Common Leaves
                         if (status === 1) {
