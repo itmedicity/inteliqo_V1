@@ -232,6 +232,20 @@ const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceVie
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
 const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
+const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
+const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
+const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
+const TrainerName = React.lazy(() => import('./views/Master/TrainerNameMaster/TrainerName'))
+const TrainingTopic = React.lazy(() => import('./views/Master/TrainingTopicMaster/TrainingTopic'))
+const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuestionsMaster/TrainingQuestions'))
+const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
+const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingScheduleMaster/TrainingSchedule'))
+const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
+const TrainingUpdate = React.lazy(() => import('./views/TrainingDevelopment/TrainingUpdate/TrainingUpdate'))
+const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
+
+
+
 
 const routes = [
 
@@ -455,7 +469,19 @@ const routes = [
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
   { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
   { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
-  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList }
-]
+  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
+  //training
+  { path: '/Home/TrainingType', exact: true, name: 'Training Type Master', component: TrainingType },
+  { path: '/Home/TrainingCategory', exact: true, name: 'Training Category Master', component: TrainingCategory },
+  { path: '/Home/TrainingName', exact: true, name: 'Training Name Master', component: TrainingName },
+  { path: '/Home/TrainerName', exact: true, name: 'Trainer Name Master', component: TrainerName },
+  { path: '/Home/TrainingTopic', exact: true, name: 'Training Topic Master', component: TrainingTopic },
+  { path: '/Home/TrainingQuestions', exact: true, name: 'Training Questions Master', component: TrainingQuestions },
+  { path: '/Home/SchedulingTime', exact: true, name: 'Scheduling Time Master', component: SchedulingTime },
+  { path: '/Home/TrainingSchedule', exact: true, name: 'Training Schedule Master', component: TrainingSchedule },
+  { path: '/Home/DepartmentalTrainingSchedule', exact: true, name: 'Departmental Training Schedule', component: DepartmentalTrainingSchedule },
+  { path: '/Home/TrainingUpdate', exact: true, name: 'Training Update', component: TrainingUpdate },
+  { path: '/Home/TrainingEmployeeSchedule', exact: true, name: 'Training Employee Schedule', component: TrainingEmployeeSchedule },
 
+]
 export default routes

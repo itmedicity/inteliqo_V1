@@ -5,7 +5,19 @@ const TrainingAndDevelopment = [
         men_slno: 55,
         component: CNavItem,
         name: 'Department Wise Training',
-        to: '/homes',
+        to: '/Home/DepartmentalTrainingSchedule',
+    },
+    {
+        men_slno: 255,
+        component: CNavItem,
+        name: 'Training Update',
+        to: '/Home/TrainingUpdate',
+    },
+    {
+        men_slno: 256,
+        component: CNavItem,
+        name: 'Employee Training Schedule',
+        to: '/Home/TrainingEmployeeSchedule',
     },
     {
         men_slno: 56,
