@@ -1,5 +1,4 @@
 import React, { useEffect, memo } from 'react'
-import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,26 +16,24 @@ const DeptSelectByRedux = ({ style, value, setValue }) => {
     const deptValues = useMemo(() => dept, [dept])
 
     return (
-        <Box >
-            <FormControl fullWidth size="small" sx={{ minWidth: 300, maxWidth: 500 }}  >
-                <Select
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    size="small"
-                    fullWidth
-                    variant='outlined'
-                    // sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
-                    sx={{ ...style, minWidth: 100 }}
-                >
-                    <MenuItem value={0} disabled >Select Department</MenuItem>
-                    {
-                        deptValues && deptValues.map((val, index) => {
-                            return <MenuItem key={index} value={val.dept_id}>{val.dept_name}</MenuItem>
-                        })
-                    }
-                </Select>
-            </FormControl>
-        </Box >
+        <FormControl fullWidth size="small"  >
+            <Select
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                size="small"
+                fullWidth
+                variant='outlined'
+                // sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
+                sx={{ ...style, minWidth: 100 }}
+            >
+                <MenuItem value={0} disabled >Select Department</MenuItem>
+                {
+                    deptValues && deptValues.map((val, index) => {
+                        return <MenuItem key={index} value={val.dept_id}>{val.dept_name}</MenuItem>
+                    })
+                }
+            </Select>
+        </FormControl>
     )
 }
 

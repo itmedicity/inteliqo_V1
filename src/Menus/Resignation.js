@@ -6,12 +6,12 @@ const Resignation = [
         name: 'Employee Inactive',
         to: '/Home/EmployeeInactiveHR',
     },
-    {
-        men_slno: 61,
-        component: CNavItem,
-        name: 'Resignation Request',
-        to: '/Home/ResignationRequest',
-    },
+    // {
+    //     men_slno: 61,
+    //     component: CNavItem,
+    //     name: 'Resignation Request',
+    //     to: '/Home/ResignationRequest',
+    // },
     {
         men_slno: 62,
         component: CNavItem,

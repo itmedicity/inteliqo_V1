@@ -170,7 +170,7 @@ const DutyPlanTopCard = () => {
             >
                 <Box
                     sx={{
-                        display: 'flex',
+                        flex: 1,
                         mt: 0.5,
                         px: 0.3,
                         // width: { sm: 100, md: 100, lg: 100 },
@@ -193,7 +193,7 @@ const DutyPlanTopCard = () => {
                 </Box>
                 <Box
                     sx={{
-                        display: 'flex',
+                        flex: 1,
                         mt: 0.5,
                         px: 0.3,
                         // width: { sm: , md: 100, lg: 100 },
@@ -217,7 +217,7 @@ const DutyPlanTopCard = () => {
                 </Box>
                 <Box
                     sx={{
-                        display: 'flex',
+                        flex: 1,
                         mt: 0.5,
                         px: 0.3,
                     }}
@@ -226,7 +226,7 @@ const DutyPlanTopCard = () => {
                 </Box>
                 <Box
                     sx={{
-                        display: 'flex',
+                        flex: 1,
                         mt: 0.5,
                         px: 0.3,
                     }}

@@ -1,6 +1,6 @@
 import { CssVarsProvider } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import { addDays, differenceInDays, getDaysInMonth } from 'date-fns';
+import { addDays, differenceInDays, getDaysInMonth, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -12,20 +12,15 @@ import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
 
 const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }) => {
+
+    const dispatch = useDispatch()
     const [arrearSalary, setArrearSalary] = useState(0)
     const [attandFlag, setAttancFlag] = useState(0)
-    //useEffect for getting leave Details
-    var date = new Date(em_cont_end);
-    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 
-    const data = useMemo(() => {
-        return {
-            emp_id: no,
-            em_no: id,
-            start: moment(firstDay).format('YYYY-MM-DD'),
-            end: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
-        }
-    }, [firstDay, em_cont_end])
+    var date = new Date(em_cont_end);
+    var initialDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
+    const firstDay = useMemo(() => initialDay, [initialDay])
 
     const [attendanceData, setattendanceData] = useState({
         duty_worked: 0,
@@ -34,6 +29,15 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
         total_days: 0
     })
     const { duty_worked, total_lop, totalLeave, total_days } = attendanceData;
+
+    const data = useMemo(() => {
+        return {
+            emp_id: no,
+            em_no: id,
+            start: moment(firstDay).format('YYYY-MM-DD'),
+            end: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
+        }
+    }, [firstDay, em_cont_end, no, id])
 
     useEffect(() => {
         const getattnsdata = async () => {
@@ -62,37 +66,6 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
         getattnsdata()
     }, [em_cont_end])
 
-    //getting attendance of the grace period
-    // useEffect(() => {
-    //     const dataarrear = {
-    //         emp_id: no,
-    //         em_no: id,
-    //         start: moment(em_cont_end).format('YYYY-MM-DD'),
-    //         end: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD'),
-    //     }
-    //     const getattnsdata = async () => {
-    //         const result = await axioslogin.post('/attandancemarking/getattendancetotal', dataarrear)
-    //         const { success, message } = result.data
-    //         if (success === 1) {
-    //             const { duty_worked, leave_type, gross_salary, duty_statuslop } = message[0]
-    //             const totaldays = parseFloat(duty_worked) + parseFloat(leave_type) - parseFloat(duty_statuslop)
-    //             const daysinamonth = getDaysInMonth(new Date(em_cont_end))
-    //             const arrearsalary = parseFloat(gross_salary) * parseFloat(totaldays) / daysinamonth
-    //             setArrearSalary(arrearsalary)
-    //         }
-    //         else if (success === 0) {
-    //             setArrearSalary(0)
-    //         }
-    //         else {
-    //             errorNofity("Error Occurred!!!Please Contact EDP")
-    //         }
-    //     }
-    //     getattnsdata()
-    // }, [em_cont_end, grace_period])
-
-
-    //function for process attendance
-    const dispatch = useDispatch()
     const ProcessAttendance = async () => {
         const date = new Date()
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -100,15 +73,16 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
             type: Actiontypes.FETCH_CONT_CLOSE_ATTENDANCE, payload: {
                 em_id: no,
                 em_no: id,
-                attendance_marking_month: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
+                attendance_marking_month: moment(startOfMonth(new Date(em_cont_end))).format('YYYY-MM-DD'),
                 total_working_days: attendanceDays,
                 tot_days_present: duty_worked,
                 total_leave: totalLeave,
                 total_lop: total_lop,
                 total_days: (parseFloat(duty_worked) + parseFloat(totalLeave)),
-                attnd_mark_startdate: moment(firstDay).format('YYYY-MM-DD'),
+                attnd_mark_startdate: moment(startOfMonth(new Date(em_cont_end))).format('YYYY-MM-DD'),
                 attnd_mark_enddate: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
-                contract_renew_date: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD')
+                contract_renew_date: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD'),
+                attendance_status: 'C'
             }
         })
         succesNofity("Attandance Data Processed Successfully!!")
@@ -127,11 +101,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     return (
         <Fragment>
             <Box sx={{ flex: 1 }}>
-                <Paper square elevation={0} sx={{
-                    display: "flex",
-                    p: 1,
-
-                }}  >
+                <Paper square elevation={0} sx={{ display: "flex", p: 1 }}  >
                     <Box sx={{ flex: 1 }}>
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
@@ -172,17 +142,8 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                             />
                         </Box>
                     }
-
                 </Paper>
-
-                <Paper square elevation={3} sx={{
-                    display: "flex",
-                    p: 1,
-                    alignItems: "center",
-                    flexDirection: 'column'
-                }}>
-
-
+                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
@@ -219,10 +180,8 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                             </CssVarsProvider>
                         </Box>
                     </Box>
-
                 </Paper>
             </Box>
-
         </Fragment>
     )
 }

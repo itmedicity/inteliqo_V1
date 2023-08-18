@@ -40,20 +40,20 @@ const AttendanceGenerateAuto = () => {
             const { succes, dataa } = result1.data
             if (succes === 1) {
                 const arr = dataa && dataa.map((val, index) => {
-                    return val.em_no
+                    return val.em_id
                 })
                 // setEmpdata(dataa);
                 const postdata = {
-                    em_no: arr,
+                    emp_id: arr,
                     from: fromdate,
                     to: todate
                 }
-                const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
+                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
                 const { success, data } = result.data
                 if (success === 1) {
                     const finalDataArry = dataa?.map((val) => {
                         const empwise = data.filter((value) => {
-                            return value.em_no === val.em_no ? 1 : 0
+                            return value.emp_id === val.em_id ? 1 : 0
                         })
                         const total = empwise.length
                         const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HP' || val.duty_desc === 'HFD' || val.duty_desc === 'EG' || val.duty_desc === 'LC')).length
@@ -101,7 +101,6 @@ const AttendanceGenerateAuto = () => {
         }
     }
 
-
     const saveData = async () => {
         const array1 = final && final.map((val, index) => {
             const obje = {
@@ -128,6 +127,8 @@ const AttendanceGenerateAuto = () => {
             return obje
         })
         const checkData = {
+            dept_id: dept,
+            sect_id: deptSec,
             attendance_marking_month: fromdate
         }
         const dutyLock = final && final.map((val, index) => {
