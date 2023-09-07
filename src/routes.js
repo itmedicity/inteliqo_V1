@@ -239,6 +239,8 @@ const CommonReqstHodApprvl = React.lazy(() => import('./views/LeaveManagement/Co
 const CommonReqstCeoApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/CeoApproval'))
 const CommonReqstHrApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HrApproval'))
 const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstHrView'))
+const EndOfService = React.lazy(() => import('./views/Resignation/EndOfService/FullandFinalSettlement'))
+const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinanceApproval/EODFinaneApproval'))
 
 const routes = [
 
@@ -470,7 +472,8 @@ const routes = [
   { path: '/Home/CommonReqstCeoApprvl', exact: true, name: 'Common Request Ceo Approval', component: CommonReqstCeoApprvl },
   { path: '/Home/CommonReqstHrApprvl', exact: true, name: 'Common Request Hr Approval', component: CommonReqstHrApprvl },
   { path: '/Home/CommonReqstHrView', exact: true, name: 'Common Request Hr View', component: CommonReqstHrView },
-
+  { path: '/Home/EndOfService', exact: true, name: 'Full and Final Settlement', component: EndOfService },
+  { path: '/Home/EODFinanceApproval', exact: true, name: 'EOD Finanace Approval', component: EODFinanceApproval },
 
 ]
 

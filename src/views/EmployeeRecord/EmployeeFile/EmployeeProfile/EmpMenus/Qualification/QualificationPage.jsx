@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, IconButton, Paper, TextField } from '@mui/material'
+import { Box, IconButton, Paper, TextField, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import EducationSelectRedux from 'src/views/MuiComponents/EducationSelectRedux';
@@ -21,6 +21,7 @@ import { useParams } from 'react-router-dom';
 import _ from 'underscore';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const QualificationPage = () => {
 
@@ -119,6 +120,7 @@ const QualificationPage = () => {
             const { success, data } = result.data;
             if (success === 1) {
                 setTableData(data);
+                setcount(0)
             } else if (success === 0) {
                 setTableData([])
                 infoNofity("No Qualification is added to this employee")
@@ -156,14 +158,27 @@ const QualificationPage = () => {
         { headerName: 'Education ', field: 'edu_desc', wrapText: true, minWidth: 200 },
         { headerName: 'Course ', field: 'cour_desc', wrapText: true, minWidth: 450 },
         { headerName: 'Specialization ', field: 'spec_desc', wrapText: true, minWidth: 450 },
-        { headerName: 'Pass/Fail', field: 'pass', wrapText: true, minWidth: 200 },
+        { headerName: 'Pass/Fail', field: 'pass', wrapText: true, minWidth: 100 },
         {
             headerName: 'Edit', minWidth: 200, cellRenderer: params =>
-                <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
-                    <EditIcon />
-                </IconButton>
+                // <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
+                //     <EditIcon />
+                // </IconButton>
+                <Fragment>
+                    <Tooltip title="Edit" followCursor placement='top' arrow >
+                        <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete" followCursor placement='top' arrow >
+                        <IconButton sx={{ pb: 1 }} onClick={() => deletequal(params)}>
+                            <DeleteIcon color='primary' />
+                        </IconButton>
+                    </Tooltip>
+                </Fragment>
         },
     ])
+
     const postData = useMemo(() => {
         return {
             em_no: id,
@@ -405,6 +420,20 @@ const QualificationPage = () => {
 
 
     }, [])
+
+    const deletequal = useCallback(async (params) => {
+        const data = params.api.getSelectedRows()
+        const { emqual_slno } = data[0]
+        const result = await axioslogin.delete(`/qualify/${emqual_slno}`)
+        const { success, message } = result.data
+        if (success === 1) {
+            succesNofity(message)
+            setcount(count + 1)
+        } else {
+            warningNofity(message)
+        }
+    }, [count])
+
 
     return (
         <Fragment>

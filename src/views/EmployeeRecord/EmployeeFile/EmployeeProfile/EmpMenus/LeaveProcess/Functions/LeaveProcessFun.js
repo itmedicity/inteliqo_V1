@@ -1,4 +1,4 @@
-import { compareAsc, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
+import { compareAsc, differenceInDays, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { employeeNumber } from 'src/views/Constant/Constant'
@@ -770,9 +770,16 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
   if (successcommonleave === 1) {
+    const today = new Date();
+    const result = startOfYear(new Date(today))
+    const res = differenceInDays(today, result)
+    const obj = {
+      leave_credit_policy_count: 365 - res
+    }
+    const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
     // Filter the Maternity For the Male Employee
-    const filterCommonArray = messagecommonleave.filter((val) => val.lvetype_slno !== 2);
-    const newCommonArray = em_gender === 1 ? filterCommonArray : messagecommonleave;
+    const filterCommonArray = arr.filter((val) => val.lvetype_slno !== 2);
+    const newCommonArray = em_gender === 1 ? filterCommonArray : arr;
     let commondata = newCommonArray.map((val) => {
       const commonleave = {
         em_no: em_no,
@@ -788,8 +795,8 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
       }
       return commonleave
     }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 || statutory_esi === 1 && val.llvetype_slno !== 7)
-
     return { ...commonLeaveMessage, status: 1, data: commondata }
+
   } else {
     return { ...commonLeaveMessage, status: 0, data: [] }
   }

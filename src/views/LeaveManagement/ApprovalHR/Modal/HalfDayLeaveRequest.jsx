@@ -32,7 +32,6 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         const { success, data } = resultdel?.data;
         if (success === 1) {
             const { planslno, leavedate } = data[0]
-            console.log((data));
             setPlanslno(planslno)
             setleaveDate(leavedate)
             setReqDetl(data)
@@ -178,7 +177,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 Leave Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(reqDate).format('DD-MM-YYYY')}
+                                {moment(leaveDate).format('DD-MM-YYYY')}
                             </Typography>
                         </Box>
                     </Box>
