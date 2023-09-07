@@ -59,15 +59,20 @@ const ResignationMainPage = () => {
                     const { desg_notice_prd } = data[0]
                     setNoticePeriod(desg_notice_prd)
                 }
+                else {
+                    setNoticePeriod(0)
+                }
             }
             getNoticePeriod()
         }
     }, [em_designation])
 
     useEffect(() => {
-        if (request_date !== '') {
+        if (request_date !== '' && resignation_type === 1) {
             const result = addDays(new Date(request_date), noticeperiod)
             setRelivingdate(result)
+        } else {
+            setRelivingdate(new Date(request_date))
         }
 
     }, [request_date, noticeperiod])
@@ -86,7 +91,7 @@ const ResignationMainPage = () => {
             resign_reason: resignation_reason,
             notice_period: noticeperiod,
             incharge_required: (authorization_incharge === 1 && incharge === 1) ? 1 :
-                (hod === 1) ? 1 :
+                (authorization_incharge === 1 && incharge === 0) ? 1 :
                     (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
             inch_app_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
                 (hod === 1) ? 1 :
@@ -114,7 +119,6 @@ const ResignationMainPage = () => {
             hr_required: 1,
             ceo_required: co_assign,
         }
-        console.log(postData);
         const result = await axioslogin.post('/Resignation', postData)
         const { success, message } = result.data
         if (success === 1) {
@@ -268,7 +272,7 @@ const ResignationMainPage = () => {
                                         fullWidth
                                         id="fullWidth"
                                         size="small"
-                                        value={moment(addDays(new Date(request_date), noticeperiod)).format('DD-MM-YYYY')}
+                                        value={resignation_type === 1 ? moment(addDays(new Date(request_date), noticeperiod)).format('DD-MM-YYYY') : moment(new Date(request_date)).format('DD-MM-YYYY')}
                                         disabled
                                     />
                                 </Box>

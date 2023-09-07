@@ -11,6 +11,9 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 
 const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
 
+    console.log(data);
+    console.log(slno);
+
     const loginId = useMemo(() => loginEmp, [loginEmp])
 
     const [details, setDetails] = useState({
@@ -26,19 +29,21 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         resign_reason: '',
         relieving_date: '',
         inch_coment: '',
-        em_id: 0
+        em_id: 0,
+        resignation_type: 0
     })
     const { em_name, em_no, request_date, resig_slno,
         sect_name, status, resign_reason, relieving_date, inch_coment,
-        dept_id, sect_id, em_id } = details;
+        dept_id, sect_id, em_id, resignation_type } = details;
     const [remark, setRemark] = useState('')
     const [replacement, setreplacement] = useState(false)
     const [dueDept, SetDueDept] = useState({})
+    const [salaryPenalty, setSalarypenalty] = useState(false)
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id,
-                sect_name, resign_reason, relieving_date, status, inch_coment, em_id } = data
+                sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type } = data
             const details = {
                 dept_id: dept_id,
                 dept_name: dept_name,
@@ -52,7 +57,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 resign_reason: resign_reason,
                 relieving_date: relieving_date,
                 inch_coment: inch_coment,
-                em_id: em_id
+                em_id: em_id,
+                resignation_type: resignation_type
             }
             setDetails(details)
         } else {
@@ -190,6 +196,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         }
     }
 
+    console.log(salaryPenalty);
+
     const submitFormdata = useCallback(async (e) => {
         if (slno === 1) {
             const approveData = {
@@ -270,17 +278,22 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         } else {
+
             const approveData = {
                 hr_id: loginId,
                 hr_app_date: moment(new Date()).format('YYYY-MM-DD'),
                 hr_app_status: 1,
                 hr_coment: remark,
                 resign_status: 'A',
+                replacement_required_hr: replacement === true ? 1 : 0,
+                salaryPenalty: salaryPenalty === true ? 1 : 0,
                 resig_slno: resig_slno,
             }
+
             const result = await axioslogin.patch('/Resignation/resignapproval', approveData)
             const { success, message } = result.data
             if (success === 1) {
+
                 const result = await axioslogin.post('/dueclearence', dueDept)
                 const { success, message } = result.data
                 if (success === 1) {
@@ -304,7 +317,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         }
-    }, [remark, replacement, resig_slno, loginId, slno, dueDept])
+    }, [remark, replacement, resig_slno, loginId, slno, dueDept, salaryPenalty])
 
     return (
         <Modal
@@ -408,6 +421,14 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                             {resign_reason}
                         </Typography>
                     </Box>
+
+                    {
+                        resignation_type === '2' ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex: 1, backgroundColor: 'lightpink' }}>
+                            <Typography fontSize="sm" fontWeight="lg"  >
+                                Employee Under 24 hour Resignation
+                            </Typography>
+                        </Box> : null
+                    }
                     {
                         slno === 2 ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
                             <Typography fontSize="sm" fontWeight="lg"  >
@@ -422,16 +443,29 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 <Box sx={{ pt: 0.5 }} >
                     <Textarea name="Outlined" placeholder="Remark For Approve/Reject The Request here…"
                         variant="outlined" onChange={(e) => setRemark(e.target.value)} />
-                    <Box sx={{ pl: 1.5, mt: 0.5 }}>
-                        <FormControlLabel
-                            control={<Checkbox />}
-                            label="  Replacement Required"
-                            checked={replacement}
-                            name="replacement"
-                            onChange={(e) => setreplacement(e.target.checked)}
-                        />
-                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                        <Box sx={{ pl: 1.5, mt: 0.5 }}>
+                            <FormControlLabel
+                                control={<Checkbox />}
+                                label="  Replacement Required"
+                                checked={replacement}
+                                name="replacement"
+                                onChange={(e) => setreplacement(e.target.checked)}
+                            />
+                        </Box>
+                        {
+                            slno === 4 ? <Box sx={{ pl: 1.5, mt: 0.5 }}>
+                                <FormControlLabel
+                                    control={<Checkbox />}
+                                    label=" Salary Penalty"
+                                    checked={salaryPenalty}
+                                    name="salaryPenalty"
+                                    onChange={(e) => setSalarypenalty(e.target.checked)}
+                                />
+                            </Box> : null
+                        }
 
+                    </Box>
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                         <Button variant="solid" color="success" onClick={submitFormdata}>
                             Request Approve

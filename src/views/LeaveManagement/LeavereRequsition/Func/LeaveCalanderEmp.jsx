@@ -36,10 +36,10 @@ const LeaveCalanderEmp = () => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    data?.map((val) => {
+                                    data?.map((val, index) => {
                                         const leaveType = val.typeleve;
                                         return < TableRow
-                                            key={val.typeleve}
+                                            key={index}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell component="th" scope="row" sx={{ textTransform: 'capitalize' }} >

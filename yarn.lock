@@ -9680,6 +9680,11 @@
     "regex-not" "^1.0.2"
     "safe-regex" "^1.1.0"
 
+"to-words@^3.6.1":
+  "integrity" "sha512-X2KDRjBXM0bQ4eTblqNnVfIBGEwhSClR3eWubD6B7gY29vh1k+ntQGSaShwgrsQT3Akt/tbIjKkn8mMOYHihnw=="
+  "resolved" "https://registry.npmjs.org/to-words/-/to-words-3.6.1.tgz"
+  "version" "3.6.1"
+
 "toidentifier@1.0.0":
   "version" "1.0.0"
 

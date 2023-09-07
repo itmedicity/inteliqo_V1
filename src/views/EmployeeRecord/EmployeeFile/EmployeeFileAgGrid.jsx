@@ -14,6 +14,7 @@ import { useMemo } from 'react'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import { ToastContainer } from 'react-toastify';
 
 const EmployeeFileAgGrid = () => {
 
@@ -143,6 +144,7 @@ const EmployeeFileAgGrid = () => {
 
     return (
         <CustomLayout title="Employee Record File" displayClose={true} >
+            <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                 <Paper square elevation={1}  >
                     <Box sx={{ display: "flex", flexDirection: "row", pt: 1, justifyItems: 'flex-start' }}>
