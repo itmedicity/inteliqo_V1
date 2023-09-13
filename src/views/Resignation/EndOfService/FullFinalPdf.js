@@ -14,7 +14,7 @@ export const pdfdownlod = (details, src, hrsig, prepard, lop, calcLop, holiday) 
     const days = getDaysInMonth(new Date(relieving_date));
     const workedSalary = (gross_salary / days) * wokeddays
 
-    const roundValue = Math.round(workedSalary / 10) * 10
+    // const roundValue = Math.round(workedSalary / 10) * 10
 
     const tot = Math.round(workedSalary / 10) * 10 - gross_salary
 

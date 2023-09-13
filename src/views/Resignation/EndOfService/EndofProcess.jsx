@@ -6,6 +6,8 @@ import React, { memo, useEffect, } from 'react'
 import { useState } from 'react'
 import { ToWords } from 'to-words';
 import { axioslogin } from 'src/views/Axios/Axios'
+import { useSelector } from 'react-redux'
+import _ from 'underscore'
 
 const EndofProcess = ({ details }) => {
     const toWords = new ToWords({
@@ -43,7 +45,6 @@ const EndofProcess = ({ details }) => {
     const { dept_name, em_no, em_name, request_date, em_doj, relieving_date,
         desg_name, gross_salary, resignation_type } = empdata;
 
-    const [salaryInwords, setSalaryInwords] = useState('')
     const [salary, setSalary] = useState(0)
     const [lop, setLop] = useState(0)
     const [calcLop, setCalcLop] = useState(0)
@@ -59,8 +60,39 @@ const EndofProcess = ({ details }) => {
     const [esi, setEsi] = useState(0)
     const [protax, setProTax] = useState(0)
 
-    useEffect(() => {
+    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
 
+    useEffect(() => {
+        const getEmpEsi = async () => {
+            const result = await axioslogin.get(`/empesipf/${em_no}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { em_pf_status, em_esi_status } = data[0]
+                if (em_pf_status === 1) {
+                    const value2 = Number(gross_salary) * state.pf_employee / 100
+                    setPf(value2 < state.pf_employee_amount ? Math.round(value2 / 10) * 10 : state.pf_employee_amount)
+                } else {
+                    setEsi(0)
+                    setPf(0)
+                }
+                if (em_esi_status === 1) {
+                    const value = Number(gross_salary) * state.esi_employee / 100
+                    setEsi(Math.round(value / 10) * 10)
+                } else {
+                    setEsi(0)
+                    setPf(0)
+                }
+            } else {
+                setEsi(0)
+                setPf(0)
+            }
+        }
+        getEmpEsi(em_no)
+    }, [em_no, gross_salary])
+
+
+    useEffect(() => {
+        //to get punchdata
         const getPunchData = async (postdata) => {
             const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
             const { success, data } = result.data
@@ -100,8 +132,8 @@ const EndofProcess = ({ details }) => {
             const workedSalary = (gross_salary / days) * wokeddays
             const roundValue = Math.round(workedSalary / 10) * 10
             setSalary(roundValue)
-            const words = toWords?.convert(roundValue)
-            setSalaryInwords(words)
+            // const words = toWords?.convert(roundValue)
+            // setSalaryInwords(words)
 
             const postdata = {
                 emp_id: em_id,
@@ -112,7 +144,6 @@ const EndofProcess = ({ details }) => {
         } else {
             setEmpdata({})
             setSalary(0)
-            setSalaryInwords('')
         }
     }, [details])
 

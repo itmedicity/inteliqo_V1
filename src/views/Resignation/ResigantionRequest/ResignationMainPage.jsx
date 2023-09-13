@@ -75,7 +75,7 @@ const ResignationMainPage = () => {
             setRelivingdate(new Date(request_date))
         }
 
-    }, [request_date, noticeperiod])
+    }, [request_date, noticeperiod, resignation_type])
 
     const submitFormData = useCallback(async (e) => {
         e.preventDefault()
@@ -287,7 +287,7 @@ const ResignationMainPage = () => {
                     <Box sx={{ flex: 1 }} >
                         <TextField
                             fullWidth
-                            placeholder="Over Time Remark"
+                            placeholder="Resignation Remark"
                             id="fullWidth"
                             size="small"
                             value={resignation_reason}

@@ -11,9 +11,6 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 
 const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
 
-    console.log(data);
-    console.log(slno);
-
     const loginId = useMemo(() => loginEmp, [loginEmp])
 
     const [details, setDetails] = useState({
@@ -195,8 +192,6 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             }
         }
     }
-
-    console.log(salaryPenalty);
 
     const submitFormdata = useCallback(async (e) => {
         if (slno === 1) {
