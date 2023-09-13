@@ -5,15 +5,14 @@ import React, { memo, useEffect, useState } from 'react'
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import ExperiDropListCmp from './ExperiDropListCmp';
 import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
 const ProfileExperience = () => {
     const [expData, setexpData] = useState([]);
     const [status, setstatus] = useState(false);
     const [dataStat, setdataStat] = useState(false);
 
-    const state = useSelector((state) => {
-        return state.getPrifileDateEachEmp?.empExperData;
-    })
+    const state = useSelector((state) => state?.getPrifileDateEachEmp?.empExperData, _.isEqual)
 
     useEffect(() => {
         const { experienData, experienDataStatus } = state;
@@ -21,6 +20,8 @@ const ProfileExperience = () => {
             setexpData(experienData)
             setstatus(true)
             Object.keys(experienData).length > 0 && setdataStat(true)
+        } else {
+            setexpData([])
         }
     }, [state])
 
@@ -35,6 +36,7 @@ const ProfileExperience = () => {
     }} >
         Data Not Updated
     </Box>
+
     return (
         <Box sx={{ width: '50%', ml: 0.2 }} >
             <CssVarsProvider>
@@ -48,7 +50,7 @@ const ProfileExperience = () => {
                 <Grid container item xl={12} lg={12} md={12} sm={12} xs={12} direction="row" >
                     <Grid item xl={12} lg={12} md={12} sm={12} xs={12}  >
                         <Box sx={{ width: '100%', height: 320, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                            {status === false ? skelton : dataStat === false ? noData : expData && expData.map((value, index) => <ExperiDropListCmp key={index} value={value} />)}
+                            {status === false ? skelton : dataStat === false ? noData : expData?.map((value, index) => <ExperiDropListCmp key={index} value={value} />)}
                         </Box>
                     </Grid>
                 </Grid>

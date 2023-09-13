@@ -7,7 +7,6 @@ import { setPersonalData } from 'src/redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CssVarsProvider, Typography, IconButton, } from '@mui/joy'
-import { useHistory } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { pdfdownlod } from './FullFinalPdf'
@@ -17,14 +16,15 @@ import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 import _ from 'underscore'
 import moment from 'moment';
 import { startOfMonth } from 'date-fns';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import { IconButton as OpenIcon } from '@mui/material';
+import NextPlanOutlinedIcon from '@mui/icons-material/NextPlanOutlined';
 
 const EndofProcess = lazy(() => import('./EndofProcess'))
 
 const FullandFinalSettlement = () => {
 
     const dispatch = useDispatch();
-    const history = useHistory();
-
     const [tableData, setTableData] = useState([])
     const [flag, setFlag] = useState(0)
     const [details, setDetails] = useState([])
@@ -36,11 +36,12 @@ const FullandFinalSettlement = () => {
     const [lop, setLop] = useState(0)
     const [calcLop, setCalcLop] = useState(0)
     const [holiday, setHoliday] = useState(0)
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const loginId = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id, _.isEqual)
 
     const toRedirectToHome = () => {
-        history.push(`/Home`)
+        setFlag(0)
     }
 
     useEffect(() => {
@@ -49,8 +50,7 @@ const FullandFinalSettlement = () => {
             const { success } = result?.data
             if (success === 1) {
                 setTableData(result?.data?.data)
-                const { dept_name, em_no, em_name, request_date, em_doj, relieving_date,
-                    desg_name, gross_salary, em_id, resignation_type } = result?.data?.data[0];
+                const { relieving_date, em_id, } = result?.data?.data[0];
                 const postdata = {
                     emp_id: em_id,
                     from: moment(startOfMonth(new Date(relieving_date))).format('YYYY-MM-DD'),
@@ -78,9 +78,6 @@ const FullandFinalSettlement = () => {
 
     }, [])
 
-
-
-
     const [column] = useState([
         { headerName: 'Slno ', field: 'slno', filter: true },
         { headerName: 'Emp ID', field: 'em_no', filter: true },
@@ -89,26 +86,32 @@ const FullandFinalSettlement = () => {
         { headerName: 'Department Section', field: 'sect_name', filter: true },
         { headerName: 'Request Date', field: 'request_date', wrapText: true, minWidth: 250, },
         { headerName: 'Type', field: 'Resign', wrapText: true, minWidth: 250, },
-        { headerName: 'Status', field: 'status', filter: true },
+        { headerName: 'Status', field: 'appstatus', filter: true },
         {
             headerName: 'Action',
             cellRenderer: params =>
-
-                <Tooltip title="Direct Contract Close" followCursor placement='top' arrow >
-                    <IconButton onClick={() => handleClickIcon(params)}>
-                        <CheckCircleOutlineIcon color='primary' />
-                    </IconButton>
+                <Tooltip title="View Details" followCursor placement='top' arrow >
+                    <OpenIcon onClick={() => handleClickIcon(params)}>
+                        <NextPlanOutlinedIcon color='primary' />
+                    </OpenIcon>
                 </Tooltip>
         }
     ])
 
     const handleClickIcon = async (params) => {
-        setDetails(params.data);
-        const { em_id, hr_id } = params.data
-        dispatch(setPersonalData(em_id))
-        setEmpid(em_id)
-        setFlag(1)
-        sethrId(hr_id)
+        setOpenBkDrop(true)
+        if (params.data.length !== 0) {
+            setDetails(params.data);
+            const { em_id, hr_id } = params.data
+            dispatch(setPersonalData(em_id))
+            setEmpid(em_id)
+            setFlag(1)
+            sethrId(hr_id)
+            setOpenBkDrop(false)
+        } else {
+            setOpenBkDrop(false)
+        }
+
     }
 
     useEffect(() => {
@@ -162,6 +165,7 @@ const FullandFinalSettlement = () => {
 
     return (
         <Fragment>
+            <CustomBackDrop open={openBkDrop} text="Please wait !. Employee Details In Process" />
             <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                 <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                     <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', }} >
