@@ -42,10 +42,10 @@ const ProfileCard = () => {
         getEmpIdforProfilePic()
     }, [no])
 
-    const Name = state.em_name.toLowerCase();
-    const Designation = state.desg_name.toLowerCase();
-    const Department = state.dept_name.toLowerCase();
-    const category = state.ecat_name.toLowerCase();
+    const Name = state?.em_name?.toLowerCase();
+    const Designation = state?.desg_name?.toLowerCase();
+    const Department = state?.dept_name?.toLowerCase();
+    const category = state?.ecat_name?.toLowerCase();
 
     return (
         <Box sx={{ display: 'flex', width: '100%' }} >
@@ -77,7 +77,7 @@ const ProfileCard = () => {
                 <CardContent sx={{ pb: { lg: 0.5 } }} >
                     <CssVarsProvider>
                         <Box sx={{
-                            display: "flex", height: 100, justifyContent: 'center',
+                            display: "flex", height: 125, justifyContent: 'center',
                             flexDirection: 'column', overflow: 'auto',
                             '::-webkit-scrollbar': { display: "none" },
                         }} >

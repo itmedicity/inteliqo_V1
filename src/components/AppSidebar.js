@@ -34,6 +34,8 @@ import CIcon from '@coreui/icons-react'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box } from '@mui/material'
 import VaccinationInfo from '../Menus/VaccinationMenu'
+import _ from 'underscore'
+
 
 const AppSidebar = () => {
 
@@ -199,10 +201,8 @@ const AppSidebar = () => {
     }
     getModuleUserRight()
   }, [count])
-  const em_name = useSelector((state) => {
-    return state.getProfileData.ProfileData[0].em_name
-    //const status = state.getProfileData.lodingStatus
-  })
+
+  const em_name = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_name, _.isEqual)
 
   return (
     <Fragment>

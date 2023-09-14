@@ -7,12 +7,6 @@ const Resignation = [
         to: '/Home/EmployeeInactiveHR',
     },
     {
-        men_slno: 61,
-        component: CNavItem,
-        name: 'Resignation Request',
-        to: '/Home/ResignationRequest',
-    },
-    {
         men_slno: 62,
         component: CNavItem,
         name: 'Approval - Incharge',
@@ -25,13 +19,13 @@ const Resignation = [
         to: '/Home/ResignationApprovalHod',
     },
     {
-        men_slno: 63,
+        men_slno: 74,
         component: CNavItem,
         name: 'Approval - CEO',
         to: '/Home/ResignationApprovalCEO',
     },
     {
-        men_slno: 74,
+        men_slno: 63,
         component: CNavItem,
         name: 'Approval - HR',
         to: '/Home/ResignationApprovalHR',
@@ -64,13 +58,13 @@ const Resignation = [
         men_slno: 68,
         component: CNavItem,
         name: 'End of Service Process',
-        to: '/Home/Resignation',
+        to: '/Home/EndOfService',
     },
     {
         men_slno: 69,
         component: CNavItem,
         name: 'EOD Finance Approval',
-        to: '/Home/Resignation',
+        to: '/Home/EODFinanceApproval',
     },
     {
         men_slno: 70,
@@ -89,18 +83,6 @@ const Resignation = [
         component: CNavItem,
         name: 'Exit Interview - HR',
         to: '/Home/Resignation',
-    },
-    {
-        men_slno: 73,
-        component: CNavItem,
-        name: 'Report-Active Employees',
-        to: '/Home/EmployeeReport',
-    },
-    {
-        men_slno: 74,
-        component: CNavItem,
-        name: 'Report-InActive Employees',
-        to: '/Home/EmployeeReportInactive',
     },
 ]
 

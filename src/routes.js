@@ -122,12 +122,12 @@ const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/O
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
 const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
-const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationRequest'))
-const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResignationApproval/ResignationApprovalIncharge'))
-const ResignationApprovalHod = React.lazy(() => import('./views/Resignation/ResignationApprovalHOD/ResignationApprovalHod'))
-const ResignationApprovalHR = React.lazy(() => import('./views/Resignation/ResignationApprovalHR/ResignationApprovalHR'))
-const ResignationApprovalCEO = React.lazy(() => import('./views/Resignation/ResignationApprovalCEO/ResignationApprovalCEO'))
-const ResignationCancel = React.lazy(() => import('./views/Resignation/ResignationCancel/ResignationCancel'))
+const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationMainPage'))
+const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Inchargeapproval'))
+const ResignationApprovalHod = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Hodapproval'))
+const ResignationApprovalHR = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/HrApproval'))
+const ResignationApprovalCEO = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/CeoApproval'))
+const ResignationCancel = React.lazy(() => import('./views/Resignation/ResigantionRequest/Cancel/ResignationCancel'))
 const BoardEdu = React.lazy(() => import('./views/Master/BoardMaster/BoardMaster'))
 const BoardMastEdit = React.lazy(() => import('./views/Master/BoardMaster/BoardMastTableEdit'))
 const HodMarking = React.lazy(() => import('./views/Master/AuthorisationHod/HodMarking'))
@@ -242,6 +242,9 @@ const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/Commo
 const Vaccination = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/Vaccination'))
 const Vaccinationentry = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/VaccinationEntry'))
 const Hicverification = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/HicVerification'))
+const EndOfService = React.lazy(() => import('./views/Resignation/EndOfService/FullandFinalSettlement'))
+const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinanceApproval/EODFinaneApproval'))
+
 
 const routes = [
 
@@ -476,6 +479,8 @@ const routes = [
   { path: '/Home/VaccinationInfo', exact: true, name: 'Vaccination Information', component: Vaccination },
   { path: '/Home/VaccinationEntry', exact: true, name: 'Vaccination Entry', component: Vaccinationentry },
   { path: '/Home/Hicverification', exact: true, name: 'Hicverification ', component: Hicverification },
+  { path: '/Home/EndOfService', exact: true, name: 'Full and Final Settlement', component: EndOfService },
+  { path: '/Home/EODFinanceApproval', exact: true, name: 'EOD Finanace Approval', component: EODFinanceApproval },
 
 ]
 

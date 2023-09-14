@@ -18,6 +18,18 @@ const Leavemanagement = [
         name: 'Overtime Request',
         to: '/Home/OTRequest',
     },
+    {
+        men_slno: 239,
+        component: CNavItem,
+        name: 'Common Request',
+        to: '/Home/CommonReqst',
+    },
+    {
+        men_slno: 61,
+        component: CNavItem,
+        name: 'Resignation Request',
+        to: '/Home/ResignationRequest',
+    },
 
     {
         men_slno: 26,
@@ -74,12 +86,7 @@ const Leavemanagement = [
         to: '/Home/OTApprovalHR',
     },
 
-    {
-        men_slno: 239,
-        component: CNavItem,
-        name: 'Common Request',
-        to: '/Home/CommonReqst',
-    },
+
     {
         men_slno: 241,
         component: CNavItem,

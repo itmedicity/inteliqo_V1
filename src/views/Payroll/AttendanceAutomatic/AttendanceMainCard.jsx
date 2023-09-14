@@ -48,7 +48,7 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
             <ToastContainer />
             {/* <CustomBackDrop open={open} text="Please Wait" /> */}
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
-                <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -64,7 +64,7 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -81,10 +81,10 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <DeptSelectByRedux setValue={setDepartment} value={deptName} />
                 </Box>
-                <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
                 </Box>
             </Box>
