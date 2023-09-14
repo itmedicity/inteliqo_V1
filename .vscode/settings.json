@@ -1,3 +1,33 @@
 {
-    "git.ignoreLimitWarning": true
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": "'zero', 'ss02', 'ss03', 'ss04', 'ss05', 'calt'",
+  // "php.validate.executablePath": "C:/xampp/php/php.exe",
+  "terminal.integrated.allowChords": false,
+  "terminal.integrated.fontFamily": "monospace",
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "editor.formatOnSave": true,
+  "beautify.ignore": "",
+  "[html]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "[php]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  },
+  "workbench.colorTheme": "Monokai Dimmed",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.minimap.enabled": false,
+  "files.associations": {
+    "*.jsx": "javascriptreact"
+  },
+  "workbench.productIconTheme": "material-product-icons",
+  "editor.formatOnType": true,
+  "workbench.statusBar.visible": false,
+  "bracket-pair-colorizer-2.depreciation-notice": false,
+  "window.zoomLevel": 1,
+  "workbench.editor.enablePreview": false
 }
