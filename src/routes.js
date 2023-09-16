@@ -94,7 +94,7 @@ const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/Em
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
 const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
-const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/AllowanceDeducation'))
+const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/BulkWageUpdation'))
 const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
 const Dutyplan = React.lazy(() => import('./views/Attendance/DutyPlan/DutyPlanMainCard'))
 const LeaveRequest = React.lazy(() => import('./views/LeaveManagement/LeaveRequest/LeaveRequest'))
@@ -241,6 +241,9 @@ const CommonReqstHrApprvl = React.lazy(() => import('./views/LeaveManagement/Com
 const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstHrView'))
 const EndOfService = React.lazy(() => import('./views/Resignation/EndOfService/FullandFinalSettlement'))
 const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinanceApproval/EODFinaneApproval'))
+const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/ArearUpdation'))
+const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
+const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
 
 const routes = [
 
@@ -474,6 +477,9 @@ const routes = [
   { path: '/Home/CommonReqstHrView', exact: true, name: 'Common Request Hr View', component: CommonReqstHrView },
   { path: '/Home/EndOfService', exact: true, name: 'Full and Final Settlement', component: EndOfService },
   { path: '/Home/EODFinanceApproval', exact: true, name: 'EOD Finanace Approval', component: EODFinanceApproval },
+  { path: '/Home/ArearUpdation', exact: true, name: 'Arear Updation', component: ArearUpdation },
+  { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
+  { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
 
 ]
 

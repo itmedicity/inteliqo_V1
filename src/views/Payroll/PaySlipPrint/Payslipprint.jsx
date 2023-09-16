@@ -136,14 +136,14 @@ const Payslipprint = () => {
                                     />
                                 </LocalizationProvider>
                             </Box>
-                            <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                            <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                 <DeptSelectByRedux setValue={setDept} value={dept} />
                             </Box>
-                            <Box sx={{ display: 'flex', mt: 0.5, px: 0.3, }} >
+                            <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                 <DeptSecSelectByRedux dept={dept} setValue={setDeptSect} value={deptSect} />
                             </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
+                        <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 0, }, justifyContent: 'flex-start' }} >
                             <CssVarsProvider>
                                 <Box sx={{ p: 0.2 }} >
                                     <Button aria-label="Like" variant="outlined" color="neutral"
@@ -171,8 +171,6 @@ const Payslipprint = () => {
                 </Paper >
             </Box >
         </Fragment >
-
-
     )
 }
 
