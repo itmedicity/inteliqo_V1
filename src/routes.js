@@ -244,6 +244,8 @@ const Vaccinationentry = React.lazy(() => import('./views/EmployeeRecord/Vacccin
 const Hicverification = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/HicVerification'))
 const EndOfService = React.lazy(() => import('./views/Resignation/EndOfService/FullandFinalSettlement'))
 const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinanceApproval/EODFinaneApproval'))
+const Hicverificationlist = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/Hicverificationlist'))
+
 
 
 const routes = [
@@ -481,6 +483,8 @@ const routes = [
   { path: '/Home/Hicverification', exact: true, name: 'Hicverification ', component: Hicverification },
   { path: '/Home/EndOfService', exact: true, name: 'Full and Final Settlement', component: EndOfService },
   { path: '/Home/EODFinanceApproval', exact: true, name: 'EOD Finanace Approval', component: EODFinanceApproval },
+  { path: '/Home/Hicverificationlist', exact: true, name: 'Hic Verification List ', component: Hicverificationlist },
+
 
 ]
 

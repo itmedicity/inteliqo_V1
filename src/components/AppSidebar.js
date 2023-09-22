@@ -227,7 +227,7 @@ const AppSidebar = () => {
             <Box sx={{ p: 1, display: "flex", textTransform: 'capitalize', fontStyle: "oblique", }} >
               <CssVarsProvider>
                 <Typography textColor="text.secondary">
-                  {em_name.toLowerCase()}
+                  {em_name?.toLowerCase()}
                 </Typography>
               </CssVarsProvider>
             </Box>

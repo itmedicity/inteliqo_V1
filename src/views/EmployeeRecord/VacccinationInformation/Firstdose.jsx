@@ -8,6 +8,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { memo } from 'react'
+import { useCallback } from 'react'
 
 const Firstdosevac = ({
   item,
@@ -20,14 +21,13 @@ const Firstdosevac = ({
   sethicdata,
 }) => {
   // hic verification
-
-  const handleIconClick = async (params) => {
+  const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
     const response = await axioslogin.get(`/Vaccination/getdataVaccination/${params.data.em_no}`)
     const { data } = response.data
     sethicdata(data)
-  }
+  }, [])
 
   const toRedirectToHome = () => {
     setShowGeneral(0)
@@ -45,7 +45,7 @@ const Firstdosevac = ({
       setData(firstdose)
       setCount(0)
     }
-  }, [item, count])
+  }, [item, count, setCount])
 
   let preparedColumnDef
   if (flag === 1) {

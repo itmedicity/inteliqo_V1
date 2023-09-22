@@ -1,22 +1,16 @@
 import { Box, IconButton, CssVarsProvider } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
-import { lazy } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper, Typography } from '@mui/material'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined'
 import CloseIcon from '@mui/icons-material/Close'
 import { memo } from 'react'
 
-const Modal = lazy(() => import('./Modal'))
-
 const Thirddose = ({ item, setCount, count, setShowGeneral }) => {
   const toRedirectToHome = () => {
     setShowGeneral(0)
   }
   const [data, setData] = useState([])
-  const [flag, setflag] = useState(0)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedRowData, setSelectedRowData] = useState({})
 
   useEffect(() => {
     const boosterdose = item && item.filter((val) => val.third_dose_status === 0)
@@ -79,14 +73,6 @@ const Thirddose = ({ item, setCount, count, setShowGeneral }) => {
             }}
             rowHeight={30}
             headerHeight={30}
-          />
-          <Modal
-            setCount={setCount}
-            count={count}
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            selectedRowData={selectedRowData}
-            flag={flag}
           />
         </Paper>
       </Box>

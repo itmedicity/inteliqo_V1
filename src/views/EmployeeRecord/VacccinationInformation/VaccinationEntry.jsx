@@ -48,6 +48,7 @@ const VaccinationEntry = () => {
       if (success === 1) {
         if (first_dose_given_status === 1 || booster_dose_given_status === 1) {
           setSearchId(emid)
+          // setdata(data)
         } else {
           warningNofity('Vaccination date not given by HR')
         }
@@ -87,6 +88,10 @@ const VaccinationEntry = () => {
         remarksecond,
         remarkthird,
         remarkbooster,
+        hic_frst_dose_status,
+        hic_second_dose_status,
+        hic_third_dose_status,
+        hic_booster_dose_status,
       } = vaccinationList[0]
       const details = {
         em_name: em_name,
@@ -116,6 +121,10 @@ const VaccinationEntry = () => {
         remarksecond: remarksecond,
         remarkthird: remarkthird,
         remarkbooster: remarkbooster,
+        hic_frst_dose_status: hic_frst_dose_status,
+        hic_second_dose_status: hic_second_dose_status,
+        hic_third_dose_status: hic_third_dose_status,
+        hic_booster_dose_status: hic_booster_dose_status,
       }
       setDetails(details)
       setcount(0)

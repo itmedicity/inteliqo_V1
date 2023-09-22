@@ -19,6 +19,12 @@ const VaccinationInfo = [
         name: 'Hic Verification ',
         to: '/Home/Hicverification',
     },
+    {
+        men_slno: 255,
+        component: CNavItem,
+        name: 'Hic Verified list ',
+        to: '/Home/Hicverificationlist',
+    },
 ]
 
 export default VaccinationInfo;

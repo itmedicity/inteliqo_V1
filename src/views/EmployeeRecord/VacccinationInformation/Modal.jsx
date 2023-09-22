@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import imageCompression from 'browser-image-compression'
+import { useCallback } from 'react'
 
 const ModalComponent = ({
   isModalOpen,
@@ -39,6 +40,8 @@ const ModalComponent = ({
     setIsModalOpen(false)
     setTiterValue('')
     setCount(count + 1)
+    setSelectedFiles([])
+    setShowUploadImageSection(false)
   }
 
   // saving the date
@@ -73,62 +76,109 @@ const ModalComponent = ({
     return compressedFile
   }
 
-  const handleUpload = async (event) => {
-    event.preventDefault()
+  const handleUpload = useCallback(
+    async (event) => {
+      event.preventDefault()
 
-    try {
-      if (!selectedFiles.length) {
-        infoNofity('Please select files to upload.')
-        return
-      }
-
-      const formData = new FormData()
-      formData.append('em_id', selectedRowData?.em_id)
-
-      for (const file of selectedFiles) {
-        if (file.type.startsWith('image')) {
-          const compressedFile = await handleImageUpload(file)
-          formData.append('files', compressedFile, compressedFile.name)
-        } else {
-          formData.append('files', file, file.name)
+      try {
+        if (!selectedFiles.length) {
+          infoNofity('Please select files to upload.')
+          return
         }
+
+        const formData = new FormData()
+        formData.append('em_id', selectedRowData?.em_id)
+
+        for (const file of selectedFiles) {
+          if (file.type.startsWith('image')) {
+            const compressedFile = await handleImageUpload(file)
+            formData.append('files', compressedFile, compressedFile.name)
+          } else {
+            formData.append('files', file, file.name)
+          }
+        }
+
+        const result = await axioslogin.post('/upload/uploadmultiple', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+
+        const { success, message } = result.data
+
+        if (success === 1) {
+          succesNofity(message)
+        } else {
+          warningNofity(message)
+        }
+        setShowUploadImageSection(true)
+      } catch (error) {
+        warningNofity('An error occurred during file upload.')
       }
-
-      const result = await axioslogin.post('/upload/uploadmultiple', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-
-      const { success, message } = result.data
-
-      if (success === 1) {
-        succesNofity(message)
-      } else {
-        warningNofity(message)
-      }
-      setShowUploadImageSection(true)
-    } catch (error) {
-      warningNofity('An error occurred during file upload.')
-    }
-  }
+    },
+    [
+      selectedFiles,
+      selectedRowData,
+      handleImageUpload,
+      infoNofity,
+      succesNofity,
+      warningNofity,
+      setShowUploadImageSection,
+      axioslogin,
+    ],
+  )
 
   // ---------------------------------------------------------------------------
-  const handleOnClick = async (event) => {
-    event.preventDefault()
 
-    if (showTiterValue) {
-      const firstdose = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
-      const boosterDose = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
+  const handleOnClick = useCallback(
+    async (event) => {
+      event.preventDefault()
 
-      if (titerValue <= 12 && titerValue > 0) {
-        const response = await axioslogin.post('/Vaccination/insert', firstdose)
+      if (showTiterValue) {
+        const firstdose = {
+          fromDate: moment(fromDate).format('yyyy-MM-DD'),
+          em_no: selectedRowData?.em_no,
+        }
+        const boosterDose = {
+          fromDate: moment(fromDate).format('yyyy-MM-DD'),
+          em_no: selectedRowData?.em_no,
+        }
+
+        if (titerValue <= 12 && titerValue > 0) {
+          const response = await axioslogin.post('/Vaccination/insert', firstdose)
+          const { message, success } = response.data
+          if (success === 1) {
+            succesNofity(message)
+            setCount(count + 1)
+            handleCloseModal()
+            setShowGeneral(0)
+          } else {
+            infoNofity(message)
+            // setShowGeneral(0)
+          }
+        } else if (titerValue <= 100 && titerValue > 12) {
+          const response = await axioslogin.post('/Vaccination/insertbooster', boosterDose)
+          const { message, success } = response.data
+
+          if (success === 1) {
+            succesNofity(message)
+            handleCloseModal()
+            setCount(count + 1)
+            setShowGeneral(0)
+          } else {
+            infoNofity(message)
+            // setShowGeneral(0)
+          }
+        } else {
+          infoNofity('Enter correct titer value')
+        }
+      } else {
+        // for taking first time vaccination
+        const firsttime = {
+          fromDate: moment(fromDate).format('yyyy-MM-DD'),
+          em_no: selectedRowData?.em_no,
+        }
+        const response = await axioslogin.post('/Vaccination/insert', firsttime)
         const { message, success } = response.data
         if (success === 1) {
           succesNofity(message)
@@ -137,42 +187,22 @@ const ModalComponent = ({
           setShowGeneral(0)
         } else {
           infoNofity(message)
-          // setShowGeneral(0)
         }
-      } else if (titerValue <= 100 && titerValue > 12) {
-        const response = await axioslogin.post('/Vaccination/insertbooster', boosterDose)
-        const { message, success } = response.data
-
-        if (success === 1) {
-          succesNofity(message)
-          handleCloseModal()
-          setCount(count + 1)
-          setShowGeneral(0)
-        } else {
-          infoNofity(message)
-          // setShowGeneral(0)
-        }
-      } else {
-        infoNofity('Enter correct titer value')
       }
-    } else {
-      // for taking first tym vaccination
-      const firsttime = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
-      const response = await axioslogin.post('/Vaccination/insert', firsttime)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity(message)
-        setCount(count + 1)
-        handleCloseModal()
-        setShowGeneral(0)
-      } else {
-        infoNofity(message)
-      }
-    }
-  }
+    },
+    [
+      showTiterValue,
+      titerValue,
+      fromDate,
+      selectedRowData,
+      setCount,
+      handleCloseModal,
+      setShowGeneral,
+      axioslogin,
+      succesNofity,
+      infoNofity,
+    ],
+  )
 
   // Render selected files with view buttons
   const renderSelectedFiles = () => {
@@ -350,7 +380,7 @@ const ModalComponent = ({
               {flag === 1 && titerValue > 100 ? (
                 <Box sx={{ mt: 2 }}>
                   <Typography variant="body1" sx={{ color: 'blue' }}>
-                    Enter Correct titer value.
+                    No Vaccinaation reqired
                   </Typography>
                 </Box>
               ) : null}

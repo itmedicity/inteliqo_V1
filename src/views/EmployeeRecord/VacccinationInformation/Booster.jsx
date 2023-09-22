@@ -7,6 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { memo } from 'react'
+import { useCallback } from 'react'
 
 const Booster = ({
   item,
@@ -19,13 +20,14 @@ const Booster = ({
   setIsModalOpen,
 }) => {
   // hic verification
-  const handleIconClick = async (params) => {
+
+  const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
     const response = await axioslogin.get(`/Vaccination/getdataVaccination/${params.data.em_no}`)
     const { data } = response.data
     sethicdata(data)
-  }
+  }, [])
   const toRedirectToHome = () => {
     setShowGeneral(0)
   }
@@ -95,6 +97,7 @@ const Booster = ({
     ]
   }
   const [columnDef] = useState(preparedColumnDef)
+
   return (
     <Box>
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>

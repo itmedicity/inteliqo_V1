@@ -230,7 +230,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
         gap: 1,
       }}
     >
-      <Grid sx={{ p: 1 }} container spacing={3}>
+      <Grid sx={{ p: 1 }} container spacing={2}>
         {main.map((item, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Paper

@@ -197,7 +197,13 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
           borderLeft={0.5}
           borderBottom={0.5}
           borderColor="#C9CCD5"
-          sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
+          sx={{
+            p: 1,
+            display: 'flex',
+            fontWeight: 400,
+            width: '25%',
+            height: 'auto',
+          }}
         >
           <CssVarsProvider>
             <Typography sx={{}}>
@@ -221,7 +227,8 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
             width: '25%',
             height: 'auto',
             backgroundColor:
-              details.firstdose_date > formatWithSundayCheck(details.first_dose_given_date)
+              moment(details.firstdose_date).format('DD-MM-YYYY') >
+              formatWithSundayCheck(details.first_dose_given_date)
                 ? '#FAD4D4'
                 : 'initial',
           }}
@@ -232,7 +239,7 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
             </Typography>
           </CssVarsProvider>
           {/* icon button */}
-          {details.first_dose_given_status === 1 && details.first_dose_status == 0 ? (
+          {details.first_dose_given_status === 1 && details.first_dose_status === 0 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
                 <AddCircleOutlineIcon />
@@ -308,9 +315,7 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
             width: '25%',
             height: 'auto',
             backgroundColor:
-              details.second_dose_given_date > formatWithSunday(details.second_dose_due_date)
-                ? '#FAD4D4'
-                : 'initial',
+              details.second_dose_given_date > details.second_dose_due_date ? '#FAD4D4' : 'initial',
           }}
         >
           <CssVarsProvider>
@@ -321,7 +326,9 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
             </Typography>
           </CssVarsProvider>
           {/* icon button */}
-          {details.first_dose_status === 1 && details.second_dose_status === 0 ? (
+          {details.first_dose_status === 1 &&
+          details.second_dose_status === 0 &&
+          details.hic_frst_dose_status === 1 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
                 <AddCircleOutlineIcon />
@@ -395,9 +402,7 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
             width: '25%',
             height: 'auto',
             backgroundColor:
-              details.third_dose_given_date > formatWithSunday(details.third_dose_due_date)
-                ? '#FAD4D4'
-                : 'initial',
+              details.third_dose_given_date > details.third_dose_due_date ? '#FAD4D4' : 'initial',
           }}
         >
           <CssVarsProvider>
@@ -410,7 +415,8 @@ const EntryInformation = ({ details, setIsModalOpen }) => {
           {/* icon button */}
           {details.first_dose_status === 1 &&
           details.second_dose_status === 1 &&
-          details.third_dose_status === 0 ? (
+          details.third_dose_status === 0 &&
+          details.hic_second_dose_status === 1 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
                 <AddCircleOutlineIcon />

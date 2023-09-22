@@ -20,6 +20,7 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({})
   const [flag, setflag] = useState(0)
+
   const handleIconClick = (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
@@ -35,7 +36,7 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
     }))
     setData(dataWithStatus)
     setCount(0)
-  }, [item, count])
+  }, [item, count, setCount])
 
   const [columnDef] = useState([
     { headerName: 'Sl No', field: 'sl_no' },

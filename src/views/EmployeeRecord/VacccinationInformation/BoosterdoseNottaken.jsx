@@ -18,7 +18,7 @@ const Boosterdose = ({ item, setCount, count, setShowGeneral }) => {
       item.filter((val) => val.booster_dose_status === 0 && val.booster_dose_given_status === 1)
     setData(boosterdose)
     setCount(0)
-  }, [item, count])
+  }, [item, count, setCount])
 
   const [columnDef] = useState([
     { headerName: 'Emp ID', field: 'em_no', filter: true },

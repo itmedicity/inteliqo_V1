@@ -149,9 +149,7 @@ const HicVerification = () => {
             gap: 2,
             p: 2,
             justifyContent: 'space-between',
-            '@media (max-width: 1590px)': {
-              // justifyContent: 'space-evenly',
-            },
+
             '@media (max-width: 600px)': {
               flexDirection: 'column',
               alignItems: 'center',
