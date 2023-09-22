@@ -281,7 +281,7 @@ const PayslipTopCard = () => {
                     <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
                 </Box>
             </Box>
-            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
+            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 0, }, justifyContent: 'flex-start' }} >
                 <CssVarsProvider>
                     <Box sx={{ p: 0.2 }} >
                         <Button aria-label="Like" variant="outlined" color="neutral"

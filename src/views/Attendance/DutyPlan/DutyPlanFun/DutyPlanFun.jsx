@@ -149,7 +149,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             const dutyPlanDateRange = dateRange.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
 
             //getting employee id from employee details - date fomat --> {date: '2022-10-01'} 
-            const employeeId = await employeeDetails && employeeDetails.map((val) => val.em_id);
+            const employeeId = (await employeeDetails) && employeeDetails.map((val) => val.em_id);
 
             //hrm_duty_plan insert initial array data making
             const shiftDutyDay = await employeeDetails.map((val) => {

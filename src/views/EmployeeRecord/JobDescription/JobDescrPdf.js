@@ -202,7 +202,7 @@ export const pdfdownlod = (objective, desig, scope,
             },
         },
         images: {
-            snow: 'http://192.168.10.170/NAS/logo/logo.png'
+            snow: 'http://192.168.22.170/NAS/logo/logo.png'
         }
     }
     pdfMake.createPdf(doc).open();

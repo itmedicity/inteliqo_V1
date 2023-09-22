@@ -135,7 +135,6 @@ const NoExpReport = () => {
             const result = await axioslogin.post('/experienceReport/noexp', slno)
             const { success, data } = result.data;
             if (success === 1) {
-                console.log(data);
                 setTableData(data)
             }
             else {

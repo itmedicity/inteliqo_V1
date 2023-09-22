@@ -1,5 +1,5 @@
 import { CssVarsProvider } from '@mui/joy/'
-import TextField from '@mui/joy/TextField'
+import Input from "@mui/joy/Input"
 import React, { Fragment } from 'react'
 
 const TextFieldCustom = ({
@@ -21,23 +21,24 @@ const TextFieldCustom = ({
     return (
         <Fragment>
             <CssVarsProvider>
-                <TextField
-                    size={size}
-                    placeholder={placeholder}
-                    type={type}
-                    startDecorator={startDecorator}
-                    endDecorator={endDecorator}
-                    sx={{ ...textStyle, ...style }}
-                    onChange={(e) => onChange(e)}
-                    value={value}
-                    defaultValue={defaultValue}
-                    name={name}
-                    autoComplete="off"
-                    disabled={disabled ?? false}
-                />
+                <FormControl size={size}>
+                    <Input
+                        placeholder={placeholder}
+                        type={type}
+                        startDecorator={startDecorator}
+                        endDecorator={endDecorator}
+                        sx={{ ...textStyle, ...style }}
+                        onChange={(e) => onChange(e)}
+                        value={value}
+                        defaultValue={defaultValue}
+                        name={name}
+                        autoComplete="off"
+                        disabled={disabled ?? false} />
+
+                </FormControl>
             </CssVarsProvider>
         </Fragment >
-    )
+    );
 }
 
 export default TextFieldCustom
