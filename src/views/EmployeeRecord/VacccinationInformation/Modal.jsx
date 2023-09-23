@@ -30,22 +30,23 @@ const ModalComponent = ({
   const [fromDate, setFromDate] = useState(moment())
   const [showUploadImageSection, setShowUploadImageSection] = useState(false)
   const [selectedFileIndex, setSelectedFileIndex] = useState(-1)
+  const [selectedFiles, setSelectedFiles] = useState([])
 
   // Function to open the view file modal
   const openViewFileModal = (index) => {
     setSelectedFileIndex(index)
   }
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setTiterValue('')
-    setCount(count + 1)
-    setSelectedFiles([])
-    setShowUploadImageSection(false)
-  }
+  const handleCloseModal = useCallback(() => {
+  setIsModalOpen(false);
+  setTiterValue('');
+  setCount(count + 1);
+  setSelectedFiles([]);
+  setShowUploadImageSection(false);
+}, [setIsModalOpen, setTiterValue, setCount, setSelectedFiles, setShowUploadImageSection, count]);
 
   // saving the date
-  const [selectedFiles, setSelectedFiles] = useState([])
+  
 
   const handleFileChange = (e) => {
     const newFiles = [...selectedFiles]
@@ -65,16 +66,15 @@ const ModalComponent = ({
     }
   }
 
-  // compress the image
-  const handleImageUpload = async (imageFile) => {
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    }
-    const compressedFile = await imageCompression(imageFile, options)
-    return compressedFile
+  const handleImageUpload = useCallback(async (imageFile) => {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
   }
+  const compressedFile = await imageCompression(imageFile, options)
+  return compressedFile
+}, []);
 
   const handleUpload = useCallback(
     async (event) => {
@@ -120,11 +120,8 @@ const ModalComponent = ({
       selectedFiles,
       selectedRowData,
       handleImageUpload,
-      infoNofity,
-      succesNofity,
-      warningNofity,
       setShowUploadImageSection,
-      axioslogin,
+    
     ],
   )
 
@@ -196,11 +193,8 @@ const ModalComponent = ({
       fromDate,
       selectedRowData,
       setCount,
-      handleCloseModal,
       setShowGeneral,
-      axioslogin,
-      succesNofity,
-      infoNofity,
+    
     ],
   )
 

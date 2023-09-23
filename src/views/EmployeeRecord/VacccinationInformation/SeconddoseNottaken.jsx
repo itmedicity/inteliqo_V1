@@ -13,9 +13,13 @@ const Seconddose = ({ item, setCount, count, setShowGeneral }) => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    const seconddose = item && item.filter((val) => val.second_dose_status === 0)
+    if (Object.keys(item).length > 0) {
+    const seconddose = item?.filter((val) => val.second_dose_status === 0)
     setData(seconddose)
     setCount(0)
+    }else{
+       setData([])
+    }
   }, [item, count])
 
   const [columnDef] = useState([
@@ -70,6 +74,7 @@ const Seconddose = ({ item, setCount, count, setShowGeneral }) => {
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

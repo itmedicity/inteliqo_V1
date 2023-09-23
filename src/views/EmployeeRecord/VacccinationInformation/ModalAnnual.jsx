@@ -14,6 +14,8 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import imageCompression from 'browser-image-compression'
+import { useCallback } from 'react';
+
 
 const ModalAnnual = ({
   isModalOpen,
@@ -62,200 +64,210 @@ const ModalAnnual = ({
     }
   }
 
-  // compress the image
-  const handleImageUpload = async (imageFile) => {
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    }
-    const compressedFile = await imageCompression(imageFile, options)
-    return compressedFile
+ 
+  const handleImageUpload = useCallback(async (imageFile) => {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
   }
+  const compressedFile = await imageCompression(imageFile, options)
+  return compressedFile
+}, []);
+const handleUpload = useCallback(async () => {
+  const firstdose = {
+    em_id: selectedRowData.em_id,
+    em_no: selectedRowData.em_no,
+    firstdosedate: selectedRowData.firstdose_date,
+    secondDoseDate: selectedRowData.second_dose_given_date,
+    thirdDoseDate: selectedRowData.third_dose_given_date,
+    hicfirst_dose_date: selectedRowData.hic_first_dose_date,
+    hic_second_dose_date: selectedRowData.hic_second_dose_date,
+    hic_thirdt_dose_date: selectedRowData.hic_thirdt_dose_date,
+    hic_emid_first_verified: selectedRowData.hic_emid_first_verified,
+    hic_emid_second_verified: selectedRowData.hic_emid_second_verified,
+    hic_emid_third_verified: selectedRowData.hic_emid_third_verified,
+    first_vacc_emid: selectedRowData.first_vacc_emid,
+    second_vacc_emid: selectedRowData.second_vacc_emid,
+    third_vacc_emid: selectedRowData.third_vacc_emid,
+    booster_vacc_emid: selectedRowData.booster_vacc_emid,
+  };
+  const boosterdose = {
+    em_id: selectedRowData.em_id,
+    em_no: selectedRowData.em_no,
+    firstdosedate: selectedRowData.firstdose_date,
+    secondDoseDate: selectedRowData.second_dose_given_date,
+    thirdDoseDate: selectedRowData.third_dose_given_date,
+    booster_dose_due_date: selectedRowData.booster_dose_given_date,
+    hicfirst_dose_date: selectedRowData.hic_first_dose_date,
+    hic_second_dose_date: selectedRowData.hic_second_dose_date,
+    hic_thirdt_dose_date: selectedRowData.hic_thirdt_dose_date,
+    hic_boostert_dose_date: selectedRowData.hic_boostert_dose_date,
+    hic_emid_first_verified: selectedRowData.hic_emid_first_verified,
+    hic_emid_second_verified: selectedRowData.hic_emid_second_verified,
+    hic_emid_third_verified: selectedRowData.hic_emid_third_verified,
+    hic_emid_booster_verified: selectedRowData.hic_emid_booster_verified,
+    first_vacc_emid: selectedRowData.first_vacc_emid,
+    second_vacc_emid: selectedRowData.second_vacc_emid,
+    third_vacc_emid: selectedRowData.third_vacc_emid,
+    booster_vacc_emid: selectedRowData.booster_vacc_emid,
+  };
 
-  const handleUpload = async (event) => {
-    event.preventDefault()
+  if (selectedRowData.first_dose_status === 1 && selectedRowData.booster_dose_status === 0) {
+    const response = await axioslogin.post('/Vaccination/annualFirstdose', firstdose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      if (!selectedFiles.length) {
+        infoNofity('Please select files to upload.');
+        return;
+      }
 
+      const formData = new FormData();
+      formData.append('em_id', selectedRowData?.em_id);
+
+      for (const file of selectedFiles) {
+        if (file.type.startsWith('image')) {
+          const compressedFile = await handleImageUpload(file);
+          formData.append('files', compressedFile, compressedFile.name);
+        } else {
+          formData.append('files', file, file.name);
+        }
+      }
+
+      const result = await axioslogin.post('/upload/uploadmultiple', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const { success, message } = result.data;
+
+      if (success === 1) {
+        succesNofity(message);
+      } else {
+        warningNofity(message);
+      }
+      setShowUploadImageSection(true);
+    } else {
+      infoNofity(message);
+    }
+  } else if (
+    selectedRowData.first_dose_status === 1 &&
+    selectedRowData.booster_dose_status === 1
+  ) {
+    const response = await axioslogin.post('/Vaccination/annualbooster', boosterdose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      if (!selectedFiles.length) {
+        infoNofity('Please select files to upload.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('em_id', selectedRowData?.em_id);
+
+      for (const file of selectedFiles) {
+        if (file.type.startsWith('image')) {
+          const compressedFile = await handleImageUpload(file);
+          formData.append('files', compressedFile, compressedFile.name);
+        } else {
+          formData.append('files', file, file.name);
+        }
+      }
+
+      const result = await axioslogin.post('/upload/uploadmultiple', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const { success, message } = result.data;
+
+      if (success === 1) {
+        succesNofity(message);
+      } else {
+        warningNofity(message);
+      }
+      setShowUploadImageSection(true);
+    } else {
+      infoNofity(message);
+    }
+  }
+}, [
+  handleImageUpload,
+  selectedRowData,
+  selectedFiles
+]);
+
+  
+
+
+  const handleOnClick = useCallback(async (event) => {
+  event.preventDefault();
+
+  if (showTiterValue) {
     const firstdose = {
-      em_id: selectedRowData.em_id,
-      em_no: selectedRowData.em_no,
-      firstdosedate: selectedRowData.firstdose_date,
-      secondDoseDate: selectedRowData.second_dose_given_date,
-      thirdDoseDate: selectedRowData.third_dose_given_date,
-      hicfirst_dose_date: selectedRowData.hic_first_dose_date,
-      hic_second_dose_date: selectedRowData.hic_second_dose_date,
-      hic_thirdt_dose_date: selectedRowData.hic_thirdt_dose_date,
-      hic_emid_first_verified: selectedRowData.hic_emid_first_verified,
-      hic_emid_second_verified: selectedRowData.hic_emid_second_verified,
-      hic_emid_third_verified: selectedRowData.hic_emid_third_verified,
-      first_vacc_emid: selectedRowData.first_vacc_emid,
-      second_vacc_emid: selectedRowData.second_vacc_emid,
-      third_vacc_emid: selectedRowData.third_vacc_emid,
-      booster_vacc_emid: selectedRowData.booster_vacc_emid,
-    }
-    const boosterdose = {
-      em_id: selectedRowData.em_id,
-      em_no: selectedRowData.em_no,
-      firstdosedate: selectedRowData.firstdose_date,
-      secondDoseDate: selectedRowData.second_dose_given_date,
-      thirdDoseDate: selectedRowData.third_dose_given_date,
-      booster_dose_due_date: selectedRowData.booster_dose_given_date,
+      fromDate: moment(fromDate).format('yyyy-MM-DD'),
+      em_no: selectedRowData?.em_no,
+    };
+    const boosterDose = {
+      fromDate: moment(fromDate).format('yyyy-MM-DD'),
+      em_no: selectedRowData?.em_no,
+    };
 
-      hicfirst_dose_date: selectedRowData.hic_first_dose_date,
-      hic_second_dose_date: selectedRowData.hic_second_dose_date,
-      hic_thirdt_dose_date: selectedRowData.hic_thirdt_dose_date,
-      hic_boostert_dose_date: selectedRowData.hic_boostert_dose_date,
-      hic_emid_first_verified: selectedRowData.hic_emid_first_verified,
-      hic_emid_second_verified: selectedRowData.hic_emid_second_verified,
-      hic_emid_third_verified: selectedRowData.hic_emid_third_verified,
-      hic_emid_booster_verified: selectedRowData.hic_emid_booster_verified,
-      first_vacc_emid: selectedRowData.first_vacc_emid,
-      second_vacc_emid: selectedRowData.second_vacc_emid,
-      third_vacc_emid: selectedRowData.third_vacc_emid,
-      booster_vacc_emid: selectedRowData.booster_vacc_emid,
-    }
-    if (selectedRowData.first_dose_status === 1 && selectedRowData.booster_dose_status === 0) {
-      const response = await axioslogin.post('/Vaccination/annualFirstdose', firstdose)
-      const { message, success } = response.data
+    if (titerValue <= 12 && titerValue > 0) {
+      const response = await axioslogin.post('/Vaccination/insert', firstdose);
+      const { message, success } = response.data;
       if (success === 1) {
-        if (!selectedFiles.length) {
-          infoNofity('Please select files to upload.')
-          return
-        }
-
-        const formData = new FormData()
-        formData.append('em_id', selectedRowData?.em_id)
-
-        for (const file of selectedFiles) {
-          if (file.type.startsWith('image')) {
-            const compressedFile = await handleImageUpload(file)
-            formData.append('files', compressedFile, compressedFile.name)
-          } else {
-            formData.append('files', file, file.name)
-          }
-        }
-
-        const result = await axioslogin.post('/upload/uploadmultiple', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-
-        const { success, message } = result.data
-
-        if (success === 1) {
-          succesNofity(message)
-        } else {
-          warningNofity(message)
-        }
-        setShowUploadImageSection(true)
+        succesNofity(message);
+        setCount((prevCount) => prevCount + 1);
+        handleCloseModal();
+        setShowGeneral(0);
       } else {
-        infoNofity(message)
+        infoNofity(message);
+        // setShowGeneral(0)
       }
-    } else if (
-      selectedRowData.first_dose_status === 1 &&
-      selectedRowData.booster_dose_status === 1
-    ) {
-      const response = await axioslogin.post('/Vaccination/annualbooster', boosterdose)
-      const { message, success } = response.data
+    } else if (titerValue <= 100 && titerValue > 12) {
+      const response = await axioslogin.post('/Vaccination/insertbooster', boosterDose);
+      const { message, success } = response.data;
+
       if (success === 1) {
-        if (!selectedFiles.length) {
-          infoNofity('Please select files to upload.')
-          return
-        }
-
-        const formData = new FormData()
-        formData.append('em_id', selectedRowData?.em_id)
-
-        for (const file of selectedFiles) {
-          if (file.type.startsWith('image')) {
-            const compressedFile = await handleImageUpload(file)
-            formData.append('files', compressedFile, compressedFile.name)
-          } else {
-            formData.append('files', file, file.name)
-          }
-        }
-
-        const result = await axioslogin.post('/upload/uploadmultiple', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-
-        const { success, message } = result.data
-
-        if (success === 1) {
-          succesNofity(message)
-        } else {
-          warningNofity(message)
-        }
-        setShowUploadImageSection(true)
+        succesNofity(message);
+        handleCloseModal();
+        setCount((prevCount) => prevCount + 1);
+        setShowGeneral(0);
       } else {
-        infoNofity(message)
-      }
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  const handleOnClick = async (event) => {
-    event.preventDefault()
-
-    if (showTiterValue) {
-      const firstdose = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
-      const boosterDose = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
-
-      if (titerValue <= 12 && titerValue > 0) {
-        const response = await axioslogin.post('/Vaccination/insert', firstdose)
-        const { message, success } = response.data
-        if (success === 1) {
-          succesNofity(message)
-          setCount(count + 1)
-          handleCloseModal()
-          setShowGeneral(0)
-        } else {
-          infoNofity(message)
-          // setShowGeneral(0)
-        }
-      } else if (titerValue <= 100 && titerValue > 12) {
-        const response = await axioslogin.post('/Vaccination/insertbooster', boosterDose)
-        const { message, success } = response.data
-
-        if (success === 1) {
-          succesNofity(message)
-          handleCloseModal()
-          setCount(count + 1)
-          setShowGeneral(0)
-        } else {
-          infoNofity(message)
-          // setShowGeneral(0)
-        }
-      } else {
-        infoNofity('Enter correct titer value')
+        infoNofity(message);
+        // setShowGeneral(0)
       }
     } else {
-      // for taking first tym vaccination
-      const firsttime = {
-        fromDate: moment(fromDate).format('yyyy-MM-DD'),
-        em_no: selectedRowData?.em_no,
-      }
-      const response = await axioslogin.post('/Vaccination/insert', firsttime)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity(message)
-        setCount(count + 1)
-        handleCloseModal()
-        setShowGeneral(0)
-      } else {
-        infoNofity(message)
-      }
+      infoNofity('Enter correct titer value');
+    }
+  } else {
+    // for taking the first-time vaccination
+    const firsttime = {
+      fromDate: moment(fromDate).format('yyyy-MM-DD'),
+      em_no: selectedRowData?.em_no,
+    };
+    const response = await axioslogin.post('/Vaccination/insert', firsttime);
+    const { message, success } = response.data;
+    if (success === 1) {
+      succesNofity(message);
+      setCount((prevCount) => prevCount + 1);
+      handleCloseModal();
+      setShowGeneral(0);
+    } else {
+      infoNofity(message);
     }
   }
+}, [
+  titerValue,
+  showTiterValue,
+  selectedRowData,
+  fromDate,
+  setShowGeneral,
+  setCount
+]);
 
   // Render selected files with view buttons
   const renderSelectedFiles = () => {

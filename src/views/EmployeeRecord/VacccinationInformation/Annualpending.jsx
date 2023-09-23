@@ -7,15 +7,21 @@ import CloseIcon from '@mui/icons-material/Close'
 import { memo } from 'react'
 
 const Annualpending = ({ item, setCount, count, setShowGeneral }) => {
+
   const toRedirectToHome = () => {
     setShowGeneral(0)
   }
   const [data, setData] = useState([])
   useEffect(() => {
-    const boosterdose = item && item.filter((val) => val.pending_status === 1)
-    setData(boosterdose)
-    setCount(0)
+       if (Object.keys(item).length > 0) {
+        const boosterdose =  item?.filter((val) => val.pending_status === 1)
+        setData(boosterdose)
+        setCount(0)
+       }else{
+          setData([])
+       }
   }, [item, count, setCount])
+
   const [columnDef] = useState([
     { headerName: 'Emp ID', field: 'em_no', filter: true },
     { headerName: 'Employee Name', field: 'em_name', filter: true },
@@ -66,6 +72,7 @@ const Annualpending = ({ item, setCount, count, setShowGeneral }) => {
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

@@ -43,21 +43,17 @@ const HicVerification = () => {
       if (success === 1) {
         // setdata(data)
         setitem(data)
-
         // booster dose   vaccinated
         const boosterdose =
-          data &&
-          data.filter((val) => val.booster_dose_status === 1 && val.hic_booster_dose_status === 0)
+          data?.filter((val) => val.booster_dose_status === 1 && val.hic_booster_dose_status === 0)
         boosterdosevac(boosterdose.length)
         // firstdose vaccinated
         const firstdosevac =
-          data &&
-          data.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
+          data?.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
         firstvac(firstdosevac.length)
         // second dose vaccinated
         const seconddosevacc =
-          data &&
-          data.filter(
+          data?.filter(
             (val) =>
               val.first_dose_status === 1 &&
               val.second_dose_status === 1 &&
@@ -66,8 +62,7 @@ const HicVerification = () => {
         secondvac(seconddosevacc.length)
         // third dose vaccinated
         const thirddosevac =
-          data &&
-          data.filter(
+          data?.filter(
             (val) =>
               val.third_dose_status === 1 &&
               val.second_dose_status === 1 &&

@@ -9,6 +9,8 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import CloseIcon from '@mui/icons-material/Close'
 import { memo } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
+import { useCallback } from 'react'
+
 
 const Modal = lazy(() => import('./Modal'))
 
@@ -19,23 +21,27 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({})
-  const [flag, setflag] = useState(0)
+  const [flag,setflag] = useState(0)
 
-  const handleIconClick = (params) => {
-    setIsModalOpen(true)
-    setSelectedRowData(params.data)
-    setflag(1)
-  }
+ const handleIconClick = useCallback((params) => {
+    setIsModalOpen(true);
+    setSelectedRowData(params.data);
+    setflag(1);
+  }, []); 
 
   useEffect(() => {
+     if (Object.keys(item).length > 0) {
     const firstdose =
-      item && item.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
+       item?.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
     const dataWithStatus = firstdose.map((record, index) => ({
       ...record,
       sl_no: index + 1,
     }))
     setData(dataWithStatus)
     setCount(0)
+     }else{
+       setData([])
+     }
   }, [item, count, setCount])
 
   const [columnDef] = useState([
@@ -116,6 +122,7 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
           sx={{
             height: 700,
             width: '100%',
+            p:1
           }}
           rowHeight={30}
           headerHeight={30}

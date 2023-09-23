@@ -8,6 +8,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { memo } from 'react'
+import { useCallback } from 'react';
 
 const Modalhic = ({
   isModalOpen,
@@ -61,85 +62,92 @@ const Modalhic = ({
   // empid Verified
   const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
   const { em_id } = empData
-  const handleOnClick = async () => {
-    if (remarks.trim() === '') {
-      infoNofity('Please insert a remark.')
-      return
-    }
-    const Hicfirstdose = {
-      fromDate: moment().format('yyyy-MM-DD'),
-      em_no: details.em_no,
-      em_id: em_id,
-      remarks: remarks,
-    }
-    const Hicseconddose = {
-      fromDate: moment().format('yyyy-MM-DD'),
-      em_no: details.em_no,
-      em_id: em_id,
-      remarks: remarks,
-    }
-    const Hicsthirddose = {
-      fromDate: moment().format('yyyy-MM-DD'),
-      em_no: details.em_no,
-      em_id: em_id,
-      remarks: remarks,
-    }
-    const Hicboosterdose = {
-      fromDate: moment().format('yyyy-MM-DD'),
-      em_no: details.em_no,
-      em_id: em_id,
-      remarks: remarks,
-    }
-    if (details.hic_frst_dose_status === 0) {
-      const response = await axioslogin.post('/Vaccination/Hicfirstdose', Hicfirstdose)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity('data saved sucessfully')
-        handleCloseModal(false)
-        setRemarks('')
-        setCount(count + 1)
-      } else {
-        infoNofity(message)
-      }
-    } else if (details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1) {
-      const response = await axioslogin.post('/Vaccination/Hicseconddose', Hicseconddose)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity('data saved sucessfully')
-        handleCloseModal(false)
-        setRemarks('')
-        setCount(count + 1)
-      } else {
-        infoNofity(message)
-      }
-    } else if (
-      details.hic_third_dose_status === 0 &&
-      details.hic_frst_dose_status === 1 &&
-      details.hic_second_dose_status === 1
-    ) {
-      const response = await axioslogin.post('/Vaccination/Hicsthirddose', Hicsthirddose)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity(message)
-        handleCloseModal(false)
-        setRemarks('')
-        setCount(count + 1)
-      } else {
-        infoNofity(message)
-      }
+  const handleOnClick = useCallback(async () => {
+  if (remarks.trim() === '') {
+    infoNofity('Please insert a remark.');
+    return;
+  }
+  const Hicfirstdose = {
+    fromDate: moment().format('yyyy-MM-DD'),
+    em_no: details.em_no,
+    em_id: em_id,
+    remarks: remarks,
+  };
+  const Hicseconddose = {
+    fromDate: moment().format('yyyy-MM-DD'),
+    em_no: details.em_no,
+    em_id: em_id,
+    remarks: remarks,
+  };
+  const Hicsthirddose = {
+    fromDate: moment().format('yyyy-MM-DD'),
+    em_no: details.em_no,
+    em_id: em_id,
+    remarks: remarks,
+  };
+  const Hicboosterdose = {
+    fromDate: moment().format('yyyy-MM-DD'),
+    em_no: details.em_no,
+    em_id: em_id,
+    remarks: remarks,
+  };
+  if (details.hic_frst_dose_status === 0) {
+    const response = await axioslogin.post('/Vaccination/Hicfirstdose', Hicfirstdose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      succesNofity('data saved successfully');
+      handleCloseModal(false);
+      setRemarks('');
+      setCount((prevCount) => prevCount + 1);
     } else {
-      const response = await axioslogin.post('/Vaccination/Hicboosterdose', Hicboosterdose)
-      const { message, success } = response.data
-      if (success === 1) {
-        succesNofity(message)
-        handleCloseModal(false)
-        setRemarks('')
-        setCount(count + 1)
-      } else {
-        infoNofity(message)
-      }
+      infoNofity(message);
+    }
+  } else if (details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1) {
+    const response = await axioslogin.post('/Vaccination/Hicseconddose', Hicseconddose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      succesNofity('data saved successfully');
+      handleCloseModal(false);
+      setRemarks('');
+      setCount((prevCount) => prevCount + 1);
+    } else {
+      infoNofity(message);
+    }
+  } else if (
+    details.hic_third_dose_status === 0 &&
+    details.hic_frst_dose_status === 1 &&
+    details.hic_second_dose_status === 1
+  ) {
+    const response = await axioslogin.post('/Vaccination/Hicsthirddose', Hicsthirddose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      succesNofity(message);
+      handleCloseModal(false);
+      setRemarks('');
+      setCount((prevCount) => prevCount + 1);
+    } else {
+      infoNofity(message);
+    }
+  } else {
+    const response = await axioslogin.post('/Vaccination/Hicboosterdose', Hicboosterdose);
+    const { message, success } = response.data;
+    if (success === 1) {
+      succesNofity(message);
+      handleCloseModal(false);
+      setRemarks('');
+      setCount((prevCount) => prevCount + 1);
+    } else {
+      infoNofity(message);
     }
   }
+}, [
+  details,
+  remarks,
+  em_id,
+  setCount,
+  
+]);
+
 
   return (
     <Modal open={isModalOpen} onClose={handleCloseModal}>

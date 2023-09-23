@@ -13,10 +13,14 @@ const Pendingfirst = ({ item, setCount, count, setShowGeneral }) => {
   }
   const [data, setData] = useState([])
   useEffect(() => {
+     if (Object.keys(item).length > 0) {
     const boosterdose =
-      item && item.filter((val) => val.first_dose_status === 0 && val.first_dose_given_status === 1)
+      item?.filter((val) => val.first_dose_status === 0 && val.first_dose_given_status === 1)
     setData(boosterdose)
     setCount(0)
+     }else{
+        setData([])
+     }
   }, [item, count, setCount])
   const [columnDef] = useState([
     { headerName: 'Emp ID', field: 'em_no', filter: true },
@@ -67,6 +71,7 @@ const Pendingfirst = ({ item, setCount, count, setShowGeneral }) => {
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

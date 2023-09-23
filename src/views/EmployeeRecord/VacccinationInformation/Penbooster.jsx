@@ -18,16 +18,20 @@ const Penbooster = ({ item, setCount, count, setShowGeneral }) => {
   }
   const [data, setData] = useState([])
   useEffect(() => {
+        if (Object.keys(item).length > 0) {
     const currentDate = new Date()
     const boosterdose =
-      item &&
-      item.filter((val) => {
+      
+      item?.filter((val) => {
         const annualDoseDate = new Date(val.annual_dose)
         return val.annual_dose !== null && annualDoseDate <= currentDate
       })
 
     setData(boosterdose)
     setCount(0)
+        }else{
+            setData([])
+        }
   }, [item, count, setCount])
 
   const handleIconClick = (params) => {
@@ -102,6 +106,7 @@ const Penbooster = ({ item, setCount, count, setShowGeneral }) => {
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

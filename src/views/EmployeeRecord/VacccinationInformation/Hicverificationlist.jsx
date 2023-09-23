@@ -68,8 +68,7 @@ const Hicverificationlist = () => {
       const { success, data } = result.data
       if (success === 1) {
         const hicverifed =
-          data &&
-          data.filter(
+          data?.filter(
             (val) =>
               (val.hic_frst_dose_status === 1 &&
                 val.hic_second_dose_status === 1 &&
@@ -97,7 +96,7 @@ const Hicverificationlist = () => {
         setnameList([])
       }
     }
-  }, [dept, deptSection, Empno, setnameList, infoNofity, axioslogin])
+  }, [dept, deptSection, Empno, setnameList])
 
   // for signature
   useEffect(() => {
@@ -186,7 +185,7 @@ const Hicverificationlist = () => {
     }
   }, [download, vaccinData, src, srcsecond, srcthird, srcbooster])
 
-  const processedData = nameList.map((row) => ({
+  const processedData = nameList?.map((row) => ({
     em_no: row.em_no,
     em_name: row.em_name,
     dept_name: row.dept_name,

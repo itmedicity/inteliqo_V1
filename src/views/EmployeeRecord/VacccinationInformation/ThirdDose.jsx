@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, CssVarsProvider, IconButton } from '@mui/joy'
+import { useCallback } from 'react'
+import { IconButton as OpenIcon } from '@mui/material'
 
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper, Typography, Tooltip } from '@mui/material'
@@ -21,13 +23,20 @@ const Thirddose = ({
   sethicdata,
 }) => {
   // hic verification
-  const handleIconClick = async (params) => {
+   const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
-    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${params.data.em_no}`)
-    const { data } = response.data
-    sethicdata(data)
-  }
+    const { em_no } = params.data; 
+    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${em_no}`)
+    const { data,success } = response.data
+     if (success===1){
+       sethicdata(data)
+    }else{
+        sethicdata([])
+    }
+    
+  }, [sethicdata,setSelectedRowData,setIsModalOpen])
+  
   const toRedirectToHome = () => {
     setShowGeneral(0)
   }
@@ -35,9 +44,10 @@ const Thirddose = ({
 
   useEffect(() => {
     if (flag === 1) {
+       if (Object.keys(item).length > 0) {
       const thirddose =
-        item &&
-        item.filter(
+        
+        item?.filter(
           (val) =>
             val.third_dose_status === 1 &&
             val.second_dose_status === 1 &&
@@ -46,10 +56,14 @@ const Thirddose = ({
         )
       setData(thirddose)
       setCount(0)
+       }else{
+              setData([])
+       }
     } else {
+       if (Object.keys(item).length > 0) {
       const thirddose =
-        item &&
-        item.filter(
+        
+        item?.filter(
           (val) =>
             val.third_dose_status === 1 &&
             val.second_dose_status === 1 &&
@@ -57,6 +71,9 @@ const Thirddose = ({
         )
       setData(thirddose)
       setCount(0)
+       }else{
+           setData([])
+       }
     }
   }, [item, count, setCount, flag])
 
@@ -90,16 +107,16 @@ const Thirddose = ({
             return <Typography variant="body1">Second dose not verified</Typography>
           } else {
             return (
-              <IconButton
-                sx={{ paddingY: 0.5 }}
-                fontSize="small"
-                color="primary"
-                onClick={() => handleIconClick(params)}
-              >
-                <Tooltip title="Click Here to approve">
-                  <AddTaskIcon />
-                </Tooltip>
-              </IconButton>
+               <OpenIcon
+              sx={{ p: 0.1 }}
+              fontSize="small"
+              color="primary"
+              onClick={() => handleIconClick(params)}
+            >
+              <Tooltip title="Click Here to select a date">
+                <AddTaskIcon />
+              </Tooltip>
+            </OpenIcon> 
             )
           }
         },
@@ -157,6 +174,7 @@ const Thirddose = ({
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

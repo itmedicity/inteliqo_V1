@@ -8,6 +8,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { memo } from 'react'
 
 const EntryInformation = ({ details, setIsModalOpen }) => {
+  
   function formatWithSundayCheck(date) {
     const givenDate = moment(date)
     const threeDaysLater = givenDate.clone().add(3, 'days')

@@ -12,9 +12,10 @@ const TotalEmployee = ({ item, setShowGeneral }) => {
   }
   const [data, setData] = useState([])
   useEffect(() => {
+    if (Object.keys(item).length > 0) {
     const notVaccinated =
-      item &&
-      item.filter(
+      
+      item?.filter(
         (val) =>
           val.first_dose_status === 1 &&
           val.second_dose_status === 1 &&
@@ -26,6 +27,9 @@ const TotalEmployee = ({ item, setShowGeneral }) => {
       sl_no: index + 1,
     }))
     setData(dataWithStatus)
+    }else{
+        setData([])
+    }
   }, [item])
 
   const [columnDef] = useState([
@@ -79,6 +83,7 @@ const TotalEmployee = ({ item, setShowGeneral }) => {
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

@@ -8,6 +8,9 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { memo } from 'react'
+import { useCallback } from 'react'
+import { IconButton as OpenIcon } from '@mui/material'
+
 
 const Seconddose = ({
   item,
@@ -20,13 +23,21 @@ const Seconddose = ({
   sethicdata,
 }) => {
   // hic verification
-  const handleIconClick = async (params) => {
+
+   const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
-    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${params.data.em_no}`)
-    const { data } = response.data
-    sethicdata(data)
-  }
+    const { em_no } = params.data; 
+    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${em_no}`)
+    const { data,success } = response.data
+     if (success===1){
+       sethicdata(data)
+    }else{
+        sethicdata([])
+    }
+    
+  }, [setIsModalOpen,sethicdata,setSelectedRowData])
+  
 
   const toRedirectToHome = () => {
     setShowGeneral(0)
@@ -35,9 +46,10 @@ const Seconddose = ({
 
   useEffect(() => {
     if (flag === 1) {
+      if (Object.keys(item).length > 0) {
       const seconddose =
-        item &&
-        item.filter(
+        
+        item?.filter(
           (val) =>
             val.first_dose_status === 1 &&
             val.second_dose_status === 1 &&
@@ -45,11 +57,18 @@ const Seconddose = ({
         )
       setData(seconddose)
       setCount(0)
+      }else{
+          setData([])
+      }
     } else {
+       if (Object.keys(item).length > 0) {
       const seconddose =
-        item && item.filter((val) => val.first_dose_status === 1 && val.second_dose_status === 1)
+      item?.filter((val) => val.first_dose_status === 1 && val.second_dose_status === 1)
       setData(seconddose)
       setCount(0)
+       }else{
+            setData([])
+       }
     }
   }, [item, count, setCount, flag])
 
@@ -79,16 +98,16 @@ const Seconddose = ({
             return <Typography variant="body1">First dose not verified</Typography>
           } else {
             return (
-              <IconButton
-                sx={{ paddingY: 0.5 }}
-                fontSize="small"
-                color="primary"
-                onClick={() => handleIconClick(params)}
-              >
-                <Tooltip title="Click Here to approve">
-                  <AddTaskIcon />
-                </Tooltip>
-              </IconButton>
+               <OpenIcon
+              sx={{ p: 0.1 }}
+              fontSize="small"
+              color="primary"
+              onClick={() => handleIconClick(params)}
+            >
+              <Tooltip title="Click Here to select a date">
+                <AddTaskIcon />
+              </Tooltip>
+            </OpenIcon> 
             )
           }
         },
@@ -147,6 +166,7 @@ const Seconddose = ({
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}

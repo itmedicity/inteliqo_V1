@@ -9,6 +9,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { memo } from 'react'
 import { useCallback } from 'react'
+import { IconButton as OpenIcon } from '@mui/material'
 
 const Firstdosevac = ({
   item,
@@ -24,10 +25,16 @@ const Firstdosevac = ({
   const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
-    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${params.data.em_no}`)
-    const { data } = response.data
-    sethicdata(data)
-  }, [])
+      const { em_no } = params.data; 
+    const response = await axioslogin.get(`/Vaccination/getdataVaccination/${em_no}`)
+    const { data,success } = response.data
+     if (success===1){
+       sethicdata(data)
+    }else{
+        sethicdata([])
+    }
+    
+  }, [setIsModalOpen,setSelectedRowData,sethicdata])
 
   const toRedirectToHome = () => {
     setShowGeneral(0)
@@ -36,14 +43,22 @@ const Firstdosevac = ({
 
   useEffect(() => {
     if (flag === 1) {
+        if (Object.keys(item).length > 0) {
       const firstdose =
-        item && item.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
+        item?.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
       setData(firstdose)
       setCount(0)
+        }else{
+            setData([])
+        }
     } else {
-      const firstdose = item && item.filter((val) => val.first_dose_status === 1)
+      if (Object.keys(item).length > 0) {
+      const firstdose =  item?.filter((val) => val.first_dose_status === 1)
       setData(firstdose)
       setCount(0)
+      }else{
+          setData([])
+      }
     }
   }, [item, count, setCount])
 
@@ -72,16 +87,16 @@ const Firstdosevac = ({
             )
           } else {
             return (
-              <IconButton
-                sx={{ paddingY: 0.5 }}
-                fontSize="small"
-                color="primary"
-                onClick={() => handleIconClick(params)}
-              >
-                <Tooltip title="Click Here to approve">
-                  <AddTaskIcon />
-                </Tooltip>
-              </IconButton>
+               <OpenIcon
+              sx={{ p: 0.1 }}
+              fontSize="small"
+              color="primary"
+              onClick={() => handleIconClick(params)}
+            >
+              <Tooltip title="Click Here to select a date">
+                <AddTaskIcon />
+              </Tooltip>
+            </OpenIcon> 
             )
           }
         },
@@ -140,6 +155,7 @@ const Firstdosevac = ({
             sx={{
               height: 700,
               width: '100%',
+                p:1
             }}
             rowHeight={30}
             headerHeight={30}
