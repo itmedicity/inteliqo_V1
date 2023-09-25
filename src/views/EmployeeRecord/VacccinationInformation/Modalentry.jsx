@@ -59,7 +59,7 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
     secondDoseDueDate: moment().format('YYYY-MM-DD'),
     thirdDoseDueDate: moment().format('YYYY-MM-DD'),
     annual_dose: moment().add(360, 'days').format('YYYY-MM-DD'),
-
+    booster_dose_due_date: moment().add(10, 'days').format('YYYY-MM-DD'),
     em_no: details.em_no,
     remarksbooster: remarksbooster,
     em_id: em_id,

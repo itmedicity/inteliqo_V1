@@ -151,7 +151,7 @@ const HicVerification = () => {
             },
           }}
         >
-          {main.map((item, index) => (
+          {main?.map((item, index) => (
             <Paper
               key={index}
               variant="outlined"

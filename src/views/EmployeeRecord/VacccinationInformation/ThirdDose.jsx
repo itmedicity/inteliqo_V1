@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Box, CssVarsProvider, IconButton } from '@mui/joy'
+import { Box,IconButton } from '@mui/joy'
 import { useCallback } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
-
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper, Typography, Tooltip } from '@mui/material'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined'
-import CloseIcon from '@mui/icons-material/Close'
 import { axioslogin } from 'src/views/Axios/Axios'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { memo } from 'react'
+import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const Thirddose = ({
   item,
@@ -37,9 +35,7 @@ const Thirddose = ({
     
   }, [sethicdata,setSelectedRowData,setIsModalOpen])
   
-  const toRedirectToHome = () => {
-    setShowGeneral(0)
-  }
+ 
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -113,7 +109,7 @@ const Thirddose = ({
               color="primary"
               onClick={() => handleIconClick(params)}
             >
-              <Tooltip title="Click Here to select a date">
+              <Tooltip title="Click Here to verify">
                 <AddTaskIcon />
               </Tooltip>
             </OpenIcon> 
@@ -132,42 +128,11 @@ const Thirddose = ({
   }
   const [columnDef] = useState(preparedColumnDef)
   return (
-    <Box>
+    <DasboardCustomLayout  title={"Third Dose Vaccinated"} displayClose={true} setClose={setShowGeneral} >
+
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
         <Paper sx={{ flex: 1 }}>
-          <Paper square sx={{ display: 'flex', height: 30, flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', flex: 1, height: 30 }}>
-              <Paper
-                square
-                sx={{
-                  display: 'flex',
-                  flex: 1,
-                  height: 30,
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Box sx={{ display: 'flex' }}>
-                  <DragIndicatorOutlinedIcon />
-
-                  <Typography sx={{ display: 'flex' }}>Third Dose Vaccinated</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', pr: 1 }}>
-                  <CssVarsProvider>
-                    <IconButton
-                      variant="outlined"
-                      size="xs"
-                      color="danger"
-                      onClick={toRedirectToHome}
-                      sx={{ color: '#ef5350' }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </CssVarsProvider>
-                </Box>
-              </Paper>
-            </Box>
-          </Paper>
+        
           <CommonAgGrid
             columnDefs={columnDef}
             tableData={data}
@@ -181,7 +146,8 @@ const Thirddose = ({
           />
         </Paper>
       </Box>
-    </Box>
+      </DasboardCustomLayout>
+
   )
 }
 

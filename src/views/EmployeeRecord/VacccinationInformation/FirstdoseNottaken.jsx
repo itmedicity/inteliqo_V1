@@ -1,23 +1,19 @@
-import { Box, CssVarsProvider, IconButton } from '@mui/joy'
+import { Box, } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { lazy } from 'react'
 import AddTaskIcon from '@mui/icons-material/AddTask'
-import { Tooltip, Paper, Typography } from '@mui/material'
+import { Tooltip, Paper, } from '@mui/material'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined'
-import CloseIcon from '@mui/icons-material/Close'
 import { memo } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
 import { useCallback } from 'react'
-
+import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const Modal = lazy(() => import('./Modal'))
 
 const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
-  const toRedirectToHome = () => {
-    setShowGeneral(0)
-  }
+  
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({})
@@ -81,41 +77,13 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
   ])
 
   return (
-    <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-      <Paper sx={{ flex: 1 }}>
-        <Paper square sx={{ display: 'flex', height: 30, flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', flex: 1, height: 30 }}>
-            <Paper
-              square
-              sx={{
-                display: 'flex',
-                flex: 1,
-                height: 30,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box sx={{ display: 'flex' }}>
-                <DragIndicatorOutlinedIcon />
 
-                <Typography sx={{ display: 'flex' }}>Not Vaccinated Employees</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', pr: 1 }}>
-                <CssVarsProvider>
-                  <IconButton
-                    variant="outlined"
-                    size="xs"
-                    color="danger"
-                    onClick={toRedirectToHome}
-                    sx={{ color: '#ef5350' }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </CssVarsProvider>
-              </Box>
-            </Paper>
-          </Box>
-        </Paper>
+
+    <DasboardCustomLayout  title={"Not Vaccinated Employee"} displayClose={true} setClose={setShowGeneral} >
+    
+      <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+        <Paper sx={{ flex: 1 }}>
+       
         <CommonAgGrid
           columnDefs={columnDef}
           tableData={data}
@@ -138,6 +106,8 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
         />
       </Paper>
     </Box>
+    </DasboardCustomLayout>
+   
   )
 }
 

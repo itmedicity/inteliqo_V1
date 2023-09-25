@@ -132,8 +132,8 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
 
   useEffect(() => {
     const departmentInfo = data1
-      .filter((person) => person.em_status === 1)
-      .reduce((info, person) => {
+      ?.filter((person) => person.em_status === 1)
+      ?.reduce((info, person) => {
         const department = person.dept_name
         if (!info[department]) {
           info[department] = {
@@ -155,8 +155,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
 
     setdptinfo(departmentInfo)
     const notvaccinated =
-      data1 &&
-      data1.filter(
+      data1?.filter(
         (val) =>
           val.first_dose_status === 1 &&
           val.second_dose_status === 1 &&
@@ -166,30 +165,29 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
     setlen(notvaccinated.length)
     // firstdose not vaccinated
     const firstdose =
-      data1 && data1.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
+       data1?.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
     firstvacnot(firstdose.length)
     // second dose not vaccinated
-    const seconddose = data1 && data1.filter((val) => val.second_dose_status === 0)
+    const seconddose =  data1?.filter((val) => val.second_dose_status === 0)
     secondvacnot(seconddose.length)
     // third dose not vaccinated
-    const thirddose = data1 && data1.filter((val) => val.third_dose_status === 0)
+    const thirddose =  data1?.filter((val) => val.third_dose_status === 0)
     thirdvacnot(thirddose.length)
     // booster dose  not vaccinated
     const boosterdose =
-      data1 &&
-      data1.filter((val) => val.booster_dose_status === 0 && val.booster_dose_given_status === 1)
+      data1?.filter((val) => val.booster_dose_status === 0 && val.booster_dose_given_status === 1)
     boosterdosevacnot(boosterdose.length)
     // firstdose vaccinated
-    const firstdosevac = data1 && data1.filter((val) => val.first_dose_status === 1)
+    const firstdosevac =  data1?.filter((val) => val.first_dose_status === 1)
     firstvac(firstdosevac.length)
     // second dose vaccinated
     const seconddosevacc =
-      data1 && data1.filter((val) => val.first_dose_status === 1 && val.second_dose_status === 1)
+    data1?.filter((val) => val.first_dose_status === 1 && val.second_dose_status === 1)
     secondvac(seconddosevacc.length)
     // third dose vaccinated
     const thirddosevac =
-      data1 &&
-      data1.filter(
+    
+      data1?.filter(
         (val) =>
           val.third_dose_status === 1 &&
           val.second_dose_status === 1 &&
@@ -198,21 +196,20 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
     thirdvac(thirddosevac.length)
     // pending first dose
     const penfirstdose =
-      data1 &&
-      data1.filter((val) => val.first_dose_status === 0 && val.first_dose_given_status === 1)
+    
+      data1?.filter((val) => val.first_dose_status === 0 && val.first_dose_given_status === 1)
     firstvacpen(penfirstdose.length)
     // pending booster dose annual health check
     const currentDate = new Date()
     const penbooster =
-      data1 &&
-      data1.filter((val) => {
+      data1?.filter((val) => {
         const annualDoseDate = new Date(val.annual_dose)
         return val.annual_dose !== null && annualDoseDate <= currentDate
       })
 
     boostervacpen(penbooster.length)
     // annual pending status
-    const annualpending = data1 && data1.filter((val) => val.pending_status === 1)
+    const annualpending =  data1?.filter((val) => val.pending_status === 1)
     annualpen(annualpending.length)
     setCount(0)
   }, [data1, setCount, count])

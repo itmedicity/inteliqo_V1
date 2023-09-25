@@ -179,13 +179,13 @@ const Modalhic = ({
                 <Typography variant="body1">Department:</Typography>
                 <Typography variant="body1">Department Section:</Typography>
                 <Typography variant="body1">Emp ID: </Typography>
-                {details.hic_frst_dose_status === 0 ? (
+                {details?.hic_frst_dose_status === 0 ? (
                   <Typography variant="body1">First dose vaccinated Date :</Typography>
-                ) : details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1 ? (
+                ) : details?.hic_second_dose_status === 0 && details?.hic_frst_dose_status === 1 ? (
                   <Typography variant="body1">Second dose vaccinated Date :</Typography>
-                ) : details.hic_third_dose_status === 0 &&
-                  details.hic_frst_dose_status === 1 &&
-                  details.hic_second_dose_status === 1 ? (
+                ) : details?.hic_third_dose_status === 0 &&
+                  details?.hic_frst_dose_status === 1 &&
+                  details?.hic_second_dose_status === 1 ? (
                   <Typography variant="body1">Third dose vaccinated Date :</Typography>
                 ) : (
                   <Typography variant="body1">Booster dose date</Typography>
@@ -206,23 +206,23 @@ const Modalhic = ({
                 <Typography sx={{ color: '#78C1F3' }} variant="body1">
                   {selectedRowData?.em_no || 'N/A'}
                 </Typography>
-                {details.hic_frst_dose_status === 0 ? (
+                {details?.hic_frst_dose_status === 0 ? (
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                    {details.firstdose_date}
+                    {details?.firstdose_date}
                   </Typography>
-                ) : details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1 ? (
+                ) : details?.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1 ? (
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                    {details.second_dose_given_date}
+                    {details?.second_dose_given_date}
                   </Typography>
-                ) : details.hic_third_dose_status === 0 &&
-                  details.hic_frst_dose_status === 1 &&
-                  details.hic_second_dose_status === 1 ? (
+                ) : details?.hic_third_dose_status === 0 &&
+                  details?.hic_frst_dose_status === 1 &&
+                  details?.hic_second_dose_status === 1 ? (
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                    {details.third_dose_given_date}
+                    {details?.third_dose_given_date}
                   </Typography>
                 ) : (
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                    {details.booster_dose_given_date}
+                    {details?.booster_dose_given_date}
                   </Typography>
                 )}
                 <TextField
