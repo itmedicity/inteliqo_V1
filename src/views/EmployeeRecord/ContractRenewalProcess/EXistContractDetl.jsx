@@ -14,6 +14,7 @@ import { useCallback } from 'react';
 
 const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
 
+    const [view, setView] = useState(0)
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -27,10 +28,8 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
         desg_name: '',
         sect_name: ''
     })
-    const [view, setView] = useState(0)
-
-    //destructuring
     const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period, desg_name, sect_name } = formData
+
     //use effect for getting existing contract details
     useEffect(() => {
         const getcontractInformation = async () => {
@@ -64,6 +63,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
         }
         getcontractInformation()
     }, [no])
+
     //useEffect for getting fine Deatails
     useEffect(() => {
         const getFinedetl = async () => {
@@ -77,7 +77,6 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             }
         }
         getFinedetl()
-
     }, [no])
 
     //function for Closing first contract
@@ -102,7 +101,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             warningNofity("Grace Period Not Completed")
             setView(0)
         }
-    }, [em_cont_end, grace_period])
+    }, [em_cont_end, grace_period, id, dispatch])
 
 
     return (

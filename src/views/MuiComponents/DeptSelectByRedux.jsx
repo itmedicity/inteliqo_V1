@@ -1,5 +1,4 @@
 import React, { useEffect, memo } from 'react'
-import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +7,7 @@ import { setDept } from 'src/redux/actions/Dept.Action';
 import _ from 'underscore';
 import { useMemo } from 'react';
 
-const DeptSelectByRedux = ({ style, value, setValue }) => {
+const DeptSelectByRedux = ({ value, setValue }) => {
 
     const dispatch = useDispatch()
     useEffect(() => dispatch(setDept()), [dispatch])
@@ -24,8 +23,6 @@ const DeptSelectByRedux = ({ style, value, setValue }) => {
                 size="small"
                 fullWidth
                 variant='outlined'
-                // sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
-                sx={{ ...style, minWidth: 100 }}
             >
                 <MenuItem value={0} disabled >Select Department</MenuItem>
                 {

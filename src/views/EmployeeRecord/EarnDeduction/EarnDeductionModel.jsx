@@ -33,7 +33,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
         include_pf: 0,
         include_lwf: 0,
         include_protax: 0,
-        em_amount: '',
+        em_amount: 0,
         start_month: false,
         end_month: false,
     });
@@ -450,9 +450,10 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                                 <Box sx={{ display: "flex", width: '25%', px: 0.3 }}>
                                     <TextField fullWidth
                                         //label="Last Amount"
-                                        id="fullWidth"
+                                        id="LastWage"
                                         size="small"
                                         disabled
+                                        name='LastWage'
                                         value={LastWage}
                                     />
                                 </Box>

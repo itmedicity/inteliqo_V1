@@ -33,7 +33,7 @@ const ApprovalDeptSectSelection = ({ em_id, value, setValue, updateDeptSect }) =
                 fullWidth
                 variant='outlined'
             >
-                <MenuItem value={0} >
+                <MenuItem value={0} disabled>
                     All Department Section
                 </MenuItem>
                 {

@@ -165,7 +165,7 @@ export const getLeaveRequestCountUser = (em_id) => async (dispatch) => {
 }
 
 export const getresignreqCountIncharge = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/ResignReqInchargeCount')
+    const result = await axioslogin.get('/Count/ResignReqInchargeCount/count')
     const { success, data } = result.data
     if (success === 1) {
         const { resigncountincharge } = data[0]

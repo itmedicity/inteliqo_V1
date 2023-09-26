@@ -25,6 +25,12 @@ const PayrollMenu = [
         to: '/Home/OTUpdatedList',
     },
     {
+        men_slno: 254,
+        component: CNavItem,
+        name: 'Arear Updation',
+        to: '/Home/ArearUpdation',
+    },
+    {
         men_slno: 41,
         component: CNavItem,
         name: 'Advance Settlement',

@@ -21,7 +21,7 @@ const BranchSelectRedux = ({ value, setValue, }) => {
                 fullWidth
                 variant='outlined'
             >
-                <MenuItem value={0} >
+                <MenuItem value={0} disabled >
                     Select Branch
                 </MenuItem>
                 {

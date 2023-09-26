@@ -1,12 +1,12 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useHistory } from 'react-router'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { CssVarsProvider } from '@mui/joy'
-import { Box, Checkbox, FormControlLabel, Paper, Tooltip } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Paper, TextField, Tooltip } from '@mui/material'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,6 +14,7 @@ import { useMemo } from 'react'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import { ToastContainer } from 'react-toastify';
 
 const EmployeeFileAgGrid = () => {
 
@@ -23,6 +24,7 @@ const EmployeeFileAgGrid = () => {
 
     const [deptName, setDepartment] = useState(0)
     const [deptSecName, setDepartSecName] = useState(0)
+    const [Empno, setEmpNo] = useState(0)
 
     const employeeRecordList = useSelector((state) => {
         return state.getEmployeeRecordList.empRecordData;
@@ -91,13 +93,22 @@ const EmployeeFileAgGrid = () => {
                 else {
                     warningNofity(message)
                 }
+            } else if (deptName === 0 && deptSecName === 0 && activestatus === true && Empno !== 0) {
+                const result = await axioslogin.get(`/empearndeduction/getAll/${Empno}`)
+                const { data, success } = result.data;
+                if (success === 1) {
+                    setTableData(data);
+                } else {
+                    infoNofity("No employee exist with this employee number!!")
+                    setTableData([]);
+                }
             }
             else {
                 warningNofity("Choose All Option")
             }
         }
         submitfunc()
-    }, [postDataDept, postData, deptName, deptSecName, activestatus, dispatch])
+    }, [postDataDept, postData, deptName, deptSecName, activestatus, dispatch, Empno])
 
     // Route to Empl Record
     const getEmployeeEmpNumber = (params) => {
@@ -109,7 +120,7 @@ const EmployeeFileAgGrid = () => {
 
     const [columnDef] = useState([
         {
-            headerName: 'Action', minWidth: 100, wrapText: true,
+            headerName: 'Action', minWidth: 100,
             cellRenderer: params =>
                 <Tooltip title="Profile View" followCursor placement='top' arrow >
                     <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getEmployeeEmpNumber(params)}>
@@ -117,31 +128,40 @@ const EmployeeFileAgGrid = () => {
                     </IconButton>
                 </Tooltip>
         },
-        { headerName: 'Emp No', field: 'em_no', minWidth: 90, filter: true },
+        { headerName: 'Emp No', field: 'em_no', minWidth: 150, filter: true },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Gender', field: 'gender', minWidth: 90 },
         { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
         { headerName: 'DOJ', field: 'em_doj', minWidth: 90 },
         { headerName: 'Mobile', field: 'em_mobile', minWidth: 90 },
         { headerName: 'Branch', field: 'branch_name', minWidth: 90 },
-        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 90 },
-        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 90 },
-        { headerName: 'Designation', field: 'desg_name', minWidth: 90 },
+        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 250 },
+        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 250 },
+        { headerName: 'Designation', field: 'desg_name', minWidth: 250 },
         { headerName: 'Status', field: 'emp_status', minWidth: 90 },
 
     ])
 
     return (
         <CustomLayout title="Employee Record File" displayClose={true} >
+            <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                 <Paper square elevation={1}  >
                     <Box sx={{ display: "flex", flexDirection: "row", pt: 1, justifyItems: 'flex-start' }}>
-                        <Box sx={{ p: 1 }} >
+                        <Box sx={{ p: 1, width: '25%' }} >
                             <DeptSelectByRedux setValue={setDepartment} value={deptName} />
                         </Box>
-                        <Box sx={{ p: 1 }}>
+                        <Box sx={{ p: 1, width: '25%' }}>
                             <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
                         </Box>
+                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                            <Box sx={{ p: 1, width: '25%' }}>
+                                <TextField fullWidth
+                                    id="fullWidth" size="small"
+                                    onChange={(e) => setEmpNo(e.target.value)}
+                                />
+                            </Box>
+                        </Tooltip>
                         <Box sx={{ p: 1 }} >
                             <FormControlLabel
                                 control={
