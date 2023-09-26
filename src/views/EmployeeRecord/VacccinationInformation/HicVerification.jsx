@@ -1,5 +1,5 @@
 import { Box, Paper, Typography, IconButton } from '@mui/material'
-import React from 'react'
+import React, { useCallback } from 'react'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import { useState } from 'react'
@@ -77,10 +77,12 @@ const HicVerification = () => {
     }
     loaddata()
   }, [count])
-  const handleClick = (e, item) => {
+
+  const handleClick =useCallback( (e, item) => {
     setShowGeneral(item.id)
     setflag(1)
-  }
+  },[])
+  
   return (
     <Box>
       <ToastContainer />

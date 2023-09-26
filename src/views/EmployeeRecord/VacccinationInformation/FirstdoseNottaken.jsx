@@ -77,8 +77,6 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
   ])
 
   return (
-
-
     <DasboardCustomLayout  title={"Not Vaccinated Employee"} displayClose={true} setClose={setShowGeneral} >
     
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
@@ -107,7 +105,6 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
       </Paper>
     </Box>
     </DasboardCustomLayout>
-   
   )
 }
 

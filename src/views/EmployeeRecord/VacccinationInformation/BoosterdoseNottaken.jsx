@@ -48,10 +48,6 @@ const Boosterdose = ({ item, setCount, count, setShowGeneral }) => {
              </Box>
 
             </DasboardCustomLayout>
-
-
-      
-  
   )
 }
 

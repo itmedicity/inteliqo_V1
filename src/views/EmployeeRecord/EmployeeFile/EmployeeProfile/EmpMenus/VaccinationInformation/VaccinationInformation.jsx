@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useEffect, useState } from 'react'
+import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
+import Heading from 'src/views/Component/MuiCustomComponent/Heading'
 const Previousvacc = lazy(() => import('./Previousvacc'))
 const Vaccinationdetials = lazy(() => import('./Vaccinationdetials'))
 
@@ -51,18 +53,14 @@ const VaccinationInformation = () => {
         </Paper>
 
         <Box sx={{ p: 1, fontWeight: 500 }}>
-          <CssVarsProvider>
-            <Typography>Vaccinated Date and Due Date</Typography>
-          </CssVarsProvider>
+        <CustmTypog title={'Vaccinated Date and Due Date'} />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
           <Box
             border={1}
             sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
           >
-            <CssVarsProvider>
-              <Typography>Vaccination</Typography>
-            </CssVarsProvider>
+          <Heading  title={'Vaccination'}/>
           </Box>
           <Box
             borderTop={1}
@@ -76,10 +74,8 @@ const VaccinationInformation = () => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography sx={{}}>First Dose</Typography>
-              <Typography>(0 Month)</Typography>
-            </CssVarsProvider>
+                    <Heading  title={'First Dose'}/>
+                    <Heading  title={'(0 Month)'}/>
           </Box>
           <Box
             border={1}
@@ -93,10 +89,8 @@ const VaccinationInformation = () => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Second Dose</Typography>
-              <Typography>(After 1 month)</Typography>
-            </CssVarsProvider>
+            <Heading  title={'Second Dose'}/>
+            <Heading  title={'(After 1 month)'}/>
           </Box>
           <Box
             borderTop={1}
@@ -111,12 +105,8 @@ const VaccinationInformation = () => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Third Dose</Typography>
-              <Typography>
-                ( 6<sup>th</sup> month)
-              </Typography>
-            </CssVarsProvider>
+            <Heading  title={'Third Dose'}/>
+            <Heading  title={'( after 6 month)'}/>
           </Box>
           <Box
             borderTop={1}
@@ -131,10 +121,8 @@ const VaccinationInformation = () => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Booster Dose</Typography>
-              <Typography>(if required)</Typography>
-            </CssVarsProvider>
+           <Heading  title={'Booster Dose'}/>
+            <Heading  title={'( if required)'}/>
           </Box>
         </Box>
 

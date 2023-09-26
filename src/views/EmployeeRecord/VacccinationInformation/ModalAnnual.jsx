@@ -33,26 +33,26 @@ const ModalAnnual = ({
   const [selectedFileIndex, setSelectedFileIndex] = useState(-1)
 
   // Function to open the view file modal
-  const openViewFileModal = (index) => {
+  const openViewFileModal = useCallback((index) => {
     setSelectedFileIndex(index)
-  }
+  },[])
 
-  const handleCloseModal = () => {
+  const handleCloseModal =useCallback( () => {
     setIsModalOpen(false)
     setTiterValue('')
     setCount(count + 1)
-  }
+  },[count])
 
   // saving the date
   const [selectedFiles, setSelectedFiles] = useState([])
 
-  const handleFileChange = (e) => {
+  const handleFileChange = useCallback((e) => {
     const newFiles = [...selectedFiles]
     newFiles.push(e.target.files[0])
     setSelectedFiles(newFiles)
-  }
+  },[])
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile =useCallback( (index) => {
     const newFiles = [...selectedFiles]
     newFiles.splice(index, 1)
     setSelectedFiles(newFiles)
@@ -62,7 +62,7 @@ const ModalAnnual = ({
     if (fileInput) {
       fileInput.value = null
     }
-  }
+  },[])
 
  
   const handleImageUpload = useCallback(async (imageFile) => {

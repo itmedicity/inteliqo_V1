@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
-import { CssVarsProvider } from '@mui/joy'
+import { Box, } from '@mui/material'
+import Heading from 'src/views/Component/MuiCustomComponent/Heading'
 
 
 
@@ -41,11 +41,12 @@ const Vaccinationdetials = ({empVaccination}) => {
             borderLeft={1}
             borderRight={1}
             borderBottom={1}
-            sx={{ display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
+            sx={{ display: 'flex', fontWeight: 400, width: '25%', height: 'auto', }}
           >
-            <CssVarsProvider>
-              <Typography p={1}>Hepatitis B</Typography>
-            </CssVarsProvider>
+          <Box sx={{p:1}}>
+               <Heading  title={'Hepatitis B'}/>
+               </Box>
+     
           </Box>
           <Box
             borderBottom={1}
@@ -55,16 +56,15 @@ const Vaccinationdetials = ({empVaccination}) => {
               height: 'auto',
               alignItems: 'center',
               flexDirection: 'column',
-            
+               
             }}
           >
-            <CssVarsProvider>
-              <Typography sx={{ p: 1 }}>
-                {details?.firstdose_date === null
+          <Box sx={{p:1}}>
+             <Heading  title=  {details?.firstdose_date === null
                   ? 'not vaccinated'
-                  : details?.firstdose_date}
-              </Typography>
-            </CssVarsProvider>
+                  : details?.firstdose_date}/>
+          </Box>
+        
           </Box>
           <Box
             borderLeft={1}
@@ -80,34 +80,23 @@ const Vaccinationdetials = ({empVaccination}) => {
           >
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Due Date</Typography>
-                </CssVarsProvider>
+                <Heading  title={'Due Date'}/>
               </Box>
               <Box borderBottom={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Given Date</Typography>
-                </CssVarsProvider>
+                <Heading  title={'Given Date'}/>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43 }}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                    {details?.second_dose_due_date === null
+              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43,p:1  }}>
+                <Heading  title=   {details?.second_dose_due_date === null
                       ? 'not vaccinated'
-                      : details?.second_dose_due_date}
-                  </Typography>
-                </CssVarsProvider>
+                      : details?.second_dose_due_date}/>
               </Box>
-              <Box borderBottom={1} sx={{ width: '50%', height: 43 }}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                    {details?.second_dose_given_date === null
+              <Box borderBottom={1} sx={{ width: '50%', height: 43,p:1  }}>
+                 <Heading  title=  {details?.second_dose_given_date === null
                       ? 'not vaccinated'
-                      : details?.second_dose_given_date}
-                  </Typography>
-                </CssVarsProvider>
+                      : details?.second_dose_given_date}/>
+              
               </Box>
             </Box>
           </Box>
@@ -124,34 +113,22 @@ const Vaccinationdetials = ({empVaccination}) => {
           >
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Due Date</Typography>
-                </CssVarsProvider>
+               <Heading  title={'Due Date'}/>
               </Box>
               <Box borderBottom={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Given Date</Typography>
-                </CssVarsProvider>
+                <Heading  title={'Given Date'}/>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43 }}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                    {details?.third_dose_due_date === null
+              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43,p:1  }}>
+                <Heading  title= {details?.third_dose_due_date === null
                       ? 'not vaccinated'
-                      : details?.third_dose_due_date}
-                  </Typography>
-                </CssVarsProvider>
+                      : details?.third_dose_due_date}/>
               </Box>
-              <Box borderBottom={1} sx={{ width: '50%', height: 43 }}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                    {details?.third_dose_given_date === null
+              <Box borderBottom={1} sx={{ width: '50%', height: 43,p:1  }}>
+                  <Heading  title=  {details?.third_dose_given_date === null
                       ? 'not vaccinated'
-                      : details?.third_dose_given_date}
-                  </Typography>
-                </CssVarsProvider>
+                      : details?.third_dose_given_date}/>
               </Box>
             </Box>
           </Box>
@@ -169,36 +146,23 @@ const Vaccinationdetials = ({empVaccination}) => {
           >
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Due Date</Typography>
-                </CssVarsProvider>
+               <Heading  title={'Due Date'}/>
               </Box>
               <Box borderBottom={1} sx={{ width: '50%', height: 23 }}>
-                <CssVarsProvider>
-                  <Typography sx={{}}>Given Date</Typography>
-                </CssVarsProvider>
+               <Heading  title={'Given Date'}/>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43,}}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                
-                    {details?.booster_dose_due_date === null
+              <Box borderBottom={1} borderRight={1} sx={{ width: '50%', height: 43,p:1 }}>
+                 <Heading  title=  {details?.booster_dose_due_date === null
                       ? 'not vaccinated'
                       :details?.booster_dose_due_date
-                       }
-                  </Typography>
-                </CssVarsProvider>
+                       }/>
               </Box>
-              <Box borderBottom={1} sx={{ width: '50%', height: 43, }}>
-                <CssVarsProvider>
-                  <Typography sx={{ p: 1 }}>
-                    {details?.booster_dose_given_date === null
+              <Box borderBottom={1} sx={{ width: '50%', height: 43,p:1 }}>
+                    <Heading  title= {details?.booster_dose_given_date === null
                       ? 'not vaccinated'
-                      : details?.booster_dose_given_date}
-                  </Typography>
-                </CssVarsProvider>
+                      : details?.booster_dose_given_date}/>
               </Box>
             </Box>
           </Box>

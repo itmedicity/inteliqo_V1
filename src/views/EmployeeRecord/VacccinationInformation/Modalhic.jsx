@@ -69,25 +69,25 @@ const Modalhic = ({
   }
   const Hicfirstdose = {
     fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
+    em_no: details?.em_no,
     em_id: em_id,
     remarks: remarks,
   };
   const Hicseconddose = {
     fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
+    em_no: details?.em_no,
     em_id: em_id,
     remarks: remarks,
   };
   const Hicsthirddose = {
     fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
+    em_no: details?.em_no,
     em_id: em_id,
     remarks: remarks,
   };
   const Hicboosterdose = {
     fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
+    em_no: details?.em_no,
     em_id: em_id,
     remarks: remarks,
   };
@@ -114,9 +114,9 @@ const Modalhic = ({
       infoNofity(message);
     }
   } else if (
-    details.hic_third_dose_status === 0 &&
-    details.hic_frst_dose_status === 1 &&
-    details.hic_second_dose_status === 1
+    details?.hic_third_dose_status === 0 &&
+    details?.hic_frst_dose_status === 1 &&
+    details?.hic_second_dose_status === 1
   ) {
     const response = await axioslogin.post('/Vaccination/Hicsthirddose', Hicsthirddose);
     const { message, success } = response.data;
@@ -210,7 +210,7 @@ const Modalhic = ({
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
                     {details?.firstdose_date}
                   </Typography>
-                ) : details?.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1 ? (
+                ) : details?.hic_second_dose_status === 0 && details?.hic_frst_dose_status === 1 ? (
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
                     {details?.second_dose_given_date}
                   </Typography>

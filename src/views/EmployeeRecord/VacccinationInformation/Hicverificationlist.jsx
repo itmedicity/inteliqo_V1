@@ -101,9 +101,9 @@ const Hicverificationlist = () => {
   // for signature
   useEffect(() => {
     const getEmployeeSig = async () => {
-      if (details.hic_emid_first_verified > 0) {
+      if (details?.hic_emid_first_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details.hic_emid_first_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + details?.hic_emid_first_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -119,9 +119,9 @@ const Hicverificationlist = () => {
     getEmployeeSig()
 
     const getEmployeeSigsecond = async () => {
-      if (details.hic_emid_second_verified > 0) {
+      if (details?.hic_emid_second_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details.hic_emid_second_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + details?.hic_emid_second_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -135,9 +135,9 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigsecond()
     const getEmployeeSigthird = async () => {
-      if (details.hic_emid_third_verified > 0) {
+      if (details?.hic_emid_third_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details.hic_emid_third_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + details?.hic_emid_third_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -151,9 +151,9 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigthird()
     const getEmployeeSigbooster = async () => {
-      if (details.hic_emid_booster_verified > 0) {
+      if (details?.hic_emid_booster_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details.hic_emid_booster_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + details?.hic_emid_booster_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -167,10 +167,10 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigbooster()
   }, [
-    details.hic_emid_first_verified,
-    details.hic_emid_second_verified,
-    details.hic_emid_third_verified,
-    details.hic_emid_booster_verified,
+    details?.hic_emid_first_verified,
+    details?.hic_emid_second_verified,
+    details?.hic_emid_third_verified,
+    details?.hic_emid_booster_verified,
   ])
 
   const handleIconClick = useCallback((params) => {
@@ -198,7 +198,7 @@ const Hicverificationlist = () => {
     thirddesg: row.thirddesg === null ? 'Nil' : row.thirddesg,
     boosterdesg: row.boosterdesg === null ? 'Nil' : row.boosterdesg,
     hic_boostert_dose_date:
-      row.hic_boostert_dose_date === null ? 'Nil' : row.hic_boostert_dose_date,
+    row.hic_boostert_dose_date === null ? 'Nil' : row.hic_boostert_dose_date,
     blood: row.group_name,
     age: row.em_age_year,
     dob: row.em_dob,
@@ -253,7 +253,6 @@ const Hicverificationlist = () => {
     },
   ])
 
-  // Now you can use 'processedData' with 'columnDef' in your ag-Grid component
 
   return (
     <CustomLayout title="Vacccination entry" displayClose={true}>

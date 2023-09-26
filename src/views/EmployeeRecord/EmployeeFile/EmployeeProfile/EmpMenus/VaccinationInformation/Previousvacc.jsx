@@ -1,24 +1,20 @@
-import { Box, Typography } from '@mui/material'
+import { Box,} from '@mui/material'
 import React, { memo } from 'react'
-import { CssVarsProvider } from '@mui/joy'
+import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
+import Heading from 'src/views/Component/MuiCustomComponent/Heading'
 
 const Previousvacc = ({data}) => {
   return (
     <Box>
      <Box sx={{ p: 1, fontWeight: 500 }}>
-          <CssVarsProvider>
-            <Typography>Previous Year Vacciantion Date</Typography>
-          </CssVarsProvider>
+        <CustmTypog title={'Previous Year Vacciantion Date'} />
         </Box>
-
         <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
           <Box
             border={1}
             sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
           >
-            <CssVarsProvider>
-              <Typography>Vaccination</Typography>
-            </CssVarsProvider>
+            <Heading title={'Vaccination'}/>
           </Box>
           <Box
             borderTop={1}
@@ -32,9 +28,7 @@ const Previousvacc = ({data}) => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography sx={{}}>First Dose</Typography>
-            </CssVarsProvider>
+           <Heading title={'First Dose'}/>
           </Box>
           <Box
             border={1}
@@ -48,9 +42,7 @@ const Previousvacc = ({data}) => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Second Dose</Typography>
-            </CssVarsProvider>
+          <Heading title={'Second Dose'}/>
           </Box>
           <Box
             borderTop={1}
@@ -65,9 +57,7 @@ const Previousvacc = ({data}) => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Third Dose</Typography>
-            </CssVarsProvider>
+           <Heading title={'Third Dose'}/>
           </Box>
           <Box
             borderTop={1}
@@ -82,9 +72,7 @@ const Previousvacc = ({data}) => {
               flexDirection: 'column',
             }}
           >
-            <CssVarsProvider>
-              <Typography>Booster Dose</Typography>
-            </CssVarsProvider>
+           <Heading title={'Booster Dose'}/>
           </Box>
         </Box>
         {data?.map((item, index) => (
@@ -95,9 +83,7 @@ const Previousvacc = ({data}) => {
               borderBottom={1}
               sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
             >
-              <CssVarsProvider>
-                <Typography>Hepatitis B</Typography>
-              </CssVarsProvider>
+            <Heading title={'Hepatitis B'}/>
             </Box>
             <Box
               borderBottom={1}
@@ -111,7 +97,7 @@ const Previousvacc = ({data}) => {
               }}
             >
               {/* FIRST DOSE DATE  */}
-              {item?.firstdose_date === null ? 'not required' : item.firstdose_date}
+              {item?.firstdose_date === null ? 'not required' : item?.firstdose_date}
             </Box>
             <Box
               borderRight={1}
@@ -128,7 +114,7 @@ const Previousvacc = ({data}) => {
               }}
             >
               {/* SECOND DOSE DATE */}
-              {item?.second_dose_given_date === null ? 'not required' : item.second_dose_given_date}
+              {item?.second_dose_given_date === null ? 'not required' : item?.second_dose_given_date}
             </Box>
             <Box
               borderRight={1}
@@ -143,7 +129,7 @@ const Previousvacc = ({data}) => {
               }}
             >
               {/* THIRD DOSE DATE */}
-              {item?.third_dose_given_date === null ? 'not required' : item.third_dose_given_date}
+              {item?.third_dose_given_date === null ? 'not required' : item?.third_dose_given_date}
             </Box>
             <Box
               borderRight={1}
@@ -160,7 +146,7 @@ const Previousvacc = ({data}) => {
               {/* BOOSTER DOSE DATE */}
               {item?.booster_dose_given_date === null
                 ? 'not required'
-                : item.booster_dose_given_date}
+                : item?.booster_dose_given_date}
             </Box>
           </Box>
         ))}

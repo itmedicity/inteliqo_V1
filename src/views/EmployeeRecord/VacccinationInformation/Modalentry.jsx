@@ -161,16 +161,16 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
           <Paper elevation={0} sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <VaccinesIcon color="success" sx={{ mr: 1 }} />
-              {details.first_dose_given_status === 1 && details.first_dose_status === 0 ? (
+              {details?.first_dose_given_status === 1 && details?.first_dose_status === 0 ? (
                 <Typography variant="h6">Vaccination Type First Dose</Typography>
-              ) : details.booster_dose_given_status === 1 &&
-                details.first_dose_given_status === 0 ? (
+              ) : details?.booster_dose_given_status === 1 &&
+                details?.first_dose_given_status === 0 ? (
                 <Typography variant="h6">Vaccination Type Booster Dose</Typography>
-              ) : details.first_dose_status === 1 && details.second_dose_status === 0 ? (
+              ) : details?.first_dose_status === 1 && details?.second_dose_status === 0 ? (
                 <Typography variant="h6">Vaccination Type second Dose</Typography>
-              ) : details.first_dose_status === 1 &&
-                details.second_dose_status === 1 &&
-                details.booster_dose_status === 0 ? (
+              ) : details?.first_dose_status === 1 &&
+                details?.second_dose_status === 1 &&
+                details?.booster_dose_status === 0 ? (
                 <Typography variant="h6">Vaccination Type third Dose</Typography>
               ) : (
                 'Vaccination date not selected by HR'
@@ -187,16 +187,16 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
                   <Typography variant="body1">Department:</Typography>
                   <Typography variant="body1">Department Section:</Typography>
                   <Typography variant="body1">Emp ID: </Typography>
-                  {details.first_dose_given_status === 1 && details.first_dose_status === 0 ? (
+                  {details?.first_dose_given_status === 1 && details?.first_dose_status === 0 ? (
                     <Typography variant="body1">FirstDose given date: </Typography>
                   ) : details.booster_dose_given_status === 1 &&
-                    details.first_dose_given_status === 0 ? (
+                    details?.first_dose_given_status === 0 ? (
                     <Typography variant="body1">BoosterDose given date: </Typography>
-                  ) : details.first_dose_status === 1 && details.second_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 && details?.second_dose_status === 0 ? (
                     <Typography variant="body1">secondDose given date: </Typography>
-                  ) : details.first_dose_status === 1 &&
-                    details.second_dose_status === 1 &&
-                    details.booster_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 &&
+                    details?.second_dose_status === 1 &&
+                    details?.booster_dose_status === 0 ? (
                     <Typography variant="body1">thirddose given date: </Typography>
                   ) : (
                     ''
@@ -209,71 +209,71 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
                     sx={{ color: '#78C1F3', textTransform: 'capitalize' }}
                     variant="body1"
                   >
-                    {details.em_name}
+                    {details?.em_name}
                   </Typography>
                   <Typography
                     sx={{ color: '#78C1F3', textTransform: 'capitalize' }}
                     variant="body1"
                   >
-                    {details.dept_name}
+                    {details?.dept_name}
                   </Typography>
                   <Typography
                     sx={{ color: '#78C1F3', textTransform: 'capitalize' }}
                     variant="body1"
                   >
-                    {details.sect_name}
+                    {details?.sect_name}
                   </Typography>
                   <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                    {details.em_no}
+                    {details?.em_no}
                   </Typography>
-                  {details.first_dose_given_status === 1 && details.first_dose_status === 0 ? (
+                  {details?.first_dose_given_status === 1 && details?.first_dose_status === 0 ? (
                     <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                      {moment(details.first_dose_given_date).format('DD-MM-YYYY')}
+                      {moment(details?.first_dose_given_date).format('DD-MM-YYYY')}
                     </Typography>
-                  ) : details.booster_dose_given_status === 1 &&
-                    details.first_dose_given_status === 0 ? (
+                  ) : details?.booster_dose_given_status === 1 &&
+                    details?.first_dose_given_status === 0 ? (
                     <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                      {moment(details.booster_dose_date_given).format('DD-MM-YYYY')}
+                      {moment(details?.booster_dose_date_given).format('DD-MM-YYYY')}
                     </Typography>
-                  ) : details.first_dose_status === 1 && details.second_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 && details?.second_dose_status === 0 ? (
                     <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                      {moment(details.second_dose_due_date).format('DD-MM-YYYY')}
+                      {moment(details?.second_dose_due_date).format('DD-MM-YYYY')}
                     </Typography>
-                  ) : details.first_dose_status === 1 &&
-                    details.second_dose_status === 1 &&
-                    details.booster_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 &&
+                    details?.second_dose_status === 1 &&
+                    details?.booster_dose_status === 0 ? (
                     <Typography sx={{ color: '#78C1F3' }} variant="body1">
-                      {moment(details.third_dose_due_date).format('DD-MM-YYYY')}
+                      {moment(details?.third_dose_due_date).format('DD-MM-YYYY')}
                     </Typography>
                   ) : (
                     ''
                   )}
                   {/* for remark */}
-                  {details.first_dose_given_status === 1 && details.first_dose_status === 0 ? (
+                  {details?.first_dose_given_status === 1 && details?.first_dose_status === 0 ? (
                     <TextField
                       size="small"
                       value={remarks}
                       onChange={(e) => setRemarks(e.target.value)}
                       sx={{ marginTop: 1 }}
                     />
-                  ) : details.booster_dose_given_status === 1 &&
-                    details.first_dose_given_status === 0 ? (
+                  ) : details?.booster_dose_given_status === 1 &&
+                    details?.first_dose_given_status === 0 ? (
                     <TextField
                       size="small"
                       value={remarksbooster}
                       onChange={(e) => setremarksbooster(e.target.value)}
                       sx={{ marginTop: 1 }}
                     />
-                  ) : details.first_dose_status === 1 && details.second_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 && details?.second_dose_status === 0 ? (
                     <TextField
                       size="small"
                       value={remarkssecond}
                       onChange={(e) => setremarkssecond(e.target.value)}
                       sx={{ marginTop: 1 }}
                     />
-                  ) : details.first_dose_status === 1 &&
-                    details.second_dose_status === 1 &&
-                    details.booster_dose_status === 0 ? (
+                  ) : details?.first_dose_status === 1 &&
+                    details?.second_dose_status === 1 &&
+                    details?.booster_dose_status === 0 ? (
                     <TextField
                       size="small"
                       value={remarksthird}
