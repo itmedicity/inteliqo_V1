@@ -2,7 +2,7 @@ import { Button, CssVarsProvider, Textarea } from '@mui/joy'
 import { Box, Paper, TextField, Grid, IconButton } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react'
 import TrainingQuestTopic from 'src/views/MuiComponents/TrainingQuestTopic'
@@ -16,8 +16,8 @@ import EditIcon from '@mui/icons-material/Edit';
 const TrainingQuestions = () => {
     const [questions, setQuestions] = useState('');
     const [answer, setAnswer] = useState('');
-    const [training_topic, setTraining_topic] = useState([]);
-    const [marks, setMarks] = useState(0);
+    const [training_topic, setTraining_topic] = useState(0);
+    const [marks, setMarks] = useState('');
     const [Q_id, setQid] = useState(0);
     const [tableData, setTabledata] = useState([]);
     const [count, setCount] = useState(0);
@@ -145,9 +145,9 @@ const TrainingQuestions = () => {
     //column def
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'q_slno', filter: true, width: 150 },
-        { headerName: 'Questions', field: 'questions', filter: true, width: 250 },
-        { headerName: 'Answers ', field: 'answers', filter: true, width: 250 },
-        { headerName: 'Topics ', field: 'training_topic_name', filter: true, width: 250 },
+        { headerName: 'Questions', field: 'questions', filter: true, minWidth: 250 },
+        { headerName: 'Answers ', field: 'answers', filter: true, minWidth: 250 },
+        { headerName: 'Topics ', field: 'training_topic_name', filter: true, minWidth: 250 },
         { headerName: 'Mark ', field: 'marks', filter: true, width: 250 },
 
         {
@@ -161,7 +161,7 @@ const TrainingQuestions = () => {
         }
     ])
     return (
-        <CustomLayout title="Training Questions Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Questions Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -242,7 +242,7 @@ const TrainingQuestions = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout>
+        </CustomSettingsLayout>
     )
 }
 

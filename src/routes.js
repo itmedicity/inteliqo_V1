@@ -232,6 +232,8 @@ const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceVie
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
 const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
+
+
 const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
 const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
 const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
@@ -243,6 +245,8 @@ const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingSchedul
 const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
 const TrainingUpdate = React.lazy(() => import('./views/TrainingDevelopment/TrainingUpdate/TrainingUpdate'))
 const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
+const AfterJoiningTraining = React.lazy(() => import('./views/TrainingDevelopment/TrainingSchedule/TrainingAfterJoining'))
+
 const CommonReqst = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstMainPage'))
 const CommonRequstMaster = React.lazy(() => import('./views/Master/CommonRequstMaster/CommonRequestMast'))
 const CommonReqstInchargeApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/InchargeApproval'))
@@ -486,6 +490,12 @@ const routes = [
   { path: '/Home/DepartmentalTrainingSchedule', exact: true, name: 'Departmental Training Schedule', component: DepartmentalTrainingSchedule },
   { path: '/Home/TrainingUpdate', exact: true, name: 'Training Update', component: TrainingUpdate },
   { path: '/Home/TrainingEmployeeSchedule', exact: true, name: 'Training Employee Schedule', component: TrainingEmployeeSchedule },
+  { path: '/Home/AfterJoiningTraining', exact: true, name: 'After Joining Training', component: AfterJoiningTraining },
+
+
+
+
+
   { path: '/Home/CommonReqst', exact: true, name: 'Common Request', component: CommonReqst },
   { path: '/Home/CommonRequstMaster', exact: true, name: 'Common Request Master', component: CommonRequstMaster },
   { path: '/Home/CommonReqstInchargeApprvl', exact: true, name: 'Common Request Incharge Approval', component: CommonReqstInchargeApprvl },

@@ -8,13 +8,13 @@ const TrainingAndDevelopment = [
         to: '/Home/DepartmentalTrainingSchedule',
     },
     {
-        men_slno: 255,
+        men_slno: 251,
         component: CNavItem,
         name: 'Training Update',
         to: '/Home/TrainingUpdate',
     },
     {
-        men_slno: 256,
+        men_slno: 252,
         component: CNavItem,
         name: 'Employee Training Schedule',
         to: '/Home/TrainingEmployeeSchedule',
@@ -23,7 +23,7 @@ const TrainingAndDevelopment = [
         men_slno: 56,
         component: CNavItem,
         name: 'Training Schedule',
-        to: '/homes',
+        to: '/Home/AfterJoiningTraining',
     },
     {
         men_slno: 57,

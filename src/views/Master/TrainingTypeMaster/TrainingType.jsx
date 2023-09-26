@@ -1,8 +1,8 @@
 import { Button, CssVarsProvider } from '@mui/joy';
-import { Box, Checkbox, FormControlLabel, Grid, IconButton, Paper, TextField } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useCallback } from 'react';
@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 
+
 const TrainingType = () => {
 
     const [type, setType] = useState('');
@@ -22,6 +23,7 @@ const TrainingType = () => {
     const [tableData, setTableData] = useState([]);
     const [slno, setSlno] = useState(0);
     const [flag, setFlag] = useState(0);
+    const [countDay, setcountDay] = useState('')
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -29,26 +31,29 @@ const TrainingType = () => {
 
     const reset = () => {
         setType('');
+        setcountDay('');
         SetStatus(false);
     }
     //postData
     const postData = useMemo(() => {
         return {
             type_name: type,
+            count_day: countDay,
             type_status: status === true ? 1 : 0,
             create_user: em_id
         }
-    }, [type, status, em_id])
+    }, [type, countDay, status, em_id])
 
     //patchData
     const patchData = useMemo(() => {
         return {
             trainingtype_slno: slno,
             type_name: type,
+            count_day: countDay,
             type_status: status,
             edit_user: em_id
         }
-    }, [slno, type, status, em_id])
+    }, [slno, type, countDay, status, em_id])
 
     // view
     useEffect(() => {
@@ -60,6 +65,8 @@ const TrainingType = () => {
                     const obj = {
                         trainingtype_slno: val.trainingtype_slno,
                         type_name: val.type_name,
+                        type_date: val.type_date,
+                        count_day: val.count_day,
                         type_status: val.type_status,
                         statusChecked: val.type_status === 0 ? "NO" : "YES"
                     }
@@ -78,9 +85,10 @@ const TrainingType = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { trainingtype_slno, type_name, type_status } = data[0]
+        const { trainingtype_slno, count_day, type_name, type_status } = data[0]
         setSlno(trainingtype_slno);
         setType(type_name);
+        setcountDay(count_day);
         SetStatus(type_status === 1 ? true : false);
     }, [])
 
@@ -151,8 +159,9 @@ const TrainingType = () => {
     //column def
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'trainingtype_slno', filter: true, width: 150 },
-        { headerName: 'Training Name ', field: 'type_name', filter: true, width: 250 },
-        { headerName: 'Status ', field: 'statusChecked', filter: true, width: 250 },
+        { headerName: 'Training Name ', field: 'type_name', filter: true, width: 300 },
+        { headerName: 'Due Days ', field: 'count_day', filter: true, width: 250 },
+        { headerName: 'Status ', field: 'statusChecked', filter: true, width: 150 },
         {
             headerName: 'Edit', cellRenderer: params =>
                 <Fragment>
@@ -174,7 +183,7 @@ const TrainingType = () => {
     ])
 
     return (
-        <CustomLayout title="Training Type Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Type Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -191,6 +200,22 @@ const TrainingType = () => {
                                         name="training_type"
                                         onChange={(e) => setType(e.target.value)}
                                     />
+                                </Box>
+                                <Box sx={{ mt: 1, display: "flex", flexDirection: "row", gap: 2 }}>
+                                    <Box sx={{ width: "50%" }}>
+                                        <TextField
+                                            fullWidth
+                                            // placeholder='Training Type Name'
+                                            id='count_day'
+                                            size="small"
+                                            value={countDay}
+                                            name="count_day"
+                                            onChange={(e) => setcountDay(e.target.value)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ mt: 1, width: "50%" }}>
+                                        <Typography>Days</Typography>
+                                    </Box>
                                 </Box>
                                 <Box>
                                     <FormControlLabel
@@ -237,7 +262,7 @@ const TrainingType = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
     )
 }
 

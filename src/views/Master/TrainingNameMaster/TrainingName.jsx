@@ -2,7 +2,7 @@ import { Button, CssVarsProvider } from '@mui/joy';
 import { Box, Checkbox, FormControlLabel, Grid, IconButton, Paper, TextField } from '@mui/material'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import TrainingTypeSelect from 'src/views/MuiComponents/TrainingTypeSelect';
 import TrainingCategorySelect from 'src/views/MuiComponents/TrainingCategorySelect';
@@ -64,7 +64,7 @@ const TrainingName = () => {
     //table view
     useEffect(() => {
         const DataTable = async () => {
-            const result = await axioslogin.get('TrainingName/select')
+            const result = await axioslogin.get('/TrainingName/select')
             const { success, data } = result.data;
             if (success === 2) {
                 const viewData = data.map((val) => {
@@ -173,7 +173,7 @@ const TrainingName = () => {
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'name_slno', filter: true, width: 150 },
         { headerName: 'Training Type', field: 'type_name', filter: true, width: 250 },
-        { headerName: 'Training Category Name ', field: 'trin_cat_name', filter: true, width: 250 },
+        { headerName: 'Training Category Name ', field: 'trin_cat_name', filter: true, width: 280 },
         { headerName: 'Training Name ', field: 'training_name', filter: true, width: 250 },
         { headerName: 'Status ', field: 'statusdesc', filter: true, width: 250 },
 
@@ -199,7 +199,7 @@ const TrainingName = () => {
     ])
 
     return (
-        <CustomLayout title="Training Name Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Name Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -269,7 +269,7 @@ const TrainingName = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
     )
 }
 

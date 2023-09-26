@@ -13,8 +13,8 @@ export const py_setting_one = [
     { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
     { to: '/Home/KRA', name: 'Key Result Areas', slno: 177 },
     { to: '/Home/TrainingCategory', name: 'Training Category Master', slno: 223 },
-    { to: '/Home/TrainingTopic', name: 'Training Topic Master', slno: 250 },
-    { to: '/Home/TrainingSchedule', name: 'Training Schedule Master', slno: 253 },
+    { to: '/Home/TrainingTopic', name: 'Training Topic Master', slno: 246 },
+    { to: '/Home/TrainingSchedule', name: 'Training Schedule Master', slno: 249 },
 
 
 ]
@@ -34,7 +34,7 @@ export const py_setting_two = [
     { to: '/Home/CarryForwardSetting', name: 'Carry Forward Setting', slno: 126 },
     { to: '/Home/PunchTransfer', name: 'Punch Transfer Manual', slno: 229 },
     { to: '/Home/TrainingName', name: 'Training Name Master', slno: 224 },
-    { to: '/Home/TrainingQuestions', name: 'Training Questions Master', slno: 251 },
+    { to: '/Home/TrainingQuestions', name: 'Training Questions Master', slno: 247 },
 ]
 
 export const py_setting_three = [
@@ -52,7 +52,7 @@ export const py_setting_three = [
     { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 },
     { to: '/Home/TrainingType', name: 'Training Type Master', slno: 222 },
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
-    { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 252 },
+    { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 248 },
     { to: '/Home/CommonRequstMaster', name: 'Common Request Master', slno: 240 },
 
 ]

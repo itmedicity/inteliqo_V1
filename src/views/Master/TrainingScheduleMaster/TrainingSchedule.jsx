@@ -2,7 +2,7 @@ import { Button, CssVarsProvider } from '@mui/joy';
 import { Box, Grid, IconButton, Paper } from '@mui/material'
 import React, { memo, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
@@ -169,7 +169,7 @@ const TrainingSchedule = () => {
     ])
 
     return (
-        <CustomLayout title="Training Schedule Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Schedule Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -220,7 +220,7 @@ const TrainingSchedule = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
     )
 }
 

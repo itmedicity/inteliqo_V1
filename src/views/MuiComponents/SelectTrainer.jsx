@@ -2,23 +2,23 @@ import { FormControl, MenuItem, Select } from '@mui/material'
 import { useEffect, React, useState, Fragment, memo } from 'react';
 import { axioslogin } from '../Axios/Axios';
 
-const EmpBasedonDept = ({ depttype, value, setValue }) => {
+const SelectTrainer = ({ value, setValue }) => {
 
     const [view, setView] = useState([]);
     useEffect(() => {
-        const getData = async (depttype) => {
-            const result = await axioslogin.get(`/TrainerName/select/${depttype}`)
+        const getData = async () => {
+            const result = await axioslogin.get(`/TrainingAfterJoining/SelectTrainer`)
             const { data, success } = result.data
             setView(data);
-            if (success === 1) {
+            if (success === 2) {
                 setView(data);
             } else {
                 setView([]);
             }
         }
-        getData(depttype)
+        getData()
 
-    }, [depttype])
+    }, [])
     return (
         <Fragment>
             <FormControl
@@ -33,7 +33,7 @@ const EmpBasedonDept = ({ depttype, value, setValue }) => {
                     variant='outlined'
                     multiple
                 >
-                    <MenuItem disabled value={0}  >
+                    <MenuItem disabled value={value.length === 0} >
                         Select Trainer Name
                     </MenuItem>
 
@@ -42,11 +42,10 @@ const EmpBasedonDept = ({ depttype, value, setValue }) => {
                             return <MenuItem key={index} value={val.em_id}>{val.em_name}</MenuItem>
                         })
                     }
-
                 </Select>
             </FormControl>
         </Fragment>
     )
 }
 
-export default memo(EmpBasedonDept)
+export default memo(SelectTrainer)

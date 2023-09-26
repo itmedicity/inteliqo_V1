@@ -17,6 +17,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 
 const TrainerName = () => {
     const [trainer_name_status, setTrainer_name_status] = useState(false);
@@ -177,8 +178,8 @@ const TrainerName = () => {
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'trainer_slno', filter: true, width: 150 },
         { headerName: 'Trainer Name', field: 'em_name', filter: true, width: 250 },
-        { headerName: 'Trainer Department ', field: 'dept_name', filter: true, width: 250 },
-        { headerName: 'Trainer Designation', field: 'desg_name', filter: true, width: 250 },
+        { headerName: 'Trainer Department ', field: 'dept_name', filter: true, minWidth: 250 },
+        { headerName: 'Trainer Designation', field: 'desg_name', filter: true, minWidth: 250 },
         { headerName: 'Status ', field: 'statusdesc', filter: true, width: 250 },
 
         {
@@ -206,7 +207,7 @@ const TrainerName = () => {
     ])
 
     return (
-        <CustomLayout title="Trainer Name Master" displayClose={true}>
+        <CustomSettingsLayout title="Trainer Name Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -268,7 +269,9 @@ const TrainerName = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
+
+
     )
 }
 

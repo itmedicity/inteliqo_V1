@@ -8,7 +8,6 @@ const SelectEmp = ({ dept, value, setValue }) => {
         const selectData = async (dept) => {
             const result = await axioslogin.get(`TrainingEmployeeSchedule/selectemp/${dept}`)
             const { success, data } = result.data;
-            setView(data);
             if (success === 1) {
                 setView(data);
             } else {
@@ -16,6 +15,7 @@ const SelectEmp = ({ dept, value, setValue }) => {
             }
         }
         selectData(dept)
+
     }, [dept])
     return (
         <Fragment>
@@ -29,8 +29,9 @@ const SelectEmp = ({ dept, value, setValue }) => {
                     size="small"
                     fullWidth
                     variant='outlined'
+                    multiple
                 >
-                    <MenuItem disabled value={0}  >
+                    <MenuItem disabled value={value.length === 0}  >
                         Select Employee Names
                     </MenuItem>
                     {

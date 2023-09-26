@@ -22,7 +22,6 @@ import moment from 'moment';
 import TopicBasedonTName from 'src/views/MuiComponents/TopicBasedonTName'
 import Timepicker from 'src/views/Component/Timepicker'
 
-
 const DepartmentalTrainingSchedule = () => {
     const [depttype, setdepttype] = useState(0);
     const [desSelect, setdesSelect] = useState(0);
@@ -61,8 +60,8 @@ const DepartmentalTrainingSchedule = () => {
             training_name: trainingname,
             topic_name: trainingTopic,
             schedule_time: schedulingtime,
-            training_time: moment(ScheduleTime).format("HH:mm:ss"),
-            training_date: moment(scheduleDate).format("YYYY-MM-DD"),
+            training_time: moment(ScheduleTime).format("YYYY-MM-DD HH:mm:ss"),
+            training_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
             training_count: TrainingCount,
             create_user: em_id
         }
@@ -77,8 +76,8 @@ const DepartmentalTrainingSchedule = () => {
             training_name: trainingname,
             topic_name: trainingTopic,
             schedule_time: schedulingtime,
-            training_time: moment(ScheduleTime).format("HH:mm:ss"),
-            training_date: moment(scheduleDate).format("YYYY-MM-DD"),
+            training_time: moment(ScheduleTime).format("YYYY-MM-DD HH:mm:ss"),
+            training_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
             training_count: TrainingCount,
             edit_user: em_id
         }
@@ -154,6 +153,7 @@ const DepartmentalTrainingSchedule = () => {
                         SlNo: val.SlNo,
                         dept_id: val.dept_id,
                         training_time: val.training_time,
+                        time: moment(val.training_time).format("HH:mm:ss"),
                         training_date: val.training_date,
                         dept_name: val.dept_name,
                         desg_slno: val.desg_slno,
@@ -181,13 +181,13 @@ const DepartmentalTrainingSchedule = () => {
 
     //table
     const [columnDef] = useState([
-        { headerName: 'Sl.No', field: 'SlNo', filter: true, width: 150 },
-        { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
-        { headerName: 'Designation', field: 'desg_name', filter: true, width: 250 },
+        { headerName: 'Sl.No', field: 'SlNo', filter: true, minWidth: 100 },
+        { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 250 },
+        { headerName: 'Designation', field: 'desg_name', filter: true, minWidth: 250 },
         { headerName: 'Training Name', field: 'training_name', filter: true, width: 250 },
         { headerName: 'Topic Name', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'Duration', field: 'schedule_name', filter: true, width: 250 },
-        { headerName: 'Time', field: 'training_time', filter: true, width: 250 },
+        { headerName: 'Time', field: 'time', filter: true, width: 250 },
         { headerName: 'Date', field: 'training_date', filter: true, width: 250 },
         { headerName: 'Count', field: 'training_count', filter: true, width: 250 },
         {
@@ -199,77 +199,77 @@ const DepartmentalTrainingSchedule = () => {
                         <EditIcon color='primary' />
                     </IconButton>
                 </Fragment>
-
-        },
-
+        }
     ])
     return (
         <CustomLayout title="Department Wise Training" displayClose={true}>
             <ToastContainer />
             <Box sx={{ width: "100%", display: 'flex', flexDirection: 'column', p: 1 }}>
-                <Box sx={{ width: "100%" }}>
-                    <Paper elevation={0} variant='outlined' sx={{ width: "100%", display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ flex: 1 }}>
-                            <DeptSelectByRedux value={depttype} setValue={setdepttype} />
+                <Box sx={{ width: "100%", backgroundColor: 'yellow' }}>
+                    <Paper elevation={0} variant='outlined' sx={{ p: 1, width: "100%", display: 'flex', flexDirection: 'column' }}>
+                        <Box sx={{ display: "flex", flexDirection: "row" }}>
+                            <Box sx={{ flex: 1 }}>
+                                <DeptSelectByRedux value={depttype} setValue={setdepttype} />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <DesignationSelectRedux value={desSelect} setValue={setdesSelect} />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <SelectTrainingName value={trainingname} setValue={setTrainingname} />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <TopicBasedonTName trainingname={trainingname} value={trainingTopic} setValue={setTrainingtopic} />
+                            </Box>
                         </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <DesignationSelectRedux value={desSelect} setValue={setdesSelect} />
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <SelectTrainingName value={trainingname} setValue={setTrainingname} />
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <TopicBasedonTName trainingname={trainingname} value={trainingTopic} setValue={setTrainingtopic} />
-                        </Box>
-                    </Paper>
-                    <Paper elevation={0} sx={{ mt: 1, width: "100%", display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ flex: 1 }}>
-                            <SelectSchedulingTime value={schedulingtime} setValue={setSchedulingtime} />
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <Timepicker label="Time picker"
-                                value={ScheduleTime}
-                                changetextvalue={(e) => setScheduleTime(e)}
-                            />
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DatePicker
-                                    views={['day']}
-                                    inputFormat="DD-MM-YYYY"
-                                    value={scheduleDate}
-                                    onChange={setScheduleDate}
-                                    renderInput={(params) => (
-                                        <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                                    )}
+                        <Box sx={{ display: "flex", flexDirection: "row", mt: 1 }}>
+                            <Box sx={{ flex: 1 }}>
+                                <SelectSchedulingTime value={schedulingtime} setValue={setSchedulingtime} />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Timepicker label="Time picker"
+                                    value={ScheduleTime}
+                                    changetextvalue={(e) => setScheduleTime(e)}
                                 />
-                            </LocalizationProvider>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DatePicker
+                                        views={['day']}
+                                        inputFormat="DD-MM-YYYY"
+                                        value={scheduleDate}
+                                        onChange={setScheduleDate}
+                                        renderInput={(params) => (
+                                            <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <TextField
+                                    fullWidth
+                                    placeholder='TrainingCount'
+                                    id='TrainingCount'
+                                    size="small"
+                                    value={TrainingCount}
+                                    name="TrainingCount"
+                                    onChange={(e) => setTrainingCount(e.target.value)}
+                                />
+                            </Box>
                         </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <TextField
-                                fullWidth
-                                placeholder='TrainingCount'
-                                id='TrainingCount'
-                                size="small"
-                                value={TrainingCount}
-                                name="TrainingCount"
-                                onChange={(e) => setTrainingCount(e.target.value)}
-                            />
+                        <Box>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitDepartmentalTrainingSchedule}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
                         </Box>
                     </Paper>
-                    <Box sx={{ mt: 1 }}>
-                        <CssVarsProvider>
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                size="md"
-                                color="primary"
-                                onClick={submitDepartmentalTrainingSchedule}
-                            >
-                                <SaveIcon />
-                            </Button>
-                        </CssVarsProvider>
-                    </Box>
                 </Box>
                 <Paper elevation={0} variant='outlined' sx={{ width: "100%", mt: 1 }}>
                     <CommonAgGrid

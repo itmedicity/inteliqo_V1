@@ -1,5 +1,6 @@
 import { Box, Grid, Paper } from '@mui/material'
 import { isBefore } from 'date-fns';
+import moment from 'moment';
 import React, { memo, useEffect, useState } from 'react'
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -24,6 +25,7 @@ const TrainingUpdate = () => {
                     const object = {
                         SlNo: val.SlNo,
                         training_time: val.training_time,
+                        time: moment(val.training_time).format("HH:mm:ss"),
                         training_date: val.training_date,
                         dept_id: val.dept_id,
                         dept_name: val.dept_name,
@@ -57,7 +59,7 @@ const TrainingUpdate = () => {
         { headerName: 'Training Name', field: 'training_name', filter: true, width: 250 },
         { headerName: 'Topic Name', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'Duration', field: 'schedule_name', filter: true, width: 250 },
-        { headerName: 'Time', field: 'training_time', filter: true, width: 250 },
+        { headerName: 'Time', field: 'time', filter: true, width: 250 },
         { headerName: 'Date', field: 'training_date', filter: true, width: 250 },
         { headerName: 'Count', field: 'training_count', filter: true, width: 250 }
     ])

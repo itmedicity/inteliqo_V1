@@ -3,7 +3,7 @@ import { Box, Checkbox, FormControlLabel, Grid, Paper, TextField, IconButton } f
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save';
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import TrainingTypeSelect from 'src/views/MuiComponents/TrainingTypeSelect';
 import { useMemo } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -59,7 +59,7 @@ const TrainingCategory = () => {
     //view
     useEffect(() => {
         const getData = async () => {
-            const result = await axioslogin.get('TrainingCategory/select')
+            const result = await axioslogin.get('/TrainingCategory/select')
             const { success, data } = result.data;
             if (success === 2) {
                 const viewData = data.map((val) => {
@@ -167,7 +167,7 @@ const TrainingCategory = () => {
 
     //column def
     const [columnDef] = useState([
-        { headerName: 'Sl.No ', field: 'cat_slno', filter: true, width: 150 },
+        { headerName: 'Sl.No ', field: 'cat_slno', filter: true, width: 100 },
         { headerName: 'Training Type', field: 'type_name', filter: true, width: 250 },
         { headerName: 'Training Category Name ', field: 'trin_cat_name', filter: true, width: 250 },
         { headerName: 'Status ', field: 'statusdesc', filter: true, width: 250 },
@@ -194,7 +194,7 @@ const TrainingCategory = () => {
     ])
 
     return (
-        <CustomLayout title="Training Category Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Category Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -261,7 +261,7 @@ const TrainingCategory = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
     )
 }
 

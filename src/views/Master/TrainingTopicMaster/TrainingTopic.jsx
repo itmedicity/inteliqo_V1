@@ -2,7 +2,7 @@ import { Button, CssVarsProvider } from '@mui/joy'
 import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react'
 import { useCallback } from 'react'
@@ -173,9 +173,9 @@ const TrainingTopic = () => {
     }, [count, postdata, patchdata])
 
     const [columnDef] = useState([
-        { headerName: 'Sl.No ', field: 'topic_slno', filter: true, width: 150 },
-        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'Training Name', field: 'training_name', filter: true, width: 250 },
+        { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
+        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 200 },
+        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 200 },
         { headerName: 'Training ', field: 'training', filter: true, width: 250 },
         { headerName: 'Tutorial ', field: 'tutorial', filter: true, width: 250 },
         { headerName: 'Medical', field: 'medical', filter: true, width: 250 },
@@ -193,7 +193,7 @@ const TrainingTopic = () => {
         },
     ])
     return (
-        <CustomLayout title="Training Topic Master" displayClose={true}>
+        <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }}>
                 <Paper>
@@ -353,7 +353,7 @@ const TrainingTopic = () => {
                     </Grid>
                 </Paper>
             </Box>
-        </CustomLayout >
+        </CustomSettingsLayout >
     )
 }
 
