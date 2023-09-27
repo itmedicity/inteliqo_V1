@@ -6,6 +6,8 @@ import { AppSidebarNav } from './AppSidebarNav'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import { axioslogin } from 'src/views/Axios/Axios'
+import VaccinesIcon from '@mui/icons-material/Vaccines'
+
 
 //NAV BAR IMPORT
 import {
@@ -31,7 +33,9 @@ import { getMenuSlno } from 'src/views/Constant/Constant'
 import CIcon from '@coreui/icons-react'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box } from '@mui/material'
+import VaccinationInfo from '../Menus/VaccinationMenu'
 import _ from 'underscore'
+
 
 const AppSidebar = () => {
 
@@ -44,6 +48,7 @@ const AppSidebar = () => {
   const [empTraining, setTrainingAndDevelopment] = useState();
   const [empResignation, setResignation] = useState();
   const [count, setCount] = useState(0)
+  const [empVaccination, setVaccination] = useState();
 
   //SIDE NAV BAR
   const navigation = [
@@ -110,6 +115,13 @@ const AppSidebar = () => {
       icon: <VscFeedback className="text-light nav-icon" size={20} />,
       items: empResignation
     },
+    {
+      slno: 13,
+      component: CNavGroup,
+      name: 'Vaccination ',
+      icon: <VaccinesIcon className="text-light nav-icon" size={20} />,
+      items: empVaccination
+    },
   ]
 
   const dispatch = useDispatch()
@@ -148,6 +160,8 @@ const AppSidebar = () => {
         setTrainingAndDevelopment(newTrainging)
         const newResignation = Resignation.filter(val => menuSlnoAry.includes(val.men_slno));
         setResignation(newResignation)
+        const newVaccination = VaccinationInfo.filter(val => menuSlnoAry.includes(val.men_slno))
+        setVaccination(newVaccination)
         //For Rerent the Component
         setCount(1)
       }
@@ -213,7 +227,7 @@ const AppSidebar = () => {
             <Box sx={{ p: 1, display: "flex", textTransform: 'capitalize', fontStyle: "oblique", }} >
               <CssVarsProvider>
                 <Typography textColor="text.secondary">
-                  {em_name.toLowerCase()}
+                  {em_name?.toLowerCase()}
                 </Typography>
               </CssVarsProvider>
             </Box>
