@@ -1,5 +1,5 @@
 import { TextField, FormControlLabel, Tooltip, Paper, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState ,memo,useCallback} from 'react'
 import Modal from '@mui/material/Modal'
 import moment from 'moment'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -8,13 +8,12 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { memo } from 'react'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import imageCompression from 'browser-image-compression'
-import { useCallback } from 'react'
+
 
 const ModalComponent = ({
   isModalOpen,
@@ -33,9 +32,9 @@ const ModalComponent = ({
   const [selectedFiles, setSelectedFiles] = useState([])
 
   // Function to open the view file modal
-  const openViewFileModal = (index) => {
+  const openViewFileModal = useCallback((index) => {
     setSelectedFileIndex(index)
-  }
+  },[setSelectedFileIndex])
 
   const handleCloseModal = useCallback(() => {
   setIsModalOpen(false);
@@ -46,15 +45,14 @@ const ModalComponent = ({
 }, [setIsModalOpen, setTiterValue, setCount, setSelectedFiles, setShowUploadImageSection, count]);
 
   // saving the date
-  
 
-  const handleFileChange = (e) => {
+  const handleFileChange = useCallback((e) => {
     const newFiles = [...selectedFiles]
     newFiles.push(e.target.files[0])
     setSelectedFiles(newFiles)
-  }
+  },[setSelectedFiles,selectedFiles])
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile = useCallback((index) => {
     const newFiles = [...selectedFiles]
     newFiles.splice(index, 1)
     setSelectedFiles(newFiles)
@@ -64,7 +62,7 @@ const ModalComponent = ({
     if (fileInput) {
       fileInput.value = null
     }
-  }
+  },[setSelectedFiles,selectedFiles])
 
   const handleImageUpload = useCallback(async (imageFile) => {
   const options = {
@@ -194,7 +192,8 @@ const ModalComponent = ({
       selectedRowData,
       setCount,
       setShowGeneral,
-    
+      count,
+      handleCloseModal
     ],
   )
 

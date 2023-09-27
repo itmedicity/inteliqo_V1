@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Box, IconButton } from '@mui/joy'
+import React, { useEffect, useMemo, useState,memo,useCallback } from 'react'
+import IconButton from '@mui/joy/IconButton';
+import Box from '@mui/joy/Box'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper,Tooltip } from '@mui/material'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { memo } from 'react'
-import { useCallback } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
@@ -21,6 +20,7 @@ const Firstdosevac = ({
   sethicdata,
 }) => {
   // hic verification
+  const empData=useMemo(()=>item,[item])
   const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
@@ -40,24 +40,24 @@ const Firstdosevac = ({
 
   useEffect(() => {
     if (flag === 1) {
-        if (Object.keys(item).length > 0) {
+        if (Object.keys(empData).length > 0) {
       const firstdose =
-        item?.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
+        empData?.filter((val) => val.first_dose_status === 1 && val.hic_frst_dose_status === 0)
       setData(firstdose)
       setCount(0)
         }else{
             setData([])
         }
     } else {
-      if (Object.keys(item).length > 0) {
-      const firstdose =  item?.filter((val) => val.first_dose_status === 1)
+      if (Object.keys(empData).length > 0) {
+      const firstdose =  empData?.filter((val) => val.first_dose_status === 1)
       setData(firstdose)
       setCount(0)
       }else{
           setData([])
       }
     }
-  }, [item, count, setCount])
+  }, [empData, count, setCount,flag])
 
   let preparedColumnDef
   if (flag === 1) {

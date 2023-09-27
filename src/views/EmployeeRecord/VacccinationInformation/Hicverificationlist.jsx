@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/joy'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useCallback,memo } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
@@ -15,21 +15,24 @@ import { pdfdownlod } from './HicPdf'
 import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 import { urlExist } from 'src/views/Constant/Constant'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
-import { useCallback } from 'react'
-import { memo } from 'react'
 
 const Hicverificationlist = () => {
   const [dept, setDept] = useState(0)
   const [deptSection, setDeptSection] = useState(0)
   const [Empno, setEmpNo] = useState('')
   const [nameList, setnameList] = useState([])
-  const [details, setDetails] = useState({})
+  const [details, setDetails] = useState({
+    hic_emid_booster_verified: 0,
+    hic_emid_first_verified: 0,
+    hic_emid_second_verified:0,
+    hic_emid_third_verified:0, 
+  })
+  const { hic_emid_booster_verified, hic_emid_first_verified, hic_emid_second_verified, hic_emid_third_verified } = details;
 
   const [src, setSrc] = useState(ProfilePicDefault)
   const [srcsecond, setSrcsecond] = useState(ProfilePicDefault)
   const [srcthird, setSrcthird] = useState(ProfilePicDefault)
   const [srcbooster, setSrcbooster] = useState(ProfilePicDefault)
-
   const [download, setDownload] = useState(0)
   const [vaccinData, setVaccineData] = useState([])
 
@@ -41,21 +44,21 @@ const Hicverificationlist = () => {
         hic_emid_second_verified,
         hic_emid_third_verified,
       } = nameList[0]
-      const details = {
+      const obj = {
         hic_emid_booster_verified: hic_emid_booster_verified,
         hic_emid_first_verified: hic_emid_first_verified,
         hic_emid_second_verified: hic_emid_second_verified,
         hic_emid_third_verified: hic_emid_third_verified,
       }
-      setDetails(details)
+      setDetails(obj)
     } else {
       setDetails({})
     }
   }, [nameList])
 
-  const getEmpNO = async (e) => {
+  const getEmpNO = useCallback( (e) => {
     setEmpNo(e.target.value)
-  }
+  },[])
 
   const dataDisplay = useCallback(async () => {
     if (dept !== 0 && deptSection !== 0 && Empno === '') {
@@ -101,9 +104,9 @@ const Hicverificationlist = () => {
   // for signature
   useEffect(() => {
     const getEmployeeSig = async () => {
-      if (details?.hic_emid_first_verified > 0) {
+      if (hic_emid_first_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details?.hic_emid_first_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + hic_emid_first_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -119,9 +122,9 @@ const Hicverificationlist = () => {
     getEmployeeSig()
 
     const getEmployeeSigsecond = async () => {
-      if (details?.hic_emid_second_verified > 0) {
+      if (hic_emid_second_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details?.hic_emid_second_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + hic_emid_second_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -135,9 +138,9 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigsecond()
     const getEmployeeSigthird = async () => {
-      if (details?.hic_emid_third_verified > 0) {
+      if (hic_emid_third_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details?.hic_emid_third_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + hic_emid_third_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -151,9 +154,9 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigthird()
     const getEmployeeSigbooster = async () => {
-      if (details?.hic_emid_booster_verified > 0) {
+      if (hic_emid_booster_verified > 0) {
         const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + details?.hic_emid_booster_verified}/signature/signature.jpg`,
+          `${PUBLIC_NAS_FOLDER + hic_emid_booster_verified}/signature/signature.jpg`,
         )
         urlExist(profilePic, (status) => {
           if (status === true) {
@@ -167,10 +170,10 @@ const Hicverificationlist = () => {
     }
     getEmployeeSigbooster()
   }, [
-    details?.hic_emid_first_verified,
-    details?.hic_emid_second_verified,
-    details?.hic_emid_third_verified,
-    details?.hic_emid_booster_verified,
+    hic_emid_first_verified,
+    hic_emid_second_verified,
+    hic_emid_third_verified,
+    hic_emid_booster_verified,
   ])
 
   const handleIconClick = useCallback((params) => {

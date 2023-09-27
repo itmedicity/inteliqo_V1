@@ -1,25 +1,25 @@
 import { Box, IconButton } from '@mui/joy'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState ,memo,lazy} from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper, Tooltip, } from '@mui/material'
-import { memo } from 'react'
 import AddTaskIcon from '@mui/icons-material/AddTask'
-import { lazy } from 'react'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
+import { useCallback } from 'react'
 const ModalAnnual = lazy(() => import('./ModalAnnual'))
 const Penbooster = ({ item, setCount, count, setShowGeneral }) => {
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({})
 
   const [flag, setflag] = useState(0)
- 
+  const empData=useMemo(()=>item,[item])
   const [data, setData] = useState([])
   useEffect(() => {
-        if (Object.keys(item).length > 0) {
+        if (Object.keys(empData).length > 0) {
     const currentDate = new Date()
     const boosterdose =
       
-      item?.filter((val) => {
+    empData?.filter((val) => {
         const annualDoseDate = new Date(val.annual_dose)
         return val.annual_dose !== null && annualDoseDate <= currentDate
       })
@@ -29,13 +29,14 @@ const Penbooster = ({ item, setCount, count, setShowGeneral }) => {
         }else{
             setData([])
         }
-  }, [item, count, setCount])
+  }, [empData, count, setCount])
 
-  const handleIconClick = (params) => {
+  const handleIconClick =useCallback( (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
     setflag(1)
-  }
+  }, [setIsModalOpen,setSelectedRowData,setflag])
+  
   const [columnDef] = useState([
     { headerName: 'Emp ID', field: 'em_no', filter: true },
     { headerName: 'Employee Name', field: 'em_name', filter: true },

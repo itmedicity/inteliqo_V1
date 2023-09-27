@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,memo,useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import { Box, Paper, TextField, Button, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -7,8 +7,7 @@ import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
-import { memo } from 'react'
-import { useCallback } from 'react';
+
 
 const Modalhic = ({
   isModalOpen,
@@ -21,9 +20,11 @@ const Modalhic = ({
 }) => {
   const [details, setDetails] = useState({})
   const [remarks, setRemarks] = useState('')
-  const handleCloseModal = () => {
+  
+  const handleCloseModal =useCallback( () => {
     setIsModalOpen(false)
-  }
+  }, [setIsModalOpen])
+  
   useEffect(() => {
     if (Object.keys(hicdata).length !== 0) {
       const {

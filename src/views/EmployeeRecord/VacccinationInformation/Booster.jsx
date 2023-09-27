@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,memo,useCallback,useMemo } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import {  Paper, Typography, Tooltip } from '@mui/material'
 import { axioslogin } from 'src/views/Axios/Axios'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
-import { memo } from 'react'
-import { useCallback } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
-import { Box, IconButton } from '@mui/joy'
+import IconButton from '@mui/joy/IconButton';
+import Box from '@mui/joy/Box'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const Booster = ({
@@ -21,6 +20,7 @@ const Booster = ({
   setIsModalOpen,
 }) => {
   // hic verification
+  const empData=useMemo(()=>item,[item])
 
   const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
@@ -40,23 +40,23 @@ const Booster = ({
 
   useEffect(() => {
     if (flag === 1) {
-         if (Object.keys(item).length > 0) {
-      const seconddose =item?.filter((val) => val.booster_dose_status === 1 && val.hic_booster_dose_status === 0)
+         if (Object.keys(empData).length > 0) {
+      const seconddose =empData?.filter((val) => val.booster_dose_status === 1 && val.hic_booster_dose_status === 0)
       setData(seconddose)
       setCount(0)
       }else{
        setData([])
       }
     } else {
-        if (Object.keys(item).length > 0) {
-      const seconddose =  item?.filter((val) => val.booster_dose_status === 1)
+        if (Object.keys(empData).length > 0) {
+      const seconddose =  empData?.filter((val) => val.booster_dose_status === 1)
       setData(seconddose)
       setCount(0)
         }else{
             setData([])
         }
     }
-  }, [item, count, setCount, flag])
+  }, [empData, count, setCount, flag])
 
   let preparedColumnDef
   

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,memo,useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import { Box, Paper, TextField, Button, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -7,8 +7,7 @@ import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
-import { memo } from 'react'
-import { useCallback } from 'react';
+
 
 const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) => {
   const [remarks, setRemarks] = useState('')
@@ -17,10 +16,10 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
   const [remarksthird, setremarksthird] = useState('')
   const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
   const { em_id } = empData
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setcount(count + 1)
     setIsModalOpen(false)
-  }
+  },[setcount,count,setIsModalOpen])
   const handleOnClick = useCallback(async (event) => {
   event.preventDefault();
 

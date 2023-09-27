@@ -1,9 +1,7 @@
 import { Box } from '@mui/material'
-import React, { lazy } from 'react'
-import { useState } from 'react'
+import React, { lazy,useState,memo } from 'react'
 import Vaccinationdetails from './Vaccinationdetails'
 import { ToastContainer } from 'react-toastify'
-import { memo } from 'react'
 
 const FirstdoseNottaken = lazy(() => import('./FirstdoseNottaken'))
 const TotalEmployee = lazy(() => import('./TotalEmployee'))

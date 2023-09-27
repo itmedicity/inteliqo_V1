@@ -1,25 +1,25 @@
 import { Box, } from '@mui/joy'
 import { Paper, } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState ,memo} from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { memo } from 'react'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const TotalEmployee = ({ item, setShowGeneral }) => {
- 
+  const empData=useMemo(()=>item,[item])
+
   const [data, setData] = useState([])
   useEffect(() => {
-    if (Object.keys(item).length > 0) {
+    if (Object.keys(empData).length > 0) {
     const notVaccinated =
       
-      item?.filter(
+    empData?.filter(
         (val) =>
           val.first_dose_status === 1 &&
           val.second_dose_status === 1 &&
           val.third_dose_status === 1 &&
           val.booster_dose_status === 1,
       )
-    const dataWithStatus = notVaccinated.map((record, index) => ({
+    const dataWithStatus = notVaccinated?.map((record, index) => ({
       ...record,
       sl_no: index + 1,
     }))
@@ -27,7 +27,7 @@ const TotalEmployee = ({ item, setShowGeneral }) => {
     }else{
         setData([])
     }
-  }, [item])
+  }, [empData])
 
   const [columnDef] = useState([
     { headerName: 'Sl No', field: 'sl_no' },

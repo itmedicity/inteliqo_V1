@@ -1,12 +1,11 @@
-import { Box, Typography } from '@mui/material'
-import React, { lazy } from 'react'
-import { CssVarsProvider } from '@mui/joy'
-import { memo } from 'react'
+import { Box, } from '@mui/material'
+import React, { lazy ,memo} from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Heading from 'src/views/Component/MuiCustomComponent/Heading'
+const Entrydetails = lazy(() => import('./Entrydetails'))
 
 const EntryInformation = ({ details, setIsModalOpen }) => {
-  const Entrydetails = lazy(() => import('./Entrydetails'))
+
   return (
     <Box sx={{ width: '100%', mt: 1 }}>
       <Box sx={{ p: 1, fontWeight: 500 }}>

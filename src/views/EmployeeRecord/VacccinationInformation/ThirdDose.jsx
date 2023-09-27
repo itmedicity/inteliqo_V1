@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState,memo,useCallback } from 'react'
 import { Box,IconButton } from '@mui/joy'
-import { useCallback } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Paper, Typography, Tooltip } from '@mui/material'
 import { axioslogin } from 'src/views/Axios/Axios'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
-import { memo } from 'react'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const Thirddose = ({
@@ -21,6 +19,8 @@ const Thirddose = ({
   sethicdata,
 }) => {
   // hic verification
+  const empData=useMemo(()=>item,[item])
+
    const handleIconClick = useCallback(async (params) => {
     setIsModalOpen(true)
     setSelectedRowData(params.data)
@@ -40,10 +40,10 @@ const Thirddose = ({
 
   useEffect(() => {
     if (flag === 1) {
-       if (Object.keys(item).length > 0) {
+       if (Object.keys(empData).length > 0) {
       const thirddose =
         
-        item?.filter(
+      empData?.filter(
           (val) =>
             val.third_dose_status === 1 &&
             val.second_dose_status === 1 &&
@@ -56,10 +56,10 @@ const Thirddose = ({
               setData([])
        }
     } else {
-       if (Object.keys(item).length > 0) {
+       if (Object.keys(empData).length > 0) {
       const thirddose =
         
-        item?.filter(
+      empData?.filter(
           (val) =>
             val.third_dose_status === 1 &&
             val.second_dose_status === 1 &&
@@ -71,7 +71,7 @@ const Thirddose = ({
            setData([])
        }
     }
-  }, [item, count, setCount, flag])
+  }, [empData, count, setCount, flag])
 
   let preparedColumnDef
   if (flag === 1) {

@@ -1,5 +1,5 @@
 import { TextField, FormControlLabel, Tooltip, Paper, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState,memo,useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import moment from 'moment'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -8,13 +8,12 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { memo } from 'react'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import imageCompression from 'browser-image-compression'
-import { useCallback } from 'react';
+
 
 
 const ModalAnnual = ({
@@ -41,7 +40,7 @@ const ModalAnnual = ({
     setIsModalOpen(false)
     setTiterValue('')
     setCount(count + 1)
-  },[count])
+  },[count,setCount,setIsModalOpen])
 
   // saving the date
   const [selectedFiles, setSelectedFiles] = useState([])
@@ -50,7 +49,7 @@ const ModalAnnual = ({
     const newFiles = [...selectedFiles]
     newFiles.push(e.target.files[0])
     setSelectedFiles(newFiles)
-  },[])
+  },[setSelectedFiles,selectedFiles])
 
   const handleRemoveFile =useCallback( (index) => {
     const newFiles = [...selectedFiles]
@@ -62,7 +61,7 @@ const ModalAnnual = ({
     if (fileInput) {
       fileInput.value = null
     }
-  },[])
+  },[selectedFiles,setSelectedFiles])
 
  
   const handleImageUpload = useCallback(async (imageFile) => {

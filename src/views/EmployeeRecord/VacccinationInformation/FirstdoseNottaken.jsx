@@ -1,19 +1,16 @@
 import { Box, } from '@mui/joy'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,lazy,memo,useCallback, useMemo} from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { lazy } from 'react'
 import AddTaskIcon from '@mui/icons-material/AddTask'
 import { Tooltip, Paper, } from '@mui/material'
 import BeenhereIcon from '@mui/icons-material/Beenhere'
-import { memo } from 'react'
 import { IconButton as OpenIcon } from '@mui/material'
-import { useCallback } from 'react'
 import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 
 const Modal = lazy(() => import('./Modal'))
 
 const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
-  
+  const empData=useMemo(()=>item,[item])
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState({})
@@ -26,9 +23,9 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
   }, []); 
 
   useEffect(() => {
-     if (Object.keys(item).length > 0) {
+     if (Object.keys(empData).length > 0) {
     const firstdose =
-       item?.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
+    empData?.filter((val) => val.booster_dose_status === 0 && val.first_dose_status === 0)
     const dataWithStatus = firstdose.map((record, index) => ({
       ...record,
       sl_no: index + 1,
@@ -38,7 +35,7 @@ const Firstdose = ({ item, setCount, count, setShowGeneral }) => {
      }else{
        setData([])
      }
-  }, [item, count, setCount])
+  }, [empData, count, setCount])
 
   const [columnDef] = useState([
     { headerName: 'Sl No', field: 'sl_no' },

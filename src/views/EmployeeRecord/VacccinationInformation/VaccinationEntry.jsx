@@ -1,16 +1,15 @@
 import { Box, Paper, TextField, Tooltip } from '@mui/material'
-import React, { lazy, useCallback, useState } from 'react'
+import React, { lazy, useCallback, useState,useEffect,memo } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import SearchIcon from '@mui/icons-material/Search'
 import { Button } from '@mui/joy'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { useEffect } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import { setVaccination } from 'src/redux/actions/Vaccination.Action'
-import { memo } from 'react'
+
 
 const Entryinformation = lazy(() => import('./EntryInformation'))
 const Modalentry = lazy(() => import('./Modalentry'))

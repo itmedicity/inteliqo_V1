@@ -1,14 +1,15 @@
-import React from 'react'
+import React,{ memo } from 'react'
 import Modal from '@mui/material/Modal'
 import { Box, Paper, Button, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
 import _ from 'underscore'
-import { memo } from 'react'
+import { useCallback } from 'react'
 const Modalupload = ({ setModalOpen, ModalOpen, setCount, count, selectedRowData }) => {
-  const handleCloseModal = () => {
+  
+  const handleCloseModal =useCallback( () => {
     setCount(count + 1)
     setModalOpen(false)
-  }
+  },[count,setCount,setModalOpen])
 
   // for upload file
 

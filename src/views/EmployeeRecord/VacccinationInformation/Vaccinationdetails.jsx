@@ -18,6 +18,7 @@ import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy'
 import HotelIcon from '@mui/icons-material/Hotel'
 import ApprovalIcon from '@mui/icons-material/Approval'
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload'
+import { useCallback } from 'react'
 
 const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
   const [data1, setdata] = useState([])
@@ -214,9 +215,9 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
     setCount(0)
   }, [data1, setCount, count])
 
-  const handleClick = (e, item) => {
+  const handleClick = useCallback((e, item) => {
     setShowGeneral(item.id)
-  }
+  },[setShowGeneral])
 
   return (
     <Box
@@ -253,7 +254,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                     opacity: 0.7,
                   }}
                 >
-                  {item.icon}
+                  {item?.icon}
                 </Box>
                 <Box
                   sx={{
@@ -270,7 +271,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                       marginRight: 'auto',
                     }}
                   >
-                    <Typography sx={{ fontSize: 18 }}>{item.name}</Typography>
+                    <Typography sx={{ fontSize: 18 }}>{item?.name}</Typography>
                   </Box>
                 </Box>
                 <Box
@@ -285,7 +286,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                   }}
                 >
                   <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                    {item.count}
+                    {item?.count}
                   </Typography>
                 </Box>
               </Box>
@@ -349,12 +350,12 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
           }}
         >
           <Grid container spacing={2}>
-            {pieChartData.map((row) => (
+            {pieChartData?.map((row) => (
               <Grid item xs={12} key={row.label}>
                 <Box sx={{ height: '100%' }}>
                   <Box sx={{}}>
                     <Typography sx={{ opacity: '.5', ml: 3 }} variant="subtitle1">
-                      {row.label}
+                      {row?.label}
                     </Typography>
                   </Box>
 
@@ -404,7 +405,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                         }}
                       >
                         <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                          {row.totalEmployees}
+                          {row?.totalEmployees}
                         </Typography>
                       </Box>
                     </Box>
@@ -453,7 +454,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                         }}
                       >
                         <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                          {row.value}
+                          {row?.value}
                         </Typography>
                       </Box>
                     </Box>
@@ -502,7 +503,7 @@ const Vaccinationdetails = ({ setShowGeneral, setitem, count, setCount }) => {
                         }}
                       >
                         <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                          {row.unvaccinatedEmployees}
+                          {row?.unvaccinatedEmployees}
                         </Typography>
                       </Box>
                     </Box>

@@ -1,13 +1,10 @@
 import { Box, Paper, Typography, IconButton } from '@mui/material'
-import React, { useCallback } from 'react'
+import React, { useCallback,useState,useEffect,lazy,memo } from 'react'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
-import { useState } from 'react'
-import { useEffect } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { lazy } from 'react'
 import { ToastContainer } from 'react-toastify'
-import { memo } from 'react'
+
 
 const Firstdose = lazy(() => import('./Firstdose'))
 const Seconddose = lazy(() => import('./Seconddose'))
@@ -198,7 +195,7 @@ const HicVerification = () => {
                       marginRight: 'auto',
                     }}
                   >
-                    <Typography sx={{ fontSize: 18 }}>{item.name}</Typography>
+                    <Typography sx={{ fontSize: 18 }}>{item?.name}</Typography>
                   </Box>
                 </Box>
                 <Box
@@ -213,7 +210,7 @@ const HicVerification = () => {
                   }}
                 >
                   <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                    {item.count}
+                    {item?.count}
                   </Typography>
                 </Box>
               </Box>

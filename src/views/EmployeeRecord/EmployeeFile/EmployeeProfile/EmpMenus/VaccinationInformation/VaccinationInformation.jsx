@@ -1,11 +1,10 @@
-import { CssVarsProvider } from '@mui/joy'
+
 import { Box, Paper, Typography } from '@mui/material'
-import React, { Fragment, lazy, memo, useMemo } from 'react'
+import React, { Fragment, lazy, memo, useMemo ,useState,useEffect} from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { useEffect, useState } from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Heading from 'src/views/Component/MuiCustomComponent/Heading'
 const Previousvacc = lazy(() => import('./Previousvacc'))
@@ -17,17 +16,16 @@ const VaccinationInformation = () => {
   const [data, setdata] = useState([])
 
   const state = useSelector(
-    (state) => state.getPrifileDateEachEmp.empPersonalData.personalData,
+    (state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData,
     _.isEqual,
   )
 
   const vaccinationList= useSelector(
-    (state) => state.setVaccinationemp.VaccinationList,
+    (state) => state?.setVaccinationemp?.VaccinationList,
     _.isEqual,
   )
   const empVaccination=useMemo(()=>vaccinationList,[vaccinationList])
   
-
 
   useEffect(() => {
     const fetchData = async () => {
