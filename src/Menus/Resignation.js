@@ -7,6 +7,12 @@ const Resignation = [
         to: '/Home/EmployeeInactiveHR',
     },
     {
+        men_slno: 258,
+        component: CNavItem,
+        name: 'Employee Active',
+        to: '/Home/EmployeeActiveHR',
+    },
+    {
         men_slno: 62,
         component: CNavItem,
         name: 'Approval - Incharge',

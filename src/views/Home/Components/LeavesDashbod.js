@@ -20,7 +20,7 @@ const LeavesDashbod = () => {
         if (empid !== '') {
             dispatch(getannualleave(empid))
         }
-    }, [empid])
+    }, [empid, dispatch])
     //useEffect
     useEffect(() => {
         const { leaveData } = state

@@ -60,7 +60,7 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
     const [lop, setLop] = useState(0)
     const [calcLop, setCalcLop] = useState(0)
     const [holiday, setHoliday] = useState(0)
-    const [totldays, setTotaldays] = useState(0)
+    // const [totldays, setTotaldays] = useState(0)
     const [salary, setSalary] = useState(0)
     const [salaryInwords, setSalaryInwords] = useState('')
     const [calcSalary, setCalcSalary] = useState(0)
@@ -121,13 +121,15 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
         }
     }, [data])
 
+    const toWordsConvert = useMemo(() => toWords, [toWords])
+
     const handlechange = useCallback((e) => {
         if (e.target.checked === true) {
             setRecievable(true)
             setPayable(false)
             const wokeddays = differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))
             const days = getDaysInMonth(new Date(relieving_date));
-            setTotaldays(days)
+            // setTotaldays(days)
             const workeddayno = wokeddays - calcLop + holiday
 
             const workedSalary = (gross_salary / days) * workeddayno
@@ -135,14 +137,14 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
             setSalary(roundValue)
             const calSalary = gross_salary - roundValue
             setCalcSalary(calSalary)
-            const words = toWords?.convert(calSalary)
+            const words = toWordsConvert?.convert(calSalary)
             setSalaryInwords(words)
 
         } else {
             setRecievable(false)
             setPayable(false)
         }
-    }, [gross_salary, relieving_date, lop, calcLop, holiday, toWords])
+    }, [gross_salary, relieving_date, calcLop, holiday, toWordsConvert])
 
     const handlechange1 = useCallback((e) => {
         if (e.target.checked === true) {
@@ -151,24 +153,20 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
 
             const wokeddays = differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))
             const days = getDaysInMonth(new Date(relieving_date));
-            setTotaldays(days)
+            // setTotaldays(days)
             const workeddayno = wokeddays - calcLop + holiday
 
             const workedSalary = (gross_salary / days) * workeddayno
             const roundValue = Math.round(workedSalary / 10) * 10
             setSalary(roundValue)
             setCalcSalary(roundValue)
-            const words = toWords?.convert(roundValue)
+            const words = toWordsConvert?.convert(roundValue)
             setSalaryInwords(words)
-
-
-
-
         } else {
             setRecievable(false)
             setPayable(false)
         }
-    }, [gross_salary, relieving_date, toWords, lop, calcLop, holiday])
+    }, [gross_salary, relieving_date, toWordsConvert, calcLop, holiday])
 
     const handleRejectRequest = useCallback(() => {
         setOpen(false)
@@ -177,7 +175,7 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
         setSalaryInwords('')
         setSalary(0)
         setCalcSalary(0)
-    }, [])
+    }, [setOpen])
 
     const postData = useMemo(() => {
         return {
@@ -214,7 +212,7 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
             setCalcSalary(0)
             setAmount(0)
         }
-    }, [postData])
+    }, [postData, setCount, setOpen])
 
     return (
         <>

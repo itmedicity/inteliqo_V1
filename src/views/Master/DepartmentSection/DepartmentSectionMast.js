@@ -73,7 +73,10 @@ const DepartmentSectionMast = () => {
                 const response = res.data;
                 if (response.success === 2) {
                     infoNofity(response.message)
-                } else if (response.success === 0) {
+                } else if (response.success === 7) {
+                    infoNofity(response.message)
+                }
+                else if (response.success === 0) {
                     errorNofity(response.message);
                     resetSectionDept();
                 } else if (response.success === 1) {

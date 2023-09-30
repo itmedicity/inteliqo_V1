@@ -104,7 +104,7 @@ const DepartmentMasterPage = () => {
         } else {
             submitFun()
         }
-    }, [dept_name, dept_alias, dept_status, type, id])
+    }, [dept_name, dept_alias, dept_status, type, id, flag, count])
 
     const [columnDef] = useState([
         { headerName: 'ID', field: 'dept_id' },
@@ -152,7 +152,7 @@ const DepartmentMasterPage = () => {
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>
                     <Grid item xl={3} lg={2}>
-                        <Paper square elevation={2} sx={{ p: 1, }}   >
+                        <Paper square elevation={0} sx={{ p: 1, }}   >
                             <Box sx={{ width: "100%", pt: 1 }}>
                                 <TextField
                                     fullWidth

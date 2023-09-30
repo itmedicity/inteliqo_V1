@@ -1,6 +1,5 @@
 import React, { Fragment, memo } from 'react'
 import Box from '@mui/material/Box';
-import ProfileComponent from './Components/ProfileComponent';
 import AppMenuBar from './Components/AppMenuBar';
 import Announcement from './Components/Announcement';
 import DashAlertCmp from './Components/DashAlertCmp';
@@ -13,7 +12,7 @@ import { useDispatch } from 'react-redux';
 
 const Home = () => {
     const dispatch = useDispatch();
-    useEffect(() => dispatch(setCommonSetting()), [])
+    useEffect(() => dispatch(setCommonSetting()), [dispatch])
     return (
         <Fragment>
             {/* Top Time Display and Notification Icon Bar */}

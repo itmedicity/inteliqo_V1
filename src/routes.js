@@ -166,7 +166,6 @@ const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProT
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
-const PayrollProces = React.lazy(() => import('./views/Payroll/PayrollProcess/PayrollProcess'))
 const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
@@ -244,6 +243,8 @@ const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinan
 const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/ArearUpdation'))
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
+const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
+
 
 const routes = [
 
@@ -403,7 +404,6 @@ const routes = [
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
   { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR },
-  { path: '/Home/PayrollProcess', exact: true, name: 'Payroll Process', component: PayrollProces },
   { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
@@ -480,6 +480,7 @@ const routes = [
   { path: '/Home/ArearUpdation', exact: true, name: 'Arear Updation', component: ArearUpdation },
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
+  { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
 
 ]
 
