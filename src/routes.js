@@ -238,8 +238,12 @@ const CommonReqstHodApprvl = React.lazy(() => import('./views/LeaveManagement/Co
 const CommonReqstCeoApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/CeoApproval'))
 const CommonReqstHrApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/HrApproval'))
 const CommonReqstHrView = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstHrView'))
+const Vaccination = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/Vaccination'))
+const Vaccinationentry = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/VaccinationEntry'))
+const Hicverification = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/HicVerification'))
 const EndOfService = React.lazy(() => import('./views/Resignation/EndOfService/FullandFinalSettlement'))
 const EODFinanceApproval = React.lazy(() => import('./views/Resignation/EODFinanceApproval/EODFinaneApproval'))
+const Hicverificationlist = React.lazy(() => import('./views/EmployeeRecord/VacccinationInformation/Hicverificationlist'))
 const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/ArearUpdation'))
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
@@ -475,8 +479,12 @@ const routes = [
   { path: '/Home/CommonReqstCeoApprvl', exact: true, name: 'Common Request Ceo Approval', component: CommonReqstCeoApprvl },
   { path: '/Home/CommonReqstHrApprvl', exact: true, name: 'Common Request Hr Approval', component: CommonReqstHrApprvl },
   { path: '/Home/CommonReqstHrView', exact: true, name: 'Common Request Hr View', component: CommonReqstHrView },
+  { path: '/Home/VaccinationInfo', exact: true, name: 'Vaccination Information', component: Vaccination },
+  { path: '/Home/VaccinationEntry', exact: true, name: 'Vaccination Entry', component: Vaccinationentry },
+  { path: '/Home/Hicverification', exact: true, name: 'Hicverification ', component: Hicverification },
   { path: '/Home/EndOfService', exact: true, name: 'Full and Final Settlement', component: EndOfService },
   { path: '/Home/EODFinanceApproval', exact: true, name: 'EOD Finanace Approval', component: EODFinanceApproval },
+  { path: '/Home/Hicverificationlist', exact: true, name: 'Hic Verification List ', component: Hicverificationlist },
   { path: '/Home/ArearUpdation', exact: true, name: 'Arear Updation', component: ArearUpdation },
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },

@@ -92,7 +92,7 @@ import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
 import { getPinWiseRegionData } from './RegionReducers'
 import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
-
+import {setVaccinationemp} from './VaccinationReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -194,7 +194,8 @@ const reducer = combineReducers({
     getPinWiseRegionData,
     setCommonreqstAll,
     setStatutoryInfo,
-    selectedEarnData
+    selectedEarnData,
+    setVaccinationemp
 })
 
 export default reducer;
