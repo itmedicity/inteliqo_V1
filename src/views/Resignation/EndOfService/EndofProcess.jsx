@@ -60,7 +60,8 @@ const EndofProcess = ({ details }) => {
     const [esi, setEsi] = useState(0)
     const [protax, setProTax] = useState(0)
 
-    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const { pf_employee, pf_employee_amount, esi_employee } = state;
 
     useEffect(() => {
         const getEmpEsi = async () => {
@@ -69,14 +70,14 @@ const EndofProcess = ({ details }) => {
             if (success === 1) {
                 const { em_pf_status, em_esi_status } = data[0]
                 if (em_pf_status === 1) {
-                    const value2 = Number(gross_salary) * state.pf_employee / 100
-                    setPf(value2 < state.pf_employee_amount ? Math.round(value2 / 10) * 10 : state.pf_employee_amount)
+                    const value2 = Number(gross_salary) * pf_employee / 100
+                    setPf(value2 < pf_employee_amount ? Math.round(value2 / 10) * 10 : pf_employee_amount)
                 } else {
                     setEsi(0)
                     setPf(0)
                 }
                 if (em_esi_status === 1) {
-                    const value = Number(gross_salary) * state.esi_employee / 100
+                    const value = Number(gross_salary) * esi_employee / 100
                     setEsi(Math.round(value / 10) * 10)
                 } else {
                     setEsi(0)
@@ -88,7 +89,7 @@ const EndofProcess = ({ details }) => {
             }
         }
         getEmpEsi(em_no)
-    }, [em_no, gross_salary])
+    }, [em_no, gross_salary, pf_employee, pf_employee_amount, esi_employee])
 
 
     useEffect(() => {

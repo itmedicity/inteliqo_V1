@@ -63,7 +63,7 @@ export const DeptWiseAttendanceViewFun = async (value, punchData, holidayList, e
     let message = { status: 0, message: '', data: [], dateFormat: [] };
     const { status, data } = holidayList;
     let holidayFilterList = []; // filter holidays based on from to dates
-    let employeeDetails;
+    // let employeeDetails;
 
     if (status === 1) {
         holidayFilterList = data && data.map((values) => {

@@ -322,7 +322,6 @@ export const pdfdownlod = (formdata, Performance,
                         return (i === 0 || i === node.table.widths.length) ? 1 : 0;
                     },
                 },
-                layout: 'noBorders'
             },
 
             {
@@ -393,7 +392,7 @@ export const pdfdownlod = (formdata, Performance,
             },
         },
         images: {
-            snow: 'http://192.168.10.170/NAS/logo/logo.png',
+            snow: 'http://192.168.10.88:9090/Inteliqo/PersonalRecords/logo/logo.png',
             employee: src,
             incharge: inchargesig,
             hod: hodsig,

@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import newYear from '../../../assets/images/newYear.jpg'
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { CircularProgress, Paper } from '@mui/material';
 //import AnnouncementList from './AnnouncementList';
 import { CssVarsProvider } from '@mui/joy';
@@ -12,15 +12,15 @@ import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
 //import BirthdayList from './BirthdayList';
 
-const Birthlist = React.lazy(() => import('./BirthdayList'))
+// const Birthlist = React.lazy(() => import('./BirthdayList'))
 const AnnList = React.lazy(() => import('./AnnouncementList'))
 
 
 const Announcement = () => {
     // const [announcement, setannouncement] = useState([])
-    const Announcementlist = useSelector((state) => {
-        return state.getAnnouncementList.AnnouncementList
-    })
+    // const Announcementlist = useSelector((state) => {
+    //     return state.getAnnouncementList.AnnouncementList
+    // })
 
     // useEffect(() => {
     //     if (Object.keys(Announcementlist).length > 0) {
@@ -28,15 +28,15 @@ const Announcement = () => {
     //     }
     // }, [])
 
-    const annouStyle = {
-        Width: '100%',
-        height: 320,
-        bgcolor: 'background.paper',
-        overflow: "hidden",
-        marginTop: 0,
-        overflowY: "auto",
+    // const annouStyle = {
+    //     Width: '100%',
+    //     height: 320,
+    //     bgcolor: 'background.paper',
+    //     overflow: "hidden",
+    //     marginTop: 0,
+    //     overflowY: "auto",
 
-    }
+    // }
     return (
         <Fragment>
             <Paper square elevation={3} sx={{ width: '100%', height: { xl: 795, lg: 600, md: 500, sm: 500 } }} >

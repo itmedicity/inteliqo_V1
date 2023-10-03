@@ -9,7 +9,6 @@ import { setBranch } from 'src/redux/actions/Branch.Action'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import CustomReportWithDateField from 'src/views/Component/CustomReportWithDateField';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import _ from 'underscore';
 import { setDept } from 'src/redux/actions/Dept.Action';
 
 const EmployeeReport = () => {

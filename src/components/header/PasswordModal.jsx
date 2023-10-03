@@ -44,7 +44,7 @@ const PasswordModal = ({ open, setOpen, details }) => {
             warningNofity(message)
             setOpen(false)
         }
-    }, [confirmPassword, details, setOpen])
+    }, [confirmPassword, details, setOpen, history])
 
     return (
         <>

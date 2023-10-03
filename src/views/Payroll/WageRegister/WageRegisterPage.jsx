@@ -4,7 +4,7 @@ import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHea
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { addMonths, startOfMonth } from 'date-fns'
 import moment from 'moment'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
@@ -22,7 +22,6 @@ const WageRegisterPage = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [dept, setDepartment] = useState(0)
     const [deptSect, setDepartSection] = useState(0)
-    const [mainArray, setmainArray] = useState([])
     const [empArray, setEmpArray] = useState([])
     const [earningData, setEarningData] = useState([])
     const [openBkDrop, setOpenBkDrop] = useState(false)

@@ -1,6 +1,5 @@
 import { Grid, Paper, } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
-import { useHistory } from 'react-router'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import TestCmp from './TestCmp';
 import _ from 'underscore';
@@ -33,7 +32,7 @@ import {
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
-    const history = useHistory()
+    // const history = useHistory()
     const dispatch = useDispatch()
     //getting employee id
     const em_id = useSelector((state) => {
@@ -76,7 +75,7 @@ const DashAlertCmp = () => {
         dispatch(getAppraisalCeo())
         dispatch(getAllAppraisal())
         dispatch(getesiNotAddedEmp())
-    }, [em_id])
+    }, [em_id, dispatch])
 
     const data = Object.values(notificationNewState);
     const entries = useMemo(() => data, [data]);
@@ -88,7 +87,7 @@ const DashAlertCmp = () => {
             <Paper square sx={{ p: 1, width: '100%', display: "flex" }} elevation={3}>
                 <Grid
                     container
-                    spacing={{ xs: 1, md: 1, md: 1, lg: 0.8, xl: 0.8 }}
+                    spacing={{ xs: 1, md: 1, lg: 0.8, xl: 0.8 }}
                     columns={{ xs: 1, sm: 8, md: 8, lg: 8, xl: 12 }}
                     sx={{ width: '100%' }} >
 

@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
 import SessionCheck from 'src/views/Axios/SessionCheck';
 // import { token } from 'src/views/Constant/Constant';
-import { succesNofity, errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { succesNofity, errorNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { employeeNumber } from 'src/views/Constant/Constant';
 
 const useStyles = makeStyles((theme) => ({
