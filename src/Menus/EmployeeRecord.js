@@ -2,6 +2,12 @@ import { CNavItem } from "@coreui/react";
 
 const Employeerecord = [
     {
+        men_slno: 259,
+        component: CNavItem,
+        name: 'Personal Records',
+        to: '/Home/PersonalRecord',
+    },
+    {
         men_slno: 19,
         component: CNavItem,
         name: 'Employee Register',
@@ -94,6 +100,7 @@ const Employeerecord = [
         name: 'Company Information',
         to: '/Home/CompanyInfo',
     },
+
 
 ]
 

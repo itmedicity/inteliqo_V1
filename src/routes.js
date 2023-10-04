@@ -248,6 +248,7 @@ const Hicverificationlist = React.lazy(() => import('./views/EmployeeRecord/Vacc
 const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/ArearUpdation'))
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
+const PersonalRecord = React.lazy(() => import('./views/EmployeeRecord/PersonalRecords/PersonalRecords'))
 
 const routes = [
 
@@ -488,6 +489,8 @@ const routes = [
   { path: '/Home/ArearUpdation', exact: true, name: 'Arear Updation', component: ArearUpdation },
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
+  { path: '/Home/PersonalRecord', exact: true, name: 'Personal Records', component: PersonalRecord },
+
 
 ]
 
