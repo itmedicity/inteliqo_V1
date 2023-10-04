@@ -1,5 +1,5 @@
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import moment from 'moment';
 import { Box, Paper, TextField } from '@mui/material';
@@ -15,6 +15,7 @@ import _ from 'underscore';
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import DeptSectionSelect from './DeptSectionSelect';
 import EmployeeUderDeptSec from './EmployeeUderDeptSec';
+
 const NightOffRequest = () => {
 
     const dispatch = useDispatch();
@@ -29,8 +30,6 @@ const NightOffRequest = () => {
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
 
     const { em_no, em_id, em_name, sect_name, dept_name, hod, incharge } = employeeProfileDetl
-
-
 
     useEffect(() => {
         dispatch(setCommonSetting());
@@ -85,41 +84,15 @@ const NightOffRequest = () => {
         <CustomLayout title="Night Off Request" displayClose={true} >
             <ToastContainer />
             <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-
                 {hod === 1 || incharge === 1 ?
-
-
                     <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-
-                        <Box sx={{
-
-                            mt: 0.5, px: 0.3,
-                            width: '30%'
-                        }} >
-                            <DeptSectionSelect
-                                em_id={em_id}
-                                value={deptSection}
-                                setValue={setDeptSection}
-                            // updateDeptSect={updateDeptSect}
-                            />
+                        <Box sx={{ mt: 0.5, px: 0.3, flex: 1 }} >
+                            <DeptSectionSelect em_id={em_id} value={deptSection} setValue={setDeptSection} />
                         </Box>
-
-                        <Box sx={{
-
-                            mt: 0.5, px: 0.3,
-                            width: '30%'
-                        }} >
-                            <EmployeeUderDeptSec
-                                value={employee}
-                                setValue={setEmployee}
-                                deptSect={deptSection}
-                            />
+                        <Box sx={{ mt: 0.5, px: 0.3, flex: 1 }} >
+                            <EmployeeUderDeptSec value={employee} setValue={setEmployee} deptSect={deptSection} />
                         </Box>
-                        <Box sx={{
-
-                            mt: 0.5, px: 0.3,
-                            width: '10%'
-                        }} >
+                        <Box sx={{ mt: 0.5, px: 0.3, flex: 1 }} >
                             <TextField
                                 fullWidth
                                 id="fullWidth"
@@ -128,12 +101,10 @@ const NightOffRequest = () => {
                                 disabled
                             />
                         </Box>
-
                     </Box>
                     :
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-
                             <TextField
                                 fullWidth
                                 id="fullWidth"
@@ -170,24 +141,15 @@ const NightOffRequest = () => {
                             />
                         </Box>
                     </Box>
-
-
-
-
                 }
-
-
-                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
-                    <Box sx={{
-                        display: 'flex', width: '25%', p: 0.5, mt: 0.2, flexDirection: 'row'
-                    }} >
-                        <Box sx={{ width: '40%', pt: 1 }}>
+                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%', }}>
+                    <Box sx={{ display: 'flex', flex: 1, p: 0.5, mt: 0.2, flexDirection: 'row', }} >
+                        <Box sx={{ pt: 1 }}>
                             <CssVarsProvider>
                                 <Typography sx={{ fontSize: 18, fontWeight: 350 }}>Required Date: </Typography>
                             </CssVarsProvider>
                         </Box>
-
-                        <Box sx={{ width: '80%' }}>
+                        <Box sx={{ flex: 1, pl: 0.5 }}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                 <DatePicker
                                     views={['day']}
@@ -200,18 +162,12 @@ const NightOffRequest = () => {
                                 />
                             </LocalizationProvider>
                         </Box>
-
-                    </Box>
-                    <Box sx={{
-                        display: 'flex', width: '50%', p: 0.5, mt: 0.2, flexDirection: 'row'
-                    }} >
-                        <Box sx={{ width: '30%', pt: 1 }}>
+                        <Box sx={{ pt: 1, pl: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography sx={{ fontSize: 18, fontWeight: 350 }}>From Date: </Typography>
                             </CssVarsProvider>
                         </Box>
-
-                        <Box sx={{ width: '80%' }}>
+                        <Box sx={{ flex: 1, pl: 0.5 }}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                 <DatePicker
                                     views={['day']}
@@ -224,19 +180,16 @@ const NightOffRequest = () => {
                                 />
                             </LocalizationProvider>
                         </Box>
-                        <Box sx={{ width: '30%', pt: 1 }}>
+                        <Box sx={{ pt: 1, pl: 0.5 }}>
                             <CssVarsProvider>
-                                <Typography sx={{ fontSize: 18, fontWeight: 350, pl: 2 }}>To Date: </Typography>
+                                <Typography sx={{ fontSize: 18, fontWeight: 350 }}>To Date: </Typography>
                             </CssVarsProvider>
                         </Box>
-
-
-                        <Box sx={{ width: '80%' }}>
+                        <Box sx={{ flex: 1, pl: 0.5 }}>
                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                 <DatePicker
                                     views={['day']}
                                     inputFormat="DD-MM-YYYY"
-
                                     minDate={addDays(new Date(fromdate), commonSettings.noff_count)}
                                     value={todate}
                                     onChange={setToDate}
@@ -247,10 +200,8 @@ const NightOffRequest = () => {
                             </LocalizationProvider>
                         </Box>
                     </Box>
-
                     <Box sx={{ px: 0.5, mt: 0.9 }}>
                         <CssVarsProvider>
-                            {/* <Tooltip title="Save Request" variant="outlined" color="info" placement="right-end"> */}
                             <Button
                                 variant="outlined"
                                 component="label"
@@ -260,111 +211,12 @@ const NightOffRequest = () => {
                             >
                                 Save Request
                             </Button>
-                            {/* </Tooltip> */}
                         </CssVarsProvider>
                     </Box>
                 </Box>
-
-
-
-
-
             </Paper>
-
         </CustomLayout >
-
-
-
-
-        // <Fragment>
-        //     <AuthorizationDetails />
-        //     <PageLayoutSave
-        //         heading="Night Off Request"
-        //         redirect={RedirectToProfilePage}
-        //         submit={submitNightoff}
-        //     >
-        //         <div className="col-md-12">
-        //             <div className="row g-1 mb-2">
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="text"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Department"
-        //                         disabled="disabled"
-        //                         value={dept_name}
-        //                     />
-        //                 </div>
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="text"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Department Section"
-        //                         disabled="disabled"
-        //                         value={sect_name}
-        //                     />
-        //                 </div>
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="text"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Employee Name"
-        //                         disabled="disabled"
-        //                         value={em_name}
-        //                     />
-        //                 </div>
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="text"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Emplyee Number"
-        //                         disabled="disabled"
-        //                         value={em_no}
-        //                     />
-        //                 </div>
-        //             </div>
-        //             <div className="row g-1 mb-2">
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="date"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Duty Day From"
-        //                         name="fromDate"
-        //                         value={fromDate}
-        //                         changeTextValue={(e) => updateLeaveDetails(e)}
-        //                     />
-        //                 </div>
-        //                 <div className="col-md-3">
-        //                     <TextInput
-        //                         type="date"
-        //                         classname="form-control form-control-sm"
-        //                         Placeholder="Duty Day To"
-        //                         name="todate"
-        //                         min={fromDate}
-        //                         value={todate}
-        //                         changeTextValue={(e) => {
-        //                             updateLeaveDetails(e)
-        //                             updatepunch()
-        //                         }}
-        //                     />
-        //                 </div>
-        //                 {value === 1 ?
-        //                     <div className="col-md-3">
-        //                         <TextInput
-        //                             type="date"
-        //                             classname="form-control form-control-sm"
-        //                             Placeholder="Request For Night Off To"
-        //                             name="fordate"
-        //                             min={todate}
-        //                             value={fordate}
-        //                             changeTextValue={(e) => updateLeaveDetails(e)}
-        //                         />
-        //                     </div> : null
-        //                 }
-        //             </div>
-        //         </div>
-        //     </PageLayoutSave>
-        // </Fragment>
     )
 }
 
-export default NightOffRequest
+export default memo(NightOffRequest) 

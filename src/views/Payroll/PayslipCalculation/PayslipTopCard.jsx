@@ -1,6 +1,6 @@
 import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import React, { memo, useReducer, useState } from 'react'
+import React, { memo, useEffect, useReducer, useState } from 'react'
 import moment from 'moment'
 import { ToastContainer } from 'react-toastify'
 import { dutyPlanInitialState, dutyPlanReducer, planInitialState } from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun'
@@ -35,6 +35,29 @@ const PayslipTopCard = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [payrollData, setPayrollData] = useState([])
     const [saveArray, setSavearray] = useState([])
+    const [areardata, setAreardata] = useState([])
+
+
+    useEffect(() => {
+        const arearDetails = async (postData) => {
+            const result = await axioslogin.post("/payrollprocess/get/arear", postData)
+            if (result.data.success === 1) {
+                setAreardata(result.data.data);
+            } else {
+                setAreardata([])
+            }
+        }
+        if (deptName !== 0 || deptSecName !== 0) {
+            const postData = {
+                department: deptName,
+                department_sect: deptSecName,
+                arrear_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
+            }
+            arearDetails(postData)
+        } else {
+            setAreardata([])
+        }
+    }, [deptName, deptSecName, value])
 
     const getAllData = async (e) => {
         e.preventDefault()
@@ -43,27 +66,29 @@ const PayslipTopCard = () => {
         } else if (moment(toDate) > moment(calanderMaxDate)) {
             infoNofity('Select the Correct From || To || Both Dates')
         } else {
-
             const postData = {
                 dept_id: deptName,
                 sect_id: deptSecName,
                 attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
             }
-
             const checkdatas = {
                 em_department: deptName,
                 em_dept_section: deptSecName,
                 attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
             }
-
             getEmployeeData(postData).then((values) => {
                 const { status, empData } = values
                 if (status === 1) {
                     getAllEarnByDept(checkdatas).then((values) => {
                         const { status, earnData } = values
                         if (status === 1) {
+
+
+
+
+
                             //calculating worked days amount
-                            const array = earnData.map((val) => {
+                            const array = earnData?.map((val) => {
                                 if (val.total_working_days === val.total_days || val.em_earning_type === 3) {
                                     const obj = {
                                         ...val,
@@ -81,7 +106,7 @@ const PayslipTopCard = () => {
                             })
 
                             //calculating esi and pf of employee and employer related to worked days
-                            const arr = array.map((i) => {
+                            const arr = array?.map((i) => {
                                 if (i.include_esi === 1 && i.em_esi_status === 1 && i.em_earning_type !== 3) {
                                     const value = Number(i.worked_amount) * state.esi_employee / 100
                                     const esivalue = Number(i.worked_amount) * state.esi_employer / 100
@@ -118,7 +143,7 @@ const PayslipTopCard = () => {
 
                             //deduct esi amount and pf amount from worked days amount
 
-                            const newArray = arr.map((j) => {
+                            const amountArray = arr.map((j) => {
                                 const amount = Number(j.worked_amount) - (j.pfValue + j.esiValue)
                                 const obj = {
                                     ...j,
@@ -126,6 +151,38 @@ const PayslipTopCard = () => {
                                 }
                                 return obj
                             })
+
+                            const xx = areardata.map((val) => {
+                                if (state.areartype === 2) {
+                                    const obj = {
+                                        em_no: val.em_no,
+                                        em_id: val.em_id,
+                                        earning_type_name: "Fixed Wages",
+                                        earnded_name: "Arear",
+                                        amount: val.arrear_amount,
+                                        em_earning_type: state.areartype,
+                                        calculated_worked: 0,
+                                        em_amount: 0,
+                                        em_esi_status: 0,
+                                        em_pf_status: 0,
+                                        esiValue: 0,
+                                        esiemployer: 0,
+                                        include_esi: 0,
+                                        include_lwf: 0,
+                                        include_pf: 0,
+                                        include_protax: 0,
+                                        pfValue: 0,
+                                        pfemployer: 0
+
+                                    }
+
+                                    return obj;
+                                } else {
+                                    return {}
+                                }
+
+                            })
+                            const newArray = [...amountArray, ...xx]
                             setSavearray(newArray)
 
                             const newFun = (val) => {

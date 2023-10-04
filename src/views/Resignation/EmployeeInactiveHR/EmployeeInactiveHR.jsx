@@ -1,6 +1,6 @@
 
 import React, { Fragment, useState, useEffect, memo, useCallback } from 'react'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { ToastContainer } from 'react-toastify'
@@ -12,6 +12,7 @@ import { Button, CssVarsProvider } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import RemarkModal from './RemarkModal';
 
 const EmployeeInactiveHR = () => {
 
@@ -21,6 +22,8 @@ const EmployeeInactiveHR = () => {
     const [deptSect, setDeptSect] = useState(0)
     const [state, setState] = useState(0)
     const [empData, setempData] = useState([])
+    const [flag, setFlag] = useState(false)
+    const [details, setDetails] = useState(0)
 
     useEffect(() => {
         const getempdetl = async () => {
@@ -39,7 +42,6 @@ const EmployeeInactiveHR = () => {
                 warningNofity("There is No employees In This Department And Department Section")
 
             }
-
         }
         if (branch !== 0 && dept !== 0 && deptSect !== 0) {
             getempdetl()
@@ -53,7 +55,6 @@ const EmployeeInactiveHR = () => {
             warningNofity("Please Select All Option")
         } else {
             setState(1)
-            // setTableData(empData)
         }
     }, [dept, deptSect])
 
@@ -77,41 +78,9 @@ const EmployeeInactiveHR = () => {
 
     const InactiveEmp = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
-        const { em_id, dept_id, sect_id } = data[0]
-        const postData = {
-            em_id: em_id
-        }
-        const postDeptData = {
-            dept_id: dept_id,
-            sect_id: sect_id,
-        }
-        const results = await axioslogin.post('/Duedepartment/duedept', postDeptData)
-        const { success1, data1 } = results.data
-        if (success1 === 1) {
-            const { due_dept_code } = data1[0]
-            const duedepartment = JSON.parse(due_dept_code)
-            const duedeptdetl = duedepartment.map((val) => {
-                return { deptcode: val.deptcode, deptname: val.deptdesc, emp_id: em_id }
-            })
-            //inactive employee
-            const result = await axioslogin.patch('/empmast/empmaster/Inactiveemp', postData)
-            const { success } = result.data
-            if (success === 2) {
-                setCount(count + 1)
-                const result = await axioslogin.post('/dueclearence', duedeptdetl)
-                const { success } = result.data
-                if (success === 1) {
-                    succesNofity("Employee Inactivated")
-                    setCount(count + 1)
-                } else {
-                    warningNofity("Error while Inactive")
-                }
-            }
-        }
-        else {
-            warningNofity("Please Map Due Clearence Department for this department Section ")
-        }
-    }, [count])
+        setDetails(data)
+        setFlag(true)
+    }, [])
 
     return (
         <CustomLayout title="Employee Inactive" displayClose={true} >
@@ -154,6 +123,8 @@ const EmployeeInactiveHR = () => {
                         headerHeight={30}
                     />
                 </Paper>
+                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
+
             </Box>
         </CustomLayout>
     )

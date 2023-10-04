@@ -128,7 +128,7 @@ const statutoryData = {
     dataList: []
 };
 
-export const setStatutoryInfo = (state = creditLeaveList, { type, payload }) => {
+export const setStatutoryInfo = (state = statutoryData, { type, payload }) => {
     switch (type) {
         case FETCH_EMP_ESI_PF_DATA:
             return { ...state, data: payload }

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
@@ -13,11 +13,11 @@ import { CircularProgress } from '@mui/material';
 
 const AnnouncementList = () => {
     const dispatch = useDispatch();
-    const [flag, setflag] = useState(false)
+    // const [flag, setflag] = useState(false)
 
     useEffect(() => {
         dispatch(setBirthdayAlert());
-        setflag(true)
+        // setflag(true)
     }, [dispatch])
     /** get announcement list from redux */
     const Announcementlist = useSelector((state) => {

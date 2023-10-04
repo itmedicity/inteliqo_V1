@@ -1,8 +1,7 @@
-import moment from 'moment';
 import { Actiontypes } from '../constants/action.type';
 
 const { FETCH_COMMON_SETTING, SELECTED_DEPT_VAL, FETCH_DEPT_SECTION_DETL, FETCH_EMPLOYEE_DETL, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, FETCH_PUNCH_MASTER_DATA,
-    UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
+    UPDATE_PUNCHMASTER_TABLE, SELECTED_EARN_VAL } = Actiontypes;
 
 
 const commonSetting = {
@@ -142,6 +141,20 @@ export const fetchupdatedPunchInOutData = (state = updatedPunchInOutData, { type
     switch (type) {
         case UPDATE_PUNCHMASTER_TABLE:
             return { ...state, puMaData: payload }
+        default:
+            return state;
+    }
+}
+
+//earn value 
+const selectEarn = {
+    earn: 0
+}
+
+export const selectedEarnData = (state = selectEarn, { type, payload }) => {
+    switch (type) {
+        case SELECTED_EARN_VAL:
+            return { ...state, earn: payload }
         default:
             return state;
     }

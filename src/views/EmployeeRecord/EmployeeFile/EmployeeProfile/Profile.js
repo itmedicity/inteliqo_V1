@@ -15,10 +15,13 @@ import {
     notify,
     setAccademicData,
     setExperienceData,
-    setPersonalData
+    setPersonalData,
+
 } from 'src/redux/actions/Profile.action';
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { Actiontypes } from 'src/redux/constants/action.type';
+import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action';
+import { setVaccination } from 'src/redux/actions/Vaccination.Action';
 
 const theme = createTheme({
     breakpoints: {
@@ -72,6 +75,8 @@ const Profile = () => {
         dispatch(notify(no))
         dispatch(getContractDetlEmp(no))
         dispatch(setDept())
+        dispatch(getStatutoryInfo(id));
+        dispatch(setVaccination(id));
     }, [id, no, count])
     return (
         // height: { xl: 850, lg: 555, md: 300, sm: 300, xs: 300 }

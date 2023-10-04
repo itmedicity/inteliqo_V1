@@ -312,7 +312,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         }
-    }, [remark, replacement, resig_slno, loginId, slno, dueDept, salaryPenalty])
+    }, [remark, replacement, resig_slno, loginId, slno, dueDept,
+        salaryPenalty, setOpen, setCount])
 
     return (
         <Modal

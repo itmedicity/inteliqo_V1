@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel, Paper } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, MenuItem, Paper, Select } from '@mui/material'
 import React, { Fragment, memo, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -60,12 +60,23 @@ const CommonSettingNew = () => {
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no
     } = FormData
 
-
-
-
     const [levaetype, setLeaveType] = useState([])
     const [count, setCount] = useState(0)
+    const [areartype, setAreartype] = useState(0)
+    const [earntype, setEarnType] = useState([])
 
+    useEffect(() => {
+        const getemptypedata = async () => {
+            const result = await axioslogin.get('/Earntype')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setEarnType(data)
+            } else {
+                setEarnType([])
+            }
+        }
+        getemptypedata()
+    }, []);
 
     //getting form data
     const updateCommonSettings = async (e) => {
@@ -81,7 +92,8 @@ const CommonSettingNew = () => {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
-                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count } = data[0]
+                    week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
+                    areartype } = data[0]
 
 
                 const frmData = {
@@ -108,7 +120,8 @@ const CommonSettingNew = () => {
                     pf_employee_amount: pf_employee_amount,
                     pf_employer_amount: pf_employer_amount,
                     noff_count: noff_count,
-                    onHourRq_no: onehour_rqst_count
+                    onHourRq_no: onehour_rqst_count,
+                    areartype: areartype
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
@@ -119,6 +132,7 @@ const CommonSettingNew = () => {
                 setworkoff(week_off_day === null ? 0 : week_off_day)
                 setValue(1)
                 setCount(0)
+                setAreartype(areartype === null ? 0 : areartype)
             }
             else if (success === 0) {
                 setValue(0)
@@ -159,8 +173,8 @@ const CommonSettingNew = () => {
         pf_employee_amount: pf_employee_amount,
         pf_employer_amount: pf_employer_amount,
         noff_count: noff_count,
-        onehour_rqst_count: onHourRq_no
-
+        onehour_rqst_count: onHourRq_no,
+        areartype: areartype
     }
 
 
@@ -194,7 +208,8 @@ const CommonSettingNew = () => {
         pf_employer_amount: pf_employer_amount,
         setting_slno: slno,
         noff_count: noff_count,
-        onehour_rqst_count: onHourRq_no
+        onehour_rqst_count: onHourRq_no,
+        areartype: areartype
 
     }
 
@@ -241,20 +256,31 @@ const CommonSettingNew = () => {
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}>
-                        <Box sx={{ flex: 1 }} >
-                            <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Common Settings
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{}}>
-                            <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' color="danger" onClick={RedirectToprofilePage}>
-                                    <CloseIcon color='info' />
-                                </IconButton>
-                            </CssVarsProvider>
+                    <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
+                        <Box sx={{ display: "flex", flex: 1, height: 30, }} >
+                            <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >
+                                <Box sx={{ display: "flex" }}>
+                                    <DragIndicatorOutlinedIcon />
+                                    <CssVarsProvider>
+                                        <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
+                                            Common Settings
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", pr: 1 }}>
+                                    <CssVarsProvider>
+                                        <IconButton
+                                            variant="outlined"
+                                            size='xs'
+                                            color="danger"
+                                            onClick={RedirectToprofilePage}
+                                            sx={{ color: '#ef5350' }}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Paper>
                         </Box>
                     </Paper>
                     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
@@ -503,8 +529,66 @@ const CommonSettingNew = () => {
                                         />
                                     </Box>
                                 </Box>
+                            </Paper>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>ESI Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
 
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> ESI Limit</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_limit"
+                                            value={esi_limit}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">ESI % Employee</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_employee"
+                                            value={esi_employee}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
 
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">ESI % Employer</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <TextInput
+                                            type="text"
+                                            classname="form-control form-control-sm"
+                                            Placeholder=""
+                                            name="esi_employer"
+                                            value={esi_employer}
+                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
                             </Paper>
                         </Box>
                     </Box>
@@ -643,114 +727,6 @@ const CommonSettingNew = () => {
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
                                     <CssVarsProvider>
-                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>ESI Setting</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> ESI Limit</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
-                                            name="esi_limit"
-                                            value={esi_limit}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">ESI % Employee</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
-                                            name="esi_employee"
-                                            value={esi_employee}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">ESI % Employer</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
-                                            name="esi_employer"
-                                            value={esi_employer}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                            </Paper>
-                        </Box>
-                    </Box>
-
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', }}>
-                        <Box sx={{ width: '50%' }}>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Shift Setting</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Default Shift</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Not Applicable</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
-                                    </Box>
-                                </Box>
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Week OFF</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
-                                    </Box>
-                                </Box>
-                            </Paper>
-                        </Box>
-
-                        <Box sx={{ width: '50%', pl: 1 }}>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
-                                    <CssVarsProvider>
                                         <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Allowed Half Day Leave Type</Typography>
                                     </CssVarsProvider>
                                 </Paper>
@@ -794,8 +770,50 @@ const CommonSettingNew = () => {
                         </Box>
                     </Box>
 
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', }}>
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Shift Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Default Shift</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Not Applicable</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Week OFF</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+
+                        <Box sx={{ width: '50%', pl: 1 }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
                                     <CssVarsProvider>
@@ -821,11 +839,42 @@ const CommonSettingNew = () => {
                                     </Box>
                                 </Box>
                             </Paper>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Arear Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1"> Arear Type</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
+                                        <FormControl fullWidth size="small"  >
+                                            <Select
+                                                value={areartype}
+                                                onChange={(e) => setAreartype(e.target.value)}
+                                                size="small"
+                                                fullWidth
+                                                variant='outlined'
+                                                sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
+                                            >
+                                                <MenuItem value={0} disabled >Select Earn Type</MenuItem>
+                                                {
+                                                    earntype && earntype.map((val, index) => {
+                                                        return <MenuItem key={index} value={val.erning_type_id}>{val.earning_type_name}</MenuItem>
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
+                                </Box>
+                            </Paper>
                         </Box>
                     </Box>
-
-
-
                 </Paper>
                 <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0, pl: 2 }} >

@@ -1,284 +1,162 @@
-import React, { Fragment, useState, useEffect, useCallback, useMemo, memo } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { axioslogin } from 'src/views/Axios/Axios';
+import React, { Fragment, useState, useCallback, memo } from 'react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
-import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import { setEmployeeName } from 'src/redux/actions/EmpName.Action'
-import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
-import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { setDept } from 'src/redux/actions/Dept.Action';
+import ReportLayout from '../ReportComponent/ReportLayout';
+import { Paper, TextField } from '@mui/material';
+import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
+import { Box, Button, CssVarsProvider, } from '@mui/joy';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import moment from 'moment';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import { employeePunch } from './Function';
+import { getEmployeeDetlDutyPlanBased } from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun';
+import { format } from 'date-fns';
+import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+
 
 const DeptPunchReport = () => {
-    /** Initiliazing values */
-    const [TableData, setTableData] = useState([]);
-    const [value, setValue] = useState(0);
-    const [slno, setslno] = useState([]);
-    const [secondvalue, setsecondValue] = useState(0)
-    const [secondMenu, setsecondmenu] = useState(0)
-    const [thirdmenu, setThirdmenu] = useState([])
-    const [thirdvalue, setThirdValue] = useState(0);
-    const [sectslno, setdeptslno] = useState([]);
-    const [empslno, setempslno] = useState([]);
-    const [data2, setdata2] = useState(sectslno)
-    const dispatch = useDispatch();
 
+    const [dept, setDepartment] = useState(0)
+    const [deptSect, setDepartSection] = useState(0)
+    const [dutydate, setDutyDate] = useState(moment(new Date()))
+    const [tableData, setTableData] = useState([])
 
-    /** To get stored department values from redux */
-    useEffect(() => {
-        dispatch(setDept())
-        dispatch(setDeptWiseSection());
-        dispatch(setEmployeeName());
-    }, [dispatch])
-
-    /** useSelector for getting depatment, department section, employee name wise list from redux */
-    const state = useSelector((state) => {
-        return {
-            dept: state.getdept.departmentlist || 0,
-            deptSection: state.getDeptSectList.deptSectionList || 0,
-            empName: state.getEmpNameList.empNameList || 0
-        }
-    })
-    /** Destructuring state into values... */
-    const { dept, deptSection, empName } = state
-
-    /** Selction checkbox for department name  */
-    const [columnDefs] = useState([
-        {
-            headerName: 'Department',
-            field: 'dept_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-    /** Selection check box for department section */
-    const [columnDefDeptSect] = useState([
-        {
-            headerName: 'Department Section',
-            field: 'sect_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-    /** Selection check box for employee name */
-    const [columnDefEmployee] = useState([
-        {
-            headerName: 'Employee Name',
-            field: 'em_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-    /** to get checked department slno from selection checkbox  */
-    const onSelectionChanged = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setValue([])
-        }
-        else {
-            setValue(event.api.getSelectedRows())
-            setsecondmenu(0)
-            setThirdmenu(0)
-            setThirdValue(0)
-            setsecondValue(0)
-        }
-        setsecondmenu(0)
-    }
-
-    /** Intializing slno for getting checked department slno */
-
-    useEffect(() => {
-        const arr = value && value.map((val, index) => {
-            return val.dept_id
-        })
-        setslno(arr)
-    }, [value])
-
-    /** To activate department section search icon */
-    const ShowSecondMenu = useCallback((e) => {
-        setsecondmenu(1)
-    }, [])
-
-    const [data, setdata] = useState(slno)
-    /** code for second menu selection, department section list */
-    useEffect(() => {
-        if (secondMenu === 1) {
-            if (slno !== 0) {
-                const filtered = deptSection.filter(val => slno.includes(val.dept_id))
-                setdata(filtered)
-            } else {
-                warningNofity("Please Select Any DIstrict!")
-            }
-        }
-    }, [secondMenu, slno, deptSection])
-
-    /** to get checked department section slno  from selection slno */
-    const onSelectionChanged2 = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setsecondValue([])
-            setThirdmenu(0)
-        }
-        else {
-            setsecondValue(event.api.getSelectedRows())
-            setThirdValue(0)
-        }
-        setThirdmenu(0)
-    }
-
-    /** to get department section slno by mapping second value */
-    useEffect(() => {
-        const arr2 = secondvalue && secondvalue.map((val, index) => {
-            return val.sect_id
-        })
-        setdeptslno(arr2)
-    }, [secondvalue])
-
-    /** to activate employee name search icon */
-    const ShowthirdMenu = useCallback((e) => {
-        setThirdmenu(1)
-    }, [])
-
-    /** to get checked department section wise employee  from selection slno */
-    const onSelectionChanged3 = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setThirdValue([])
-        }
-        else {
-            setThirdValue(event.api.getSelectedRows())
-        }
-    }
-
-    /** to get deaprtment section wise employee name from redux */
-    useEffect(() => {
-        if (thirdmenu === 1) {
-            if (sectslno !== 0) {
-                const filter = empName.filter(val => sectslno.includes(val.em_dept_section))
-                setdata2(filter)
-            }
-            else {
-                warningNofity("please select any Department section")
-            }
-        }
-
-    }, [thirdmenu, sectslno, empName, slno])
-
-    /** to get employee id by mapping thirdvalue */
-    useEffect(() => {
-        const arr3 = thirdvalue && thirdvalue.map((val, index) => {
-            return val.em_id
-        })
-        setempslno(arr3)
-    }, [thirdvalue])
-
-    /** stored department slno, department section slno as postData for API Call */
-
-    const postData = useMemo(() => {
-        return {
-            dept_id: slno,
-            sect_id: sectslno
-        }
-    }, [sectslno, slno])
-
-    /** stored department slno, department section slno, employee id as postDataemp for API Call */
-
-    const postDataemp = useMemo(() => {
-        return {
-            dept_id: slno,
-            sect_id: sectslno,
-            em_id: empslno
-        }
-    }, [sectslno, slno, empslno])
-
-    /** report ag grid table heading */
-    const [columnDefMain] = useState([
-        {
-            headerName: '#',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
+    const [column] = useState([
         { headerName: 'ID', field: 'em_no' },
         { headerName: 'Name ', field: 'em_name' },
-        { headerName: 'Dept Name ', field: 'dept_name' },
-        { headerName: 'Dept Section ', field: 'sect_name' },
-        { headerName: 'Institution ', field: 'em_institution' },
-        { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'Exp From ', field: 'em_from' },
-        { headerName: 'Exp To ', field: 'em_to' },
-        { headerName: 'Year ', field: 'year' },
-        { headerName: 'Month ', field: 'month' },
-        { headerName: 'Days ', field: 'day' },
-
+        { headerName: 'Dept Name ', field: 'dept_name', minWidth: 250 },
+        { headerName: 'Dept Section ', field: 'sect_name', minWidth: 250 },
+        { headerName: 'Shift In ', field: 'shift_in' },
+        { headerName: 'Shift Out ', field: 'shift_out' },
+        { headerName: 'Punch In ', field: 'punch_in' },
+        { headerName: 'Punch Out ', field: 'punch_out' },
     ])
 
-    /** Selected checkbox list sumbitted,  to get corresponding data from databse */
-    const getEmployeeExperience = useCallback((e) => {
-        e.preventDefault();
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        /** Department wise employee experience */
-        const getEmployeeDepartment = async (slno) => {
-            const result = await axioslogin.post('/experienceReport/expemployee', slno)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
-        }
-        /** Department section wise employee experience list */
-        const getEmpDeptSect = async (postData) => {
-            const result = await axioslogin.post('/experienceReport/deptsect', postData)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
-        }
-        /** Selected employee experience list */
-        const getEmployee = async (postDataemp) => {
-            const result = await axioslogin.post('/experienceReport/sectempname', postDataemp)
+    const getData = useCallback(async (e) => {
 
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
+        if (dept === 0 || deptSect === 0) {
+            warningNofity('Check The Department || Department Section Feild');
+
+        } else {
+            const getEmpData = {
+                em_department: dept,
+                em_dept_section: deptSect,
             }
-            else {
-                setTableData([])
-            }
+            getEmployeeDetlDutyPlanBased(getEmpData).then((emplyDataArray) => {
+                const { status, data } = emplyDataArray;
+                if (status === 1) {
+                    const arr = data?.map((val) => {
+                        return val.em_id
+                    })
+                    const postdata = {
+                        emp_id: arr,
+                        from: moment(dutydate).format('YYYY-MM-DD'),
+                        to: moment(dutydate).format('YYYY-MM-DD')
+                    }
+                    employeePunch(postdata).then((dataObj) => {
+                        const { status, punchdata } = dataObj
+                        if (status === 1) {
+                            const combinedArray = punchdata.reduce((result, item1) => {
+                                const matchingItem2 = data.find((item2) => item2.em_id === item1.emp_id);
+                                if (matchingItem2) {
+                                    // Merge properties from both objects
+                                    result.push({ ...item1, ...matchingItem2 });
+                                } else {
+                                    // If there's no matching item in array2, add item1 as is
+                                    result.push(item1);
+                                }
+
+                                return result;
+                            }, []);
+
+                            const arr = combinedArray.map((val) => {
+                                const obj = {
+                                    em_no: val.em_no,
+                                    em_name: val.em_name,
+                                    dept_name: val.dept_name,
+                                    sect_name: val.sect_name,
+                                    shift_in: format(new Date(val.shift_in), 'HH:mm'),
+                                    shift_out: format(new Date(val.shift_out), 'HH:mm'),
+                                    punch_in: val.punch_in !== null ? format(new Date(val.punch_in), 'HH:mm') : 'NIL',
+                                    punch_out: val.punch_out !== null ? format(new Date(val.punch_out), 'HH:mm') : 'NIL',
+                                }
+                                return obj;
+                            })
+
+                            setTableData(arr);
+                        } else {
+                            warningNofity("Duty Plan Not Done for this Department!!")
+                        }
+                    })
+                } else {
+                    warningNofity("No Employees Under This Department!!")
+                }
+            })
         }
-        if (slno !== 0 && sectslno === 0 && empslno === 0) {
-            getEmployeeDepartment(slno)
-        }
-        else if (slno !== 0 && sectslno !== 0 && empslno === 0) {
-            getEmpDeptSect(postData)
-        }
-        else if (slno !== 0 && sectslno !== 0 && empslno !== 0) {
-            getEmployee(postDataemp)
-        }
-        else {
-            warningNofity("Please Select Any Checkbox!!")
-        }
-    }, [slno, dispatch, sectslno, empslno, postData, postDataemp])
+
+    }, [dept, deptSect, dutydate])
+
 
     return (
         <Fragment>
             <ToastContainer />
-
+            <ReportLayout title="Employee Punch Report" data={tableData} displayClose={true} >
+                <Paper sx={{ width: '100%' }}>
+                    <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }} >
+                            <DeptSelectByRedux setValue={setDepartment} value={dept} />
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }} >
+                            <DeptSecSelectByRedux dept={dept} setValue={setDepartSection} value={deptSect} />
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }} >
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                    views={['day']}
+                                    inputFormat="DD-MM-YYYY"
+                                    value={dutydate}
+                                    onChange={setDutyDate}
+                                    renderInput={(params) => (
+                                        <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box sx={{
+                            display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, mt: 0.5,
+                            justifyContent: 'flex-start'
+                        }} >
+                            <CssVarsProvider>
+                                <Box sx={{ p: 0.2 }} >
+                                    <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
+                                        color: '#90caf9'
+                                    }} >
+                                        <PublishedWithChangesIcon />
+                                    </Button>
+                                </Box>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Paper
+                        square
+                        elevation={0}
+                        sx={{
+                            p: 1, mt: 0.5,
+                            display: 'flex',
+                            backgroundColor: '#f0f3f5',
+                            flexDirection: "column",
+                        }} >
+                        <CustomAgGridRptFormatOne
+                            tableDataMain={tableData}
+                            columnDefMain={column}
+                        />
+                    </Paper>
+                </Paper>
+            </ReportLayout>
         </Fragment>
     )
 }

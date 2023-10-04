@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
@@ -19,7 +19,7 @@ const BirthdayList = () => {
     }, [dispatch])
 
     const empBirthday = useSelector((state) => {
-        return state.getBirthdayList.empBirthdayList
+        return state?.getBirthdayList?.empBirthdayList
     })
 
     return (

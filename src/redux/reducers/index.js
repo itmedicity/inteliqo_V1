@@ -58,7 +58,10 @@ import { getGradeList } from '../reducers/Grade.Reducer'
 import { getdept } from '../reducers/Dept.Reducer'
 import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList, getShiftPlanDetl, getShiftDateFormat, getUpdatedShiftId, updatedShiftDetlOnModel } from '../reducers/Shift.Reducer'
-import { getCommonSettings, selectedDeptCode, getDepartmentSection, getEmployeeBasedSection, getPunchData, getShiftData, getPunchMasterData, fetchupdatedPunchInOutData } from './CommonSett.Reducer';
+import {
+    getCommonSettings, selectedDeptCode, getDepartmentSection, getEmployeeBasedSection, getPunchData,
+    getShiftData, getPunchMasterData, fetchupdatedPunchInOutData, selectedEarnData
+} from './CommonSett.Reducer';
 import { getCasualLeaveData } from './LeaveData.Reducer';
 import { getJobSummary } from './JobDescription.Reducer'
 import { getJobDuties } from './JobDuties.Reducer'
@@ -90,7 +93,7 @@ import { getPinWiseRegionData } from './RegionReducers'
 import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
 import { gettrainingData } from './Training.Reducer'
-
+import { setVaccinationemp } from './VaccinationReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -192,8 +195,9 @@ const reducer = combineReducers({
     getPinWiseRegionData,
     setCommonreqstAll,
     setStatutoryInfo,
-    gettrainingData
-
+    gettrainingData,
+    selectedEarnData,
+    setVaccinationemp
 })
 
 export default reducer;
