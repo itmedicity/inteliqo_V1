@@ -77,7 +77,7 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
             errorNofity("Error Occured!!!!Please Contact EDP")
             setOpen(false)
         }
-    }, [remark, loginId, resig_slno, remark,])
+    }, [loginId, resig_slno, remark, setOpen, setCount])
 
     return (
         <Modal

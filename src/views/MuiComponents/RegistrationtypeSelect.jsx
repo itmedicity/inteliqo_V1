@@ -36,4 +36,4 @@ const RegistrationtypeSelect = ({ value, setValue, education, regTypedisable }) 
     )
 }
 
-export default RegistrationtypeSelect
+export default memo(RegistrationtypeSelect) 

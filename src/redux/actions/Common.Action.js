@@ -14,7 +14,7 @@ export const setCommonSetting = () => async (dispatch) => {
 
 export const getDepartmentSection = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/section/sect/${id}`);
-    const { success, data, message } = await result.data;
+    const { success, data } = await result.data;
     if (success === 1) {
         dispatch({ type: FETCH_DEPT_SECTION_DETL, payload: data })
     } else {

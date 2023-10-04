@@ -1,20 +1,18 @@
-
-import React, { Fragment, useState, useEffect, memo, useCallback } from 'react'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { axioslogin } from 'src/views/Axios/Axios';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import { Box, Button, CssVarsProvider, } from '@mui/joy'
+import { IconButton, Paper, Tooltip } from '@mui/material'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
-import { Box, IconButton, Paper, Tooltip } from '@mui/material'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import { Button, CssVarsProvider } from '@mui/joy'
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import RemarkModal from './RemarkModal';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-const EmployeeInactiveHR = () => {
+const EmployeeActiveHR = () => {
 
     const [count, setCount] = useState(0)
     const [branch, setBranch] = useState(0)
@@ -22,8 +20,15 @@ const EmployeeInactiveHR = () => {
     const [deptSect, setDeptSect] = useState(0)
     const [state, setState] = useState(0)
     const [empData, setempData] = useState([])
-    const [flag, setFlag] = useState(false)
-    const [details, setDetails] = useState(0)
+
+    const getemployeedetails = useCallback(async () => {
+        if (dept === 0 && deptSect === 0) {
+            warningNofity("Please Select All Option")
+        } else {
+            setState(1)
+            // setTableData(empData)
+        }
+    }, [dept, deptSect])
 
     useEffect(() => {
         const getempdetl = async () => {
@@ -32,7 +37,7 @@ const EmployeeInactiveHR = () => {
                 em_dept_section: deptSect,
                 em_branch: branch
             }
-            const result = await axioslogin.post("/plan/create", postData);
+            const result = await axioslogin.post("/ActiveEmpReport/inactive/emp", postData);
             const { success, data } = result.data
             if (success === 1) {
                 setempData(data)
@@ -42,6 +47,7 @@ const EmployeeInactiveHR = () => {
                 warningNofity("There is No employees In This Department And Department Section")
 
             }
+
         }
         if (branch !== 0 && dept !== 0 && deptSect !== 0) {
             getempdetl()
@@ -49,14 +55,6 @@ const EmployeeInactiveHR = () => {
         }
 
     }, [count, branch, dept, deptSect])
-
-    const getemployeedetails = useCallback(async () => {
-        if (dept === 0 && deptSect === 0) {
-            warningNofity("Please Select All Option")
-        } else {
-            setState(1)
-        }
-    }, [dept, deptSect])
 
     const [column] = useState([
         { headerName: 'Emp ID ', field: 'em_no', filter: true },
@@ -78,12 +76,22 @@ const EmployeeInactiveHR = () => {
 
     const InactiveEmp = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
-        setDetails(data)
-        setFlag(true)
-    }, [])
+        const { em_id } = data[0]
+        const postData = {
+            em_id: em_id
+        }
+        const result = await axioslogin.patch('/empmast/empmsater/active', postData)
+        const { success, message } = result.data
+        if (success === 2) {
+            succesNofity("Employee Inactivated")
+            setCount(count + 1)
+        } else {
+            warningNofity(message)
+        }
+    }, [count])
 
     return (
-        <CustomLayout title="Employee Inactive" displayClose={true} >
+        <CustomLayout title="Employee Active" displayClose={true} >
             <ToastContainer />
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 <Paper variant="outlined" sx={{ width: '100%', p: 0.5, display: 'flex', flexDirection: 'row' }}  >
@@ -123,11 +131,9 @@ const EmployeeInactiveHR = () => {
                         headerHeight={30}
                     />
                 </Paper>
-                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
-
             </Box>
         </CustomLayout>
     )
 }
 
-export default memo(EmployeeInactiveHR)
+export default memo(EmployeeActiveHR) 

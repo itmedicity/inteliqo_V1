@@ -5,7 +5,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, infoNofity } from 'src/views/CommonCode/Commonfunc'
 import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import moment from 'moment'
-import _ from 'underscore'
 import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
 import { CssVarsProvider } from '@mui/joy'
@@ -76,7 +75,6 @@ const PunchTransfer = () => {
                         px: 8,
                         pt: 2,
                         width: "100%",
-                        pt: 0.5
                     }}>
                         <Box sx={{ width: "7%" }} >
                             <CssVarsProvider>

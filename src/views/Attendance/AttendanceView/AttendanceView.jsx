@@ -2,7 +2,6 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action';
 import InchargeHodCompnt from './InchargeHodCompnt';
-import _ from 'underscore';
 
 const EmployeeCmpnt = React.lazy(() => import('./EmployeeCompnt'));
 const AttendanceView = () => {
@@ -20,7 +19,7 @@ const AttendanceView = () => {
     useEffect(() => {
         //get holiday current
         reduxDispatch(getHolidayList());
-    }, [])
+    }, [reduxDispatch])
 
     useEffect(() => {
         if (hod === 0 && incharge === 0) {
