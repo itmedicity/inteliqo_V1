@@ -306,6 +306,7 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
                 const patchdata = {
                     emp_no: emp_no
 
+
                 }
                 const result1 = await axioslogin.patch('/TrainingAfterJoining/JoineeDetailsUpdate', patchdata)
                 const { message } = result1.data
@@ -351,10 +352,10 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
                                     <Box>Department Section</Box>
                                 </Box>
                                 <Box sx={{ display: "flex", flexDirection: "column", textTransform: "capitalize" }}>
-                                    <Box>: {userdata.emp_no}</Box>
-                                    <Box>: {userdata.em_name.toLowerCase()}</Box>
-                                    <Box>: {userdata.dept_name.toLowerCase()}</Box>
-                                    <Box>: {userdata.sect_name.toLowerCase()}</Box>
+                                    <Box>: {userdata?.emp_no}</Box>
+                                    <Box>: {userdata?.em_name?.toLowerCase()}</Box>
+                                    <Box>: {userdata?.dept_name?.toLowerCase()}</Box>
+                                    <Box>: {userdata?.sect_name?.toLowerCase()}</Box>
                                 </Box>
                             </Box>
                         </Box>

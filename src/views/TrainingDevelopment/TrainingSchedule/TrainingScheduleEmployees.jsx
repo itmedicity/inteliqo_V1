@@ -11,7 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { IconButton as Openbtn } from '@mui/material';
 import EditscheduleModal from './EditscheduleModal';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
-
+import _ from 'underscore';
 
 const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
     const [tableData, setTableData] = useState([]);
@@ -22,10 +22,7 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
     const [modalflag, setmodalFlag] = useState(0);
     const [scheduledata, setScheduleData] = useState({});
 
-    const schedule = useSelector((state) => {
-        return state.gettrainingData.trainingSchedule.trainingScheduleList
-    })
-
+    const schedule = useSelector((state) => state?.gettrainingData?.trainingSchedule?.trainingScheduleList, _.isEqual)
     useEffect(() => {
         const displayData = schedule.map((val) => {
 
@@ -74,7 +71,6 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
 
 
     const [columnDef] = useState([
-        // { headerName: 'Sl.No', field: 'tnd_slno', filter: true, minWidth: 100 },
         { headerName: 'Emp_No', field: 'tns_emp_id', filter: true, minWidth: 150 },
         { headerName: 'Name', field: 'em_name', filter: true, minWidth: 150 },
         { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 150 },

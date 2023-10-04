@@ -6,7 +6,9 @@ const {
     FETCH_TRAINING_CATEGORY_ALL,
     FETCH_TRAINING_NAMES_ALL,
     FETCH_TRAINING_SCHEDULE_ALL,
-    FETCH_DEPARTMENTAL_TRAINING_SCHEDULE_ALL
+    FETCH_DEPARTMENTAL_TRAINING_SCHEDULE_ALL,
+    FETCH_TRAINING_TOPICS_ALL,
+    FETCH_TRAINER_NAMES_ALL,
 } = Actiontypes;
 
 const TrainingData = {
@@ -33,6 +35,14 @@ const TrainingData = {
     departmentalTrainingSchedule: {
         departmentalTrainingScheduleList: [],
         departmentalTrainingScheduleStatus: false
+    },
+    trainingTopics: {
+        trainingTopicsList: [],
+        trainingTopicsStatus: false
+    },
+    trainerNames: {
+        trainerNamesList: [],
+        trainerNamesStatus: false
     }
 }
 
@@ -90,6 +100,24 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.departmentalTrainingSchedule,
                     departmentalTrainingScheduleList: payload,
                     departmentalTrainingScheduleStatus: true
+                }
+            }
+        case FETCH_TRAINING_TOPICS_ALL:
+            return {
+                ...state,
+                trainingTopics: {
+                    ...state.trainingTopics,
+                    trainingTopicsList: payload,
+                    trainingTopicsStatus: true
+                }
+            }
+        case FETCH_TRAINER_NAMES_ALL:
+            return {
+                ...state,
+                trainerNames: {
+                    ...state.trainerNames,
+                    trainerNamesList: payload,
+                    trainerNamesStatus: true
                 }
             }
         default:

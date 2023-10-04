@@ -17,8 +17,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { ToastContainer } from 'react-toastify';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainer from 'src/views/MuiComponents/SelectTrainer';
-import CloseIcon from '@mui/icons-material/Close';
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
 
 
@@ -77,6 +75,7 @@ const DepartmentalTraining = ({ setShow, count, Setcount }) => {
         let arr = dates.map((item) => item.date === val.date ? { ...item, inValue: e } : item)
         setDates(arr)
     }
+
     const openField = useCallback(() => {
         setopen(1);
     })
@@ -282,45 +281,6 @@ const DepartmentalTraining = ({ setShow, count, Setcount }) => {
 
                         </Paper>
                         : null}
-
-                {/* {
-                viewTable === 1 ?
-                    <Paper elevation={0} sx={{
-                        mt: 1, backgroundColor: "#FAF1E4",
-                        width: "20%", height: 100, overflow: 'auto',
-                        '::-webkit-scrollbar': { display: "none" }
-                    }}>
-                        <TableContainer sx={{}}>
-                            <Table size="small" >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center">Date</TableCell>
-                                        <TableCell align="center"> Choose Date</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {
-                                        dates?.map((val, ind) => {
-                                            return <TableRow key={ind}>
-                                                <TableCell align="center">{val.date}</TableCell>
-                                                <TableCell align="center"><CommonCheckBox
-                                                    checked={val?.inValue || false}
-                                                    onChange={(e) => {
-                                                        getValue(e.target.checked, val)
-                                                    }}
-                                                /></TableCell>
-                                            </TableRow>
-                                        })
-                                    }
-
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                    : null
-            } */}
-
-
 
                 <Paper elevation={0} variant='outlined' sx={{ width: "100%", mt: 1 }}>
                     <CommonAgGrid

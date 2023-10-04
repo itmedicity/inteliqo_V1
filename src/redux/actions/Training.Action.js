@@ -7,7 +7,9 @@ const {
     FETCH_TRAINING_CATEGORY_ALL,
     FETCH_TRAINING_NAMES_ALL,
     FETCH_TRAINING_SCHEDULE_ALL,
-    FETCH_DEPARTMENTAL_TRAINING_SCHEDULE_ALL
+    FETCH_DEPARTMENTAL_TRAINING_SCHEDULE_ALL,
+    FETCH_TRAINING_TOPICS_ALL,
+    FETCH_TRAINER_NAMES_ALL,
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -68,5 +70,25 @@ export const DepartmentalTrainingSchedule = () => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_DEPARTMENTAL_TRAINING_SCHEDULE_ALL, payload: [], status: false })
+    }
+}
+export const TrainingTopics = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingTopic/select`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_TOPICS_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_TOPICS_ALL, payload: [], status: false })
+    }
+}
+export const TrainerNames = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainerName/select`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINER_NAMES_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINER_NAMES_ALL, payload: [], status: false })
     }
 }

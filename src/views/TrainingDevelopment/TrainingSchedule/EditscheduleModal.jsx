@@ -91,15 +91,14 @@ const EditscheduleModal = ({ open, setOpen, setmodalFlag, scheduledata, count, S
                                 <Box sx={{ mt: 1 }}><Typography>Schedule Date</Typography></Box>
                             </Box>
                             <Box sx={{ display: "flex", flexDirection: "column", textTransform: "capitalize" }}>
-                                <Box><Typography>: {scheduledata.tns_emp_id}</Typography></Box>
-                                <Box><Typography>: {scheduledata.em_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata.dept_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata.sect_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata.type_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata.trin_cat_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata.training_name.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.tns_emp_id}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.em_name.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.dept_name?.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.sect_name?.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.type_name?.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.trin_cat_name?.toLowerCase()}</Typography></Box>
+                                <Box><Typography>: {scheduledata?.training_name?.toLowerCase()}</Typography></Box>
                                 <Box sx={{ mt: 1 }}>
-
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
                                         <DatePicker
                                             views={['day']}
@@ -111,11 +110,9 @@ const EditscheduleModal = ({ open, setOpen, setmodalFlag, scheduledata, count, S
                                             )}
                                         />
                                     </LocalizationProvider>
-
                                 </Box>
                             </Box>
                         </Box>
-
                     </DialogContent>
                     <DialogActions>
                         <CssVarsProvider>

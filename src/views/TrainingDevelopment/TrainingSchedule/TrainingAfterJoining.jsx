@@ -13,10 +13,10 @@ import TrainingScheduleEmployees from './TrainingScheduleEmployees';
 import _ from 'underscore';
 import PendingActionsSharpIcon from '@mui/icons-material/PendingActionsSharp';
 import EmojiEmotionsSharpIcon from '@mui/icons-material/EmojiEmotionsSharp';
-import DepartmentalTraining from './DepartmentalTraining';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import DepartmentalTrainingCalender from './DepartmentalTrainingCalender';
+import DepartmentalCalender from './DepartmentalCalender';
 
 const TrainingAfterJoining = () => {
     const [show, setShow] = useState(0);
@@ -65,61 +65,11 @@ const TrainingAfterJoining = () => {
                 <Box sx={{ width: "100%", p: 1 }}>
                     {show === 1 ? <ViewJoinersTable show={show} setShow={setShow} count={count} Setcount={Setcount} /> :
                         show === 2 ? <TrainingScheduleEmployees show={show} setShow={setShow} count={count} Setcount={Setcount} /> :
-                            // show === 3 ? <DepartmentalTraining setShow={setShow} count={count} Setcount={Setcount} /> :
-                            show === 3 ? <DepartmentalTrainingCalender setShow={setShow} count={count} Setcount={Setcount} /> :
+                            // show === 3 ? <DepartmentalTrainingCalender setShow={setShow} count={count} Setcount={Setcount} /> :
+                            show === 3 ? <DepartmentalCalender setShow={setShow} count={count} Setcount={Setcount} /> :
 
                                 <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
                                 >
-                                    {/* <Grid
-                                        container
-                                        spacing={{ xs: 1, md: 1, md: 1, lg: 0.8, xl: 0.8 }}
-                                        columns={{ xs: 1, sm: 8, md: 8, lg: 8, xl: 12 }}
-                                        sx={{ width: '100%' }} > */}
-
-                                    {/* {itemsList.map((val, index) => (
-                                            <Grid item xs={2} sm={4} md={4} lg={2} xl={3} key={index}>
-                                                <Paper sx={{ width: "100%", height: 150, flex: 2, p: 2, display: "flex", flexDirection: "column", gap: 5, flexWrap: "wrap" }}
-                                                    key={index}>
-                                                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                                                        <Box sx={{ display: "flex", flexDirection: "row", gap: 5 }}>
-                                                            <Box sx={{
-                                                                width: 40,
-                                                                p: 1,
-                                                                height: 40,
-                                                                backgroundColor: '#E2F6CA',
-                                                                borderRadius: '50%',
-                                                                display: 'flex',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                opacity: 0.7
-                                                            }}>
-                                                                {val.icons}
-                                                            </Box>
-
-                                                            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "80%", fontFamily: "sans-serif", fontSize: "large" }}>
-                                                                <Box sx={{ color: "#61677A" }}>
-                                                                    {val.itemname}
-                                                                </Box>
-                                                                <Box sx={{ fontSize: "x-large", fontWeight: "bold" }}>
-                                                                    {val.count}
-                                                                </Box>
-                                                            </Box>
-                                                        </Box>
-                                                        <Box sx={{ display: "flex", flexDirection: "row", gap: 3, borderTop: 1, borderColor: "#E4F1FF", mt: 2, cursor: "pointer" }} onClick={(e) => {
-                                                            ViewList(e, val)
-                                                        }}>
-                                                            <Box sx={{ mt: 1, fontWeight: "bold", color: "#5C5470" }}>View more</Box>
-                                                            <Box sx={{ mt: 1 }}><ArrowRightAltIcon /></Box>
-                                                        </Box>
-                                                    </Box>
-                                                </Paper>
-                                            </Grid>
-                                        ))} */}
-                                    {/* </Grid> */}
-
-
-
-
 
                                     <Grid sx={{ p: 1 }} container spacing={2}>
                                         {itemsList.map((item, index) => (
