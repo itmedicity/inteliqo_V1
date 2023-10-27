@@ -9,7 +9,6 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import CompanyChange from './CompanyChange';
-import { useSelector } from 'react-redux';
 import { CheckIdExists, InsertAppraisal } from './AppraisalFunctions';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
@@ -18,6 +17,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CommonAgGrid from '../Component/CommonAgGrid';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ProbationExcel } from '../Payroll/AttendanceUpdation/ExportToExcel';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const ProbationEnd = () => {
 
@@ -26,7 +26,6 @@ const ProbationEnd = () => {
     const [empno, setempno] = useState(0)
     const [flag, setFlag] = useState(0)
     const [empid, setEmpid] = useState(0)
-    const [display, setdisplay] = useState(0)
     const [name, setname] = useState('')
     const [count, setCount] = useState(0)
     const today = moment(new Date).format('YYYY-MM-DD')
@@ -51,18 +50,23 @@ const ProbationEnd = () => {
         aprobationEndList()
     }, [count])
 
-    /** to get employee category details from redux */
-    const empCate = useSelector((state) => {
-        return state.getEmployeeCategory.empCategory || 0
-    })
-
-    useEffect(() => {
-        if (empCate.some(key => key.des_type === 1)) {
-            setdisplay(2)
-        }
-    }, [empCate])
-
     const [columnDef] = useState([
+        {
+            headerName: 'Action',
+            cellRenderer: params =>
+                <Fragment>
+                    <Tooltip title="Direct Permanent Confirmation" followCursor placement='top' arrow >
+                        <OpenIcon onClick={() => addtoProcess(params)}>
+                            <NextPlanIcon color='primary' />
+                        </OpenIcon>
+                    </Tooltip>
+                    <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                        <OpenIcon onClick={() => toAppraisal(params)}>
+                            <CheckCircleIcon color='primary' />
+                        </OpenIcon>
+                    </Tooltip>
+                </Fragment>
+        },
         // { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 50, filter: true },
         { headerName: 'Emp ID# ', field: 'em_no', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 100 },
@@ -72,22 +76,7 @@ const ProbationEnd = () => {
         { headerName: 'Date of joining ', field: 'em_doj', minWidth: 100 },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
         { headerName: 'Probation End ', field: 'em_prob_end_date', minWidth: 100 },
-        {
-            headerName: 'Action',
-            cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Direct Contract Confirmation" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }} onClick={() => addtoProcess(params)}>
-                            <NextPlanIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }} onClick={() => toAppraisal(params)}>
-                            <CheckCircleIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
-                </Fragment>
-        },
+
     ])
     //redirect to company information page
     const addtoProcess = useCallback((params) => {
@@ -196,7 +185,6 @@ const ProbationEnd = () => {
             }
         }
 
-
         if (sect_id !== 0 && hod === 0 && incharge === 0) {
             const postData = {
                 dept_section: sect_id
@@ -272,25 +260,25 @@ const ProbationEnd = () => {
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 {
-                    flag === 1 ? <CompanyChange empid={empid} setFlag={setFlag} empno={empno} display={display} name={name} /> : <Paper square elevation={2} sx={{ p: 0.5, }}>
-                        <Paper square elevation={1} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                    flag === 1 ? <CompanyChange empid={empid} setFlag={setFlag} empno={empno} display={2} name={name} /> : <Paper square elevation={2} sx={{ p: 0.5, }}>
+                        <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                             <Box sx={{ flex: 1, }} >
                                 <CssVarsProvider>
-                                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                         Employee Probation End List
                                     </Typography>
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ pl: 0.5 }}>
                                 <CssVarsProvider>
-                                    <IconButton variant="outlined" size='sm' sx={{ color: 'green' }} onClick={toDownload}>
+                                    <IconButton variant="outlined" size='xs' sx={{ color: 'green' }} onClick={toDownload}>
                                         <DownloadIcon />
                                     </IconButton>
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ pl: 0.5 }}>
                                 <CssVarsProvider>
-                                    <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
+                                    <IconButton variant="outlined" size='xs' sx={{ color: 'red' }} onClick={RedirectToHome}>
                                         <CloseIcon />
                                     </IconButton>
                                 </CssVarsProvider>

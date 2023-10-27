@@ -1,63 +1,73 @@
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import { CssVarsProvider } from '@mui/joy'
-import Typography from '@mui/joy/Typography';
-import { Box, IconButton, Paper } from '@mui/material'
-import React, { Fragment, memo, useMemo } from 'react'
+import { IconButton, CssVarsProvider, Tooltip } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
+import React, { Fragment, memo } from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
-import EXistContractDetl from './EXistContractDetl';
-import AttendanceDetails from './AttendanceDetails';
-import Old_dataTo_copy from './Old_dataTo_copy';
-import Renew_Process from './Renew_Process';
 import { addDays, format, lastDayOfMonth } from 'date-fns';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import _ from 'underscore';
 import { employeeNewContractEntry, employeeRecordUpdationMandatory, employeeRecordUpdationUserChoice, employeeUpdateExpTable, employeeUpdatePersonaltable, employeeUpdateQualificationTable, updateArrearSalary, updateEmployeeMasterTable, updateoldAttndanceDetail } from './Function/ContractFun';
-import { setPersonalData } from 'src/redux/actions/Profile.action';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
+
+const EXistContractDetl = React.lazy(() => import('./EXistContractDetl'))
+const AttendanceDetails = React.lazy(() => import('./AttendanceDetails'))
+const OldDatatoCopy = React.lazy(() => import('./OldDatatoCopy'))
+const RenewProcess = React.lazy(() => import('./RenewProcess'))
 
 const ContractRenewalProcess = () => {
 
   const { id, no } = useParams()
   const history = useHistory()
-  const dispatch = useDispatch();
   const [probationperiod, setProbationPeriod] = useState(0)
   const [fine, setFine] = useState(0)
-  const [disable, setDisable] = useState(false)
-  const [contractstart, setContractStart] = useState(0)
-  const [contractend, setContractEnd] = useState(0)
+  //const [contractstart, setContractStart] = useState('')
+  const [contractend, setContractEnd] = useState('')
   const [graceperiod, setgraceperiod] = useState(0)
+  const [retirementdate, setRetirementdate] = useState('')
   const [attendanceDays, setattendanceDays] = useState(0)
   const [newCatgeory, setnewCategory] = useState(0)
-  const [oldCategory, setOldctaegory] = useState(0)
+  // const [oldCategory, setOldctaegory] = useState(0)
   const [probsataus, setProbstatus] = useState(0)// for setting probation status
   const [contstatus, setContrstatus] = useState(0)//for setting contract status
-  const [attendanceata, setAttendanceData] = useState([])
+  //const [attendanceata, setAttendanceData] = useState([])
+  const [doj, setDoj] = useState('')
 
   const [contractrenew, setContractrenew] = useState(false)//checkbox state for contract renewal
   const [contractTpPermanent, setcontractTpPermanent] = useState(false)//checkbox state for contract permanent
   const [punchmast, setPunchMast] = useState([])
   const [updateSlno, setUpdateSlno] = useState(0)
 
-  useEffect(() => {
-    dispatch(setPersonalData(no))
-  }, [dispatch, no])
-
   // to get employee's date of join, contract end date, retiremnt date
-  const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-  const { em_doj, em_contract_end_date, em_retirement_date } = state
+  const state = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual)
+
+  useEffect(() => {
+
+    if (Object.keys(state).length !== 0) {
+      const { em_cont_end,
+        em_doj, em_retirement_date } = state;
+      setContractEnd(em_cont_end)
+      // setContractStart(em_cont_start)
+      //setOldctaegory(category_slno)
+      setRetirementdate(em_retirement_date)
+      setDoj(em_doj)
+    } else {
+      setContractEnd('')
+      // setContractStart('')
+      // setOldctaegory(0)
+      setRetirementdate('')
+      setDoj('')
+    }
+
+  }, [state])
 
   //getting data to save
-  const datatoSave = useSelector((state) => {
-    return state.getContractClosedata
-  })
+  const datatoSave = useSelector((state) => state?.getContractClosedata, _.isEqual)
   const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData, newCategory
   } = datatoSave
 
@@ -76,10 +86,10 @@ const ContractRenewalProcess = () => {
   })
   const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
 
-  //login employee number
-  const em_no = useSelector((state) => state.getProfileData.ProfileData[0].em_no, _.isEqual)
+  // //login employee number
+  // const em_no = useSelector((state) => state.getProfileData.ProfileData[0].em_no, _.isEqual)
 
-  const empno = useMemo(() => em_no, [em_no])
+  // const empno = useMemo(() => em_no, [em_no])
 
   //new entry contract details
   const newcontractdetl = {
@@ -124,13 +134,13 @@ const ContractRenewalProcess = () => {
   const updateempMast = {
     em_no: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
     em_category: newCatgeory,
-    em_contract_end_date: contstatus === 1 && contractrenew === true ? newcontractend : em_contract_end_date,
+    em_contract_end_date: contstatus === 1 && contractrenew === true ? newcontractend : contractend,
     em_prob_end_date: contstatus === 1 && contractrenew === true ? moment(addDays(new Date(newcontractstart), probationperiod)).format('YYYY-MM-DD') : moment(addDays(new Date(newdateofjoin), probationperiod)).format('YYYY-MM-DD'),
     em_id: no,
     probation_status: probsataus === 1 ? 1 : 0,
     contract_status: contstatus === 1 && contractrenew === true ? 1 : 0,
-    em_doj: contstatus === 0 && contractrenew === false ? newdateofjoin : em_doj,
-    actual_doj: em_doj
+    em_doj: contstatus === 0 && contractrenew === false ? newdateofjoin : doj,
+    actual_doj: doj
   }
 
   const checkemid = {
@@ -143,31 +153,31 @@ const ContractRenewalProcess = () => {
   }
 
   //useEffect for getting attendancde details to process earn leave
-  useEffect(() => {
-    const postdata = {
-      emp_id: no,
-      startdate: moment(new Date(contractstart)).format('YYYY-MM-DD'),
-      endate: moment(new Date(contractend)).format('YYYY-MM-DD'),
-    }
-    // data based on the calculation of earn leave
-    const getattendanceData = async () => {
-      const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
-      const { success, data } = result.data;
-      if (success === 2) {
-        setAttendanceData(data[0])
-      }
-      else if (success === 2) {
-        setAttendanceData([])
-      }
-      else {
-        setAttendanceData([])
-      }
-    }
-    getattendanceData()
-  }, [no, contractstart, contractend])
+  // useEffect(() => {
+  //   const postdata = {
+  //     emp_id: no,
+  //     startdate: moment(new Date(contractstart)).format('YYYY-MM-DD'),
+  //     endate: moment(new Date(contractend)).format('YYYY-MM-DD'),
+  //   }
+  //   // data based on the calculation of earn leave
+  //   const getattendanceData = async () => {
+  //     const result = await axioslogin.post('/yearleaveprocess/dataannualcalculationemp', postdata)
+  //     const { success, data } = result.data;
+  //     if (success === 2) {
+  //       setAttendanceData(data[0])
+  //     }
+  //     else if (success === 2) {
+  //       setAttendanceData([])
+  //     }
+  //     else {
+  //       setAttendanceData([])
+  //     }
+  //   }
+  //   getattendanceData()
+  // }, [no, contractstart, contractend])
 
   useEffect(() => {
-    const dutylandata = async (id) => {
+    const dutyplandata = async (id) => {
       const postdata = {
         em_no: id,
         from: newcontractstart,
@@ -176,7 +186,7 @@ const ContractRenewalProcess = () => {
       const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
       const { success, data } = result.data
       if (success === 1) {
-        const arr = data.map((val) => {
+        const arr = data?.map((val) => {
           const obj = {
             em_no: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
             duty_day: val.duty_day,
@@ -189,7 +199,7 @@ const ContractRenewalProcess = () => {
         setPunchMast([])
       }
     }
-    dutylandata(id)
+    dutyplandata(id)
 
     const getLoginDetails = async () => {
       const result = await axioslogin.get(`/empcontract/empdetails/${id}`)
@@ -203,12 +213,6 @@ const ContractRenewalProcess = () => {
     }
     getLoginDetails(id)
   }, [newcontractstart, id, contstatus, contractrenew, newempId, permanentEmpNo])
-
-
-  const empInfo = {
-    empid: no,
-    empno: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo
-  }
 
   //function for saving new contract
   const RenewOldContract = async (e) => {
@@ -244,6 +248,7 @@ const ContractRenewalProcess = () => {
         warningNofity("Employee ID Already Exist")
       }
       else {
+
         //closing first contract
         const result = await axioslogin.patch('/empcontract/contractrenew', contractclose.contCloseData)
         const { success } = result.data
@@ -260,9 +265,8 @@ const ContractRenewalProcess = () => {
            *  d-> salary head split details (earning and deduction details)
            *  e-> contract log updation
            */
-          updateEmployeeMasterTable(updateempMast, no, oldCategory, newCatgeory, newempId, empno).then((messsage) => {
+          updateEmployeeMasterTable(updateempMast, no, newempId, updateSlno).then((messsage) => {
             const { modelStatus } = messsage;
-
             if (modelStatus === 1 && contstatus === 0) {
               employeeRecordUpdationMandatory(oldPersonalData).then((values) => {
                 const { contrLogStatus, message } = values
@@ -281,18 +285,10 @@ const ContractRenewalProcess = () => {
                                 const { status } = values
                                 if (status === 1) {
                                   history.push(`/Home/Prfle/${id}/${no}/${0}`)
-                                  //setLeaveprocess(1)
-                                  // setmodelvalue(1)
-                                  // setOpenModel(true)
-                                  // setDisable(false)
                                 }
                               })
                             } else {
                               history.push(`/Home/Prfle/${id}/${no}/${0}`)
-                              //setLeaveprocess(1)
-                              // setmodelvalue(1)
-                              // setOpenModel(true)
-                              // setDisable(false)
                             }
                           })
                         } else {
@@ -307,7 +303,7 @@ const ContractRenewalProcess = () => {
                   warningNofity(message)
                 }
               })
-              /** 1 -> next category contain contract*/
+              //     /** 1 -> next category contain contract*/
             } else if (modelStatus === 1 && contstatus === 1) {
               employeeNewContractEntry(newcontractdetl).then((values) => {
                 const { status } = values
@@ -329,17 +325,10 @@ const ContractRenewalProcess = () => {
                                     const { status } = values
                                     if (status === 1) {
                                       history.push(`/Home/Prfle/${id}/${no}/${0}`)
-                                      // setmodelvalue(1)
-                                      // setOpenModel(true)
-                                      // setDisable(false)
-                                      // history.push(`/Home/Prfle/${em_no}/${em_id}/${0}`)
                                     }
                                   })
                                 } else {
                                   history.push(`/Home/Prfle/${id}/${no}/${0}`)
-                                  // setmodelvalue(1)
-                                  // setOpenModel(true)
-                                  // setDisable(false)
                                 }
                               })
                             } else {
@@ -359,11 +348,11 @@ const ContractRenewalProcess = () => {
                 } else {
                   warningNofity("Error while adding new contract entry")
                 }
-
               })
-
             }
           })
+        } else {
+          warningNofity("Error While Closing Contract")
         }
       }
     }
@@ -373,25 +362,32 @@ const ContractRenewalProcess = () => {
     <Fragment>
       <ToastContainer />
 
-      <Box sx={{ width: "100%" }}>
-        <Paper square elevation={2} sx={{ p: 0.5, flexDirection: "row" }} >
-          <EXistContractDetl
-            id={id}
-            no={no}
-            fine={fine}
-            setFine={setFine}
-            setContractEnd={setContractEnd}
-            setContractStart={setContractStart}
-            setgraceperiod={setgraceperiod}
-            setattendanceDays={setattendanceDays}
-            setOldctaegory={setOldctaegory}
-          />
-          {/*attendance details */}
-          <Paper square elevation={3} sx={{
-            display: "flex",
-            p: 1,
-            alignItems: "center",
-          }}  >
+      <Box sx={{
+        display: "flex",
+        flexGrow: 1,
+        height: window.innerHeight - 85,
+        width: "100%",
+        flexDirection: 'column'
+      }} >
+        <Paper sx={{
+          display: 'flex', flex: 1, p: 1,
+          // bgcolor: 'pink',
+          // justifyContent: 'space-between',
+          // height: window.innerHeight - 85,
+          flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+        }}>
+
+          <Box sx={{ flex: 1 }}>
+            <EXistContractDetl
+              id={id}
+              no={no}
+              fine={fine}
+              setFine={setFine}
+              setgraceperiod={setgraceperiod}
+              setattendanceDays={setattendanceDays}
+            />
+          </Box>
+          <Box sx={{ flex: 1 }}>
             <AttendanceDetails
               id={id}
               no={no}
@@ -400,54 +396,53 @@ const ContractRenewalProcess = () => {
               attendanceDays={attendanceDays}
             // formData={formData}
             />
-          </Paper>
-          {/* old Contract details top copy */}
-          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
-            <Old_dataTo_copy
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <OldDatatoCopy
               id={id}
               no={no}
             />
-          </Paper>
-          {/* conntract renew process */}
-          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
-            <Box sx={{ p: 1, display: "flex" }} >
-              <CssVarsProvider>
-                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" sx={{ flex: 2 }}>
-                  Employee Renewal / Confirmation Process
-                </Typography>
-              </CssVarsProvider>
-            </Box>
-            {/* Contract renew process */}
-            <Renew_Process
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <RenewProcess
               em_cont_end={contractend}
               grace_period={graceperiod}
               newContract={newContract}
               updateNewContract={updateNewContract}
-              emp_doj={em_doj}
-              emp_retireDate={em_retirement_date}
+              emp_doj={doj}
+              emp_retireDate={retirementdate}
               contractrenew={contractrenew}
               setContractrenew={setContractrenew}
               contractTpPermanent={contractTpPermanent}
               setcontractTpPermanent={setcontractTpPermanent}
-
             />
-          </Paper>
-          <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
-            <Box sx={{ flex: 0 }} >
-              <IconButton variant="outlined" size='sm' onClick={RenewOldContract}
-                disabled={disable}
-              >
-                <LibraryAddCheckOutlinedIcon color='primary' />
-              </IconButton>
-              <IconButton variant="outlined" size='sm' onClick={redirect}>
-                <CssVarsProvider>
-                  <DisabledByDefaultOutlinedIcon color='primary' />
-                </CssVarsProvider>
-              </IconButton>
-            </Box>
-          </Paper >
+          </Box>
+        </Paper>
+        <Paper square elevation={3}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box sx={{ flex: 0, gap: 2 }} >
+            <CssVarsProvider>
+              <Tooltip title="Save" followCursor placement='top' arrow>
+                <IconButton variant="outlined" size='xs' color="primary" onClick={RenewOldContract}  >
+                  <SaveIcon />
+                </IconButton>
+              </Tooltip>
+            </CssVarsProvider>
+
+            <CssVarsProvider>
+              <Tooltip title="Close" followCursor placement='top' arrow>
+                <IconButton variant="outlined" size='xs' color="danger" onClick={redirect}  >
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            </CssVarsProvider>
+          </Box>
         </Paper >
-      </Box >
+      </Box>
     </Fragment >
   )
 }

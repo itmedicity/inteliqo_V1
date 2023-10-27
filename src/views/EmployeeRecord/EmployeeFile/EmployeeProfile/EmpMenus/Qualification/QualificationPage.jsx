@@ -1,4 +1,4 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, IconButton, Paper, TextField, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -12,7 +12,6 @@ import { format } from 'date-fns'
 import BoardSelectRedux from 'src/views/MuiComponents/BoardSelectRedux';
 import CommonCheckBox from 'src/views/Component/CommonCheckBox';
 import RegistrationtypeSelect from 'src/views/MuiComponents/RegistrationtypeSelect';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -22,6 +21,7 @@ import _ from 'underscore';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 
 const QualificationPage = () => {
 
@@ -88,19 +88,21 @@ const QualificationPage = () => {
         }
     }, [education])
 
-    const resetForm = {
-        em_education: '',
-        em_course: '',
-        em_specialization: '',
-        em_univ_institute: '',
-        em_board: '',
-        em_year: '',
-        em_mark_grade: '',
-        em_reg_type: '',
-        em_reg_no: '',
-        em_chellan: '',
-        pass_fail: true
-    }
+    const resetForm = useMemo(() => {
+        return {
+            em_education: '',
+            em_course: '',
+            em_specialization: '',
+            em_univ_institute: '',
+            em_board: '',
+            em_year: '',
+            em_mark_grade: '',
+            em_reg_type: '',
+            em_reg_no: '',
+            em_chellan: '',
+            pass_fail: true
+        }
+    }, [])
 
     const reset = () => {
         setCourse(0)
@@ -140,14 +142,14 @@ const QualificationPage = () => {
     const updateYear = (val) => {
         setYear(val)
     }
-    const updateexpdate = (e) => {
-        var val = format(new Date(e.target.value), "yyyy-MM-dd")
-        setExpyear(val)
-    }
-    const updatechellandate = (e) => {
-        var val = format(new Date(e.target.value), "yyyy-MM-dd")
-        setChellan(val)
-    }
+    // const updateexpdate = (e) => {
+    //     var val = format(new Date(e.target.value), "yyyy-MM-dd")
+    //     setExpyear(val)
+    // }
+    // const updatechellandate = (e) => {
+    //     var val = format(new Date(e.target.value), "yyyy-MM-dd")
+    //     setChellan(val)
+    // }
     const qual_year = moment(year).format('YYYY')
 
     const [columnDef] = useState([
@@ -160,23 +162,21 @@ const QualificationPage = () => {
         { headerName: 'Specialization ', field: 'spec_desc', wrapText: true, minWidth: 450 },
         { headerName: 'Pass/Fail', field: 'pass', wrapText: true, minWidth: 100 },
         {
-            headerName: 'Edit', minWidth: 200, cellRenderer: params =>
-                // <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
-                //     <EditIcon />
-                // </IconButton>
-                <Fragment>
-                    <Tooltip title="Edit" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
-                            <EditIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }} onClick={() => deletequal(params)}>
-                            <DeleteIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
-                </Fragment>
+            headerName: 'Edit', minWidth: 100, cellRenderer: params =>
+                <Tooltip title="Edit" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getDataTable(params)}>
+                        <EditIcon />
+                    </IconButton>
+                </Tooltip>
         },
+        {
+            headerName: 'Edit', minWidth: 100, cellRenderer: params =>
+                <Tooltip title="Delete" followCursor placement='top' arrow >
+                    <IconButton sx={{ pb: 1 }} onClick={() => deletequal(params)}>
+                        <DeleteIcon color='primary' />
+                    </IconButton>
+                </Tooltip>
+        }
     ])
 
     const postData = useMemo(() => {
@@ -389,7 +389,7 @@ const QualificationPage = () => {
             submitupdatedata(updatepostData, updatepostdata4, updatepostdata5)
         }
 
-    }, [postData5, postData, postData4, updatepostData, updatepostdata4, updatepostdata5,
+    }, [postData5, postData, postData4, resetForm, updatepostData, updatepostdata4, updatepostdata5,
         flag, count, education])
 
     const getDataTable = useCallback((params) => {
@@ -438,9 +438,11 @@ const QualificationPage = () => {
     return (
         <Fragment>
             <Box sx={{
-                width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                width: "100%", flex: 1, p: 1,
+                //height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, 
+                overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
             }} >
-                <Paper square elevation={2} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                <Paper variant='outlined' square elevation={0} sx={{ display: "flex", alignItems: "center", }}  >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -448,6 +450,21 @@ const QualificationPage = () => {
                             </Typography>
                         </CssVarsProvider>
                     </Box>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ display: "flex", pr: 1 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="sm"
+                                    color="primary"
+                                    onClick={submitQualification}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Tooltip>
                 </Paper>
 
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -462,7 +479,7 @@ const QualificationPage = () => {
                         <Box sx={{ width: '30%' }} >
                             <EducationSelectRedux value={education} setValue={setEducation} />
                         </Box>
-                        <Box sx={{ width: '20%' }}>
+                        <Box sx={{ width: '20%', ml: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary">
                                     Course
@@ -485,7 +502,7 @@ const QualificationPage = () => {
                             <SpecializtionSelectRedux value={Specialization} setValue={setSpecialization}
                                 course={course} specdisable={specdisable} />
                         </Box>
-                        <Box sx={{ width: '20%' }}>
+                        <Box sx={{ width: '20%', pl: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     University
@@ -507,7 +524,7 @@ const QualificationPage = () => {
                         <Box sx={{ width: '30%' }} >
                             <BoardSelectRedux value={board} setValue={setBoard} education={education} boarddisable={boarddisable} />
                         </Box>
-                        <Box sx={{ width: '20%' }}>
+                        <Box sx={{ width: '20%', ml: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     Year
@@ -654,17 +671,9 @@ const QualificationPage = () => {
                 </Box>
                 <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid columnDefs={columnDef} tableData={tabledata} sx={{
-                        height: 600,
+                        height: 400,
                         width: "100%"
-                    }} rowHeight={40} headerHeight={40} />
-                </Paper>
-                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
-                    <Box sx={{ flex: 0, p: 0.3 }} >
-                        <IconButton variant="outlined" size='sm' onClick={submitQualification} >
-                            <LibraryAddCheckOutlinedIcon />
-                        </IconButton>
-
-                    </Box>
+                    }} rowHeight={30} headerHeight={30} />
                 </Paper>
             </Box>
         </Fragment>

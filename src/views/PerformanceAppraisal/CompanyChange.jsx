@@ -1,39 +1,36 @@
-import { addDays } from 'date-fns'
 import React, { Fragment, useState, useEffect, memo, useMemo } from 'react'
-import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import { CssVarsProvider } from '@mui/joy'
+import { Button, CssVarsProvider, Input, Tooltip } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { Box, Paper } from '@mui/material'
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
-import TextInput from 'src/views/Component/TextInput'
 import { useCallback } from 'react'
 import { format } from 'date-fns'
-import { useDispatch, useSelector } from 'react-redux'
-import { setCategory } from 'src/redux/actions/Category.Action'
+import { useDispatch } from 'react-redux'
 import _ from 'underscore'
 import CommonAgGrid from '../Component/CommonAgGrid'
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory } from 'react-router-dom'
 import CommonCheckBox from '../Component/CommonCheckBox'
-import { setPersonalData } from 'src/redux/actions/Profile.action'
-import BranchSelectRedux from '../MuiComponents/BranchSelectRedux'
-import DeptSelectByRedux from '../MuiComponents/DeptSelectByRedux'
-import DeptSecSelectByRedux from '../MuiComponents/DeptSecSelectByRedux'
-import DesignationSelectRedux from '../MuiComponents/DesignationSelectRedux'
-import InstitutionTypeSelectRedux from '../MuiComponents/InstitutionTypeSelectRedux'
-import CategorySelectRedux from '../MuiComponents/CategorySelectRedux'
+import JoyBranchSelect from '../MuiComponents/JoyComponent/JoyBranchSelect'
+import JoyDepartment from '../MuiComponents/JoyComponent/JoyDepartment'
+import JoyDepartmentSection from '../MuiComponents/JoyComponent/JoyDepartmentSection'
+import JoyInstitutionSelect from '../MuiComponents/JoyComponent/JoyInstitutionSelect'
+import JoyDesignationSelect from '../MuiComponents/JoyComponent/JoyDesignationSelect'
+import moment from 'moment'
+import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
+import SaveIcon from '@mui/icons-material/Save';
+import { setDepartment } from 'src/redux/actions/Department.action'
 
 const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
     const em_no = useMemo(() => empno, [empno])
     const em_id = useMemo(() => empid, [empid])
-
-    const history = useHistory();
+    const disp = useMemo(() => display, [display])
+    const empname = useMemo(() => name, [name])
 
     const [branch, setBranch] = useState(0)
     const [dept, setDept] = useState(0)
@@ -41,43 +38,20 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
     const [institute, setInstitute] = useState(0)
     const [empDesignation, setEmpDesignation] = useState(0)
     const [empcategory, setEmpCategory] = useState(0)
-
-
-    const { id, no } = useParams();
-    //Employee Category set
-    const [cat, setCat] = useState({
-        catemp: ''
-    })
-    const [probationperiod, setProbationPeriod] = useState('');
     const [company, setcompany] = useState(0)//for setting old category
     const [designation, setdesignation] = useState(0)// for setting old desgination
     const [ineffectdate, setineffectdate] = useState('');//designation change date
     const [cateineffectdate, setCateineffectdate] = useState('')//category change date
-    const [startdate, setstartdate] = useState('')//date of joining
-    const [enddate, setenddate] = useState('')//probation or training end date
-    const [trainingConfDate, setTrainingConfDate] = useState('')// training confirmation date
     const [probationconfDate, setProbationconfDate] = useState('')// probation confirmation date
     const [empstatus, setempStatus] = useState(0)
-    const [probsataus, setProbstatus] = useState(0)// for setting probation status
-
     const [count, setcount] = useState(0)
-    //for table data
     const [tabledata, setTableData] = useState();
-
-    const [old_type, setOld_type] = useState(0)  //for seeting old emp_type
-    const [new_type, setNew_type] = useState(0)  //for setting new emp_type
-
     const [extended_checkbox, setextended_checkbox] = useState(false)//probation extend date checkbox
     const [prob_extendDate, setprob_extendDate] = useState('')//probation extend date
 
-    const [training_checkbox, setTraining_Checkbox] = useState(false)//training extended checkbox
-    const [training_extendDate, settraining_extendDate] = useState('')//training extended date
-
-    const [old_destype, setold_destype] = useState(0)// to get old des type
     const [old_cont_end_date, setOld_cont_end_date] = useState('')
     const [old_cont_conf_date, setOld_cont_conf_end_date] = useState('')//setting old contract confirmation date
 
-    const [destype, setDestype] = useState(0)//for setting destype
     const [p_startdate, setp_startdate] = useState('')
     const [p_enddate, setp_endadate] = useState('')
 
@@ -97,14 +71,6 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
         return (cateineffectdate)
     }, [])
 
-    //training confirmation date
-    const getTrainingDate = useCallback((e) => {
-        var startdate = e.target.value
-        var trainingConfDate = format(new Date(startdate), "yyyy-MM-dd")
-        setTrainingConfDate(trainingConfDate)
-        return (trainingConfDate)
-    }, [])
-
     //probation confirmation date
     const getProbationDate = useCallback((e) => {
         var startdate = e.target.value
@@ -121,66 +87,11 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
         return (prob_extendDate)
     }, [])
 
-    //training extend date
-    const getTraingExtendDate = useCallback((e) => {
-        var startdate = e.target.value
-        var training_extendDate = format(new Date(startdate), "yyyy-MM-dd")
-        settraining_extendDate(training_extendDate)
-        return (training_extendDate)
-    }, [])
-
     /** to get stored category values from redux */
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setCategory());
-        dispatch(setPersonalData(em_id))
-    }, [dispatch, em_id])
-
-    /** to get employee category details from redux */
-    const empCate = useSelector((state) => {
-        return state.getEmployeeCategory.empCategory || 0
-    })
-
-    //Employee contract status
-    const state = useSelector((state) => state.getPrifileDateEachEmp.empPersonalData.personalData, _.isEqual)
-    const { contract_status, em_prob_end_date } = state;
-
-    const disp = useMemo(() => display, [display])
-    const empname = useMemo(() => name, [name])
-
-
-    useEffect(() => {
-        //get current category employee type like permanent or contract
-        if (company === empcategory) {
-            const arr = empCate && empCate.filter((val) => {
-                if (val.category_slno === empcategory) {
-                    return val.emp_type
-                }
-            })
-            const value = arr && arr.map((val) => {
-                return val.emp_type
-            })
-            const value1 = arr && arr.map((val) => {
-                return val.des_type
-            })
-            setold_destype(value1)
-            setOld_type(value)
-        }
-        else {
-            //get changed category employee type
-            const arr = empCate && empCate.filter((val) => {
-                if (val.category_slno === empcategory) {
-                    return val.emp_type
-                }
-            })
-            const value = arr && arr.map((val) => {
-                return val.emp_type
-            })
-            setNew_type(value)
-        }
-    }, [empCate, empcategory, company])
-
-
+        dispatch(setDepartment());
+    }, [dispatch])
 
     //Get data from clicked employee
     useEffect(() => {
@@ -191,29 +102,18 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 const { em_branch, em_department, em_prob_end_date,
                     em_dept_section, em_institution_type, em_category,
                     em_designation, em_doj, em_contract_end_date, em_conf_end_date } = data[0]
-                const frm = {
-                    catemp: em_category
-                }
-                setCat(frm)
-                setProbationPeriod(em_prob_end_date)
                 setBranch(em_branch)
                 setDept(em_department === 0 ? 0 : em_department)
-                setDeptSection(em_dept_section)
+                setDeptSection(em_dept_section === 0 ? 0 : em_dept_section)
                 setInstitute(em_institution_type)
                 setEmpCategory(em_category)
                 setEmpDesignation(em_designation)
                 setcompany(em_category)
                 setdesignation(em_designation)
+                setp_startdate(em_doj)
                 setOld_cont_end_date(em_contract_end_date)
                 setOld_cont_conf_end_date(em_conf_end_date)
-                setp_startdate(em_doj)
                 setp_endadate(em_prob_end_date)
-                const result = await axioslogin.get(`/empcontract/contractByno/${em_no}`)
-                if (result.data.success === 1) {
-                    const { em_cont_start, em_prob_end_date } = result.data.data[0]
-                    setstartdate(em_cont_start)
-                    setenddate(em_prob_end_date)
-                }
             }
         }
         getCompany()
@@ -240,34 +140,25 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 setTableData(data);
             } else if (success === 0) {
                 infoNofity("No update is done against this employee")
+                setTableData([])
             } else {
-                warningNofity(" Error occured contact EDP")
+                setTableData([])
             }
         }
         getDetails();
-    }, [em_no]);
+    }, [em_no, count]);
 
     useEffect(() => {
-        //if ((getemployeecategory !== cat.catemp) || (getemployeecategory !== 0)) {
         if (empcategory !== 0) {
             const getEmpType = async () => {
                 const result = await axioslogin.get(`/empcat/${empcategory}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { ecat_prob_period, ecat_cont, ecat_prob, des_type } = data[0]
-                    setProbationPeriod(addDays(new Date, ecat_prob_period))
-                    setDestype(des_type)//setting category destype
-                    if (ecat_cont === 1) {
+                    const { emp_type } = data[0]
+                    if (emp_type === 1) {
                         setempStatus(1)
-                    }
-                    else {
+                    } else {
                         setempStatus(0)
-                    }
-                    if (ecat_prob === 1) {
-                        setProbstatus(1)
-                    }
-                    else {
-                        setProbstatus(0)
                     }
                 }
                 else {
@@ -276,7 +167,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             }
             getEmpType()
         }
-    }, [empcategory, cat.catemp])
+    }, [empcategory])
 
     //post Data for new entry hrm_emp_company_log && updating on hrm_emp_master
     const updateData = useMemo(() => {
@@ -289,11 +180,11 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             com_category_new: empcategory,
             em_category: empcategory,
             //em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
-            contract_status: empstatus === 1 ? 1 : 0,
-            probation_status: destype === 1 || destype === 2 ? probsataus : 0,
+            contract_status: 0,
+            probation_status: 0,
             create_user: employeeNumber(),
             edit_user: employeeNumber(),
-            em_id: empid,
+            em_id: em_id,
             em_no: empno,
             com_designation: designation,
             com_designation_new: empDesignation,
@@ -303,33 +194,43 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             //category ineffect date
             category_ineffect_date: company !== empcategory ? cateineffectdate : null,
             //training con date for hrm_emp_company_log
-            training_conf_date: disp === 1 && training_checkbox === false ? trainingConfDate : null,
+            //training_conf_date: disp === 1 && training_checkbox === false ? trainingConfDate : null,
             //probation con date for hrm_emp_company_log
             probation_conf_date: disp === 2 && extended_checkbox === false ? probationconfDate : null,
             //conf date for probation or training list
-            em_conf_end_date: disp === 2 && extended_checkbox === false ? probationconfDate :
-                disp === 1 && training_checkbox === false ? trainingConfDate : old_cont_conf_date,
+            em_conf_end_date: disp === 2 && extended_checkbox === false ? probationconfDate : old_cont_conf_date,
             //training extend date for hrm_emp_company_log
-            training_extend_date: disp === 1 && training_checkbox === true ? training_extendDate : null,
+            //training_extend_date: disp === 1 && training_checkbox === true ? training_extendDate : null,
             //probation extend date for hrm_emp_company_log
             probation_extend_date: disp === 2 && extended_checkbox === true ? prob_extendDate : null,
             //setting probation end date on hrm_emp_matser when probation or training date extend
-            em_prob_end_date: disp === 1 && training_checkbox !== false ? training_extendDate :
-                disp === 2 && extended_checkbox === true ? prob_extendDate : p_enddate,
+            em_prob_end_date: disp === 2 && extended_checkbox === true ? prob_extendDate : p_enddate,
             em_cont_end: old_cont_end_date,
-            em_cont_start: startdate
+            // em_cont_start: startdate
         }
     }, [branch, dept, institute, company, empcategory, empid, empno, old_cont_conf_date,
-        empstatus, probsataus, empDesignation, designation,
-        ineffectdate, deptSection, cateineffectdate, trainingConfDate, probationconfDate,
-        prob_extendDate, training_extendDate, disp, training_checkbox, extended_checkbox,
-        destype, old_cont_end_date, p_enddate, startdate])
+        empDesignation, designation, ineffectdate, deptSection, cateineffectdate,
+        probationconfDate, prob_extendDate, disp,
+        extended_checkbox, old_cont_end_date, p_enddate])
 
-    //update Data
-    const submitCompany = async (e) => {
-        e.preventDefault();
-        //only designation change
-        const getdatasub = async () => {
+    //probation extend checkbox value
+    const getextendValue = useCallback((e) => {
+        if (e.target.checked === true) {
+            setextended_checkbox(true)
+        } else {
+            setextended_checkbox(false)
+        }
+    }, [])
+
+    const submitCompany = useCallback(async (e) => {
+        if (empstatus === 0) {
+            warningNofity("Please Change Employee Category  to Permanent!!")
+        } else if (designation !== empDesignation && ineffectdate === '') {
+            infoNofity("Please Add Designation Change Date")
+        } else if (company !== empcategory && cateineffectdate === '') {
+            infoNofity("Please Add Category Change Date")
+        }
+        else {
             const result = await axioslogin.post('/empmast/company', updateData)
             const { message, success } = result.data;
             if (success === 1) {
@@ -342,98 +243,42 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 infoNofity(message)
             }
         }
-
-        //category change 
-        const getdatasub1 = async () => {
-            const result = await axioslogin.post('/empmast/company', updateData)
-            const { message, success } = result.data;
-            if (success === 1 && contract_status === 1) {
-                setcount(count + 1)
-                const result = await axioslogin.patch('/empmast/update/contractdetl', updateData);
-                const { success, message } = result.data;
-                if (success === 2) {
-                    succesNofity(message)
-                    history.push(`/Home/Prfle/${empno}/${empid}`)
-                }
-                else {
-                    infoNofity(message)
-                }
-            } else if (success === 1 && contract_status === 0) {
-                succesNofity(message);
-                setcount(count + 1)
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
-            }
-        }
-        if (contract_status === 1) {
-            if (old_destype[0] === 2 || old_destype[0] === 1 && old_type[0] !== 2 || new_type[0] !== 1) {
-                getdatasub1()
-            } //contract to permanent change
-            else if (old_type[0] === 2 && new_type[0] === 1 && old_destype[0] === 1 || old_destype[0] === 2) {
-                warningNofity('Cannot Change Employee Category Contract to Permanent, Please Close Contract First!!')
-            } else {
-                warningNofity('Contract Employee Category Change Only Through Contract Process Window')
-            }
-        } else if (contract_status === 0) {
-            //if the category is permanent+ probation
-            getdatasub1()
-        } else if (designation !== empDesignation && ineffectdate === '') {
-            infoNofity("Please Add Designation Change Date")
-        } else if (designation !== empDesignation && ineffectdate !== '') {
-            getdatasub()
-        } else if (company !== empcategory && cateineffectdate === '') {
-            infoNofity("Please Add Category Change Date")
-        } else {
-            getdatasub1()
-        }
-    }
-
-    //probation extend checkbox value
-    const getextendValue = useCallback((e) => {
-        if (e.target.checked === true) {
-            setextended_checkbox(true)
-        }
-        else {
-            setextended_checkbox(false)
-        }
-    }, [])
-
-    //training extend checkbox value
-    const gettraingCheckBox = useCallback((e) => {
-        if (e.target.checked === true) {
-            setTraining_Checkbox(true)
-        }
-        else {
-            setTraining_Checkbox(false)
-        }
-    }, [])
+    }, [updateData, empstatus])
 
     return (
         <Fragment>
             <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
                     {/* heading section start */}
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
-                        <Box sx={{ flex: 1 }} >
-                            <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Company Information
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box>
-                            <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' color="danger" onClick={RedirectToHome}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </CssVarsProvider>
+                    <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
+                        <Box sx={{ display: "flex", flex: 1, height: 30, }} >
+                            <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >
+                                <Box sx={{ display: "flex" }}>
+                                    <DragIndicatorOutlinedIcon />
+                                    <CssVarsProvider>
+                                        <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
+                                            Company Information
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", pr: 1 }}>
+                                    <CssVarsProvider>
+                                        <IconButton
+                                            variant="outlined"
+                                            size='xs'
+                                            color="danger"
+                                            onClick={RedirectToHome}
+                                            sx={{ color: '#ef5350' }}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Paper>
                         </Box>
                     </Paper>
                     {/* heading section end */}
-
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                    <Paper variant='outlined' square elevation={0} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                         <Box sx={{ flex: 1, pl: 20, fontWeight: 500, }} >
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
@@ -450,7 +295,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                         </Box>
                     </Paper>
 
-                    <Paper square elevation={3} sx={{
+                    <Paper square elevation={0} sx={{
                         p: 0.5, mt: 0.5, display: 'flex', alignItems: "center",
                         flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" }
                     }} >
@@ -465,8 +310,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <BranchSelectRedux value={branch} setValue={setBranch} />
-                                    {/* <BrnachMastSelection style={SELECT_CMP_STYLE} /> */}
+                                    <JoyBranchSelect value={branch} setValue={setBranch} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
@@ -476,7 +320,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <DeptSelectByRedux value={dept} setValue={setDept} />
+                                    <JoyDepartment deptValue={dept} getDept={setDept} />
                                 </Box>
                             </Box>
                             {/* first row end */}
@@ -491,8 +335,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <DeptSecSelectByRedux dept={dept} value={deptSection} setValue={setDeptSection} />
-                                    {/* <DepartmentSectionSelect style={SELECT_CMP_STYLE} /> */}
+                                    <JoyDepartmentSection sectValues={deptSection} getSection={setDeptSection} dept={dept} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
@@ -502,8 +345,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <InstitutionTypeSelectRedux value={institute} setValue={setInstitute} />
-                                    {/* <EmployeeInstitutiontype style={SELECT_CMP_STYLE} /> */}
+                                    <JoyInstitutionSelect value={institute} setValue={setInstitute} />
                                 </Box>
                             </Box>
                             {/* second row end */}
@@ -517,29 +359,26 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <DesignationSelectRedux value={empDesignation} setValue={setEmpDesignation} />
-                                    {/* <DesignationMast style={{ minHeight: 10, maxHeight: 27, paddingTop: 0, paddingBottom: 4 }} /> */}
+                                    <JoyDesignationSelect desgValue={empDesignation} getDesg={setEmpDesignation} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
                                         <Typography textColor="text.secondary" >
                                             Designation Change Date
                                         </Typography>
-
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <TextInput
+                                    <Input
                                         type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Date"
-                                        min={new Date()}
+                                        slotProps={{
+                                            input: {
+                                                min: moment(new Date()).format('YYYY-MM-DD'),
+                                            },
+                                        }}
                                         value={ineffectdate}
                                         name="ineffectdate"
-                                        //disabled={Toggle === 1 ? false : true}
-                                        changeTextValue={(e) => {
-                                            getDate(e)
-                                        }}
+                                        onChange={(e) => getDate(e)}
                                     />
                                 </Box>
                             </Box>
@@ -556,8 +395,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }}>
-                                    <CategorySelectRedux value={empcategory} setValue={setEmpCategory} />
-                                    {/* <EmployeeCategory style={SELECT_CMP_STYLE} /> */}
+                                    <JoyCategorySelect value={empcategory} setValue={setEmpCategory} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
                                     <CssVarsProvider>
@@ -567,17 +405,16 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
-                                    <TextInput
+                                    <Input
                                         type="date"
-                                        classname="form-control form-control-sm"
-                                        Placeholder="Date"
-                                        min={new Date()}
+                                        slotProps={{
+                                            input: {
+                                                min: moment(new Date()).format('YYYY-MM-DD'),
+                                            },
+                                        }}
                                         value={cateineffectdate}
                                         name="cateineffectdate"
-                                        //disabled={true}
-                                        changeTextValue={(e) => {
-                                            getCateDate(e)
-                                        }}
+                                        onChange={(e) => getCateDate(e)}
                                     />
                                 </Box>
                             </Box>
@@ -585,55 +422,55 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
                             {/* fourth row start */}
                             {
-                                disp === 1 ? <Box sx={{
+                                disp === 2 ? <Box sx={{
                                     display: "flex", flexDirection: "row", pt: 0.5, width: "100%"
                                 }}>
                                     <Box sx={{ width: "20%", fontWeight: 500, }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" >
-                                                Training Start Date : {old_type[0] === 2 ? startdate : startdate}
+
+                                                Probation Start Date :  {p_startdate}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ width: "20%", pl: 0.5, fontWeight: 500, }}>
                                         <CssVarsProvider>
                                             <Typography textColor="text.secondary" >
-                                                Training End Date :{old_type[0] === 2 ? p_enddate : p_enddate}
+                                                Probation End Date :{p_enddate}
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ width: "20%", pl: 0.5 }}>
                                         <CommonCheckBox
                                             label="Extend Date"
-                                            name="training_checkbox"
-                                            //value={training_checkbox}
-                                            checked={training_checkbox}
-                                            onChange={(e) => gettraingCheckBox(e)}
+                                            name="extended_checkbox"
+                                            // value={extended_checkbox}
+                                            checked={extended_checkbox}
+                                            onChange={(e) => getextendValue(e)}
                                         />
                                     </Box>
                                     {
-                                        training_checkbox === true ? <Box sx={{
+                                        extended_checkbox === true ? <Box sx={{
                                             display: "flex", flexDirection: "row", pt: 0.5, width: "40%"
                                         }}>
                                             <Box sx={{ width: "50%" }}>
                                                 <CssVarsProvider>
                                                     <Typography textColor="text.secondary" >
-                                                        Training Extend Date
+                                                        Probation Extend Date
                                                     </Typography>
                                                 </CssVarsProvider>
                                             </Box>
                                             <Box sx={{ width: "50%" }}>
-                                                <TextInput
+                                                <Input
                                                     type="date"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Date"
-                                                    min={new Date()}
-                                                    value={training_extendDate}
-                                                    name="training_extendDate"
-                                                    //disabled={true}
-                                                    changeTextValue={(e) => {
-                                                        getTraingExtendDate(e)
+                                                    slotProps={{
+                                                        input: {
+                                                            min: moment(new Date()).format('YYYY-MM-DD'),
+                                                        },
                                                     }}
+                                                    value={prob_extendDate}
+                                                    name="prob_extendDate"
+                                                    onChange={(e) => getProbationExtendDate(e)}
                                                 />
                                             </Box>
                                         </Box> : <Box sx={{
@@ -642,110 +479,28 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                             <Box sx={{ width: "50%" }}>
                                                 <CssVarsProvider>
                                                     <Typography textColor="text.secondary" >
-                                                        Training confirmation Date
+                                                        Probation Confirmation Date
                                                     </Typography>
                                                 </CssVarsProvider>
                                             </Box>
                                             <Box sx={{ width: "50%" }}>
-                                                <TextInput
+                                                <Input
                                                     type="date"
-                                                    classname="form-control form-control-sm"
-                                                    Placeholder="Date"
-                                                    min={new Date()}
-                                                    value={trainingConfDate}
-                                                    name="trainingConfDate"
-                                                    //disabled={true}
-                                                    changeTextValue={(e) => {
-                                                        getTrainingDate(e)
+                                                    slotProps={{
+                                                        input: {
+                                                            min: moment(new Date()).format('YYYY-MM-DD'),
+                                                        },
                                                     }}
+                                                    value={probationconfDate}
+                                                    name="probationconfDate"
+                                                    onChange={(e) => getProbationDate(e)}
                                                 />
                                             </Box>
                                         </Box>
                                     }
-
-                                </Box>
-                                    : display === 2 ? <Box sx={{
-                                        display: "flex", flexDirection: "row", pt: 0.5, width: "100%"
-                                    }}>
-                                        <Box sx={{ width: "20%", fontWeight: 500, }}>
-                                            <CssVarsProvider>
-                                                <Typography textColor="text.secondary" >
-                                                    Probation Start Date : {old_type[0] === 2 ? startdate : p_startdate}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box sx={{ width: "20%", pl: 0.5, fontWeight: 500, }}>
-                                            <CssVarsProvider>
-                                                <Typography textColor="text.secondary" >
-                                                    Probation End Date :{old_type[0] === 2 ? p_enddate : p_enddate}
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box sx={{ width: "20%", pl: 0.5 }}>
-                                            <CommonCheckBox
-                                                label="Extend Date"
-                                                name="extended_checkbox"
-                                                // value={extended_checkbox}
-                                                checked={extended_checkbox}
-                                                onChange={(e) => getextendValue(e)}
-                                            />
-                                        </Box>
-                                        {
-                                            extended_checkbox === true ? <Box sx={{
-                                                display: "flex", flexDirection: "row", pt: 0.5, width: "40%"
-                                            }}>
-                                                <Box sx={{ width: "50%" }}>
-                                                    <CssVarsProvider>
-                                                        <Typography textColor="text.secondary" >
-                                                            Probation Extend Date
-                                                        </Typography>
-                                                    </CssVarsProvider>
-                                                </Box>
-                                                <Box sx={{ width: "50%" }}>
-                                                    <TextInput
-                                                        type="date"
-                                                        classname="form-control form-control-sm"
-                                                        Placeholder="Date"
-                                                        min={new Date()}
-                                                        value={prob_extendDate}
-                                                        name="prob_extendDate"
-                                                        //disabled={true}
-                                                        changeTextValue={(e) => {
-                                                            getProbationExtendDate(e)
-                                                        }}
-                                                    />
-                                                </Box>
-                                            </Box> : <Box sx={{
-                                                display: "flex", flexDirection: "row", pt: 0.5, width: "40%"
-                                            }}>
-                                                <Box sx={{ width: "50%" }}>
-                                                    <CssVarsProvider>
-                                                        <Typography textColor="text.secondary" >
-                                                            Probation Confirmation Date
-                                                        </Typography>
-                                                    </CssVarsProvider>
-                                                </Box>
-                                                <Box sx={{ width: "50%" }}>
-                                                    <TextInput
-                                                        type="date"
-                                                        classname="form-control form-control-sm"
-                                                        Placeholder="Date"
-                                                        min={new Date()}
-                                                        value={probationconfDate}
-                                                        name="probationconfDate"
-                                                        //disabled={true}
-                                                        changeTextValue={(e) => {
-                                                            getProbationDate(e)
-                                                        }}
-                                                    />
-                                                </Box>
-                                            </Box>
-                                        }
-                                    </Box> : null
+                                </Box> : null
                             }
-
                             {/* fourth row start */}
-
                         </Box>
                     </Paper>
                     <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
@@ -760,17 +515,21 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                     display: "flex",
                     flexDirection: "row"
                 }}>
-                    <Box sx={{ flex: 0, p: 0.3 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })}
-                                onClick={submitCompany}
-                            >
-                                <LibraryAddCheckOutlinedIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ display: "flex", pr: 1 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="sm"
+                                    color="primary"
+                                    onClick={submitCompany}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Tooltip>
                 </Paper>
             </Box>
         </Fragment >
