@@ -1,38 +1,40 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper, Tooltip } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Fragment } from 'react'
+import { Box, CssVarsProvider, IconButton, Typography } from '@mui/joy'
+import { Paper, Tooltip } from '@mui/material'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/joy/IconButton';
-import { useHistory } from 'react-router-dom';
-import { axioslogin } from 'src/views/Axios/Axios';
-import CancelIcon from '@mui/icons-material/Cancel';
-import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import moment from 'moment';
-import { CheckIdExists, InsertAppraisal } from 'src/views/PerformanceAppraisal/AppraisalFunctions';
-import { ToastContainer } from 'react-toastify';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ContractExcel } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
+import { useHistory } from 'react-router-dom';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid';
+import { IconButton as OpenIcon } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import moment from 'moment';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { CheckIdExists, InsertAppraisal } from 'src/views/PerformanceAppraisal/AppraisalFunctions';
+import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { setPersonalData } from 'src/redux/actions/Profile.action';
+import { useDispatch } from 'react-redux';
 
+const ContractRenewList = () => {
 
-const ContractDetailsAgGrid = () => {
     const history = useHistory()
-    const toSettings = () => {
+    const dispatch = useDispatch();
+    const toSettings = useCallback(() => {
         history.push(`/Home`)
-    }
+    }, [history])
     const [tableData, setTableData] = useState([]);
     const [count, setCount] = useState(0)
+
     const today = moment(new Date).format('YYYY-MM-DD')
 
     //Direct Contract close
-    const DirectContractClose = (params) => {
+    const DirectContractClose = useCallback((params) => {
         const { em_no, em_id } = params.data
         history.push(`/Home/Direct_Contract_Close/${em_no}/${em_id}`)
-    }
+    }, [history])
 
     //contreact Renew Process
     const ContractRenew = async (params) => {
@@ -199,10 +201,11 @@ const ContractDetailsAgGrid = () => {
     }
 
     //Contract Renewal Process
-    const DirectContractRenewProcess = (params) => {
+    const DirectContractRenewProcess = useCallback((params) => {
         const { em_no, em_id } = params.data
+        dispatch(setPersonalData(em_id))
         history.push(`/Home/ContractRenewalProcess/${em_no}/${em_id}`)
-    }
+    }, [history, dispatch])
 
     //column fot ag grid table
     const [columnDef] = useState([
@@ -210,19 +213,19 @@ const ContractDetailsAgGrid = () => {
             headerName: 'Action', minWidth: 200,
             cellRenderer: params => <Fragment>
                 <Tooltip title="Direct contract Close" followCursor placement='top' arrow >
-                    <IconButton sx={{ pb: 1 }} onClick={() => DirectContractClose(params)}>
+                    <OpenIcon onClick={() => DirectContractClose(params)}>
                         <CancelIcon color='primary' />
-                    </IconButton>
+                    </OpenIcon>
                 </Tooltip>
                 <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
-                    <IconButton sx={{ pb: 1 }} onClick={() => ContractRenew(params)}>
+                    <OpenIcon onClick={() => ContractRenew(params)}>
                         <LibraryAddCheckIcon color='primary' />
-                    </IconButton>
+                    </OpenIcon>
                 </Tooltip>
                 <Tooltip title="Direct Contract Renew" followCursor placement='top' arrow >
-                    <IconButton sx={{ pb: 1 }} onClick={() => DirectContractRenewProcess(params)}>
+                    <OpenIcon onClick={() => DirectContractRenewProcess(params)}>
                         <TaskAltIcon color='primary' />
-                    </IconButton>
+                    </OpenIcon>
                 </Tooltip>
             </Fragment>
         },
@@ -261,9 +264,9 @@ const ContractDetailsAgGrid = () => {
         }
     };
 
-    const toDownload = async () => {
+    const toDownload = useCallback(() => {
         const fileName = "Contractend"
-        const array = tableData.map((val) => {
+        const array = tableData?.map((val) => {
             return {
                 "EmpID": val.em_no,
                 "Name": val.em_name,
@@ -275,62 +278,50 @@ const ContractDetailsAgGrid = () => {
             }
         })
         ContractExcel(array, fileName)
-    }
+    }, [tableData])
 
     return (
-        <Fragment>
-            <ToastContainer />
-            <Box sx={{ width: "100%" }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
-                        <Box sx={{ flex: 1 }} >
-                            <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Employee Contract End List
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ pl: 0.5 }}>
-                            <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' sx={{ color: 'green' }} onClick={toDownload}>
-                                    <DownloadIcon />
-                                </IconButton>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ pl: 0.5 }}>
-                            <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' color="danger" onClick={toSettings}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </CssVarsProvider>
-                        </Box>
-                    </Paper>
-                    <Paper square elevation={0} sx={{
-                        pt: 1,
-                        mt: 0.5,
-                        display: 'flex',
-                        flexDirection: "column"
-                    }} >
-                        <CommonAgGrid
-                            columnDefs={columnDef}
-                            tableData={tableData}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30}
-                            rowStyle={rowStyle} getRowStyle={getRowStyle}
-                        />
-                    </Paper>
+        <Box sx={{ display: "flex", flexGrow: 1, bgcolor: 'pink', width: "100%" }} >
+            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
+                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                    <Box sx={{ flex: 1 }} >
+                        <CssVarsProvider>
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                Employee Contract End List
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='xs' sx={{ color: 'green' }} onClick={toDownload}>
+                                <DownloadIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
+                                <CloseIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
                 </Paper>
-            </Box>
-        </Fragment>
+                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                    <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={tableData}
+                        sx={{
+                            height: 600,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                        rowStyle={rowStyle} getRowStyle={getRowStyle}
+                    />
+                </Paper>
+            </Paper>
+        </Box>
     )
 }
 
-export default ContractDetailsAgGrid
+export default memo(ContractRenewList) 

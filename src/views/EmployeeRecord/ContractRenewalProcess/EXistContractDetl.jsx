@@ -3,7 +3,7 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import Typography from '@mui/joy/Typography';
 import { Box, Chip, IconButton, Paper } from '@mui/material'
 import { addDays, differenceInDays } from 'date-fns'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
 import { useDispatch } from 'react-redux';
@@ -11,9 +11,11 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import moment from 'moment';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
+import { employeeNumber } from 'src/views/Constant/Constant';
 
-const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractStart, setgraceperiod, setattendanceDays, setOldctaegory }) => {
+const EXistContractDetl = ({ id, no, fine, setFine, setattendanceDays, setgraceperiod }) => {
 
+    const dispatch = useDispatch()
     const [view, setView] = useState(0)
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
@@ -36,8 +38,8 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             const result = await axioslogin.get(`/empcontract/${no}`)
             const { success, data } = result.data
             if (success === 1) {
-                const { em_cont_start, em_cont_end, em_no, em_id,
-                    em_category, em_name, ecat_name, cont_grace, dept_name, desg_name, sect_name } = data[0]
+                const { em_cont_start, em_cont_end, em_no, em_id, em_name, ecat_name, cont_grace,
+                    dept_name, desg_name, sect_name } = data[0]
                 const frmData = {
                     em_cont_start: em_cont_start === null ? 'NOT UPDATED' : em_cont_start,
                     em_cont_end: em_cont_end === null ? 'NOT UPDATED' : em_cont_end,
@@ -51,10 +53,10 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     sect_name: sect_name === null ? 'NOT UPDATED' : sect_name
                 }
                 setFormData(frmData)
-                setContractEnd(em_cont_end)
-                setContractStart(em_cont_start)
+                //  setContractEnd(em_cont_end)
+                //  setContractStart(em_cont_start)
                 setgraceperiod(cont_grace)
-                setOldctaegory(em_category)
+                //setOldctaegory(em_category)
                 const date = new Date(em_cont_end)
                 var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
                 const length = differenceInDays(new Date(em_cont_end), new Date(firstDay))
@@ -62,7 +64,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             }
         }
         getcontractInformation()
-    }, [no])
+    }, [no, setattendanceDays, setgraceperiod])
 
     //useEffect for getting fine Deatails
     useEffect(() => {
@@ -77,10 +79,9 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
             }
         }
         getFinedetl()
-    }, [no])
+    }, [no, setFine])
 
     //function for Closing first contract
-    const dispatch = useDispatch()
     const ContractClose = useCallback(() => {
         if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
             dispatch({
@@ -91,7 +92,8 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     em_cont_renew: 'R',
                     em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
                     em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
-                    em_no: id
+                    em_no: id,
+                    edit_user: employeeNumber()
                 }
             })
             succesNofity("Contract Closed Successfully")
@@ -106,16 +108,16 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
 
     return (
         <Fragment>
-            <Paper square elevation={0} sx={{ display: "flex", p: 1, }}  >
+            <Paper square variant='outlined' sx={{ display: "flex", flex: 1, }}  >
                 <Box sx={{ flex: 1 }}>
                     <CssVarsProvider>
-                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                        <Typography textColor="neutral.400" startDecorator={<DragIndicatorOutlinedIcon />} level="h6" >
                             Existing Contract Details
                         </Typography>
                     </CssVarsProvider>
                 </Box>
                 {
-                    view === 1 ? <Box sx={{ flex: 0, pt: 0.5, pr: 1.5 }}>
+                    view === 1 ? <Box sx={{ pt: 0.5, pr: 1.5 }}>
                         <CssVarsProvider>
                             <Typography sx={{ color: 'green' }}>
                                 Done!
@@ -124,7 +126,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     </Box> : null
                 }
                 {
-                    view === 1 ? <Box sx={{ flex: 0, }} ><Chip
+                    view === 1 ? <Box  ><Chip
                         icon={
                             <IconButton disabled
                                 className="p-1" >
@@ -133,7 +135,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                         }
                         label="Contract Close"
                         clickable={false}
-                    /> </Box> : <Box sx={{ flex: 0, pl: 0.3 }} >
+                    /> </Box> : <Box sx={{ pl: 0.3 }} >
                         <Chip
                             icon={
                                 <IconButton disabled
@@ -148,8 +150,11 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                     </Box>
                 }
             </Paper>
-            <Paper sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '100%', justifyContent: "space-evenly", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'row', xs: "row" } }}>
-                <Paper square elevation={3}
+            <Paper square elevation={0}
+                sx={{
+                    display: 'flex', width: '100%', justifyContent: "space-evenly",
+                }}>
+                <Paper square elevation={0}
                     sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }}>
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
@@ -212,8 +217,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
                         </Box>
                     </Box>
                 </Paper>
-                <Paper square elevation={3}
-                    sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                <Paper square elevation={0} sx={{ p: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
@@ -280,4 +284,4 @@ const EXistContractDetl = ({ id, no, fine, setFine, setContractEnd, setContractS
     )
 }
 
-export default EXistContractDetl
+export default memo(EXistContractDetl) 
