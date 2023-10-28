@@ -84,7 +84,6 @@ const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/Employee
 const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
 const QualificationMastTableEdit = React.lazy(() => import('./views/Master/Qualification/QualificationMastTableEdit'))
 const RegionMastTableEdit = React.lazy(() => import('./views/Master/Region/RegionMastTableEdit'))
-const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
 const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
 const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
 const EmployeeTypeTableEdit = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeTableEdit'))
@@ -249,6 +248,8 @@ const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceR
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
 const PersonalRecord = React.lazy(() => import('./views/EmployeeRecord/PersonalRecords/PersonalRecords'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
+const ManpowerPlanning = React.lazy(() => import('./views/Master/ManPower/Manpowermain'))
+
 
 
 const routes = [
@@ -341,7 +342,6 @@ const routes = [
   { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
   { path: '/Home/QualificationMastTableEdit/:id', exact: true, name: 'Qualification  Table Edit', component: QualificationMastTableEdit },
   { path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
-  { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
   { path: '/Home/BankMastTableEdit/:id', exact: true, name: 'Bank master Table Edit', component: BankMastTableEdit },
   { path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
   { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
@@ -490,7 +490,7 @@ const routes = [
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
   { path: '/Home/PersonalRecord', exact: true, name: 'Personal Records', component: PersonalRecord },
-  { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
+  { path: '/Home/ManpowerPlanning', exact: true, name: 'ManPower', component: ManpowerPlanning },
 
 
 ]

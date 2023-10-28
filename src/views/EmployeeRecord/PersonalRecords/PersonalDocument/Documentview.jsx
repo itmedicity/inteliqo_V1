@@ -1,11 +1,11 @@
-import { Box, Typography } from '@mui/joy'
+import { Box } from '@mui/joy'
 import React, { useEffect, useState, lazy, memo } from 'react'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 
 const EmployeeChecklist = lazy(() => import('./EmployeeFileCheck/EmployeeChecklist'))
 
-const Documentview = ({ selectedRowData }) => {
+const Documentview = ({ selectedRowData, setflag, Files, setFiles, src, setSrc }) => {
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
     const { emp_name, sect_name, em_no, desg_name } = empdata
 
@@ -29,7 +29,7 @@ const Documentview = ({ selectedRowData }) => {
 
         <Box sx={{}}>
 
-            <EmployeeChecklist selectedRowData={selectedRowData} />
+            <EmployeeChecklist selectedRowData={selectedRowData} setflag={setflag} Files={Files} setFiles={setFiles} src={src} setSrc={setSrc} />
 
         </Box>
 

@@ -1,8 +1,8 @@
 import { Box, CssVarsProvider, List, Typography, } from '@mui/joy'
 import { Paper } from '@mui/material'
 import React, { lazy, memo, useEffect, useState } from 'react'
-import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
-import ListItem, { listItemClasses } from '@mui/joy/ListItem';
+import { listItemButtonClasses } from '@mui/joy/ListItemButton';
+import { listItemClasses } from '@mui/joy/ListItem';
 
 
 const DocumentView = lazy(() => import('./Documentview'))
@@ -14,7 +14,7 @@ const ExitDocument = lazy(() => import('./ExitDocument'))
 const ChecklistDocument = lazy(() => import('./ChecklistDocument'))
 
 
-const Document = ({ selectedRowData }) => {
+const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) => {
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
     const { emp_name, sect_name, em_no, desg_name } = empdata
 
@@ -42,23 +42,24 @@ const Document = ({ selectedRowData }) => {
                     </Box>
 
                 </Box>
-                <Box sx={{
-                    mt: 1, pl: '24px',
+                <Paper elevation={0} sx={{
+                    mt: 1, pl: '10px',
                 }}>
-
-                    <Typography sx={{ fontSize: 14, textTransform: "capitalize" }}>{emp_name}</Typography>
+                    <Box sx={{ display: "flex" }}>
+                        <Typography sx={{ fontSize: 14, textTransform: "capitalize" }}>{emp_name}</Typography>
+                        <Typography sx={{ fontSize: 13, ml: 1 }}> ({em_no})</Typography>
+                    </Box>
                     <Typography sx={{ fontSize: 13, textTransform: "capitalize" }}>{sect_name}</Typography>
-                    <Typography sx={{ fontSize: 13, }}> ID:{em_no}</Typography>
                     <Typography sx={{ fontSize: 13, }}>{desg_name}</Typography>
 
-                </Box>
+                </Paper>
 
 
                 <Box
                     sx={{
                         flex: 1,
                         mt: 1,
-                        pl: '24px',
+                        pl: '10px',
                         overflow: 'auto',
                         '::-webkit-scrollbar': { display: "none" }
                     }}
@@ -105,25 +106,25 @@ const Document = ({ selectedRowData }) => {
                             {/*  ChecklistDocument  Ends */}
 
                             {/*  Pre-joining Documents start */}
-                            <PreJoining />
+                            <PreJoining selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
 
                             {/*  Pre-joining Documents Ends */}
 
                             {/*  Joining Formalities Documents Start */}
-                            <JoiningFormalities />
+                            <JoiningFormalities selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
                             {/*  Joining Formalities Documents End */}
 
                             {/*  Annual Mandatory Documents Start */}
-                            <AnnualMandatory />
+                            <AnnualMandatory selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
                             {/*  Annual Mandatory Documents End */}
 
                             {/*  Special Documents Start */}
-                            <OtherDocuments />
+                            <OtherDocuments selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
                             {/*  Speical Documents End */}
 
 
                             {/*  Exit Documents Start */}
-                            <ExitDocument />
+                            <ExitDocument selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
                         </List>
                     </CssVarsProvider>
                 </Box>
@@ -132,7 +133,7 @@ const Document = ({ selectedRowData }) => {
             <Box sx={{ display: "flex", flex: 1, width: '85%', }} >
                 <Paper square variant='outlined' sx={{ flex: 1, p: 0.5 }} >
 
-                    <DocumentView selectedRowData={selectedRowData} />
+                    <DocumentView selectedRowData={selectedRowData} setflag={setflag} setFiles={setFiles} Files={Files} setSrc={setSrc} src={src} />
 
                 </Paper>
             </Box>

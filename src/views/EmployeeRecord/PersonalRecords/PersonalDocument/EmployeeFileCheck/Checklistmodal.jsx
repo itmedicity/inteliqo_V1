@@ -10,10 +10,11 @@ import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Co
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import imageCompression from 'browser-image-compression'
 import { axioslogin } from 'src/views/Axios/Axios';
+import moment from 'moment'
 
 const Checklistmodalview = lazy(() => import('./ChecklistmodalView'))
 
-const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname, Setitem, setFiles, checklistid }) => {
+const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname, Setitem, checklistid, Files, setcount, count }) => {
 
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
     const { emp_name, sect_name, em_no, desg_name } = empdata
@@ -24,7 +25,7 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
         const newFiles = [...selectedFiles]
         newFiles.push(e.target.files[0])
         setSelectedFiles(newFiles)
-        setFiles(newFiles)
+
     }, [setSelectedFiles, selectedFiles])
     const handleRemoveFile = useCallback((index) => {
         const newFiles = [...selectedFiles]
@@ -86,9 +87,8 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
                 formData.append('dept_name', selectedRowData?.dept_name)
                 formData.append('em_name', selectedRowData?.em_name)
                 formData.append('sect_name', selectedRowData?.dept_name)
-
-
-
+                const currentDate = moment().format('YYYY-MM-DD'); // Get the current date in 'YYYY-MM-DD' format
+                formData.append('upload_date', currentDate);
                 for (const file of selectedFiles) {
                     if (file.type.startsWith('image')) {
                         const compressedFile = await handleImageUpload(file)
@@ -107,9 +107,11 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
                 const { success, message } = result.data
 
                 if (success === 1) {
+                    setcount(count + 1)
                     succesNofity(message)
                     setIsModalOpen(false)
                     setSelectedFiles([])
+
                 } else {
                     warningNofity(message)
                 }
@@ -179,7 +181,7 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
     }
     return (
         <Box>
-            <Modal sx={{ backdropFilter: 'blur(5px)' }} open={isModalOpen} onClose={handleCloseModal}>
+            <Modal open={isModalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
                         position: 'absolute',

@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/joy'
-import React, { useState, useEffect,useCallback,memo } from 'react'
+import React, { useState, useEffect, useCallback, memo } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
@@ -24,8 +24,8 @@ const Hicverificationlist = () => {
   const [details, setDetails] = useState({
     hic_emid_booster_verified: 0,
     hic_emid_first_verified: 0,
-    hic_emid_second_verified:0,
-    hic_emid_third_verified:0, 
+    hic_emid_second_verified: 0,
+    hic_emid_third_verified: 0,
   })
   const { hic_emid_booster_verified, hic_emid_first_verified, hic_emid_second_verified, hic_emid_third_verified } = details;
 
@@ -56,9 +56,9 @@ const Hicverificationlist = () => {
     }
   }, [nameList])
 
-  const getEmpNO = useCallback( (e) => {
+  const getEmpNO = useCallback((e) => {
     setEmpNo(e.target.value)
-  },[])
+  }, [])
 
   const dataDisplay = useCallback(async () => {
     if (dept !== 0 && deptSection !== 0 && Empno === '') {
@@ -201,7 +201,7 @@ const Hicverificationlist = () => {
     thirddesg: row.thirddesg === null ? 'Nil' : row.thirddesg,
     boosterdesg: row.boosterdesg === null ? 'Nil' : row.boosterdesg,
     hic_boostert_dose_date:
-    row.hic_boostert_dose_date === null ? 'Nil' : row.hic_boostert_dose_date,
+      row.hic_boostert_dose_date === null ? 'Nil' : row.hic_boostert_dose_date,
     blood: row.group_name,
     age: row.em_age_year,
     dob: row.em_dob,

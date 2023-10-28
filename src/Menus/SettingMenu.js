@@ -12,6 +12,7 @@ export const py_setting_one = [
     { to: '/Home/DueClearenceDepartment', name: 'Due Clearence Department', slno: 121 },
     { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
     { to: '/Home/KRA', name: 'Key Result Areas', slno: 177 },
+    { to: '/Home/ManpowerPlanning', name: 'ManPower Planning ', slno: 260 },
 
 ]
 
@@ -29,6 +30,7 @@ export const py_setting_two = [
     { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
     { to: '/Home/CarryForwardSetting', name: 'Carry Forward Setting', slno: 126 },
     { to: '/Home/PunchTransfer', name: 'Punch Transfer Manual', slno: 229 },
+
 ]
 
 export const py_setting_three = [

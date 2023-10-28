@@ -3,6 +3,7 @@ import { Modal, Paper } from '@mui/material'
 import React, { memo } from 'react'
 
 const ChecklistmodalView = ({ selectedFiles, selectedFileIndex, setSelectedFileIndex }) => {
+
     return (
 
         < Modal open={selectedFileIndex !== -1

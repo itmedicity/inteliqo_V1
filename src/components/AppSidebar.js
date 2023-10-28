@@ -21,7 +21,7 @@ import { IoIosGitNetwork } from "react-icons/io";
 import { VscMortarBoard, VscLaw, VscFeedback } from "react-icons/vsc";
 import { CNavGroup, CNavItem } from '@coreui/react'
 
-import recruitMenuArray from '../Menus/AttendanceMang'
+import recruitMenuArray from '../Menus/Recruitment'
 import AttendanceManagement from '../Menus/AttendanceMang'
 import Employeerecord from '../Menus/EmployeeRecord'
 import Leavemanagement from '../Menus/LeaveManagemrent'

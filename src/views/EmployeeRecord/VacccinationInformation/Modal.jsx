@@ -1,5 +1,5 @@
 import { TextField, FormControlLabel, Tooltip, Paper, Box } from '@mui/material'
-import React, { useState ,memo,useCallback} from 'react'
+import React, { useState, memo, useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import moment from 'moment'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -34,15 +34,15 @@ const ModalComponent = ({
   // Function to open the view file modal
   const openViewFileModal = useCallback((index) => {
     setSelectedFileIndex(index)
-  },[setSelectedFileIndex])
+  }, [setSelectedFileIndex])
 
   const handleCloseModal = useCallback(() => {
-  setIsModalOpen(false);
-  setTiterValue('');
-  setCount(count + 1);
-  setSelectedFiles([]);
-  setShowUploadImageSection(false);
-}, [setIsModalOpen, setTiterValue, setCount, setSelectedFiles, setShowUploadImageSection, count]);
+    setIsModalOpen(false);
+    setTiterValue('');
+    setCount(count + 1);
+    setSelectedFiles([]);
+    setShowUploadImageSection(false);
+  }, [setIsModalOpen, setTiterValue, setCount, setSelectedFiles, setShowUploadImageSection, count]);
 
   // saving the date
 
@@ -50,7 +50,7 @@ const ModalComponent = ({
     const newFiles = [...selectedFiles]
     newFiles.push(e.target.files[0])
     setSelectedFiles(newFiles)
-  },[setSelectedFiles,selectedFiles])
+  }, [setSelectedFiles, selectedFiles])
 
   const handleRemoveFile = useCallback((index) => {
     const newFiles = [...selectedFiles]
@@ -62,17 +62,17 @@ const ModalComponent = ({
     if (fileInput) {
       fileInput.value = null
     }
-  },[setSelectedFiles,selectedFiles])
+  }, [setSelectedFiles, selectedFiles])
 
   const handleImageUpload = useCallback(async (imageFile) => {
-  const options = {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-  }
-  const compressedFile = await imageCompression(imageFile, options)
-  return compressedFile
-}, []);
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    }
+    const compressedFile = await imageCompression(imageFile, options)
+    return compressedFile
+  }, []);
 
   const handleUpload = useCallback(
     async (event) => {
@@ -86,7 +86,6 @@ const ModalComponent = ({
 
         const formData = new FormData()
         formData.append('em_id', selectedRowData?.em_id)
-
         for (const file of selectedFiles) {
           if (file.type.startsWith('image')) {
             const compressedFile = await handleImageUpload(file)
@@ -119,7 +118,7 @@ const ModalComponent = ({
       selectedRowData,
       handleImageUpload,
       setShowUploadImageSection,
-    
+
     ],
   )
 

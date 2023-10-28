@@ -1,48 +1,91 @@
 
-import { Box, Tooltip } from '@mui/joy'
-import React, { Fragment, lazy, memo, useCallback, useState } from 'react'
+import { Box, Tooltip, Typography, IconButton } from '@mui/joy'
+import React, { Fragment, lazy, memo, useCallback, useEffect, useState } from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { urlExist } from 'src/views/Constant/Constant'
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
+import { axioslogin } from 'src/views/Axios/Axios';
+import SlideshowIcon from '@mui/icons-material/Slideshow';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import CloseIcon from '@mui/icons-material/Close';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+
 
 const Modal = lazy(() => import('./Checklistmodal'))
-
-const EmployeeChecklist = ({ selectedRowData, }) => {
-
-
-  const [Files, setFiles] = useState([])
+const EmployeeChecklist = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) => {
   const [checklistid, setid] = useState(0)
+  const [count, setcount] = useState(0)
+  const [data, setdata] = useState([])
   const [itemname, Setitem] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [expandedItems, setExpandedItems] = useState(null);
-  const [selectedUploadItemId, setSelectedUploadItemId] = useState(null); // New state to track the selected upload icon ID
-  console.log(itemname);
+  const [expandedItemID, setExpandedItemID] = useState(null);
+  useEffect(() => {
+    const postdata = {
+      em_id: selectedRowData?.em_id,
+    };
+    const fetchData = async () => {
+      const result = await axioslogin.post('/PersonalChecklist/get/all', postdata)
+      const { success, data } = result.data
+      if (success === 1) {
+        setdata(data)
+        setcount(0)
+      } else {
+        setdata([])
+      }
+    }
+    fetchData()
+  }, [selectedRowData, setcount, count])
 
-  // const handleFileChange = useCallback((e,) => {
-  //   const newFiles = [...selectedFiles]
-  //   newFiles.push(e.target.files[0])
-  //   setSelectedFiles(newFiles)
-  // }, [setSelectedFiles, selectedFiles])
+
   const handleFileid = useCallback((e, item) => {
     setid(item.id)
     Setitem(item.name)
     setIsModalOpen(true);
-    setExpandedItems(item.id);
-    setSelectedUploadItemId(item.id); // Set the selected upload icon's ID
-    setFiles([]);
+  }, [Setitem,])
 
-  }, [Setitem, setExpandedItems, setSelectedUploadItemId])
-  const handleToggleExpand = (itemId) => {
-    if (expandedItems === itemId) {
-      // If the same item is clicked again, close it
-      setExpandedItems(null);
+  const handleToggleExpand = useCallback(async (e, item) => {
+
+    if (selectedRowData?.em_id > 0) {
+      try {
+        // api for file opening
+        const postData = {
+          checklistid: item?.id,
+          em_id: selectedRowData?.em_id
+        }
+        const response = await axioslogin.post('/upload/files', postData)
+        const { success, data } = response.data
+        if (success === 1) {
+          const data = response.data;
+          const fileNames = data.data
+          if (expandedItemID === item.id) {
+            setExpandedItemID(null);
+          } else {
+            setExpandedItemID(item.id);
+          }
+          // Construct URLs for each file using the file names
+          const fileUrls = fileNames.map((fileName) => {
+            return `http://192.168.22.5/NAS/PersonalRecords/${selectedRowData?.em_id}/checklist/${item?.id}/${fileName}`;
+          });
+
+          fileUrls.forEach((fileUrl) => {
+            setFiles(fileUrls)
+          });
+        } else {
+          warningNofity("no data uploded")
+        }
+      } catch (error) {
+        // console.error('Error fetching file names:', error);
+      }
     } else {
-      // Otherwise, open the clicked item
-      setExpandedItems(itemId);
+      warningNofity("no Employee Found")
     }
-  };
+  }, [selectedRowData, expandedItemID]);
+
   const preJoining = [
     { id: 1, name: 'Application For Employment' },
     { id: 2, name: 'Bio Data' },
@@ -96,20 +139,72 @@ const EmployeeChecklist = ({ selectedRowData, }) => {
     { name: 'Annual Mandatory', items: annualMandatory },
     { name: 'Other Documents', items: otherDocuments },
     { name: 'Exit', items: exitDocuments },
-  ];
+  ]
 
+  const uploadStatusMap = {};
+  data.forEach((item) => {
+    if (item.upload_status === 1) {
+      uploadStatusMap[item.personal_record_id] = true;
+    }
+  });
+
+  // Update the sections array with upload_status
+  const updatedSections = sections.map((section) => {
+    const updatedItems = section.items.map((item) => {
+      const uploadStatus = uploadStatusMap[item.id] ? 1 : 0;
+      return { ...item, upload_status: uploadStatus };
+    });
+
+    return { ...section, items: updatedItems };
+  });
+
+  // uploaded image view
+  const handleFileButtonClick = (e, fileName) => {
+    setSrc(fileName)
+    setflag(2)
+  };
+  const toRedirectToHome = useCallback(() => {
+    setflag(0)
+  }, [setflag])
   return (
     <Box sx={{}}>
       <Box mt={0}>
-        <CustmTypog title={'CheckList For Documents'} />
+        {/* <CustmTypog title={'CheckList For Documents'} /> */}
+        <Paper square sx={{ backgroundColor: '#e8eaf6', height: 25 }} >
+          <Box sx={{ display: "flex", flexDirection: 'row', justifyContent: "space-between" }}>
+            <Box>
+              <Typography
+                startDecorator={<ArrowRightIcon />}
+                textColor="neutral.600" sx={{ display: 'flex', }} >
+                CheckList For Documents
+              </Typography>
+            </Box>
+            <Box >  <IconButton
+              variant="outlined"
+              size='xs'
+              color="danger"
+              onClick={toRedirectToHome}
+              sx={{ color: '#ef5350', }}
+            >
+              <CloseIcon />
+            </IconButton></Box>
+          </Box>
+        </Paper>
       </Box>
-      <Box sx={{ overflowX: 'auto', height: window.innerHeight - 140 }}>
+      <Box sx={{
+        overflowX: 'auto',
+        height: window.innerHeight - 140,
+        scrollbarWidth: 'none',
+        '&::-webkit-scrollbar': {
+          width: 0,
+        },
+      }}>
         <Box mt={1}>
           <TableContainer>
             <Table size="small">
               <TableHead></TableHead>
               <TableBody>
-                {sections.map((section) => (
+                {updatedSections.map((section) => (
                   <Fragment key={section.name}>
                     <TableRow sx={{ height: 7, }}>
                       <TableCell sx={{ color: '#6B728E' }} colSpan={6}>
@@ -123,14 +218,22 @@ const EmployeeChecklist = ({ selectedRowData, }) => {
                           <TableCell sx={{ color: '#6B728E' }}>{item.id}</TableCell>
                           <TableCell sx={{ color: '#6B728E' }}>{item.name}</TableCell>
                           <TableCell width={20} sx={{ color: '#6B728E', cursor: 'pointer' }}>
-                            <Tooltip title="Show Files">
-                              <ExpandMoreIcon
-                                fontSize="small"
-                                onClick={() => handleToggleExpand(item.id)}
-                              />
-                            </Tooltip>
+                            {item.upload_status === 1 ? (
+                              <Tooltip title="Show Files">
+                                <ExpandMoreIcon
+                                  fontSize="small"
+                                  onClick={(e) => handleToggleExpand(e, item)}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip title="No data">
+                                <ControlPointIcon
+                                  fontSize="small"
+                                  color="disabled"
+                                />
+                              </Tooltip>
+                            )}
                           </TableCell>
-
                           <TableCell width={20}>
                             <Box
                               onClick={(e) => {
@@ -162,61 +265,52 @@ const EmployeeChecklist = ({ selectedRowData, }) => {
                               <Tooltip title="View File">
                                 <WysiwygIcon />
                               </Tooltip>
-
                             </Box>
                           </TableCell>
-                          {/* <TableCell width={20}>
-                            <Box
-                              sx={{
-                                cursor: 'pointer',
-                                ':hover': {
-                                  color: '#81c784',
-                                  boxShadow: 10,
-                                },
-                              }}
-
-                              onClick={(e) => {
-                                handleUpload(e, item);
-                              }}
-                            >
-                              <Tooltip title="Save File">
-                                <SaveIcon />
-                              </Tooltip>
-
-                            </Box>
-                          </TableCell> */}
                         </TableRow>
-                        {expandedItems === item.id && item.id === selectedUploadItemId && (
-                          <TableRow>
+                        {/* Conditionally render the expanded row based on expansion state */}
+                        {expandedItemID === item.id && (
+                          <TableRow sx={{ backgroundColor: "#EEEFF0" }}>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
-                            <TableCell colSpan={6}>
+                            <TableCell colSpan={6} sx={{ color: '#6B728E' }}>
+                              {Files.map((fileName) => {
 
-
-                              {/* Display the files here */}
-                              {Files.map((file, index) => (
-                                <Box sx={{ display: "flex" }} key={`file-${index}`}>
-                                  <Box sx={{ width: "2%" }}>{index + 1}.</Box>
-
-                                  <Box sx={{ width: "65%" }} >{file.name}  </Box>
-                                  {/* <Box sx={{ width: "5%" }}>
-                                    <Tooltip title="View">
-                                      <VisibilityIcon />
-                                    </Tooltip>
-
-                                  </Box> */}
-                                  {/* <Box sx={{ width: "5%" }} onClick={() => handleRemoveFile(index)}>
-                                    <Tooltip title="Close">
-                                      <CloseIcon />
-                                    </Tooltip>
-                                  </Box> */}
-
-                                </Box>
-                              ))}
+                                const parts = fileName.split('/');
+                                const fileNamePart = parts[parts.length - 1];
+                                const fileNameWithoutExtension = fileNamePart.split('.')[0];
+                                // for getting date
+                                const dateParts = fileNamePart.split('&');
+                                // Extracted content between "&" symbols
+                                const uploadedDate = dateParts[1];
+                                return (
+                                  <Box key={fileName} sx={{ display: "flex", gap: 4 }}>
+                                    <Box sx={{ width: "50%" }}>
+                                      File Name: {fileNameWithoutExtension}
+                                    </Box>
+                                    <Box sx={{ width: "33%" }}>
+                                      Uploded date: {uploadedDate}
+                                    </Box>
+                                    <Box
+                                      onClick={(e) => handleFileButtonClick(e, fileName)}
+                                      sx={{
+                                        cursor: 'pointer',
+                                        ':hover': {
+                                          color: '#90caf9',
+                                          boxShadow: 10,
+                                        },
+                                      }}
+                                    >
+                                      <Tooltip title="View Uploded File">
+                                        <SlideshowIcon />
+                                      </Tooltip>
+                                    </Box>
+                                  </Box>
+                                );
+                              })}
                             </TableCell>
                           </TableRow>
                         )}
-
                       </Fragment>
                     ))}
                   </Fragment>
@@ -231,11 +325,13 @@ const EmployeeChecklist = ({ selectedRowData, }) => {
         setIsModalOpen={setIsModalOpen}
         selectedRowData={selectedRowData}
         itemname={itemname}
-        setFiles={setFiles}
         Setitem={Setitem}
         checklistid={checklistid}
+        setflag={setflag}
+        setcount={setcount}
+        count={count}
       />
-    </Box>
+    </Box >
   );
 };
 
