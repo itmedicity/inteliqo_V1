@@ -6,15 +6,19 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { CssVarsProvider } from '@mui/joy'
-import { Box, Checkbox, FormControlLabel, Paper, TextField, Tooltip } from '@mui/material'
+import { Box, Paper, Tooltip } from '@mui/material'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { useMemo } from 'react'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const EmployeeFileAgGrid = () => {
 
@@ -22,7 +26,7 @@ const EmployeeFileAgGrid = () => {
     const [tableData, setTableData] = useState([])
     const dispatch = useDispatch()
 
-    const [deptName, setDepartment] = useState(0)
+    const [deptName, setDepartmentName] = useState(0)
     const [deptSecName, setDepartSecName] = useState(0)
     const [Empno, setEmpNo] = useState(0)
 
@@ -35,7 +39,8 @@ const EmployeeFileAgGrid = () => {
         if (Object.keys(employeeRecordList).length > 0) {
             setTableData(employeeRecordList)
         }
-    }, [employeeRecordList])
+        dispatch(setDepartment());
+    }, [dispatch, employeeRecordList])
 
     const postData = useMemo(() => {
         return {
@@ -123,9 +128,9 @@ const EmployeeFileAgGrid = () => {
             headerName: 'Action', minWidth: 100,
             cellRenderer: params =>
                 <Tooltip title="Profile View" followCursor placement='top' arrow >
-                    <IconButton sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getEmployeeEmpNumber(params)}>
+                    <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => getEmployeeEmpNumber(params)}>
                         <AccountCircleOutlinedIcon />
-                    </IconButton>
+                    </OpenIcon>
                 </Tooltip>
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 150, filter: true },
@@ -145,56 +150,55 @@ const EmployeeFileAgGrid = () => {
     return (
         <CustomLayout title="Employee Record File" displayClose={true} >
             <ToastContainer />
-            <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
-                <Paper square elevation={1}  >
-                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1, justifyItems: 'flex-start' }}>
-                        <Box sx={{ p: 1, width: '25%' }} >
-                            <DeptSelectByRedux setValue={setDepartment} value={deptName} />
-                        </Box>
-                        <Box sx={{ p: 1, width: '25%' }}>
-                            <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
-                        </Box>
-                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
-                            <Box sx={{ p: 1, width: '25%' }}>
-                                <TextField fullWidth
-                                    id="fullWidth" size="small"
-                                    onChange={(e) => setEmpNo(e.target.value)}
-                                />
-                            </Box>
-                        </Tooltip>
-                        <Box sx={{ p: 1 }} >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        color="secondary"
-                                        name="activestatus"
-                                        value={activestatus}
-                                        checked={activestatus}
-                                        className="ml-2"
-                                        onChange={(e) => { updateFormData(e) }}
-                                    />
-                                }
-                                label="Active"
+            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
+                {/* <Paper square elevation={1}  > */}
+                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                        <DepartmentDropRedx getDept={setDepartmentName} />
+                    </Box>
+                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                        <DepartmentSectionRedx getSection={setDepartSecName} />
+                    </Box>
+
+                    <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Employee Number"
+                                name="Empno"
+                                value={Empno}
+                                onchange={(e) => setEmpNo(e.target.value)}
                             />
                         </Box>
-                        <Box sx={{ p: 1 }}>
-                            <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' color="danger" onClick={getEmployeeList}>
-                                    <SearchIcon />
-                                </IconButton>
-                            </CssVarsProvider>
-                        </Box>
+                    </Tooltip>
+                    <Box sx={{ mt: 1.5, px: 0.3, }} >
+                        <JoyCheckbox
+                            label='Active'
+                            name="activestatus"
+                            checked={activestatus}
+                            onchange={(e) => { updateFormData(e) }}
+                        />
                     </Box>
-                    {/* First Row end */}
+                    <Box sx={{ p: 1 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='sm' color="primary" onClick={getEmployeeList}>
+                                <SearchIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                    </Box>
+                </Box>
+                {/* First Row end */}
 
-                </Paper>
+                {/* </Paper> */}
                 <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
                         height: 600,
                         width: "100%"
                     }} rowHeight={40} headerHeight={40} />
                 </Paper>
-
             </Box>
         </CustomLayout>
     )

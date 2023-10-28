@@ -60,7 +60,8 @@ import { getDeptSecList } from '../reducers/DeptSectionByDept.Reducer'
 import { getShiftList, getShiftPlanDetl, getShiftDateFormat, getUpdatedShiftId, updatedShiftDetlOnModel } from '../reducers/Shift.Reducer'
 import {
     getCommonSettings, selectedDeptCode, getDepartmentSection, getEmployeeBasedSection, getPunchData,
-    getShiftData, getPunchMasterData, fetchupdatedPunchInOutData, selectedEarnData
+    getShiftData, getPunchMasterData, fetchupdatedPunchInOutData, selectedEarnData,
+    setEmployeeType
 } from './CommonSett.Reducer';
 import { getCasualLeaveData } from './LeaveData.Reducer';
 import { getJobSummary } from './JobDescription.Reducer'
@@ -197,7 +198,8 @@ const reducer = combineReducers({
     setStatutoryInfo,
     gettrainingData,
     selectedEarnData,
-    setVaccinationemp
+    setVaccinationemp,
+    setEmployeeType
 })
 
 export default reducer;

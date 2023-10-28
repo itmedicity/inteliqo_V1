@@ -1,5 +1,6 @@
 import { axioslogin } from "src/views/Axios/Axios"
 import { warningNofity } from "src/views/CommonCode/Commonfunc"
+import { employeeNumber } from "src/views/Constant/Constant"
 
 export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
 
@@ -11,8 +12,6 @@ export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
     else {
         return { contrLogStatus: 0, message: "Error while updating" }
     }
-
-    // return  { ...message, persoStatus: 0, qualifStatus: 0 , expeStatus: 1, message: "Update Personal Information Successfully" }
 }
 
 
@@ -55,7 +54,6 @@ export const updateoldAttndanceDetail = async (attendancedetls, punchmast) => {
             return { status: 0, message: "Error Updating Attendance" }
         }
     }
-
 }
 
 export const updateArrearSalary = async (arreardetails) => {
@@ -69,12 +67,12 @@ export const updateArrearSalary = async (arreardetails) => {
     }
 }
 
-export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, newCatgeory, newempId, empno, id, updateSlno) => {
+export const updateEmployeeMasterTable = async (updateempMast, no, newempId, updateSlno) => {
     let messsage = { modelStatus: 0 }
     const delteId = {
         emp_slno: updateSlno
     }
-    const result = await axioslogin.delete('/employee', delteId)
+    const result = await axioslogin.patch('/employee/inactive', delteId)
     const { success } = result.data
     if (success === 2) {
         const result = await axioslogin.patch('/empcontract/updateEmpMaster', updateempMast)
@@ -84,7 +82,7 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
             const results = await axioslogin.get(`/empmast/databyempid/${no}`)
             // const { data, success } = result.data
             if (results.data.success === 1) {
-                const { em_id, em_no, em_category, em_email } = results.data.data[0]
+                const { em_id, em_no, em_email } = results.data.data[0]
                 const submitemployee = {
                     emp_no: em_no,
                     emp_id: em_id,
@@ -92,32 +90,22 @@ export const updateEmployeeMasterTable = async (updateempMast, no, oldCategory, 
                     emp_username: newempId,
                     emp_password: newempId,
                     emp_email: em_email,
-                    create_user: empno
+                    create_user: employeeNumber()
                 }
                 // update hrm_employee table
                 const resultemployee = await axioslogin.post('/employee', submitemployee);
                 const { success } = resultemployee.data;
                 if (success === 1) {
-                    if (oldCategory !== em_category) {
-                        return { ...messsage, modelStatus: 1, message: "Data Inserted successfully" }
-                    }
-                    else {
-                        return { ...messsage, modelStatus: 0, message: "Error Occured" }
-                    }
-
+                    return { ...messsage, modelStatus: 1, message: "Data Inserted successfully" }
                 }
                 else {
-                    return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
+                    return { ...messsage, modelStatus: 0, message: "Error Occured" }
                 }
             }
         }
     } else {
-        return { ...messsage, modelStatus: 0, openStatus: 0, disableStatus: 1, message: "Error Occured" }
+        return { ...messsage, modelStatus: 0, message: "Error Occured" }
     }
-
-
-
-
 }
 
 export const employeeNewContractEntry = async (newcontractdetl) => {

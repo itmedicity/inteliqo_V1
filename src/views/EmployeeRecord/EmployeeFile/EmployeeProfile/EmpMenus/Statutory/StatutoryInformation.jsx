@@ -1,14 +1,15 @@
-import { Box, Checkbox, FormControlLabel, Paper, TextField } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Tooltip, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import IconButton from '@mui/joy/IconButton'
-import GradeSelectRedux from 'src/views/MuiComponents/GradeSelectRedux'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
+import SaveIcon from '@mui/icons-material/Save';
 
 const StatutoryInformation = () => {
 
@@ -282,7 +283,7 @@ const StatutoryInformation = () => {
         <Fragment>
             <Box sx={{ width: "100%" }} >
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                    <Paper variant='outlined' square elevation={0} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -290,207 +291,176 @@ const StatutoryInformation = () => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
+                        <Tooltip title="Save" followCursor placement='top' arrow>
+                            <Box sx={{ display: "flex", pr: 1 }}>
+                                <CssVarsProvider>
+                                    <Button
+                                        variant="outlined"
+                                        component="label"
+                                        size="sm"
+                                        color="primary"
+                                        onClick={submitFormData}
+                                    >
+                                        <SaveIcon />
+                                    </Button>
+                                </CssVarsProvider>
+                            </Box>
+                        </Tooltip>
                     </Paper>
-                    <Paper square elevation={3} sx={{ sp: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
+                    <Paper square elevation={0} sx={{ sp: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
                         <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                             <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
-                                <Box sx={{ flex: 1 }} >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                disabled={enable}
-                                                name="pf"
-                                                color="primary"
-                                                value={pf}
-                                                checked={pf}
-                                                className="ml-1"
-                                                onChange={(e) => updateStatutoryInformation(e)}
-                                            />
-                                        }
-                                        label="Provident Fund"
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1 }} >
-                                    <TextField
-                                        placeholder="PF Number"
+                                <Box sx={{ flex: 1, mt: 0.5 }} >
+                                    <JoyCheckbox
                                         disabled={enable}
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={pfno}
-                                        name="pfno"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        label='Provident Fund'
+                                        name="pf"
+                                        checked={pf}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1, pl: 0.5 }} >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                disabled={enable}
-                                                name="esi"
-                                                color="primary"
-                                                value={esi}
-                                                checked={esi}
-                                                className="ml-1"
-                                                onChange={(e) => updateStatutoryInformation(e)}
-                                            />
-                                        }
-                                        label="Employee's State Insurance "
+                                <Box sx={{ flex: 1 }} >
+                                    <InputComponent
+                                        type="text"
+                                        disabled={enable}
+                                        size="sm"
+                                        placeholder="PF Number"
+                                        name="pfno"
+                                        value={pfno}
+                                        onchange={(e) => updateStatutoryInformation(e)}
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, mt: 0.5, ml: 0.5 }} >
+                                    <JoyCheckbox
+                                        disabled={enable}
+                                        label="Employee's State Insurance"
+                                        name="esi"
+                                        checked={esi}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
-                                        placeholder="ESI Number"
+                                    <InputComponent
+                                        type="text"
                                         disabled={enable}
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={esino}
+                                        size="sm"
+                                        placeholder="ESI Number"
                                         name="esino"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={esino}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                                 <Box sx={{ flex: 1 }}>
                                     <CssVarsProvider>
-                                        <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
+                                        <Typography textColor="text.secondary">
                                             Universal Account Number
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
-                                    <TextField
-                                        placeholder="UAN Number"
+                                    <InputComponent
+                                        type="text"
                                         disabled={enable}
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={uanno}
+                                        size="sm"
+                                        placeholder="UAN Numbe"
                                         name="uanno"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={uanno}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
-                                <Box sx={{ flex: 1 }}>
+                                <Box sx={{ flex: 1, ml: 0.5, mt: 0.5 }}>
                                     <CssVarsProvider>
-                                        <Typography textColor="text.secondary" sx={{ fontWeight: 550 }} >
+                                        <Typography textColor="text.secondary" >
                                             Grade
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
-                                    <GradeSelectRedux value={selectGrade} setValue={UpdateGrade} />
+                                    <JoyGradeSelect value={selectGrade} setValue={UpdateGrade} />
                                 </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
-                                <Box sx={{ flex: 1 }} >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="nps"
-                                                color="primary"
-                                                value={nps}
-                                                checked={nps}
-                                                className="ml-1"
-                                                onChange={(e) => updateStatutoryInformation(e)}
-                                            />
-                                        }
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
+                                <Box sx={{ flex: 1, mt: 0.5 }} >
+                                    <JoyCheckbox
                                         label="NPS Number(PRAN)"
+                                        name="nps"
+                                        checked={nps}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
-                                    <TextField
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
                                         placeholder="NPS Number"
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={npsnumber}
                                         name="npsnumber"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={npsnumber}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <Box sx={{ flex: 1 }}>
                                         <CssVarsProvider>
-                                            <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
+                                            <Typography textColor="text.secondary" >
                                                 NPS Amount
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
                                         placeholder="NPS Employee Amount"
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={npsamount}
                                         name="npsamount"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={npsamount}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                                 <Box sx={{ flex: 1 }} >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="lwf"
-                                                color="primary"
-                                                value={lwf}
-                                                checked={lwf}
-                                                className="ml-1"
-                                                onChange={(e) => updateStatutoryInformation(e)}
-                                            />
-                                        }
+                                    <JoyCheckbox
                                         label="LWF Number"
+                                        name="lwf"
+                                        checked={lwf}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} >
-                                    <TextField
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
                                         placeholder="LWF Number"
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={lwfnumber}
                                         name="lwfnumber"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={lwfnumber}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1, pl: 0.5 }} >
                                     <Box sx={{ flex: 1 }}>
                                         <CssVarsProvider>
-                                            <Typography textColor="text.secondary" sx={{ fontWeight: 550 }}>
+                                            <Typography textColor="text.secondary" >
                                                 LWF Amount
                                             </Typography>
                                         </CssVarsProvider>
                                     </Box>
                                 </Box>
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
-                                        placeholder=" LWF Amount"
-                                        fullWidth
-                                        id="fullWidth"
-                                        size="small"
-                                        value={lwfamount}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="LWF Amount"
                                         name="lwfamount"
-                                        onChange={(e) => updateStatutoryInformation(e)}
+                                        value={lwfamount}
+                                        onchange={(e) => updateStatutoryInformation(e)}
                                     />
                                 </Box>
                             </Box>
                         </Box>
                     </Paper>
-                </Paper>
-                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
-                    <Box sx={{ display: "flex", p: 0.3 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={submitFormData} >
-                                <LibraryAddCheckOutlinedIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
                 </Paper>
             </Box>
         </Fragment>

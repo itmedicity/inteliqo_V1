@@ -21,7 +21,7 @@ const RegionMaster = React.lazy(() => import('./views/Master/Region/RegionMast')
 const DepartmentShift = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftMast'));
 const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
 const EmployeeRecrd = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecord'));
-const EmployeeFile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFile'));
+// const EmployeeFile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFile'));
 const EmploymentType = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeMast'));
 const EmploymentTypeList = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypetable'));
 const EmploymentTypetable = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeEdit'));
@@ -87,7 +87,6 @@ const RegionMastTableEdit = React.lazy(() => import('./views/Master/Region/Regio
 const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
 const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
 const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
-const EmployeeTypeTableEdit = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeTableEdit'))
 const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
@@ -153,7 +152,7 @@ const AttendanceMarking = React.lazy(() => import('./views/Attendance/Attendance
 const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryForwad/LeaveCarryForwad'))
 const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
 const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/Hrm_message'))
-const Probation_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Probation_end_details'))
+// const Probation_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Probation_end_details'))
 //const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/Contract_end_details'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
 const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/AnnualLeaveProcess'))
@@ -185,7 +184,7 @@ const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
 const EmpProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/Profile'))
 const ContractRenewalProcess = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/ContractRenewalProcess'))
 const Direct_Contract_Close = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/Direct_Contract_Close'))
-const ContractRenewApprovalList = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractRenewApprovalList'))
+// const ContractRenewApprovalList = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractRenewApprovalList'))
 const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
 const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
 const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
@@ -198,7 +197,7 @@ const EmpFirstVerification = React.lazy(() => import('./views/EmployeeRecord/Emp
 const EmpSecondVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpVerification/EmployeeSecondVerification'))
 const EmployeeRecordsAgGrid = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileAgGrid'))
 const JobDescriptionViewTable = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescriptionViewTable'))
-const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/Probation_Contract_End_Details/ContractDetailsAgGrid'))
+const Contract_end_details = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/ContractRenewList'))
 const RegistrationTypeReport = React.lazy(() => import('./views/HrReports/RegistrationTypeReports/RegistrationTypeReport'))
 const ContractClosedReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractClosedReport'))
 const ContractRenewReport = React.lazy(() => import('./views/HrReports/ContractReports/ContractRenewReport'))
@@ -281,7 +280,6 @@ const routes = [
   { path: '/Home/DeptSection', exact: true, name: 'Department Section', component: DepartmentSectionMast },
   { path: '/Home/SectionEdit/:id', exact: true, name: 'Department Section Edit', component: DepartmentSectionEdit },
   { path: '/Home/EmployeeType', exact: true, name: 'Employee Type', component: EmployeeTypeMast },
-  { path: '/Home/EmployeeTypeTableEdit/:id', exact: true, name: 'Employee Type Edit', component: EmployeeTypeTableEdit },
   { path: '/Home/DesignationType', exact: true, name: 'Designation Type', component: DesignatoionType },
   { path: '/Home/Designation', exact: true, name: 'Designation', component: Designation },
   { path: '/Home/Qualification', exact: true, name: 'Qualification', component: Qualification },
@@ -293,7 +291,7 @@ const routes = [
   { path: '/Home/DepartmentShift', exact: true, name: 'Department Shift Master', component: DepartmentShift },
   { path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
   { path: '/Home/EmployeeRecord', exact: true, name: 'Employee Records', component: EmployeeRecrd },
-  { path: '/Home/EmployeeFile', exact: true, name: 'Employee File', component: EmployeeFile },
+  // { path: '/Home/EmployeeFile', exact: true, name: 'Employee File', component: EmployeeFile },
   { path: '/Home/EmploymentType', exact: true, name: 'Employment Type', component: EmploymentType },
   { path: '/Home/EmploymentTypeList', exact: true, name: 'Employment Type List', component: EmploymentTypeList },
   { path: '/Home/EmploymentTypeEdit/:id', exact: true, name: 'Employment Type Edit', component: EmploymentTypetable },
@@ -412,7 +410,7 @@ const routes = [
   { path: '/Home/LeaveCarryForwad', exact: true, name: 'Leave Carry Forwad', component: LeaveCarryForwad },
   { path: '/Home/Hrm_Alert', exact: true, name: 'Hrm Alert', component: Hrm_Alert },
   { path: '/Home/Hrm_message', exact: true, name: 'Hrm message', component: Hrm_message },
-  { path: '/Home/Probation_end_details', exact: true, name: 'Probation End Details', component: Probation_end_details },
+  // { path: '/Home/Probation_end_details', exact: true, name: 'Probation End Details', component: Probation_end_details },
   { path: '/Home/Contract_end_details', exact: true, name: 'Contract End Details', component: Contract_end_details },
   { path: '/Home/NightOffRequest', exact: true, name: 'Night Off Request', component: NightOffRequest },
   { path: '/Home/AnnualLeaveProcess', exact: true, name: 'Annual Leave Process', component: AnnualLeaveProcess },
@@ -444,7 +442,7 @@ const routes = [
   { path: '/Home/Prfle/:id/:no', exact: true, name: 'Employee Profile', component: EmpProfile },
   { path: '/Home/ContractRenewalProcess/:id/:no', exact: true, name: 'Contract Renewal Process', component: ContractRenewalProcess },
   { path: '/Home/Direct_Contract_Close/:id/:no', exact: true, name: 'Direct Contract Close', component: Direct_Contract_Close },
-  { path: '/Home/ContractRenewApprovalList', exact: true, name: 'Contract Renew Approval List', component: ContractRenewApprovalList },
+  // { path: '/Home/ContractRenewApprovalList', exact: true, name: 'Contract Renew Approval List', component: ContractRenewApprovalList },
   { path: '/Home/ProbationEnd', exact: true, name: 'Probation End List', component: ProbationEnd },
   { path: '/Home/AnnualAppraisalList', exact: true, name: 'Annual Appraisal List', component: AnnualAppraisalList },
   { path: '/Home/ContractEnd', exact: true, name: 'Contract End List', component: ContractEnd },

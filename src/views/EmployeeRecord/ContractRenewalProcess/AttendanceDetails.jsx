@@ -30,7 +30,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     })
     const { duty_worked, total_lop, totalLeave, total_days } = attendanceData;
 
-    const data = useMemo(() => {
+    const getdata = useMemo(() => {
         return {
             emp_id: no,
             em_no: id,
@@ -41,7 +41,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
 
     useEffect(() => {
         const getattnsdata = async () => {
-            const result = await axioslogin.post('/attandancemarking/getattendancetotal', data)
+            const result = await axioslogin.post('/attandancemarking/getattendancetotal', getdata)
             const { success, message } = result.data
             if (success === 1) {
                 const { duty_statuslop, duty_status, noofleaves, gross_salary } = message[0]
@@ -82,7 +82,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                 attnd_mark_startdate: moment(startOfMonth(new Date(em_cont_end))).format('YYYY-MM-DD'),
                 attnd_mark_enddate: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
                 contract_renew_date: moment(addDays(new Date(em_cont_end), grace_period)).format('YYYY-MM-DD'),
-                attendance_status: 'C'
+                // attendance_status: 'C'
             }
         })
         succesNofity("Attandance Data Processed Successfully!!")
@@ -101,10 +101,10 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     return (
         <Fragment>
             <Box sx={{ flex: 1 }}>
-                <Paper square elevation={0} sx={{ display: "flex", p: 1 }}  >
+                <Paper square variant='outlined' sx={{ display: "flex" }}  >
                     <Box sx={{ flex: 1 }}>
                         <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                            <Typography textColor="neutral.400" startDecorator={<DragIndicatorOutlinedIcon />} level="h6" >
                                 Attendance Details
                             </Typography>
                         </CssVarsProvider>
@@ -143,14 +143,15 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                         </Box>
                     }
                 </Paper>
-                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", flexDirection: 'column' }}>
+                <Paper square elevation={0}
+                    sx={{ display: "flex", p: 1, alignItems: "center", flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                             <CssVarsProvider>
                                 <Typography level="body1">Days Worked</Typography>
                             </CssVarsProvider>
                             <CssVarsProvider>
-                                <Typography level="body1">{duty_worked}</Typography>
+                                <Typography level="body1">{duty_worked === 0 ? duty_worked : 'NOT UPDATED'}</Typography>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
@@ -158,7 +159,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                                 <Typography level="body1">Total Lop</Typography>
                             </CssVarsProvider>
                             <CssVarsProvider>
-                                <Typography level="body1">{total_lop}</Typography>
+                                <Typography level="body1">{total_lop === 0 ? total_lop : 'NOT UPDATED'}</Typography>
                             </CssVarsProvider>
                         </Box>
                     </Box>
@@ -168,7 +169,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                                 <Typography level="body1">Total Leave</Typography>
                             </CssVarsProvider>
                             <CssVarsProvider>
-                                <Typography level="body1">{totalLeave}</Typography>
+                                <Typography level="body1">{totalLeave === 0 ? totalLeave : 'NOT UPDATED'}</Typography>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
@@ -176,7 +177,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
                                 <Typography level="body1">Total Days</Typography>
                             </CssVarsProvider>
                             <CssVarsProvider>
-                                <Typography level="body1">{total_days}</Typography>
+                                <Typography level="body1">{total_days === 0 ? total_days : 'NOT UPDATED'}</Typography>
                             </CssVarsProvider>
                         </Box>
                     </Box>

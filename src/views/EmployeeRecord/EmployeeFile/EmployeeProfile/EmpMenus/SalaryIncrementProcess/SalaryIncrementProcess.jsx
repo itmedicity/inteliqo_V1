@@ -76,9 +76,8 @@ const SalaryIncrementProcess = () => {
                 <Paper square elevation={2} sx={{ p: 0.5, }}>
 
                     {/* Heading Section start */}
-                    <Paper square elevation={3} sx={{
+                    <Paper variant='outlined' square elevation={0} sx={{
                         display: "flex",
-                        p: 1,
                         alignItems: "center",
                     }}  >
                         <Box sx={{ flex: 1 }} >
