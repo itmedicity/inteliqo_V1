@@ -31,7 +31,6 @@ const TrainingSchedule = () => {
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
-
     //postdata
     const PostData = useMemo(() => {
         return {
@@ -61,7 +60,7 @@ const TrainingSchedule = () => {
         setdesSelect(0);
         settrainingcategory(0);
         setTrainingname(0);
-    })
+    }, [])
 
     //views
     useEffect(() => {
@@ -145,7 +144,7 @@ const TrainingSchedule = () => {
         else {
             EditData(PatchData)
         }
-    }, [PostData, count, PatchData])
+    }, [PostData, count, PatchData, flag, reset])
 
     //column def
     const [columnDef] = useState([

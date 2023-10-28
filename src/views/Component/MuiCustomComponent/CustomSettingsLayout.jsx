@@ -6,6 +6,7 @@ import { memo } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const CustomSettingsLayout = ({ children, title, displayClose }) => {
     const history = useHistory();
@@ -14,8 +15,8 @@ const CustomSettingsLayout = ({ children, title, displayClose }) => {
         history.push('/Home/Settings');
     }
     return (
-        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
-            <Paper sx={{ flex: 1, }} >
+        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: screenInnerHeight - 85 }} >
+            <Paper sx={{ flex: 1 }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >

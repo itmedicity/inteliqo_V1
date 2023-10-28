@@ -17,7 +17,6 @@ const EmpBasedonDept = ({ depttype, value, setValue }) => {
             }
         }
         getData(depttype)
-
     }, [depttype])
     return (
         <Fragment>
@@ -31,7 +30,7 @@ const EmpBasedonDept = ({ depttype, value, setValue }) => {
                     size="small"
                     fullWidth
                     variant='outlined'
-                    multiple
+                // multiple
                 >
                     <MenuItem disabled value={0}  >
                         Select Trainer Name

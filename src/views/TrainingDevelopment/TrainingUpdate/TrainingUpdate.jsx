@@ -13,7 +13,7 @@ const TrainingUpdate = () => {
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id, em_department } = employeeProfileDetl;
+    const { em_department } = employeeProfileDetl;
 
     //view
     useEffect(() => {
@@ -35,7 +35,6 @@ const TrainingUpdate = () => {
                         training_name: val.training_name,
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name,
-                        name_slno: val.name_slno,
                         slno: val.slno,
                         schedule_name: val.schedule_name,
                         training_count: val.training_count

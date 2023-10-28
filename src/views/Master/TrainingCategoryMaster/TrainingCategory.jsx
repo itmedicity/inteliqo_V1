@@ -142,7 +142,7 @@ const TrainingCategory = () => {
         //Edit
         const EditData = async (PatchData) => {
             const result = await axioslogin.patch('/TrainingCategory/update', PatchData)
-            const { message, data, success } = result.data
+            const { message, success } = result.data
             if (success === 2) {
                 reset();
                 setCount(count + 1);
@@ -163,7 +163,7 @@ const TrainingCategory = () => {
             EditData(PatchData)
 
         }
-    }, [PostData, PatchData, count, flag])
+    }, [PostData, PatchData, count, flag, reset])
 
     //column def
     const [columnDef] = useState([

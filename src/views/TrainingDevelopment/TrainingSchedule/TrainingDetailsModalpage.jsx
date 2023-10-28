@@ -128,12 +128,12 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
 
     useEffect(() => {
         //mandatory
-        const mandatoryCate = trainingCategory.filter((val) => val.trainingtype_slno === 1);
+        const mandatoryCate = trainingCategory?.filter((val) => val.trainingtype_slno === 1);
         setCate(mandatoryCate);
-        const mandatoryName = trainingName.filter((val) => val.trainingtype_slno === 1);
+        const mandatoryName = trainingName?.filter((val) => val.trainingtype_slno === 1);
         setNames(mandatoryName);
 
-        const mndryDuedateItem = trainingtype.find((typeItem) => typeItem.trainingtype_slno === 1);
+        const mndryDuedateItem = trainingtype?.find((typeItem) => typeItem.trainingtype_slno === 1);
         const { count_day } = mndryDuedateItem;
         const joiningdate = moment(joining_date, "DD-MM-YYYY").toDate();
         const datelimit = addDays(joiningdate, count_day);
@@ -141,11 +141,11 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
         setmndryDuedate(dayswithin);
 
         //requirement
-        const reqCate = trainingCategory.filter((val) => val.trainingtype_slno === 2);
+        const reqCate = trainingCategory?.filter((val) => val.trainingtype_slno === 2);
         setCatereq(reqCate);
-        const reqName = trainingName.filter((val) => val.trainingtype_slno === 2);
+        const reqName = trainingName?.filter((val) => val.trainingtype_slno === 2);
         setNamesreq(reqName);
-        const rqmtDuedateItem = trainingtype.find((typeItem) => typeItem.trainingtype_slno === 2);
+        const rqmtDuedateItem = trainingtype?.find((typeItem) => typeItem.trainingtype_slno === 2);
 
         if (rqmtDuedateItem) {
             const { count_day } = rqmtDuedateItem;
@@ -156,11 +156,11 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
         }
 
         //life support
-        const lifeCate = trainingCategory.filter((val) => val.trainingtype_slno === 3);
+        const lifeCate = trainingCategory?.filter((val) => val.trainingtype_slno === 3);
         setCatelife(lifeCate);
-        const lifeName = trainingName.filter((val) => val.trainingtype_slno === 3);
+        const lifeName = trainingName?.filter((val) => val.trainingtype_slno === 3);
         setNameslife(lifeName);
-        const lifeDuedateItem = trainingtype.find((typeItem) => typeItem.trainingtype_slno === 3);
+        const lifeDuedateItem = trainingtype?.find((typeItem) => typeItem.trainingtype_slno === 3);
 
         if (lifeDuedateItem) {
             const { count_day } = lifeDuedateItem;
@@ -170,11 +170,11 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
             setlifeDuedate(dayswithin);
         }
         //pro
-        const proCate = trainingCategory.filter((val) => val.trainingtype_slno === 4);
+        const proCate = trainingCategory?.filter((val) => val.trainingtype_slno === 4);
         setCatepro(proCate);
-        const proName = trainingName.filter((val) => val.trainingtype_slno === 4);
+        const proName = trainingName?.filter((val) => val.trainingtype_slno === 4);
         setNamespro(proName);
-        const proDuedateItem = trainingtype.find((typeItem) => typeItem.trainingtype_slno === 3);
+        const proDuedateItem = trainingtype?.find((typeItem) => typeItem.trainingtype_slno === 3);
 
         if (proDuedateItem) {
             const { count_day } = proDuedateItem;
@@ -264,7 +264,7 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
             tns_date: moment(mscheduleDate).format("YYYY-MM-DD HH:mm:ss"),
             create_user: em_id
         }
-    }, [emp_no, selectValue, mscheduleDate, em_id])
+    }, [emp_no, mscheduleDate, em_id, sect_id, dept_id])
 
 
     //submit
@@ -291,7 +291,7 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
         })
         const combinedArray = [...filterMname, ...filterRname, ...filterLname, ...filterPname];
 
-        const concatData = combinedArray.map((combinedArray) => ({
+        const concatData = combinedArray?.map((combinedArray) => ({
             ...combinedArray,
             tnd_emp_id: emp_no,
             create_user: em_id,
@@ -328,8 +328,7 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
             warningNofity(message)
         }
 
-    }, [count, type_name, reqtype_name, lifetype_name, protype_name, names, postdata, namesreq, nameslife, namespro])
-
+    }, [count, Setcount, em_id, emp_no, mscheduleDate, reset, setOpen, type_name, reqtype_name, lifetype_name, protype_name, names, postdata, namesreq, nameslife, namespro])
     const handleClose = () => {
         setOpen(false);
     };
@@ -340,8 +339,8 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
                 fullScreen
                 open={open}
             >
-                <Paper >
-                    <Paper sx={{ width: "100%", }}>
+                <Box >
+                    <Box sx={{ width: "100%", }}>
                         <Typography sx={{ p: 1, textAlign: "center", fontSize: "x-large", fontWeight: "bold" }}>TRAINING DETAILS </Typography>
                         <Box sx={{ display: "flex", flexDirection: "column", p: 1, pl: 5, border: 0.5, borderColor: "#B9B4C7" }}>
                             <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -360,7 +359,7 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
                             </Box>
                         </Box>
 
-                        <Paper elevation={0} sx={{ width: "100%", p: 1 }}>
+                        <Paper sx={{ width: "100%", p: 1 }}>
 
                             <Box sx={{
                                 width: '100%', display: 'flex',
@@ -678,8 +677,8 @@ const TrainingDetailsModalpage = ({ userdata, open, setOpen, count, Setcount }) 
                             </Box>
 
                         </Paper>
-                    </Paper>
-                </Paper >
+                    </Box>
+                </Box >
                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", mt: 2 }}>
                     <Box sx={{ pr: 2 }}>
                         <Button onClick={handleSubmit} variant="contained" >SAVE</Button>

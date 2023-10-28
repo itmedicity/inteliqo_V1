@@ -50,7 +50,7 @@ const DepartmentalTrainingSchedule = () => {
         setTrainingCount(0);
         setScheduleTime(new Date());
         setScheduleDate(new Date());
-    })
+    }, [])
 
     //postData
     const postData = useMemo(() => {
@@ -81,7 +81,7 @@ const DepartmentalTrainingSchedule = () => {
             training_count: TrainingCount,
             edit_user: em_id
         }
-    }, [depttype, desSelect, trainingname, trainingTopic, schedulingtime, ScheduleTime, scheduleDate, TrainingCount, em_id])
+    }, [depttype, id, desSelect, trainingname, trainingTopic, schedulingtime, ScheduleTime, scheduleDate, TrainingCount, em_id])
 
     const submitDepartmentalTrainingSchedule = useCallback(() => {
         //insert
@@ -124,7 +124,7 @@ const DepartmentalTrainingSchedule = () => {
         else {
             EditData(patchData)
         }
-    }, [postData, count, patchData, flag])
+    }, [postData, ScheduleTime, TrainingCount, depttype, desSelect, reset, scheduleDate, schedulingtime, trainingTopic, trainingname, count, patchData, flag])
 
     //click_edit
     const getDataTable = useCallback((params) => {
@@ -162,7 +162,6 @@ const DepartmentalTrainingSchedule = () => {
                         training_name: val.training_name,
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name,
-                        name_slno: val.name_slno,
                         slno: val.slno,
                         schedule_name: val.schedule_name,
                         training_count: val.training_count

@@ -1,11 +1,10 @@
 import React, { memo, useCallback, useState } from 'react'
 import { Fragment } from 'react';
-import TableEditModal from './TableEditModal';
 import { useEffect } from 'react';
 import { Table } from '@mui/joy';
-import { getDate, getMonth, getYear } from 'date-fns';
+import TableEditModals from './TableEditModals';
 
-const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
+const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr }) => {
     const [open, setOpen] = useState(false);
     const [flag, setFlag] = useState(0);
     const [rowdata, setrowdata] = useState({});
@@ -18,30 +17,11 @@ const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
     }, [])
 
     useEffect(() => {
-        const mapdata = checkdata?.filter((val) => {
-            return val.months === id && val.year === yr;
-        });
+        const mapdata = checkdata?.filter((val) => val.months === id && val.year === yr)
+        setdata(mapdata);
+    }, [checkdata, id, yr])
 
-        if (mapdata) {
-            const modifiedData = mapdata?.map((val) => {
-                const scheduleDate = val.schedule_date;
-                const dateObj = new Date(scheduleDate);
 
-                return {
-                    ...val,
-                    schedule_date: dateObj
-                };
-            });
-
-            setdata(modifiedData);
-        }
-    }, [checkdata, id, yr]);
-
-    const demo = new Date();
-    const dayName = demo.toLocaleDateString('en-US', { weekday: 'long' });
-    const dates = getDate(demo);
-    const month = getMonth(demo) + 1;
-    const year = getYear(demo);
 
     return (
         <Fragment>
@@ -53,9 +33,7 @@ const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
                         <tbody>
                             {
                                 data?.map((val, index) => (
-
-                                    < tr key={index} style={{ textTransform: "capitalize" }}>
-
+                                    <tr key={index} style={{ textTransform: "capitalize" }}>
                                         <td
                                             key={index}
                                             onClick={() => handleClick(val)}
@@ -95,10 +73,10 @@ const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
             }
 
             {
-                flag === 1 ? <TableEditModal rowdata={rowdata} setrowdata={setrowdata} count={count} Setcount={Setcount} open={open} setOpen={setOpen} flag={flag} setFlag={setFlag} /> : null
+                flag === 1 ? <TableEditModals rowdata={rowdata} setrowdata={setrowdata} count={count} Setcount={Setcount} open={open} setOpen={setOpen} flag={flag} setFlag={setFlag} /> : null
             }
         </Fragment >
     );
 }
 
-export default memo(DeptTrainingRows);
+export default memo(DeptTrainingRow);

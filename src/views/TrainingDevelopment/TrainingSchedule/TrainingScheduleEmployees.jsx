@@ -1,6 +1,6 @@
 import { Paper, Box, TextField } from '@mui/material';
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -12,6 +12,8 @@ import { IconButton as Openbtn } from '@mui/material';
 import EditscheduleModal from './EditscheduleModal';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
 import _ from 'underscore';
+import TrainingTypeSelect from 'src/views/MuiComponents/TrainingTypeSelect';
+import { TrainingType } from 'src/redux/actions/Training.Action';
 
 const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
     const [tableData, setTableData] = useState([]);
@@ -21,11 +23,18 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
     const [open, setOpen] = useState(false);
     const [modalflag, setmodalFlag] = useState(0);
     const [scheduledata, setScheduleData] = useState({});
+    const [trainingType, setTrainingtype] = useState(0);
 
     const schedule = useSelector((state) => state?.gettrainingData?.trainingSchedule?.trainingScheduleList, _.isEqual)
-    useEffect(() => {
-        const displayData = schedule.map((val) => {
 
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(TrainingType());
+    }, [dispatch, count])
+
+    useEffect(() => {
+        const displayData = schedule?.map((val) => {
             const object = {
                 tnd_slno: val.tnd_slno,
                 tns_emp_id: val.tns_emp_id,
@@ -50,17 +59,17 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
         if (flag === 1) {
             const ScheduleDate = displayData.filter((val) => {
                 return val.tnd_date === pickdate
+
             })
 
             if (ScheduleDate.length !== 0) {
                 setTableData(ScheduleDate);
             }
             else {
-                warningNofity("No traing Scheduled")
+                warningNofity("No training Scheduled")
             }
         }
-
-    }, [schedule, pickdate])
+    }, [schedule, pickdate, flag])
 
     //edit field
     const editField = useCallback((params) => {
@@ -68,7 +77,6 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
         setOpen(true);
         setmodalFlag(1);
     }, [])
-
 
     const [columnDef] = useState([
         { headerName: 'Emp_No', field: 'tns_emp_id', filter: true, minWidth: 150 },
@@ -87,7 +95,6 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
                         <EditIcon color='primary' />
                     </Openbtn>
                 </Fragment>
-
         },
     ])
 
@@ -96,49 +103,58 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
         const getdate = moment(selectdate).format("DD-MM-YYYY")
         setPickdate(getdate);
         setFlag(1);
-    }, [pickdate, filterdate])
 
+        const scheduleType = schedule?.filter((val) => {
+            return val.trainingtype_slno === trainingType
+        })
+        setTableData(scheduleType);
+    }, [filterdate, trainingType, schedule])
 
     return (
         <CustomDashboardPage title="Training Schedule_New Joinees" displayClose={true} setClose={setShow}  >
             <Box sx={{ width: "100%", p: 1 }}>
-                <Paper variant='outlined' sx={{ display: "flex", flexDirection: "row", mt: 3, p: 1, width: "20%" }}>
-                    <Box sx={{ p: 1 }}>
-                        <LocalizationProvider dateAdapter={AdapterMoment} >
-                            <DatePicker
-                                label="Select Date"
-                                views={['day']}
-                                inputFormat="DD-MM-YYYY"
-                                value={filterdate}
-                                onChange={setFilterDate}
-                                renderInput={(params) => (
-                                    <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                                )}
-                            />
-                        </LocalizationProvider>
+                <Box sx={{ p: 1, display: "flex", flexDirection: "row", gap: 1 }}>
+                    <LocalizationProvider dateAdapter={AdapterMoment} >
+                        <DatePicker
+                            views={['day']}
+                            inputFormat="DD-MM-YYYY"
+                            value={filterdate}
+                            onChange={setFilterDate}
+                            renderInput={(params) => (
+                                <TextField {...params} helperText={null} size="small" />
+                            )}
+                        />
+                    </LocalizationProvider>
+
+                    <Box sx={{ width: "20%" }} >
+                        <TrainingTypeSelect
+                            value={trainingType}
+                            setValue={setTrainingtype}
+                        />
                     </Box>
                     <Box sx={{ p: 1 }}>
                         <SearchIcon
                             color="neutral"
                             onClick={handleDateChange}
-
                         />
                     </Box>
-                </Paper>
+                </Box>
 
-
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <Paper square sx={{
+                    pt: 1, mt: 0.5, display: 'flex', flexDirection: "column"
+                }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tableData}
                         sx={{
-                            height: 800,
-                            width: "100%"
+                            height: 700,
+                            width: "100%",
+                            overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }
                         }}
                         rowHeight={30}
                         headerHeight={30}
                     />
-
                 </Paper>
                 {modalflag === 1 ? <EditscheduleModal count={count} Setcount={Setcount} scheduledata={scheduledata} open={open} setOpen={setOpen} modalflag={modalflag} setmodalFlag={setmodalFlag} /> : null}
             </Box>

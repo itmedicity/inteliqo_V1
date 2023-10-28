@@ -13,8 +13,11 @@ import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
+// import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 
 const TrainingTopic = () => {
+    const [dept_status, set_dept_status] = useState(false);
+    const [depttype, setdepttype] = useState(0);
     const [training_topic_name, setTraining_topic_name] = useState('');
     const [training_status, setTraining_status] = useState(false);
     const [tutorial_status, setTutorial_status] = useState(false);
@@ -27,6 +30,7 @@ const TrainingTopic = () => {
     const [topic_slno, setTopic_slno] = useState(0);
     const [flag, setFlag] = useState(0);
     const [trainingname, setTrainingname] = useState(0);
+    const [hours, setHours] = useState('');
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -42,6 +46,7 @@ const TrainingTopic = () => {
         setPretest_status(false);
         setPost_test_status(false);
         setTrainingname(0);
+        setHours(0);
     }
     //postdata
     const postdata = useMemo(() => {
@@ -54,9 +59,10 @@ const TrainingTopic = () => {
             non_medical_status: non_medical_status === true ? 1 : 0,
             pretest_status: pretest_status === true ? 1 : 0,
             post_test_status: post_test_status === true ? 1 : 0,
-            create_user: em_id
+            create_user: em_id,
+            hours: hours
         }
-    }, [training_topic_name, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id])
+    }, [training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
@@ -70,9 +76,11 @@ const TrainingTopic = () => {
             pretest_status: pretest_status === true ? 1 : 0,
             post_test_status: post_test_status === true ? 1 : 0,
             edit_user: em_id,
-            topic_slno: topic_slno
+            topic_slno: topic_slno,
+            hours: hours
+
         }
-    }, [training_topic_name, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno])
+    }, [training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno])
 
     //view
     useEffect(() => {
@@ -85,6 +93,7 @@ const TrainingTopic = () => {
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name,
                         name_slno: val.name_slno,
+                        hours: val.hours,
                         training_name: val.training_name,
                         training_status: val.training_status,
                         training: val.training_status === 0 ? "NO" : "YES",
@@ -114,18 +123,19 @@ const TrainingTopic = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status } = data[0]
+        const { topic_slno, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status } = data[0]
         setFlag(1);
         setTraining_topic_name(training_topic_name);
-        setTraining_status(training_status);
-        setTutorial_status(tutorial_status);
-        setMedical_status(medical_status);
-        set_Non_medical_status(non_medical_status);
-        setPretest_status(pretest_status);
-        setPost_test_status(post_test_status);
+        setTraining_status(training_status === 1 ? true : false);
+        setTutorial_status(tutorial_status === 1 ? true : false);
+        setMedical_status(medical_status === 1 ? true : false);
+        set_Non_medical_status(non_medical_status === 1 ? true : false);
+        setPretest_status(pretest_status === 1 ? true : false);
+        setPost_test_status(post_test_status === 1 ? true : false);
         setTopic_slno(topic_slno)
         setTrainingname(name_slno)
-    }, [topic_slno, training_topic_name, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status])
+        setHours(hours)
+    }, [])
 
     //submit
     const submitTrainingTopic = useCallback(() => {
@@ -168,28 +178,27 @@ const TrainingTopic = () => {
         }
         else {
             EditData(patchdata)
-
         }
-    }, [count, postdata, patchdata])
+    }, [count, flag, postdata, patchdata])
 
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
-        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 200 },
-        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 200 },
-        { headerName: 'Training ', field: 'training', filter: true, width: 250 },
-        { headerName: 'Tutorial ', field: 'tutorial', filter: true, width: 250 },
-        { headerName: 'Medical', field: 'medical', filter: true, width: 250 },
-        { headerName: 'Non Medical', field: 'non_medical', filter: true, width: 250 },
-        { headerName: 'Pre Test ', field: 'pretest', filter: true, width: 250 },
-        { headerName: 'Post Test ', field: 'post_test', filter: true, width: 250 },
+        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 150 },
+        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
+        { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
+        { headerName: 'Tutorial ', field: 'tutorial', filter: true, minWidth: 150 },
+        { headerName: 'Medical', field: 'medical', filter: true, minWidth: 150 },
+        { headerName: 'Non-Med', field: 'non_medical', filter: true, minWidth: 150 },
+        { headerName: 'Pre-Test ', field: 'pretest', filter: true, minWidth: 150 },
+        { headerName: 'Post-Test ', field: 'post_test', filter: true, minWidth: 150 },
+        { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
         {
-            headerName: 'Edit', cellRenderer: params =>
+            headerName: 'Edit', minWidth: 150, cellRenderer: params =>
                 <Fragment>
                     <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)}>
                         <EditIcon color='primary' />
                     </IconButton>
                 </Fragment>
-
         },
     ])
     return (
@@ -200,18 +209,49 @@ const TrainingTopic = () => {
                     <Grid container spacing={1}>
                         <Grid item xl={3} lg={2}>
                             <Paper sx={{ p: 1 }}>
-                                <Box >
+
+                                <Box>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="dept_status"
+                                                color="primary"
+                                                value={dept_status}
+                                                checked={dept_status}
+                                                className="ml-1"
+                                                onChange={(e) => set_dept_status(e.target.checked)}
+                                            />
+                                        }
+                                        label="Departmental"
+                                    />
+                                </Box>
+                                <Box sx={{}}>
+                                    {/* <DeptSecSelectByRedux value={depttype} setValue={setdepttype} /> */}
+
+                                </Box>
+                                <Box sx={{ mt: 1 }}>
                                     <SelectTrainingName value={trainingname} setValue={setTrainingname} />
                                 </Box>
                                 <Box sx={{ mt: 1 }}>
                                     <TextField
                                         fullWidth
-                                        placeholder='Training Topic Name'
+                                        placeholder='Training Subject Name'
                                         id='training_topic_name'
                                         size="small"
                                         value={training_topic_name}
                                         name="training_topic_name"
                                         onChange={(e) => setTraining_topic_name(e.target.value)}
+                                    />
+                                </Box>
+                                <Box sx={{ mt: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder='Training Hours'
+                                        id='Training Hours'
+                                        size="small"
+                                        value={hours}
+                                        name="Training Hours"
+                                        onChange={(e) => setHours(e.target.value)}
                                     />
                                 </Box>
 

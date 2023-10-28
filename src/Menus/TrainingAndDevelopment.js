@@ -1,11 +1,17 @@
 import { CNavItem } from "@coreui/react";
 
 const TrainingAndDevelopment = [
+    // {
+    //     men_slno: 55,
+    //     component: CNavItem,
+    //     name: 'Department Wise Training',
+    //     to: '/Home/DepartmentalTrainingSchedule',
+    // },
     {
         men_slno: 55,
         component: CNavItem,
         name: 'Department Wise Training',
-        to: '/Home/DepartmentalTrainingSchedule',
+        to: '/Home/DepartmentalCalenders',
     },
     {
         men_slno: 251,

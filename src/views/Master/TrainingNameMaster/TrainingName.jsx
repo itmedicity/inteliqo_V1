@@ -51,7 +51,7 @@ const TrainingName = () => {
             name_status: training_name_status === true ? 1 : 0,
             edit_user: em_id
         }
-    }, [training_name, trainingtype, trainingcategory, training_name_status, em_id])
+    }, [training_name, trainingtype, trainingcategory, training_name_status, em_id, name_slno])
 
     //reset
     const reset = useCallback(() => {
@@ -167,7 +167,7 @@ const TrainingName = () => {
             EdiData(PatchData)
         }
 
-    }, [PostData, PatchData, count])
+    }, [PostData, PatchData, count, flag, reset])
 
     //column def
     const [columnDef] = useState([

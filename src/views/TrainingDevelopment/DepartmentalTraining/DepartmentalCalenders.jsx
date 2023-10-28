@@ -1,5 +1,4 @@
 import React, { Fragment, memo, useCallback, useMemo } from 'react'
-import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
 import { CssVarsProvider, Input } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
@@ -8,7 +7,6 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import ScheduleCalender from './ScheduleCalender';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { useEffect } from 'react';
@@ -17,9 +15,11 @@ import { TrainerNames, TrainingTopics } from 'src/redux/actions/Training.Action'
 import { getMonth, getYear } from 'date-fns';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
+import ScheduleCalenders from './ScheduleCalenders';
 
 
-const DepartmentalCalender = ({ setShow, count, Setcount }) => {
+const DepartmentalCalenders = () => {
 
     const dispatch = useDispatch();
 
@@ -28,6 +28,7 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
     const [year, setYear] = useState(moment(new Date()).format("YYYY"));
     const [table, setTable] = useState(0);
     const [checkdata, setCheckdata] = useState([]);
+    const [count, Setcount] = useState(0);
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -65,14 +66,13 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
                             year: getYear(new Date(val.schedule_year)),
                             schedule_date: val.schedule_date,
                             months: getMonth(new Date(val.schedule_date)),
-                            date: moment(val.schedule_date).format("DD-MM-YYYY"),
+                            date: moment(val.schedule_date).format("MM/DD"),
                             schedule_remark: val.schedule_remark,
                             training_topic_name: val.training_topic_name,
                             traineer_name: val.traineer_name
                         }
                         return object;
                     })
-
                     setCheckdata(displayData)
 
                 }
@@ -96,9 +96,8 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
     return (
         <Fragment>
             <ToastContainer />
-            <CustomDashboardPage title="Departmental Training Calender" displayClose={true} setClose={setShow}  >
-                <Box sx={{ width: "100%", p: 1, height: 800 }}>
-
+            <CustomSettingsLayout title="Department Wise Training" displayClose={true}>
+                <Box sx={{ width: "100%", p: 1, height: 850 }}>
                     <Paper variant='outlined' sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
                         <Box sx={{ flex: 1, }}>
                             <DepartmentDropRedx getDept={setdept} />
@@ -134,13 +133,13 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
                         <Box sx={{ flex: 1 }}></Box>
                     </Paper>
                     {
-                        table === 1 ? <ScheduleCalender checkdata={checkdata} dept={dept} setdept={setdept} deptSec={deptSec} setdeptSec={setdeptSec} year={year}
+                        table === 1 ? <ScheduleCalenders checkdata={checkdata} dept={dept} setdept={setdept} deptSec={deptSec} setdeptSec={setdeptSec} year={year}
                             setYear={setYear} count={count} Setcount={Setcount} setTable={setTable} /> : null
                     }
                 </Box>
-            </CustomDashboardPage >
+            </CustomSettingsLayout >
         </Fragment >
     )
 }
 
-export default memo(DepartmentalCalender)
+export default memo(DepartmentalCalenders)

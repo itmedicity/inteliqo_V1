@@ -65,8 +65,7 @@ const ViewJoinersTable = ({ setShow, count, Setcount }) => {
     return (
         <CustomDashboardPage title="Training Schedule_New Joinees" displayClose={true} setClose={setShow}  >
             <Box sx={{ width: "100%", p: 1 }}>
-
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <Paper variant='outlined' square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tableData}

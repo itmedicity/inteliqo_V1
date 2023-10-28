@@ -1,13 +1,13 @@
 
 import { Typography } from '@mui/material'
 import React, { Fragment, memo, useCallback, useState } from 'react'
-import DeptTrainingRows from './DeptTrainingRows'
 import { Box } from '@mui/joy';
 import { endOfMonth, getYear, startOfMonth } from 'date-fns';
-import TrainingBasedonMonthModal from './TrainingBasedonMonthModal'
+import DeptTrainingRow from './DeptTrainingRow';
+import TrainingonMonthModal from './TrainingonMonthModal';
 
 
-const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, setdept, deptSec,
+const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, setdept, deptSec,
     setTable, setdeptSec }) => {
 
     const [insertModal, setinsetmodal] = useState(0);
@@ -22,10 +22,12 @@ const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, set
     ];
 
     const OpenInsertModal = useCallback((e, month) => {
+
         setinsetmodal(1);
         setOpen(true);
         const monthId = month.id
         setmonthData(monthId);
+
     }, [setinsetmodal, setOpen])
 
     const date = new Date(yr, monthdata, 1);
@@ -67,7 +69,7 @@ const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, set
 
                                     </Box>
                                     <Box sx={{ width: "80%" }}>
-                                        <DeptTrainingRows
+                                        <DeptTrainingRow
                                             id={month.id} yr={yr}
                                             months={months} count={count} Setcount={Setcount}
                                             checkdata={checkdata}
@@ -81,7 +83,7 @@ const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, set
             </Box>
 
             {
-                insertModal === 1 ? <TrainingBasedonMonthModal checkdata={checkdata} setTable={setTable} dept={dept}
+                insertModal === 1 ? <TrainingonMonthModal checkdata={checkdata} setTable={setTable} dept={dept}
                     monthdata={monthdata} setdept={setdept} deptSec={deptSec} setdeptSec={setdeptSec} year={year} setYear={setYear}
                     open={open} setinsetmodal={setinsetmodal} setOpen={setOpen} count={count} Setcount={Setcount}
                     start={start} end={end}
@@ -93,4 +95,4 @@ const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, set
     )
 }
 
-export default memo(ScheduleCalender)
+export default memo(ScheduleCalenders)

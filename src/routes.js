@@ -241,10 +241,11 @@ const TrainingTopic = React.lazy(() => import('./views/Master/TrainingTopicMaste
 const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuestionsMaster/TrainingQuestions'))
 const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
 const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingScheduleMaster/TrainingSchedule'))
-const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
+// const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
 const TrainingUpdate = React.lazy(() => import('./views/TrainingDevelopment/TrainingUpdate/TrainingUpdate'))
 const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
 const AfterJoiningTraining = React.lazy(() => import('./views/TrainingDevelopment/TrainingSchedule/TrainingAfterJoining'))
+const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 
 const CommonReqst = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstMainPage'))
 const CommonRequstMaster = React.lazy(() => import('./views/Master/CommonRequstMaster/CommonRequestMast'))
@@ -263,6 +264,7 @@ const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/Are
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
+const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 
 
 const routes = [
@@ -500,6 +502,7 @@ const routes = [
   { path: '/Home/TrainingUpdate', exact: true, name: 'Training Update', component: TrainingUpdate },
   { path: '/Home/TrainingEmployeeSchedule', exact: true, name: 'Training Employee Schedule', component: TrainingEmployeeSchedule },
   { path: '/Home/AfterJoiningTraining', exact: true, name: 'After Joining Training', component: AfterJoiningTraining },
+  { path: '/Home/DepartmentalCalenders', exact: true, name: 'Departmental Calender', component: DepartmentalCalenders },
 
 
 

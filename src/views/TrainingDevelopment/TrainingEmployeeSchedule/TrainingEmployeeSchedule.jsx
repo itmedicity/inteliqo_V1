@@ -134,7 +134,7 @@ const TrainingEmployeeSchedule = () => {
             EditData(patchdata)
         }
 
-    }, [postdata, count, patchdata, flag])
+    }, [postdata, count, patchdata, flag, ScheduleTime, dept, deptSec, emp_name, reset, scheduleDate, topic, trainingname])
 
     //view
     useEffect(() => {

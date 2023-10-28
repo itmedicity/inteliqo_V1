@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from 'react'
+import React, { Fragment, memo } from 'react'
 import Box from '@mui/material/Box';
 import { useCallback } from 'react';
 import { Paper, TextField } from '@mui/material';
@@ -15,44 +15,68 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { ToastContainer } from 'react-toastify';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import _ from 'underscore';
 
+const TableEditModals = ({ open, setOpen, setFlag, count, Setcount, rowdata }) => {
 
-const EditscheduleModal = ({ open, setOpen, setmodalFlag, scheduledata, count, Setcount }) => {
+    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { em_id } = employeeProfileDetl;
 
     const [scheduleDate, setScheduleDate] = useState(moment());
-
-    const [slno, setSlno] = useState(0)
+    const [slno, setSlno] = useState(0);
+    const [data, setdata] = useState({
+        slno: 0,
+        date: '',
+        month: '',
+        schedule_date: '',
+        em_id: '',
+        traineer_name: '',
+        training_topic_name: '',
+        topic_slno: '',
+    })
 
     const handleClose = useCallback(() => {
         setOpen(false);
     }, [setOpen])
-
     useEffect(() => {
-        if (Object.keys(scheduledata).length !== 0) {
-            const { tnd_slno } = scheduledata;
-            setSlno(tnd_slno)
-
-        } else {
-
+        if (Object.keys(rowdata).length !== 0) {
+            const { date, month, schedule_date, traineer_name, training_topic_name, slno, em_id, topic_slno } = rowdata;
+            const obj = {
+                slno: slno,
+                date: date,
+                month: month,
+                schedule_date: moment(schedule_date).format("YYYY-MM-DD"),
+                traineer_name: traineer_name,
+                training_topic_name: training_topic_name,
+                topic_slno: topic_slno,
+                em_id: em_id
+            }
+            setdata(obj);
+            setSlno(slno);
         }
-    }, [scheduledata])
+
+    }, [rowdata])
 
     const patchdata = useMemo(() => {
         return {
-            tnd_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
-            tnd_slno: slno
+            schedule_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
+            slno: slno,
+            edit_user: em_id
         }
-    }, [scheduleDate, slno])
-
+    }, [scheduleDate, slno, em_id])
 
     const SubmitSchedule = useCallback(() => {
+
         const patchinsert = async (patchdata) => {
-            const result = await axioslogin.patch('/TrainingAfterJoining/ScheduleUpdate', patchdata)
+
+            const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity("Update successfully")
-                setmodalFlag(0);
+                setFlag(0);
                 Setcount(count + 1);
             }
             else {
@@ -60,44 +84,32 @@ const EditscheduleModal = ({ open, setOpen, setmodalFlag, scheduledata, count, S
             }
         }
         patchinsert(patchdata);
-    }, [patchdata, count, Setcount, setmodalFlag])
-
-
+    }, [patchdata, count, Setcount, setFlag])
     return (
         <Fragment>
-            <ToastContainer />
             <Dialog
                 open={open}
             >
-                <Paper sx={{ m: 1, height: 350 }} variant="outlined" >
+                <Paper sx={{ m: 1, }} variant="outlined" >
                     <Box sx={{ flex: 1, p: 0.5 }} >
                         <CssVarsProvider>
                             <Typography fontWeight="lg" variant="soft" >
-                                Training Schedule Update
+                                Departmental Training
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <DialogContent sx={{ display: 'flex', minWidth: 500, flexDirection: 'column' }} >
-                        <Box sx={{ display: "flex", flexDirection: "row", gap: 5 }}>
+                    <DialogContent sx={{ display: 'flex', minWidth: 500, height: 180, flexDirection: 'column' }} >
+
+                        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly" }}>
                             <Box sx={{ display: "flex", flexDirection: "column" }}>
-                                <Box><Typography>Emp No</Typography></Box>
-                                <Box><Typography>Name</Typography></Box>
-                                <Box><Typography>Dept</Typography></Box>
-                                <Box><Typography>Dep.Sec</Typography></Box>
-                                <Box><Typography>Training Type</Typography></Box>
-                                <Box><Typography>Training Category</Typography></Box>
-                                <Box><Typography>Training Name</Typography></Box>
-                                <Box sx={{ mt: 1 }}><Typography>Schedule Date</Typography></Box>
+                                <Box><Typography>Schedule Date</Typography></Box>
+                                <Box sx={{ mt: 2 }}><Typography>Trainer Names</Typography></Box>
+                                <Box sx={{ mt: 2 }}><Typography>Reschedule Date</Typography></Box>
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "column", textTransform: "capitalize" }}>
-                                <Box><Typography>: {scheduledata?.tns_emp_id}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.em_name.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.dept_name?.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.sect_name?.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.type_name?.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.trin_cat_name?.toLowerCase()}</Typography></Box>
-                                <Box><Typography>: {scheduledata?.training_name?.toLowerCase()}</Typography></Box>
-                                <Box sx={{ mt: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                <Box>{data?.schedule_date}</Box>
+                                <Box sx={{ mt: 2 }} >{data?.traineer_name}</Box>
+                                <Box sx={{ mt: 2 }}>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
                                         <DatePicker
                                             views={['day']}
@@ -141,4 +153,4 @@ const EditscheduleModal = ({ open, setOpen, setmodalFlag, scheduledata, count, S
     )
 }
 
-export default memo(EditscheduleModal)
+export default memo(TableEditModals)

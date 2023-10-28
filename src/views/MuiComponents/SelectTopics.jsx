@@ -24,11 +24,9 @@ const SelectTopics = ({ setTopic }) => {
     }, [])
 
     useEffect(() => {
-        const obj = {
-            topicname: topicname
-        }
-        setTopic(obj);
-    }, [topicname])
+        setTopic(topicname)
+    }, [setTopic, topicname])
+
 
     return (
         <Fragment>

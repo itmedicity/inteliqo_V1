@@ -29,6 +29,7 @@ const TrainingQuestTopic = ({ value, setValue }) => {
                     size="small"
                     fullWidth
                     variant='outlined'
+
                 >
                     <MenuItem disabled value={0}  >
                         Select Training Topics

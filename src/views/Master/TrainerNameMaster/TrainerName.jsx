@@ -2,7 +2,6 @@ import { Button, CssVarsProvider } from '@mui/joy';
 import { Box, Checkbox, FormControlLabel, Grid, IconButton, Paper } from '@mui/material'
 import React, { memo, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
@@ -62,7 +61,7 @@ const TrainerName = () => {
         setdesSelect(0);
         setdepttype(0);
         setempSelect(0);
-    })
+    }, [])
 
     //views
     useEffect(() => {
@@ -153,7 +152,7 @@ const TrainerName = () => {
         //Edit
         const EditData = async (PatchData) => {
             const result = await axioslogin.patch('/TrainerName/update', PatchData)
-            const { message, data, success } = result.data
+            const { message, success } = result.data
             if (success === 2) {
                 reset();
                 setCount(count + 1)
@@ -172,7 +171,7 @@ const TrainerName = () => {
         else {
             EditData(PatchData)
         }
-    }, [PostData, count, PatchData])
+    }, [PostData, count, PatchData, depttype, desSelect, empSelect, flag, reset])
 
     //column def
     const [columnDef] = useState([

@@ -25,11 +25,9 @@ const SelectTrainer = ({ setTrainer }) => {
     }, []);
 
     useEffect(() => {
-        const obj = {
-            Tname: Tname
-        }
-        setTrainer(obj);
-    }, [Tname])
+        setTrainer(Tname)
+    }, [setTrainer, Tname])
+
     return (
         <Fragment>
             <FormControl

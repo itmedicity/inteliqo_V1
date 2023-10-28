@@ -47,7 +47,7 @@ const SchedulingTime = () => {
             edit_user: em_id,
             slno: slno
         }
-    })
+    }, [schedule_name, schedule_status, em_id, slno])
     // view
     useEffect(() => {
         const getData = async () => {
@@ -144,7 +144,7 @@ const SchedulingTime = () => {
         else {
             EditData(patchdata)
         }
-    }, [postdata, patchdata, count, flag])
+    }, [postdata, patchdata, reset, count, flag])
 
     //column def
     const [columnDef] = useState([
