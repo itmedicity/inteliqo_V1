@@ -1,28 +1,24 @@
-import { CssVarsProvider } from '@mui/joy'
-import { Box, Paper, Typography } from '@mui/material'
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import TextInput from 'src/views/Component/TextInput'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
-import moment from 'moment';
+import { Box, CssVarsProvider, Typography } from '@mui/joy';
+import { Paper } from '@mui/material';
 import { addDays } from 'date-fns';
-import { Actiontypes } from 'src/redux/constants/action.type'
+import moment from 'moment';
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import CommonCheckBox from 'src/views/Component/CommonCheckBox';
-import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySelect';
+import { Actiontypes } from 'src/redux/constants/action.type'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import TextInput from 'src/views/Component/TextInput';
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
+import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
+import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySelect';
 
-
-const Renew_Process = ({
+const RenewProcess = ({
     em_cont_end, grace_period, newContract,
     updateNewContract, emp_retireDate, contractrenew,
     setContractrenew, contractTpPermanent, setcontractTpPermanent,
 }) => {
     const dispatch = useDispatch()
-
     const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
-
-    //const [contractrenew, setContractrenew] = useState(false)//checkbox state for contract renewal
-    //const [contractTpPermanent, setcontractTpPermanent] = useState(false)//checkbox state for contract permanent
     const [permanentcate, setpermanentcate] = useState(0)//setting permanent category
     const [renewCate, setRenewCate] = useState(0)
 
@@ -40,7 +36,7 @@ const Renew_Process = ({
             }
             updateNewContract(frmData)
         }
-    }, [em_cont_end, grace_period])
+    }, [em_cont_end, updateNewContract, grace_period])
 
 
     const UpdateNewContractInformation = async (e) => {
@@ -72,7 +68,7 @@ const Renew_Process = ({
             setContractrenew(false)
             setcontractTpPermanent(true)
         }
-    }, [])
+    }, [setContractrenew, setcontractTpPermanent])
 
     //checkbox for contract to permannet 
     const getPermanent = useCallback((e) => {
@@ -84,20 +80,25 @@ const Renew_Process = ({
             setcontractTpPermanent(false)
             setContractrenew(true)
         }
-    }, [])
-
+    }, [setContractrenew, setcontractTpPermanent])
 
     return (
         <Fragment>
-            <Box sx={{ display: "flex", width: "100%" }} >
+            <Paper variant='outlined' square elevation={0} sx={{ display: "flex" }}  >
+                <CssVarsProvider>
+                    <Typography textColor="neutral.400" startDecorator={<DragIndicatorOutlinedIcon />} level="h6" >
+                        Employee Renewal / Confirmation Process
+                    </Typography>
+                </CssVarsProvider>
+            </Paper>
+            <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
                 <Box sx={{ display: "flex", width: "50%", flexDirection: 'column' }} >
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
-                            <CommonCheckBox
+                            <JoyCheckbox
                                 name="contractrenew"
-                                // value={contractrenew}
                                 checked={contractrenew}
-                                onChange={(e) => getContract(e)}
+                                onchange={(e) => getContract(e)}
                             />
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, pl: 2 }}>
@@ -177,7 +178,6 @@ const Renew_Process = ({
                                 disable={contractrenew === true ? false : true}
                                 value={renewCate}
                                 setValue={setRenewCate} />
-                            {/* <EmployeeCategory style={SELECT_CMP_STYLE} disable={contractrenew === true ? false : true} /> */}
                         </Box>
                     </Box>
 
@@ -187,11 +187,10 @@ const Renew_Process = ({
                 <Box sx={{ display: "flex", width: "50%", flexDirection: 'column' }} >
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
-                            <CommonCheckBox
+                            <JoyCheckbox
                                 name="contractTpPermanent"
-                                // value={contractTpPermanent}
                                 checked={contractTpPermanent}
-                                onChange={(e) => getPermanent(e)}
+                                onchange={(e) => getPermanent(e)}
                             />
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, pl: 2 }}>
@@ -272,7 +271,6 @@ const Renew_Process = ({
                                 value={permanentcate}
                                 setValue={setpermanentcate}
                             />
-                            {/* <EmployeeCategory style={SELECT_CMP_STYLE} disable={contractTpPermanent === true ? false : true} /> */}
                         </Box>
                     </Box>
 
@@ -282,4 +280,4 @@ const Renew_Process = ({
     )
 }
 
-export default Renew_Process
+export default memo(RenewProcess) 

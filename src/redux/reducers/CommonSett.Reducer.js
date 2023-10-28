@@ -1,7 +1,8 @@
 import { Actiontypes } from '../constants/action.type';
 
 const { FETCH_COMMON_SETTING, SELECTED_DEPT_VAL, FETCH_DEPT_SECTION_DETL, FETCH_EMPLOYEE_DETL, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, FETCH_PUNCH_MASTER_DATA,
-    UPDATE_PUNCHMASTER_TABLE, SELECTED_EARN_VAL } = Actiontypes;
+    UPDATE_PUNCHMASTER_TABLE, SELECTED_EARN_VAL,
+    FETCH_EMPLOYEE_TYPE } = Actiontypes;
 
 
 const commonSetting = {
@@ -155,6 +156,20 @@ export const selectedEarnData = (state = selectEarn, { type, payload }) => {
     switch (type) {
         case SELECTED_EARN_VAL:
             return { ...state, earn: payload }
+        default:
+            return state;
+    }
+}
+
+//get employee type
+const empType = {
+    empypeList: []
+}
+
+export const setEmployeeType = (state = empType, { type, payload }) => {
+    switch (type) {
+        case FETCH_EMPLOYEE_TYPE:
+            return { ...state, empypeList: payload }
         default:
             return state;
     }

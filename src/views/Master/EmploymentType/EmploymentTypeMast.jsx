@@ -1,802 +1,498 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState, useContext, useEffect } from 'react'
-import NumberFormat from 'react-number-format'
+import React, { useState, useEffect, useCallback } from 'react'
 import { ToastContainer } from 'react-toastify'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
-import SessionCheck from 'src/views/Axios/SessionCheck'
-import DesignationType from 'src/views/CommonCode/DesignationType'
-import EmployeType from 'src/views/CommonCode/EmployeType'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { useHistory } from 'react-router-dom'
 import { memo } from 'react'
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import { Box, Button, CssVarsProvider, Grid, Tooltip, Typography } from '@mui/joy'
+import JoyEmployeeTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyEmployeeTypeSelect'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import SaveIcon from '@mui/icons-material/Save';
+import PreviewIcon from '@mui/icons-material/Preview';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import { Paper } from '@mui/material'
 
 const EmploymentTypeMast = () => {
-    const [cont_period, setcont_period] = useState(0)
-    const [disable, setdisable] = useState(true)
-    const classes = useStyles();
-    const {
-        selectEmployeeType,
-        selectDesignationType,
-        updateEmployeetype,
-        updateDesignationType,
-        earntypename,
-        designattypename
-    } = useContext(PayrolMasterContext);
-    // use effect employee cateroy
-    useEffect(() => {
-        if (selectEmployeeType === 2) {
-            setdisable(false)
-        }
-        else {
-            setdisable(true)
-        }
 
+    const history = useHistory();
+    const [empType, setEmptype] = useState(0)
+    const [cate_name, setCate_name] = useState('')
+    const [lvetype_slno_cl, setlvetype_slno_cl] = useState(false)
+    const [max_allowed_count_cl, setmax_allowed_count_cl] = useState('')
+    const [lvetype_slno_sick, setlvetype_slno_sick] = useState(false)
+    const [max_allowed_count_sick, setmax_allowed_count_sick] = useState('')
+    const [lvetype_slno_conference, setlvetype_slno_conference] = useState(false)
+    const [max_allowed_count_conference, setmax_allowed_count_conference] = useState('')
+    const [lvetype_slno_lop, setlvetype_slno_lop] = useState(false)
+    const [max_allowed_count_lop, setmax_allowed_count_lop] = useState('')
+    const [lvetype_slno_maternity, setlvetype_slno_maternity] = useState(false)
+    const [max_allowed_count_maternity, setmax_allowed_count_maternity] = useState('')
+    const [lvetype_slno_previlage, setlvetype_slno_previlage] = useState(false)
+    const [max_allowed_count_previlage, setmax_allowed_count_previlage] = useState('')
+    const [cont_renw, setcont_renw] = useState(false)
+    const [contract_perd, setcontract_perd] = useState('')
+    const [esi_yes, setesi_yes] = useState(false)
+    const [dayoff, setdayoff] = useState(false)
+    const [workoff, setworkoff] = useState(false)
+    const [emp_status, setemp_status] = useState(false)
+    const [training, settraining] = useState(false)
+    const [probation, setprobation] = useState(false)
+    const [holiday, setholiday] = useState(false)
+    const [probation_day_count, setprobation_day_count] = useState('')
+    const [training_day_count, settraining_day_count] = useState('')
+    const [contract_grace_period, setContractGraceperiod] = useState(0)
+    const [pf, setPf] = useState(false)
+    const [wwf, setWwf] = useState(false)
+    const [lwf, setLwf] = useState(false)
 
-    }, [selectDesignationType, selectEmployeeType, designattypename, earntypename])
+    const clearForm = useCallback(() => {
+        setlvetype_slno_cl(false)
+        setlvetype_slno_sick(false)
+        setlvetype_slno_conference(false)
+        setlvetype_slno_lop(false)
+        setlvetype_slno_maternity(false)
+        setlvetype_slno_previlage(false)
+        setcont_renw(false)
+        setcontract_perd(0)
+        setesi_yes(false)
+        setdayoff(false)
+        setworkoff(false)
+        setemp_status(false)
+        settraining(false)
+        setprobation(false)
+        setprobation_day_count(0)
+        settraining_day_count(0)
+        setholiday(false)
+        setCate_name('')
+        setContractGraceperiod(0)
+        setPf(false)
+        setWwf(false)
+        setLwf(false)
+    }, [])
+
     // use effect for append
     useEffect(() => {
-
         const getyearlysettings = async () => {
             const result = await axioslogin.get('/yearlyleaves')
             const { successleave, messageleave, message } = result.data;
-            if (successleave === 0) {
-                warningNofity(message)
-            }
-            else if (successleave === 2) {
-                errorNofity("Contact EDP")
-
-
-            }
-            else {
-
-                const { max_allowed_count_cl,
-                    max_allowed_count_conference,
-                    max_allowed_count_lop,
-                    max_allowed_count_maternity,
-                    max_allowed_count_previlage,
-                    max_allowed_count_sick } = messageleave[0]
-                const frmdata = {
-                    max_allowed_count_cl: max_allowed_count_cl,
-                    max_allowed_count_conference: max_allowed_count_conference,
-                    max_allowed_count_lop: max_allowed_count_lop,
-                    max_allowed_count_maternity: max_allowed_count_maternity,
-                    max_allowed_count_previlage: max_allowed_count_previlage,
-                    max_allowed_count_sick: max_allowed_count_sick,
-                    contract_perd: 0,
-                    train_perd: 0,
-                    lvetype_slno_cl: false,
-                    lvetype_slno_sick: false,
-                    lvetype_slno_conference: false,
-                    lvetype_slno_lop: false,
-                    lvetype_slno_maternity: false,
-                    lvetype_slno_previlage: false,
-                    cont_renw: false,
-                    trapro: false,
-                    esi_yes: false,
-                    nahl_yes: false,
-                    fest_leav: false,
-                    dayoff: false,
-                    workoff: false,
-                    emp_status: false,
-                    cont_period: 0,
-                    cont_grace: 0,
-                    desiggperiod: 0,
-                    emt_name: ''
-                }
-                setEmploymentData(frmdata)
+            if (successleave === 1) {
+                const { max_allowed_count_cl, max_allowed_count_conference, max_allowed_count_lop,
+                    max_allowed_count_maternity, max_allowed_count_previlage, max_allowed_count_sick } = messageleave[0]
+                setmax_allowed_count_cl(max_allowed_count_cl === null ? 0 : max_allowed_count_cl)
+                setmax_allowed_count_conference(max_allowed_count_conference)
+                setmax_allowed_count_lop(max_allowed_count_lop)
+                setmax_allowed_count_maternity(max_allowed_count_maternity)
+                setmax_allowed_count_previlage(max_allowed_count_previlage)
+                setmax_allowed_count_sick(max_allowed_count_sick)
+                setprobation_day_count(0)
+                settraining_day_count(0)
+                setcontract_perd(0)
+                setContractGraceperiod(0)
+            } else {
+                infoNofity(message)
             }
         }
         getyearlysettings();
-
-
     }, [])
 
-    // use history
-    const history = useHistory();
-    const [employmentData, setEmploymentData] = useState({
-        emt_name: '',
-        emp_type: selectEmployeeType,
-        des_type: selectDesignationType,
-        lvetype_slno_cl: false,
-        max_allowed_count_cl: 0,
-        lvetype_slno_sick: false,
-        max_allowed_count_sick: 0,
-        lvetype_slno_conference: false,
-        max_allowed_count_conference: 0,
-        lvetype_slno_lop: false,
-        max_allowed_count_lop: 0,
-        lvetype_slno_maternity: false,
-        max_allowed_count_maternity: 0,
-        lvetype_slno_previlage: false,
-        max_allowed_count_previlage: 0,
-        cont_renw: false,
-        contract_perd: 0,
-        train_perd: 0,
-        trapro: false,
-        esi_yes: false,
-        nahl_yes: false,
-        fest_leav: false,
-        dayoff: false,
-        workoff: false,
-        emp_status: false,
-        contractgrace_perd: 0,
-        traingrace_perd: 0,
-        desiggperiod: 0
-    })
-    const {
-        emt_name,
-        lvetype_slno_cl,
-        max_allowed_count_cl,
-        lvetype_slno_sick,
-        max_allowed_count_sick,
-        lvetype_slno_conference,
-        max_allowed_count_conference,
-        lvetype_slno_lop,
-        max_allowed_count_lop,
-        lvetype_slno_maternity,
-        max_allowed_count_maternity,
-        lvetype_slno_previlage,
-        max_allowed_count_previlage,
-        cont_renw,
-        contract_perd,
-        train_perd,
-        trapro,
-        esi_yes,
-        nahl_yes,
-        fest_leav,
-        dayoff, contractgrace_perd, traingrace_perd,
-        workoff,
-        emp_status } = employmentData;
-    // useEffect(() => {
-    //     setEmploymentData(employmentData)
-    // }, [employmentData])
-
-    const getEmploymentFormData = (e) => {
-        if (selectEmployeeType === 0 && selectDesignationType === 0) {
-            infoNofity("Please Select The Designation Type or EmployeeType")
-        }
-        else {
-            const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-            setEmploymentData({ ...employmentData, [e.target.name]: value })
-        }
-    }
-
-    // for submission data
-    const postFormdata = {
-        ecat_name: emt_name,
-        emp_type: selectEmployeeType,
-        des_type: selectDesignationType,
-        ecat_cont: cont_renw === true ? 1 : 0,
-        ecat_cont_period: contract_perd,
-        cont_grace: contractgrace_perd,
-        ecat_prob: trapro === true ? 1 : 0,
-        ecat_prob_period: train_perd,
-        cont_period: traingrace_perd,
-        ecat_cl: lvetype_slno_cl === true ? 1 : 0,
-        ecat_cl_max: max_allowed_count_cl,
-        ecat_el: lvetype_slno_previlage === true ? 1 : 0,
-        ecat_el_max: max_allowed_count_previlage,
-        ecat_sl: lvetype_slno_sick === true ? 1 : 0,
-        ecat_sl_max: max_allowed_count_sick,
-        ecat_nh: nahl_yes === true ? 1 : 0,
-        ecat_fh: fest_leav === true ? 1 : 0,
-        ecat_woff_allow: workoff === true ? 1 : 0,
-        ecat_doff_allow: dayoff === true ? 1 : 0,
-        ecat_esi_allow: esi_yes === true ? 1 : 0,
-        ecat_confere: cont_renw === true ? 1 : 0,
-        ecat_confere_max: max_allowed_count_conference,
-        ecat_lop: lvetype_slno_lop === true ? 1 : 0,
-        ecat_lop_max: max_allowed_count_lop,
-        ecat_mate: lvetype_slno_maternity === true ? 1 : 0,
-        ecat_mate_max: max_allowed_count_maternity,
-        ecat_status: emp_status === true ? 1 : 0,
-        empstat_period: cont_period,
-
-        create_users: employeeNumber()
-    }
-    // for rest
-    const resetForm = {
-        emt_name: '',
-        lvetype_slno_cl: false,
-        max_allowed_count_cl: 0,
-        lvetype_slno_sick: false,
-        max_allowed_count_sick: 0,
-        lvetype_slno_conference: false,
-        max_allowed_count_conference: 0,
-        lvetype_slno_lop: false,
-        max_allowed_count_lop: 0,
-        lvetype_slno_maternity: false,
-        max_allowed_count_maternity: 0,
-        lvetype_slno_previlage: false,
-        max_allowed_count_previlage: 0,
-        cont_renw: false,
-        contract_perd: 0,
-        train_perd: 0,
-        trapro: false,
-        esi_yes: false,
-        nahl_yes: false,
-        fest_leav: false,
-        dayoff: false,
-        workoff: false,
-        emp_status: false,
-        cont_period: 0,
-        cont_grace: 0,
-        desiggperiod: 0,
-        contractgrace_perd: 0,
-        traingrace_perd: 0,
-    }
-
     // for submission
-    const submitEmploymentForm = async (e) => {
-        e.preventDefault();
-        if (cont_renw === true && contract_perd === 0) {
-            infoNofity("Select contract Period")
-        } else if (trapro === true && train_perd === 0) {
-            infoNofity("Select Training Period")
-        } else {
-            const result = await axioslogin.post('/empcat', postFormdata);
-            const { success, message } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setEmploymentData(resetForm)
-                updateEmployeetype(0)
-                updateDesignationType(0)
-                setcont_period(0);
-                // setcont_grace(0);
-            } else if (success === 0) {
-                errorNofity(message)
-            } else if (success === 2) {
-                infoNofity(message)
-            } else if (success === 7) {
-                infoNofity(message)
-            }
+    const submitEmploymentForm = useCallback(async (e) => {
+        const postData = {
+            ecat_name: cate_name,
+            emp_type: empType,
+            ecat_cl: lvetype_slno_cl === true ? 1 : 0,
+            ecat_cl_max: max_allowed_count_cl,
+            ecat_sl: lvetype_slno_sick === true ? 1 : 0,
+            ecat_sl_max: max_allowed_count_sick,
+            ecat_confere: lvetype_slno_conference === true ? 1 : 0,
+            ecat_confere_max: max_allowed_count_conference,
+            ecat_lop: lvetype_slno_lop === true ? 1 : 0,
+            ecat_lop_max: max_allowed_count_lop,
+            ecat_mate: lvetype_slno_maternity === true ? 1 : 0,
+            ecat_mate_max: max_allowed_count_maternity,
+            ecat_el: lvetype_slno_previlage === true ? 1 : 0,
+            ecat_el_max: max_allowed_count_previlage,
+            ecat_cont: cont_renw === true ? 1 : 0,
+            ecat_cont_period: contract_perd,
+            ecat_esi_allow: esi_yes === true ? 1 : 0,
+            ecat_doff_allow: dayoff === true ? 1 : 0,
+            ecat_woff_allow: workoff === true ? 1 : 0,
+            ecat_status: emp_status === true ? 1 : 0,
+            ecat_training: training === true ? 1 : 0,
+            ecat_training_max: training_day_count,
+            ecat_prob: probation === true ? 1 : 0,
+            ecat_prob_period: probation_day_count,
+            ecat_holiday: holiday === true ? 1 : 0,
+            cont_grace: contract_grace_period,
+            ecate_pf: pf === true ? 1 : 0,
+            ecat_wwf: wwf === true ? 1 : 0,
+            ecat_lwf: lwf === true ? 1 : 0,
+            create_users: employeeNumber()
         }
-    }
+        const result = await axioslogin.post('/empcat', postData);
+        const { success, message } = result.data;
+        if (success === 1) {
+            succesNofity(message)
+            setEmptype(0)
+            clearForm()
+        } else if (success === 0) {
+            errorNofity(message)
+        } else if (success === 2) {
+            infoNofity(message)
+        } else if (success === 7) {
+            infoNofity(message)
+        }
 
-    // for close button 
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
-    // to view page 
-    const employmentTypeTable = () => {
+    }, [empType, lvetype_slno_cl, max_allowed_count_cl, lvetype_slno_sick, max_allowed_count_sick,
+        lvetype_slno_conference, max_allowed_count_conference, lvetype_slno_lop, max_allowed_count_lop,
+        lvetype_slno_maternity, max_allowed_count_maternity, lvetype_slno_previlage, training,
+        max_allowed_count_previlage, cont_renw, contract_perd, esi_yes, dayoff, workoff, emp_status,
+        training_day_count, probation, probation_day_count, holiday, cate_name, contract_grace_period,
+        pf, wwf, lwf, clearForm])
+
+
+    const viewTable = useCallback(() => {
         history.push('/Home/EmploymentTypeList');
-    }
+    }, [history])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <>
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Employee Category</h5>
-                </div>
-                <form className={classes.root} onSubmit={submitEmploymentForm}>
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-md-12">
-
-                                <div className="col-md-12 row">
-                                    <div className="col-md-4">
-                                        <EmployeType />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <DesignationType />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <TextField
-                                            label="Employment Type Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            name="emt_name"
-                                            value={emt_name}
-                                            onChange={(e) => getEmploymentFormData(e)}
+            <MasterLayout title={"Employee Category"} displayClose={true}>
+                <Box sx={{ width: "100%", p: 0.5 }} >
+                    <Paper variant='outlined' sx={{ p: 1 }}>
+                        <Grid container spacing={1}>
+                            <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', }}>
+                                <Box sx={{ flex: 1 }}>
+                                    <JoyEmployeeTypeSelect value={empType} setValue={setEmptype} />
+                                </Box>
+                                <Box sx={{ flex: 1, pl: 0.5 }}>
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        name="cate_name"
+                                        value={cate_name}
+                                        onchange={(e) => setCate_name(e.target.value)}
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                </Box>
+                            </Box>
+                            <Grid item xl={4} lg={2}>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Casual Leave'
+                                            name="lvetype_slno_cl"
+                                            checked={lvetype_slno_cl}
+                                            onchange={(e) => setlvetype_slno_cl(e.target.checked)}
                                         />
-                                    </div>
-
-                                </div>
-
-                                {/* first row */}
-                                <div className="col-md-12 row">
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_cl"
-                                                    color="secondary"
-                                                    value={lvetype_slno_cl}
-                                                    checked={lvetype_slno_cl}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Casual Leave"
-                                        />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            disabled
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="casleave_perd"
+                                            size="sm"
+                                            name="max_allowed_count_cl"
                                             value={max_allowed_count_cl}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            onchange={(e) => setmax_allowed_count_cl(e.target.value)}
                                         />
-                                    </div>
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_maternity"
-                                                    color="secondary"
-                                                    value={lvetype_slno_maternity}
-                                                    checked={lvetype_slno_maternity}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="ML"
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Earn Leave'
+                                            checked={lvetype_slno_previlage}
+                                            name="lvetype_slno_previlage"
+                                            onchange={(e) => setlvetype_slno_previlage(e.target.checked)}
                                         />
-                                    </div>
-
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            disabled
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="max_allowed_count_maternity"
-                                            value={max_allowed_count_maternity}
-                                            onChange={(e) => getEmploymentFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="workoff"
-                                                    color="secondary"
-                                                    value={workoff}
-                                                    checked={workoff}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Work Off"
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="fest_leav"
-                                                    color="secondary"
-                                                    value={fest_leav}
-                                                    checked={fest_leav}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Festival Leave "
-                                        />
-                                    </div>
-                                </div>
-
-
-                                {/* second row */}
-                                <div className="col-md-12 row">
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_previlage"
-                                                    color="secondary"
-                                                    value={lvetype_slno_previlage}
-                                                    checked={lvetype_slno_previlage}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Earn Leave"
-                                        />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            disabled
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
+                                            size="sm"
                                             name="max_allowed_count_previlage"
                                             value={max_allowed_count_previlage}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            onchange={(e) => setmax_allowed_count_previlage(e.target.value)}
                                         />
-                                    </div>
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_conference"
-                                                    color="secondary"
-                                                    value={lvetype_slno_conference}
-                                                    checked={lvetype_slno_conference}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Conferance Leave"
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Sick Leave'
+                                            checked={lvetype_slno_sick}
+                                            name="lvetype_slno_sick"
+                                            onchange={(e) => setlvetype_slno_sick(e.target.checked)}
                                         />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            disabled
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="max_allowed_count_conference"
-                                            value={max_allowed_count_conference}
-                                            onChange={(e) => getEmploymentFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="dayoff"
-                                                    color="secondary"
-                                                    value={dayoff}
-                                                    checked={dayoff}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Day off"
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="nahl_yes"
-                                                    color="secondary"
-                                                    value={nahl_yes}
-                                                    checked={nahl_yes}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="National Holiday"
-                                        />
-                                    </div>
-
-                                </div>
-                                {/* third row */}
-                                <div className="col-md-12 row">
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_sick"
-                                                    color="secondary"
-                                                    value={lvetype_slno_sick}
-                                                    checked={lvetype_slno_sick}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Sick Leave"
-                                        />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            disabled
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
+                                            size="sm"
                                             name="max_allowed_count_sick"
                                             value={max_allowed_count_sick}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            onchange={(e) => setmax_allowed_count_sick(e.target.value)}
                                         />
-                                    </div>
-                                    <div className="col-md-3 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="lvetype_slno_lop"
-                                                    color="secondary"
-                                                    value={lvetype_slno_lop}
-                                                    checked={lvetype_slno_lop}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="LOP"
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Contract Renewal Period(Days)'
+                                            disabled={empType === 2 ? false : true}
+                                            checked={cont_renw}
+                                            name="cont_renw"
+                                            onchange={(e) => setcont_renw(e.target.checked)}
                                         />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            disabled
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="loptxt"
-                                            value={max_allowed_count_lop}
-                                            onChange={(e) => getEmploymentFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="esi_yes"
-                                                    color="secondary"
-                                                    value={esi_yes}
-                                                    checked={esi_yes}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="ESI"
-                                        />
-                                    </div>
-                                    <div className="col-md-2 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="emp_status"
-                                                    color="secondary"
-                                                    value={emp_status}
-                                                    checked={emp_status}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                </div>
-
-
-                                {/* forth row */}
-                                <div className="col-md-12 row">
-                                    <div className="col-md-3 ">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="cont_renw"
-                                                    color="secondary"
-                                                    value={cont_renw}
-                                                    checked={cont_renw}
-                                                    disabled={disable}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Contract Renewal Period(Days)"
-                                        />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4 ">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
-                                            type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
+                                            size="sm"
+                                            disabled={empType === 2 ? false : true}
                                             name="contract_perd"
                                             value={contract_perd}
-                                            disabled={disable}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            onchange={(e) => setcontract_perd(e.target.value)}
                                         />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        {
+                                            empType === 2 ? <CssVarsProvider>
+                                                <Typography textColor="text.secondary" >
+                                                    Contract Renewal Grace Period
+                                                </Typography>
+                                            </CssVarsProvider> : null
+                                        }
 
-                                    </div>
-
-                                    <div className="col-md-3 ">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="trapro"
-                                                    color="secondary"
-                                                    value={trapro}
-                                                    checked={trapro}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Training /Probation period (Days)"
-                                        />
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="train_perd"
-                                            value={train_perd}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            size="sm"
+                                            disabled={empType === 2 ? false : true}
+                                            name="contract_grace_period"
+                                            value={contract_grace_period}
+                                            onchange={(e) => setContractGraceperiod(e.target.value)}
                                         />
-                                    </div>
-
-
-                                </div>
-                                {/* fifth row */}
-                                <div className="col-md-12 row">
-                                    <div className="col-md-3 ">
-
-                                    </div>
-                                    <div className="col-md-1 col-sm-4 ">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                </Box>
+                            </Grid>
+                            <Grid item xl={4} lg={2}>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Maternity Leave'
+                                            checked={lvetype_slno_maternity}
+                                            name="lvetype_slno_maternity"
+                                            onchange={(e) => setlvetype_slno_maternity(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="contractgrace_perd"
-                                            value={contractgrace_perd}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            size="sm"
+                                            name="max_allowed_count_maternity"
+                                            value={max_allowed_count_maternity}
+                                            onchange={(e) => setmax_allowed_count_maternity(e.target.value)}
                                         />
-
-                                    </div>
-
-                                    <div className="col-md-3 ">
-                                        {/* <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="trapro"
-                                                    color="secondary"
-                                                    value={trapro}
-                                                    checked={trapro}
-                                                    className="ml-2 "
-                                                    onChange={(e) => getEmploymentFormData(e)}
-                                                />
-                                            }
-                                            label="Training /Probation period (Days)"
-                                        /> */}
-                                    </div>
-                                    <div className="col-md-1 col-sm-4">
-                                        <NumberFormat
-                                            customInput={TextField}
-                                            fullWidth
-                                            format="###"
-                                            variant="outlined"
-                                            size="small"
-                                            autoComplete="off"
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Conferance Leave'
+                                            checked={lvetype_slno_conference}
+                                            name="lvetype_slno_conference"
+                                            onchange={(e) => setlvetype_slno_conference(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
                                             type="text"
-                                            thousandSeparator={false}
-                                            allowNegative={false}
-                                            name="traingrace_perd"
-                                            value={traingrace_perd}
-                                            onChange={(e) => getEmploymentFormData(e)}
+                                            size="sm"
+                                            name="max_allowed_count_conference"
+                                            value={max_allowed_count_conference}
+                                            onchange={(e) => setmax_allowed_count_conference(e.target.value)}
                                         />
-                                    </div>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Training'
+                                            checked={training}
+                                            name="training"
+                                            onchange={(e) => settraining(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            name="training_day_count"
+                                            value={training_day_count}
+                                            onchange={(e) => settraining_day_count(e.target.value)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Probation'
+                                            checked={probation}
+                                            name="probation"
+                                            onchange={(e) => setprobation(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            name="probation_day_count"
+                                            value={probation_day_count}
+                                            onchange={(e) => setprobation_day_count(e.target.value)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Grid>
+                            <Grid item xl={4} lg={2}>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='LWP'
+                                            checked={lvetype_slno_lop}
+                                            name="lvetype_slno_lop"
+                                            onchange={(e) => setlvetype_slno_lop(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            name="max_allowed_count_lop"
+                                            value={max_allowed_count_lop}
+                                            onchange={(e) => setmax_allowed_count_lop(e.target.value)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', pt: 0.5 }}>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='Week Off'
+                                            checked={workoff}
+                                            name="workoff"
+                                            onchange={(e) => setworkoff(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='Holiday'
+                                            checked={holiday}
+                                            onchange={(e) => setholiday(e.target.checked)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='Compansatory Off'
+                                            checked={dayoff}
+                                            name="dayoff"
+                                            onchange={(e) => setdayoff(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='ESI'
+                                            checked={esi_yes}
+                                            name="esi_yes"
+                                            onchange={(e) => setesi_yes(e.target.checked)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='PF'
+                                            checked={pf}
+                                            name="pf"
+                                            onchange={(e) => setPf(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='WWF'
+                                            checked={wwf}
+                                            name="wwf"
+                                            onchange={(e) => setWwf(e.target.checked)}
+                                        />
+                                    </Box>
+                                </Box>
 
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='LWF'
+                                            checked={lwf}
+                                            name="lwf"
+                                            onchange={(e) => setLwf(e.target.checked)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1 }}>
+                                        <JoyCheckbox
+                                            label='Status'
+                                            checked={emp_status}
+                                            name="emp_status"
+                                            onchange={(e) => setemp_status(e.target.checked)}
+                                        />
+                                    </Box>
 
-                                </div>
-
-
-
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card-footer">
-
-                        <div className="row col-md-12">
-
-                            <div className="col-md-6 row">
-                                <div className="col-md-4 col-sm-12 col-xs-12 mb-1">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        type="Submit"
-                                        className="ml-2"
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                                <div className="col-md-4 col-sm-12 col-xs-12">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        className="ml-2"
-                                        onClick={employmentTypeTable}
-                                    >
-                                        View
-                                    </Button>
-                                </div>
-                                <div className="col-md-4 col-sm-12 col-xs-12">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        fullWidth
-                                        className="ml-2"
-                                        onClick={toSettings}
-                                    >
-                                        Close
-                                    </Button>
-                                </div>
-
-                            </div>
-                            <div className="col-md-6 row"></div>
-
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-        </Fragment>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                            <Tooltip title="Save" followCursor placement='top' arrow>
+                                <Box sx={{ px: 0.5, mt: 0.9 }}>
+                                    <CssVarsProvider>
+                                        <Button
+                                            variant="outlined"
+                                            component="label"
+                                            size="sm"
+                                            color="primary"
+                                            onClick={submitEmploymentForm}
+                                        >
+                                            <SaveIcon />
+                                        </Button>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                            <Tooltip title="View" followCursor placement='top' arrow>
+                                <Box sx={{ px: 0.5, mt: 0.9 }}>
+                                    <CssVarsProvider>
+                                        <Button
+                                            variant="outlined"
+                                            component="label"
+                                            size="sm"
+                                            color="primary"
+                                            onClick={viewTable}
+                                        >
+                                            <PreviewIcon />
+                                        </Button>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Tooltip>
+                        </Box>
+                    </Paper>
+                </Box>
+            </MasterLayout >
+        </>
     )
 }
 

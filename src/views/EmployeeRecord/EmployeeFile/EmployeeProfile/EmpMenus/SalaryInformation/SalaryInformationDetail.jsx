@@ -49,12 +49,12 @@ const SalaryInformationDetail = () => {
         <Fragment>
             <Box sx={{
                 width: "100%",
-                height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                // height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" }
             }} >
-                <Paper square elevation={0} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{
+                <Paper variant='outlined' square elevation={0} sx={{ p: 0.5, }}>
+                    <Paper variant='outlined' square elevation={0} sx={{
                         display: "flex",
                         p: 1,
                         alignItems: "center",
@@ -106,7 +106,11 @@ const SalaryInformationDetail = () => {
                         {/* Fixed wages box end */}
 
                         {/* Amendment box start */}
-                        <Paper square sx={{ display: "flex", width: "100%", flexDirection: "column", pl: 0.5, height: 150 }}>
+                        <Paper square sx={{
+                            display: "flex",
+                            width: "100%", flexDirection: "column", pl: 0.5, height: 150, overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }
+                        }}>
                             <Box boxShadow={3} sx={{ display: "flex", width: "100%" }} >
                                 <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly", backgroundColor: "#F7F7F8" }} >
                                     <CssVarsProvider>

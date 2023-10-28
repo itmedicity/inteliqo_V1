@@ -4,18 +4,20 @@ import moment from 'moment';
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import TextInput from 'src/views/Component/TextInput'
 import { format } from 'date-fns'
-import { Box, Checkbox, FormControlLabel, Paper, TextField } from '@mui/material';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { Box, Paper, } from '@mui/material';
+import { Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import IconButton from '@mui/joy/IconButton';
 import { useSelector } from 'react-redux';
-import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import EditIcon from '@mui/icons-material/Edit';
 import _ from 'underscore';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect';
+import SaveIcon from '@mui/icons-material/Save';
+import { IconButton as OpenIcon } from '@mui/material';
+
 const ExperienceDetails = () => {
 
     //const classes = useStyles()
@@ -37,13 +39,15 @@ const ExperienceDetails = () => {
         workenddate: format(new Date(), "yyyy-MM-dd"),
     })
     //defaultState
-    const defaultState = {
-        institution_name: "",
-        gross_salary: "",
-        tmch_exp: false,
-        workstartdate: format(new Date(), "yyyy-MM-dd"),
-        workenddate: format(new Date(), "yyyy-MM-dd"),
-    }
+    const defaultState = useMemo(() => {
+        return {
+            institution_name: "",
+            gross_salary: "",
+            tmch_exp: false,
+            workstartdate: format(new Date(), "yyyy-MM-dd"),
+            workenddate: format(new Date(), "yyyy-MM-dd"),
+        }
+    }, [])
     //Destructuring
     const { institution_name, gross_salary, tmch_exp, workstartdate, workenddate } = formData
     //getting form data
@@ -117,11 +121,13 @@ const ExperienceDetails = () => {
             const result = await axioslogin.post('/experience', postData)
             const { success, message } = result.data
             if (success === 1) {
+                settotyear(0)
+                setTotmonth(0)
+                setDesg(0)
                 succesNofity(message)
                 setformData(defaultState)
                 setCount(count + 1)
-                settotyear(0)
-                setDesg(0)
+
             }
             else if (success === 2) {
                 warningNofity(message)
@@ -135,11 +141,13 @@ const ExperienceDetails = () => {
             const result = await axioslogin.patch('/experience', patchData)
             const { success, message } = result.data
             if (success === 2) {
+                settotyear(0)
+                setDesg(0)
+                setTotmonth(0)
                 succesNofity(message)
                 setformData(defaultState)
                 setCount(count + 1)
-                settotyear(0)
-                succesNofity(message)
+
             }
             else {
                 infoNofity(message)
@@ -155,7 +163,7 @@ const ExperienceDetails = () => {
             }
 
         }
-    }, [postData, patchData, flag, count, workstartdate, workenddate])
+    }, [postData, patchData, flag, count, setDesg, workstartdate, defaultState, workenddate])
 
     const [columnDef] = useState([
         { headerName: 'Emp No', field: 'em_no', wrapText: true, minWidth: 90 },
@@ -169,10 +177,10 @@ const ExperienceDetails = () => {
         { headerName: 'Gross salary', field: 'em_salary', minWidth: 150 },
         {
             headerName: 'Edit', minWidth: 150, cellRenderer: params =>
-                <EditIcon onClick={() =>
-                    getTableData(params)
-                }
-                />
+                <OpenIcon sx={{ pb: 2, boxShadow: 0 }} size='sm' color='primary' onClick={() => getTableData(params)}>
+                    <EditIcon />
+                </OpenIcon>
+
         },
     ])
 
@@ -194,9 +202,14 @@ const ExperienceDetails = () => {
 
     return (
         <Fragment>
-            <Box sx={{ width: "100%", height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+            <Box sx={{
+                width: "100%", p: 1,
+                //height: { xxl: 925, xl: 800, lg: 523, md: 270, sm: 270, xs: 270 }, 
+                overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+            }} >
+
                 {/* heading Section start */}
-                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                <Paper variant='outlined' square elevation={0} sx={{ display: "flex", alignItems: "center" }}   >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -204,9 +217,24 @@ const ExperienceDetails = () => {
                             </Typography>
                         </CssVarsProvider>
                     </Box>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ display: "flex", pr: 1 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="sm"
+                                    color="primary"
+                                    onClick={submitFormData}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Tooltip>
                 </Paper>
                 {/* headig section end */}
-                <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
+                <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, mt: 0.5 }}>
                     {/* first row start */}
                     <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
                         <Box sx={{ width: '20%' }}>
@@ -217,36 +245,26 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <TextField fullWidth
-                                placeholder='Institution Name'
-                                size="small"
-                                id='institution_name'
-                                value={tmch_exp === true ? "Travancore Medicity" : institution_name}
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Institution Name"
                                 name="institution_name"
-                                onChange={(e) => updateEmployeeExpFormData(e)}
+                                value={tmch_exp === true ? "Travancore Medicity" : institution_name}
+                                onchange={(e) => updateEmployeeExpFormData(e)}
                             />
                         </Box>
-                        <Box sx={{ width: '50%', pl: 5 }} >
-                            <FormControlLabel
-                                className=""
-                                control={
-                                    <Checkbox
-                                        name="tmch_exp"
-                                        color="secondary"
-                                        value={tmch_exp}
-                                        checked={tmch_exp}
-                                        className="pl-2 pt-1 pb-1"
-                                        onChange={(e) => {
-                                            updateEmployeeExpFormData(e)
-                                        }}
-                                    />
-                                } label="Medicity Experience"
+                        <Box sx={{ width: '50%', pl: 5, mt: 1 }} >
+                            <JoyCheckbox
+                                label='Medicity Experience'
+                                name="tmch_exp"
+                                checked={tmch_exp}
+                                onchange={(e) => updateEmployeeExpFormData(e)}
                             />
                         </Box>
                     </Box>
                     {/* first row end */}
-
-                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                         <Box sx={{ width: '20%' }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
@@ -255,9 +273,9 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <DesignationSelectRedux value={desg} setValue={setDesg} />
+                            <JoyDesignationSelect desgValue={desg} getDesg={setDesg} />
                         </Box>
-                        <Box sx={{ width: '20%' }}>
+                        <Box sx={{ width: '20%', pl: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     Gross Salary
@@ -265,19 +283,19 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%', }}>
-                            <TextField fullWidth
-                                placeholder='Gross Salary'
-                                size="small"
-                                id='gross_salary'
-                                value={gross_salary}
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Gross Salary"
                                 name="gross_salary"
-                                onChange={(e) => updateEmployeeExpFormData(e)}
+                                value={gross_salary}
+                                onchange={(e) => updateEmployeeExpFormData(e)}
                             />
                         </Box>
                     </Box>
                     {/* second row start */}
                     <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
-                        <Box sx={{ width: '20%', pl: 0.5 }}>
+                        <Box sx={{ width: '20%' }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     Work Start Date
@@ -285,19 +303,20 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <TextInput
+                            <Input
                                 type="date"
-                                classname="form-control form-control-lg"
-                                Placeholder="Start Date"
-                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                slotProps={{
+                                    input: {
+                                        max: moment(new Date()).format('YYYY-MM-DD'),
+                                    },
+
+                                }}
                                 value={workstartdate}
                                 name="workstartdate"
-                                changeTextValue={(e) => {
-                                    updateEmployeeExpFormData(e)
-                                }}
+                                onChange={(e) => updateEmployeeExpFormData(e)}
                             />
                         </Box>
-                        <Box sx={{ width: '20%', }}>
+                        <Box sx={{ width: '20%', pl: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     Work End Date
@@ -305,23 +324,25 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <TextInput
+                            <Input
                                 type="date"
-                                classname="form-control form-control-lg"
-                                Placeholder="Start Date"
-                                min={moment(workstartdate).format('YYYY-MM-DD')}
-                                max={moment(new Date()).format('YYYY-MM-DD')}
+                                slotProps={{
+                                    input: {
+                                        min: moment(workstartdate).format('YYYY-MM-DD'),
+                                        max: moment(new Date()).format('YYYY-MM-DD'),
+                                    },
+
+                                }}
                                 value={workenddate}
                                 name="workenddate"
-                                changeTextValue={(e) => {
-                                    updateEmployeeExpFormData(e)
-                                }}
+                                onChange={(e) => updateEmployeeExpFormData(e)}
                             />
                         </Box>
                     </Box>
                     {/* second row end */}
+
                     {/* third row start */}
-                    <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 0.5 }}>
                         <Box sx={{ width: '20%' }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
@@ -330,16 +351,16 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <TextField fullWidth
-                                placeholder='Total Year'
-                                size="small"
-                                id='totyear'
-                                value={totyear}
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Total Year"
                                 name="totyear"
-                                disabled={true}
+                                value={totyear}
+                                disabled
                             />
                         </Box>
-                        <Box sx={{ width: '20%' }}>
+                        <Box sx={{ width: '20%', pl: 0.5 }}>
                             <CssVarsProvider>
                                 <Typography textColor="text.secondary" >
                                     Total Month Experience
@@ -347,42 +368,31 @@ const ExperienceDetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <TextField fullWidth
-                                placeholder='Total Month'
-                                size="small"
-                                id='totmonth'
-                                value={totmonth}
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Total Month"
                                 name="totmonth"
-                                disabled={true}
+                                value={totmonth}
+                                disabled
                             />
                         </Box>
                     </Box>
+                    {/* third row end */}
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={data}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30} />
+                    </Paper>
                 </Box>
-                {/* third row end */}
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={data}
-                        sx={{
-                            height: 600,
-                            width: "100%"
-                        }}
-                        rowHeight={30}
-                        headerHeight={30} />
-                </Paper>
-                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
-                    <Box sx={{ flex: 0, p: 0.3 }} >
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' sx={theme => ({
-                                color: `rgba(${theme.vars.palette.primary.mainChannel} / 0.78)`,
-                            })} onClick={submitFormData} >
-                                <LibraryAddCheckOutlinedIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
             </Box>
-        </Fragment>
+        </Fragment >
     )
 }
 

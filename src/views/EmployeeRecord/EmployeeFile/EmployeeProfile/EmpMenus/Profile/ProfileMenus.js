@@ -1,12 +1,11 @@
 import { CssVarsProvider, Typography } from '@mui/joy';
 import { Box, Grid, IconButton, Paper, Tooltip, } from '@mui/material';
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
-import { InfoOutlined } from '@material-ui/icons';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined';
@@ -18,16 +17,16 @@ import { memo } from 'react';
 
 const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
-    const state = useSelector((state) => {
-        return state.getMenuRenderCompRights.slno;
-    })
+    // const state = useSelector((state) => {
+    //     return state.getMenuRenderCompRights.slno;
+    // })
 
     // get personal details 
     const loginDetl = useSelector((state) => {
         return state.getPrifileDateEachEmp || 0
     })
 
-    const { personalData, personalDataStatus } = loginDetl.empPersonalData;
+    const { personalData } = loginDetl.empPersonalData;
 
     const {
         em_no, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,

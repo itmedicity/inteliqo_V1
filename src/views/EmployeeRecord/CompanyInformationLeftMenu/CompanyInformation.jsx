@@ -1,17 +1,24 @@
 import { Button } from '@mui/joy'
 import { Box, IconButton, Tooltip } from '@mui/material'
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { axioslogin } from 'src/views/Axios/Axios'
 import NextPlanIcon from '@mui/icons-material/NextPlan';
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+import { useDispatch } from 'react-redux';
+import { setDepartment } from 'src/redux/actions/Department.action';
 
 const CompanyPage = React.lazy(() => import('./CompanyInfoPage'))
 
 const CompanyInformation = () => {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(setDepartment());
+    }, [dispatch])
 
     const [dept, setDept] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
@@ -68,13 +75,13 @@ const CompanyInformation = () => {
                 open === 1 ? <CompanyPage emno={emno} empid={empid} setOpen={setOpen} /> : <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
-                            <DeptSelectByRedux setValue={setDept} value={dept} />
+                            <DepartmentDropRedx getDept={setDept} />
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
-                            <DeptSecSelectByRedux dept={dept} setValue={setDeptSection} value={deptSection} />
+                            <DepartmentSectionRedx getSection={setDeptSection} />
                         </Box>
-                        <Box sx={{ flex: 1, px: 0.3 }}>
-                            <Button aria-label="Like" variant="outlined" color="neutral"
+                        <Box sx={{ flex: 1, px: 0.3, mt: 1 }}>
+                            <Button aria-label="Like" size='sm' variant="outlined" color="neutral"
                                 onClick={dataDisplay}
                                 sx={{
                                     color: '#81c784'

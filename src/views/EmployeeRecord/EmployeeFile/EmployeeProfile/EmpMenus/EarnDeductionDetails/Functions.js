@@ -15,7 +15,7 @@ export const updateEmpmaster = async (no) => {
     const result = await axioslogin.get(`/payrollprocess/grosssalarybyid/${no}`)
     const { message, success, data } = result.data;
     if (success === 1) {
-        const { em_id, gross_salary } = data[0]
+        const { em_id } = data[0]
         const sumWithInitial = data.map(item => item.em_amount).reduce((prev, next) => Number(prev) + Number(next));
         const updatedata = {
             gross_salary: sumWithInitial,

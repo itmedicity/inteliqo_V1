@@ -1,4 +1,4 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
 import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -11,7 +11,6 @@ import { useParams } from 'react-router-dom';
 import { axiosellider, axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import DetailsModel from './DetailsModel';
-import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 import RegionSelectRedux from 'src/views/MuiComponents/RegionSelectRedux';
@@ -20,6 +19,7 @@ import { setRegionByPin } from 'src/redux/actions/Region.Action';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ToastContainer } from 'react-toastify';
+import SaveIcon from '@mui/icons-material/Save';
 
 const Personaldetails = () => {
 
@@ -402,9 +402,13 @@ const Personaldetails = () => {
                     empid={no} emno={id} relation={relation} count={count} setCount={setCount}
                     setMrdnumber={setMrdnumber} setRelation={setRelation} />
             </Suspense>
-            <Box sx={{ width: "100%", height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 }, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+            <Box sx={{
+                width: "100%", p: 1,
+                // height: { xxl: 800, xl: 750, lg: 500, md: 500, sm: 500, xs: 350 },
+                overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+            }} >
                 {/* <Paper square elevation={0} > */}
-                <Paper square elevation={2} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                <Paper variant='outlined' square elevation={0} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
                             <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
@@ -412,6 +416,21 @@ const Personaldetails = () => {
                             </Typography>
                         </CssVarsProvider>
                     </Box>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ display: "flex", pr: 1 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="sm"
+                                    color="primary"
+                                    onClick={personaldataSubmit}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Tooltip>
                 </Paper>
                 {/* <RegionSelectRedux getDept={changeDept} /> */}
                 <Paper square elevation={0} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
@@ -1067,15 +1086,6 @@ const Personaldetails = () => {
                         </Box>
                     </Paper>
                 </Box>
-                <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
-                    <Box sx={{ display: "flex", p: 0.3 }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={personaldataSubmit}
-                        >
-                            <LibraryAddCheckOutlinedIcon color='primary' />
-                        </IconButton>
-                    </Box>
-                </Paper>
             </Box >
         </Fragment >
     )

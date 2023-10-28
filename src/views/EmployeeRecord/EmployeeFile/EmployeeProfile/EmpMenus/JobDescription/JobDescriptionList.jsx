@@ -154,7 +154,7 @@ const JobDescriptionList = ({ flag, setflag, id }) => {
             <ToastContainer />
             <Box sx={{
                 width: "100%",
-                //height: { xxl: 900, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
+                //height: { xxl: 925, xl: 800, lg: 523, md: 270, sm: 270, xs: 270 },
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" },
             }} >
