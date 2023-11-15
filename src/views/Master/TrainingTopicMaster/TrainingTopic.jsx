@@ -1,5 +1,5 @@
-import { Button, CssVarsProvider } from '@mui/joy'
-import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton } from '@mui/material'
+import { Button, CssVarsProvider, Input } from '@mui/joy'
+import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton, Typography } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
@@ -13,7 +13,9 @@ import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
-// import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
+// import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
+// import { setDepartment } from 'src/redux/actions/Department.action';
 
 const TrainingTopic = () => {
     const [dept_status, set_dept_status] = useState(false);
@@ -29,15 +31,21 @@ const TrainingTopic = () => {
     const [tableData, setTabledata] = useState(0);
     const [topic_slno, setTopic_slno] = useState(0);
     const [flag, setFlag] = useState(0);
+    const [dept_flag, setdept_Flag] = useState(0);
     const [trainingname, setTrainingname] = useState(0);
-    const [hours, setHours] = useState('');
+    const [hours, setHours] = useState(0);
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
+    // const dispatch = useDispatch()
+
+    // useEffect(() => {
+    //     dispatch(setDepartment())
+    // }, [dispatch, count])
     //reset
-    const reset = () => {
+    const reset = useCallback(() => {
         setTraining_topic_name('');
         setTraining_status(false);
         setTutorial_status(false);
@@ -47,10 +55,27 @@ const TrainingTopic = () => {
         setPost_test_status(false);
         setTrainingname(0);
         setHours(0);
-    }
+        set_dept_status(false);
+        setdepttype(0);
+        setdept_Flag(false)
+    }, [])
+    //check dept
+    const checkDepartment = useCallback((e) => {
+        if (e.target.checked === true) {
+            set_dept_status(e.target.checked)
+            setdept_Flag(1);
+        }
+        else {
+            set_dept_status(false)
+            setdept_Flag(0);
+            setdepttype(0);
+        }
+    }, [setdept_Flag, set_dept_status])
     //postdata
     const postdata = useMemo(() => {
         return {
+            dept_status: dept_status === true ? 1 : 0,
+            training_dept: depttype,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -62,11 +87,13 @@ const TrainingTopic = () => {
             create_user: em_id,
             hours: hours
         }
-    }, [training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id])
+    }, [depttype, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
         return {
+            dept_status: dept_status === true ? 1 : 0,
+            training_dept: depttype,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -78,9 +105,8 @@ const TrainingTopic = () => {
             edit_user: em_id,
             topic_slno: topic_slno,
             hours: hours
-
         }
-    }, [training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno])
+    }, [dept_status, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno])
 
     //view
     useEffect(() => {
@@ -91,6 +117,10 @@ const TrainingTopic = () => {
                 const viewData = data.map((val) => {
                     const obj = {
                         topic_slno: val.topic_slno,
+                        dept_status: val.dept_status,
+                        dept_id: val.dept_id,
+                        dept_name: val.dept_name,
+                        dept: val.dept_name === 0 ? "NILL" : val.dept_name,
                         training_topic_name: val.training_topic_name,
                         name_slno: val.name_slno,
                         hours: val.hours,
@@ -123,8 +153,11 @@ const TrainingTopic = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status } = data[0]
+        const { topic_slno, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status } = data[0]
         setFlag(1);
+        setdepttype(dept_id)
+        set_dept_status(dept_status === 0 ? false : true)
+        setdept_Flag(dept_status === 0 ? 0 : 1)
         setTraining_topic_name(training_topic_name);
         setTraining_status(training_status === 1 ? true : false);
         setTutorial_status(tutorial_status === 1 ? true : false);
@@ -160,7 +193,7 @@ const TrainingTopic = () => {
         const EditData = async (patchdata) => {
             const result = await axioslogin.patch('/TrainingTopic/update', patchdata)
             const { message, success } = result.data
-            if (success === 2) {
+            if (success === 1) {
                 reset();
                 setCount(count + 1);
                 setTopic_slno(0);
@@ -179,10 +212,11 @@ const TrainingTopic = () => {
         else {
             EditData(patchdata)
         }
-    }, [count, flag, postdata, patchdata])
+    }, [count, flag, reset, postdata, patchdata])
 
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
+        { headerName: 'Department', field: 'dept', filter: true, minWidth: 300 },
         { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 150 },
         { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
         { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
@@ -199,8 +233,9 @@ const TrainingTopic = () => {
                         <EditIcon color='primary' />
                     </IconButton>
                 </Fragment>
-        },
+        }
     ])
+
     return (
         <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
             <ToastContainer />
@@ -219,16 +254,20 @@ const TrainingTopic = () => {
                                                 value={dept_status}
                                                 checked={dept_status}
                                                 className="ml-1"
-                                                onChange={(e) => set_dept_status(e.target.checked)}
+                                                onChange={(e) => checkDepartment(e)}
                                             />
                                         }
                                         label="Departmental"
                                     />
                                 </Box>
-                                <Box sx={{}}>
-                                    {/* <DeptSecSelectByRedux value={depttype} setValue={setdepttype} /> */}
-
-                                </Box>
+                                {
+                                    dept_flag === 1 ?
+                                        <Box>
+                                            {/* <JoyDepartment deptValue={dept_type} getDept={setdept_type} /> */}
+                                            <DeptSelectByRedux value={depttype} setValue={setdepttype} />
+                                        </Box>
+                                        : null
+                                }
                                 <Box sx={{ mt: 1 }}>
                                     <SelectTrainingName value={trainingname} setValue={setTrainingname} />
                                 </Box>
@@ -243,18 +282,21 @@ const TrainingTopic = () => {
                                         onChange={(e) => setTraining_topic_name(e.target.value)}
                                     />
                                 </Box>
-                                <Box sx={{ mt: 1 }}>
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Training Hours'
-                                        id='Training Hours'
-                                        size="small"
+
+                                <Box sx={{ mt: 0.5, display: "flex", flexDirection: "row", gap: 3 }}>
+                                    <Typography sx={{ mt: 1 }}>Training Hours :</Typography>
+                                    <Input
+                                        type="number"
                                         value={hours}
-                                        name="Training Hours"
                                         onChange={(e) => setHours(e.target.value)}
+                                        slotProps={{
+                                            input: {
+                                                min: 1,
+                                                max: 5
+                                            },
+                                        }}
                                     />
                                 </Box>
-
                                 <Grid container spacing={1}>
                                     <Grid item xl={4} lg={2}>
                                         <Box>

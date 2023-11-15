@@ -1,44 +1,36 @@
-
 import { FormControl, MenuItem, Select } from '@mui/material';
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 
-const SelectTopics = ({ setTopic }) => {
+const DepartmentalTrainingTopics = ({ setTopic, topic, dept }) => {
     const [view, setView] = useState([]);
-    const [topicname, setTopicname] = useState([]);
     useEffect(() => {
-        const getData = async () => {
-            const result = await axioslogin.get(`/TrainingAfterJoining/selecttopic`)
-            const { data, success } = result.data
-            if (success === 2) {
-                setView(data);
-            } else {
-                setView([]);
+        if (dept === 0) {
+            const getData = async (dept) => {
+                const result = await axioslogin.get(`/TrainingAfterJoining/deptTrainingtopic/${dept}`)
+                const { data, success } = result.data
+                if (success === 1) {
+                    setView(data);
+                } else {
+                    setView([]);
+                }
             }
+            getData(dept)
         }
-        getData()
-    }, [])
-
-    useEffect(() => {
-        setTopic(topicname)
-    }, [setTopic, topicname])
+    }, [dept])
 
     return (
         <Fragment>
-            <FormControl
-                fullWidth
-                size='small'
-            >
+            <FormControl fullWidth size='small'>
                 <Select
-                    value={topicname}
-                    onChange={(e) => setTopicname(e.target.value)}
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
                     size="small"
                     fullWidth
                     variant='outlined'
                     sx={{ maxWidth: "100%" }}
-
                 >
-                    <MenuItem disabled value={0}  >
+                    <MenuItem disabled value={0}>
                         Select Training Topics
                     </MenuItem>
                     {
@@ -48,8 +40,8 @@ const SelectTopics = ({ setTopic }) => {
                     }
                 </Select>
             </FormControl>
-        </Fragment >
+        </Fragment>
     )
 }
 
-export default memo(SelectTopics)
+export default memo(DepartmentalTrainingTopics)

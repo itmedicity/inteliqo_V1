@@ -41,6 +41,7 @@ const TableEditModal = ({ open, setOpen, setFlag, count, Setcount, rowdata }) =>
     const handleClose = useCallback(() => {
         setOpen(false);
     }, [setOpen])
+
     useEffect(() => {
         if (Object.keys(rowdata).length !== 0) {
             const { date, month, schedule_date, traineer_name, training_topic_name, slno, em_id, topic_slno } = rowdata;

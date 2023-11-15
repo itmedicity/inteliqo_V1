@@ -10,10 +10,10 @@ const CustomDashboardPage = ({ children, title, displayClose, setClose }) => {
     }
     return (
         <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
-            <Paper sx={{ flex: 1, }} >
-                <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
+            <Box sx={{ flex: 1 }} >
+                <Paper sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
-                        <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >
+                        <Paper sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >
                             <Box sx={{ display: "flex" }}>
                                 <DragIndicatorOutlinedIcon />
                                 <CssVarsProvider>
@@ -44,8 +44,8 @@ const CustomDashboardPage = ({ children, title, displayClose, setClose }) => {
                 <Box sx={{ display: 'flex', flex: 1, py: 0.5 }} >
                     {children}
                 </Box>
-            </Paper>
-        </Box>
+            </Box>
+        </Box >
     )
 }
 

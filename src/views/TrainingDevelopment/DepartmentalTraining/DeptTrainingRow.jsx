@@ -1,14 +1,14 @@
-import React, { memo, useCallback, useState } from 'react'
-import { Fragment } from 'react';
-import { useEffect } from 'react';
-import { Table } from '@mui/joy';
+import React, { memo, useCallback, useState, useEffect, Fragment } from 'react'
 import TableEditModals from './TableEditModals';
+import { CssVarsProvider, Sheet, Table } from '@mui/joy';
+import TrainingEmpSchedule from './TrainingEmpSchedule';
 
-const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr }) => {
+const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr, monthdata, end, EmpDetails }) => {
     const [open, setOpen] = useState(false);
     const [flag, setFlag] = useState(0);
     const [rowdata, setrowdata] = useState({});
     const [data, setdata] = useState([]);
+
 
     const handleClick = useCallback((val) => {
         setrowdata(val);
@@ -25,55 +25,58 @@ const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr }) => {
 
     return (
         <Fragment>
+
             {
-                data.length !== 0 ?
-                    <Table
-                        borderAxis="both"
-                        size="lg"  >
-                        <tbody>
-                            {
-                                data?.map((val, index) => (
-                                    <tr key={index} style={{ textTransform: "capitalize" }}>
-                                        <td
-                                            key={index}
-                                            onClick={() => handleClick(val)}
-                                            style={{
+                data?.length !== 0 ?
+                    <CssVarsProvider>
+                        <Table
+                            borderAxis="both"
+                            size="lg"  >
+                            <tbody>
+                                {
+                                    data?.map((val, index) => (
+                                        <tr key={index} style={{ textTransform: "capitalize" }}>
+                                            <td
+                                                key={index}
+                                                onClick={() => handleClick(val)}
+                                                style={{
 
-                                                textAlign: "start",
-                                                textDecoration: "underline",
-                                                cursor: "pointer"
-                                            }}
-                                        >
-                                            {val.training_topic_name.toLowerCase()}
-                                        </td>
-                                        <td style={{ textAlign: "start" }}>{val.traineer_name.toLowerCase()}</td>
-                                        <td style={{ textAlign: "start" }}>
-                                            {val.date}
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody >
-                    </Table > :
+                                                    textAlign: "center",
+                                                    textDecoration: "underline",
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                {val.training_topic_name.toLowerCase()}
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>{val.traineer_name.toLowerCase()}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                {val.date}
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody >
+                        </Table >
+                    </CssVarsProvider> :
+                    <CssVarsProvider>
+                        <Table
+                            borderAxis="both"
+                            size="lg" >
+                            <tbody>
+                                <tr>
+                                    <td style={{ textAlign: "center" }}>Not Updated</td>
+                                    <td style={{ textAlign: "center" }}>Not Updated</td>
+                                    <td style={{ textAlign: "center" }}>Not Updated</td>
+                                </tr>
 
-                    <Table
-                        borderAxis="both"
-                        size="lg" >
-                        <tbody>
-                            <tr>
+                            </tbody>
 
-                                <td style={{ textAlign: "start" }}>Not Updated</td>
-                                <td style={{ textAlign: "start" }}>Not Updated</td>
-                                <td style={{ textAlign: "start" }}>Not Updated</td>
-                            </tr>
-
-                        </tbody>
-
-                    </Table>
+                        </Table>
+                    </CssVarsProvider>
             }
 
             {
-                flag === 1 ? <TableEditModals rowdata={rowdata} setrowdata={setrowdata} count={count} Setcount={Setcount} open={open} setOpen={setOpen} flag={flag} setFlag={setFlag} /> : null
+                flag === 1 ? <TrainingEmpSchedule EmpDetails={EmpDetails} yr={yr} end={end} monthdata={monthdata} rowdata={rowdata} setrowdata={setrowdata} count={count} Setcount={Setcount} open={open} setOpen={setOpen} flag={flag} setFlag={setFlag} /> : null
             }
         </Fragment >
     );

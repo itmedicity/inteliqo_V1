@@ -21,7 +21,6 @@ const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
         const mapdata = checkdata?.filter((val) => {
             return val.months === id && val.year === yr;
         });
-
         if (mapdata) {
             const modifiedData = mapdata?.map((val) => {
                 const scheduleDate = val.schedule_date;
@@ -36,12 +35,6 @@ const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
             setdata(modifiedData);
         }
     }, [checkdata, id, yr]);
-
-    const demo = new Date();
-    const dayName = demo.toLocaleDateString('en-US', { weekday: 'long' });
-    const dates = getDate(demo);
-    const month = getMonth(demo) + 1;
-    const year = getYear(demo);
 
     return (
         <Fragment>

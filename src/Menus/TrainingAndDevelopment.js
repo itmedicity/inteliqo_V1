@@ -1,12 +1,7 @@
 import { CNavItem } from "@coreui/react";
 
 const TrainingAndDevelopment = [
-    // {
-    //     men_slno: 55,
-    //     component: CNavItem,
-    //     name: 'Department Wise Training',
-    //     to: '/Home/DepartmentalTrainingSchedule',
-    // },
+
     {
         men_slno: 55,
         component: CNavItem,
@@ -16,8 +11,8 @@ const TrainingAndDevelopment = [
     {
         men_slno: 251,
         component: CNavItem,
-        name: 'Training Update',
-        to: '/Home/TrainingUpdate',
+        name: 'Training Process',
+        to: '/Home/TrainingProcess',
     },
     {
         men_slno: 252,
@@ -46,8 +41,8 @@ const TrainingAndDevelopment = [
     {
         men_slno: 59,
         component: CNavItem,
-        name: 'Employee Training Examination',
-        to: '/homes',
+        name: 'Pre-Test',
+        to: '/Home/PreTest',
     },
     {
         men_slno: 60,

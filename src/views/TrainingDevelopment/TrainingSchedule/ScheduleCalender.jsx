@@ -64,7 +64,6 @@ const ScheduleCalender = ({ checkdata, year, setYear, count, Setcount, dept, set
                                             {month.name}     {yr}
 
                                         </Typography>
-
                                     </Box>
                                     <Box sx={{ width: "80%" }}>
                                         <DeptTrainingRows

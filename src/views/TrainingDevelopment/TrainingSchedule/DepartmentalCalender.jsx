@@ -28,6 +28,7 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
     const [year, setYear] = useState(moment(new Date()).format("YYYY"));
     const [table, setTable] = useState(0);
     const [checkdata, setCheckdata] = useState([]);
+    const [sect_id, setsect_id] = useState(0);
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -68,7 +69,8 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
                             date: moment(val.schedule_date).format("DD-MM-YYYY"),
                             schedule_remark: val.schedule_remark,
                             training_topic_name: val.training_topic_name,
-                            traineer_name: val.traineer_name
+                            traineer_name: val.traineer_name,
+                            sect_id: val.sect_id
                         }
                         return object;
                     })
@@ -93,6 +95,7 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
 
     }, [postdata, count, dept, deptSec, year])
 
+    console.log("checkdata", checkdata);
     return (
         <Fragment>
             <ToastContainer />

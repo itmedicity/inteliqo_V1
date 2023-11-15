@@ -8,7 +8,7 @@ import TrainingonMonthModal from './TrainingonMonthModal';
 
 
 const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, setdept, deptSec,
-    setTable, setdeptSec }) => {
+    setTable, setdeptSec, EmpDetails }) => {
 
     const [insertModal, setinsetmodal] = useState(0);
     const [open, setOpen] = useState(false);
@@ -22,12 +22,10 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
     ];
 
     const OpenInsertModal = useCallback((e, month) => {
-
         setinsetmodal(1);
         setOpen(true);
         const monthId = month.id
         setmonthData(monthId);
-
     }, [setinsetmodal, setOpen])
 
     const date = new Date(yr, monthdata, 1);
@@ -53,27 +51,27 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
                     }}>
                         {
                             months?.map((month, index) => (
-                                <Box key={index} sx={{ display: "flex", flexDirection: "row" }}>
-                                    <Box sx={{ width: "20%", borderBottom: 1, borderLeft: 1, borderColor: "#D8D9DA" }}>
-                                        <Typography
-                                            onClick={(e) => OpenInsertModal(e, month)}
-                                            sx={{
-                                                cursor: "pointer",
-                                                textDecoration: "underline",
-                                                color: "blue"
-                                            }}
-                                        >
-                                            {month.name}     {yr}
-
-                                        </Typography>
-
-                                    </Box>
-                                    <Box sx={{ width: "80%" }}>
-                                        <DeptTrainingRow
-                                            id={month.id} yr={yr}
-                                            months={months} count={count} Setcount={Setcount}
-                                            checkdata={checkdata}
-                                        />
+                                <Box key={index}>
+                                    <Box sx={{ display: "flex", flexDirection: "row" }}>
+                                        <Box sx={{ width: "20%", borderBottom: 1, borderLeft: 1, borderColor: "#D8D9DA" }}>
+                                            <Typography
+                                                onClick={(e) => OpenInsertModal(e, month)}
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    textDecoration: "underline",
+                                                    color: "blue"
+                                                }}
+                                            >
+                                                {month.name}     {yr}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ width: "80%" }}>
+                                            <DeptTrainingRow
+                                                id={month.id} yr={yr}
+                                                months={months} count={count} Setcount={Setcount}
+                                                checkdata={checkdata} end={end} EmpDetails={EmpDetails}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                             ))
@@ -88,8 +86,6 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
                     open={open} setinsetmodal={setinsetmodal} setOpen={setOpen} count={count} Setcount={Setcount}
                     start={start} end={end}
                 /> : null
-
-
             }
         </Fragment >
     )

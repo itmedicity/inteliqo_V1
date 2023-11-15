@@ -8,7 +8,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import _ from 'underscore';
-const TrainingUpdate = () => {
+const TrainingUpdates = () => {
     const [tableData, setTableData] = useState([]);
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
@@ -95,4 +95,4 @@ const TrainingUpdate = () => {
     )
 }
 
-export default memo(TrainingUpdate)
+export default memo(TrainingUpdates)

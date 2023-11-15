@@ -16,7 +16,6 @@ const ViewJoinersTable = ({ setShow, count, Setcount }) => {
     const [userdata, setUserdata] = useState({});
     const [open, setOpen] = useState(false);
 
-
     const newJoinee = useSelector((state) => state?.gettrainingData?.newJoiners?.newJoinersList, _.isEqual)
 
     useEffect(() => {
@@ -70,7 +69,7 @@ const ViewJoinersTable = ({ setShow, count, Setcount }) => {
                         columnDefs={columnDef}
                         tableData={tableData}
                         sx={{
-                            height: 800,
+                            height: 700,
                             width: "100%"
                         }}
                         rowHeight={30}
