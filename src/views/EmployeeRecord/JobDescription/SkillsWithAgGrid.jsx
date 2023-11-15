@@ -115,7 +115,7 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
         else {
             updateEach()
         }
-    }, [checkData, skills])
+    }, [checkData, count, selectDeptSection, selectDesignation, selectedDept, slno, value, skills])
 
     const EditData = useCallback((params) => {
         setvalue(1)
@@ -136,7 +136,7 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
         } else {
             errorNofity(message)
         }
-    }, [])
+    }, [count])
 
     return (
         <Fragment>

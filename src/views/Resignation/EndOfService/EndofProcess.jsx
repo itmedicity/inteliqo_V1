@@ -104,10 +104,24 @@ const EndofProcess = ({ details }) => {
                 setHoliday(holiday)
                 setLop(lossofpay)
                 setCalcLop(calculatedlop)
+                setDutyoff(0)
+                setArear(0)
+                setEarned(0)
+                setCompOff(0)
+                setCautionDepo(0)
+                setKswf(0)
+                setProTax(0)
             } else {
                 setLop(0)
                 setCalcLop(0)
                 setHoliday(0)
+                setDutyoff(0)
+                setArear(0)
+                setEarned(0)
+                setCompOff(0)
+                setCautionDepo(0)
+                setKswf(0)
+                setProTax(0)
             }
         }
 

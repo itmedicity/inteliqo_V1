@@ -20,7 +20,7 @@ const JoyReligion = ({ value, setValue }) => {
             const array = regionList?.find((e) => e.relg_slno === parseInt(value))
             setValue(array.relg_slno)
         }
-    }, [value, flag, regionList])
+    }, [value, setValue, flag, regionList])
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
@@ -32,7 +32,7 @@ const JoyReligion = ({ value, setValue }) => {
             setFlag(0)
         }
         return
-    }, [value])
+    }, [setValue])
 
     return (
         <Select

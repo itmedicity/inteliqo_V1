@@ -21,7 +21,7 @@ import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDro
 import { getannualleave } from 'src/redux/actions/Profile.action';
 import { fetchleaveInformationFun } from './Func/LeaveFunction';
 import {
-    getCommonLeaveData, getEmployeeInformation,
+    getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
     getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
 } from 'src/redux/actions/LeaveReqst.action';
@@ -38,11 +38,11 @@ const MultiLeaveRequestForm = () => {
     const [reason, setReason] = useState('');
     const [drop, setDropOpen] = useState(false)
 
-    const changeForm = () => {
+    const changeForm = useCallback(() => {
         let requestType = { requestType: 0 };
         dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
         dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+    }, [dispatch, FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT])
 
     //request selected employee details after the submit button pn;y changes
     // const empDetl = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
@@ -59,25 +59,28 @@ const MultiLeaveRequestForm = () => {
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
     const {
         em_no, em_id,
         em_department, em_dept_section,
-        hod: empHodStat, incharge: empInchrgStat
+        hod: empHodStat,
+        //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
 
     useEffect(() => {
-        const data = { em_id: em_id }
-        dispatch(getCreditedCasualLeave(em_id));
-        dispatch(getCreitedCommonLeave(data));
-        dispatch(getCreitedHolidayLeave(em_id));
-        dispatch(getCreitedCompansatoryOffLeave(em_id));
-        dispatch(getCreditedEarnLeave(em_id));
-        dispatch(getannualleave(em_id))
-        dispatch(getEmployeeInformation(em_id))
-    }, [hod === 0 && incharge === 0])
+        if (hod === 0 && incharge === 0) {
+            const data = { em_id: em_id }
+            dispatch(getCreditedCasualLeave(em_id));
+            dispatch(getCreitedCommonLeave(data));
+            dispatch(getCreitedHolidayLeave(em_id));
+            dispatch(getCreitedCompansatoryOffLeave(em_id));
+            dispatch(getCreditedEarnLeave(em_id));
+            dispatch(getannualleave(em_id))
+            dispatch(getEmployeeInformation(em_id))
+        }
+    }, [incharge, hod, dispatch, em_id])
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))
@@ -157,7 +160,7 @@ const MultiLeaveRequestForm = () => {
             })
             setnewData(newSelectedLeaveData)
         }
-    })
+    }, [newData])
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
@@ -352,7 +355,9 @@ const MultiLeaveRequestForm = () => {
                 }
             }
         }
-    }, [newData, multiLeaveTypeData, reason, toDate, fromDate, em_id, em_no, levRequestNo, em_department, em_dept_section, numberOfDays])
+    }, [newData, multiLeaveTypeData, reason, em_id, em_no, levRequestNo, changeForm,
+        em_department, em_dept_section, numberOfDays, authorization_hod, authorization_incharge, dispatch,
+        empHodStat, hod, incharge, CommonLeaveType])
 
     return (
         <Paper
@@ -415,7 +420,7 @@ const MultiLeaveRequestForm = () => {
                             </Box>
                             <Box sx={{ display: "flex", flex: 2, pl: 1 }} >
                                 <CssVarsProvider>
-                                    <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                                    <Tooltip title="View Documents" variant="outlined" placement="top">
                                         <Button
                                             variant="outlined"
                                             component="label"
@@ -443,7 +448,6 @@ const MultiLeaveRequestForm = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", flex: 2, px: 1 }} >
-                        {/* <TextareaAutosize maxRows={2} minRows={2} style={{ width: '100%', p: 0.5 }} placeholder="Leave Request Reasons" /> */}
                         <CssVarsProvider>
                             <Textarea
                                 label="Outlined"
@@ -468,14 +472,12 @@ const MultiLeaveRequestForm = () => {
                                 startDecorator={<SaveAsIcon />}
                                 onClick={leaveRequestSubmitFun}
                                 fullWidth
-                            // sx={{ color: 'green' }} 
                             >
                                 Save Leave Request
                             </Button>
                         </CssVarsProvider>
                     </Box>
                 </Box>
-
             </Paper>
         </Paper>
     )

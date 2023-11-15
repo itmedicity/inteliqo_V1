@@ -162,7 +162,7 @@ const AnnualLeaveInformation = () => {
             dispatch(setEmployeeProcessDetail(id))
         )
 
-    }, [no, modelvalue, id])
+    }, [no, modelvalue, dispatch, id])
 
 
     const year = moment(new Date()).format('YYYY')
@@ -187,7 +187,7 @@ const AnnualLeaveInformation = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success == 2) {
+            else if (success === 2) {
                 setAttendanceData([])
             }
             else {

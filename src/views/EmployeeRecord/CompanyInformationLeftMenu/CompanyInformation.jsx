@@ -10,6 +10,7 @@ import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRed
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { useDispatch } from 'react-redux';
 import { setDepartment } from 'src/redux/actions/Department.action';
+import { useCallback } from 'react';
 
 const CompanyPage = React.lazy(() => import('./CompanyInfoPage'))
 
@@ -44,7 +45,7 @@ const CompanyInformation = () => {
 
     ])
 
-    const dataDisplay = async () => {
+    const dataDisplay = useCallback(async () => {
         if (dept !== 0 && deptSection !== 0) {
             const postData = {
                 em_department: dept,
@@ -58,16 +59,16 @@ const CompanyInformation = () => {
                 setnameList([]);
             }
         }
-    }
+    }, [dept, deptSection])
 
-    const toOpenCmpnyPage = async (params) => {
+    const toOpenCmpnyPage = useCallback((params) => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
         setEmno(em_no)
         setEmpid(em_id)
         setOpen(1)
 
-    }
+    }, [])
 
     return (
         <CustomLayout title="Company Information" displayClose={true} >
@@ -80,7 +81,7 @@ const CompanyInformation = () => {
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
                             <DepartmentSectionRedx getSection={setDeptSection} />
                         </Box>
-                        <Box sx={{ flex: 1, px: 0.3, mt: 1 }}>
+                        <Box sx={{ flex: 1, px: 0.3, mt: 0.7 }}>
                             <Button aria-label="Like" size='sm' variant="outlined" color="neutral"
                                 onClick={dataDisplay}
                                 sx={{

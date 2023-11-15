@@ -39,7 +39,7 @@ const SectionBsdEmployee = ({ getEmploy }) => {
             setEmpInform([])
             return
         }
-    }, [empInform, value])
+    }, [empInform, getEmploy, value])
 
 
     return (

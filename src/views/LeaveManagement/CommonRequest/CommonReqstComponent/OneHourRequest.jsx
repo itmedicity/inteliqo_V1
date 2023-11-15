@@ -20,14 +20,14 @@ const OneHourRequest = () => {
 
     const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
 
-    const state = useSelector((state) => state.getCommonSettings, _.isEqual)
+    // const state = useSelector((state) => state.getCommonSettings, _.isEqual)
 
     const [fromDate, setFromDate] = useState(moment(new Date()))
     const [deptShift, setDeptShift] = useState([])
     const [selectedShift, setSelectedShift] = useState(0)
 
     const [shiftTiming, setShiftTiming] = useState([])
-    const [punchDetl, setPunchDetl] = useState([])
+    // const [punchDetl, setPunchDetl] = useState([])
 
     const [checkinBox, setCheckInCheck] = useState(false)
     const [checkoutBox, setCheckOutCheck] = useState(false)
@@ -125,9 +125,9 @@ const OneHourRequest = () => {
                 }
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
                 const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                const { success, data } = result.data;
+                const { success } = result.data;
                 if (success === 1) {
-                    setPunchDetl(data)
+                    // setPunchDetl(data)
                     succesNofity('Done , Select The Punching Info')
                 } else {
                     //no record
@@ -340,7 +340,7 @@ const OneHourRequest = () => {
                 </Box>
                 <Box sx={{ px: 0.5, mt: 0.2 }}>
                     <CssVarsProvider>
-                        <Tooltip title="Save Request" variant="outlined" color="info" placement="top">
+                        <Tooltip title="Save Request" variant="outlined" placement="top">
                             <Button
                                 variant="outlined"
                                 component="label"

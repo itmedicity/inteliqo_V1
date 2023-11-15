@@ -32,7 +32,7 @@ const JoyBranchSelect = ({ value, setValue }) => {
             setValue(0)
         }
         return
-    }, [value, setValue])
+    }, [setValue])
 
     return (
         <Select

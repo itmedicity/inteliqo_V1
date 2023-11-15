@@ -22,11 +22,11 @@ const CompansatoryOffMast = () => {
     const dispatch = useDispatch();
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
-    const changeForm = () => {
+    const changeForm = useCallback(() => {
         let requestType = { requestType: 0 };
         dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
         dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+    }, [dispatch, FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT])
 
     const [offType, setOffType] = useState(0)
     const [fromDate, setFromDate] = useState(moment())
@@ -56,7 +56,7 @@ const CompansatoryOffMast = () => {
         const selectedCoffType = e.target.value;
         setOffType(selectedCoffType)
         selectedCoffType === 1 ? serDisShift(false) : serDisShift(true);
-    })
+    }, [])
 
     //get the employee details for taking the HOd and Incharge Details
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
@@ -70,7 +70,8 @@ const CompansatoryOffMast = () => {
     const {
         em_no, em_id,
         em_department, em_dept_section,
-        hod: empHodStat, incharge: empInchrgStat
+        hod: empHodStat,
+        //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
     // GET DEPARTMENT WISE SHIFT
@@ -167,20 +168,20 @@ const CompansatoryOffMast = () => {
         } else {
             warningNofity('Select The Off Type and Shift Feild')
         }
-    }, [fromDate, offType, selectedShift, em_id, em_no])
+    }, [fromDate, offType, selectedShift, em_id, em_no, shiftTiming])
 
 
     const handleChangeCheckInCheck = useCallback((e) => {
         const checkin = e.target.checked;
         setCheckIn(checkin)
         setDisableIn(!checkin)
-    })
+    }, [])
 
     const handleChangeCheckOutCheck = useCallback((e) => {
         const checkout = e.target.checked;
         setCheckOut(checkout)
         setDisableOut(!checkout)
-    })
+    }, [])
 
 
     //submit coff request 
@@ -257,7 +258,9 @@ const CompansatoryOffMast = () => {
             }
         }
 
-    })
+    }, [authorization_hod, hod, authorization_incharge, reason, punchSlno, changeForm,
+        empHodStat, em_department, em_dept_section, em_id, em_no, fromDate, incharge, offType, punchInTime,
+        punchOutTime, selectedShift, selectedShiftTiming])
 
     return (
         <Paper
@@ -337,7 +340,7 @@ const CompansatoryOffMast = () => {
                 </Box>
                 <Box>
                     <CssVarsProvider>
-                        <Tooltip title="Process" variant="outlined" color="info" placement="top">
+                        <Tooltip title="Process" variant="outlined" placement="top">
                             <Button
                                 variant="outlined"
                                 component="label"
@@ -396,7 +399,7 @@ const CompansatoryOffMast = () => {
                             defaultValue={0}
                             disabled={disableIn}
                             value={punchInTime}
-                            onChange={useCallback((e) => setPunchInTime(e.target.value))}
+                            onChange={useCallback((e) => setPunchInTime(e.target.value), [])}
                         >
                             <MenuItem value={0} disabled>Check In Time</MenuItem>
                             {
@@ -452,7 +455,7 @@ const CompansatoryOffMast = () => {
                             defaultValue={0}
                             disabled={disableOut}
                             value={punchOutTime}
-                            onChange={useCallback((e) => setPunchOutTime(e.target.value))}
+                            onChange={useCallback((e) => setPunchOutTime(e.target.value), [])}
                         >
                             <MenuItem value={0} disabled>Check Out Time</MenuItem>
                             {
@@ -472,7 +475,7 @@ const CompansatoryOffMast = () => {
                     <CssVarsProvider>
                         <Textarea
                             label="Outlined"
-                            placeholder="Reason For Leave Request"
+                            placeholder="Reason For Compansatory OFF Request"
                             variant="outlined"
                             color="warning"
                             size="lg"
@@ -486,7 +489,7 @@ const CompansatoryOffMast = () => {
                 <Box sx={{ display: 'flex', flex: 2, alignItems: 'center', px: 1, justifyContent: "space-evenly" }}>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="Upload Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Upload Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -501,7 +504,7 @@ const CompansatoryOffMast = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -516,7 +519,7 @@ const CompansatoryOffMast = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="Save Compansatory Off Request" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Save Compansatory Off Request" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"

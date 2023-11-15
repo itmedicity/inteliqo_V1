@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import TextInput from 'src/views/Component/TextInput';
@@ -30,7 +30,7 @@ const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, sel
     //useState for getting  reporting dept section
     //const [reporting, setreporting] = useState(0)
     //useState for getting  reporting Designation
-    const [reportDesig, setreportDesig] = useState(0)
+    //const [reportDesig, setreportDesig] = useState(0)
     //useState for getting working hours
     // const [workingHours, setWorkinhHours] = useState(0)
     //use State for getting formdata
@@ -43,13 +43,15 @@ const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, sel
     })
     //destructuring
     const { objective, scope, equipment, workingHours, reporting } = FormData
-    const defaultState = {
-        objective: '',
-        scope: '',
-        equipment: '',
-        workingHours: '',
-        reporting: ''
-    }
+    const defaultState = useMemo(() => {
+        return {
+            objective: '',
+            scope: '',
+            equipment: '',
+            workingHours: '',
+            reporting: ''
+        }
+    }, [])
 
     //use effect for getting job summary details to edit
     useEffect(() => {
@@ -58,7 +60,7 @@ const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, sel
                 const result = await axioslogin.get(`/jobsummary/getjobSummary/${jobedit}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { equipment_used, objective, reporting_dept, reporting_designation,
+                    const { equipment_used, objective, reporting_dept,
                         scope, work_place, working_hour } = data[0]
                     const frmdata = {
                         objective: objective,
@@ -71,7 +73,7 @@ const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, sel
                     //setWorkinhHours([working_hour])
                     setWorkPlace(work_place)
                     //setreporting(reporting_dept)
-                    setreportDesig(reporting_designation)
+                    //setreportDesig(reporting_designation)
                 }
             }
             getjobSummary()
@@ -80,14 +82,14 @@ const JobSummary = ({ jobedit, deptsectName, jobview, selectDesignationName, sel
             setFormData(defaultState)
         }
 
-    }, [jobedit,])
+    }, [jobedit, defaultState])
 
 
     useEffect(() => {
         if (selectDesignation !== 0) {
             setFormData(defaultState)
         }
-    }, [selectDesignation])
+    }, [selectDesignation, defaultState])
 
     //function for getting from Data
     const updatejob_description = (e) => {

@@ -5,7 +5,7 @@ import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { setEmployeeList } from '../../../redux/actions/Profile.action'
 import { useDispatch, useSelector } from 'react-redux'
-import { CssVarsProvider } from '@mui/joy'
+import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Paper, Tooltip } from '@mui/material'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import IconButton from '@mui/joy/IconButton';
@@ -13,12 +13,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useMemo } from 'react'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { IconButton as OpenIcon } from '@mui/material';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 const EmployeeFileAgGrid = () => {
 
@@ -147,60 +148,84 @@ const EmployeeFileAgGrid = () => {
 
     ])
 
-    return (
-        <CustomLayout title="Employee Record File" displayClose={true} >
-            <ToastContainer />
-            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
-                {/* <Paper square elevation={1}  > */}
-                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                        <DepartmentDropRedx getDept={setDepartmentName} />
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                        <DepartmentSectionRedx getSection={setDepartSecName} />
-                    </Box>
+    const toSettings = useCallback(() => {
+        history.push(`/Home`)
+    }, [history])
 
-                    <Tooltip title="Employee Number" followCursor placement='top' arrow>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
-                            <InputComponent
-                                type="text"
-                                size="sm"
-                                placeholder="Employee Number"
-                                name="Empno"
-                                value={Empno}
-                                onchange={(e) => setEmpNo(e.target.value)}
+    return (
+        <Box sx={{ display: "flex", flexGrow: 1, width: "100%" }} >
+            <ToastContainer />
+            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', }}>
+                <Box>
+                    <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Employee Contract End List
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                    </Paper>
+                    <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                            <DepartmentDropRedx getDept={setDepartmentName} />
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                            <DepartmentSectionRedx getSection={setDepartSecName} />
+                        </Box>
+
+                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                            <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                                <InputComponent
+                                    type="text"
+                                    size="sm"
+                                    placeholder="Employee Number"
+                                    name="Empno"
+                                    value={Empno}
+                                    onchange={(e) => setEmpNo(e.target.value)}
+                                />
+                            </Box>
+                        </Tooltip>
+                        <Box sx={{ mt: 1.5, px: 0.3, }} >
+                            <JoyCheckbox
+                                label='Active'
+                                name="activestatus"
+                                checked={activestatus}
+                                onchange={(e) => { updateFormData(e) }}
                             />
                         </Box>
-                    </Tooltip>
-                    <Box sx={{ mt: 1.5, px: 0.3, }} >
-                        <JoyCheckbox
-                            label='Active'
-                            name="activestatus"
-                            checked={activestatus}
-                            onchange={(e) => { updateFormData(e) }}
+                        <Box sx={{ p: 1 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='sm' color="primary" onClick={getEmployeeList}>
+                                    <SearchIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                        </Box>
+                    </Box>
+                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 600,
+                                width: "100%"
+                            }}
+                            rowHeight={40}
+                            headerHeight={40}
                         />
-                    </Box>
-                    <Box sx={{ p: 1 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='sm' color="primary" onClick={getEmployeeList}>
-                                <SearchIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
-                    </Box>
+                    </Paper>
                 </Box>
-                {/* First Row end */}
-
-                {/* </Paper> */}
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                    <CommonAgGrid columnDefs={columnDef} tableData={tableData} sx={{
-                        height: 600,
-                        width: "100%"
-                    }} rowHeight={40} headerHeight={40} />
-                </Paper>
-            </Box>
-        </CustomLayout>
+            </Paper>
+        </Box>
     )
 }
 

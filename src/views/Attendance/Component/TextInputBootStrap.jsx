@@ -1,5 +1,4 @@
 import React, { memo } from 'react'
-import { useCallback } from 'react'
 import { Form } from 'react-bootstrap'
 
 const TextInputBootStrap = ({ type, style, placeholder, disabled, value, onChange }) => {
@@ -10,7 +9,7 @@ const TextInputBootStrap = ({ type, style, placeholder, disabled, value, onChang
             disabled={disabled}
             placeholder={placeholder}
             value={value}
-            onChange={useCallback((e) => onChange(e.target.value))}
+            onChange={(e) => onChange(e.target.value)}
         />
     )
 }

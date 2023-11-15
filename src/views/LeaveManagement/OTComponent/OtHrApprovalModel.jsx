@@ -75,7 +75,7 @@ const OtHrApprovalModel = ({ open, handleClose, rowData, inchid, count, setCount
             }
             setArray([...array, obj, obj2])
         }
-    }, [over_time, ot_coff_type, check_in, check_out])
+    }, [over_time, array, em_no, ot_coff_type, check_in, check_out])
 
     const patchData = {
         ot_hr_status: apprv === true ? 1 : reject === true ? 2 : 0,

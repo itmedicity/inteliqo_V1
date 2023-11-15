@@ -1,5 +1,5 @@
 import MaterialTable from 'material-table'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { tableIcons } from 'src/views/Constant/MaterialIcon';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -10,10 +10,12 @@ const FineAndDeductionTable = ({ update, collected }) => {
     const history = useHistory();
     const [data, setTableData] = useState();
     const { id, no } = useParams()
-    const postdata = {
-        id: id,
-        collected: collected
-    }
+    const postdata = useMemo(() => {
+        return {
+            id: id,
+            collected: collected
+        }
+    }, [id, collected])
 
     //Table
     const title = [
@@ -52,7 +54,7 @@ const FineAndDeductionTable = ({ update, collected }) => {
             }
         }
         getFineDeduction();
-    }, [id, update, collected]);
+    }, [id, update, postdata, collected]);
 
     //For Edit
     const getDataTable = (data) => {

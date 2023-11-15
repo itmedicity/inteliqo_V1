@@ -12,7 +12,7 @@ import {
 } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import { Box, Button, CssVarsProvider, Option, Select, Tooltip } from '@mui/joy'
+import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy'
 import JoySalutation from 'src/views/MuiComponents/JoyComponent/JoySalutation'
 import SaveIcon from '@mui/icons-material/Save';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -30,7 +30,6 @@ import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
 import { addDays, addYears } from 'date-fns'
-import _ from 'underscore'
 import CloseIcon from '@mui/icons-material/Close';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection'
@@ -44,8 +43,6 @@ const EmployeeRecordEdit = () => {
     const { id, no } = useParams();
     const history = useHistory();
     const dispatch = useDispatch()
-
-
 
     const [salutation, setSalutation] = useState(0)
     const [empname, setEmpname] = useState('')
@@ -89,10 +86,10 @@ const EmployeeRecordEdit = () => {
 
 
     const [oldCategory, setOldCategory] = useState(0)
-    const [oldContract_Status, setOldContract_Status] = useState(0)
+    //const [oldContract_Status, setOldContract_Status] = useState(0)
     const [oldprob_end_date, setOldprob_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [old_cont_end_date, setOld_cont_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
-    const [oldprob_status, setOld_prob_Status] = useState(0)
+    //const [oldprob_status, setOld_prob_Status] = useState(0)
 
     const [clinictype, setClinictype] = useState(0)
     const [doctor, setDoctor] = useState(false)
@@ -191,7 +188,7 @@ const EmployeeRecordEdit = () => {
                     em_dept_section, em_institution_type,
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
-                    contract_status, probation_status, recomend_salary, clinicaltype,
+                    recomend_salary, clinicaltype,
                     doctor_status } = data[0]
                 const age = {
                     yearage: em_age_year,
@@ -231,10 +228,10 @@ const EmployeeRecordEdit = () => {
                 setretirementyear(em_retirement_date)
                 setcont_gracedate(em_conf_end_date)
                 setOldCategory(em_category)//setting category to old
-                setOldContract_Status(contract_status)//setting old contract status
+                // setOldContract_Status(contract_status)//setting old contract status
                 setOldprob_end_date(em_prob_end_date)//old probation end date
                 setOld_cont_end_date(em_contract_end_date)//old contract end date
-                setOld_prob_Status(probation_status)//setting old 
+                // setOld_prob_Status(probation_status)//setting old 
                 setClinictype(clinicaltype === 0 ? 0 : clinicaltype)
                 setDoctor(doctor_status === 1 ? true : false)
             }
@@ -244,7 +241,7 @@ const EmployeeRecordEdit = () => {
 
     const toTable = useCallback(() => {
         history.push('/Home/EmployeeRecordTable')
-    })
+    }, [history])
 
 
     // data for sumbimssion
@@ -293,7 +290,7 @@ const EmployeeRecordEdit = () => {
             em_no: parseInt(empno),
         }
 
-    }, [empno, id, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
+    }, [empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
         cont_gracedate, dateofjoining, category, retirementyear, cont_perioddate, permantPin, region1,
         yearage, mobileno, landphone, email, designation, bloodgrp, presentPin, mnthage, dayge, religion,
         Salary, empstatus, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, doctortype,
@@ -336,9 +333,9 @@ const EmployeeRecordEdit = () => {
         setDoctor(false)
     }, [])
 
-    const Notification = async () => {
+    const Notification = useCallback(() => {
         history.push('/Home/EmployeeRecord')
-    }
+    }, [history])
 
 
     const submitemployeerecord = useCallback(() => {
@@ -352,7 +349,7 @@ const EmployeeRecordEdit = () => {
             const { success, message } = result.data;
             if (success === 1) {
                 const result = await axioslogin.get(`/empmast/${id}`)
-                const { success, data } = result.data
+                const { success } = result.data
                 if (success === 1) {
                     const postContractDetl = {
                         em_id: no,
@@ -391,7 +388,7 @@ const EmployeeRecordEdit = () => {
             const { success, message } = result.data;
             if (success === 1) {
                 const result = await axioslogin.get(`/empmast/${id}`)
-                const { success, data, message } = result.data
+                const { success, message } = result.data
                 if (success === 1) {
                     succesNofity(message)
                     clearForm()
@@ -411,20 +408,22 @@ const EmployeeRecordEdit = () => {
             }
         }
         if (contractflag === 1) {
-            if (cont_date < today) {
+            if (cont_date < today || oldCategory !== category) {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {
                 updateContractEmp(submitdata)
             }
         } else {
-            if (probdate < today) {
+            if (probdate < today || oldCategory !== category) {
                 infoNofity("Employee Probation date already Exceeded!!You Can Edit This Employee Through Company Information!")
             } else {
                 updateFunction(submitdata)
             }
 
         }
-    }, [submitdata, oldprob_end_date, old_cont_end_date, id])
+    }, [submitdata, oldprob_end_date, old_cont_end_date, id, category, Notification, clearForm,
+        oldCategory, cont_gracedate, cont_perioddate,
+        contractflag, dateofjoining, no, probationendDate])
 
     return (
         <>

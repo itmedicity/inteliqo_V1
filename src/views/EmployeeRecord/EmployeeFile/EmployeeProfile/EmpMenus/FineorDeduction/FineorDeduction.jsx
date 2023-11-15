@@ -47,6 +47,8 @@ const FineorDeduction = () => {
     const [insertFine, setInsertFine] = useState([])
     const [updateFineArray, setupdateFineArray] = useState([])
     const [tableData, setTableData] = useState([]);
+    //use state for getting selected fine slno
+    const [updateid, setupdateid] = useState(0)
 
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
 
@@ -111,20 +113,22 @@ const FineorDeduction = () => {
         }
     }, [id, no, serialno, fine, fine_descp, fine_amount, finestart, fineend, times, fine_remark, em_id])
 
-    const resetForm = {
-        fine_descp: '',
-        fine_amount: 0,
-        fine_remark: '',
-        fine_status: ''
-    }
-
-    const reset = useCallback(() => {
-        setFine(0);
-        setPeriod(0);
-        setTimes(0)
-        setMonthstart(format(new Date(), "yyyy-MM-dd"));
-        setMonthend(format(new Date(), "yyyy-MM-dd"));
+    const resetForm = useMemo(() => {
+        return {
+            fine_descp: '',
+            fine_amount: 0,
+            fine_remark: '',
+            fine_status: ''
+        }
     }, [])
+
+    // const reset = useCallback(() => {
+    //     setFine(0);
+    //     setPeriod(0);
+    //     setTimes(0)
+    //     setMonthstart(format(new Date(), "yyyy-MM-dd"));
+    //     setMonthend(format(new Date(), "yyyy-MM-dd"));
+    // }, [])
 
     useEffect(() => {
         if (Object.keys(period).length !== 0) {
@@ -164,8 +168,7 @@ const FineorDeduction = () => {
         }
     }, [period, id, no, updateid, serialno, fine_amount, em_id])
 
-    //use state for getting selected fine slno
-    const [updateid, setupdateid] = useState(0)
+
 
     //function getting selected fine type
     const getDataTable = useCallback((params) => {

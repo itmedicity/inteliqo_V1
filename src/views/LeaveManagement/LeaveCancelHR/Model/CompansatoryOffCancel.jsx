@@ -81,7 +81,7 @@ const CompansatoryOffCancel = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [reason, slno, leave_date, em_id, setCount, setOpen, cf_hr_apprv_status])
 
     // COFF Request Close
     const handleClose = () => {

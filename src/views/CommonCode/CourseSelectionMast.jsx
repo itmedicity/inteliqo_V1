@@ -5,7 +5,7 @@ import { axioslogin } from '../Axios/Axios';
 
 const CourseSelectionMast = ({ style, disable }) => {
     const [course, setCourse] = useState([]);
-    const { selectCourse, updateCourse, courseName, setCourseName } = useContext(PayrolMasterContext)
+    const { selectCourse, updateCourse, setCourseName } = useContext(PayrolMasterContext)
 
     useEffect(() => {
         const getCourse = async () => {
@@ -18,7 +18,7 @@ const CourseSelectionMast = ({ style, disable }) => {
             updateCourse(0),
             setCourseName('')
         )
-    }, [updateCourse]);
+    }, [updateCourse, setCourseName]);
     // labeldata 
     const getlaeldat = (e) => {
         const selectedText = e.nativeEvent.target.textContent

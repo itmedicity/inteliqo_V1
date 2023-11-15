@@ -41,7 +41,7 @@ const JoyDepartmentSection = ({ sectValues, getSection }) => {
             setValue({})
             setFlag(0)
         }
-    }, [])
+    }, [getSection])
 
     return (
         <Autocomplete

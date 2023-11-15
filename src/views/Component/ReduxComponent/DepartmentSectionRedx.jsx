@@ -39,7 +39,7 @@ const DepartmentSectionRedx = ({ getSection }) => {
             }
             dispatch(getEmployeeBasedSection(postData))
         }
-    }, [deptCode, deptSectionValue])
+    }, [deptCode, dispatch, getSection, deptSectionValue])
 
 
     useEffect(() => {

@@ -64,7 +64,7 @@ const AttendanceMarkingTabdata = ({ data, count, dateformat, rageset }) => {
 
 
 
-    }, [data])
+    }, [data, rageset])
     return (
         <Fragment>
             <Suspense fallback={<LinearProgress />} >

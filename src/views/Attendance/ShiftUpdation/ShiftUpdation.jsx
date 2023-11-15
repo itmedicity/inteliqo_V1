@@ -4,7 +4,6 @@ import Paper from '@mui/material/Paper';
 import { useState } from 'react';
 import { addDays, addMonths, differenceInMinutes, format, formatDuration, getMonth, getYear, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import moment from 'moment';
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import { errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
@@ -28,7 +27,8 @@ import { lazy } from 'react';
 import { Actiontypes } from 'src/redux/constants/action.type';
 import { useMemo } from 'react';
 import _ from 'underscore'
-const ShiftTableDataRow = lazy(() => import('./ShiftUpdationTblRow'))
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+// const ShiftTableDataRow = lazy(() => import('./ShiftUpdationTblRow'))
 const TableRows = lazy(() => import('./TableRows'))
 
 const ShiftUpdation = () => {
@@ -36,7 +36,7 @@ const ShiftUpdation = () => {
     //get the employee details for taking the HOd and Incharge Details
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge, em_id, em_name, sect_name, dept_name, em_department, em_dept_section } = employeeProfileDetl;
+    const { hod, incharge, em_name, sect_name, dept_name, em_department, em_dept_section } = employeeProfileDetl;
 
     const dispatch = useDispatch();
     const [openBkDrop, setOpenBkDrop] = useState(false)
@@ -44,7 +44,7 @@ const ShiftUpdation = () => {
     // dispatch the department data
     useEffect(() => {
         dispatch(setDepartment());
-    }, [])
+    }, [dispatch])
 
     //DATA SELECTETOR
     const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
@@ -66,7 +66,7 @@ const ShiftUpdation = () => {
             changeSection(em_dept_section)
             getEmployee(employeeProfileDetl)
         }
-    })
+    }, [hod, incharge, em_department, em_dept_section, employeeProfileDetl])
 
     //HANDLE FETCH PUNCH DETAILS AGINST EMPLOYEE SELECTION
     const handleOnClickFuntion = useCallback(async () => {
@@ -86,7 +86,7 @@ const ShiftUpdation = () => {
                 setDisable(true)
                 setOpenBkDrop(false)
             }
-            //If Not done 
+            // //If Not done 
             else {
                 const { em_id } = emply
                 const postData = {
@@ -107,7 +107,6 @@ const ShiftUpdation = () => {
 
                 const punchInOutHr = await axioslogin.post("/attendCal/checkInOutMarked/", chckdata);
                 const { success } = punchInOutHr.data
-
                 if (success === 1) {
                     //Get Emp salary and common late in and early out
                     const resultdel = await axioslogin.get(`/common/getgrossSalary/${em_id}`);
@@ -116,7 +115,7 @@ const ShiftUpdation = () => {
 
                     const gracePeriod = await axioslogin.get('/commonsettings')
                     const { data } = gracePeriod.data
-                    const { cmmn_late_in_grace, cmmn_early_out_grace } = data[0]
+                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -130,7 +129,8 @@ const ShiftUpdation = () => {
                     const { holidaydata } = holiday_data.data;
 
                     //Function for punch master updation. Based on duty plan and punch details in punch data 
-                    const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+                    const result = await getAndUpdatePunchingData(postData, holidaydata,
+                        cmmn_early_out, cmmn_grace_period, cmmn_late_in,
                         gross_salary, empInform, dispatch)
 
                     if (result !== undefined) {
@@ -201,7 +201,7 @@ const ShiftUpdation = () => {
             setOpenBkDrop(false)
 
         }
-    }, [value, dept, section, emply, empInform])
+    }, [value, dept, section, emply, empInform, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, em_no])
 
     //ATTENDANCE TABLE UPDATION FUNCTION
     useEffect(() => {
@@ -220,161 +220,150 @@ const ShiftUpdation = () => {
             getUpdatedTable()
             dispatch({ type: UPDATE_PUNCHMASTER_TABLE, payload: {} })
         }
-    }, [updatedDataPunchInOut])
-
+    }, [updatedDataPunchInOut, UPDATE_PUNCHMASTER_TABLE, dispatch, tableArray])
 
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
-            <PageLayoutCloseOnly
-                heading="Punch In/Out Marking"
-                redirect={() => { }}
-            >
-                <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                    <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['year', 'month']}
-                                minDate={subMonths(new Date(), 1)}
-                                maxDate={addMonths(new Date(), 1)}
-                                value={value}
-                                size="small"
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                }}
-                                renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                        <CssVarsProvider>
-                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                        </CssVarsProvider>
-                                        {InputProps?.endAdornment}
-                                    </Box>
-                                )}
-                            />
-                        </LocalizationProvider>
-                    </Box>
-                    {hod === 1 || incharge === 1 ?
-
-                        <Box sx={{ display: 'flex', py: 0.5, width: '60%', }}>
-
-                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                <DepartmentDropRedx getDept={changeDept} />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                <DepartmentSectionRedx getSection={changeSection} />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                <SectionBsdEmployee getEmploy={getEmployee} />
-                            </Box>
-                        </Box> :
-                        <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
-
-                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
+            <CustomLayout title="Punch In/Out Marking" displayClose={true} >
+                <Box sx={{ width: '100%', }}>
+                    <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                        <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['year', 'month']}
+                                    minDate={subMonths(new Date(), 1)}
+                                    maxDate={addMonths(new Date(), 1)}
+                                    value={value}
                                     size="small"
-                                    value={dept_name}
-                                    sx={{ display: 'flex', mt: 0.5 }}
-                                    disabled
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
                                 />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                    value={sect_name}
-                                    sx={{ display: 'flex', mt: 0.5 }}
-                                    disabled
-                                />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                    value={em_name}
-                                    sx={{ display: 'flex', mt: 0.5 }}
-                                    disabled
-                                />
-                            </Box>
-
-
+                            </LocalizationProvider>
                         </Box>
+                        {hod === 1 || incharge === 1 ?
 
+                            <Box sx={{ display: 'flex', width: '60%', }}>
 
-                    }
+                                <Box sx={{ flex: 1, px: 0.5 }}>
+                                    <DepartmentDropRedx getDept={changeDept} />
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5 }}>
+                                    <DepartmentSectionRedx getSection={changeSection} />
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5 }}>
+                                    <SectionBsdEmployee getEmploy={getEmployee} />
+                                </Box>
+                            </Box> :
+                            <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
 
-
-
-
-                    <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
-                        <CssVarsProvider>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="neutral"
-                                onClick={handleOnClickFuntion}
-                                fullWidth
-                                startDecorator={<HourglassEmptyOutlinedIcon />}
-                                sx={{ mx: 0.5 }}
-                            >
-                                Process
-                            </Button>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="neutral"
-                                fullWidth
-                                startDecorator={<CleaningServicesOutlinedIcon />}
-                                sx={{ mx: 0.5 }}
-                            >
-                                Clear
-                            </Button>
-
-                        </CssVarsProvider>
+                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        size="small"
+                                        value={dept_name}
+                                        sx={{ display: 'flex', mt: 0.5 }}
+                                        disabled
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        size="small"
+                                        value={sect_name}
+                                        sx={{ display: 'flex', mt: 0.5 }}
+                                        disabled
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        size="small"
+                                        value={em_name}
+                                        sx={{ display: 'flex', mt: 0.5 }}
+                                        disabled
+                                    />
+                                </Box>
+                            </Box>
+                        }
+                        <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                            <CssVarsProvider>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    onClick={handleOnClickFuntion}
+                                    fullWidth
+                                    startDecorator={<HourglassEmptyOutlinedIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    Process
+                                </Button>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    fullWidth
+                                    startDecorator={<CleaningServicesOutlinedIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    Clear
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ flex: 1, pt: 0.5 }} >
+                        <TableContainer component={Paper}>
+                            <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
+                                <TableHead>
+                                    <TableRow sx={{ color: '#003A75' }} hover >
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }} >#</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }} >Date</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Emp No</TableCell>
+                                        <TableCell size='small' padding='none' align="center" colSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Shift Time</TableCell>
+                                        <TableCell size='small' padding='none' align="center" colSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Punch Data</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Hrs Worked</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>L-IN(min)</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>E-GO(min)</TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
+                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
+                                    </TableRow>
+                                    <TableRow hover >
+                                        {/* <TableCell>Date</TableCell> */}
+                                        <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>In Time</TableCell>
+                                        <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>Out Time</TableCell>
+                                        <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>In Time</TableCell>
+                                        <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>Out Time</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <Suspense>
+                                        {
+                                            tableArray?.map((val, ind) => {
+                                                return <TableRows key={ind} data={val}
+                                                    disable={disable} />
+                                            })
+                                        }
+                                    </Suspense>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Box>
                 </Box>
-                <Box sx={{ flex: 1, pt: 0.5 }} >
-                    <TableContainer component={Paper}>
-                        <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
-                            <TableHead>
-                                <TableRow sx={{ color: '#003A75' }} hover >
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }} >#</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }} >Date</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Emp No</TableCell>
-                                    <TableCell size='small' padding='none' align="center" colSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Shift Time</TableCell>
-                                    <TableCell size='small' padding='none' align="center" colSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Punch Data</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>Hrs Worked</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>L-IN(min)</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>E-GO(min)</TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
-                                    <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
-                                </TableRow>
-                                <TableRow hover >
-                                    {/* <TableCell>Date</TableCell> */}
-                                    <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>In Time</TableCell>
-                                    <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>Out Time</TableCell>
-                                    <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>In Time</TableCell>
-                                    <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }}>Out Time</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <Suspense>
-                                    {
-                                        tableArray?.map((val, ind) => {
-                                            return <TableRows key={ind} data={val}
-                                                disable={disable} />
-                                        })
-                                    }
-                                </Suspense>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </PageLayoutCloseOnly>
+            </CustomLayout>
         </Fragment >
     )
 }

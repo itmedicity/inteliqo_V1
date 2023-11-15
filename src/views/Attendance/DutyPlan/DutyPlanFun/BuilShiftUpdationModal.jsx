@@ -2,8 +2,6 @@ import React from 'react'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { memo } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -21,9 +19,9 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
 
-    const departmentShiftt = useSelector((state) => state.getDepartmentShiftData.deptShiftData, _.isEqual);
-    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
-    const planData = useSelector((state) => state.getShiftPlanDetl.shiftData, _.isEqual);
+    const departmentShiftt = useSelector((state) => state?.getDepartmentShiftData?.deptShiftData, _.isEqual);
+    const commonState = useSelector((state) => state?.getCommonSettings, _.isEqual);
+    const planData = useSelector((state) => state?.getShiftPlanDetl.shiftData, _.isEqual);
 
     const deptShift = useMemo(() => departmentShiftt, [departmentShiftt]);
     const commonSettings = useMemo(() => commonState, [commonState]);
@@ -100,7 +98,7 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
                                 size="small"
                                 onChange={(e) => setShift(e.target.value)}
                             >
-                                <MenuItem disabled defaultValue={0}>Select Shift</MenuItem>
+                                <MenuItem disabled value={0}>Select Shift</MenuItem>
                                 {
                                     deptShift && deptShift.map((val, index) => (
                                         <MenuItem

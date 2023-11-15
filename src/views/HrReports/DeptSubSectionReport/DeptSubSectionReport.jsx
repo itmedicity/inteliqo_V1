@@ -5,9 +5,9 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import Custom_Report_Two from 'src/views/Component/Custom_Report_Two';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { setSubSection } from 'src/redux/actions/DeptSubSection.Action';
+import CustomReportTwo from 'src/views/Component/CustomReportTwo';
 
 const DeptSubSectionReport = () => {
     /** Initiliazing values for tabale data*/
@@ -164,7 +164,7 @@ const DeptSubSectionReport = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Custom_Report_Two
+            <CustomReportTwo
                 /** to display left side first selection checkbox list */
                 columnDefs={columnDefs}
                 tableData={rowData}

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { getannualleave, getContractDetlEmp, notify, setAccademicData, setExperienceData, setPersonalData } from 'src/redux/actions/Profile.action'
 import ProfileMenus from '../EmpMenus/Profile/ProfileMenus';

@@ -15,7 +15,7 @@ const DeptWiseEmployeeSelect = ({ value, setValue, deptSect, setSelectedEmp }) =
 
     const getEmployeeId = useCallback((em_id) => {
         setSelectedEmp(em_id);
-    }, [])
+    }, [setSelectedEmp])
 
     return (
         <FormControl fullWidth

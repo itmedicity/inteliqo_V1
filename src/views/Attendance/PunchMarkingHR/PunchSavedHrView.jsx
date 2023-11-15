@@ -2,7 +2,7 @@ import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from "src/views/Axios/Axios";
 import { useDispatch, useSelector } from 'react-redux'
 import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
@@ -89,7 +89,7 @@ const PunchSavedHrView = ({ dept, value, section }) => {
             }
         }
         getDetail()
-    }, [])
+    }, [commonSettings, dept, fromdate, section, todate])
 
     return (
         <Fragment>

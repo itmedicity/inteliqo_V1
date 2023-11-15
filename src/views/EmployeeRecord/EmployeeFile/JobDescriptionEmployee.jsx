@@ -34,7 +34,7 @@ const JobDescriptionEmployee = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(setPersonalData(no))
-    }, [no])
+    }, [no, dispatch])
     const getempData = useSelector((state) => {
         return state.getPrifileDateEachEmp.empPersonalData.personalData
     })
@@ -50,7 +50,7 @@ const JobDescriptionEmployee = () => {
                 dept_id: getempData.em_department
             }
             const result = await axioslogin.post('/jobsummary/check', checkData)
-            const { data, success } = result.data
+            const { success } = result.data
             if (success === 1) {
                 setJobdescView(1)
             }

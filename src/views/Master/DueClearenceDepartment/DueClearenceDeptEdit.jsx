@@ -30,7 +30,7 @@ const DueClearenceDeptEdit = () => {
             deptcode: selectDeptSec,
             deptdesc: deptname
         }
-        if (arraydata.some(key => key.deptcode == selectDeptSec)) {
+        if (arraydata.some(key => key.deptcode === selectDeptSec)) {
             warningNofity("Department Already Added!!")
         }
         else {
@@ -66,7 +66,7 @@ const DueClearenceDeptEdit = () => {
             }
         }
         getdeuDepartment()
-    }, [selectedDept, updateDepartmentSection, updateDepartmentSection, id])
+    }, [selectedDept, updateSelected, updateDepartmentSection, id])
     //post Data
     const PostData = {
         dept_id: selectedDept,

@@ -33,9 +33,9 @@ const AgGridWithLoading = ({
         filter: 'agTextColumnFilter',
     }
 
-    const onGridReady = (params) => {
-        let gridApi = params.api
-    }
+    // const onGridReady = (params) => {
+    //     let gridApi = params.api
+    // }
 
     const rowStyle = {
         fontFamily: [
@@ -125,7 +125,7 @@ const AgGridWithLoading = ({
                         headerHeight={headerHeight}
                         rowDragManaged={true}
                         animateRows={true}
-                        onGridReady={onGridReady}
+                        // onGridReady={onGridReady}
                         rowSelection="multiple"
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}

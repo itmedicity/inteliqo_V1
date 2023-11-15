@@ -5,7 +5,7 @@ import { axioslogin } from '../Axios/Axios';
 
 const SpecializationSelection = (props) => {
     const [spec, setSpec] = useState([]);
-    const { selectSpec, updateSpec, selectCourse, specName,
+    const { selectSpec, updateSpec, selectCourse,
         setSpecName } = useContext(PayrolMasterContext)
 
     useEffect(() => {

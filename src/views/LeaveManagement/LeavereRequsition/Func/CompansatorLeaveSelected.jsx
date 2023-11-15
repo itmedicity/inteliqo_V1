@@ -11,22 +11,23 @@ import _ from 'underscore';
 const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
 
     const [coff, setCoff] = useState([]);
-    const [status, setStatus] = useState(false);
+    // const [status, setStatus] = useState(false);
 
     const copansatoryOff = useSelector((state) => state.getCreitedCompansatoryOffLeave, _.isEqual);
     const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
 
     useEffect(() => {
-        const { apiStats, compansatory } = compOff;
-        apiStats && setStatus(true)
+        const {
+            compansatory } = compOff;
+        //apiStats && setStatus(true)
         setCoff(compansatory);
     }, [compOff])
 
-    useEffect(() => {
-        return () => {
-            setStatus(false)
-        }
-    })
+    // useEffect(() => {
+    //     return () => {
+    //         setStatus(false)
+    //     }
+    // })
 
     //handle change compansatory off
     const changeConpansatoryLeave = useCallback(async (event) => {
@@ -40,7 +41,7 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, copansatoryLeave)
-    })
+    }, [handleChange, index, date])
 
     return (
         <Form.Select

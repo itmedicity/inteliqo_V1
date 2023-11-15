@@ -68,7 +68,8 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [setCount, setOpen, reason, slno, leaveDate, emno])
+
     const LeaveRejectdata = {
         hf_hr_apprv_status: 2,
         hf_hr_apprv_cmnt: reason,

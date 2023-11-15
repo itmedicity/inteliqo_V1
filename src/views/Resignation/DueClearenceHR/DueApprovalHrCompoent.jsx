@@ -20,7 +20,7 @@ const DueApprovalHrCompoent = ({ row, setfinaldata }) => {
                 reject: reject
             }])
         }
-    }, [formData])
+    }, [formData, row, approval, reject, data, setfinaldata])
     const updateHRApproval = async (e) => {
         setdata(1)
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;

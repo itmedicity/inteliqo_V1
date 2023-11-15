@@ -5,7 +5,7 @@ import { axioslogin } from '../Axios/Axios'
 
 const EmpNameDepartmentSec = (props) => {
     const [employeeName, setEmployeeName] = useState([])
-    const { selectDeptSec, updateDeptSec, selectEmpDeptSec,
+    const { selectDeptSec, selectEmpDeptSec,
         updateselectEmpDeptSec } = useContext(PayrolMasterContext)
 
     // Get Employee Details

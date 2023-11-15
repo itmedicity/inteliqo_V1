@@ -35,7 +35,7 @@ const JoyFineTypeSelect = ({ value, setValue, updatefine }) => {
             setValue(0)
         }
         return
-    }, [])
+    }, [setValue])
 
 
     return (

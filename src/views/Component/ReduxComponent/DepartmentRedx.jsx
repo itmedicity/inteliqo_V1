@@ -26,7 +26,7 @@ const DepartmentRedx = ({ getDept }) => {
             getDept(0)
         }
         return
-    }, [value])
+    }, [value, SELECTED_DEPT_VAL, getDept, dispatch])
 
     useEffect(() => {
         departments.length > 0 && setDept(departments)

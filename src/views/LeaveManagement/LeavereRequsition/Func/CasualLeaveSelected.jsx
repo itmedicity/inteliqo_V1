@@ -12,22 +12,22 @@ import { format } from 'date-fns/esm';
 const CasualLeaveSelected = ({ handleChange, index, date }) => {
 
     const [casualLeve, setCasualLeave] = useState([]);
-    const [status, setStatus] = useState(false);
+    // const [status, setStatus] = useState(false);
 
     const casulLeves = useSelector((state) => state.getCreditedCasualLeave, _.isEqual);
     const casualLve = useMemo(() => casulLeves, [casulLeves])
 
     useEffect(() => {
-        const { apiStats, casualLeave } = casualLve;
-        apiStats && setStatus(true)
+        const { casualLeave } = casualLve;
+        //apiStats && setStatus(true)
         setCasualLeave(casualLeave);
     }, [casualLve])
 
-    useEffect(() => {
-        return () => {
-            setStatus(false)
-        }
-    })
+    // useEffect(() => {
+    //     return () => {
+    //         setStatus(false)
+    //     }
+    // })
 
     //handle change casal leave 
 
@@ -43,7 +43,7 @@ const CasualLeaveSelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, casualLeave)
-    })
+    }, [index, handleChange, date])
 
     return (
         <Form.Select
