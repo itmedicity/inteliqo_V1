@@ -113,7 +113,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
         getdepartmentShift();
 
         dispatch(getEmployeeApprovalLevel(empid))
-    }, [employee, dispatch, empid])
+    }, [employee, dispatch, dept, deptSection, empid])
 
     //Get Data
     useEffect(() => {
@@ -145,11 +145,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
         } else {
             setapprovalrights({})
         }
-        const editdata = punchDetl.filter((val) => {
-            if (val.punch_time === punchInTime || val.punch_time === punchOutTime) {
-                return val
-            }
-        })
+        const editdata = punchDetl.filter((val) => val.punch_time === punchInTime || val.punch_time === punchOutTime)
         setSaveArray(editdata)
 
         const checkpost = {
@@ -170,7 +166,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
             }
         }
         checkpuch()
-    }, [punchInTime, punchOutTime, empApprovalLevel, empid])
+    }, [punchInTime, punchDetl, punchOutTime, empApprovalLevel, empid])
 
     //Shift Hours
     const inTime = moment(selectedShiftTiming.inCheck).format("YYYY-MM-DD HH:mm:ss")
@@ -206,13 +202,13 @@ const InchargeHodPage = ({ em_id, em_department }) => {
         const checkin = e.target.checked;
         setCheckIn(checkin)
         setDisableIn(!checkin)
-    })
+    }, [])
 
     const handleChangeCheckOutCheck = useCallback((e) => {
         const checkout = e.target.checked;
         setCheckOut(checkout)
         setDisableOut(!checkout)
-    })
+    }, [])
 
     const getShiftdetail = async () => {
         if (selectedShift === 0) {
@@ -584,7 +580,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
                                         defaultValue={0}
                                         disabled={disableIn}
                                         value={punchInTime}
-                                        onChange={useCallback((e) => setPunchInTime(e.target.value))}
+                                        onChange={useCallback((e) => setPunchInTime(e.target.value), [])}
                                     >
                                         <MenuItem value={0} disabled>Check In Time</MenuItem>
                                         {
@@ -638,7 +634,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
                                         defaultValue={0}
                                         disabled={disableOut}
                                         value={punchOutTime}
-                                        onChange={useCallback((e) => setPunchOutTime(e.target.value))}
+                                        onChange={useCallback((e) => setPunchOutTime(e.target.value), [])}
                                     >
                                         <MenuItem value={0} disabled>Check Out Time</MenuItem>
                                         {
@@ -706,7 +702,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
                     </Box>
                     <Box sx={{ px: 0.5, mt: 0.2 }}>
                         <CssVarsProvider>
-                            <Tooltip title="Save Request" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Save Request" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"

@@ -21,7 +21,7 @@ const OtApproveModel = ({ open, handleClose, rowData, inchid, count, setCount })
     const { apprv, reject } = status
     const [ot_type, setOt_type] = useState(0)
     const [ot_inch_remark, setOt_inch_remark] = useState('')
-    const [table, setTable] = useState(false)
+    // const [table, setTable] = useState(false)
     const [flag, setFlag] = useState(0)
     const [array, setArray] = useState([])
 
@@ -53,20 +53,20 @@ const OtApproveModel = ({ open, handleClose, rowData, inchid, count, setCount })
         }
 
 
-    }, [over_time, check_in, check_out])
+    }, [over_time, array, em_no, check_in, check_out])
 
     const updatechageottype = (val) => {
         if (val === 1) {
-            setTable(true)
+            // setTable(true)
         } else {
-            setTable(false)
+            // setTable(false)
         }
     }
 
     const checkOT = (val) => {
         if (val === 1) {
             if (over_time > 480) {
-                var othr = Math.floor(over_time / 480)
+                // var othr = Math.floor(over_time / 480)
                 // setdays(othr)
 
             }
@@ -87,12 +87,12 @@ const OtApproveModel = ({ open, handleClose, rowData, inchid, count, setCount })
         ot_slno: ot_slno
     }
 
-    const dataPost = {
-        ot_time: over_time,
-        emp_id: emp_id,
-        applied_cl: 1,
-        ot_coff_slno: ot_slno,
-    }
+    // const dataPost = {
+    //     ot_time: over_time,
+    //     emp_id: emp_id,
+    //     applied_cl: 1,
+    //     ot_coff_slno: ot_slno,
+    // }
 
     const submitnopunch = async () => {
         const result1 = await axioslogin.patch('/overtimerequest/inchargeapprove', patchData)

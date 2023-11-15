@@ -1,7 +1,6 @@
 import { Box, Paper } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
-import { CssVarsProvider, Typography } from '@mui/joy';
-import Avatar from '@mui/joy/Avatar'
+import { AspectRatio, CssVarsProvider, Typography } from '@mui/joy';
 import IconButton from '@mui/joy/IconButton';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -26,12 +25,10 @@ const ProfileCard = () => {
 
     const state = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual)
 
-
     useEffect(() => {
         const getEmpIdforProfilePic = async () => {
             if (no > 0) {
                 const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`);
-
                 urlExist(profilePic, (status) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
@@ -50,24 +47,16 @@ const ProfileCard = () => {
 
     return (
         <>
-            <Box sx={{
-                justifyContent: 'center',
-                display: 'flex', width: '100%',
-                flexDirection: 'column'
-            }} >
-
-                <Box sx={{ flex: 1, display: "flex", justifyContent: 'center', px: 6 }}>
-                    <CssVarsProvider>
-                        <Avatar
+            <Box sx={{ justifyContent: 'center', display: 'flex', width: '100%', flexDirection: 'column' }} >
+                <Box sx={{ width: 200, borderRadius: 'sm', ml: 3 }}>
+                    <AspectRatio objectFit="contain">
+                        <img
                             src={src}
-                            sx={{
-                                flex: 1,
-                                "--Avatar-size": { xl: '100px', lg: '100px', md: '70px', sm: '90px', xs: '70px' },
-                            }}
+                            srcSet={src}
+                            alt="Profile Pic"
                         />
-                    </CssVarsProvider>
+                    </AspectRatio>
                 </Box>
-
                 {/* <CssVarsProvider> */}
                 <Paper elevation={0} sx={{
                     display: "flex", justifyContent: 'center',

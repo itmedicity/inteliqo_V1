@@ -18,7 +18,7 @@ const CompetencyViewTable = ({ setCompdata }) => {
         } else if (Object.keys(comp).length === 0) {
             setCompdata(1)
         }
-    }, [comp])
+    }, [comp, setCompdata])
 
     return (
         <Fragment>

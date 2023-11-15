@@ -1,7 +1,5 @@
-import { Box, TextareaAutosize } from '@mui/material'
+import { Box } from '@mui/material'
 import React, { Fragment } from 'react'
-import IconButton from '@mui/joy/IconButton';
-import AdjustIcon from '@mui/icons-material/Adjust';
 import { memo } from 'react';
 import { CssVarsProvider, Typography } from '@mui/joy';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';

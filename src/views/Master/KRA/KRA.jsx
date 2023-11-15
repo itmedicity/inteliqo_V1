@@ -1,17 +1,20 @@
-import { Box, Card, Grid, Paper, Typography } from '@mui/material'
-import React, { Fragment, useCallback } from 'react'
+import { Button, CssVarsProvider, IconButton } from '@mui/joy'
+import { Box, Grid, Paper } from '@mui/material'
+import React, { memo, useCallback, useEffect } from 'react'
 import { useMemo } from 'react'
 import { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
-import CommonCheckBox from 'src/views/Component/CommonCheckBox'
-import TextInput from 'src/views/Component/TextInput'
-import KRAAGgridTable from './KRAAGgridTable'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import EditIcon from '@mui/icons-material/Edit';
 
 const KRA = () => {
-    const history = useHistory()
+
     const [count, setCount] = useState(0)
     const [formData, setFormData] = useState({
         kra: '',
@@ -20,10 +23,15 @@ const KRA = () => {
     const { kra, krastatus } = formData
     const [value, setvalue] = useState(0)
     const [slno, setslno] = useState(0)
-    const defaultState = {
-        kra: '',
-        krastatus: false
-    }
+    const [data, setData] = useState([])
+
+
+    const defaultState = useMemo(() => {
+        return {
+            kra: '',
+            krastatus: false
+        }
+    }, [])
     //getting formData
     const updatekeyResultArea = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -100,57 +108,93 @@ const KRA = () => {
         else {
             update(postupdateData)
         }
-    }, [postData, postupdateData, count, value])
-    const RedirectToMasterPage = () => {
-        history.push('/Home/Settings');
-    }
-    return (
-        <Fragment>
-            <PageLayoutSaveClose
-                heading="Key Performance Area"
-                submit={SubmitFormData}
-                redirect={RedirectToMasterPage}
-            >
-                <Box>
-                    <Paper square elevation={2} sx={{ p: 0.5, }}   >
-                        <Box sx={{ flex: 2, }} >
+    }, [postData, postupdateData, defaultState, count, value])
 
-                            <Grid container spacing={1}>
-                                <Grid item xl={3} lg={2}>
-                                    <Card sx={{ padding: 1, borderStyle: 'inherit' }}>
-                                        <TextInput
-                                            style={{ width: "100%", paddingLeft: 13 }}
-                                            Placeholder="key Result Area"
-                                            name="kra"
-                                            value={kra}
-                                            changeTextValue={(e) => updatekeyResultArea(e)}
-                                        />
-                                        <Grid container >
-                                            <Grid item xs={2} lg={2} xl={2} md={2}>
-                                                <CommonCheckBox
-                                                    style={{ width: "100%", paddingLeft: 3, paddingTop: 6 }}
-                                                    name="krastatus"
-                                                    value={krastatus}
-                                                    checked={krastatus}
-                                                    onChange={(e) => updatekeyResultArea(e)}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6} lg={6} xl={6} md={6}>
-                                                <Typography sx={{ paddingTop: 1, paddingLeft: 0 }}>Status</Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={9} lg={9} xl={9} md={9}>
-                                    <KRAAGgridTable getDataTable={getDataTable} count={count} />
-                                </Grid>
-                            </Grid>
-                        </Box>
-                    </Paper>
-                </Box>
-            </PageLayoutSaveClose >
-        </Fragment >
+    //getting Kra Table Data
+    useEffect(() => {
+        const getData = async () => {
+            const result = await axioslogin.get('/KraMast')
+            const { success, data } = result.data
+            if (success === 1) {
+                setData(data)
+                setCount(0)
+            }
+            else {
+                setData([])
+            }
+        }
+        getData()
+    }, [count])
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'kra_slno' },
+        { headerName: 'KRA desc ', field: 'kra_desc' },
+        { headerName: 'Kra status ', field: 'status' },
+        {
+            headerName: 'Action', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+
+        },
+    ])
+
+    return (
+        <MasterLayout title="Key Performance Area" displayClose={true} >
+            <ToastContainer />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Paper square elevation={0} sx={{ p: 1, }}   >
+                            <Box sx={{ width: "100%", pt: 1 }}>
+                                <InputComponent
+                                    placeholder={'Key Result Area'}
+                                    type="text"
+                                    size="sm"
+                                    name="kra"
+                                    value={kra}
+                                    onchange={(e) => updatekeyResultArea(e)}
+                                />
+                            </Box>
+                            <Box sx={{ width: "100%", pt: 1 }}>
+                                <JoyCheckbox
+                                    label='Status'
+                                    checked={krastatus}
+                                    name="krastatus"
+                                    onchange={(e) => updatekeyResultArea(e)}
+                                />
+                            </Box>
+                            <Box sx={{ px: 0.5, mt: 0.9 }}>
+                                <CssVarsProvider>
+                                    <Button
+                                        variant="outlined"
+                                        component="label"
+                                        size="md"
+                                        color="primary"
+                                        onClick={SubmitFormData}
+                                    >
+                                        <SaveIcon />
+                                    </Button>
+                                </CssVarsProvider>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={data}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default KRA
+export default memo(KRA) 

@@ -15,8 +15,8 @@ import {
 import { Box } from '@mui/system'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DutyPlanTopCard from './DutyPlanTopCard'
-import { dutyPlanInitialState, dutyPlanReducer } from './DutyPlanFun/DutyPlanFun'
-import { useReducer } from 'react'
+// import { dutyPlanInitialState, dutyPlanReducer } from './DutyPlanFun/DutyPlanFun'
+// import { useReducer } from 'react'
 import ShiftSelect from './DutyPlanFun/ShiftSelect'
 import { ToastContainer } from 'react-toastify'
 import { useSelector } from 'react-redux'
@@ -33,6 +33,7 @@ const DutyPlanMainCard = () => {
     const [plan, setPlan] = useState([])
     const [open, setOpen] = useState(false);
     const [dateFormat, setDateFormat] = useState([])
+    const [emNo, setEmno] = useState(0);
 
     const [updatedPlanfrmModel, setUpdatedPlanfrmModel] = useState({});
 
@@ -40,8 +41,8 @@ const DutyPlanMainCard = () => {
 
     const dispatchRedux = useDispatch();
 
-    const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState);
-    const { fromDate, toDate, deptName, deptSecName } = planState
+    // const [planState] = useReducer(dutyPlanReducer, dutyPlanInitialState);
+    // const { fromDate, toDate, deptName, deptSecName } = planState
 
     const planData = useSelector((state) => state.getShiftPlanDetl.shiftData, _.isEqual);
     const shiftDate = useSelector((state) => state.getShiftDateFormat.dateFormat, _.isEqual);
@@ -55,7 +56,7 @@ const DutyPlanMainCard = () => {
         Object.keys(shiftPlanData).length > 0 ? setPlan(shiftPlanData) : setPlan([]);
         Object.keys(shiftBaseDateFormat).length > 0 ? setDateFormat(shiftBaseDateFormat) : setDateFormat([]);
         dispatchRedux({ type: FETCH_UPDATED_PLAN, payload: shiftPlanData });
-    }, [shiftPlanData, shiftBaseDateFormat])
+    }, [shiftPlanData, FETCH_UPDATED_PLAN, dispatchRedux, shiftBaseDateFormat])
 
     useEffect(() => {
         return () => {
@@ -63,7 +64,7 @@ const DutyPlanMainCard = () => {
             dispatchRedux({ type: GET_SHIFT_DATE_FORMAT, payload: [], status: true })
             dispatchRedux({ type: FETCH_UPDATED_PLAN, payload: [] });
         }
-    }, [])
+    }, [dispatchRedux, GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_UPDATED_PLAN])
 
     //update the "plan" state after updating the model updation.
 
@@ -99,16 +100,16 @@ const DutyPlanMainCard = () => {
 
         updateNewShiftPlan(updatedPlanfrmModel)
 
-    }, [updatedPlanfrmModel])
+    }, [updatedPlanfrmModel, FETCH_UPDATED_PLAN, updatedPlanDetl, dispatchRedux])
 
     //open modal for bulk shift updation
-    const [emNo, setEmno] = useState(0);
+
     const builkShiftUpdation = async (em_no) => {
         const pendingTckt = shiftPlanData.filter((val) => {
             return val.em_no === em_no
         })
         const { plan } = pendingTckt[0]
-        const xx = plan[0].map((val) => {
+        const xx = plan[0]?.map((val) => {
             const { attendance_update_flag } = val
             if (attendance_update_flag === 1) {
                 const obj = { flag: 1 }

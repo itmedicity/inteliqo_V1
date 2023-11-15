@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { setDept } from 'src/redux/actions/Dept.Action';
-import Custom_Report_Two from 'src/views/Component/Custom_Report_Two';
+import CustomReportTwo from 'src/views/Component/CustomReportTwo';
 
 const NoExpReport = () => {
 
@@ -176,7 +176,7 @@ const NoExpReport = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Custom_Report_Two
+            <CustomReportTwo
                 /** to display left side first selection checkbox list */
                 columnDefs={columnDefs}
                 tableData={dept}

@@ -21,7 +21,7 @@ const KraSelect = ({ value, setValue, style, label, setKraName }) => {
     }, [])
     const handleChange = (event) => {
         setValue(event.target.value);
-        setKraName(event.nativeEvent.target.textContent)
+        //setKraName(event.nativeEvent.target.textContent)
     };
 
     return (

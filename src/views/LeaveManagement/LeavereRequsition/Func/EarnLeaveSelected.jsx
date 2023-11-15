@@ -11,22 +11,22 @@ import { format } from 'date-fns';
 const EarnLeaveSelected = ({ handleChange, index, date }) => {
 
     const [earnLeave, setEarnLeave] = useState([]);
-    const [status, setStatus] = useState(false);
+    //const [status, setStatus] = useState(false);
 
     const earnLeaves = useSelector((state) => state.getCreditedEarnLeave, _.isEqual);
     const earnLve = useMemo(() => earnLeaves, [earnLeaves]);
 
     useEffect(() => {
-        const { apiStats, earnLeave } = earnLve;
-        apiStats && setStatus(true)
+        const { earnLeave } = earnLve;
+        // apiStats && setStatus(true)
         setEarnLeave(earnLeave);
     }, [earnLve])
 
-    useEffect(() => {
-        return () => {
-            setStatus(false)
-        }
-    })
+    // useEffect(() => {
+    //     return () => {
+    //         setStatus(false)
+    //     }
+    // })
 
     // handle change earn leaves
     const changeEarnLeave = useCallback(async (event) => {
@@ -41,7 +41,7 @@ const EarnLeaveSelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, earnLeaves)
-    })
+    }, [index, handleChange, date])
 
     return (
         <Form.Select

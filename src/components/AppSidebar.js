@@ -30,10 +30,10 @@ import PerformanceApproval from '../Menus/PerformaneApproval'
 import TrainingAndDevelopment from '../Menus/TrainingAndDevelopment'
 import Resignation from '../Menus/Resignation'
 import { getMenuSlno } from 'src/views/Constant/Constant'
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box } from '@mui/material'
+// import { CssVarsProvider, Typography } from '@mui/joy'
+// import { Box } from '@mui/material'
 import VaccinationInfo from '../Menus/VaccinationMenu'
-import _ from 'underscore'
+// import _ from 'underscore'
 
 
 const AppSidebar = () => {
@@ -201,7 +201,7 @@ const AppSidebar = () => {
     getModuleUserRight()
   }, [count])
 
-  const em_name = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_name, _.isEqual)
+  //const em_name = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_name, _.isEqual)
 
   return (
     <Fragment>
@@ -215,7 +215,7 @@ const AppSidebar = () => {
       >
         <CSidebarBrand className="d-none d-md-flex" to="/">
 
-          <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}>
+          {/* <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}>
             <Box sx={{ p: 1, display: "flex", }} >
               <CssVarsProvider>
                 <Typography textColor="text.secondary">
@@ -230,7 +230,7 @@ const AppSidebar = () => {
                 </Typography>
               </CssVarsProvider>
             </Box>
-          </Box>
+          </Box> */}
 
 
           {/* Company Logo Big Size */}

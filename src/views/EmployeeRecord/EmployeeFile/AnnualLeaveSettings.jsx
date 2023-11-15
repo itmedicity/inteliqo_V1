@@ -151,7 +151,7 @@ const AnnualLeaveSettings = () => {
             dispatch(setEmployeeProcessDetail(id))
         )
 
-    }, [no, modelvalue, id])
+    }, [no, modelvalue, dispatch, id])
     const year = moment(new Date()).format('YYYY')
     //useEffect for getting attendancde details to process earn leave
     useEffect(() => {
@@ -172,7 +172,7 @@ const AnnualLeaveSettings = () => {
             if (success === 2) {
                 setAttendanceData(data[0])
             }
-            else if (success == 2) {
+            else if (success === 2) {
                 setAttendanceData([])
             }
             else {
@@ -181,7 +181,7 @@ const AnnualLeaveSettings = () => {
         }
         getattendanceData()
 
-    }, [no])
+    }, [no, year])
     const postFormdata =
     {
         em_no: no,

@@ -25,9 +25,10 @@ const ShiftSelect = ({ data }) => {
     const { plan_slno,
         emp_id,
         shift_id,
-        duty_day,
+        //duty_day,
         attendance_update_flag,
-        holiday } = shiftData;
+        //holiday 
+    } = shiftData;
 
     useEffect(() => {
         setShift(shift_id)

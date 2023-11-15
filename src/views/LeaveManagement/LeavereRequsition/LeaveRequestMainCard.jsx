@@ -47,7 +47,7 @@ const LeaveRequestMainCard = () => {
         }
         dispatch(getEmployeeApprovalLevel(em_id))
 
-    }, [hod, incharge, em_id])
+    }, [hod, incharge, em_id, dispatch])
 
     useEffect(() => {
         return () => {
@@ -58,7 +58,7 @@ const LeaveRequestMainCard = () => {
             dispatch(getEmployeeInformation())
             dispatch(getEmployeeApprovalLevel(0))
         }
-    }, [])
+    }, [dispatch, LEAVE_REQ_DEFAULT])
 
     //Leave Request in HOD/INcharge Selected employes Empid get Reducer function
     const SelectEmp = useSelector((state) => state.leaveRequestSelectedEmployee.em_id, _.isEqual);

@@ -1,6 +1,5 @@
-import { Box, LinearProgress, Paper, TableContainer } from '@mui/material'
+import { Box, Paper, TableContainer } from '@mui/material'
 import React from 'react'
-import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -34,7 +33,7 @@ const CasualLeaveCard = ({ title, id, processStat }) => {
 
   return (
     <Paper square sx={{ flex: 1, height: 250 }}>
-      <CustmTypog title={title} />
+      {/* <CustmTypog title={title} /> */}
       <Box>
         {loding && <LinearProgreeBar />}
         <TableContainer sx={{ maxHeight: 200 }} >

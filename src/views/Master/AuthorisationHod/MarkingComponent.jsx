@@ -1,13 +1,15 @@
-import React, { Fragment, useState, useContext, memo } from 'react'
+import React, { Fragment, useState, useContext, memo, useCallback } from 'react'
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { Checkbox, IconButton } from '@mui/material'
+import { IconButton } from '@mui/material'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { useMemo } from 'react';
 
-const MarkingComponent = ({ value }, key) => {
+const MarkingComponent = ({ value }) => {
 
     const { employeedetails } = useContext(PayrolMasterContext)
     const { em_no } = employeedetails
@@ -15,20 +17,22 @@ const MarkingComponent = ({ value }, key) => {
     const [assign, setassign] = useState({ coassign: false })
     const [cosetup, setcosetup] = useState(0)
 
-    const updateAssign = (e) => {
+    const updateAssign = useCallback((e) => {
         setcosetup(1)
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setassign({ ...assign, [e.target.name]: value })
 
-    }
+    }, [assign])
 
-    const postData = {
-        emp_id: value.emp_id,
-        co_assign: assign.coassign === true ? 1 : 0,
-        create_user: em_no
-    }
+    const postData = useMemo(() => {
+        return {
+            emp_id: value.emp_id,
+            co_assign: assign.coassign === true ? 1 : 0,
+            create_user: em_no
+        }
+    }, [value, em_no, assign])
 
-    const submitAssign = async (e) => {
+    const submitAssign = useCallback(async (e) => {
         e.preventDefault();
 
         const result = await axioslogin.post('/authorization/coassign', postData)
@@ -41,7 +45,7 @@ const MarkingComponent = ({ value }, key) => {
         } else {
             infoNofity(message)
         }
-    }
+    }, [postData, count])
 
 
     return (
@@ -54,15 +58,11 @@ const MarkingComponent = ({ value }, key) => {
                 <TableCell align="center">{value.sect_name}</TableCell>
                 <TableCell align="center">{value.em_name}</TableCell>
                 <TableCell align="center">{
-                    <Checkbox
-                        name="coassign"
-                        color="primary"
-                        // value={coassign}
+                    <JoyCheckbox
+                        label='Incharge'
                         checked={value.coassign === 1 && cosetup === 0 ? true : assign.coassign}
-                        className="py-0 px-5"
-                        onChange={(e) => {
-                            updateAssign(e)
-                        }}
+                        name="coassign"
+                        onchange={(e) => updateAssign(e)}
                     />
                 }
                 </TableCell>
@@ -73,7 +73,6 @@ const MarkingComponent = ({ value }, key) => {
                     >
                         <AddTaskRoundedIcon color="success" />
                     </IconButton>
-
                 </TableCell>
             </TableRow>
         </Fragment>

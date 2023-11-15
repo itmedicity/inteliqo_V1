@@ -9,7 +9,7 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
     useEffect(() => dispatch(setDeptWiseSection()), [dispatch])
 
     const departmentSec = useSelector((state) => state.getDeptSectList.deptSectionList, _.isEqual)
-    const [deptSect, setDeptSect] = useState([{ sect_id: 0, sect_name: 'Select Department' }])
+    const [deptSect, setDeptSect] = useState([{ sect_id: 0, sect_name: 'Select Department Section' }])
     const depatSecValues = useMemo(() => departmentSec, [departmentSec]);
 
     const [value, setValue] = useState(deptSect[0]);
@@ -22,7 +22,7 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
             getDeptSection(0)
         }
         return
-    }, [value])
+    }, [value, getDeptSection])
 
     useEffect(() => {
         depatSecValues.length > 0 && setDeptSect(depatSecValues)
@@ -30,7 +30,7 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
 
     return (
         <Autocomplete
-            placeholder="Select Department"
+            placeholder="Select Department Section"
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {

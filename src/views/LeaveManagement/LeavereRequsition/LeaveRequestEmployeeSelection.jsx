@@ -30,7 +30,7 @@ const LeaveRequestEmployeeSelection = () => {
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
 
     const { formSubmit } = singleLevFormData;
-    const { hod, incharge, em_id, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
+    const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
 
     const [deptSection, setDeptSection] = useState(0);
     const [employeeID, setEmployeeID] = useState(0);
@@ -53,7 +53,7 @@ const LeaveRequestEmployeeSelection = () => {
                     requestType: levReq
                 }
                 dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
-                console.log(` emp selectio hod ${em_no} `)
+                //console.log(` emp selectio hod ${em_no} `)
                 // dispatch(getCommonLeaveData(em_no));
             }
 

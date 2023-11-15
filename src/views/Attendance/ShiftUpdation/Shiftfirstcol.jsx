@@ -3,7 +3,7 @@ import { deepOrange, deepPurple, green, blueGrey, pink } from '@mui/material/col
 import { Avatar } from '@mui/material';
 const Shiftfirstcol = ({ datapunch }) => {
     console.log(datapunch)
-    const { duty_status, lvreq_type, punch_in, punch_out, shift_id, holiday_flag, duty_worked, offday_falg } = datapunch;
+    const { duty_status, lvreq_type, punch_in, punch_out, holiday_flag, duty_worked, offday_falg } = datapunch;
     console.log(datapunch)
     return (
         <Fragment>

@@ -1,15 +1,17 @@
-import { Button, CssVarsProvider } from '@mui/joy'
-import { Box, Checkbox, FormControl, FormControlLabel, Grid, IconButton, MenuItem, Paper, Select, TextField } from '@mui/material'
+import { Button, CssVarsProvider, Option, Select } from '@mui/joy'
+import { Box, Grid, IconButton, Paper } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import SaveIcon from '@mui/icons-material/Save';
 import { useCallback } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import EditIcon from '@mui/icons-material/Edit';
+import MasterLayout from '../MasterComponents/MasterLayout'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 
 const DepartmentMasterPage = () => {
     const [dept_name, setDeptname] = useState("");
@@ -147,70 +149,55 @@ const DepartmentMasterPage = () => {
 
 
     return (
-        <CustomLayout title="Department" displayClose={true} >
+        <MasterLayout title="Department" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>
                     <Grid item xl={3} lg={2}>
                         <Paper square elevation={0} sx={{ p: 1, }}   >
                             <Box sx={{ width: "100%", pt: 1 }}>
-                                <TextField
-                                    fullWidth
-                                    placeholder='Department Name'
-                                    size="small"
-                                    id='dept_name'
-                                    value={dept_name}
+                                <InputComponent
+                                    placeholder={'Department Name'}
+                                    type="text"
+                                    size="sm"
                                     name="dept_name"
-                                    onChange={(e) => setDeptname(e.target.value)}
+                                    value={dept_name}
+                                    onchange={(e) => setDeptname(e.target.value)}
                                 />
                             </Box>
                             <Box sx={{ width: "100%", pt: 1 }}>
-                                <TextField
-                                    placeholder="Short Name"
-                                    fullWidth
-                                    size="small"
-                                    variant="outlined"
-                                    autoComplete="off"
-                                    value={dept_alias}
+                                <InputComponent
+                                    placeholder={'Short Name'}
+                                    type="text"
+                                    size="sm"
                                     name="dept_alias"
-                                    onChange={(e) => setDeptalias(e.target.value)}
+                                    value={dept_alias}
+                                    onchange={(e) => setDeptalias(e.target.value)}
                                 />
                             </Box>
                             <Box sx={{ width: "100%", pt: 1 }}>
-                                <FormControl
-                                    fullWidth
-                                    size='small'   >
-                                    <Select
-                                        value={type}
-                                        onChange={(e) => setType(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        variant='outlined'
-                                    >
-                                        <MenuItem disabled value={0} >
-                                            Select Type
-                                        </MenuItem>
-                                        {
-                                            typeArray?.map((val, ind) => {
-                                                return <MenuItem key={ind} value={val.typeNo}>{val.name}</MenuItem>
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
+                                <Select
+                                    value={type}
+                                    onChange={(event, newValue) => {
+                                        setType(newValue);
+                                    }}
+                                    size='md'
+                                    variant='outlined'
+                                >
+                                    <Option value={0}> Select Type</Option>
+                                    {
+                                        typeArray?.map((val, ind) => {
+                                            return <Option key={ind} value={val.typeNo}>{val.name}</Option>
+                                        })
+                                    }
+                                </Select>
                             </Box>
                             <Box sx={{ width: "100%", pt: 1 }}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="dept_status"
-                                            color="primary"
-                                            value={dept_status}
-                                            checked={dept_status}
-                                            className="ml-2"
-                                            onChange={(e) => { setDeptstatus(e.target.checked) }}
-                                        />
-                                    }
-                                    label="Department Status"
+                                <JoyCheckbox
+                                    label='Department Status'
+                                    checked={dept_status}
+                                    name="dept_status"
+                                    onchange={(e) => setDeptstatus(e.target.checked)}
                                 />
                             </Box>
                             <Box sx={{ px: 0.5, mt: 0.9 }}>
@@ -242,7 +229,7 @@ const DepartmentMasterPage = () => {
                     </Grid>
                 </Grid>
             </Box>
-        </CustomLayout>
+        </MasterLayout>
     )
 }
 

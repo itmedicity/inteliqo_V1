@@ -9,7 +9,7 @@ const DepartmentSelect = ({ style, disabled }) => {
     const [deptData, setdeptData] = useState([]);
     useEffect(() => {
         dispatch(setDepartment())
-    }, [])
+    }, [dispatch])
 
     const { selectedDept, updateSelected, updateSelectedName } = useContext(PayrolMasterContext);
     const departments = useSelector((state) => {

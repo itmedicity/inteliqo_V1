@@ -1,9 +1,7 @@
 import { Checkbox, CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper, TextareaAutosize } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment } from 'react'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import TextInput from 'src/views/Component/TextInput';
 import FemaleOutlinedIcon from '@mui/icons-material/FemaleOutlined';
 import MaleOutlinedIcon from '@mui/icons-material/MaleOutlined';
 import { useState } from 'react';
@@ -23,7 +21,7 @@ const JobGenericEmp = ({ selectDesignation, selectedDept }) => {
         is_male: false,
         special_comment: ''
     })
-    const { experience, experience_year, age_from, age_to, is_female, is_male, special_comment } = formData
+    const { experience, age_from, age_to, is_female, is_male, special_comment } = formData
 
     const [jobQualification, setjobQualification] = useState([])
     useEffect(() => {

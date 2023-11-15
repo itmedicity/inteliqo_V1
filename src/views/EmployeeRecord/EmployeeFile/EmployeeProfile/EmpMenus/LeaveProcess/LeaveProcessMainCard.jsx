@@ -1,5 +1,5 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Alert, Paper, Button, Divider, CircularProgress, Backdrop } from '@mui/material'
+// import { CssVarsProvider, Typography } from '@mui/joy'
+import { Paper, Button, Divider, CircularProgress } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import { Suspense } from 'react'
@@ -9,10 +9,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import CustomTypoThree from 'src/views/Component/MuiCustomComponent/CustomTypoThree'
 import CustomTypoTwo from 'src/views/Component/MuiCustomComponent/CustomTypoTwo'
 import _ from 'underscore'
-import LeaveCategoryInfo from '../AnnualLeaveInformation/LeaveCategoryInfo'
 import LeaveProcessCard from './LeaveProcessCard'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -29,7 +27,7 @@ import {
 } from './Functions/LeaveProcessFun'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { getProcessserialnum } from 'src/views/Constant/Constant'
-import CircularProgressBar from 'src/views/Component/MuiCustomComponent/CircularProgressBar'
+// import CircularProgressBar from 'src/views/Component/MuiCustomComponent/CircularProgressBar'
 import { ToastContainer } from 'react-toastify'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import LeaveReduxFun from './Functions/LeaveReduxFun'
@@ -37,6 +35,9 @@ import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcess
 import { useCallback } from 'react'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
 import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action'
+import AccordionGroup from '@mui/joy/AccordionGroup';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/joy'
+
 
 const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -44,6 +45,7 @@ const CommonLeaveTable = React.lazy(() => import('./CommonLeavesCard'))
 const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))
 const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'))
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'))
+const LeaveCategoryInfo = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/AnnualLeaveInformation/LeaveCategoryInfo'))
 
 const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const dispatch = useDispatch()
@@ -54,17 +56,15 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const [processMesg, setprocessMesg] = useState('')
   const [processBtn, setprocessBtn] = useState(true)
   const [processSlno, setProcessSlno] = useState(0)
-
   //new Object for inserting ( after category change, new Employee Object etc.. )
   const [newEmployeeProcesedData, setNewEmployeeProcesedData] = useState({})
   const [updateStat, setUpdateStat] = useState(0)
   const [open, setOpen] = useState(false)
-
   const [processedLeave, setProcessedLeave] = useState([])
+  const [employeeIDs, setEmployeeIDs] = useState({});
+  const [index, setIndex] = useState(0)
 
   const { id, no } = useParams()
-
-  const [employeeIDs, setEmployeeIDs] = useState({});
 
   useEffect(() => {
     let empDetl = {
@@ -80,36 +80,17 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setEmployeeIDs(empDetl)
     }
     dispatch(getStatutoryInfo(id));
-  }, [id, no, formStatus, empInfo])
-
-  // const employeeIDs = useMemo(() => {
-  //   return {
-  //     em_no: no,
-  //     em_id: id,
-  //   }
-  // }, [id, no])
+  }, [id, no, dispatch, formStatus, empInfo])
 
   const updateStatus = useMemo(() => updateStat, [updateStat])
 
-  const state = useSelector(
-    (state) => state.getPrifileDateEachEmp.empPersonalData.personalData,
-    _.isEqual,
-  )
-  const leaveUpdateStat = useSelector((state) => state.updateCasualLeaveStatus, _.isEqual)
+  const state = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual,)
+  const leaveUpdateStat = useSelector((state) => state?.updateCasualLeaveStatus, _.isEqual)
 
   const employeeDetl = useMemo(() => state, [state])
 
-  const {
-    contract_status,
-    em_prob_end_date,
-    des_type,
-    emp_type,
-    em_cont_start,
-    em_cont_end,
-    em_doj,
-    probation_status
-
-  } = employeeDetl
+  const { contract_status, em_prob_end_date, ecat_prob, ecat_training, em_cont_end,
+    probation_status } = employeeDetl
 
   useEffect(() => {
     //new process serial number
@@ -163,11 +144,12 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setEmpLeaveProcess({})
       // dispatch(setEmployeeProcessDetail(0))
     }
-  }, [employeeIDs.em_no, updateStatus, employeeIDs.em_id, leaveUpdateStat])
+  }, [employeeIDs, dispatch, updateStatus, leaveUpdateStat])
 
   const category = useMemo(() => empCategory, [empCategory])
   const leaveProcess = useMemo(() => empLeaveProcess, [empLeaveProcess])
   const processedLeaveDetl = useMemo(() => processedLveDetl, [processedLveDetl])
+
 
   useEffect(() => {
     //procedded Leave List
@@ -222,7 +204,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       )
   }, [category, processSlno, employeeIDs])
 
-  const { leaveData } = processedLeaveDetl
+  //const { leaveData } = processedLeaveDetl
 
   //Leave Process onClick Process Button Function
   const leaveProcessOption = useCallback(async () => {
@@ -241,19 +223,11 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
      */
 
     // 1 ->
-    const contractStatus = await checkContractStatus(
-      em_cont_start,
-      em_cont_end,
-      contract_status,
-      em_doj,
-      em_prob_end_date,
-      des_type,
-      emp_type, probation_status
-
-    )
+    const contractStatus = await checkContractStatus(em_cont_end, contract_status,
+      em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
     if (contractStatus.status === true) {
-      // 4->
+      //   // 4->
       if (processedLveDetl.newProcess === true) {
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
         // new employee data for insert to DB
@@ -279,7 +253,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       } else if (processedLveDetl.categoryStatus === 0) {
         //Category changed in 'hrm_emp_mast' ( check both the table ''hrm_emp_mast' & 'hrm_process_table' )
 
-        //1 --> first create a new object with current category and currenct active 'hrm_emp_process' table data
+        // 1 -- > first create a new object with current category and currenct active 'hrm_emp_process' table data
         categoryChangedNewObject(category, leaveProcess, processSlno, employeeIDs)
           .then((newCategoryObject) => {
             // new category based data to insert into DB
@@ -291,7 +265,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
              *
              **/
 
-            const result = updateInactiveLeaves(category, leaveProcess)
+            updateInactiveLeaves(category, leaveProcess)
               .then((updateStatus) => {
                 // updatation Status old leaves if excist
                 const { success } = updateStatus
@@ -357,19 +331,19 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setOpen(false)
       warningNofity(contractStatus.message)
     }
-  })
+  }, [ecat_prob, leaveProcess, contract_status, em_cont_end, em_prob_end_date, probation_status,
+    updateStat, newEmployeeProcesedData, processedLveDetl, category, employeeIDs, processSlno, ecat_training,])
 
   return (
     <CustomLayout title="Leave Process">
       <LeaveReduxFun />
       <ToastContainer />
       <CustomBackDrop open={open} />
-      <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
         <LeaveCategoryInfo />
         <Box sx={{ display: 'flex', py: 0.5 }}>
           <Box sx={{ display: 'flex', flex: 1 }}>
             <Paper square sx={{ flex: 1 }}>
-              {/* <Paper square sx={{ flex: 1, minHeight: 150, maxHeight: 200 }} > */}
               <CustmTypog title={'Leave criterion &  Process Information'} />
               <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
                 <Box
@@ -404,90 +378,119 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                         return element.value !== 2 ? (
                           <LeaveProcessCard key={index} data={element} category={category} />
                         ) : null
-                        // return <LeaveProcessCard key={ind} title={val.name} />
                       })}
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
                   <Box sx={{ p: 0.1 }}>
-                    <CustomTypoThree />
-                  </Box>
-                  <Box sx={{ p: 0.1 }}>
-                    <CustomTypoThree />
-                  </Box>
-                  <Box sx={{ p: 0.1 }}>
-                    <CustomTypoThree />
-                  </Box>
-                  <Box sx={{ p: 0.1 }}>
-                    <CustomTypoThree />
+                    <AccordionGroup sx={{ maxWidth: '100%' }}>
+                      <Accordion expanded={index === 0}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 0 : null);
+                        }}
+                      >
+                        <AccordionSummary>Casual Leave</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <CasualLeaveTable
+                              title={'Casual Leave'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion
+                        expanded={index === 1}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 1 : null);
+                        }}
+                      >
+                        <AccordionSummary>Holiday</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <HolidayLeaveTable
+                              title={'Naional & Festival Holiday'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+                      <Accordion
+                        expanded={index === 2}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 2 : null);
+                        }}>
+                        <AccordionSummary>Carry Forward Leave</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <CarryForwardLeaveTable
+                              title={'Carry Forward Leave'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+                      <Accordion
+                        expanded={index === 3}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 3 : null);
+                        }}>
+                        <AccordionSummary>Earned || Privilage Leave</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <EarnedLeaveTable
+                              title={'Earned || Privilage Leave'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+                      <Accordion
+                        expanded={index === 4}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 4 : null);
+                        }}>
+                        <AccordionSummary>Common Off Days</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <CommonLeaveTable
+                              title={'Common Off Days'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+                      <Accordion
+                        expanded={index === 5}
+                        onChange={(event, expanded) => {
+                          setIndex(expanded ? 5 : null);
+                        }}>
+                        <AccordionSummary>Credited Leaves</AccordionSummary>
+                        <AccordionDetails>
+                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
+                            <CreditedLeaveTable
+                              title={'Credited Leaves'}
+                              id={employeeIDs.em_no}
+                              processStat={processBtn}
+                            />
+                          </Suspense>
+                        </AccordionDetails>
+                      </Accordion>
+                    </AccordionGroup>
                   </Box>
                 </Box>
               </Box>
             </Paper>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', py: 0.5 }}>
-          <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <CasualLeaveTable
-                title={'Casual Leave'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <EarnedLeaveTable
-                title={'Earned || Privilage Leave'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', py: 0.5 }}>
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <HolidayLeaveTable
-                title={'Naional & Festival Holiday'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <CommonLeaveTable
-                title={'Common Off Days'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', py: 0.5 }}>
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <CarryForwardLeaveTable
-                title={'Carry Forward Leave'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-          <Box sx={{ display: 'flex', flex: 1 }}>
-            <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-              <CreditedLeaveTable
-                title={'Credited Leaves'}
-                id={employeeIDs.em_no}
-                processStat={processBtn}
-              />
-            </Suspense>
-          </Box>
-        </Box>
-      </Box>
-    </CustomLayout>
+      </Box >
+    </CustomLayout >
   )
 }
 

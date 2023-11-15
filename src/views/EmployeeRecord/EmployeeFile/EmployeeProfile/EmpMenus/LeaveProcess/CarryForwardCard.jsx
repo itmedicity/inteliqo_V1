@@ -1,6 +1,5 @@
 import { Box, Paper, TableContainer } from '@mui/material'
 import React from 'react'
-import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,15 +10,10 @@ import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
-import { useMemo } from 'react';
 
 const CarryForwardCard = ({ title, id, processStat }) => {
     const [cfData, setcfData] = useState([])
     const [loding, setLoding] = useState(false)
-
-    // console.log(carryForward)
 
     useEffect(() => {
         setLoding(true)
@@ -39,7 +33,7 @@ const CarryForwardCard = ({ title, id, processStat }) => {
 
     return (
         <Paper square sx={{ flex: 1, height: 250 }}>
-            <CustmTypog title={title} />
+            {/* <CustmTypog title={title} /> */}
             <Box>
                 {loding && <LinearProgreeBar />}
                 <TableContainer sx={{ maxHeight: 200 }} >

@@ -37,7 +37,7 @@ const OtCnclModel = ({ open, handleClose, rowData, count, setCount, logEmpid, ap
             }
             setArray([...array, obj, obj2])
         }
-    }, [check_in, check_out])
+    }, [check_in, array, em_no, check_out])
 
     const submitCancel = async (e) => {
         e.preventDefault()

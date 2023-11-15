@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, memo, useMemo } from 'react'
+import React, { Fragment, useCallback, memo, useMemo } from 'react'
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -53,7 +53,7 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
                 errorNofity('Error Updating Leave Request')
             }
         }
-    }, [Canceldata, reason])
+    }, [Canceldata, reason, setOpen, setCount])
 
     return (
         <Fragment>

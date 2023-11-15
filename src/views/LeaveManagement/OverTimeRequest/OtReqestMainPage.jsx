@@ -193,11 +193,7 @@ const OtReqestMainPage = () => {
         } else {
             setapprovalrights({})
         }
-        const editdata = punchDetl.filter((val) => {
-            if (val.punch_time === punchInTime || val.punch_time === punchOutTime) {
-                return val
-            }
-        })
+        const editdata = punchDetl.filter((val) => val.punch_time === punchInTime || val.punch_time === punchOutTime)
         setSaveArray(editdata)
         const getotamount = async () => {
             const result = await axioslogin.get(`/common/getotwage/${em_id}`)
@@ -229,7 +225,7 @@ const OtReqestMainPage = () => {
             }
         }
         checkpuch()
-    }, [punchInTime, punchOutTime, empApprovalLevel, em_id])
+    }, [punchInTime, punchDetl, punchOutTime, empApprovalLevel, em_id])
 
     //Shift Hours
     const inTime = moment(selectedShiftTiming.inCheck).format("YYYY-MM-DD HH:mm:ss")
@@ -723,7 +719,7 @@ const OtReqestMainPage = () => {
                                 </Box>
                                 <Box sx={{ px: 0.5, mt: 0.2 }}>
                                     <CssVarsProvider>
-                                        <Tooltip title="Save Request" variant="outlined" color="info" placement="top">
+                                        <Tooltip title="Save Request" variant="outlined" placement="top">
                                             <Button
                                                 variant="outlined"
                                                 component="label"

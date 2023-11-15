@@ -1,5 +1,5 @@
 import { Button, Stack, Alert } from '@mui/material'
-import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, subMonths, startOfYear, compareAsc, getYear, addDays, addMonths } from 'date-fns'
+import { eachMonthOfInterval, intervalToDuration, lastDayOfYear, startOfYear, compareAsc, getYear, addMonths } from 'date-fns'
 import moment from 'moment'
 import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -45,7 +45,7 @@ const AnnualProcessComponent = ({
                 dispatch(setEmployeeProcessDetail(em_no))
             )
         }
-    }, [em_no])
+    }, [em_no, dispatch])
     // useState for common leave data
     // const [commonleave, setcommonleave] = useState({
     //     com_slno: 0,
@@ -369,7 +369,7 @@ const AnnualProcessComponent = ({
         // commonleave save
         const getCommonleave = async (lv_process_slnocurrent) => {
             const result = await axioslogin.get('/yearlyleaves')
-            const { successleave, messageleave } = result.data
+            const { successleave } = result.data
             if (successleave === 1) {
                 // setcommonleave(messageleave[0])
                 const result = await axioslogin.get('/yearlyleaves/get/getcommonleave')

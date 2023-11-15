@@ -20,7 +20,7 @@ const NopunchCancelEmp = ({ open, setOpen, data, setCount }) => {
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    const [punchslno, setPuncslno] = useState(0)
+    // const [punchslno, setPuncslno] = useState(0)
     const [nopunch, setNopunch] = useState({
         nopunchdate: '',
         shft_desc: '',
@@ -38,7 +38,7 @@ const NopunchCancelEmp = ({ open, setOpen, data, setCount }) => {
         const { success, data } = resultdel?.data;
         if (success === 1) {
             const { nopunchdate, shft_desc, np_reason, creteddate, checkinflag, checkintime, checkoutflag,
-                checkouttime, punslno, np_hr_apprv_status } = data[0]
+                checkouttime, np_hr_apprv_status } = data[0]
             setReqDetl(data)
             const formData = {
                 nopunchdate: nopunchdate,
@@ -49,10 +49,10 @@ const NopunchCancelEmp = ({ open, setOpen, data, setCount }) => {
             }
             setNopunch(formData)
             setMis(checkinflag === 1 ? checkintime : checkoutflag === 1 ? checkouttime : null)
-            setPuncslno(punslno)
+            //setPuncslno(punslno)
         }
     }
-    const { nopunchdate, shft_desc, np_reason, creteddate, np_hr_apprv_status } = nopunch
+    const { nopunchdate, shft_desc, np_reason, creteddate } = nopunch
 
     useEffect(() => {
         if (slno !== null && slno !== undefined) {
@@ -93,7 +93,7 @@ const NopunchCancelEmp = ({ open, setOpen, data, setCount }) => {
                 errorNofity('Error Updating Leave Request')
             }
         }
-    }, [Canceldata, reason])
+    }, [Canceldata, setOpen, setCount, reason])
 
     return (
         <Fragment>

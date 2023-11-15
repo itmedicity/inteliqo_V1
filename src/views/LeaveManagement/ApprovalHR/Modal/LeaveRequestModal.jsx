@@ -14,6 +14,7 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import { useMemo } from 'react';
 
 const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
     //STATES
@@ -216,15 +217,17 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 setOpen(false)
             })
         }
-    }, [slno, reqDetl])
+    }, [slno, reqDetl, emno, reason, setCount, setOpen])
 
-    const LeaveRejectdata = {
-        hr_apprv_status: 2,
-        hr_apprv_cmnt: reason,
-        hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
-        hr_uscode: employeeNumber(),
-        lve_uniq_no: slno
-    }
+    const LeaveRejectdata = useMemo(() => {
+        return {
+            hr_apprv_status: 2,
+            hr_apprv_cmnt: reason,
+            hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
+            hr_uscode: employeeNumber(),
+            lve_uniq_no: slno
+        }
+    }, [reason, slno])
 
     const handleRegectRequest = useCallback(async () => {
         //CASUAL LEAVE 
@@ -371,7 +374,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             setCount(Math.random())
             errorNofity('Error Updating Leave Request')
         }
-    }, [slno, reqDetl])
+    }, [emno, setCount, setOpen, LeaveRejectdata, reqDetl])
 
     return (
         <>

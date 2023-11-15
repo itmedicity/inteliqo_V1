@@ -1,17 +1,23 @@
-import { Checkbox, FormControlLabel, TextField, Button } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router'
+
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
-import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import GroupmasterTable from './GroupmasterTable'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, Grid } from '@mui/material'
+import { useMemo } from 'react'
 
 const Groupmaster = () => {
-    const history = useHistory()
-    const classess = useStyles()
     const [count, setCount] = useState(0)
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
     const [formData, setFormData] = useState({
         user_group_name: '',
         user_group_status: false
@@ -24,115 +30,149 @@ const Groupmaster = () => {
         setFormData({ ...formData, [e.target.name]: value })
     }
 
-    // Redirect to the Setting Page 
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
-
-    const postData = {
-        user_group_name: user_group_name,
-        user_group_status: user_group_status === true ? 1 : 0,
-    }
-
-    const resetForm = {
-        user_group_name: '',
-        user_group_status: false
-    }
-
-    const submitUserGroupMaster = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.post('/usergroup', postData)
-        const { success, message } = result.data;
-        if (success === 1) {
-            succesNofity(message)
-            setFormData(resetForm)
-            setCount(count + 1)
-        } else if (success === 0) {
-            errorNofity(message);
-        } else if (success === 2) {
-            infoNofity(message.sqlMessage);
+    const postData = useMemo(() => {
+        return {
+            user_group_name: user_group_name,
+            user_group_status: user_group_status === true ? 1 : 0,
         }
-    }
+    }, [user_group_name, user_group_status])
+
+    const resetForm = useMemo(() => {
+        return {
+            user_group_name: '',
+            user_group_status: false
+        }
+    }, [])
+
+    const updatedPostData = useMemo(() => {
+        return {
+            user_group_name: user_group_name,
+            user_group_status: user_group_status === true ? 1 : 0,
+            user_grp_slno: slno
+        }
+    }, [user_group_name, user_group_status, slno])
+
+    const submitUserGroupMaster = useCallback(async (e) => {
+        e.preventDefault();
+
+        if (flag === 1) {
+            const result = await axioslogin.patch(`/usergroup`, updatedPostData)
+            const { message, success } = result.data
+            if (success === 2) {
+                succesNofity(message)
+                setCount(count + 1)
+                setFormData(resetForm)
+            } else {
+                infoNofity(message)
+            }
+        } else {
+            const result = await axioslogin.post('/usergroup', postData)
+            const { success, message } = result.data;
+            if (success === 1) {
+                succesNofity(message)
+                setFormData(resetForm)
+                setCount(count + 1)
+            } else if (success === 0) {
+                errorNofity(message);
+            } else if (success === 2) {
+                infoNofity(message.sqlMessage);
+            }
+        }
+    }, [postData, count, resetForm, flag, updatedPostData])
+
+    useEffect(() => {
+        const getGroupmaster = async () => {
+            const result = await axioslogin.get('/usergroup')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data)
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getGroupmaster()
+    }, [count])
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'user_grp_slno' },
+        { headerName: 'Group Name', field: 'user_group_name', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'grp_status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { user_group_name, user_group_status, user_grp_slno } = params.data
+        const getData = {
+            user_group_name,
+            user_group_status: user_group_status === 1 ? true : false
+        }
+        setFormData(getData)
+        setSlno(user_grp_slno)
+
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+
+        <MasterLayout title="Group Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Group Master</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classess.root} onSubmit={submitUserGroupMaster} >
-                                <div className="col-md-12 row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="User Group Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            value={user_group_name}
-                                            name="user_group_name"
-                                            onChange={(e) => getUserGroupFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="user_group_status"
-                                                    color="secondary"
-                                                    value={user_group_status}
-                                                    checked={user_group_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => getUserGroupFormData(e)}
-                                                />
-                                            }
-                                            label="User Group Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12 mt-1 ">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-1"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <GroupmasterTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", p: 1 }}>
+                            <InputComponent
+                                placeholder={'User Group Name'}
+                                type="text"
+                                size="sm"
+                                name="user_group_name"
+                                value={user_group_name}
+                                onchange={(e) => getUserGroupFormData(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1 }} >
+                            <JoyCheckbox
+                                label='User Group Status'
+                                checked={user_group_status}
+                                name="user_group_status"
+                                onchange={(e) => getUserGroupFormData(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitUserGroupMaster}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default Groupmaster
+export default memo(Groupmaster) 

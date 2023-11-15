@@ -50,7 +50,7 @@ const CarryforwardMastEdit = () => {
             }
         }
         getBranch()
-    }, [id])
+    }, [id, updateDeptSection, updateEmployeetype])
 
     const patchdata = {
         dept_sec: getDeptSection,

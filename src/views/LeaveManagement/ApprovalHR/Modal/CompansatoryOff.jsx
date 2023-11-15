@@ -81,7 +81,7 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [reason, slno, leave_date, setCount, setOpen, em_id])
     const CoffRejectdata = {
         cf_hr_apprv_status: 2,
         cf_hr_apprv_cmnt: reason,

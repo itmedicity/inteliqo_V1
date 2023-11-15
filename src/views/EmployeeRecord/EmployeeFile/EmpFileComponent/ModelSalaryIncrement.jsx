@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useMemo } from 'react'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -31,10 +31,12 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
     })
     //destructuring
     const { incre_slno, em_no, description, start_date, increment_type, increment_amount, last_amount } = modeldta
-    const postData1 = {
-        em_no: emno,
-        em_salary_desc: em_salary_desc
-    }
+    const postData1 = useMemo(() => {
+        return {
+            em_no: emno,
+            em_salary_desc: em_salary_desc
+        }
+    }, [emno, em_salary_desc])
     //getting salary increment details for edit
     useEffect(() => {
         if (open === true) {
@@ -58,7 +60,7 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
             }
             getSalaryIncrementsetting()
         }
-    }, [])
+    }, [postData1, open])
     //getting data from the model
     const updateSalaryIncrementSettings = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;

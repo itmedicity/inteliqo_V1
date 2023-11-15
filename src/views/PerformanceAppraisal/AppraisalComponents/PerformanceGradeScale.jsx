@@ -1,5 +1,5 @@
 import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Paper } from '@mui/material'
+import { Box } from '@mui/material'
 import React, { Fragment, memo } from 'react'
 
 const PerformanceGradeScale = () => {

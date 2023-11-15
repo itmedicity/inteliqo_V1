@@ -72,7 +72,7 @@ const getDutyPlanDetl = async (getDateOnly, emplyeeDetl) => {
 
 export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, employeeDetl, deptShift) => {
     let message = { status: 0, message: '', data: [], dateFormat: [] };
-    const { notapplicable_shift, default_shift, week_off_day } = commonSettings;
+    const { notapplicable_shift, default_shift } = commonSettings;
     const { fromDate, toDate, deptName, deptSecName } = formData;
     const { status, data } = holidayList;
 
@@ -81,16 +81,11 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
         em_dept_section: deptSecName,
     }
 
-    const postData = {
-        dept_id: deptName,
-        sect_id: deptSecName
-    }
-
     let holidayFilterList = []; // filter holidays based on from to dates
     let employeeDetails; //new object based on employee details
 
     if (status === 1) {
-        holidayFilterList = data && data.map((values) => {
+        holidayFilterList = data?.map((values) => {
             return values.hld_date >= fromDate && values.hld_date <= toDate ? values : null;
         }).filter((val) => val !== null);
     } else {
@@ -98,7 +93,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
     }
 
     // return planState;
-    employeeDetails = employeeDetl.map((val) => {
+    employeeDetails = employeeDetl?.map((val) => {
         return {
             desg_name: val.desg_name,
             em_id: val.em_id,
@@ -107,7 +102,6 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj
         }
     })
-    // .filter((val) => val.em_id === 144)
 
     if (Object.keys(employeeDetails).length > 0) {
 
@@ -146,7 +140,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             const newDateRange = dateAndDayFormat.map(addHolidayToDateRange)
 
             //duty plan date range
-            const dutyPlanDateRange = dateRange.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
+            const dutyPlanDateRange = dateRange?.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
 
             //getting employee id from employee details - date fomat --> {date: '2022-10-01'} 
             const employeeId = (await employeeDetails) && employeeDetails.map((val) => val.em_id);
@@ -183,7 +177,6 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                     }
                 }
             }
-            //
 
             //checking wheher duty plan is already inserted in these dates
             const postDate = {
@@ -243,8 +236,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         }
                     }
                 }
-
-            } else {
+            }
+            else {
                 /******** if not excist  **********/
                 if (default_shift === null || notapplicable_shift === null) {
                     return { ...message, status: 0, message: 'Default and Not Applicable Shift Not Mapped', data: [] }
@@ -273,6 +266,4 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
     } else {
         return { ...message, status: 0, message: 'There Is No Employees Under This Department Section', data: [] }
     }
-
-    return message;
 }

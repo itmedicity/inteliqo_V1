@@ -1,5 +1,5 @@
 import { Box, Tooltip, } from '@mui/material'
-import React, { useEffect, useState,memo, useCallback } from 'react'
+import React, { useEffect, useState, memo, useCallback } from 'react'
 import moment from 'moment'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import IconButton from '@mui/material/IconButton'
@@ -15,56 +15,55 @@ const Entrydetails = ({ details, setIsModalOpen }) => {
   const [boosterdueDate, setBoosterDueDate] = useState('');
 
   const [empdata, setDetails] = useState({
-    first_dose_given_date:'',
-    firstdose_date:'',
-    first_dose_given_status:'',
-    first_dose_status:'',
-    hic_frst_dose_status:'',
-    remark:'',
-    second_dose_due_date:'',
-    second_dose_given_date:'',
-    second_dose_given_status:'',
-    third_dose_due_date:'',
-    third_dose_given_date:'',
-    third_dose_status:'',
-    hic_second_dose_status:'',
-    remarksecond:'',
-    booster_dose_date_given:'',
-    booster_dose_due_date:'',
-    booster_dose_given_date:'',
-    booster_dose_given_status:'',
+    first_dose_given_date: '',
+    firstdose_date: '',
+    first_dose_given_status: '',
+    first_dose_status: '',
+    hic_frst_dose_status: '',
+    remark: '',
+    second_dose_due_date: '',
+    second_dose_given_date: '',
+    second_dose_given_status: '',
+    third_dose_due_date: '',
+    third_dose_given_date: '',
+    third_dose_status: '',
+    hic_second_dose_status: '',
+    remarksecond: '',
+    booster_dose_date_given: '',
+    booster_dose_due_date: '',
+    booster_dose_given_date: '',
+    booster_dose_given_status: '',
     remarkbooster: '',
     second_dose_status: "",
-    booster_dose_status:"",
-      remarkthird:'',
+    booster_dose_status: "",
+    remarkthird: '',
   })
 
-const {first_dose_given_date,
-  firstdose_date,
-  first_dose_given_status,
-  first_dose_status,
-  hic_frst_dose_status,
-  remark,
-  second_dose_due_date,
-  second_dose_given_date,
-  booster_dose_status,
-  second_dose_given_status,
-  third_dose_due_date,
-  third_dose_given_date,
-  third_dose_status,
-  hic_second_dose_status,
-  remarksecond,
-  booster_dose_date_given,
-  booster_dose_due_date,
-  booster_dose_given_date,
-  booster_dose_given_status,
-  remarkbooster,
-  second_dose_status,
+  const { first_dose_given_date,
+    firstdose_date,
+    first_dose_given_status,
+    first_dose_status,
+    hic_frst_dose_status,
+    remark,
+    second_dose_due_date,
+    second_dose_given_date,
+    booster_dose_status,
+    third_dose_due_date,
+    third_dose_given_date,
+    third_dose_status,
+    hic_second_dose_status,
+    remarksecond,
+    booster_dose_date_given,
+    booster_dose_due_date,
+    booster_dose_given_date,
+    booster_dose_given_status,
+    remarkbooster,
+    second_dose_status,
     remarkthird, } = empdata
 
   useEffect(() => {
     if (Object.keys(details).length !== 0) {
-      const {first_dose_given_date,
+      const { first_dose_given_date,
         firstdose_date,
         first_dose_given_status,
         first_dose_status,
@@ -85,11 +84,11 @@ const {first_dose_given_date,
         booster_dose_given_date,
         booster_dose_given_status,
         remarkbooster,
-          remarkthird,
-       
+        remarkthird,
+
       } = details
       const obj = {
-        second_dose_given_status:second_dose_given_status,
+        second_dose_given_status: second_dose_given_status,
         booster_dose_due_date: booster_dose_due_date,
         booster_dose_given_date: booster_dose_given_date,
         firstdose_date: firstdose_date,
@@ -105,10 +104,10 @@ const {first_dose_given_date,
         booster_dose_date_given: booster_dose_date_given,
         remark: remark,
         remarksecond: remarksecond,
-        second_dose_status:second_dose_status,
+        second_dose_status: second_dose_status,
         remarkthird: remarkthird,
         remarkbooster: remarkbooster,
-        booster_dose_status:booster_dose_status,
+        booster_dose_status: booster_dose_status,
         hic_frst_dose_status: hic_frst_dose_status,
         hic_second_dose_status: hic_second_dose_status,
       }
@@ -140,12 +139,12 @@ const {first_dose_given_date,
   }, [details])
 
   // icon buttton
-  const handleIconClick =useCallback( () => {
+  const handleIconClick = useCallback(() => {
     setIsModalOpen(true)
-  },[setIsModalOpen])
+  }, [setIsModalOpen])
   return (
     <Box>
-     <Box sx={{ p: 1, fontWeight: 500, mt: 5 }}>
+      <Box sx={{ p: 1, fontWeight: 500, mt: 5 }}>
         <CustmTypog title={'Vaccination Information'} />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
@@ -154,7 +153,7 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 600, width: '25%', height: 'auto' }}
         >
-          <Heading  title={'Vaccination Details'}/>
+          <Heading title={'Vaccination Details'} />
         </Box>
         <Box
           borderBottom={0.5}
@@ -162,14 +161,14 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, fontWeight: 600, display: 'flex', width: '25%', height: 'auto' }}
         >
-        <Heading  title={'Actual Date'}/>
+          <Heading title={'Actual Date'} />
         </Box>
         <Box
           border={0.5}
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 600, width: '25%', height: 'auto' }}
         >
-          <Heading  title={'Due date'}/>
+          <Heading title={'Due date'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -178,7 +177,7 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto', fontWeight: 600 }}
         >
-         <Heading  title={'Vaccinated date'}/>
+          <Heading title={'Vaccinated date'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -187,7 +186,7 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto', fontWeight: 600 }}
         >
-        <Heading  title={'Remark'}/>
+          <Heading title={'Remark'} />
         </Box>
       </Box>
       {/* first dose */}
@@ -199,16 +198,16 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 500, width: '25%', height: 'auto' }}
         >
-        <Heading  title={'First Dose'}/>
+          <Heading title={'First Dose'} />
         </Box>
         <Box
           borderBottom={0.5}
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-        <Heading title=  {first_dose_given_date
-                ? moment(first_dose_given_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={first_dose_given_date
+            ? moment(first_dose_given_date).format('DD-MM-YYYY')
+            : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -223,9 +222,9 @@ const {first_dose_given_date,
             height: 'auto',
           }}
         >
-         <Heading title=  {first_dose_given_date
-                ? formattedDate
-                : 'N/A'}/>
+          <Heading title={first_dose_given_date
+            ? formattedDate
+            : 'N/A'} />
         </Box>
 
         <Box
@@ -247,7 +246,7 @@ const {first_dose_given_date,
             //     : 'initial',
           }}
         >
-          <Heading title= {firstdose_date ? moment(firstdose_date).format('DD-MM-YYYY') : 'N/A'}/>
+          <Heading title={firstdose_date ? moment(firstdose_date).format('DD-MM-YYYY') : 'N/A'} />
           {/* icon button */}
           {first_dose_given_status === 1 && first_dose_status === 0 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
@@ -266,11 +265,11 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title= {remark || 'N/A'}/>
+          <Heading title={remark || 'N/A'} />
         </Box>
       </Box>
       {/* second dose */}
-       <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
         <Box
           borderRight={0.5}
           borderLeft={0.5}
@@ -278,16 +277,16 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 500, width: '25%', height: 'auto' }}
         >
-         <Heading  title={'Second Dose'}/>
+          <Heading title={'Second Dose'} />
         </Box>
         <Box
           borderBottom={0.5}
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title=   {second_dose_due_date
-                ? moment(second_dose_due_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={second_dose_due_date
+            ? moment(second_dose_due_date).format('DD-MM-YYYY')
+            : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -296,9 +295,9 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
         >
-         <Heading title=  {second_dose_due_date
-                ? secondDate
-                : 'N/A'}/>
+          <Heading title={second_dose_due_date
+            ? secondDate
+            : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -316,12 +315,12 @@ const {first_dose_given_date,
               second_dose_given_date > second_dose_due_date ? '#FAD4D4' : 'initial',
           }}
         >
-          <Heading title=   {second_dose_given_date
-                ? moment(second_dose_given_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={second_dose_given_date
+            ? moment(second_dose_given_date).format('DD-MM-YYYY')
+            : 'N/A'} />
           {first_dose_status === 1 &&
-          second_dose_status === 0 &&
-          hic_frst_dose_status === 1 ? (
+            second_dose_status === 0 &&
+            hic_frst_dose_status === 1 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
                 <AddCircleOutlineIcon />
@@ -338,11 +337,11 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title= {remarksecond || 'N/A'}/>
+          <Heading title={remarksecond || 'N/A'} />
         </Box>
       </Box>
       {/* third dose */}
-       <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
         <Box
           borderRight={0.5}
           borderLeft={0.5}
@@ -350,16 +349,16 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 500, width: '25%', height: 'auto' }}
         >
-          <Heading  title={'Third Dose'}/>
+          <Heading title={'Third Dose'} />
         </Box>
         <Box
           borderBottom={0.5}
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title=     {third_dose_due_date
-                ? moment(third_dose_due_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={third_dose_due_date
+            ? moment(third_dose_due_date).format('DD-MM-YYYY')
+            : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -368,7 +367,7 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
         >
-          <Heading title= {third_dose_due_date ? thirdDate : 'N/A'}/>
+          <Heading title={third_dose_due_date ? thirdDate : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -386,14 +385,14 @@ const {first_dose_given_date,
               third_dose_given_date > third_dose_due_date ? '#FAD4D4' : 'initial',
           }}
         >
-      <Heading title=  {third_dose_given_date
-                ? moment(third_dose_given_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={third_dose_given_date
+            ? moment(third_dose_given_date).format('DD-MM-YYYY')
+            : 'N/A'} />
           {/* icon button */}
           {first_dose_status === 1 &&
-          second_dose_status === 1 &&
-          third_dose_status === 0 &&
-          hic_second_dose_status === 1 ? (
+            second_dose_status === 1 &&
+            third_dose_status === 0 &&
+            hic_second_dose_status === 1 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
                 <AddCircleOutlineIcon />
@@ -410,12 +409,12 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title= {remarkthird || 'N/A'}/>
-       
+          <Heading title={remarkthird || 'N/A'} />
+
         </Box>
       </Box>
       {/* booster */}
-       <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', px: 1, width: '100%' }}>
         <Box
           borderRight={0.5}
           borderLeft={0.5}
@@ -423,18 +422,18 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 500, width: '25%', height: 'auto' }}
         >
-                  <Heading  title={'Booster Dose'}/>
+          <Heading title={'Booster Dose'} />
         </Box>
         <Box
           borderBottom={0.5}
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-         <Heading title=   {booster_dose_date_given
-                ? moment(booster_dose_date_given).format('DD-MM-YYYY')
-                : booster_dose_due_date
-                ? moment(booster_dose_due_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={booster_dose_date_given
+            ? moment(booster_dose_date_given).format('DD-MM-YYYY')
+            : booster_dose_due_date
+              ? moment(booster_dose_due_date).format('DD-MM-YYYY')
+              : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -443,11 +442,11 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', fontWeight: 400, width: '25%', height: 'auto' }}
         >
-          <Heading title=   {booster_dose_date_given
-                ? boosterDate
-                : booster_dose_due_date
-                ? boosterdueDate
-                : 'N/A'}/>
+          <Heading title={booster_dose_date_given
+            ? boosterDate
+            : booster_dose_due_date
+              ? boosterdueDate
+              : 'N/A'} />
         </Box>
         <Box
           borderRight={0.5}
@@ -463,9 +462,9 @@ const {first_dose_given_date,
             height: 'auto',
           }}
         >
-         <Heading title=   {booster_dose_given_date
-                ? moment(booster_dose_given_date).format('DD-MM-YYYY')
-                : 'N/A'}/>
+          <Heading title={booster_dose_given_date
+            ? moment(booster_dose_given_date).format('DD-MM-YYYY')
+            : 'N/A'} />
           {booster_dose_given_status === 1 && booster_dose_status === 0 ? (
             <IconButton onClick={handleIconClick} sx={{ color: 'green', p: 0 }}>
               <Tooltip title="Click Here to vaccinate">
@@ -483,12 +482,12 @@ const {first_dose_given_date,
           borderColor="#C9CCD5"
           sx={{ p: 1, display: 'flex', width: '25%', height: 'auto' }}
         >
-          <Heading title= {remarkbooster || 'N/A'}/>
+          <Heading title={remarkbooster || 'N/A'} />
 
         </Box>
       </Box>
-      </Box>
+    </Box>
   )
 }
 
-export default memo( Entrydetails)
+export default memo(Entrydetails)

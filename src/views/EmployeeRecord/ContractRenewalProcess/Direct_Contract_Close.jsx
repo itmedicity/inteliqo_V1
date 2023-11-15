@@ -13,6 +13,7 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector } from 'react-redux';
 import { IconButton as OpenIcon } from '@mui/material';
+import _ from 'underscore';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
@@ -74,9 +75,7 @@ const Direct_Contract_Close = () => {
     }, [no])
 
     //to get login employee number
-    const emp_no = useSelector((state) => {
-        return state.getProfileData.ProfileData[0].em_no
-    })
+    const emp_no = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_no, _.isEqual)
 
     //useEffect for getting fine Deatails
     useEffect(() => {
@@ -125,7 +124,7 @@ const Direct_Contract_Close = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ width: "100%" }}>
+            <Paper sx={{ width: "100%" }}>
                 <Paper square elevation={1} sx={{ display: "flex" }}  >
                     <Box sx={{ flex: 1 }}>
                         <CssVarsProvider>
@@ -307,7 +306,7 @@ const Direct_Contract_Close = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-            </Box>
+            </Paper>
         </Fragment >
     )
 }

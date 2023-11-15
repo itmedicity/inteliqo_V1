@@ -52,7 +52,7 @@ const DepartmentShiftEdit = () => {
             }
         }
         getdepartmentShiftData()
-    }, [selectedDept, updateDepartmentSection, updateSelected, id, notapplicable_shift, default_shift, week_off_day])
+    }, [selectedDept, updateShifts, updateDepartmentSection, updateSelected, id, notapplicable_shift, default_shift, week_off_day])
 
     //adding shifts to table
     const getShiftData = () => {
@@ -136,7 +136,8 @@ const DepartmentShiftEdit = () => {
         if (arraydata !== 0) {
             UpdateSubmit(postData)
         }
-    }, [arraydata])
+    }, [arraydata, history, id, notapplicable_shift, selectDeptSection, selectedDept, updateDepartmentSection,
+        updateSelected, updateShifts, week_off_day, default_shift])
 
     const RedirectToProfilePage = () => {
         history.push('/Home/Settings')

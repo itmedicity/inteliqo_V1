@@ -43,6 +43,7 @@ const OtCeoApproval = () => {
             })
             if (Object.keys(filterdata).length > 0) {
                 setTableData(filterdata)
+                setDeptSect(0)
             } else {
                 infoNofity("No OT request pending for this department!!")
                 setTableData([])

@@ -69,13 +69,16 @@ const Profile = () => {
             <Paper sx={{
                 display: 'flex', flex: 1, height: window.innerHeight - 85,
                 flexDirection: 'row', justifyContent: 'space-between',
-                overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                // overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
             }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '15%', backgroundColor: '#EEEFF0' }}>
                     <ProfileCard />
                     <MenuList empid={empCredential} />
                 </Box>
-                <Box sx={{ display: 'flex', width: '85%', flexDirection: 'column' }}>
+                <Box sx={{
+                    display: 'flex', width: '85%', flexDirection: 'column',
+                    overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                }}>
                     <Paper square sx={{
                         display: "flex", height: 30, alignItems: 'center', px: 2,
                         justifyContent: "space-between", width: "100%"

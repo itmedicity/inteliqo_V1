@@ -5,7 +5,7 @@ const LeaveCarryTextFeild = ({ setedit, edit, count, name, dis, lcmast }) => {
     const [newedit, setNewedit] = useState(count)
     useEffect(() => {
         setedit({ ...edit, [name]: count })
-    }, [])
+    }, [count, edit, name, setedit])
 
     const settingvalues = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value

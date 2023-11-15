@@ -1,9 +1,9 @@
 import { Autocomplete } from '@mui/joy';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
-import { setDepartment } from 'src/redux/actions/Department.action';
 import { setEmployee } from 'src/redux/actions/Employee.Action';
+
 import _ from 'underscore';
 
 const JoyDepartment = ({ deptValue, getDept }) => {
@@ -39,7 +39,7 @@ const JoyDepartment = ({ deptValue, getDept }) => {
             setFlag(0)
             setValue({})
         }
-    }, [value, getDept])
+    }, [dispatch, getDept])
 
     useEffect(() => {
         departments.length > 0 && setDept(departments)

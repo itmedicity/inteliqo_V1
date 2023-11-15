@@ -1,5 +1,5 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton, List } from '@mui/material'
-import React, { Fragment, memo, useState, useEffect } from 'react'
+import React, { Fragment, memo } from 'react'
 import PushPinIcon from '@mui/icons-material/PushPin';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ContractDetails from './ContractDetails';

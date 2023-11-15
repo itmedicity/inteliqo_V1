@@ -280,7 +280,7 @@ const MissPunchrequest = () => {
                 </Box>
                 <Box sx={{ pl: 1, pt: 0.5 }}>
                     <CssVarsProvider>
-                        <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                        <Tooltip title="View Documents" variant="outlined" placement="top">
                             <Button
                                 variant="outlined"
                                 component="label"

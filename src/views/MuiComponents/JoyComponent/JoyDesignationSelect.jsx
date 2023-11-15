@@ -21,7 +21,7 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
             setValue(array[0]);
         }
 
-    }, [desgValue, flag])
+    }, [desgValue, empDesignation, flag])
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
@@ -33,7 +33,7 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
             setValue({})
             setFlag(0)
         }
-    }, [value])
+    }, [getDesg])
 
     useEffect(() => {
         empDesignation.length > 0 && setDesignationList(empDesignation)

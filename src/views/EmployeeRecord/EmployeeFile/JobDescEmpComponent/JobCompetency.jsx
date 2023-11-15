@@ -2,7 +2,6 @@ import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, useEffect, useState } from 'react'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CompetencyDetl from './CompetencyDetl';
 import { memo } from 'react';
