@@ -17,25 +17,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
-    const [KraName, setKraName] = useState(0)
+    //const [KraName, setKraName] = useState(0)
     const [slno, setSlno] = useState(0)
-    const [flag, setflag] = useState(0)
 
     //table
     const [tableData, settableData] = useState([])
     const [deletecount, setdeletecount] = useState(0)
     const [submitflag, setsubmitflag] = useState(0)
     const [value, setvalue] = useState(0)
-    const [count, setCount] = useState(0)
 
     const [formData, setFormData] = useState({
         competency_desc: ''
     })
 
     const { competency_desc } = formData
-    const defaultState = {
-        competency_desc: ''
-    }
+
+    const defaultState = useMemo(() => {
+        return {
+            competency_desc: ''
+        }
+    }, [])
 
     //getting form data
     const updatKeyPerformance = async (e) => {
@@ -54,18 +55,20 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
         { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
     ])
 
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
+    const checkData = useMemo(() => {
+        return {
+            designation: selectDesignation,
+            dept_id: selectedDept,
+            sect_id: selectDeptSection
+        }
+    }, [selectDesignation, selectedDept, selectDeptSection])
 
     useEffect(() => {
         if (selectDesignation !== 0) {
             settableData([])
             setFormData(defaultState)
         }
-    }, [selectDesignation])
+    }, [selectDesignation, defaultState])
 
     useEffect(() => {
         if (jobedit > 0 || submitflag === 1) {
@@ -85,7 +88,7 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
         return () => {
             settableData([])
         }
-    }, [jobedit, deletecount, flag, submitflag, count])
+    }, [jobedit, checkData, deletecount, submitflag])
 
     //for deletion process
     const DeleteItem = useCallback((params) => {
@@ -105,7 +108,7 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
             }
         }
         deltevalue(value)
-    })
+    }, [deletecount])
 
     const TableValues = useMemo(() => tableData, [tableData])
 
@@ -113,15 +116,15 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
     const EditData = useCallback((params) => {
         setvalue(1)
         const data = params.api.getSelectedRows()
-        const { competency_desc, key_result_area, competency_slno, kra_desc } = data[0]
+        const { competency_desc, key_result_area, competency_slno } = data[0]
         const frmData = {
             competency_desc: competency_desc,
         }
         setFormData(frmData)
         setKra(key_result_area)
         setSlno(competency_slno)
-        setKraName(kra_desc)
-    })
+        // setKraName(kra_desc)
+    }, [])
 
     const AddCompetencyToTable = useCallback((e) => {
         e.preventDefault();
@@ -194,7 +197,7 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
             updateEach()
         }
 
-    }, [checkData, Kra, competency_desc])
+    }, [checkData, Kra, deletecount, competency_desc, slno, value, selectedDept, selectDeptSection, selectDesignation, defaultState])
 
     return (
 
@@ -224,7 +227,9 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column", width: "100%" }} >
                 <Box sx={{ display: "flex", alignItems: "center", }} >
                     <Box sx={{ flex: 3, width: "40%" }} >
-                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE} setKraName={setKraName} />
+                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE}
+                        //setKraName={setKraName} 
+                        />
                     </Box>
                     {/* <Box sx={{ display: "flex", alignItems: "center", py: 0.1, flexDirection: "row" }} > */}
                     <Box sx={{ flex: 4, pl: 1, width: "60%", }}

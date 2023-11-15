@@ -15,7 +15,7 @@ const JoyGender = ({ value, setValue }) => {
             <Option value={0}>Select Gender</Option>
             <Option value="1">Male</Option>
             <Option value="2">Female</Option>
-            <Option value="2">Others</Option>
+            <Option value="3">Others</Option>
         </Select>
     )
 }

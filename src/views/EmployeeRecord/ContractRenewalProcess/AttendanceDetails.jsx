@@ -17,11 +17,6 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
     const [arrearSalary, setArrearSalary] = useState(0)
     const [attandFlag, setAttancFlag] = useState(0)
 
-    var date = new Date(em_cont_end);
-    var initialDay = new Date(date.getFullYear(), date.getMonth(), 1);
-
-    const firstDay = useMemo(() => initialDay, [initialDay])
-
     const [attendanceData, setattendanceData] = useState({
         duty_worked: 0,
         total_lop: 0,
@@ -34,10 +29,10 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
         return {
             emp_id: no,
             em_no: id,
-            start: moment(firstDay).format('YYYY-MM-DD'),
+            start: moment(startOfMonth(new Date(em_cont_end))).format('YYYY-MM-DD'),
             end: moment(new Date(em_cont_end)).format('YYYY-MM-DD'),
         }
-    }, [firstDay, em_cont_end, no, id])
+    }, [em_cont_end, no, id])
 
     useEffect(() => {
         const getattnsdata = async () => {
@@ -46,7 +41,7 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
             if (success === 1) {
                 const { duty_statuslop, duty_status, noofleaves, gross_salary } = message[0]
                 const frmData = {
-                    duty_worked: differenceInDays(new Date(em_cont_end), new Date(firstDay)) + 1,
+                    duty_worked: differenceInDays(new Date(em_cont_end), new Date(startOfMonth(new Date(em_cont_end)))) + 1,
                     total_lop: duty_statuslop,
                     totalLeave: noofleaves,
                     total_days: duty_status
@@ -64,11 +59,11 @@ const AttendanceDetails = ({ id, no, em_cont_end, grace_period, attendanceDays }
 
         }
         getattnsdata()
-    }, [em_cont_end])
+    }, [em_cont_end, getdata])
 
     const ProcessAttendance = async () => {
-        const date = new Date()
-        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        // const date = new Date()
+        // var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         dispatch({
             type: Actiontypes.FETCH_CONT_CLOSE_ATTENDANCE, payload: {
                 em_id: no,

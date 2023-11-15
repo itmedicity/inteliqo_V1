@@ -20,7 +20,7 @@ const JoyInstitutionSelect = ({ value, setValue }) => {
             const array = instituteList?.find((e) => e.inst_slno === value)
             setValue(array.inst_slno)
         }
-    }, [value, flag, instituteList])
+    }, [value, setValue, flag, instituteList])
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
@@ -31,7 +31,7 @@ const JoyInstitutionSelect = ({ value, setValue }) => {
             setValue(0)
         }
         return
-    }, [value])
+    }, [setValue])
 
 
     return (

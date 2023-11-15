@@ -32,7 +32,7 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
         cf_hr_apprv_status: 0
     })
 
-    const { reqestdate, leave_date, cf_reason, em_id, cf_hr_apprv_status } = coff
+    const { reqestdate, leave_date, cf_reason } = coff
 
     //GET THE DETAILED TABLE DATA USING API
     const getLeaveReqDetl = async (slno) => {
@@ -92,7 +92,7 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
                 errorNofity('Error Updating Leave Request')
             }
         }
-    }, [Canceldata, reason])
+    }, [Canceldata, reason, setOpen, setCount])
 
     return (
         <Fragment>

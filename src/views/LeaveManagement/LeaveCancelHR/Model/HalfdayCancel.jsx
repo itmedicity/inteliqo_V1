@@ -70,7 +70,7 @@ const HalfdayCancel = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [reason, slno, planSlno, hrStatus, leaveDate, emno, setCount, setOpen])
 
     // Half Day Request Cancel Close
     const handleClose = () => {

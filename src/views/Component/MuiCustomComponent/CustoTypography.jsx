@@ -2,7 +2,7 @@ import React from 'react'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { memo } from 'react'
 
-const CustmTypo_tow = ({ title, fontSize, style }) => {
+const CustoTypography = ({ title, fontSize, style }) => {
     return (
         <CssVarsProvider>
             <Typography
@@ -13,4 +13,4 @@ const CustmTypo_tow = ({ title, fontSize, style }) => {
     )
 }
 
-export default memo(CustmTypo_tow)
+export default memo(CustoTypography) 

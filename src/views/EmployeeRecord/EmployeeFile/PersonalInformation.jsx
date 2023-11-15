@@ -1,6 +1,6 @@
 import { FormControl, IconButton, MenuItem, Select } from '@material-ui/core'
 import Checkbox from '@mui/material/Checkbox'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 import BloodGroupSelect from 'src/views/CommonCode/BloodGroupSelect'
 import PageLayout from 'src/views/CommonCode/PageLayout'
 import RegionSelect from 'src/views/CommonCode/RegionSelect'
@@ -321,9 +321,11 @@ const PersonalInformation = () => {
     const [src, setSrc] = useState(ProfilePic)
     const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
 
-    const empiddata = {
-        em_id: no
-    }
+    const empiddata = useMemo(() => {
+        return {
+            em_id: no
+        }
+    }, [no])
 
     useEffect(() => {
         const getProfilePicInform = async () => {

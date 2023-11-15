@@ -1,5 +1,5 @@
 import { IconButton } from '@material-ui/core';
-import React, { Fragment, useContext, useEffect } from 'react'
+import React, { Fragment, useContext } from 'react'
 import { useState } from 'react';
 import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md';
 import { PayrolMasterContext } from 'src/Context/MasterContext';

@@ -99,7 +99,7 @@ const NopunchRqModel = ({ open, handleClose, authority, em_id, count, setcount, 
                 const { np_inc_apprv_req, np_incapprv_status } = data[0]
                 if (np_inc_apprv_req === 1 && np_incapprv_status === 0) {
                     const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvnopunch', submitpunch)
-                    const { success, message } = result.data
+                    const { success } = result.data
                     if (success === 1) {
                         const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlnopunch', submitpunch)
                         const { success, message } = result.data

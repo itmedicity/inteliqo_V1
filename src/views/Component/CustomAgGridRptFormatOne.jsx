@@ -26,10 +26,10 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
         filter: 'agTextColumnFilter',
     }
 
-    let gridApi
-    const onGridReady = (params) => {
-        gridApi = params.api
-    }
+    // let gridApi
+    // const onGridReady = (params) => {
+    //     gridApi = params.api
+    // }
 
     const rowStyle = {
         fontFamily: [
@@ -64,7 +64,7 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
                         headerHeight={headerHeight}
                         rowDragManaged={true}
                         animateRows={true}
-                        onGridReady={onGridReady}
+                        //onGridReady={onGridReady}
                         rowSelection="multiple"
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}

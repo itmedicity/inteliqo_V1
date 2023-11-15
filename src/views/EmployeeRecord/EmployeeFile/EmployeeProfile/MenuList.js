@@ -139,6 +139,7 @@ const MenuList = () => {
                             <Typography
                                 level="inherit"
                                 sx={{
+                                    pl: 2,
                                     fontWeight: open ? 'bold' : undefined,
                                     color: open ? 'text.primary' : 'inherit',
                                 }}
@@ -178,6 +179,7 @@ const MenuList = () => {
                             <Typography
                                 level="inherit"
                                 sx={{
+                                    pl: 2,
                                     fontWeight: open1 ? 'bold' : undefined,
                                     color: open1 ? 'text.primary' : 'inherit',
                                 }}
@@ -218,6 +220,7 @@ const MenuList = () => {
                             <Typography
                                 level="inherit"
                                 sx={{
+                                    pl: 2,
                                     fontWeight: open2 ? 'bold' : undefined,
                                     color: open2 ? 'text.primary' : 'inherit',
                                 }}
@@ -257,6 +260,7 @@ const MenuList = () => {
                             <Typography
                                 level="inherit"
                                 sx={{
+                                    pl: 2,
                                     fontWeight: open3 ? 'bold' : undefined,
                                     color: open3 ? 'text.primary' : 'inherit',
                                 }}

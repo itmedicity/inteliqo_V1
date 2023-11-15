@@ -125,7 +125,7 @@ const JobDescriptionList = ({ flag, setflag, id }) => {
         return () => {
             setSummary()
         }
-    }, [jsummary.length])
+    }, [jsummary])
 
     useEffect(() => {
         if (jGeneric.length !== 0) {
@@ -142,7 +142,7 @@ const JobDescriptionList = ({ flag, setflag, id }) => {
         return () => {
             setGeneric()
         }
-    }, [jGeneric.length])
+    }, [jGeneric])
 
     const ViewPage = async () => {
         setflag(0)

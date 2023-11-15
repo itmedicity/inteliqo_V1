@@ -1,4 +1,4 @@
-import React, { useState,memo,useCallback } from 'react'
+import React, { useState, memo, useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import { Box, Paper, TextField, Button, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -19,128 +19,129 @@ const Modalentry = ({ isModalOpen, setIsModalOpen, details, count, setcount }) =
   const handleCloseModal = useCallback(() => {
     setcount(count + 1)
     setIsModalOpen(false)
-  },[setcount,count,setIsModalOpen])
+  }, [setcount, count, setIsModalOpen])
   const handleOnClick = useCallback(async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (
-    (details.first_dose_given_status === 1 &&
-      details.first_dose_status === 0 &&
-      remarks.trim() === '') ||
-    (details.booster_dose_given_status === 1 &&
-      details.first_dose_given_status === 0 &&
-      remarksbooster.trim() === '') ||
-    (details.first_dose_status === 1 &&
-      details.second_dose_status === 0 &&
-      remarkssecond.trim() === '') ||
-    (details.first_dose_status === 1 &&
+    if (
+      (details.first_dose_given_status === 1 &&
+        details.first_dose_status === 0 &&
+        remarks.trim() === '') ||
+      (details.booster_dose_given_status === 1 &&
+        details.first_dose_given_status === 0 &&
+        remarksbooster.trim() === '') ||
+      (details.first_dose_status === 1 &&
+        details.second_dose_status === 0 &&
+        remarkssecond.trim() === '') ||
+      (details.first_dose_status === 1 &&
+        details.second_dose_status === 1 &&
+        details.booster_dose_status === 0 &&
+        remarksthird.trim() === '')
+    ) {
+      infoNofity('Remarks must be provided before saving.');
+      return;
+    }
+
+    const firstdose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details.em_no,
+      secondDoseDueDate: moment().add(30, 'days').format('YYYY-MM-DD'),
+      thirdDoseDueDate: moment().add(180, 'days').format('YYYY-MM-DD'),
+      booster_dose_due_date: moment().add(360, 'days').format('YYYY-MM-DD'),
+      remarks: remarks,
+      annual_dose: moment().add(360, 'days').format('YYYY-MM-DD'),
+      // vaccin_slno: details.vaccin_slno,
+      em_id: em_id,
+    };
+    const boosterDose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      secondDoseDueDate: moment().format('YYYY-MM-DD'),
+      thirdDoseDueDate: moment().format('YYYY-MM-DD'),
+      annual_dose: moment().add(360, 'days').format('YYYY-MM-DD'),
+      booster_dose_due_date: moment().add(10, 'days').format('YYYY-MM-DD'),
+      em_no: details.em_no,
+      remarksbooster: remarksbooster,
+      em_id: em_id,
+    };
+    const seconddose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details.em_no,
+      remarkssecond: remarkssecond,
+      em_id: em_id,
+    };
+    const thirddose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details.em_no,
+      remarksthird: remarksthird,
+      em_id: em_id,
+    };
+
+    if (details.first_dose_given_status === 1 && details.first_dose_status === 0) {
+      const response = await axioslogin.post('/Vaccination/insertFirstdose', firstdose);
+      const { message, success } = response.data;
+      if (success === 1) {
+        succesNofity(message);
+        handleCloseModal();
+      } else {
+        infoNofity(message);
+      }
+    } else if (details.booster_dose_given_status === 1 && details.first_dose_given_status === 0) {
+      if (details.booster_dose_status === 1) {
+        infoNofity('you are fully vaccinated');
+      } else {
+        const response = await axioslogin.post('/Vaccination/insertboosterdose', boosterDose);
+        const { message, success } = response.data;
+
+        if (success === 1) {
+          succesNofity(message);
+          handleCloseModal();
+        } else {
+          infoNofity(message);
+        }
+      }
+    } else if (details.first_dose_status === 1 && details.second_dose_status === 0) {
+      const response = await axioslogin.post('/Vaccination/insertSeconddose', seconddose);
+      const { message, success } = response.data;
+
+      if (success === 1) {
+        succesNofity(message);
+        handleCloseModal();
+      } else {
+        infoNofity(message);
+      }
+    } else if (
+      details.first_dose_status === 1 &&
       details.second_dose_status === 1 &&
-      details.booster_dose_status === 0 &&
-      remarksthird.trim() === '')
-  ) {
-    infoNofity('Remarks must be provided before saving.');
-    return;
-  }
+      details.booster_dose_status === 0
+    ) {
+      if (details.third_dose_status === 1) {
+        infoNofity('you are vaccinated');
+      } else {
+        const response = await axioslogin.post('/Vaccination/insertThirddose', thirddose);
+        const { message, success } = response.data;
 
-  const firstdose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
-    secondDoseDueDate: moment().add(30, 'days').format('YYYY-MM-DD'),
-    thirdDoseDueDate: moment().add(180, 'days').format('YYYY-MM-DD'),
-    booster_dose_due_date: moment().add(360, 'days').format('YYYY-MM-DD'),
-    remarks: remarks,
-    annual_dose: moment().add(360, 'days').format('YYYY-MM-DD'),
-    // vaccin_slno: details.vaccin_slno,
-    em_id: em_id,
-  };
-  const boosterDose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    secondDoseDueDate: moment().format('YYYY-MM-DD'),
-    thirdDoseDueDate: moment().format('YYYY-MM-DD'),
-    annual_dose: moment().add(360, 'days').format('YYYY-MM-DD'),
-    booster_dose_due_date: moment().add(10, 'days').format('YYYY-MM-DD'),
-    em_no: details.em_no,
-    remarksbooster: remarksbooster,
-    em_id: em_id,
-  };
-  const seconddose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
-    remarkssecond: remarkssecond,
-    em_id: em_id,
-  };
-  const thirddose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details.em_no,
-    remarksthird: remarksthird,
-    em_id: em_id,
-  };
-
-  if (details.first_dose_given_status === 1 && details.first_dose_status === 0) {
-    const response = await axioslogin.post('/Vaccination/insertFirstdose', firstdose);
-    const { message, success } = response.data;
-    if (success === 1) {
-      succesNofity(message);
-      handleCloseModal();
-    } else {
-      infoNofity(message);
-    }
-  } else if (details.booster_dose_given_status === 1 && details.first_dose_given_status === 0) {
-    if (details.booster_dose_status === 1) {
+        if (success === 1) {
+          succesNofity(message);
+          handleCloseModal();
+        } else {
+          infoNofity(message);
+        }
+      }
+    } else if (details.booster_dose_status === 1) {
       infoNofity('you are fully vaccinated');
-    } else {
-      const response = await axioslogin.post('/Vaccination/insertboosterdose', boosterDose);
-      const { message, success } = response.data;
-
-      if (success === 1) {
-        succesNofity(message);
-        handleCloseModal();
-      } else {
-        infoNofity(message);
-      }
     }
-  } else if (details.first_dose_status === 1 && details.second_dose_status === 0) {
-    const response = await axioslogin.post('/Vaccination/insertSeconddose', seconddose);
-    const { message, success } = response.data;
+  }, [
+    handleCloseModal,
+    details,
+    remarks,
+    remarksbooster,
+    remarkssecond,
+    remarksthird,
+    em_id,
 
-    if (success === 1) {
-      succesNofity(message);
-      handleCloseModal();
-    } else {
-      infoNofity(message);
-    }
-  } else if (
-    details.first_dose_status === 1 &&
-    details.second_dose_status === 1 &&
-    details.booster_dose_status === 0
-  ) {
-    if (details.third_dose_status === 1) {
-      infoNofity('you are vaccinated');
-    } else {
-      const response = await axioslogin.post('/Vaccination/insertThirddose', thirddose);
-      const { message, success } = response.data;
+  ]);
 
-      if (success === 1) {
-        succesNofity(message);
-        handleCloseModal();
-      } else {
-        infoNofity(message);
-      }
-    }
-  } else if (details.booster_dose_status === 1) {
-    infoNofity('you are fully vaccinated');
-  }
-}, [
-  details,
-  remarks,
-  remarksbooster,
-  remarkssecond,
-  remarksthird,
-  em_id,
-  
-]);
 
-  
   return (
     <Box>
       <Modal open={isModalOpen} onClose={handleCloseModal}>

@@ -37,7 +37,7 @@ const JoyWageSelect = ({ wagevalue, setWage }) => {
             setWage(0)
         }
         return
-    }, [])
+    }, [setWage])
 
     return (
         <Autocomplete

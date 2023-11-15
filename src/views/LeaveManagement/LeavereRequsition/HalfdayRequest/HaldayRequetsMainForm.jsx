@@ -19,18 +19,12 @@ import HalfDayCasualLeaveOption from '../Func/HalfDayCasualLeaveOption'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { addDays, differenceInDays, format } from 'date-fns'
 
 const HaldayRequetsMainForm = () => {
 
     const dispatch = useDispatch();
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
-
-    const changeForm = () => {
-        let requestType = { requestType: 0 };
-        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
-        dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
-
 
     const [fromDate, setFromDate] = useState(moment())
     const [leveType, setLeaveType] = useState([])
@@ -48,20 +42,20 @@ const HaldayRequetsMainForm = () => {
     const [drop, setDropOpen] = useState(false)
 
     //get the employee details for taking the HOd and Incharge Details
-    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
+    const getEmployeeInformation = useSelector((state) => state?.getEmployeeInformationState?.empData, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state?.getEmployeeApprovalLevel?.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel;
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel;
 
     const {
         em_no, em_id,
         em_department, em_dept_section,
-        hod: empHodStat, incharge: empInchrgStat
+        hod: empHodStat,
+        //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0] || {};
-    console.log(em_id);
 
     //SELECTED EMPLOYEE EMP_ID AND EMP_NO DETAILS
     const empInformation = useSelector((state) => state.leaveRequestSelectedEmployee, _.isEqual)
@@ -81,6 +75,16 @@ const HaldayRequetsMainForm = () => {
     } = shiftData || {};
     // console.log(shiftData)
 
+    const changeForm = useCallback(() => {
+        let requestType = { requestType: 0 };
+        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+        dispatch({ type: LEAVE_REQ_DEFAULT })
+        setFromDate(moment())
+        setLeveTypeState(0)
+        setShiftTime(0)
+        setLeaveName(0)
+    }, [dispatch, FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT])
+
     useEffect(() => {
         if (totalAllowedData?.length > 0) {
             // console.log(totalAllowedData?.length)
@@ -99,7 +103,7 @@ const HaldayRequetsMainForm = () => {
         setLeveTypeState(0)
         setLeaveName(0)
         setDisable(true)
-    }, [empIdInform, fromDate])
+    }, [empIdInform, fromDate, dispatch, em_id, hod, incharge])
     //SHIFT INFORMATION BASED ON SELECTED DATE
     const shiftInformation = useSelector((state) => state.getDutyPlannedShift.shiftInformation, _.isEqual);
 
@@ -111,7 +115,7 @@ const HaldayRequetsMainForm = () => {
     const handleChangeDate = useCallback(async (date) => {
         setFromDate(date)
         setShiftTime(0)
-    })
+    }, [])
 
     // onCHange Select Half Day Timing Shift Function
     const changeHalfDayShiftTiming = useCallback(async (e) => {
@@ -137,119 +141,148 @@ const HaldayRequetsMainForm = () => {
             }
         }
 
-    }, [shiftInformation, leveType, shiftData])
+    }, [shiftInformation, leveType, first_half_in, first_half_out, second_half_in,
+        second_half_out, shft_desc])
 
     //ONCHAGE LEAVE TYPE FUNCTION
     const handleChangeLeaveType = useCallback(async (e) => {
         setLeveTypeState(e.target.value)
         dispatch(getCreditedCasualLeave(em_id))
-    }, [em_id])
+    }, [em_id, dispatch])
 
     //ONCHAGE LEAVE NAME
     const handleChangeLeaveName = useCallback(async (e, { props }) => {
         setName(props.children)
         setLeaveName(e.target.value)
-    })
+    }, [])
 
     // SAVE HALF DAY LEAVE REQUEST 
 
     const handleSaveHalfDayLeaveRequest = useCallback(async () => {
-        setDropOpen(true)
+
         let postDataForGetAttendMarking = {
             empNo: empIdInform.em_no,
             fromDate: moment(fromDate).format('YYYY-MM-DD'),
             toDate: moment(fromDate).format('YYYY-MM-DD')
         }
-        //Checking attendance marking is saved in  current month || start of month b/w current date 
-        const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
-        const { success } = result.data;
-        if (success === 1) {
-            warningNofity("Attendance Marking Processed ! Contact HRD")
+        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+            warningNofity("Can't Apply for Halfday Request, limitted days exceeded!!")
         } else {
 
-            if (shiftTime === 0 || leveTypeState === 0 || leaveName === 0) {
-                warningNofity("Select All The Feild")
-            } else if (reason === '') {
-                warningNofity("Leave Request Reason Is Mandatory")
+            //Checking attendance marking is saved in  current month || start of month b/w current date 
+            const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
+            const { success } = result.data;
+            if (success === 1) {
+                warningNofity("Attendance Marking Processed ! Contact HRD")
             } else {
-
-                const first_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_in).format('HH:mm')}`;
-                const first_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_out).format('HH:mm')}`;
-                const second_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_in).format('HH:mm')}`;
-                const second_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_out).format('HH:mm')}`;
-
-                // console.log(moment(first_half_in).format('hh:mm'))
-                const halfdaysavedata = {
-                    checkIn: shiftTime === 1 ? first_half_inTime : second_half_inTime,
-                    checkOut: shiftTime === 1 ? first_half_outTime : second_half_outTime,
-                    leavedate: moment(fromDate).format('YYYY-MM-DD HH:mm:ss'),
-                    planslno: leaveName, // selected leave name slno 
-                    shiftid: shift_id,
-                    month: name, // Selected leave Name
-                    em_id: em_id,
-                    em_no: em_no,
-                    em_department: em_department,
-                    em_dept_section: em_dept_section,
-                    inc_apprv_req:
-                        (authorization_incharge === 1 && incharge === 1) ? 1 :
-                            (authorization_incharge === 1 && incharge === 0) ? 1 :
-                                (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                    incapprv_status:
-                        (authorization_incharge === 1 && incharge === 1) ? 1 :
-                            (hod === 1) ? 1 :
-                                (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                    inc_apprv_cmnt:
-                        (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                            (hod === 1) ? "DIRECT" :
-                                (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
-                    inc_apprv_time:
-                        (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                            (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                    hod_apprv_req:
-                        (authorization_hod === 1 && hod === 1) ? 1 :
-                            (authorization_hod === 1 && hod === 0) ? 1 :
-                                (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                    hod_apprv_status:
-                        (authorization_hod === 1 && hod === 1) ? 1 :
-                            (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                    hod_apprv_cmnt:
-                        (authorization_hod === 1 && hod === 1) ? "DIRECT" :
-                            (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
-                    hod_apprv_time:
-                        (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                            (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                    hr_aprrv_requ: 1,
-                    ceo_req_status: empHodStat === 1 ? 1 : 0,
-                    resonforleave: reason,
-                    dutyPlanSlno: plan_slno // duty plan table slno 
+                const postDataForpunchMaster = {
+                    date1: format(new Date(fromDate), 'yyyy-MM-dd'),
+                    date2: format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd'),
+                    em_no: em_no
                 }
-                const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                const { success, message } = result.data;
-                if (success === 1) {
-                    succesNofity(message)
-                    changeForm()
+                //FETCH THE PUNCH TIME FROM PUNCH DATA
+                const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
+                const { data } = result.data;
+                if (data.length === 1) {
+                    warningNofity("There is only One Punch, You cant Proceed for halfday request!!")
                     setDropOpen(false)
-                    dispatch(getCreditedCasualLeave(em_id))
-                } else if (success === 2) {
-                    warningNofity(message)
-                    changeForm()
+                } else if (data.length === 0) {
+                    warningNofity("There is only No Punch")
                     setDropOpen(false)
                 } else {
-                    warningNofity(`Contact EDP ${JSON.stringify(message)}`)
-                    changeForm()
-                    setDropOpen(false)
+                    setDropOpen(true)
+                    if (shiftTime === 0 || leveTypeState === 0 || leaveName === 0) {
+                        warningNofity("Select All The Feild")
+                    } else if (reason === '') {
+                        warningNofity("Leave Request Reason Is Mandatory")
+                    } else {
+
+                        const first_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_in).format('HH:mm')}`;
+                        const first_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_out).format('HH:mm')}`;
+                        const second_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_in).format('HH:mm')}`;
+                        const second_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_out).format('HH:mm')}`;
+
+                        // console.log(moment(first_half_in).format('hh:mm'))
+                        const halfdaysavedata = {
+                            checkIn: shiftTime === 1 ? first_half_inTime : second_half_inTime,
+                            checkOut: shiftTime === 1 ? first_half_outTime : second_half_outTime,
+                            leavedate: moment(fromDate).format('YYYY-MM-DD HH:mm:ss'),
+                            planslno: leaveName, // selected leave name slno 
+                            shiftid: shift_id,
+                            month: name, // Selected leave Name
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            inc_apprv_req:
+                                (authorization_incharge === 1 && incharge === 1) ? 1 :
+                                    (authorization_incharge === 1 && incharge === 0) ? 1 :
+                                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                            incapprv_status:
+                                (authorization_incharge === 1 && incharge === 1) ? 1 :
+                                    (hod === 1) ? 1 :
+                                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                            inc_apprv_cmnt:
+                                (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
+                                    (hod === 1) ? "DIRECT" :
+                                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                            inc_apprv_time:
+                                (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                    (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                            hod_apprv_req:
+                                (authorization_hod === 1 && hod === 1) ? 1 :
+                                    (authorization_hod === 1 && hod === 0) ? 1 :
+                                        (authorization_hod === 0 && hod === 1) ? 1 : 0,
+                            hod_apprv_status:
+                                (authorization_hod === 1 && hod === 1) ? 1 :
+                                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
+                            hod_apprv_cmnt:
+                                (authorization_hod === 1 && hod === 1) ? "DIRECT" :
+                                    (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
+                            hod_apprv_time:
+                                (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                            hr_aprrv_requ: 1,
+                            ceo_req_status: empHodStat === 1 ? 1 : 0,
+                            resonforleave: reason,
+                            dutyPlanSlno: plan_slno // duty plan table slno 
+                        }
+                        const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            succesNofity(message)
+                            changeForm()
+                            setDropOpen(false)
+                            dispatch(getCreditedCasualLeave(em_id))
+                        } else if (success === 2) {
+                            warningNofity(message)
+                            changeForm()
+                            setDropOpen(false)
+                        } else {
+                            warningNofity(`Contact EDP ${JSON.stringify(message)}`)
+                            changeForm()
+                            setDropOpen(false)
+                        }
+                    }
                 }
+
+
+
             }
         }
 
-    }, [name, reason])
+    }, [name, reason, authorization_hod, authorization_incharge, dispatch, changeForm, em_department,
+        em_dept_section, em_id, em_no, empHodStat, empIdInform, first_half_in, first_half_out, fromDate,
+        hod, incharge, leaveName, leveTypeState, plan_slno, second_half_in, second_half_out, shiftTime,
+        shift_id
+    ])
 
     useEffect(() => {
         return () => {
             dispatch(getannualleave(em_id));
         }
-    }, [em_id])
+    }, [em_id, dispatch])
 
     return (
         <Paper
@@ -362,7 +395,7 @@ const HaldayRequetsMainForm = () => {
                     <CssVarsProvider>
                         <Textarea
                             label="Outlined"
-                            placeholder="Reason For Leave Request"
+                            placeholder="Reason For Halfday Leave Request"
                             variant="outlined"
                             color="warning"
                             size="lg"
@@ -376,7 +409,7 @@ const HaldayRequetsMainForm = () => {
                 <Box sx={{ display: 'flex', flex: 2, alignItems: 'center', px: 1, justifyContent: "space-evenly" }}>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="Upload Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Upload Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -391,7 +424,7 @@ const HaldayRequetsMainForm = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -406,7 +439,7 @@ const HaldayRequetsMainForm = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"

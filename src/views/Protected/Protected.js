@@ -23,7 +23,7 @@ const Protected = (props) => {
             dispatch({ type: FETCH_LOGIN_CRED, payload: login })
             dispatch(setProfileData(empid))
         }
-    }, [history]);
+    }, [history, dispatch, FETCH_LOGIN_CRED]);
 
     return (
         <div>

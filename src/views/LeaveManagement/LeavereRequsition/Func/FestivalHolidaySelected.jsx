@@ -13,24 +13,24 @@ const FestivalHolidaySelected = ({ handleChange, index, date }) => {
      * This component for festival holiday - 4  
      */
     const [holiday, setHoliday] = useState([]);
-    const [status, setStatus] = useState(false);
+    //const [status, setStatus] = useState(false);
 
     const holidayLeaves = useSelector((state) => state.getCreitedHolidayLeave, _.isEqual);
     const holidays = useMemo(() => holidayLeaves, [holidayLeaves]);
 
     useEffect(() => {
-        const { apiStats, holidayLeave } = holidays;
-        apiStats && setStatus(true)
+        const { holidayLeave } = holidays;
+        //apiStats && setStatus(true)
         const festivalHoliday = holidayLeave?.filter((val) => val.lvetype_slno === 4)
         setHoliday(festivalHoliday);
     }, [holidays])
 
 
-    useEffect(() => {
-        return () => {
-            setStatus(false)
-        }
-    })
+    // useEffect(() => {
+    //     return () => {
+    //         setStatus(false)
+    //     }
+    // })
     // handle the holiday leaves
 
     const changeHolidayLeves = useCallback(async (event) => {
@@ -44,7 +44,7 @@ const FestivalHolidaySelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, holidaySelectedObj)
-    })
+    }, [date, handleChange, index])
 
     return (
         <Form.Select

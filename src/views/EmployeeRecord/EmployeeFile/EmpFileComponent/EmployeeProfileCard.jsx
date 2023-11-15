@@ -2,7 +2,7 @@
 import { Card, CardActionArea, CardMedia, Stack, Avatar, Typography, CardContent } from '@mui/material'
 import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { employeeNumber, urlExist } from 'src/views/Constant/Constant'
+import { urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from '../../../../assets/images/default.png'
 import { CircularProgress } from '@mui/material';
 import { memo } from 'react'

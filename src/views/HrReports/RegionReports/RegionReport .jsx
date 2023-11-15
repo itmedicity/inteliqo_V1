@@ -6,9 +6,9 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
 import { setDistrict } from 'src/redux/actions/District.Action'
-import Custom_Report_Two from 'src/views/Component/Custom_Report_Two';
 import { setDistRegion } from 'src/redux/actions/DistRegion.Action';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import CustomReportTwo from 'src/views/Component/CustomReportTwo';
 
 const RegionReport = () => {
     /** Initiliazing values for tabale data*/
@@ -186,7 +186,7 @@ const RegionReport = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Custom_Report_Two
+            <CustomReportTwo
                 /** to display left side first selection checkbox list */
                 columnDefs={columnDefs}
                 tableData={empDistrict}

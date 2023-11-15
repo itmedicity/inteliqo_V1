@@ -47,7 +47,7 @@ const HrLeaveCancel = () => {
         getleaverequest().then((val) => {
             setleaverequesttype(val)
         })
-    }, [getleaverequest, setleaverequesttype])
+    }, [setleaverequesttype])
 
     //RADIO BUTTON HANDLE FUNCTION
     const handleChangeRadioBtn = useCallback(async (event) => {
@@ -167,13 +167,13 @@ const HrLeaveCancel = () => {
             }
         }
 
-    }, [halfdayRqList, leaveRqList, nopunchRqList, compOffRqList, value, count]);
+    }, [halfdayRqList, leaveRqList, nopunchRqList, compOffRqList,]);
 
 
-    useEffect(async () => {
+    useEffect(() => {
         if (value === 1) {
             if (Object.keys(leaveRqList).length > 0) {
-                const leaveRequestList = await leaveRqList?.map((val) => {
+                const leaveRequestList = leaveRqList?.map((val) => {
                     return {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
@@ -199,7 +199,7 @@ const HrLeaveCancel = () => {
         } else if (value === 2) {
 
             if (Object.keys(halfdayRqList).length > 0) {
-                const leaveRequestList = await halfdayRqList?.map((val) => {
+                const leaveRequestList = halfdayRqList?.map((val) => {
                     return {
                         slno: val.half_slno,
                         emno: val.em_no,
@@ -225,7 +225,7 @@ const HrLeaveCancel = () => {
             }
         } else if (value === 3) {
             if (Object.keys(nopunchRqList).length > 0) {
-                const leaveRequestList = await nopunchRqList?.map((val) => {
+                const leaveRequestList = nopunchRqList?.map((val) => {
                     return {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
@@ -250,7 +250,7 @@ const HrLeaveCancel = () => {
             }
         } else if (value === 4) {
             if (Object.keys(compOffRqList).length > 0) {
-                const leaveRequestList = await compOffRqList?.map((val) => {
+                const leaveRequestList = compOffRqList?.map((val) => {
                     return {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,

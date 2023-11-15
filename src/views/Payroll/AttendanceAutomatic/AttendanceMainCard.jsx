@@ -32,11 +32,13 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
 
     useEffect(() => {
-        setfromdate(fromDate);
-        setTodate(toDate);
-        setdept(deptName);
-        setDeptsec(deptSecName);
-    }, [deptName != 0, deptSecName != 0, fromDate, toDate])
+        if (deptName !== 0 && deptSecName !== 0) {
+            setfromdate(fromDate);
+            setTodate(toDate);
+            setdept(deptName);
+            setDeptsec(deptSecName);
+        }
+    }, [fromDate, setfromdate, setTodate, setdept, setDeptsec, deptName, deptSecName, toDate])
 
     return (
         <Paper

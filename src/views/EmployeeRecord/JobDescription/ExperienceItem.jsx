@@ -5,7 +5,6 @@ import React, { useCallback } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { memo } from 'react';
-import JobDeletionModal from './JobDeletionModal';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
@@ -28,7 +27,7 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit, setsubmitdelt, DeleteValu
             }
         }
         deltevalue(qualification_slno)
-    }, [val])
+    }, [setDeleteItem, setsubmitdelt])
 
     return (
         <Box sx={{ display: "flex", width: "100%", alignItems: "center", px: 0.1 }} >

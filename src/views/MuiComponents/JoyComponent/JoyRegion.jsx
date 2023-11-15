@@ -23,7 +23,7 @@ const JoyRegion = ({ regValue, getRegion }) => {
             setValue(array[0]);
         }
 
-    }, [regValue])
+    }, [regValue, regionList, flag])
 
     useEffect(() => {
         regionList.length > 0 && setRegion(regionList)
@@ -39,7 +39,7 @@ const JoyRegion = ({ regValue, getRegion }) => {
             getRegion(0)
             setFlag(0)
         }
-    }, [value])
+    }, [getRegion])
 
     return (
         <Autocomplete

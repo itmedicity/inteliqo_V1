@@ -165,33 +165,29 @@ const ModelLeaveProcess = ({
             if (olddata === 1) {
                 // New Process || initial Process
                 datayearsave(processdatanew)
-            }
-            else {
-                datayearsave(funprocessdata(em_category, category_slno))
-            }
-
-            if ((em_category !== category_slno)) {
-                {
-                    /*
-                        Update the all leaves inactive as value "1" / this data consider for the carry forward
-                        Update casual leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
-                    */
-                    if ((ecat_cl === 0 && hrm_clv === 1)) {
-                        await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', updatedetllable)
-                        // const { message, success } = updatecasualleaveupdateslno.data
-                    }
-                    //    holiday leaves update
-                    if ((ecat_nh === 0 || ecat_fh === 0) && hrm_hld === 1) {
-
-                        await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', updatedetllable)
-                        // const { message, success } = updateholidayupdateslno.data
-                    }
-                    // earn leave update
-                    if ((ecat_el === 0) && hrm_ern_lv === 1) {
-                        await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', updatedetllable)
-                        // const { message, success } = updateholidayupdateslno.data
-                    }
+            } else if (em_category !== category_slno) {
+                /*
+                    Update the all leaves inactive as value "1" / this data consider for the carry forward
+                    Update casual leave inactive (as "1" ) // inactive status --> "1" consider for the leave carry forward
+                */
+                if ((ecat_cl === 0 && hrm_clv === 1)) {
+                    await axioslogin.post('/yearleaveprocess/updatecasualleaveupdateslno', updatedetllable)
+                    // const { message, success } = updatecasualleaveupdateslno.data
                 }
+                //    holiday leaves update
+                if ((ecat_nh === 0 || ecat_fh === 0) && hrm_hld === 1) {
+
+                    await axioslogin.post('/yearleaveprocess/updateholidayupdateslno', updatedetllable)
+                    // const { message, success } = updateholidayupdateslno.data
+                }
+                // earn leave update
+                if ((ecat_el === 0) && hrm_ern_lv === 1) {
+                    await axioslogin.post('/yearleaveprocess/updateeanleaveupdate', updatedetllable)
+                    // const { message, success } = updateholidayupdateslno.data
+                }
+
+            } else {
+                datayearsave(funprocessdata(em_category, category_slno))
             }
         } else if (success === 0) { // If any error from the updated API
             infoNofity(message)

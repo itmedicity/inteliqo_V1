@@ -1,4 +1,4 @@
-import React, { useState, useEffect,memo,useCallback } from 'react'
+import React, { useState, useEffect, memo, useCallback } from 'react'
 import Modal from '@mui/material/Modal'
 import { Box, Paper, TextField, Button, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
@@ -11,20 +11,18 @@ import _ from 'underscore'
 
 const Modalhic = ({
   isModalOpen,
-  setSelectedRowData,
   selectedRowData,
   setIsModalOpen,
   hicdata,
-  count,
   setCount,
 }) => {
   const [details, setDetails] = useState({})
   const [remarks, setRemarks] = useState('')
-  
-  const handleCloseModal =useCallback( () => {
+
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
   }, [setIsModalOpen])
-  
+
   useEffect(() => {
     if (Object.keys(hicdata).length !== 0) {
       const {
@@ -64,90 +62,91 @@ const Modalhic = ({
   const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
   const { em_id } = empData
   const handleOnClick = useCallback(async () => {
-  if (remarks.trim() === '') {
-    infoNofity('Please insert a remark.');
-    return;
-  }
-  const Hicfirstdose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details?.em_no,
-    em_id: em_id,
-    remarks: remarks,
-  };
-  const Hicseconddose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details?.em_no,
-    em_id: em_id,
-    remarks: remarks,
-  };
-  const Hicsthirddose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details?.em_no,
-    em_id: em_id,
-    remarks: remarks,
-  };
-  const Hicboosterdose = {
-    fromDate: moment().format('yyyy-MM-DD'),
-    em_no: details?.em_no,
-    em_id: em_id,
-    remarks: remarks,
-  };
-  if (details.hic_frst_dose_status === 0) {
-    const response = await axioslogin.post('/Vaccination/Hicfirstdose', Hicfirstdose);
-    const { message, success } = response.data;
-    if (success === 1) {
-      succesNofity('data saved successfully');
-      handleCloseModal(false);
-      setRemarks('');
-      setCount((prevCount) => prevCount + 1);
-    } else {
-      infoNofity(message);
+    if (remarks.trim() === '') {
+      infoNofity('Please insert a remark.');
+      return;
     }
-  } else if (details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1) {
-    const response = await axioslogin.post('/Vaccination/Hicseconddose', Hicseconddose);
-    const { message, success } = response.data;
-    if (success === 1) {
-      succesNofity('data saved successfully');
-      handleCloseModal(false);
-      setRemarks('');
-      setCount((prevCount) => prevCount + 1);
+    const Hicfirstdose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details?.em_no,
+      em_id: em_id,
+      remarks: remarks,
+    };
+    const Hicseconddose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details?.em_no,
+      em_id: em_id,
+      remarks: remarks,
+    };
+    const Hicsthirddose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details?.em_no,
+      em_id: em_id,
+      remarks: remarks,
+    };
+    const Hicboosterdose = {
+      fromDate: moment().format('yyyy-MM-DD'),
+      em_no: details?.em_no,
+      em_id: em_id,
+      remarks: remarks,
+    };
+    if (details.hic_frst_dose_status === 0) {
+      const response = await axioslogin.post('/Vaccination/Hicfirstdose', Hicfirstdose);
+      const { message, success } = response.data;
+      if (success === 1) {
+        succesNofity('data saved successfully');
+        handleCloseModal(false);
+        setRemarks('');
+        setCount((prevCount) => prevCount + 1);
+      } else {
+        infoNofity(message);
+      }
+    } else if (details.hic_second_dose_status === 0 && details.hic_frst_dose_status === 1) {
+      const response = await axioslogin.post('/Vaccination/Hicseconddose', Hicseconddose);
+      const { message, success } = response.data;
+      if (success === 1) {
+        succesNofity('data saved successfully');
+        handleCloseModal(false);
+        setRemarks('');
+        setCount((prevCount) => prevCount + 1);
+      } else {
+        infoNofity(message);
+      }
+    } else if (
+      details?.hic_third_dose_status === 0 &&
+      details?.hic_frst_dose_status === 1 &&
+      details?.hic_second_dose_status === 1
+    ) {
+      const response = await axioslogin.post('/Vaccination/Hicsthirddose', Hicsthirddose);
+      const { message, success } = response.data;
+      if (success === 1) {
+        succesNofity(message);
+        handleCloseModal(false);
+        setRemarks('');
+        setCount((prevCount) => prevCount + 1);
+      } else {
+        infoNofity(message);
+      }
     } else {
-      infoNofity(message);
+      const response = await axioslogin.post('/Vaccination/Hicboosterdose', Hicboosterdose);
+      const { message, success } = response.data;
+      if (success === 1) {
+        succesNofity(message);
+        handleCloseModal(false);
+        setRemarks('');
+        setCount((prevCount) => prevCount + 1);
+      } else {
+        infoNofity(message);
+      }
     }
-  } else if (
-    details?.hic_third_dose_status === 0 &&
-    details?.hic_frst_dose_status === 1 &&
-    details?.hic_second_dose_status === 1
-  ) {
-    const response = await axioslogin.post('/Vaccination/Hicsthirddose', Hicsthirddose);
-    const { message, success } = response.data;
-    if (success === 1) {
-      succesNofity(message);
-      handleCloseModal(false);
-      setRemarks('');
-      setCount((prevCount) => prevCount + 1);
-    } else {
-      infoNofity(message);
-    }
-  } else {
-    const response = await axioslogin.post('/Vaccination/Hicboosterdose', Hicboosterdose);
-    const { message, success } = response.data;
-    if (success === 1) {
-      succesNofity(message);
-      handleCloseModal(false);
-      setRemarks('');
-      setCount((prevCount) => prevCount + 1);
-    } else {
-      infoNofity(message);
-    }
-  }
-}, [
-  details,
-  remarks,
-  em_id,
-  setCount,
-  
-]);
+  }, [
+    handleCloseModal,
+    details,
+    remarks,
+    em_id,
+    setCount,
+
+  ]);
 
 
   return (

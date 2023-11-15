@@ -7,7 +7,7 @@ import { setAccademicData } from 'src/redux/actions/Profile.action'
 import ExistingEmpDetl from '../AppraisalComponents/ExistingEmpDetl'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CheckIdExists, CreateEmployeeRemak, UpdateEmployeeDetl, updateEmpstatus } from '../AppraisalFunctions'
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios';
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,7 +34,7 @@ const SelfApproval = () => {
     const [flag, setFlag] = useState(0)// for diable button after click
     const [compdata, setCompdata] = useState(0)
     const [perfData, setperfdata] = useState(0)
-    const [alert,setAlert]=useState(0)
+    const [alert, setAlert] = useState(0)
 
     useEffect(() => {
         if (compdata === 1 && perfData === 1) {
@@ -182,7 +182,7 @@ const SelfApproval = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Paper square variant='outlined' sx={{ display: "flex",flexDirection: 'column', width: '100%'}}>
+            <Paper square variant='outlined' sx={{ display: "flex", flexDirection: 'column', width: '100%' }}>
                 <Paper square elevation={2} sx={{ display: "flex", p: 1, alignItems: "center", }}>
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
@@ -201,88 +201,88 @@ const SelfApproval = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-{
-    alert===1?
-    <Paper><Alert severity="info">There is No Appraisal For Pending!</Alert></Paper> :
-    <Fragment>
-    <ExistingEmpDetl empno={em_no}display={display}
-    />
-    <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
-                    <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Perfomance Assessment
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
-                <Suspense fallback={<Progress />} >
-                    <Perform setperfdata={setperfdata} />
-                </Suspense>
-
-                <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
-                    <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Competency Assessment
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
-
-                <Suspense fallback={<Progress />} >
-                    <Comp setCompdata={setCompdata} />
-                </Suspense>
-
-                <Paper square variant='outlined' sx={{ display: "flex" }}  >
-                    <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Appraisee awareness about Appraisal
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
-                <Paper square variant='outlined' sx={{ display: "flex", flexDirection: 'column' }}  >
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Paper elevation={0} sx={{ display: "flex", pl: 5, pt: 1, justifyContent: "center" }}  >
-                            <CssVarsProvider>
-                                <Typography level="body1" > Remarks</Typography>
-                            </CssVarsProvider>
-                        </Paper>
-                        <Box sx={{ flex: 1, pl: 1 }} >
-                            <TextareaAutosize
-                                style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
-                                minRows={2}
-                                placeholder="Remarks"
-                                name="self_comment"
-                                value={self_comment}
-                                onChange={(e) => getdata(e)}
+                {
+                    alert === 1 ?
+                        <Paper><Alert severity="info">There is No Appraisal For Pending!</Alert></Paper> :
+                        <Fragment>
+                            <ExistingEmpDetl empno={em_no} display={display}
                             />
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', py: 2 }}>
-                        <Box sx={{ height: 35, pl: 5 }} >
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    I am aware of my ratings and comments in the appraisal
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ pl: 5 }}>
-                            <Button variant="outlined"
-                                size="small"
-                                disabled={flag === 1 ? true : false}
-                                onClick={submitEmpApproval}>
-                                Agree
-                            </Button>
-                        </Box>
-                    </Box>
-                </Paper>
-                </Fragment>
+                            <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
+                                <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
+                                    <CssVarsProvider>
+                                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                            Perfomance Assessment
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Paper>
+                            <Suspense fallback={<Progress />} >
+                                <Perform setperfdata={setperfdata} />
+                            </Suspense>
 
-}
-  
+                            <Paper square variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
+                                <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
+                                    <CssVarsProvider>
+                                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                            Competency Assessment
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Paper>
+
+                            <Suspense fallback={<Progress />} >
+                                <Comp setCompdata={setCompdata} />
+                            </Suspense>
+
+                            <Paper square variant='outlined' sx={{ display: "flex" }}  >
+                                <Box sx={{ flex: 1, height: 35, pt: 0.5 }} >
+                                    <CssVarsProvider>
+                                        <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                            Appraisee awareness about Appraisal
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Paper>
+                            <Paper square variant='outlined' sx={{ display: "flex", flexDirection: 'column' }}  >
+                                <Box sx={{ display: "flex", width: "100%" }} >
+                                    <Paper elevation={0} sx={{ display: "flex", pl: 5, pt: 1, justifyContent: "center" }}  >
+                                        <CssVarsProvider>
+                                            <Typography level="body1" > Remarks</Typography>
+                                        </CssVarsProvider>
+                                    </Paper>
+                                    <Box sx={{ flex: 1, pl: 1 }} >
+                                        <TextareaAutosize
+                                            style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
+                                            minRows={2}
+                                            placeholder="Remarks"
+                                            name="self_comment"
+                                            value={self_comment}
+                                            onChange={(e) => getdata(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', py: 2 }}>
+                                    <Box sx={{ height: 35, pl: 5 }} >
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                I am aware of my ratings and comments in the appraisal
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ pl: 5 }}>
+                                        <Button variant="outlined"
+                                            size="small"
+                                            disabled={flag === 1 ? true : false}
+                                            onClick={submitEmpApproval}>
+                                            Agree
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Fragment>
+
+                }
+
             </Paper>
         </Fragment>
     )

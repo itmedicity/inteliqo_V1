@@ -47,6 +47,13 @@ const QualificationReport = () => {
 
     })
 
+
+
+    /** destructuring the state */
+    const { empEducation, empCourse, empSpecilization } = state
+    const courseList = useMemo(() => empCourse, [empCourse])
+    const specializaionList = useMemo(() => empSpecilization, [empSpecilization])
+
     /**Leftside Selection Checkbox for Education*/
     const [columnDefs] = useState([
         {
@@ -91,13 +98,13 @@ const QualificationReport = () => {
     useEffect(() => {
         if (secondMenu === 1) {
             if (slno !== 0) {
-                const filtered = empCourse.filter(val => slno.includes(val.edu_slno))
+                const filtered = courseList?.filter(val => slno.includes(val.edu_slno))
                 setdata1(filtered)
                 // return setSpecialization
             }
             return setCourse
         }
-    }, [secondMenu, slno])
+    }, [secondMenu, courseList, slno])
 
     /** to get checked course slno  from selection slno */
     const onSelectionChanged2 = (event) => {
@@ -143,7 +150,7 @@ const QualificationReport = () => {
     useEffect(() => {
         if (thirdmenu === 1) {
             if (coursslno !== 0) {
-                const filtered1 = empSpecilization.filter(val => coursslno.includes(val.cour_slno))
+                const filtered1 = specializaionList?.filter(val => coursslno.includes(val.cour_slno))
                 setdata(filtered1)
                 // return setSpecialization
             }
@@ -152,7 +159,7 @@ const QualificationReport = () => {
             }
         }
 
-    }, [thirdmenu, coursslno, dispatch])
+    }, [thirdmenu, coursslno, specializaionList, dispatch])
 
     /** to get checked course slno  from selection slno */
     const onSelectionChanged3 = (event) => {
@@ -186,8 +193,6 @@ const QualificationReport = () => {
 
 
 
-    /** destructuring the state */
-    const { empEducation, empCourse, empSpecilization } = state
 
     const postData = useMemo(() => {
         return {

@@ -1,9 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper } from '@mui/material'
+import { Box } from '@mui/material'
 import React from 'react'
-import IconButton from '@mui/joy/IconButton';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { memo } from 'react';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 

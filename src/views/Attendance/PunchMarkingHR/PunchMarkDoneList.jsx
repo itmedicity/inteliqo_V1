@@ -1,5 +1,4 @@
 import React, { Fragment, useState, memo, useMemo, useEffect, useCallback } from 'react'
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,6 +16,7 @@ import _ from 'underscore'
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory } from 'react-router-dom'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 
 const PunchMarkDoneList = () => {
 
@@ -97,7 +97,7 @@ const PunchMarkDoneList = () => {
                 warningNofity("No Employes Under this section")
             }
         })
-    }, [count, setCount])
+    }, [count, em_no, setCount])
 
     //Search Button Function
     const handleOnClickFuntion = useCallback((e) => {
@@ -115,7 +115,7 @@ const PunchMarkDoneList = () => {
         }
         getTableData(postdata)
         setViewTable(1)
-    }, [value, setDeptList, count])
+    }, [value, setDeptList])
 
     useEffect(() => {
         const postdata = {
@@ -134,17 +134,15 @@ const PunchMarkDoneList = () => {
         if (count > 0) {
             getTableData(postdata)
         }
-    }, [count, setDeptList])
+    }, [count, value, setDeptList])
 
     const handleClose = () => {
         history.push('/Home/PunchMarkingHR');
     }
     return (
         <Fragment>
-            <PageLayoutCloseOnly
-                heading="Punch In/Out Marked List"
-                redirect={() => { }}
-            >
+            <CustomLayout title="Punch In/Out Marked List" displayClose={true} >
+
                 <Box sx={{
                     display: 'flex', py: 0.5, width: '100%',
                     height: '100%',
@@ -153,7 +151,7 @@ const PunchMarkDoneList = () => {
                     <Box sx={{
                         display: 'flex', py: 0.5, width: '50%',
                         flexDirection: "row",
-                        height: '100%',
+                        height: '100%', pl: 0.5
 
                     }}>
                         <Box sx={{ px: 0.5, width: '40%', }} >
@@ -211,7 +209,7 @@ const PunchMarkDoneList = () => {
                         </Box>
                     </Box>
 
-                    {viewTable === 1 ? <Box  >
+                    {viewTable === 1 ? <Box sx={{ p: 1 }} >
                         <CommonAgGrid
                             columnDefs={columnDef}
                             tableData={deptList}
@@ -224,7 +222,7 @@ const PunchMarkDoneList = () => {
                         />
                     </Box> : null}
                 </Box>
-            </PageLayoutCloseOnly>
+            </CustomLayout>
         </Fragment>
     )
 }

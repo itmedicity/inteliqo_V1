@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { memo } from 'react'
-import { IconButton, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import TextField from '@mui/material/TextField'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
@@ -10,9 +10,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { useState } from 'react'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import SendIcon from '@mui/icons-material/Send'
 import { useReducer } from 'react'
-import { addDays, lastDayOfMonth } from 'date-fns/esm'
+import { lastDayOfMonth } from 'date-fns/esm'
 import {
     dutyPlanInitialState,
     dutyPlanInsertFun,
@@ -22,7 +21,7 @@ import {
 } from './DutyPlanFun/DutyPlanFun'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch } from 'react-redux'
-import { getdeptShift, getempdetails } from 'src/redux/actions/dutyplan.action'
+import { getdeptShift } from 'src/redux/actions/dutyplan.action'
 import { useEffect } from 'react'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { useSelector } from 'react-redux'
@@ -36,7 +35,6 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
 
 const DutyPlanTopCard = () => {
-    const [count, setCount] = useState(0)
     const [open, setOpen] = useState(false)
 
     const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS } = Actiontypes;
@@ -60,12 +58,12 @@ const DutyPlanTopCard = () => {
         return () => {
             dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
         }
-    }, [])
+    }, [FETCH_EMP_DETAILS, reduxDispatch])
 
 
     // state variable from reducx state
     // EMployee detaild selected dept & dept_section
-    const employeeDetl = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual);
+    //const employeeDetl = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual);
     //Common settings
     const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
     // get holiday 
@@ -73,7 +71,7 @@ const DutyPlanTopCard = () => {
     // selected department shift details
     const departmentShiftt = useSelector((state) => state.getDepartmentShiftData.deptShiftData, _.isEqual);
 
-    const empDetl = useMemo(() => employeeDetl, [employeeDetl]);
+    //const empDetl = useMemo(() => employeeDetl, [employeeDetl]);
     const commonSettings = useMemo(() => commonState, [commonState]);
     const holidayList = useMemo(() => holiday, [holiday]);
     const deptShift = useMemo(() => departmentShiftt, [departmentShiftt])
@@ -130,7 +128,7 @@ const DutyPlanTopCard = () => {
                     reduxDispatch(getdeptShift(departmentDetlFrShiftGet));
                     //process function
                     dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
-                        //employee details based on selected dept and dept sec
+                        // employee details based on selected dept and dept sec
                         const { data, status, message, dateFormat } = values;
                         if (status === 1) {
                             reduxDispatch({ type: GET_SHIFT_PLAN_DETL, payload: data, status: false })
@@ -140,7 +138,6 @@ const DutyPlanTopCard = () => {
                             warningNofity(message)
                             setOpen(false)
                         }
-
                     })
                 } else {
                     dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
@@ -155,27 +152,9 @@ const DutyPlanTopCard = () => {
             sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
         >
             <CustomBackDrop open={open} text="Please Wait" />
-            <Box
-                sx={{
-                    display: 'flex',
-                    flex: {
-                        xs: 4,
-                        sm: 4,
-                        md: 4,
-                        lg: 4,
-                        xl: 3,
-                    },
-                    flexDirection: 'row',
-                }}
-            >
+            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}  >
                 <Box
-                    sx={{
-                        flex: 1,
-                        mt: 0.5,
-                        px: 0.3,
-                        // width: { sm: 100, md: 100, lg: 100 },
-                    }}
-                >
+                    sx={{ flex: 1, mt: 0.5, px: 0.3, }}  >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -191,14 +170,7 @@ const DutyPlanTopCard = () => {
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        mt: 0.5,
-                        px: 0.3,
-                        // width: { sm: , md: 100, lg: 100 },
-                    }}
-                >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -215,38 +187,14 @@ const DutyPlanTopCard = () => {
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        mt: 0.5,
-                        px: 0.3,
-                    }}
-                >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <DeptSelectByRedux setValue={setDepartment} value={deptName} />
                 </Box>
-                <Box
-                    sx={{
-                        flex: 1,
-                        mt: 0.5,
-                        px: 0.3,
-                    }}
-                >
+                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
                 </Box>
             </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flex: {
-                        xs: 0,
-                        sm: 0,
-                        md: 0,
-                        lg: 0,
-                        xl: 1,
-                    },
-                    justifyContent: 'flex-start'
-                }}
-            >
+            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
                 <CssVarsProvider>
                     <Box sx={{ p: 0.2 }} >
                         <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
@@ -263,10 +211,6 @@ const DutyPlanTopCard = () => {
                         </Button>
                     </Box>
                 </CssVarsProvider>
-                {/* <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
-                </Button>
-                <Button variant="outlined" startIcon={<SendIcon />} onClick={onClickDutyPlanButton}>
-                </Button> */}
             </Box>
         </Paper>
     )

@@ -1,9 +1,12 @@
-import { Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import moment from 'moment'
 import React, { Fragment, Suspense, useCallback, useMemo, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveCancelEmp from '../EmpView/LeaveCancelEmp';
+import HalfdayCancelEmp from '../EmpView/HalfdayCancelEmp';
+import NopunchCancelEmp from '../EmpView/NopunchCancelEmp';
+import CompOffCancelEmp from '../EmpView/CompOffCancelEmp';
 
 const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
 
@@ -49,6 +52,9 @@ const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
         <Fragment>
             <Suspense>
                 <LeaveCancelEmp open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} setCount={setCount} />
+                <HalfdayCancelEmp open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
+                <NopunchCancelEmp open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} setCount={setCount} />
+                <CompOffCancelEmp open={coffReqModal} setOpen={setcoffReqModal} data={coffData} setCount={setCount} />
             </Suspense>
             <TableContainer component={Grid}
                 item

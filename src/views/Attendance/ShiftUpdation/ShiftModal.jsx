@@ -86,7 +86,7 @@ const ShiftModal = ({ open, setOpen, data }) => {
 
             //UPDATE THIS DATA TO THE DATA BASE
             let result = await axioslogin.post("/attendCal/inOutUpdate", postData);
-            const { success, message } = result.data;
+            const { success } = result.data;
             if (success === 2) {
                 succesNofity('Punch Data Updated')
                 setOpen(false)
@@ -98,7 +98,7 @@ const ShiftModal = ({ open, setOpen, data }) => {
         } else {
             infoNofity("Select Both In & Out Time")
         }
-    }, [inTime, outTime])
+    }, [inTime, outTime, UPDATE_PUNCHMASTER_TABLE, data, shiftIn, shiftOut, dispatch, setOpen])
 
 
     return (

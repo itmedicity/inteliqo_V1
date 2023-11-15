@@ -1,9 +1,7 @@
 import { CssVarsProvider } from '@mui/joy'
-import IconButton from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
-import { Box, Paper } from '@mui/material'
-import React, { Fragment, useState } from 'react'
-import AdjustIcon from '@mui/icons-material/Adjust';
+import { Box } from '@mui/material'
+import React, { Fragment } from 'react'
 import { memo } from 'react';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 

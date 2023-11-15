@@ -20,7 +20,7 @@ const ApprovalDeptSectSelection = ({ em_id, value, setValue, updateDeptSect }) =
             setDeptSectValues([])
             updateDeptSect([])
         }
-    }, [DeptSect])
+    }, [DeptSect, updateDeptSect])
 
     return (
 

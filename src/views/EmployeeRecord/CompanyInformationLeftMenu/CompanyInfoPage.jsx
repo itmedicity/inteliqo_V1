@@ -1,6 +1,6 @@
 import { CssVarsProvider, IconButton, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { addDays, format, isAfter, isBefore, isEqual } from 'date-fns'
+import { addDays, format, isAfter, isBefore } from 'date-fns'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -132,7 +132,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                 const result = await axioslogin.get(`/empcat/${category}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { ecat_cont_period, ecat_prob_period, emp_type, des_type } = data[0]
+                    const { ecat_cont_period, ecat_prob_period, emp_type } = data[0]
                     setEmptype(emp_type)
                     setProbationPeriod(addDays(new Date, ecat_prob_period))
                     if (ecat_cont_period > 0) {
