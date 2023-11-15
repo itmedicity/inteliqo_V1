@@ -3,6 +3,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
 import { setDepartment } from 'src/redux/actions/Department.action';
+import { setEmployee } from 'src/redux/actions/Employee.Action';
 import _ from 'underscore';
 
 const JoyDepartment = ({ deptValue, getDept }) => {
@@ -26,8 +27,10 @@ const JoyDepartment = ({ deptValue, getDept }) => {
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
+
             setFlag(1)
             setValue(value)
+            dispatch(setEmployee(value.dept_id));
             dispatch(getDepartmentSection(value.dept_id))
             getDept(value.dept_id)
         } else {

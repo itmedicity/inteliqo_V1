@@ -1,15 +1,11 @@
 import React, { useState, useCallback, useMemo, useEffect, lazy, memo } from 'react'
-import { Box, Tooltip, Button, CssVarsProvider, } from '@mui/joy'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { Box, Tooltip, Button, } from '@mui/joy'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { useDispatch } from 'react-redux'
 import { setDepartment } from 'src/redux/actions/Department.action';
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import SearchIcon from '@mui/icons-material/Search';
 import SaveIcon from '@mui/icons-material/Save';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
@@ -21,12 +17,16 @@ const Viewdata = lazy(() => import('./Viewdata'))
 const Manpowersearch = () => {
     const [mincount, setmincount] = useState(0);
     const [maxcount, setmaxcount] = useState(0);
+    const [salaryfrom, setsalaryfrom] = useState(0);
+    const [salaryto, setsalaryto] = useState(0);
+
     const [update, setupdate] = useState(0);
     const [dept, changeDept] = useState(0);
     const [flag, setflag] = useState(0);
     const [section, changeSection] = useState(0);
     const dispatch = useDispatch();
     const [tableData, setTableData] = useState([])
+
     const [Data, setData] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newdesig, setnewdesig] = useState({})
@@ -94,6 +94,8 @@ const Manpowersearch = () => {
                             ...val,
                             MaxCount: maxcount,
                             MinCount: mincount,
+                            salaryfrom: salaryfrom,
+                            salaryto: salaryto,
                             status: 0,
                             dept_id: dept,
                             sect_id: section
@@ -115,7 +117,7 @@ const Manpowersearch = () => {
         }
         // }
         // submitfunc()
-    }, [postDataDept, postData, dept, section])
+    }, [postDataDept, postData, dept, section, maxcount, mincount, salaryfrom, salaryto])
 
     // data save
     const submitmanpower = useCallback(async (event) => {
@@ -234,7 +236,7 @@ const Manpowersearch = () => {
                         <SearchIcon />
                     </Button>
                 </Box>
-                <Box sx={{ px: 0.5, mt: 0.9 }}>
+                {flag === 1 ? <Box sx={{ px: 0.5, mt: 0.9 }}>
                     <Tooltip title="Save">
                         <Button
                             variant="outlined"
@@ -246,8 +248,7 @@ const Manpowersearch = () => {
                             <SaveIcon />
                         </Button>
                     </Tooltip>
-
-                </Box>
+                </Box> : null}
                 {flag === 1 ? <Box sx={{ px: 0.5, mt: 0.9 }}>
                     <Tooltip title="Add new designation">
                         <Button
@@ -264,7 +265,7 @@ const Manpowersearch = () => {
                 </Box> : null}
 
             </Box>
-            {flag === 1 ? <Viewdata newdesig={newdesig} setmincount={setmincount} setmaxcount={setmaxcount} mincount={mincount} maxcount={maxcount} tableData={tableData} setTableData={setTableData} /> : null}
+            {flag === 1 ? <Viewdata salaryfrom={salaryfrom} salaryto={salaryto} newdesig={newdesig} setmincount={setmincount} setmaxcount={setmaxcount} mincount={mincount} maxcount={maxcount} tableData={tableData} setTableData={setTableData} /> : null}
             <Modal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
@@ -273,7 +274,8 @@ const Manpowersearch = () => {
                 mincount={mincount}
                 maxcount={maxcount}
                 setnewdesig={setnewdesig}
-
+                salaryto={salaryto}
+                salaryfrom={salaryfrom}
                 section={section}
                 dept={dept}
             />

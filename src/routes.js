@@ -248,7 +248,12 @@ const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/D
 const PersonalRecord = React.lazy(() => import('./views/EmployeeRecord/PersonalRecords/PersonalRecords'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
 const ManpowerPlanning = React.lazy(() => import('./views/Master/ManPower/Manpowermain'))
-
+const Manpowerrequestapproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/RequestApproval'))
+const HodRequestapproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/HodRequestapproval'))
+const HrRequestApproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/HrRequestApproval'))
+const VacancyAnnoncment = React.lazy(() => import('./views/recruitment/manpowerRequest/Vacancy'))
+const VacancyList = React.lazy(() => import('./views/recruitment/VacancyList/Vacancylist'))
+const Applicationform = React.lazy(() => import('./views/recruitment/ApplicationForm/Applicationform'))
 
 
 const routes = [
@@ -489,7 +494,12 @@ const routes = [
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
   { path: '/Home/PersonalRecord', exact: true, name: 'Personal Records', component: PersonalRecord },
   { path: '/Home/ManpowerPlanning', exact: true, name: 'ManPower', component: ManpowerPlanning },
-
+  { path: '/Home/RequestApproval', exact: true, name: 'RequestApproval', component: Manpowerrequestapproval },
+  { path: '/Home/HodRequestapproval', exact: true, name: 'HOD Request Approval', component: HodRequestapproval },
+  { path: '/Home/HrRequestApproval', exact: true, name: 'HR Request Approval', component: HrRequestApproval },
+  { path: '/Home/VacancyAnnouncement', exact: true, name: 'Vacancy Announcement', component: VacancyAnnoncment },
+  { path: '/Home/VacancyList', exact: true, name: 'Vacancy List', component: VacancyList },
+  { path: '/Home/Applicationform', exact: true, name: 'Application Form', component: Applicationform },
 
 ]
 

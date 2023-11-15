@@ -1,17 +1,23 @@
-import { Box } from '@mui/joy'
-import React from 'react'
-import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
+import { Box, } from '@mui/joy';
+import React, { memo, lazy } from 'react'
+import { useHistory } from 'react-router-dom';
+import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout';
+const ManpowerForm = lazy(() => import('./ManpowerForm'))
 
 const ManpowerRequest = () => {
+    const history = useHistory();
+    const toRedirectToHome = () => {
+        history.push('/Home');
+    }
     return (
-        <Box sx={{ width: "100%" }}>
-            <CustmTypog title={'Manpower Requisition Form'} />
-            <Box sx={{ display: 'flex' }}>
-                <Box>Job Tittle</Box>
-
-            </Box>
+        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', }} >
+            <DasboardCustomLayout title={" Manpower Requisition Form"} displayClose={true} setClose={toRedirectToHome} >
+                <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: window.innerHeight - 120 }} >
+                    <ManpowerForm />
+                </Box>
+            </DasboardCustomLayout>
         </Box>
     )
 }
 
-export default ManpowerRequest
+export default memo(ManpowerRequest)

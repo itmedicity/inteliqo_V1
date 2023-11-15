@@ -8,28 +8,41 @@ const recruitMenuArray = [
         to: '/home/ManpowerRequest',
     },
     {
+        men_slno: 19,
+        component: CNavItem,
+        name: 'HOD Request Approval',
+        to: '/Home/HodRequestapproval',
+    },
+    {
+        men_slno: 20,
+        component: CNavItem,
+        name: 'HR Request Approval',
+        to: '/Home/HrRequestApproval',
+    },
+    {
         men_slno: 2,
         component: CNavItem,
-        name: 'Manpower Request Approval',
-        to: '/home/Vacancy',
+        name: 'ED Request Approval',
+        to: '/Home/RequestApproval',
     },
+
     {
         men_slno: 3,
         component: CNavItem,
         name: 'Vacancy Announcement',
-        to: '/homes',
+        to: '/Home/VacancyAnnouncement',
     },
     {
         men_slno: 4,
         component: CNavItem,
         name: 'Vacancy List',
-        to: '/homes',
+        to: '/Home/VacancyList',
     },
     {
         men_slno: 5,
         component: CNavItem,
         name: 'Application Form',
-        to: '/homes',
+        to: '/Home/Applicationform',
     },
     {
         men_slno: 6,
@@ -109,6 +122,7 @@ const recruitMenuArray = [
         name: 'Announcement Closing',
         to: '/homes',
     },
+
 ]
 
 export default recruitMenuArray;

@@ -12,12 +12,13 @@ const JoyInput = ({
     onchange,
     value,
     min,
-    defaultValue, name, disabled
+    defaultValue, name, disabled, variant
 }) => {
     const textStyle = { width: "100%", height: "100%" }
     return (
         <CssVarsProvider>
             <Input
+                variant={variant}
                 placeholder={placeholder}
                 type={type}
                 size={size}

@@ -1,13 +1,12 @@
 import { Box, Button, Typography } from '@mui/joy'
 import { Modal } from '@mui/material'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux'
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 
-const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, mincount, maxcount, setnewdesig, dept, section }) => {
+const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, mincount, maxcount, setnewdesig, dept, section, salaryto, salaryfrom }) => {
     const [designation, setdesignation] = useState(0);
 
     const handleCloseModal = useCallback(() => {
@@ -36,6 +35,8 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
                         MaxCount: maxcount,
                         MinCount: mincount,
                         desg_name: designame,
+                        salaryto: salaryto,
+                        salaryfrom: salaryfrom,
                         status: 0,
                         dept_id: dept,
                         sect_id: section,
@@ -49,7 +50,7 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
                 }
             }
         },
-        [designation, maxcount, mincount,],
+        [designation, maxcount, mincount, handleCloseModal, salaryto, salaryfrom, section,],
     )
     return (
         <Box>
@@ -116,4 +117,4 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
     )
 }
 
-export default Modalmanpower
+export default memo(Modalmanpower)
