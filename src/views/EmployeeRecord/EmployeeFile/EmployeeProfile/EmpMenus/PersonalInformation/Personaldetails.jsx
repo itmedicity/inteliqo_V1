@@ -817,7 +817,7 @@ const Personaldetails = () => {
                                     </Select>
                                 </FormControl>
                             </Box>
-                            <Tooltip title="Pan No" followCursor placement='top' arrow >
+                            <Tooltip title="MRD NO" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1 }}>
                                     <TextField
                                         fullWidth
