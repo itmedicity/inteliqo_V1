@@ -455,6 +455,7 @@ const EmployeeRecordEdit = () => {
                                 placeholder="Employee Number"
                                 name="empno"
                                 value={empno}
+                                disabled={true}
                                 onchange={(e) => setEmpno(e.target.value)}
                             />
                         </Box>

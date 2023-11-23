@@ -15,8 +15,6 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
     const [elData, setelData] = useState([])
     const [loding, setLoding] = useState(false)
 
-    console.log(processStat);
-
     useEffect(() => {
 
         setLoding(true)
@@ -24,10 +22,7 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
 
             const result = await axioslogin.get(`/common/getearnleave/${id}`)
             const { success, data } = result.data;
-            console.log(result.data);
             if (success === 1) {
-                console.log("fgd");
-                console.log(data);
                 setelData(data)
             } else {
                 setelData([])
@@ -37,8 +32,7 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
         processStat && getLeaveData(id)
         return (() => setelData([]))
     }, [id, processStat])
-    console.log(elData);
-    console.log(loding);
+
     return (
         <Paper square sx={{ flex: 1, }}>
             {/* <CustmTypog title={title} /> */}

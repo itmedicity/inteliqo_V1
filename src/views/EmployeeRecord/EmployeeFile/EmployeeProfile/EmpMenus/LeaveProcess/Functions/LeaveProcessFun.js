@@ -108,7 +108,8 @@ export const checkContractStatus = async (
   em_prob_end_date,
   // des_type,
   // emp_type,
-  ecat_prob, ecat_training,
+  ecat_prob,
+  ecat_training,
   probation_status
 
 ) => {
@@ -141,28 +142,28 @@ export const checkContractStatus = async (
       }
     }
   }
-  else if (contract_status === 1 && probation_status === 1) {
-    if (moment(probationEndDate).isValid() && moment(contrctEndDate).isValid()) {
-      if (new Date(probationEndDate) > new Date() && new Date(contrctEndDate) > new Date()) {
-        return {
-          message: 'Contract Date Not Exceeded',
-          status: true,
-        }
-      }
-      else {
-        return {
-          message: 'Probation end Date Exceeded Please Do the Probation Conformation',
-          status: false,
-        }
-      }
-    } else {
-      return {
-        message: 'Contract End Date Showing is a Invalid Date, Please Contract HRD',
-        status: false,
-      }
-    }
+  // else if (probation_status === 1) {
+  //   if (moment(probationEndDate).isValid() && moment(contrctEndDate).isValid()) {
+  //     if (new Date(probationEndDate) > new Date() && new Date(contrctEndDate) > new Date()) {
+  //       return {
+  //         message: 'Contract Date Not Exceeded',
+  //         status: true,
+  //       }
+  //     }
+  //     else {
+  //       return {
+  //         message: 'Probation end Date Exceeded Please Do the Probation Conformation',
+  //         status: false,
+  //       }
+  //     }
+  //   } else {
+  //     return {
+  //       message: 'Contract End Date Showing is a Invalid Date, Please Contract HRD',
+  //       status: false,
+  //     }
+  //   }
 
-  }
+  // }
   else if ((ecat_prob === 1 || ecat_training === 1) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
     return {
       message: 'Probation || Training Confirmation Pending,Do the Process First',
@@ -178,6 +179,7 @@ export const checkContractStatus = async (
 
 //for new employee primary data for inserting the the "hrm_emp_processs" table
 export const newProcessedEmployeeData = async (category, processSlno, employeeIDs) => {
+
   const {
     ecat_cl,
     ecat_el,
@@ -191,6 +193,7 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     ecat_prob,
     ecat_holiday,
     em_prob_end_date,
+    ecat_training
   } = category
 
   return {
@@ -210,12 +213,13 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
-        ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
-          ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
-            ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
-              ((ecat_cont === 0 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
-                moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
+      ((ecat_cont === 1) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
+        ((ecat_cont === 1) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+          ((ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+            ((ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+              ((ecat_training === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+                ((ecat_training === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+                  moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
   }
 }
 
@@ -232,15 +236,17 @@ export const categoryChangedNewObject = async (
     ecat_cont,
     ecat_el,
     ecat_esi_allow,
-    ecat_fh,
+    // ecat_fh,
     ecat_lop,
     ecat_mate,
-    ecat_nh,
+    //ecat_nh,
+    ecat_holiday,
     ecat_prob,
     ecat_sl,
     em_category,
     em_contract_end_date,
     em_prob_end_date,
+    ecat_training
   } = category
 
   const {
@@ -274,13 +280,13 @@ export const categoryChangedNewObject = async (
             ? 0
             : 2,
     hrm_hld:
-      (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 1
+      (ecat_holiday === 1) && hrm_hld === 1
         ? 1
-        : (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 2
+        : (ecat_holiday === 1) && hrm_hld === 2
           ? 0
-          : (ecat_nh === 1 || ecat_fh === 1) && hrm_hld === 0
+          : (ecat_holiday === 1) && hrm_hld === 0
             ? 0
-            : ecat_nh === 0 && ecat_fh === 0
+            : ecat_holiday === 0
               ? 2
               : 2,
     hrm_cmn:
@@ -296,12 +302,13 @@ export const categoryChangedNewObject = async (
     hrm_calcu: 0,
     hrm_process_status: 'A',
     next_updatedate:
-      ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
-        ((ecat_cont === 1 && ecat_prob === 0) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
-          ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
-            ((ecat_cont === 1 && ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
-              ((ecat_cont === 0 && ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
-                moment(lastDayOfYear(new Date())).format('YYYY-MM-DD')
+      ((ecat_cont === 1) && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
+        ((ecat_cont === 1) && (moment(em_contract_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+          ((ecat_prob === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+            ((ecat_prob === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+              ((ecat_training === 1) && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
+                ((ecat_training === 1) && (moment(em_prob_end_date) >= moment(lastDayOfYear(new Date())))) ? moment(lastDayOfYear(new Date())).format('YYYY-MM-DD') :
+                  moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
     // (ecat_cont === 1 && (moment(em_contract_end_date) <= moment(lastDayOfYear(new Date())))) ? em_contract_end_date :
     //   (ecat_prob === 1 && (moment(em_prob_end_date) <= moment(lastDayOfYear(new Date())))) ? em_prob_end_date :
     //     moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
@@ -318,7 +325,7 @@ export const categoryChangedNewObject = async (
  **/
 
 export const updateInactiveLeaves = async (category, leaveProcess) => {
-  const { ecat_cl, ecat_nh, ecat_fh, ecat_el } = category
+  const { ecat_cl, ecat_holiday, ecat_el } = category
   const { hrm_clv, hrm_hld, hrm_ern_lv, lv_process_slno } = leaveProcess
 
   const leaveProcessSlnoObj = {
@@ -351,7 +358,7 @@ export const updateInactiveLeaves = async (category, leaveProcess) => {
     }
   }
   //    holiday leaves update
-  if ((ecat_nh === 0 || ecat_fh === 0) && hrm_hld === 1) {
+  if ((ecat_holiday === 0) && hrm_hld === 1) {
     const holidayLeaveUpdation = await axioslogin.post(
       '/yearleaveprocess/updateholidayupdateslno',
       leaveProcessSlnoObj,
@@ -402,6 +409,7 @@ export const updateOldLeaveProcessedData = async (leaveProcess) => {
 
 // insert new data into the 'hrm_leave_process' table function
 export const insertNewLeaveProcessData = async (newObj) => {
+
   const { em_id, em_no } = newObj ?? 0
 
   const yearlyProcessTableData = {
@@ -549,56 +557,56 @@ export const getEmployeeProcessStartAndEndDate = async (empCategoryProcessDetl) 
   // check the sontract start and wnd dateis valid ( not equal to "2000-01-01" )
   if (is_under_contract === 1 && contactStart !== defaultDate && contractEnd !== defaultDate) {
     //employee under contract
-    if (is_under_probation === 1) {
-      // employee under probation or training in Contract
-      if (
-        startOfYears <= contactStart &&
-        contactStart <= probationEndDate &&
-        probationEndDate <= endOfYears &&
-        probationEndDate <= contractEnd
-      ) {
-        return { ...processDates, startDate: contactStart, endDate: probationEndDate, status: 1 }
-      } else if (
-        startOfYears >= contactStart &&
-        contactStart <= probationEndDate &&
-        probationEndDate <= endOfYears &&
-        probationEndDate <= contractEnd &&
-        probationEndDate <= endOfYears
-      ) {
-        return { ...processDates, startDate: startOfYears, endDate: probationEndDate, status: 1 }
-      } else if (
-        contactStart >= startOfYears &&
-        contactStart <= probationEndDate &&
-        probationEndDate >= endOfYears &&
-        contractEnd >= endOfYears
-      ) {
-        return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
-      } else {
-        return { ...processDates, message: 'inside contract & inside probation' }
-      }
-    } else {
-      // employee is contract + confirmation
-      if (
-        startOfYears <= contactStart &&
-        contactStart <= contractEnd &&
-        contractEnd <= endOfYears
-      ) {
-        return { ...processDates, startDate: contactStart, endDate: contractEnd, status: 1 }
-      } else if (
-        startOfYears >= contactStart &&
-        contactStart <= contractEnd &&
-        contractEnd <= endOfYears
-      ) {
-        return { ...processDates, startDate: startOfYears, endDate: contractEnd, status: 1 }
-      } else if (
-        contactStart >= startOfYears &&
-        contactStart <= endOfYears &&
-        contactStart <= contractEnd
-      ) {
-        return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
-      }
-      return { ...processDates, message: 'inside contract & confirmation' }
+    // if (is_under_probation === 1) {
+    //   // employee under probation or training in Contract
+    //   if (
+    //     startOfYears <= contactStart &&
+    //     contactStart <= probationEndDate &&
+    //     probationEndDate <= endOfYears &&
+    //     probationEndDate <= contractEnd
+    //   ) {
+    //     return { ...processDates, startDate: contactStart, endDate: probationEndDate, status: 1 }
+    //   } else if (
+    //     startOfYears >= contactStart &&
+    //     contactStart <= probationEndDate &&
+    //     probationEndDate <= endOfYears &&
+    //     probationEndDate <= contractEnd &&
+    //     probationEndDate <= endOfYears
+    //   ) {
+    //     return { ...processDates, startDate: startOfYears, endDate: probationEndDate, status: 1 }
+    //   } else if (
+    //     contactStart >= startOfYears &&
+    //     contactStart <= probationEndDate &&
+    //     probationEndDate >= endOfYears &&
+    //     contractEnd >= endOfYears
+    //   ) {
+    //     return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
+    //   } else {
+    //     return { ...processDates, message: 'inside contract & inside probation' }
+    //   }
+    // } else {
+    // employee is contract + confirmation
+    if (
+      startOfYears <= contactStart &&
+      contactStart <= contractEnd &&
+      contractEnd <= endOfYears
+    ) {
+      return { ...processDates, startDate: contactStart, endDate: contractEnd, status: 1 }
+    } else if (
+      startOfYears >= contactStart &&
+      contactStart <= contractEnd &&
+      contractEnd <= endOfYears
+    ) {
+      return { ...processDates, startDate: startOfYears, endDate: contractEnd, status: 1 }
+    } else if (
+      contactStart >= startOfYears &&
+      contactStart <= endOfYears &&
+      contactStart <= contractEnd
+    ) {
+      return { ...processDates, startDate: contactStart, endDate: endOfYears, status: 1 }
     }
+    return { ...processDates, message: 'inside contract' }
+    // }
   } else if (is_under_contract === 0) {
     // employee is permanent
     if (is_under_probation === 1) {
@@ -773,13 +781,14 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 
 //Update Common Leaves 
 export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi) => {
+
   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
   if (successcommonleave === 1) {
-    const today = new Date();
-    const result = startOfYear(new Date(today))
-    const res = differenceInDays(today, result)
+    //const today = new Date();
+    const result = startOfYear(new Date())
+    const res = differenceInDays(new Date(), result)
     const obj = {
       leave_credit_policy_count: 365 - res
     }
@@ -875,6 +884,7 @@ export const updateEarnLeaves = async (calulatedProcessDate, lv_process_slno, em
 //insert Earn Leaves
 export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no) => {
   let returnMessage = { status: 0, message: '' }
+
   const lv_process = {
     lv_proce: lv_process_slno
   }

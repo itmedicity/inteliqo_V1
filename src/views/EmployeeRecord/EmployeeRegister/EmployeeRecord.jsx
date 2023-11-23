@@ -685,7 +685,7 @@ const EmployeeRecord = () => {
                 label='Check If Doctor'
                 name="doctor"
                 checked={doctor}
-                disabled={clinictype === "1" ? false : true}
+                disabled={clinictype === 1 ? false : true}
                 onchange={(e) => setDoctor(e.target.checked)}
               />
             </Box>
