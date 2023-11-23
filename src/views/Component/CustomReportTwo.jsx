@@ -15,8 +15,8 @@ import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { useHistory } from 'react-router-dom'
 
-const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableData, onSelectionChanged, tableDataMain, columnDefMain, onClick, columnDefMenu2, tableDataMenu2, onSelectionChangedMenu2, onChange }) => {
-
+const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableData, onSelectionChanged, tableDataMain, columnDefMain, onClick, columnDefMenu2,
+    tableDataMenu2, onSelectionChangedMenu2, onChange }) => {
     const dispatch = useDispatch()
     const history = useHistory()
     /** To download ag grid report list, if there is no value or not clicked on the search button it shows warning. otherwise it dispatch */
@@ -181,4 +181,4 @@ const Custom_Report_Two = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tabl
     )
 }
 
-export default memo(Custom_Report_Two)
+export default memo(CustomReportTwo) 

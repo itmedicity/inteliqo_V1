@@ -28,7 +28,6 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
     const [year, setYear] = useState(moment(new Date()).format("YYYY"));
     const [table, setTable] = useState(0);
     const [checkdata, setCheckdata] = useState([]);
-    const [sect_id, setsect_id] = useState(0);
 
     useEffect(() => {
         dispatch(setDepartment());

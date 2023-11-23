@@ -30,6 +30,8 @@ const OtHrApproval = () => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
         if (arraydepsect.length !== 0) {
             setAlldept(arraydepsect)
+            setDeptSect(0)
+            updateDeptSect(0)
         } else {
             setAlldept([])
         }
@@ -57,12 +59,12 @@ const OtHrApproval = () => {
                 setTableData(filterdata)
             } else {
                 infoNofity("No OT request pending for this department!!")
-                setTableData([])
+                setTableData(alldept)
             }
         } else {
             setTableData(employeeDetl)
         }
-    }, [employeeDetl, deptSect, count])
+    }, [employeeDetl, deptSect, alldept, count])
 
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'slno', filter: true, minWidth: 100 },

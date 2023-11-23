@@ -1,6 +1,5 @@
-import { Box, IconButton, Paper, Typography } from '@mui/material'
+import { Box, Grid, IconButton, Paper, Typography } from '@mui/material'
 import React, { memo, useEffect } from 'react';
-import { Grid } from '@mui/joy';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useCallback } from 'react';
 import { useState } from 'react';

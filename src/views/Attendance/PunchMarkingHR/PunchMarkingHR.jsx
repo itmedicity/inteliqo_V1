@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState, memo, useMemo, useCallback } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import PageLayoutCloseOnly from 'src/views/CommonCode/PageLayoutCloseOnly'
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material'
@@ -22,6 +21,7 @@ import { Actiontypes } from 'src/redux/constants/action.type';
 import PunchSavedHrView from './PunchSavedHrView';
 import { useHistory } from 'react-router-dom'
 import _ from 'underscore'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 
 
 const PunchMarkingHR = () => {
@@ -42,7 +42,7 @@ const PunchMarkingHR = () => {
     // dispatch the department data
     useEffect(() => {
         dispatch(setDepartment());
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if (dept !== 0) {
@@ -92,7 +92,7 @@ const PunchMarkingHR = () => {
 
                         const gracePeriod = await axioslogin.get('/commonsettings')
                         const { data } = gracePeriod.data
-                        const { cmmn_late_in_grace, cmmn_early_out_grace } = data[0]
+                        const { cmmn_early_out, cmmn_grace_period, cmmn_late_in } = data[0]
 
                         const SelectMonth = getMonth(new Date(selectedDate))
                         const SelectYear = getYear(new Date(selectedDate))
@@ -107,7 +107,8 @@ const PunchMarkingHR = () => {
 
                         //Function for punch master updation. Based on duty plan and punch details in punch data 
 
-                        const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_late_in_grace, cmmn_early_out_grace,
+                        const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_early_out,
+                            cmmn_grace_period, cmmn_late_in,
                             gross_salary, empInform, dispatch)
 
                         if (result !== undefined) {
@@ -117,7 +118,7 @@ const PunchMarkingHR = () => {
                                 dispatch({ type: FETCH_PUNCH_DATA, payload: punch_data })
                                 dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
                                 const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
-                                const { success, planData } = punch_master_data.data;
+                                const { success } = punch_master_data.data;
 
                                 if (success === 1) {
                                     const dutyLock = empInform && empInform.map((val, index) => {
@@ -150,12 +151,12 @@ const PunchMarkingHR = () => {
                     }
                 }
                 attendMarkCheck(postdata)
+                return 0
             })
-        }
-        else {
+        } else {
             warningNofity("Please Select Depatment And Department section")
         }
-    })
+    }, [empInform, dept, section, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, value])
 
     const [nextstage, setNextStage] = useState(0)
     useEffect(() => {
@@ -175,6 +176,8 @@ const PunchMarkingHR = () => {
             succesNofity("Punch Updated Successfully")
             setOpenBkDrop(false)
             setFlag(1)
+        } else {
+            warningNofity("Error While Updating Punch")
         }
     }
 
@@ -190,82 +193,81 @@ const PunchMarkingHR = () => {
             }
             punchMarkSave(saveDta)
         }
-    }, [nextstage])
+    }, [nextstage, value, dept, section, em_no])
 
     const handleView = useCallback(() => {
         history.push('/Home/PunchDoneList');
-    })
+    }, [history])
 
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
-            <PageLayoutCloseOnly
-                heading="Punch In/Out Marking HR"
-                redirect={() => { }}
-            >
-                <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                    <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['year', 'month']}
-                                minDate={subMonths(new Date(), 1)}
-                                maxDate={addMonths(new Date(), 1)}
-                                value={value}
-                                size="small"
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                }}
-                                renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                        <CssVarsProvider>
-                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                        </CssVarsProvider>
-                                        {InputProps?.endAdornment}
-                                    </Box>
-                                )}
-                            />
-                        </LocalizationProvider>
-                    </Box>
-                    <Box sx={{ display: 'flex', py: 0.5, width: '50%', }}>
-
-                        <Box sx={{ flex: 1, px: 0.5 }}>
-                            <DepartmentDropRedx getDept={changeDept} deptslno={dept} />
+            <CustomLayout title="Punch In/Out Marking HR" displayClose={true} >
+                <Box sx={{ width: '100%', }}>
+                    <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                        <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['year', 'month']}
+                                    minDate={subMonths(new Date(), 1)}
+                                    maxDate={addMonths(new Date(), 1)}
+                                    value={value}
+                                    size="small"
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </Box>
-                        <Box sx={{ flex: 1, px: 0.5 }}>
-                            <DepartmentSectionRedx getSection={changeSection} />
+                        <Box sx={{ display: 'flex', width: '50%', }}>
+
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <DepartmentDropRedx getDept={changeDept} deptslno={dept} />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <DepartmentSectionRedx getSection={changeSection} />
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                            <CssVarsProvider>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    onClick={handleOnClickFuntion}
+                                    fullWidth
+                                    startDecorator={<HourglassEmptyOutlinedIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    Process
+                                </Button>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    fullWidth
+                                    onClick={handleView}
+                                    startDecorator={<RemoveRedEyeOutlinedIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    View
+                                </Button>
+                            </CssVarsProvider>
                         </Box>
                     </Box>
-
-                    <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
-                        <CssVarsProvider>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="neutral"
-                                onClick={handleOnClickFuntion}
-                                fullWidth
-                                startDecorator={<HourglassEmptyOutlinedIcon />}
-                                sx={{ mx: 0.5 }}
-                            >
-                                Process
-                            </Button>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="neutral"
-                                fullWidth
-                                onClick={handleView}
-                                startDecorator={<RemoveRedEyeOutlinedIcon />}
-                                sx={{ mx: 0.5 }}
-                            >
-                                View
-                            </Button>
-                        </CssVarsProvider>
-                    </Box>
+                    {flag === 1 ? <PunchSavedHrView value={value} dept={dept} section={section}
+                    /> : null}
                 </Box>
-                {flag === 1 ? <PunchSavedHrView value={value} dept={dept} section={section}
-                /> : null}
-            </PageLayoutCloseOnly>
+            </CustomLayout>
         </Fragment>
     )
 }

@@ -30,7 +30,7 @@ const DueClearenceDepartment = () => {
             deptcode: selectDeptSec,
             deptdesc: deptname
         }
-        if (arraydata.some(key => key.deptcode == selectDeptSec)) {
+        if (arraydata.some(key => key.deptcode === selectDeptSec)) {
             warningNofity("Department Already Added!!")
         }
         else {

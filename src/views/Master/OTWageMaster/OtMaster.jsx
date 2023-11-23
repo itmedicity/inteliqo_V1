@@ -1,6 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Grid, IconButton, Paper, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import EmployeeUderDeptSec from 'src/views/LeaveManagement/NightOff/EmployeeUderDeptSec'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
@@ -12,6 +11,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { memo } from 'react'
+import MasterLayout from '../MasterComponents/MasterLayout'
 
 const OtMaster = () => {
     const [dept, setDept] = useState(0)
@@ -153,7 +153,7 @@ const OtMaster = () => {
         }
     }
     return (
-        <CustomLayout title="Over Time Wage" displayClose={true} >
+        <MasterLayout title="Over Time Wage" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>
@@ -223,7 +223,7 @@ const OtMaster = () => {
                     </Grid>
                 </Grid>
             </Box>
-        </CustomLayout>
+        </MasterLayout>
 
     )
 }

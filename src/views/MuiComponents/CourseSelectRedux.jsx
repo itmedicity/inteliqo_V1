@@ -1,7 +1,6 @@
 import { FormControl, MenuItem, Select } from '@mui/material';
 import React, { memo, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setCourse } from 'src/redux/actions/Course.Action';
 import { setRegistrationType } from 'src/redux/actions/RegistrationType.Action';
 import _ from 'underscore';
 

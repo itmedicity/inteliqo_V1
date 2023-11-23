@@ -97,7 +97,7 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
                 if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
                     const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
-                    const { success, message } = result.data
+                    const { success } = result.data
                     if (success === 1) {
                         const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
                         const { success, message } = result.data

@@ -1,9 +1,8 @@
 import { Button, CssVarsProvider } from '@mui/joy'
-import { Box, Checkbox, FormControlLabel, Grid, IconButton, TextField } from '@mui/material'
+import { Box, Grid, IconButton } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import SaveIcon from '@mui/icons-material/Save';
 import { useMemo } from 'react'
 import { useCallback } from 'react'
@@ -13,6 +12,9 @@ import _ from 'underscore'
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MasterLayout from '../MasterComponents/MasterLayout'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 
 const CommonRequestMast = () => {
 
@@ -135,35 +137,27 @@ const CommonRequestMast = () => {
     }
 
     return (
-        <CustomLayout title="General Request" displayClose={true} >
+        <MasterLayout title="General Request" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>
                     <Grid item xl={3} lg={2}>
                         <Box sx={{ width: "100%", p: 1 }}>
-                            <TextField
-                                fullWidth
-                                placeholder='Request Name'
-                                size="small"
-                                id='reqstDesc'
-                                value={reqstDesc}
+                            <InputComponent
+                                placeholder={'Request Name'}
+                                type="text"
+                                size="sm"
                                 name="reqstDesc"
-                                onChange={(e) => setReqstDesc(e.target.value)}
+                                value={reqstDesc}
+                                onchange={(e) => setReqstDesc(e.target.value)}
                             />
                         </Box>
                         <Box sx={{ pl: 1 }} >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={status}
-                                        checked={status}
-                                        className="ml-1"
-                                        onChange={(e) => setStatus(e.target.checked)}
-                                    />
-                                }
-                                label="Status"
+                            <JoyCheckbox
+                                label='Status'
+                                checked={status}
+                                name="status"
+                                onchange={(e) => setStatus(e.target.checked)}
                             />
                         </Box>
                         <Box sx={{ px: 0.5, mt: 0.9 }}>
@@ -194,7 +188,7 @@ const CommonRequestMast = () => {
                     </Grid>
                 </Grid>
             </Box>
-        </CustomLayout>
+        </MasterLayout>
     )
 }
 

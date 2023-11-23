@@ -1,5 +1,5 @@
 import { Paper } from '@mui/material'
-import React from 'react'
+import React, { memo } from 'react'
 import LeaveCalanderEmp from './Func/LeaveCalanderEmp'
 import RequestedLeaveTable from './Func/RequestedLeaveTable'
 
@@ -12,4 +12,4 @@ const LeaveTableContainer = () => {
     )
 }
 
-export default LeaveTableContainer
+export default memo(LeaveTableContainer) 

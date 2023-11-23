@@ -96,7 +96,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [reason, checkintime, checkouttime, count, checkinflag, setCount, setOpen, checkoutflag, punchslno, slno])
     const NoPunchRejectdata = {
         np_hr_apprv_status: 2,
         np_hr_apprv_cmnt: reason,

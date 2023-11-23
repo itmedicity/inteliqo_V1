@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import { Card, CardActionArea, Avatar, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { useHistory } from 'react-router'
 import HttpsIcon from '@mui/icons-material/Https';
@@ -28,6 +28,7 @@ import {
     getannualleave,
     notify
 } from '../../../../redux/actions/Profile.action'
+import { useCallback } from 'react';
 
 const EmployeeProfileCardMenuList = (props) => {
     const { id, no } = props.empid;
@@ -71,48 +72,47 @@ const EmployeeProfileCardMenuList = (props) => {
         history.push(`/Home/EmployeeCompany/${id}/${no}`)
     }
     //Salary Information
-    const SalaryInformation = () => {
+    const SalaryInformation = useCallback(() => {
         history.push(`/Home/SalaryInformation/${id}/${no}`)
-    }
+    }, [history, id, no])
     //Allownace Information
-    const allowance = () => {
+    const allowance = useCallback(() => {
         history.push(`/Home/EmployeeAllowance/${id}/${no}`)
-    }
+    }, [history, id, no])
     //Annual Leave Settngs
-    const AnnualLeaveSettings = () => {
+    const AnnualLeaveSettings = useCallback(() => {
         history.push(`/Home/AnnualLeaveSettings/${id}/${no}`)
-    }
+    }, [history, id, no])
     //Employee Training
     const EmployeeTrainingInformation = () => {
         // history.push(`/Home/EmployeeTraining/${4516}`)
     }
     //Salary Increment Settings
-    const SalaryIncrementSettings = () => {
+    const SalaryIncrementSettings = useCallback(() => {
         history.push(`/Home/SalaryIncrement/${id}/${no}`)
-    }
+    }, [history, id, no])
     //Employee document checklist
-    const Employeedocumentchecklist = () => {
+    const Employeedocumentchecklist = useCallback(() => {
         history.push(`/Home/EmployeeDocumentChecklist/${id}/${no}`)
-    }
+    }, [history, id, no])
     //Vaccination Information
-    const Vaccinationinformation = () => {
+    const Vaccinationinformation = useCallback(() => {
         // history.push(`/Home/VaccinationInformation/${4516}`)
-    }
+    }, [])
     //fine or other deduction
-    const fineorotherdeduction = () => {
+    const fineorotherdeduction = useCallback(() => {
         history.push(`/Home/FineorDeduction/${id}/${no}`)
-    }
+    }, [history, id, no])
     //employee end of service
     const endofservice = () => {
         // history.push(`/Home/EmployeeEndofService/${4516}`)
     }
     //job description
-    const JobDescription = () => {
+    const JobDescription = useCallback(() => {
         history.push(`/Home/JobDescriptionEmployee/${id}/${no}`)
-    }
-
-    useEffect(() => {
-        const listArray = [
+    }, [history, id, no])
+    const listArray = useMemo(() => {
+        return [
             { color: '#ea80fc', name: 'Earnings / Deduction', Icon: <AlignVerticalCenterIcon />, funName: allowance, slno: 112 },
             { color: '#80cbc4', name: 'Salary information', Icon: <AttachMoneyIcon />, funName: SalaryInformation, slno: 111 },
             { color: '#b39ddb', name: 'Annual Leave Setting', Icon: <BadgeIcon />, funName: AnnualLeaveSettings, slno: 113 },
@@ -121,6 +121,12 @@ const EmployeeProfileCardMenuList = (props) => {
             { color: '#ffab91', name: 'Document Checklist', Icon: <ListAltIcon />, funName: Employeedocumentchecklist, slno: 116 },
             { color: '#e1bee7', name: 'Vaccination Information', Icon: <EnhancedEncryptionIcon />, funName: Vaccinationinformation, slno: 117 },
         ]
+
+    }, [allowance, SalaryInformation, AnnualLeaveSettings, fineorotherdeduction, SalaryIncrementSettings, Employeedocumentchecklist,
+        Vaccinationinformation
+    ])
+
+    useEffect(() => {
 
         getMenuSlno().then((val) => {
 
@@ -138,7 +144,7 @@ const EmployeeProfileCardMenuList = (props) => {
             }
         })
 
-    }, [count])
+    }, [listArray, count])
 
     return (
         < Fragment >

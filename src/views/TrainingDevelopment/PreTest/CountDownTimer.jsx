@@ -1,11 +1,7 @@
 import { Typography } from '@mui/material';
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect } from 'react'
 
-const CountDownTimer = () => {
-    const [sec, setSec] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(60);
-
-
+const CountDownTimer = ({ sec, setSec, timeLeft, setTimeLeft }) => {
     const formatTime = (t) => t < 10 ? '0' + t : t;
     useEffect(() => {
         const interval = setInterval(() => {

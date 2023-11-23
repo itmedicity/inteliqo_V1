@@ -215,7 +215,7 @@ const RequestedLeaveTable = () => {
             })
             setleavecanceldetl([...newList, ...newHalfday, ...newNopunch, ...newCompRq])
         }
-    }, [hod, incharge, em_id, leaveRqList, nopunchRqList,
+    }, [hod, incharge, em_id, leaveRqList, nopunchRqList, em_no,
         compOffRqList, halfdayRqList, authorizationBasedDeptSection])
 
 

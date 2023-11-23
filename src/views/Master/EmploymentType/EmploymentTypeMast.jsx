@@ -163,7 +163,7 @@ const EmploymentTypeMast = () => {
             <MasterLayout title={"Employee Category"} displayClose={true}>
                 <Box sx={{ width: "100%", p: 0.5 }} >
                     <Paper variant='outlined' sx={{ p: 1 }}>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={1} >
                             <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', }}>
                                 <Box sx={{ flex: 1 }}>
                                     <JoyEmployeeTypeSelect value={empType} setValue={setEmptype} />
@@ -182,7 +182,7 @@ const EmploymentTypeMast = () => {
                                 <Box sx={{ flex: 1 }}>
                                 </Box>
                             </Box>
-                            <Grid item xl={4} lg={2}>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -283,8 +283,8 @@ const EmploymentTypeMast = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Grid>
-                            <Grid item xl={4} lg={2}>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -361,8 +361,8 @@ const EmploymentTypeMast = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Grid>
-                            <Grid item xl={4} lg={2}>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -455,7 +455,7 @@ const EmploymentTypeMast = () => {
                                     </Box>
 
                                 </Box>
-                            </Grid>
+                            </Box>
                         </Grid>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                             <Tooltip title="Save" followCursor placement='top' arrow>

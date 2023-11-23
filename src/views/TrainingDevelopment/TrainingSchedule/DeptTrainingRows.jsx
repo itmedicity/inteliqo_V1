@@ -3,7 +3,6 @@ import { Fragment } from 'react';
 import TableEditModal from './TableEditModal';
 import { useEffect } from 'react';
 import { Table } from '@mui/joy';
-import { getDate, getMonth, getYear } from 'date-fns';
 
 const DeptTrainingRows = ({ checkdata, count, Setcount, id, yr }) => {
     const [open, setOpen] = useState(false);

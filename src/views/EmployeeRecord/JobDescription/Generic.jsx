@@ -1,7 +1,7 @@
 import { Checkbox, CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useCallback, useContext } from 'react'
+import React, { Fragment, useCallback, useContext, useMemo } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -67,18 +67,15 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
             const newexp = experiencee.filter((val) => {
                 if (val.qualification_id !== sumbitdelt) {
                     return val
+                } else {
+                    return null
                 }
             })
             setExperience(newexp)
-            const rem = experiencee.filter((val) => {
-                if (val.qualification_id === sumbitdelt) {
-                    return val
-                }
-            })
-
+            const rem = experiencee?.filter(val => val.qualification_id === sumbitdelt)
             setremaining([...remaining, ...rem])
         }
-    }, [sumbitdelt])
+    }, [sumbitdelt, experiencee, remaining])
 
     //deleteing qualiification
     useEffect(() => {
@@ -86,11 +83,13 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
             const newexp = experiencee.filter((val) => {
                 if (val.id !== deleteitem) {
                     return val
+                } else {
+                    return null
                 }
             })
             setExperience(newexp)
         }
-    }, [deleteitem])
+    }, [deleteitem, experiencee])
 
 
     //save
@@ -104,43 +103,49 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         male: false
     })
 
-    const defaultState = {
-        experincedetl: '',
-        expYear: '',
-        specialcomment: '',
-        ageFrom: '',
-        ageTo: '',
-        female: false,
-        male: false
-    }
+    const defaultState = useMemo(() => {
+        return {
+            experincedetl: '',
+            expYear: '',
+            specialcomment: '',
+            ageFrom: '',
+            ageTo: '',
+            female: false,
+            male: false
+        }
+    }, [])
     const { experincedetl, expYear, specialcomment, ageFrom, ageTo, female, male } = formData
 
     useEffect(() => {
         if (editKra > 0) {
-            const editdata = experiencee.filter((val) => {
-                if (val.id === editKra) {
-                    return val
-                }
-            })
+            // const editdata = experiencee.filter((val) => {
+            //     if (val.id === editKra) {
+            //         return val
+            //     }
+            // })
             const newKra = experiencee.filter((val) => {
                 if (val.id !== editKra) {
                     return val
+                } else {
+                    return null
                 }
             })
             setExperience(newKra)
         }
-    }, [editKra])
+    }, [editKra, experiencee])
 
     const updateGeneric = async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
     }
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
-    const [editdata, setEditdata] = useState([])
+    const checkData = useMemo(() => {
+        return {
+            designation: selectDesignation,
+            dept_id: selectedDept,
+            sect_id: selectDeptSection
+        }
+    }, [selectDesignation, selectedDept, selectDeptSection])
+    // const [editdata, setEditdata] = useState([])
     //use effect for getting job generic to edit
     useEffect(() => {
         if (jobedit > 0) {
@@ -160,9 +165,9 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
 
                     }
                     setFormData(frmdata)
-                    setEditdata(data)
+                    //setEditdata(data)
                     setslno(job_generic_slno)
-
+                    setEditKra(0)
                 }
             }
             getJoGeneric()
@@ -170,7 +175,7 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         else {
             setFormData(defaultState)
         }
-    }, [jobedit])
+    }, [jobedit, checkData, defaultState])
 
     useEffect(() => {
         if (jobedit > 0) {
@@ -188,14 +193,14 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
         else {
             setExperience([])
         }
-    }, [jobedit])
+    }, [jobedit, checkData])
 
     useEffect(() => {
         if (selectDesignation !== 0) {
             setExperience([])
             setFormData(defaultState)
         }
-    }, [selectDesignation])
+    }, [selectDesignation, defaultState])
 
     const SaveJobGeneric = useCallback((e) => {
         e.preventDefault();
@@ -350,7 +355,9 @@ const Generic = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }
             }
         }
         submitFunc(checkData)
-    }, [sumbitdelt, remaining, checkData])
+    }, [checkData, ageFrom, ageTo, arrays, expYear, experiencee, experincedetl, female,
+        filterdata, flag, male, selectDeptSection, selectDesignation, selectedDept, slno,
+        specialcomment])
 
     //deletion process
     // const [open, setOpen] = useState(false)

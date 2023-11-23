@@ -77,7 +77,6 @@ const EmploymentTypeEdit = () => {
         const getyearlysettings = async () => {
             const result = await axioslogin.get(`/empcat/${id}`)
             const { data } = result.data;
-            console.log(data);
             const { ecat_name, category_slno, ecat_cl, ecat_cl_max, ecat_confere, ecat_confere_max,
                 ecat_cont, ecat_cont_period, ecat_doff_allow, ecat_el, ecat_el_max, ecat_esi_allow,
                 ecat_lop, ecat_lop_max, ecat_mate, ecat_mate_max, ecat_prob, ecat_prob_period, ecat_sl,
@@ -209,7 +208,7 @@ const EmploymentTypeEdit = () => {
                                 <Box sx={{ flex: 1 }}>
                                 </Box>
                             </Box>
-                            <Grid item xl={4} lg={2}>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -310,8 +309,8 @@ const EmploymentTypeEdit = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Grid>
-                            <Grid item xl={4} lg={2}>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -388,8 +387,8 @@ const EmploymentTypeEdit = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Grid>
-                            <Grid item xl={4} lg={2}>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
                                 <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                                     <Box sx={{ flex: 1, pt: 0.5 }}>
                                         <JoyCheckbox
@@ -481,7 +480,7 @@ const EmploymentTypeEdit = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Grid>
+                            </Box>
                         </Grid>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                             <Tooltip title="Amount" followCursor placement='top' arrow>

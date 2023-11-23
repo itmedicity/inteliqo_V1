@@ -16,19 +16,25 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { differenceInDays } from 'date-fns'
 
 const MissPunchRequest = () => {
 
     const dispatch = useDispatch();
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
-    const changeForm = () => {
+    const changeForm = useCallback(() => {
         let requestType = { requestType: 0 };
         dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
         dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+        setReason('')
+        setFromDate(moment(new Date()))
+        setShiftDesc('Data Not Found')
+        setCheckInCheck(false)
+        setCheckOutCheck(false)
+    }, [dispatch, FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT])
 
-    const [fromDate, setFromDate] = useState(moment())
+    const [fromDate, setFromDate] = useState(moment(new Date()))
     const [shiftData, setShiftData] = useState({})
 
     const [drop, setDropOpen] = useState(false)
@@ -43,28 +49,26 @@ const MissPunchRequest = () => {
     const [reason, setReason] = useState('')
 
     //get the employee details for taking the HOd and Incharge Details
-    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
+    const getEmployeeInformation = useSelector((state) => state?.getEmployeeInformationState?.empData, _.isEqual);
+    const employeeApprovalLevels = useSelector((state) => state?.getEmployeeApprovalLevel?.payload, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
-
-    // console.log(hod, incharge)
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
     const {
         em_no, em_id,
         em_department, em_dept_section,
-        hod: empHodStat, incharge: empInchrgStat
+        hod: empHodStat,
+        //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
     const handleChangeDate = useCallback((date) => {
         setFromDate(date)
         setCheckInCheck(false)
         setCheckOutCheck(false)
-    })
-
+    }, [])
 
     useEffect(() => {
         setShiftDesc('Data Not Found')
@@ -77,9 +81,9 @@ const MissPunchRequest = () => {
             em_id: em_id
         }
         dispatch(getDutyPlannedShiftForHalfDayRequest(postData));
-    }, [fromDate, em_id])
+    }, [fromDate, em_id, dispatch])
 
-    const shiftInformation = useSelector((state) => state.getDutyPlannedShift.shiftInformation, _.isEqual);
+    const shiftInformation = useSelector((state) => state?.getDutyPlannedShift?.shiftInformation, _.isEqual);
 
     useEffect(() => {
         setShiftData(shiftInformation?.[0])
@@ -107,32 +111,40 @@ const MissPunchRequest = () => {
         if (e.target.checked === true) {
             setCheckInCheck(true)
             setCheckOutCheck(false)
+        } else {
+            setCheckOutCheck(true)
+            setCheckInCheck(false)
         }
-    })
+    }, [])
 
     const handleChangeCheckOutCheck = useCallback((e) => {
         if (e.target.checked === true) {
             setCheckOutCheck(true)
             setCheckInCheck(false)
+        } else {
+            setCheckInCheck(true)
+            setCheckOutCheck(false)
         }
-    })
+    }, [])
 
     const handleChangeMissPunchRequest = useCallback(async () => {
-        setDropOpen(true)
 
-        if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
+        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+            warningNofity("Can't Apply for Miss punch Request, limitted days exceeded!!")
+        }
+        else if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
             warningNofity("Duty Not Planned For the Selected Date")
         } else if (checkInCheck === false && checkOutCheck === false) {
             warningNofity("Check In || Check Out Needs To Check")
         } else if (reason === '') {
             warningNofity("Reason Is Mandatory")
         } else {
-
+            setDropOpen(true)
             const misspunchReqPostData = {
                 checkinflag: checkInCheck === true ? 1 : 0,
-                checkintime: checkInCheck === true ? `${moment(fromDate).format('YYYY-MM-DD')} ${moment(shft_chkin_time).format('HH:mm')}` : '0000-00-00 00:00:00',
+                checkintime: checkInCheck === true ? `${moment(fromDate).format('YYYY-MM-DD')} ${moment(shft_chkin_time).format('HH:mm')}` : null,
                 checkoutflag: checkOutCheck === true ? 1 : 0,
-                checkouttime: checkOutCheck === true ? `${moment(fromDate).format('YYYY-MM-DD')} ${moment(shft_chkout_time).format('HH:mm')}` : '0000-00-00 00:00:00',
+                checkouttime: checkOutCheck === true ? `${moment(fromDate).format('YYYY-MM-DD')} ${moment(shft_chkout_time).format('HH:mm')}` : null,
                 nopunchdate: moment(fromDate).format('YYYY-MM-DD'),  // mispunch date
                 plan_slno: plan_slno,
                 shift_id: shift_id,
@@ -188,6 +200,8 @@ const MissPunchRequest = () => {
                 warningNofity("Attendance Marking Processed ! Contact HRD")
             } else {
 
+                console.log(misspunchReqPostData);
+
                 const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                 const { success, message } = result.data;
                 if (success === 1) {
@@ -205,7 +219,9 @@ const MissPunchRequest = () => {
                 }
             }
         }
-    }, [shiftInformation, reason, checkInCheck, checkOutCheck])
+    }, [shiftInformation, reason, checkInCheck, checkOutCheck, authorization_hod, shft_chkin_time,
+        shft_chkout_time, shift_id, em_department, em_dept_section, em_id, em_no, empHodStat, fromDate,
+        plan_slno, incharge, hod, authorization_incharge, changeForm])
 
     return (
         <Paper
@@ -291,7 +307,6 @@ const MissPunchRequest = () => {
                         </Sheet>
                     </CssVarsProvider>
                 </Box>
-
             </Box >
             <Box
                 sx={{ display: 'flex', flex: 1, width: '100%', my: 0.3, p: 0.3 }}
@@ -301,7 +316,7 @@ const MissPunchRequest = () => {
                     <CssVarsProvider>
                         <Textarea
                             label="Outlined"
-                            placeholder="Reason For Leave Request"
+                            placeholder="Reason For Miss Punch Request"
                             variant="outlined"
                             color="warning"
                             size="lg"
@@ -315,7 +330,7 @@ const MissPunchRequest = () => {
                 <Box sx={{ display: 'flex', flex: 2, alignItems: 'center', px: 1, justifyContent: "space-evenly" }}>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="Upload Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Upload Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -330,7 +345,7 @@ const MissPunchRequest = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -345,7 +360,7 @@ const MissPunchRequest = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"

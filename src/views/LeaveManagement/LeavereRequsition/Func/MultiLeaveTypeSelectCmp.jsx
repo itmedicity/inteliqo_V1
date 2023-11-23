@@ -36,7 +36,7 @@ const MultiLeaveTypeSelectCmp = ({ index, onChange, leaveTypeChange }) => {
             'leaveTypeName': event.target.selectedOptions[0].label,
             'singleLeave': singleLeave
         }, null)
-    })
+    }, [index, onChange, leaveTypeChange])
 
 
     return (

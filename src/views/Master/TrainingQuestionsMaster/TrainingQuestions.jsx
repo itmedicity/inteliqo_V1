@@ -48,7 +48,6 @@ const TrainingQuestions = () => {
     const [count, setCount] = useState(0);
     const [flag, setFlag] = useState(0);
     const [tableData, setTabledata] = useState([]);
-    const [Viewfiles, setViewfiles] = useState([]);
     const [open, setopen] = useState(false);
     const [view, setview] = useState(0);
     const [uploads, setUploads] = useState([]);
@@ -361,7 +360,7 @@ const TrainingQuestions = () => {
 
 
     const getDataTable = useCallback(async (params) => {
-        setViewfiles(1);
+        // setViewfiles(1);
         setFlag(1);
         const datas = params.data;
         const { topic_slno, questions, answer_a, answer_b, answer_c, answer_d,
@@ -407,7 +406,7 @@ const TrainingQuestions = () => {
         } else {
             infoNofity("No File uploads")
         }
-    }, [setViewfiles, setUploads]);
+    }, [setUploads]);
 
     //submit
     const submitTrainingQuestions = useCallback(() => {
@@ -543,7 +542,7 @@ const TrainingQuestions = () => {
 
     useEffect(() => {
         if (uploads.length !== 0) {
-            uploads.map((val) => {
+            uploads?.map((val) => {
                 if (val.id === "A") {
                     setAFlag(1)
                     setAFlagFile(val.file)

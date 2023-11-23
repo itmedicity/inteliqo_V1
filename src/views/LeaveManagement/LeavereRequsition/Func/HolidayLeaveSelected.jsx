@@ -13,7 +13,7 @@ const HolidayLeaveSelected = ({ handleChange, index, date }) => {
      * This component for national holiday - 3
      */
     const [holiday, setHoliday] = useState([]);
-    const [status, setStatus] = useState(false);
+    //const [status, setStatus] = useState(false);
 
     const holidayLeaves = useSelector((state) => state.getCreitedHolidayLeave, _.isEqual);
     const holidays = useMemo(() => holidayLeaves, [holidayLeaves]);
@@ -21,19 +21,19 @@ const HolidayLeaveSelected = ({ handleChange, index, date }) => {
     // console.log(holiday)
 
     useEffect(() => {
-        const { apiStats, holidayLeave } = holidays;
+        const { holidayLeave } = holidays;
         //filter the national hjoliday 
         const nationalHoliday = holidayLeave?.filter((val) => val.lvetype_slno === 3)
-        apiStats && setStatus(true)
+        // apiStats && setStatus(true)
         setHoliday(nationalHoliday);
     }, [holidays])
 
 
-    useEffect(() => {
-        return () => {
-            setStatus(false)
-        }
-    })
+    // useEffect(() => {
+    //     return () => {
+    //         setStatus(false)
+    //     }
+    // })
 
     // handle the holiday leaves
 
@@ -48,7 +48,7 @@ const HolidayLeaveSelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, holidaySelectedObj)
-    })
+    }, [date, handleChange, index])
 
     return (
         <Form.Select

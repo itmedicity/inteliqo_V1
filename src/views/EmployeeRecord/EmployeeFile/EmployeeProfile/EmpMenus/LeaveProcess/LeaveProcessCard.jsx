@@ -27,19 +27,14 @@ const { UPDATE_CASUAL_LEAVE } = Actiontypes
 const LeaveProcessCard = ({ data, category }) => {
     const dispatch = useDispatch()
 
-    const [btnState, setBtnState] = useState(false)
-    const [labelState, setLabelState] = useState(false)
     const [statutory_esi, setStatutoryEsi] = useState(0)
 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual)
-    const commonLve = useSelector((state) => state.getCommonLeave, _.isEqual)
+    // const holiday = useSelector((state) => state.getHolidayList, _.isEqual)
+    // const commonLve = useSelector((state) => state.getCommonLeave, _.isEqual)
     //employee category and contract detailed based on after hrm_leave_process
-    const empCategoryProcess = useSelector(
-        (state) => state.getEmployeeProcessRecord.ProcessRecord,
-        _.isEqual,
-    )
+    const empCategoryProcess = useSelector((state) => state?.getEmployeeProcessRecord?.ProcessRecord, _.isEqual,)
 
-    const statutory = useSelector((state) => state.setStatutoryInfo.data, _.isEqual)
+    const statutory = useSelector((state) => state?.setStatutoryInfo?.data, _.isEqual)
     const esiInfo = useMemo(() => statutory, [statutory])
 
     useEffect(() => {
@@ -56,13 +51,13 @@ const LeaveProcessCard = ({ data, category }) => {
 
 
     const LeaveProcessedData = useMemo(() => data, [data])
-    const categoryData = useMemo(() => category, [category])
+    // const categoryData = useMemo(() => category, [category])
     const empCategoryProcessDetl = useMemo(() => empCategoryProcess, [empCategoryProcess])
 
     //{ 1-> 'Casual Leave', 2-> 'Common Leave', 3-> 'Privilege Leave', 4-> 'Holiday' }
 
-    const holidayList = useMemo(() => holiday, [holiday])
-    const commonLeave = useMemo(() => commonLve, [commonLve])
+    //const holidayList = useMemo(() => holiday, [holiday])
+    // const commonLeave = useMemo(() => commonLve, [commonLve])
 
     // Processed table data 'hrm_leave_process' table
     const {
@@ -72,30 +67,30 @@ const LeaveProcessCard = ({ data, category }) => {
         lv_process_slno,
         em_id,
         em_no,
-        category_slno,
-        process_updatedate,
-        hrm_clv,
-        hrm_ern_lv,
-        hrm_hld,
-        hrm_cmn,
-        hrm_process_status,
-        next_updatedate,
+        // category_slno,
+        // process_updatedate,
+        // hrm_clv,
+        // hrm_ern_lv,
+        // hrm_hld,
+        // hrm_cmn,
+        // hrm_process_status,
+        // next_updatedate,
     } = LeaveProcessedData
 
     // category Details
     const {
-        em_category,
-        em_contract_end_date,
-        em_retirement_date,
-        em_prob_end_date,
-        ecat_cont,
-        ecat_prob,
+        // em_category,
+        // em_contract_end_date,
+        // em_retirement_date,
+        // em_prob_end_date,
+        // ecat_cont,
+        // ecat_prob,
         ecat_esi_allow,
-        ecat_confere,
-        ecat_lop,
-        ecat_sl,
+        // ecat_confere,
+        // ecat_lop,
+        // ecat_sl,
         em_doj,
-        ecat_mate,
+        // ecat_mate,
     } = category
 
     let buttonDisableStatus = value === 0 ? false : true;
@@ -111,6 +106,7 @@ const LeaveProcessCard = ({ data, category }) => {
 
     const leaveCreditProcessFun = async (leaveName) => {
         //{ 1-> 'Casual Leave', 2-> 'Common Leave', 3-> 'Privilege Leave', 4-> 'Holiday' }
+
         getEmployeeProcessStartAndEndDate(empCategoryProcessDetl).then((calulatedProcessDate) => {
             const { em_gender } = empCategoryProcessDetl;
             const { status } = calulatedProcessDate;
@@ -135,7 +131,8 @@ const LeaveProcessCard = ({ data, category }) => {
 
                     }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -119' + err) })
 
-                } else if (leaveName === 2) {
+                }
+                else if (leaveName === 2) {
                     //Common Off days Leave Credit option
                     updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow, statutory_esi).then((values) => {
                         const { status, data } = values;
@@ -153,7 +150,8 @@ const LeaveProcessCard = ({ data, category }) => {
                         }
                     }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 138' + err) })
 
-                } else if (leaveName === 3) {
+                }
+                else if (leaveName === 3) {
                     // Earn Leave Process and Leave Crediting
                     updateEarnLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no).then((dateRange) => {
                         //insert privilege leaves
@@ -169,7 +167,8 @@ const LeaveProcessCard = ({ data, category }) => {
 
                     }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 154' + err) })
 
-                } else if (leaveName === 4) {
+                }
+                else if (leaveName === 4) {
 
                     // National And Festival Holiday
                     updateHolidayLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj).then((value) => {

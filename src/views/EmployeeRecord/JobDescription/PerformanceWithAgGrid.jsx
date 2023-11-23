@@ -18,7 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
-    const [KraName, setKraName] = useState(0)
+    // const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
     const [slno, setSlno] = useState(0)
 
@@ -33,10 +33,12 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         kpiscore: '',
     })
     const { kpi, kpiscore } = formData
-    const defaultState = {
-        kpi: '',
-        kpiscore: '',
-    }
+    const defaultState = useMemo(() => {
+        return {
+            kpi: '',
+            kpiscore: '',
+        }
+    }, [])
 
     const AddKra = () => {
         if (Kra === 0) {
@@ -64,11 +66,13 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
     ])
 
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
+    const checkData = useMemo(() => {
+        return {
+            designation: selectDesignation,
+            dept_id: selectedDept,
+            sect_id: selectDeptSection
+        }
+    }, [selectDesignation, selectedDept, selectDeptSection])
 
     useEffect(() => {
         if (selectDesignation !== 0) {
@@ -76,7 +80,7 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             setKraview(0)
             settableData([])
         }
-    }, [selectDesignation])
+    }, [selectDesignation, defaultState])
 
     //use effect for getting job performance for edit
     useEffect(() => {
@@ -98,7 +102,7 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         return () => {
             settableData([])
         }
-    }, [jobedit, deletecount, submitflag])
+    }, [jobedit, deletecount, checkData, submitflag])
 
     const TableValues = useMemo(() => tableData, [tableData])
 
@@ -106,7 +110,7 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     const EditData = useCallback((params) => {
         setvalue(1)
         const data = params.api.getSelectedRows()
-        const { key_result_area, kpi, kpi_score, specification_slno, kra_desc } = data[0]
+        const { key_result_area, kpi, kpi_score, specification_slno } = data[0]
         const frmData = {
             kpi: kpi,
             kpiscore: kpi_score,
@@ -114,10 +118,10 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         }
         setFormData(frmData)
         setKra(key_result_area)
-        setKraName(kra_desc)
+        //setKraName(kra_desc)
         setKraview(1)
         setSlno(specification_slno)
-    })
+    }, [])
 
     //for deletion process
     const DeleteItem = useCallback((params) => {
@@ -137,7 +141,7 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             }
         }
         deltevalue(value)
-    })
+    }, [deletecount])
 
     const saveJobSpecification = useCallback((e) => {
         e.preventDefault();
@@ -221,7 +225,8 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             updateEach()
         }
 
-    }, [checkData])
+    }, [checkData, defaultState, Kra, deletecount, kpi, kpiscore, selectDeptSection, selectDesignation,
+        selectedDept, slno, value])
 
     return (
         <Fragment>
@@ -251,7 +256,9 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", alignItems: "center" }} >
                     <Box sx={{ flex: 1 }} >
-                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE} setKraName={setKraName} />
+                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE}
+                        // setKraName={setKraName} 
+                        />
                     </Box>
                     <Box sx={{ flex: 1, px: 2 }} >
                         <IconButton variant="outlined" size='sm'

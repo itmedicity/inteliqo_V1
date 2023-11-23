@@ -5,7 +5,6 @@ import TextInputBootStrap from 'src/views/Attendance/Component/TextInputBootStra
 // import CasualLeaveSelected from './Func/CasualLeaveSelected';
 import { useState } from 'react';
 import moment from 'moment';
-import { useCallback } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
 const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
@@ -18,12 +17,6 @@ const FestivalHolidaySelected = lazy(() => import('./Func/FestivalHolidaySelecte
 const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
 
     const [select, setSelect] = useState(0)
-    const [select2, setSelect2] = useState(0)
-
-    // console.log(index)
-    const changeLeaveType = useCallback(async () => {
-        setSelect2()
-    })
 
     return (
         <Box
@@ -38,14 +31,14 @@ const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
                 py: 0.2
             }}
         >
-            <Box component={Grid} item sx={{ flex: 'display', flex: 1, mx: 0.3, justifyContent: 'flex-start' }}  >
+            <Box component={Grid} item sx={{ display: 'flex', flex: 1, mx: 0.3, justifyContent: 'flex-start' }}  >
                 <TextInputBootStrap
                     placeholder={`${moment(data.date).format('DD-MM-YYYY')} - ${moment(data.date).format('dddd')}`}
                     type="text"
                     disabled={true}
                 />
             </Box>
-            <Box item component={Grid} sx={{ flex: 'display', flex: 1, mx: 0.3 }} >
+            <Box item component={Grid} sx={{ display: 'flex', flex: 1, mx: 0.3 }} >
                 <Suspense fallback={<LinearProgreeBar />} >
                     <MultiLeaveTypeSelectCmp
                         onChange={setSelect}

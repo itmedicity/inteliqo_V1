@@ -19,6 +19,7 @@ const CalculatedOffDays = ({ empid }) => {
             const { success, data } = result.data
             if (success === 0) {
                 setlist([])
+                setState(true)
             }
             else {
                 setlist(data)

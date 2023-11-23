@@ -10,10 +10,8 @@ import IconButton from '@mui/joy/IconButton'
 import { useCallback } from 'react'
 import { format } from 'date-fns'
 import { useDispatch } from 'react-redux'
-import _ from 'underscore'
 import CommonAgGrid from '../Component/CommonAgGrid'
 import CloseIcon from '@mui/icons-material/Close';
-import { useHistory } from 'react-router-dom'
 import CommonCheckBox from '../Component/CommonCheckBox'
 import JoyBranchSelect from '../MuiComponents/JoyComponent/JoyBranchSelect'
 import JoyDepartment from '../MuiComponents/JoyComponent/JoyDepartment'
@@ -208,7 +206,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             em_cont_end: old_cont_end_date,
             // em_cont_start: startdate
         }
-    }, [branch, dept, institute, company, empcategory, empid, empno, old_cont_conf_date,
+    }, [branch, dept, institute, company, empcategory, empno, old_cont_conf_date, em_id,
         empDesignation, designation, ineffectdate, deptSection, cateineffectdate,
         probationconfDate, prob_extendDate, disp,
         extended_checkbox, old_cont_end_date, p_enddate])
@@ -243,7 +241,8 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 infoNofity(message)
             }
         }
-    }, [updateData, empstatus])
+    }, [updateData, cateineffectdate, empDesignation, empcategory, count, company, designation,
+        ineffectdate, empstatus])
 
     return (
         <Fragment>

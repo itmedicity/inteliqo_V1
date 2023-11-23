@@ -13,7 +13,6 @@ import { useSelector } from 'react-redux';
 import { urlExist } from 'src/views/Constant/Constant';
 import { PUBLIC_NAS_FOLDER, } from 'src/views/Constant/Static';
 import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
-import { format, formatRelative } from 'date-fns';
 
 const Progress = () => {
     return (
@@ -78,9 +77,11 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
     //to get last qualification of employee
     const lastdata = state.slice(-1)
 
-    const checkid = {
-        em_id: emp_id
-    }
+    const checkid = useMemo(() => {
+        return {
+            em_id: emp_id
+        }
+    }, [emp_id])
 
     useEffect(() => {
         CheckIdExists(checkid).then((values) => {
@@ -116,7 +117,7 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                 setceoId(0)
             }
         })
-    }, [])
+    }, [checkid])
 
 
     useEffect(() => {
@@ -204,7 +205,7 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         setSrc(picUrl)
-                    }else{
+                    } else {
                         setSrc(ProfilePicDefault)
                     }
                 })
@@ -219,7 +220,7 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                         const picUrl = JSON.parse(profilePic)
                         setinchargesig(picUrl)
                     }
-                    else{
+                    else {
                         setinchargesig(ProfilePicDefault)
                     }
                 })
@@ -234,7 +235,7 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         sethodsig(picUrl)
-                    }else{
+                    } else {
                         sethodsig(ProfilePicDefault)
                     }
                 })
@@ -249,7 +250,7 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         sethrSig(picUrl)
-                    }else{
+                    } else {
                         sethrSig(ProfilePicDefault)
                     }
                 })
@@ -258,13 +259,13 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
         getHrdSig()
 
         const getCeoSignaure = async () => {
-            if (ceoId != 0) {
+            if (ceoId !== 0) {
                 const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + ceoId}/signature/signature.jpg`);
                 urlExist(profilePic, (status) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
                         setceosig(picUrl)
-                    }else{
+                    } else {
                         setceosig(ProfilePicDefault)
                     }
                 })

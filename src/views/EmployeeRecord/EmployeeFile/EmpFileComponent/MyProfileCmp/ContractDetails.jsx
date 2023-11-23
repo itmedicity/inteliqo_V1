@@ -1,5 +1,5 @@
 import { ListItem, ListItemText, Typography } from '@mui/material';
-import React, { Fragment, useState,memo } from 'react'
+import React, { Fragment, memo } from 'react'
 
 
 const ContractDetails = ({ ContractDetail }) => {

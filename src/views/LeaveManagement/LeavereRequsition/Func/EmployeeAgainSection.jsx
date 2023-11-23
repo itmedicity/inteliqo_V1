@@ -31,13 +31,13 @@ const EmployeeAgainSection = ({ section, employeeId, setEmployeeId, formSubmit }
             const filterdEmpList = filterEmployeeList.filter((val) => val.em_dept_section === section)
             setEmplList(filterdEmpList)
         }
-    }, [section, filterEmployeeList])
+    }, [section, setEmployeeId, filterEmployeeList])
 
     useEffect(() => {
         const empData = { em_no: employeeId, em_id: emid }
         dispatch(getCommonLeaveData(employeeId));
         dispatch({ type: GET_SELECTED_EMPLOYEE_LEAVE_REQUEST, payload: empData })
-    }, [employeeId, emid])
+    }, [employeeId, dispatch, emid, GET_SELECTED_EMPLOYEE_LEAVE_REQUEST])
 
     const getEmployeeId = useCallback((em_id) => {
         setEmid(em_id)
@@ -49,7 +49,7 @@ const EmployeeAgainSection = ({ section, employeeId, setEmployeeId, formSubmit }
         dispatch(getCreditedEarnLeave(em_id));
         dispatch(getannualleave(em_id))
         dispatch(getEmployeeInformation(em_id))
-    })
+    }, [dispatch])
 
     return (
         <FormControl

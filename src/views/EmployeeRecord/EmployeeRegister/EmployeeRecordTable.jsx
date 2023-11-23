@@ -112,7 +112,7 @@ const EmployeeRecordTable = () => {
                             </Paper>
                         </Box>
                     </Paper>
-                    <Paper square variant="outlined" elevation={0} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
+                    <Paper square variant="outlined" elevation={0} sx={{ px: 0.5, py: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'column', xs: "column" } }} >
                         <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                             {/* <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                 <JoyBranchSelect value={branch} setValue={setBranch} />

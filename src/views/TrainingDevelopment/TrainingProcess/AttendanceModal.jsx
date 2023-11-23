@@ -115,7 +115,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
             warningNofity(message)
             setQuestion_count('')
         }
-    }, [Setcount, count, question_count, setQuestion_count])
+    }, [Setcount, count, Todaydata, question_count, setQuestion_count])
 
     return (
         <Modal

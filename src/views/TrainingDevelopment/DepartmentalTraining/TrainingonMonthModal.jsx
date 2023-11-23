@@ -4,7 +4,7 @@ import { Checkbox, FormControlLabel, Paper } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { CssVarsProvider, Typography, Button, Input, Select } from '@mui/joy';
+import { CssVarsProvider, Typography, Button, Input } from '@mui/joy';
 import { useCallback } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';

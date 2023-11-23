@@ -277,7 +277,7 @@ const LeaveReqCancel = ({ open, setOpen, data, setCount }) => {
             }
         }
 
-    }, [slno, reqDetl, reason])
+    }, [slno, reqDetl, emno, hrstatus, setCount, reason, setOpen])
 
     // Half Day Request Cancel Close
     const handleClose = () => {

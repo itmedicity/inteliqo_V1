@@ -1,5 +1,5 @@
-import { Box, Paper, Typography } from '@mui/material'
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Box } from '@mui/material'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -9,22 +9,28 @@ import { QuestionList } from 'src/redux/actions/Training.Action';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import QuestionHeading from './QuestionHeading';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import ShowModal from './ShowModal';
 
-const QuestionPaper = ({ setOpen, open, count, Setcount, Userdata }) => {
+const QuestionPaper = ({ Setcount, count, Userdata, setOpen }) => {
 
     const [questCount, setQuestcount] = useState(0);
     const [data, setData] = useState([]);
-    const [order, setOrder] = useState(1)
+    const [order, setOrder] = useState(1);
     const [datalen, setDatalen] = useState(0)
-    const [greenflag, setGreenFlag] = useState(0);
-    const [redflag, setRedFlag] = useState(0);
     const [clrFlagA, SetclrFlagA] = useState(0);
     const [clrFlagB, SetclrFlagB] = useState(0);
     const [clrFlagC, SetclrFlagC] = useState(0);
     const [clrFlagD, SetclrFlagD] = useState(0);
     const [correct, SetCorrect] = useState(0);
     const [wrong, SetWrong] = useState(0);
-    const [increment, SetIncrement] = useState(0);
+    const [rightAns, setRightAns] = useState(0)
+    const [disright, setDisright] = useState(0)
+    const [checkInsert, setCheckInsert] = useState(0)
+    const [sec, setSec] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(60);
+    const [open, setopen] = useState(false);
 
     const dispatch = useDispatch()
 
@@ -61,48 +67,118 @@ const QuestionPaper = ({ setOpen, open, count, Setcount, Userdata }) => {
         setData(displayData)
     }, [Questions, setDatalen, setData])
 
+    const [datas, setDatas] = useState({
+        em_id: 0,
+        em_name: '',
+        slno: 0,
+        topic_slno: 0,
+        training_topic_name: '',
+        question_count: 0,
+        dept_id: 0,
+        desg_slno: 0,
+        sect_id: 0
+    });
+
+    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
     useEffect(() => {
         if (Object.keys(Userdata).length !== 0) {
-            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count } = Userdata[0];
+            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Userdata[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
                 slno: slno,
                 topic_slno: topic_slno,
                 training_topic_name: training_topic_name,
-                question_count: question_count
+                question_count: question_count,
+                dept_id: dept_id,
+                desg_slno: desg_slno,
+                sect_id: sect_id
             }
             setQuestcount(question_count)
+            setDatas(obj);
         }
-    }, [Userdata, setQuestcount])
+    }, [Userdata, setDatas, setQuestcount])
 
     //Next questn
     const HandleNextQuestion = useCallback((e) => {
-        setOrder(order + 1)
-        SetclrFlagA(0);
-        SetclrFlagB(0)
-        SetclrFlagC(0)
-        SetclrFlagD(0)
-        // console.log(correct);
-        // console.log(wrong);
-        if (correct !== 0) {
-            setGreenFlag(increment + 1)
-            console.log(increment);
+        if (clrFlagA !== 0 || clrFlagB !== 0 || clrFlagC !== 0 || clrFlagD) {
+            if (disright === rightAns) {
+                SetCorrect(correct + 1)
+            }
+            else {
+                SetWrong(wrong + 1)
+            }
+            setOrder(order + 1)
+            SetclrFlagA(0);
+            SetclrFlagB(0)
+            SetclrFlagC(0)
+            SetclrFlagD(0)
+            setTimeLeft(60)
         }
-        else if (wrong === 0) {
-            setRedFlag(increment + 1)
+        else {
+            warningNofity("Please Select one option")
         }
-    }, [setOrder, SetclrFlagA, increment, correct, wrong, SetclrFlagB, SetclrFlagC, SetclrFlagD, order, setGreenFlag, setRedFlag])
 
+    }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
+
+    const PostData = useMemo(() => {
+        return {
+            emp_id: em_id,
+            emp_dept: dept_id,
+            emp_dept_sec: sect_id,
+            emp_desg: desg_slno,
+            emp_topic: topic_slno,
+            pretest_status: 1,
+            mark: correct,
+            create_user: em_id
+        }
+    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno])
+
+    useEffect(() => {
+        if (checkInsert === 1) {
+            const InsertData = async (PostData) => {
+                const result = await axioslogin.post('/TrainingProcess/pretest', PostData)
+                const { success, message } = result.data
+                if (success === 1) {
+                    setopen(true)
+                    Setcount(Math.random())
+                }
+                else {
+                    warningNofity(message)
+                }
+            }
+            InsertData(PostData)
+        }
+    }, [PostData, checkInsert, Setcount, setopen])
+
+    //submit
     const SubmitAnswers = useCallback(() => {
-        console.log("close");
-    }, [])
+        if (clrFlagA !== 0 || clrFlagB !== 0 || clrFlagC !== 0 || clrFlagD) {
+            if (disright === rightAns) {
+                SetCorrect(correct + 1)
+            }
+            else {
+                SetWrong(wrong + 1)
+            }
+            setCheckInsert(1)
+            SetclrFlagA(0);
+            SetclrFlagB(0)
+            SetclrFlagC(0)
+            SetclrFlagD(0)
+            setTimeLeft(0)
+            setTimeLeft(0)
+        }
+        else {
+            warningNofity("Please Select one option")
+        }
+    }, [disright, rightAns, wrong, correct, clrFlagA, clrFlagB, clrFlagC, clrFlagD])
+
     return (
         <Fragment>
             <Box sx={{ p: 2, width: "100%", height: 650, backgroundColor: "#F5F7F8" }}>
 
                 <Box sx={{ display: "flex", flexDirection: "row", width: "100%", gap: 2 }}>
-                    <Box sx={{ width: "4%", height: 60, borderRadius: 10, textAlign: "center", border: 4, borderColor: "#6F1AB6", p: 0.3 }}>  <CountDownTimer /></Box>
+                    <Box sx={{ width: "4%", height: 60, borderRadius: 10, textAlign: "center", border: 4, borderColor: "#6F1AB6", p: 0.3 }}>  <CountDownTimer sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
 
                     {/* Header Portion */}
                     <Box sx={{ width: "95%", display: "flex", flexDirection: "column", gap: 1 }}>
@@ -111,16 +187,16 @@ const QuestionPaper = ({ setOpen, open, count, Setcount, Userdata }) => {
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                 <Box sx={{ backgroundColor: "#A2C579", display: "flex", flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
                                     <Box><CheckIcon /></Box>
-                                    <Box>{greenflag}</Box>
+                                    <Box>{correct}</Box>
                                 </Box>
                                 <Box sx={{ backgroundColor: "#FA7070", display: "flex", flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
                                     <Box><ClearIcon /></Box>
-                                    <Box>{redflag}</Box>
+                                    <Box>{wrong}</Box>
                                 </Box>
                             </Box>
                         </Box>
                         <Box>
-                            <QuestionHeading data={data} order={order} setGreenFlag={setGreenFlag} setRedFlag={setRedFlag} count={count} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} SetCorrect={SetCorrect} SetWrong={SetWrong} />
+                            <QuestionHeading data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} />
                         </Box>
                     </Box>
                 </Box>
@@ -143,6 +219,7 @@ const QuestionPaper = ({ setOpen, open, count, Setcount, Userdata }) => {
                         </Box>
                 }
             </Box>
+            {open === true ? <ShowModal open={open} setopen={setopen} setOpen={setOpen} /> : null}
         </Fragment >
     )
 }

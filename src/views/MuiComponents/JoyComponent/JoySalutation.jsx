@@ -24,7 +24,7 @@ const JoySalutation = ({ value, setValue }) => {
             const array = saltation?.find((e) => e.sa_code === parseInt(value))
             setValue(array.sa_code)
         }
-    }, [value, flag, saltation])
+    }, [value, setValue, flag, saltation])
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
@@ -35,7 +35,7 @@ const JoySalutation = ({ value, setValue }) => {
             setValue(0)
         }
         return
-    }, [value])
+    }, [setValue])
 
     return (
         <Select

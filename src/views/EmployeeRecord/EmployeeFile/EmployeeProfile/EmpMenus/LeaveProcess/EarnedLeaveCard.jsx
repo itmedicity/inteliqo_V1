@@ -1,6 +1,5 @@
 import { Box, Paper, TableContainer } from '@mui/material'
 import React from 'react'
-import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,25 +15,33 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
     const [elData, setelData] = useState([])
     const [loding, setLoding] = useState(false)
 
+    console.log(processStat);
+
     useEffect(() => {
+
         setLoding(true)
         const getLeaveData = async () => {
+
             const result = await axioslogin.get(`/common/getearnleave/${id}`)
             const { success, data } = result.data;
+            console.log(result.data);
             if (success === 1) {
+                console.log("fgd");
+                console.log(data);
                 setelData(data)
             } else {
                 setelData([])
             }
             setLoding(false)
         }
-        processStat && getLeaveData()
+        processStat && getLeaveData(id)
         return (() => setelData([]))
     }, [id, processStat])
-
+    console.log(elData);
+    console.log(loding);
     return (
         <Paper square sx={{ flex: 1, }}>
-            <CustmTypog title={title} />
+            {/* <CustmTypog title={title} /> */}
             <Box>
                 {loding && <LinearProgreeBar />}
                 <TableContainer sx={{ maxHeight: 200 }} >

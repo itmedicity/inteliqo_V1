@@ -187,17 +187,6 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                     >
                         Training Schedule
                     </Typography>
-                    {/* <Typography
-                        component="h2"
-                        id="modal-title"
-                        level="h4"
-                        textColor="inherit"
-                        fontWeight="lg"
-                        textAlign="center"
-                        mb={1}
-                    >
-                        Training Schedule
-                    </Typography> */}
 
                     <Box sx={{ display: "flex", flexDirection: "row", mt: 3, pl: 0.5 }}>
                         <Box sx={{}}>Schedule Date</Box>

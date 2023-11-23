@@ -21,7 +21,7 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
     const [openBkDrop, setOpenBkDrop] = useState(false)
 
     //DISPLAY THE DATA 
-    const { slno, emno, name, section, status, reqDate, fromDate, toDate, leaveid } = data;
+    const { slno, emno, name, section, reqDate, fromDate, toDate, leaveid } = data;
     //GET THE DETAILED TABLE DATA USING API
     const getLeaveReqDetl = async (slno) => {
         const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${slno}`);
@@ -200,7 +200,7 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
                 errorNofity('Error Updating Leave Request')
             }
         }
-    }, [Canceldata, slno])
+    }, [Canceldata, emno, reason, setOpen, setCount, reqDetl])
 
     const handleClose = () => {
         setOpen(false)

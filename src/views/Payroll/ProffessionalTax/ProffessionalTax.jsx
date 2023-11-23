@@ -73,6 +73,9 @@ const ProffessionalTax = () => {
                 if ((val.salary_from <= gross) && (gross <= val.salary_to)) {
                     return { taxx: val.tax_amt }
                 }
+                else {
+                    return null
+                }
             }
             else {
                 return { taxx: 0 }
@@ -86,6 +89,8 @@ const ProffessionalTax = () => {
                 else {
                     return { taxvalue: val.taxx }
                 }
+            } else {
+                return null
             }
         })
         const { taxx } = x[0]

@@ -87,7 +87,7 @@ const NoPunchCancel = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    })
+    }, [setCount, setOpen, reason, slno, np_hr_apprv_status, punchslno])
 
     // No Punch Request Close
     const handleClose = () => {

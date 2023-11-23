@@ -19,7 +19,7 @@ const JoyGradeSelect = ({ value, setValue }) => {
             const array = gradeList?.find((e) => e.grade_slno === value)
             setValue(array.grade_slno)
         }
-    }, [value, flag, gradeList])
+    }, [value, setValue, flag, gradeList])
 
     const onClick = useCallback((value) => {
         if (value !== null) {
@@ -29,7 +29,7 @@ const JoyGradeSelect = ({ value, setValue }) => {
             setFlag(0)
         }
 
-    }, [])
+    }, [setValue])
 
     return (
         <Select

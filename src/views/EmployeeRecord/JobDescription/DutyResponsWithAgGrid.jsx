@@ -29,9 +29,11 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     const [formData, setFormData] = useState({
         duties: ''
     })
-    const defaultstate = {
-        duties: ''
-    }
+    const defaultstate = useMemo(() => {
+        return {
+            duties: ''
+        }
+    }, [])
     const { duties } = formData
     const updateDutiesandResponsibility = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -46,11 +48,13 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         { headerName: 'Edit', width: 20, cellRenderer: params => <EditIcon onClick={() => EditData(params)} /> },
         { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
     ])
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
+    const checkData = useMemo(() => {
+        return {
+            designation: selectDesignation,
+            dept_id: selectedDept,
+            sect_id: selectDeptSection
+        }
+    }, [selectDesignation, selectedDept, selectDeptSection])
 
     useEffect(() => {
         if (selectDesignation !== 0) {
@@ -81,7 +85,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             settableData([])
         }
 
-    }, [jobedit, deletecount, submitflag])
+    }, [jobedit, deletecount, checkData, submitflag])
 
     const TableValues = useMemo(() => tableData, [tableData])
 
@@ -104,7 +108,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
             }
         }
         deltevalue(value)
-    }, [])
+    }, [deletecount,])
 
     //edit data select
     const EditData = useCallback((params) => {
@@ -116,7 +120,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         }
         setFormData(formData)
         setSlno(duties_slno)
-    })
+    }, [])
 
     const SubmitFormData = useCallback((e) => {
         e.preventDefault();
@@ -182,7 +186,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         else {
             updateEach()
         }
-    }, [checkData, count])
+    }, [checkData, deletecount, duties, selectDeptSection, selectDesignation, selectedDept, value, defaultstate, slno, count])
 
     return (
         <Fragment>

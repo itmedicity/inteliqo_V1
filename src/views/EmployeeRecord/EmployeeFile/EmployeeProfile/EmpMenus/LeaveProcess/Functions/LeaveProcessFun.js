@@ -1,4 +1,4 @@
-import { compareAsc, differenceInDays, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
+import { addDays, compareAsc, differenceInDays, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { employeeNumber } from 'src/views/Constant/Constant'
@@ -34,24 +34,24 @@ export const processedLeaveList = async (category, leaveProcess) => {
 
   const {
     em_category,
-    ecat_cl,
-    ecat_el,
-    ecat_nh,
-    ecat_fh,
-    ecat_lop,
-    ecat_sl,
-    ecat_mate,
-    ecat_confere,
+    // ecat_cl,
+    // ecat_el,
+    // ecat_nh,
+    // ecat_fh,
+    // ecat_lop,
+    // ecat_sl,
+    // ecat_mate,
+    // ecat_confere,
   } = category
   const {
-    lv_process_slno,
+    // lv_process_slno,
     category_slno,
     hrm_clv,
     hrm_ern_lv,
     hrm_hld,
     hrm_cmn,
-    hrm_calcu,
-    hrm_process_status,
+    // hrm_calcu,
+    // hrm_process_status,
     next_updatedate,
   } = leaveProcess
 
@@ -101,13 +101,14 @@ export const processedLeaveList = async (category, leaveProcess) => {
 // 1 -> Checking for the employee is in contract
 
 export const checkContractStatus = async (
-  em_cont_start,
+  // em_cont_start,
   em_cont_end,
   contract_status,
-  em_doj,
+  // em_doj,
   em_prob_end_date,
-  des_type,
-  emp_type,
+  // des_type,
+  // emp_type,
+  ecat_prob, ecat_training,
   probation_status
 
 ) => {
@@ -116,8 +117,8 @@ export const checkContractStatus = async (
    * employee type -> Regular -> 1, contract -> 2 (emp_type)
    */
   const contrctEndDate = moment(em_cont_end).isValid() ? moment(em_cont_end) : 0
-  const contractStartDate = moment(em_cont_start).isValid() ? moment(em_cont_start) : 0
-  const dateOfJoin = moment(em_doj).isValid() ? moment(em_doj) : 0
+  //const contractStartDate = moment(em_cont_start).isValid() ? moment(em_cont_start) : 0
+  //const dateOfJoin = moment(em_doj).isValid() ? moment(em_doj) : 0
   const probationEndDate = moment(em_prob_end_date).isValid() ? moment(em_prob_end_date) : 0
 
   if (contract_status === 1 && probation_status === 0) {
@@ -162,7 +163,7 @@ export const checkContractStatus = async (
     }
 
   }
-  else if ((des_type === 1 || des_type === 2) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
+  else if ((ecat_prob === 1 || ecat_training === 1) && ((moment(probationEndDate).isValid()) && new Date(probationEndDate) < new Date())) {
     return {
       message: 'Probation || Training Confirmation Pending,Do the Process First',
       status: false,
@@ -180,8 +181,7 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
   const {
     ecat_cl,
     ecat_el,
-    ecat_nh,
-    ecat_fh,
+    em_doj,
     ecat_esi_allow,
     ecat_lop,
     ecat_mate,
@@ -189,6 +189,7 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     ecat_cont,
     em_contract_end_date,
     ecat_prob,
+    ecat_holiday,
     em_prob_end_date,
   } = category
 
@@ -199,8 +200,9 @@ export const newProcessedEmployeeData = async (category, processSlno, employeeID
     process_user: employeeNumber(),
     em_id: employeeIDs.em_no,
     hrm_clv: ecat_cl === 1 ? 0 : 2,
-    hrm_ern_lv: ecat_el === 1 ? 0 : 2,
-    hrm_hld: ecat_nh === 1 || ecat_fh === 1 ? 0 : 2,
+    hrm_ern_lv: ecat_el === 1 && new Date(em_doj) < addDays(startOfYear(new Date()), 14) ? 0 : 2,
+    //hrm_hld: ecat_nh === 1 || ecat_fh === 1 ? 0 : 2,
+    hrm_hld: ecat_holiday === 1 ? 0 : 2,
     hrm_cmn:
       ecat_esi_allow === 1 || ecat_el === 1 || ecat_lop === 1 || ecat_mate === 1 || ecat_sl === 1
         ? 0
@@ -241,7 +243,12 @@ export const categoryChangedNewObject = async (
     em_prob_end_date,
   } = category
 
-  const { hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld, lv_process_slno, category_slno } =
+  const {
+    hrm_clv,
+    hrm_cmn,
+    hrm_ern_lv,
+    hrm_hld,
+  } =
     leaveProcess
 
   return {
@@ -338,9 +345,9 @@ export const updateInactiveLeaves = async (category, leaveProcess) => {
     )
     const { success } = casualLeaveUpdation.data
     if (success === 2 || success === 1) {
-      let resultObj = { ...resultObj }
+      resultObj = { ...resultObj }
     } else {
-      let resultObj = { ...resultObj, error: 1 }
+      resultObj = { ...resultObj, error: 1 }
     }
   }
   //    holiday leaves update
@@ -351,9 +358,9 @@ export const updateInactiveLeaves = async (category, leaveProcess) => {
     )
     const { success } = holidayLeaveUpdation.data
     if (success === 2 || success === 1) {
-      let resultObj = { ...resultObj }
+      resultObj = { ...resultObj }
     } else {
-      let resultObj = { ...resultObj, error: 1 }
+      resultObj = { ...resultObj, error: 1 }
     }
   }
   // earn leave update
@@ -364,9 +371,9 @@ export const updateInactiveLeaves = async (category, leaveProcess) => {
     )
     const { success } = earnLeaveUpdation.data
     if (success === 2 || success === 1) {
-      let resultObj = { ...resultObj }
+      resultObj = { ...resultObj }
     } else {
-      let resultObj = { ...resultObj, error: 1 }
+      resultObj = { ...resultObj, error: 1 }
     }
   }
 
@@ -397,13 +404,13 @@ export const updateOldLeaveProcessedData = async (leaveProcess) => {
 export const insertNewLeaveProcessData = async (newObj) => {
   const { em_id, em_no } = newObj ?? 0
 
-  // const yearlyProcessTableData = {
-  //   em_id: em_id,
-  //   em_no: em_no,
-  //   processUser: employeeNumber(),
-  //   currentYear: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
-  //   year: moment().format('YYYY')
-  // }
+  const yearlyProcessTableData = {
+    em_id: em_id,
+    em_no: em_no,
+    processUser: employeeNumber(),
+    currentYear: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+    year: moment().format('YYYY')
+  }
 
   const lastYearDate = subYears(new Date(), 1);
   const lastYear = getYear(lastYearDate);
@@ -423,12 +430,12 @@ export const insertNewLeaveProcessData = async (newObj) => {
      * 3-> if "no" then insert into a new data based on current year()
      */
 
-    // const getYearlyLeaveProcessData = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', yearlyProcessTableData,)
-    // const { successStatus } = getYearlyLeaveProcessData.data;
-    // if (successStatus === 1) {
-    //   //No Record yearly data 
-    //   const insertYearlyLeaveProcessTableData = await axioslogin.post('/yearleaveprocess/insertyearly',yearlyProcessTableData)
-    // }
+    const getYearlyLeaveProcessData = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', yearlyProcessTableData,)
+    const { successStatus } = getYearlyLeaveProcessData.data;
+    if (successStatus === 1) {
+      //No Record yearly data 
+      await axioslogin.post('/yearleaveprocess/insertyearly', yearlyProcessTableData)
+    }
 
     /**** ANNUAL PROCESS TABLE DATA INSERT AND PREVOUS DATA DEACTIVATE
      * 1-> check any leave process data in "hrm_leave_process" table with ('A') active status with Previous Year;
@@ -479,13 +486,13 @@ export const getEmployeeProcessStartAndEndDate = async (empCategoryProcessDetl) 
   //employee category and contract detailed based on after hrm_leave_process
   const {
     date_of_join,
-    em_conf_end_date,
+    //em_conf_end_date,
     em_cont_end,
     em_cont_start,
     is_under_contract,
     is_under_probation,
     probation_end_date,
-    em_gender,
+    // em_gender,
   } = empCategoryProcessDetl
 
   //if date is invalid defaultDate is supply - 2000-01-01
@@ -706,7 +713,7 @@ export const casualLeaveInsertFun = async (value, lv_process_slno) => {
 //update holiday based on saved Holiday
 
 export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj) => {
-  const { startDate, endDate } = calulatedProcessDate;
+  // const { startDate, endDate } = calulatedProcessDate;
   let messages = { status: 0, data: [] }
   const holidayList = await axioslogin.get('/yearleaveprocess/year/holiday');
   const { success, data } = holidayList.data;
@@ -765,7 +772,7 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 }
 
 //Update Common Leaves 
-export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, ecat_esi_allow, statutory_esi) => {
+export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi) => {
   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
@@ -829,7 +836,7 @@ export const insertCommonLeaves = async (data, lv_process_slno) => {
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Holiday Leave! Contact EDP, line-688',
+      message: errorMsg ?? 'Error Updating Common Leave! Contact EDP, line-688',
     }
   }
 }
@@ -886,7 +893,7 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
 
   //Update previous year earn leaves
   if (yearDiffrence >= 1) {
-    const privilegeLeaveUpdation = await axioslogin.post('/yearleaveprocess/creditPrivilegeLeave', data);
+    await axioslogin.post('/yearleaveprocess/creditPrivilegeLeave', data);
   }
 
   const result = await axioslogin.post('/yearleaveprocess/insertearnleave', dateRange);
@@ -899,7 +906,7 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
       return {
         ...returnMessage,
         status: 1,
-        message: 'Casual Leave Updated SuccessFully'
+        message: 'Earn Leave Updated SuccessFully'
       }
     }
 
@@ -908,7 +915,7 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Casual Leave! Contact EDP, line-621',
+      message: errorMsg ?? 'Error Updating Earn Leave! Contact EDP, line-621',
     }
   }
 }

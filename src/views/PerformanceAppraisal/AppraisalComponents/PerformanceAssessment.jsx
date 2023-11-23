@@ -142,7 +142,7 @@ const PerformanceAssessment = ({ empid }) => {
             const score = (Math.round(performance_score * 100) / 100).toFixed(2);
 
             //finding grade and description
-            if (score == 100.00) {
+            if (score === 100.00) {
                 setGrade('O')
                 setDescription('Key Performer')
             } else if (score < 100 && score > 91) {

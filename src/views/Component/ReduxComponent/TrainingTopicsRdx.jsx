@@ -13,14 +13,12 @@ const TrainingTopicsRdx = ({ getTopic, topicValue, disabled }) => {
     const [value, setValue] = useState(topics[0]);
     const [inputValue, setInputValue] = useState('');
 
-    // useEffect(() => {
-    //     if ((topicValue !== 0) && (flag === 0)) {
-    //         const array = topics?.filter((e) => e.topic_slno === topicValue)
-    //         setValue(array[0]);
-    //     }
-
-    //     console.log("TrainingTopicsRdx", topicValue);
-    // }, [topicValue, topics, setValue, flag])
+    useEffect(() => {
+        if ((topicValue !== 0) && (flag === 0)) {
+            const array = topics?.filter((e) => e.topic_slno === topicValue)
+            setValue(array[0]);
+        }
+    }, [topicValue, topics, setValue, flag])
 
     const onClick = useCallback((value) => {
         if (value !== null) {

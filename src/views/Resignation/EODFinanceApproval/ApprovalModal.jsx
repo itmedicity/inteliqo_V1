@@ -57,7 +57,7 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
     const { em_name, em_no, em_id, request_date, sect_name, relieving_date, resignation_type, gross_salary } = details;
     const [payable, setPayable] = useState(false)
     const [recievable, setRecievable] = useState(false)
-    const [lop, setLop] = useState(0)
+    // const [lop, setLop] = useState(0)
     const [calcLop, setCalcLop] = useState(0)
     const [holiday, setHoliday] = useState(0)
     // const [totldays, setTotaldays] = useState(0)
@@ -75,14 +75,14 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
             const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
             const { success, data } = result.data
             if (success === 1) {
-                const lossofpay = (data.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
+                //const lossofpay = (data.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
                 const calculatedlop = (data.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
                 const holiday = (data.filter(val => val.holiday_status === 1)).length
                 setHoliday(holiday)
-                setLop(lossofpay)
+                //setLop(lossofpay)
                 setCalcLop(calculatedlop)
             } else {
-                setLop(0)
+                //setLop(0)
                 setCalcLop(0)
                 setHoliday(0)
             }

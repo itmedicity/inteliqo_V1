@@ -152,19 +152,21 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
         setOpen(false)
         setModel(0)
     }
-    const resetForm = {
-        em_salary_desc: '',
-        earning_type_name: '',
-        em_earning_type: '',
-        include_esi: 0,
-        include_pf: 0,
-        include_lwf: 0,
-        include_protax: 0,
-        em_amount: 0,
-        start_month: false,
-        end_month: false,
-        LastWage: 0
-    }
+    const resetForm = useMemo(() => {
+        return {
+            em_salary_desc: '',
+            earning_type_name: '',
+            em_earning_type: '',
+            include_esi: 0,
+            include_pf: 0,
+            include_lwf: 0,
+            include_protax: 0,
+            em_amount: 0,
+            start_month: false,
+            end_month: false,
+            LastWage: 0
+        }
+    }, [])
 
     // post data for update
     const updateData = useMemo(() => {
@@ -297,7 +299,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
             submitData(postData)
         }
 
-    }, [postData, updateData, Empno, empId, count, flag])
+    }, [postData, updateData, resetForm, Empno, empId, count, flag])
 
     const getDelete = useCallback(async (params) => {
         const data1 = params.api.getSelectedRows()
@@ -346,7 +348,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
         } else {
 
         }
-    }, [count, empId, Empno])
+    }, [count, resetForm, empId, Empno])
 
 
 

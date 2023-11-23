@@ -28,11 +28,11 @@ const SingleLeaveRequestForm = () => {
     const dispatch = useDispatch();
 
     //form reset function
-    const changeForm = () => {
+    const changeForm = useCallback(() => {
         let requestType = { requestType: 0 };
         dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
         dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+    }, [FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT, dispatch])
 
     const [drop, setDropOpen] = useState(false)
 
@@ -50,13 +50,14 @@ const SingleLeaveRequestForm = () => {
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
-    const { hod, incharge, authorization_incharge, authorization_hod, co_assign } = empApprovalLevel
+    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
     const {
         em_no, em_id,
         em_department, em_dept_section,
         probation_status,
-        hod: empHodStat, incharge: empInchrgStat
+        hod: empHodStat,
+        //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
 
     // console.log(empHodStat, empInchrgStat)
@@ -220,7 +221,9 @@ const SingleLeaveRequestForm = () => {
                 warningNofity("Allowed Leave is Not Enough For This Leave Request")
             }
         }
-    }, [CommonLeaveType, em_no, fromDate, toDate, reason, singleLeaveState, hod, incharge, authorization_incharge, authorization_hod])
+    }, [CommonLeaveType, dispatch, em_no, fromDate, toDate, reason, hod, incharge,
+        authorization_incharge, authorization_hod, em_department, em_dept_section, em_id, empHodStat,
+        levRequestNo, probation_status, singleLeaveDesc, singleLeaveType, totalDays, changeForm])
 
     return (
         <Paper
@@ -287,7 +290,7 @@ const SingleLeaveRequestForm = () => {
                 <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', px: 1, justifyContent: "space-evenly" }}>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="Upload Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="Upload Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
@@ -302,7 +305,7 @@ const SingleLeaveRequestForm = () => {
                     </Box>
                     <Box>
                         <CssVarsProvider>
-                            <Tooltip title="View Documents" variant="outlined" color="info" placement="top">
+                            <Tooltip title="View Documents" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
