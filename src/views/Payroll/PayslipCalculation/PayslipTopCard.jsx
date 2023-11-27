@@ -51,7 +51,7 @@ const PayslipTopCard = () => {
             const postData = {
                 department: deptName,
                 department_sect: deptSecName,
-                arrear_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
+                arrear_month: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD')
             }
             arearDetails(postData)
         } else {
@@ -69,12 +69,12 @@ const PayslipTopCard = () => {
             const postData = {
                 dept_id: deptName,
                 sect_id: deptSecName,
-                attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
+                attendance_marking_month: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD')
             }
             const checkdatas = {
                 em_department: deptName,
                 em_dept_section: deptSecName,
-                attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
+                attendance_marking_month: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD')
             }
             getEmployeeData(postData).then((values) => {
                 const { status, empData } = values
@@ -82,11 +82,6 @@ const PayslipTopCard = () => {
                     getAllEarnByDept(checkdatas).then((values) => {
                         const { status, earnData } = values
                         if (status === 1) {
-
-
-
-
-
                             //calculating worked days amount
                             const array = earnData?.map((val) => {
                                 if (val.total_working_days === val.total_days || val.em_earning_type === 3) {

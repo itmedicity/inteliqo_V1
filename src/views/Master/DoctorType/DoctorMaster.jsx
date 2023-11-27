@@ -1,18 +1,24 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import React, { memo, useEffect, useMemo, useState } from 'react'
+import { useCallback } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import DoctorMastTable from './DoctorMastTable'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
 
 const DoctorMaster = () => {
-    const classes = useStyles();
     const [count, setCount] = useState(0);
-    const history = useHistory();
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
 
     //Intializing
     const [type, setType] = useState({
@@ -22,120 +28,160 @@ const DoctorMaster = () => {
 
     //Destructuring
     const { doctype_desc, doctype_status } = type;
-    const updateType = (e) => {
+    const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
-    }
+    }, [type])
 
-    const postDoctorData = {
-        doctype_desc,
-        doctype_status: doctype_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
-    const resetForm = {
-        doctype_desc: '',
-        doctype_status: false
-    }
+    const postDoctorData = useMemo(() => {
+        return {
+            doctype_desc,
+            doctype_status: doctype_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [doctype_desc, doctype_status])
+
+    const resetForm = useMemo(() => {
+        return {
+            doctype_desc: '',
+            doctype_status: false
+        }
+    }, [])
+
+    const updateData = useMemo(() => {
+        return {
+            doctype_desc,
+            doctype_status: doctype_status === true ? 1 : 0,
+            doctype_slno: slno,
+            edit_user: employeeNumber()
+        }
+    }, [doctype_desc, doctype_status, slno])
 
     //Insert
-    const submitType = async (e) => {
+    const submitType = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/doctype', postDoctorData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-        } else if (success === 0) {
-            infoNofity(message);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/doctype', updateData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setType(resetForm);
+                setCount(count + 1);
+                succesNofity(message);
+                setSlno(0)
+                setFlag(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/doctype', postDoctorData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+            } else if (success === 0) {
+                infoNofity(message);
+            } else {
+                infoNofity(message)
+            }
         }
-    }
+    }, [flag, updateData, resetForm, postDoctorData, count])
 
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    useEffect(() => {
+        const getTypeList = async () => {
+            const result = await axioslogin.get('/doctype')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getTypeList();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'doctype_slno' },
+        { headerName: 'Grade Name', field: 'doctype_desc', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { doctype_slno, doctype_desc, doctype_status } = params.data
+        const frmdata = {
+            doctype_desc: doctype_desc,
+            doctype_status: doctype_status === '1' ? true : false
+        }
+        setType(frmdata)
+        setSlno(doctype_slno)
+    }, [])
+
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Doctor Type Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Doctor Type</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Doctor Type"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="doctype_desc"
-                                            value={doctype_desc}
-                                            onChange={(e) => updateType(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="doctype_status"
-                                                    color="primary"
-                                                    value={doctype_status}
-                                                    checked={doctype_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <DoctorMastTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Doctor Type'}
+                                type="text"
+                                size="sm"
+                                name="doctype_desc"
+                                value={doctype_desc}
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={doctype_status}
+                                name="doctype_status"
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitType}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default DoctorMaster
+export default memo(DoctorMaster) 

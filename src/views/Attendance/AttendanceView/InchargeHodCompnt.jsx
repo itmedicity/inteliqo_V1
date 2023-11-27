@@ -27,6 +27,7 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
 
     // get holiday 
     const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+
     const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
@@ -45,15 +46,15 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
                 })
                 const postdata = {
                     em_no: arr,
-                    from: moment(startOfMonth(value)).format('YYYY-MM-DD'),
-                    to: moment(endOfMonth(value)).format('YYYY-MM-DD')
+                    from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
+                    to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
                 let empData = dataa;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
                 const { success, data } = result.data
                 if (success === 1) {
                     let punchData = data;
-                    DeptWiseAttendanceViewFun(value, punchData, holidayList, empData).then((values) => {
+                    DeptWiseAttendanceViewFun(value, holidayList).then((values) => {
                         setDateArray(values);
                         const newFun = (val) => {
                             const arr = punchData?.filter(item => val.em_no === item.em_no)

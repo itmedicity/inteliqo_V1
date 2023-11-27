@@ -46,7 +46,7 @@ const EarntypeDropSelect = ({ getEarn }) => {
 
     return (
         <Autocomplete
-            placeholder="Select Department"
+            placeholder="Select Earn"
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {

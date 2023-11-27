@@ -1,12 +1,18 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import GradeMasterTable from './GradeMasterTable'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import { useMemo } from 'react'
 
 const GradeMaster = () => {
     // use State  
@@ -17,133 +23,164 @@ const GradeMaster = () => {
 
     // set count for table element refresh
     const [count, setcount] = useState(0)
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
 
     // upfate function for  element on change 
-    const updategradedata = (e) => {
+    const updategradedata = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getformdata({ ...gradedata, [e.target.name]: value })
-    }
+    }, [gradedata])
 
     // destructuring data
     const { gradename, grade_status } = gradedata
 
-    // use history 
-    const history = useHistory()
-
-    // clse button click
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
-
     // data to be posted
-    const postData = {
-        grade_desc: gradename,
-        grade_status: grade_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
+    const postData = useMemo(() => {
+        return {
+            grade_desc: gradename,
+            grade_status: grade_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [gradename, grade_status])
 
     // default state
-    const reset = {
-        gradename: '',
-        grade_status: false
+    const reset = useMemo(() => {
+        return {
+            gradename: '',
+            grade_status: false
+        }
+    }, [])
 
-    }
+
+    const updateData = useMemo(() => {
+        return {
+            grade_desc: gradename,
+            grade_status: grade_status === true ? 1 : 0,
+            edit_user: employeeNumber(),
+            grade_slno: slno,
+        }
+    }, [gradename, slno, grade_status])
 
     // submitt form data 
-    const postFormData = async (e) => {
+    const postFormData = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/grade', postData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            getformdata(reset);
-            setcount(count + 1)
-        } else if (success === 0 || success === 2 || success === 7) {
-            infoNofity(message);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/grade', updateData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                succesNofity(message);
+                getformdata(reset);
+                setcount(count + 1)
+            } else if (success === 0 || success === 1) {
+                infoNofity(message);
+            }
+        } else {
+            const result = await axioslogin.post('/grade', postData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                getformdata(reset);
+                setcount(count + 1)
+            } else if (success === 0 || success === 2 || success === 7) {
+                infoNofity(message);
+            }
         }
-    }
+    }, [count, postData, flag, reset, updateData])
+
+    useEffect(() => {
+        const getabledata = async () => {
+            const result = await axioslogin.get('/grade')
+            const { success, data } = result.data
+            if (success === 1) {
+                setTableData(data)
+                setcount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getabledata();
+    }, [count])
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'grade_slno' },
+        { headerName: 'Grade Name', field: 'grade_desc', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { grade_slno, grade_desc, grade_status, } = params.data
+        const frmdata = {
+            gradename: grade_desc,
+            grade_status: grade_status === 1 ? true : false
+        }
+        getformdata(frmdata)
+        setSlno(grade_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Grade Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Grade Master</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form onSubmit={postFormData}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Grade"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="gradename"
-                                            value={gradename}
-                                            onChange={(e) => updategradedata(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name='grade_status'
-                                                    color="secondary"
-                                                    checked={grade_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updategradedata(e)}
-                                                />
-
-
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <GradeMasterTable update={count} />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Grade'}
+                                type="text"
+                                size="sm"
+                                name="gradename"
+                                value={gradename}
+                                onchange={(e) => updategradedata(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={grade_status}
+                                name="grade_status"
+                                onchange={(e) => updategradedata(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={postFormData}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default GradeMaster
+export default memo(GradeMaster) 
