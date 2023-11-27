@@ -1,67 +1,40 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { PayrolMasterContext } from 'src/Context/MasterContext';
+import React, { useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 import { memo } from 'react';
+import { Option, Select } from '@mui/joy';
 
-const NationSlnoSelection = () => {
+const NationSlnoSelection = ({ value, setValue }) => {
 
     const [nation, setNation] = useState([]);
-    const { selectNation, updateNation } = useContext(PayrolMasterContext);
-
-
-
     useEffect(() => {
         const getNation = async () => {
             const result = await axioslogin.get('/common/getNation');
-            const { data } = await result.data;
-            setNation(data)
-
-
+            const { success, data } = await result.data;
+            if (success === 1) {
+                setNation(data)
+            } else {
+                setNation([])
+            }
         }
         getNation()
-
-        return (
-            updateNation(0)
-        )
-
-    }, [updateNation]);
-
-
-
-
+    }, []);
 
     return (
-        <Fragment>
-            <FormControl
-                fullWidth
-                margin="dense"
-            >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="selectNation"
-                    fullWidth
-                    variant="outlined"
-                    className="ml-1"
-                    value={selectNation}
-                    onChange={(e) => updateNation(e.target.value)}
-                    defaultValue={0}
-                >
-                    <MenuItem value='0' disabled>
-                        Select Nation
-                    </MenuItem>
-                    {
-                        nation && nation.map((val, index) => {
-                            return <MenuItem key={index} value={val.nat_slno}>{val.nat_name}
-                            </MenuItem>
-                        })
-                    }
-
-
-                </Select>
-            </FormControl>
-        </Fragment>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}>Select Nation </Option>
+            {
+                nation?.map((val, index) => {
+                    return <Option key={index} value={val.nat_slno}>{val.nat_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 

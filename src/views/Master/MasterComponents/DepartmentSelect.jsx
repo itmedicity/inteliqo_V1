@@ -1,11 +1,10 @@
-import { Autocomplete } from '@mui/joy';
+import { Autocomplete } from '@mui/joy'
 import React, { memo, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { getDepartmentSection } from 'src/redux/actions/Common.Action';
-import _ from 'underscore';
+import { useSelector } from 'react-redux'
+import _ from 'underscore'
 
-const JoyDepartment = ({ deptValue, getDept }) => {
-    const dispatch = useDispatch()
+const DepartmentSelect = ({ deptValue, getDept }) => {
+
     const departments = useSelector((state) => state?.getDepartmentList?.empDepartmentList, _.isEqual)
     const [dept, setDept] = useState([{ dept_id: 0, dept_name: 'Select Department' }])
     const [value, setValue] = useState(dept[0]);
@@ -15,18 +14,14 @@ const JoyDepartment = ({ deptValue, getDept }) => {
         if (deptValue !== 0) {
             const array = dept?.filter((e) => e.dept_id === deptValue)
             setValue(array[0]);
-            dispatch(getDepartmentSection(deptValue))
         } else {
-            dispatch(getDepartmentSection(0))
             setValue({})
         }
-
-    }, [deptValue, dept, dispatch])
+    }, [deptValue, dept])
 
     useEffect(() => {
         departments.length > 0 && setDept(departments)
     }, [departments])
-
 
     return (
         <Autocomplete
@@ -36,7 +31,6 @@ const JoyDepartment = ({ deptValue, getDept }) => {
             clearOnBlur
             onChange={(event, newValue) => {
                 setValue(newValue);
-                dispatch(getDepartmentSection(newValue.dept_id))
                 getDept(newValue.dept_id)
             }}
             inputValue={inputValue}
@@ -54,4 +48,4 @@ const JoyDepartment = ({ deptValue, getDept }) => {
     )
 }
 
-export default memo(JoyDepartment) 
+export default memo(DepartmentSelect) 
