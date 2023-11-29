@@ -13,7 +13,6 @@ const ShowModal = ({ open, setopen, setOpen }) => {
         setopen(false);
         setOpen(false);
     }, [setopen, setOpen]);
-
     return (
         <Fragment>
             <Modal
@@ -35,8 +34,8 @@ const ShowModal = ({ open, setopen, setOpen }) => {
                         }}
                     />
                     <Paper elevation={0} sx={{ size: 'lg', fontWeight: "bold", width: "100%", textAlign: "center", p: 1 }}>
-                        <Typography sx={{ size: 'lg', color: "#186F65", fontWeight: "bold" }}>Good attempt!</Typography>
-                        <Typography sx={{ color: "steelblue", mt: 1 }}>Your next section will be continued...</Typography>
+                        <Typography sx={{ size: 'lg', color: "#186F65", fontWeight: "bold" }}>Good Luck</Typography>
+                        <Typography sx={{ color: "steelblue", mt: 1 }}>Training Successfully completed</Typography>
 
                         <Box sx={{ mt: 1 }}>
                             <Button onClick={BtnClose}>
@@ -49,4 +48,5 @@ const ShowModal = ({ open, setopen, setOpen }) => {
         </Fragment>
     );
 }
+
 export default memo(ShowModal)

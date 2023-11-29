@@ -262,6 +262,7 @@ const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/D
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/EmployeeTrainingTopViewList'))
+const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/EmpViewpage'))
 
 
 const routes = [
@@ -517,6 +518,7 @@ const routes = [
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
   { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
+  { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
 
 ]
 

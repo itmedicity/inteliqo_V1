@@ -47,9 +47,16 @@ const TrainingAndDevelopment = [
     {
         men_slno: 60,
         component: CNavItem,
-        name: 'Test Evaluation',
-        to: '/homes',
+        name: 'Post-Test',
+        to: '/Home/PostTest',
     },
+    // {
+    //     men_slno: 60,
+    //     component: CNavItem,
+    //     name: 'Test Evaluation',
+    //     to: '/homes',
+    // },
+
 
 ]
 

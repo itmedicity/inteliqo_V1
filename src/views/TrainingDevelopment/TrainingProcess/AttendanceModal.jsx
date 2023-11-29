@@ -12,7 +12,7 @@ import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
 
-const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, getData }) => {
+const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) => {
     const [tableData, setTableData] = useState([]);
     const [setData, setsetData] = useState([]);
     const [question_count, setQuestion_count] = useState('');
@@ -61,7 +61,6 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
         const result = await axioslogin.patch('/TrainingProcess/attendance', patchdata)
         const { success, message } = result.data;
         if (success === 2) {
-            succesNofity(message)
             Setcount(count + 1)
         }
         else {
@@ -69,6 +68,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
         }
     }, [Setcount, count])
 
+    console.log(tableData);
     const [columnDef] = useState([
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 150 },
@@ -97,25 +97,26 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
 
 
     const handleSubmit = useCallback(async () => {
-        const { slno, date, topic_slno } = Todaydata[0]
+        const { slno, date } = getData[0]
         const patchdata = {
             slno: slno,
             schedule_date: moment(date).format("YYYY-MM-DD HH:MM:SS"),
-            topic_slno: topic_slno,
             question_count: question_count
         }
+        console.log(patchdata);
         const result = await axioslogin.patch('/TrainingProcess/questionCount', patchdata)
         const { success, message } = result.data;
         if (success === 1) {
             succesNofity(message)
             Setcount(count + 1)
             setQuestion_count('');
+            Setopen(false)
         }
         else {
             warningNofity(message)
             setQuestion_count('')
         }
-    }, [Setcount, count, Todaydata, question_count, setQuestion_count])
+    }, [Setcount, count, getData, question_count, Setopen, setQuestion_count])
 
     return (
         <Modal
@@ -125,7 +126,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
             onClose={Handleclose}
             sx={{ display: 'flex' }}
         >
-            <ModalDialog size="lg" sx={{ width: "60%", height: 550 }}>
+            <ModalDialog size="lg" sx={{ width: "60%", height: 600 }}>
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -158,8 +159,8 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Todaydata, Details, g
                         headerHeight={30}
                     />
                 </Box>
-                <Box sx={{ display: "flex", flexDirection: "row", mt: 3, width: "100%", justifyContent: "flex-end", gap: 3 }} >
-                    <Typography>Random Question Count</Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", mt: 2, width: "100%", justifyContent: "flex-end", gap: 3 }} >
+                    <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
                     <Box >
                         <input
                             type='number'

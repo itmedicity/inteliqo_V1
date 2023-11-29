@@ -48,15 +48,8 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
             setRightAns(right_answer)
             setFilestatus(upload_status)
         }
-
     }, [data, order, setDisQuestn, setRightAns])
 
-    useEffect(() => {
-        SetclrFlagA(0)
-        SetclrFlagB(0)
-        SetclrFlagC(0)
-        SetclrFlagD(0)
-    }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD])
     const HandleOptionA = useCallback(() => {
         if (incmentCount === 0) {
             SetclrFlagA(1)
@@ -73,14 +66,14 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
             SetclrFlagD(0)
             setDisright(0)
         }
-        // else {
-        //     setincmentCount(0)
-        //     SetclrFlagA(0)
-        //     SetclrFlagB(0)
-        //     SetclrFlagC(0)
-        //     SetclrFlagD(0)
-        //     setDisright(0)
-        // }
+        else {
+            setincmentCount(0)
+            SetclrFlagA(0)
+            SetclrFlagB(0)
+            SetclrFlagC(0)
+            SetclrFlagD(0)
+            setDisright(0)
+        }
     }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, setincmentCount, incmentCount, setDisright])
 
     //Option B
@@ -101,17 +94,16 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
             SetclrFlagD(0)
             setDisright(0)
         }
-        // else {
-        //     setincmentCount(0)
-        //     SetclrFlagB(0)
-        //     SetclrFlagA(0)
-        //     SetclrFlagC(0)
-        //     SetclrFlagD(0)
-        //     setDisright(0)
-        // }
+        else {
+            setincmentCount(0)
+            SetclrFlagB(0)
+            SetclrFlagA(0)
+            SetclrFlagC(0)
+            SetclrFlagD(0)
+            setDisright(0)
+        }
 
     }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, setincmentCount, incmentCount, setDisright])
-
 
     //Option C
     const HandleOptionC = useCallback(() => {
@@ -131,14 +123,14 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
             SetclrFlagA(0)
             setDisright(0)
         }
-        // else {
-        //     setincmentCount(0)
-        //     SetclrFlagC(0)
-        //     SetclrFlagB(0)
-        //     SetclrFlagD(0)
-        //     SetclrFlagA(0)
-        //     setDisright(0)
-        // }
+        else {
+            setincmentCount(0)
+            SetclrFlagC(0)
+            SetclrFlagB(0)
+            SetclrFlagD(0)
+            SetclrFlagA(0)
+            setDisright(0)
+        }
     }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, setincmentCount, incmentCount, setDisright])
 
 
@@ -161,14 +153,14 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
             SetclrFlagC(0)
             setDisright(0)
         }
-        // else {
-        //     setincmentCount(0)
-        //     SetclrFlagD(0)
-        //     SetclrFlagA(0)
-        //     SetclrFlagB(0)
-        //     SetclrFlagC(0)
-        //     setDisright(0)
-        // }
+        else {
+            setincmentCount(0)
+            SetclrFlagD(0)
+            SetclrFlagA(0)
+            SetclrFlagB(0)
+            SetclrFlagC(0)
+            setDisright(0)
+        }
     }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, setincmentCount, incmentCount, setDisright])
 
     return (

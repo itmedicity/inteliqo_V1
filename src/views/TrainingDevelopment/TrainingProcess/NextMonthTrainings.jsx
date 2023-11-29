@@ -52,9 +52,9 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
     }, [NextmonthData, flag, pickdate])
 
     const [columnDef] = useState([
-        { headerName: 'Trainer Names', field: 'traineer_name', filter: true, width: 250 },
-        { headerName: 'Training Department', field: 'dept_name', filter: true, width: 250 },
-        { headerName: 'Training Department Section', field: 'sect_name', filter: true, width: 250 },
+        // { headerName: 'Trainer Names', field: 'traineer_name', filter: true, width: 250 },
+        // { headerName: 'Training Department', field: 'dept_name', filter: true, width: 250 },
+        // { headerName: 'Training Department Section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
     ])

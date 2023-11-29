@@ -15,7 +15,6 @@ import ModalClose from '@mui/joy/ModalClose';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 
-
 const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata, EmpDetails }) => {
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
@@ -42,10 +41,10 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
     })
 
     const reset = useCallback(() => {
-        setNewdata([])
         setScheduleDate('')
         setViewtable(0)
-    }, [])
+        setFlag(0);
+    }, [setFlag])
 
     useEffect(() => {
         if (Object.keys(rowdata).length !== 0) {
@@ -127,7 +126,6 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
             const { success, message } = results.data
             if (success === 1) {
                 succesNofity(message);
-                setFlag(0);
                 Setcount(count + 1);
                 reset();
             }
@@ -137,10 +135,8 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         }
         else {
             warningNofity(message)
-            setFlag(0);
-
         }
-    }, [patchdata, postdata, count, reset, Setcount, setFlag])
+    }, [patchdata, postdata, count, reset, Setcount])
 
     const end = endOfMonth(new Date(scheduleDate))
 

@@ -14,8 +14,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
-// import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
-// import { setDepartment } from 'src/redux/actions/Department.action';
 
 const TrainingTopic = () => {
     const [dept_status, set_dept_status] = useState(false);
@@ -27,23 +25,21 @@ const TrainingTopic = () => {
     const [non_medical_status, set_Non_medical_status] = useState(false);
     const [pretest_status, setPretest_status] = useState(false);
     const [post_test_status, setPost_test_status] = useState(false);
+    const [online_status, set_Online_status] = useState(false);
+    const [offline_status, setOffline_status] = useState(false);
+    const [both_status, setBoth_status] = useState(false);
     const [count, setCount] = useState(0);
     const [tableData, setTabledata] = useState(0);
     const [topic_slno, setTopic_slno] = useState(0);
     const [flag, setFlag] = useState(0);
     const [dept_flag, setdept_Flag] = useState(0);
     const [trainingname, setTrainingname] = useState(0);
-    const [hours, setHours] = useState(0);
+    const [hours, setHours] = useState('');
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    // const dispatch = useDispatch()
-
-    // useEffect(() => {
-    //     dispatch(setDepartment())
-    // }, [dispatch, count])
     //reset
     const reset = useCallback(() => {
         setTraining_topic_name('');
@@ -58,6 +54,9 @@ const TrainingTopic = () => {
         set_dept_status(false);
         setdepttype(0);
         setdept_Flag(false)
+        set_Online_status(false)
+        setOffline_status(false)
+        setBoth_status(false)
     }, [])
     //check dept
     const checkDepartment = useCallback((e) => {
@@ -71,6 +70,7 @@ const TrainingTopic = () => {
             setdepttype(0);
         }
     }, [setdept_Flag, set_dept_status])
+
     //postdata
     const postdata = useMemo(() => {
         return {
@@ -84,10 +84,13 @@ const TrainingTopic = () => {
             non_medical_status: non_medical_status === true ? 1 : 0,
             pretest_status: pretest_status === true ? 1 : 0,
             post_test_status: post_test_status === true ? 1 : 0,
+            online_status: online_status === true ? 1 : 0,
+            offline_status: offline_status === true ? 1 : 0,
+            both_status: both_status === true ? 1 : 0,
             create_user: em_id,
             hours: hours
         }
-    }, [depttype, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id])
+    }, [depttype, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
@@ -102,11 +105,14 @@ const TrainingTopic = () => {
             non_medical_status: non_medical_status === true ? 1 : 0,
             pretest_status: pretest_status === true ? 1 : 0,
             post_test_status: post_test_status === true ? 1 : 0,
+            online_status: online_status === true ? 1 : 0,
+            offline_status: offline_status === true ? 1 : 0,
+            both_status: both_status === true ? 1 : 0,
             edit_user: em_id,
             topic_slno: topic_slno,
             hours: hours
         }
-    }, [dept_status, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno])
+    }, [dept_status, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
@@ -114,13 +120,14 @@ const TrainingTopic = () => {
             const result = await axioslogin.get('TrainingTopic/select')
             const { success, data } = result.data;
             if (success === 2) {
-                const viewData = data.map((val) => {
+                const viewData = data?.map((val) => {
                     const obj = {
                         topic_slno: val.topic_slno,
                         dept_status: val.dept_status,
+                        deptstatus: val.dept_status === 0 ? "NO" : "YES",
                         dept_id: val.dept_id,
                         dept_name: val.dept_name,
-                        dept: val.dept_name === 0 ? "NILL" : val.dept_name,
+                        dept: val.dept_name,
                         training_topic_name: val.training_topic_name,
                         name_slno: val.name_slno,
                         hours: val.hours,
@@ -136,7 +143,13 @@ const TrainingTopic = () => {
                         pretest_status: val.pretest_status,
                         pretest: val.pretest_status === 0 ? "NO" : "YES",
                         post_test_status: val.post_test_status,
-                        post_test: val.post_test_status === 0 ? "NO" : "YES"
+                        post_test: val.post_test_status === 0 ? "NO" : "YES",
+                        online_status: val.online_status,
+                        online: val.online_status === 0 ? "NO" : "YES",
+                        offline_status: val.offline_status,
+                        offline: val.offline_status === 0 ? "NO" : "YES",
+                        both_status: val.both_status,
+                        both: val.both_status === 0 ? "NO" : "YES"
                     }
                     return obj;
                 })
@@ -153,7 +166,7 @@ const TrainingTopic = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status } = data[0]
+        const { topic_slno, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
         setFlag(1);
         setdepttype(dept_id)
         set_dept_status(dept_status === 0 ? false : true)
@@ -168,6 +181,9 @@ const TrainingTopic = () => {
         setTopic_slno(topic_slno)
         setTrainingname(name_slno)
         setHours(hours)
+        set_Online_status(online_status === 1 ? true : false)
+        setOffline_status(offline_status === 1 ? true : false)
+        setBoth_status(both_status === 1 ? true : false)
     }, [])
 
     //submit
@@ -190,6 +206,7 @@ const TrainingTopic = () => {
                 reset();
             }
         }
+
         const EditData = async (patchdata) => {
             const result = await axioslogin.patch('/TrainingTopic/update', patchdata)
             const { message, success } = result.data
@@ -216,8 +233,8 @@ const TrainingTopic = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
-        { headerName: 'Department', field: 'dept', filter: true, minWidth: 300 },
-        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 150 },
+        { headerName: 'Department', field: 'deptstatus', filter: true, minWidth: 150 },
+        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 250 },
         { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
         { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
         { headerName: 'Tutorial ', field: 'tutorial', filter: true, minWidth: 150 },
@@ -225,6 +242,9 @@ const TrainingTopic = () => {
         { headerName: 'Non-Med', field: 'non_medical', filter: true, minWidth: 150 },
         { headerName: 'Pre-Test ', field: 'pretest', filter: true, minWidth: 150 },
         { headerName: 'Post-Test ', field: 'post_test', filter: true, minWidth: 150 },
+        { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
+        { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
+        { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
         { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
         {
             headerName: 'Edit', minWidth: 150, cellRenderer: params =>
@@ -244,7 +264,6 @@ const TrainingTopic = () => {
                     <Grid container spacing={1}>
                         <Grid item xl={3} lg={2}>
                             <Paper sx={{ p: 1 }}>
-
                                 <Box>
                                     <FormControlLabel
                                         control={
@@ -263,7 +282,6 @@ const TrainingTopic = () => {
                                 {
                                     dept_flag === 1 ?
                                         <Box>
-                                            {/* <JoyDepartment deptValue={dept_type} getDept={setdept_type} /> */}
                                             <DeptSelectByRedux value={depttype} setValue={setdepttype} />
                                         </Box>
                                         : null
@@ -401,6 +419,60 @@ const TrainingTopic = () => {
                                                     />
                                                 }
                                                 label="Post Test"
+                                            />
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                {/* Section status */}
+                                <Grid container spacing={1}>
+                                    <Grid item xl={4} lg={2}>
+                                        <Box>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        name="status"
+                                                        color="primary"
+                                                        value={online_status}
+                                                        checked={online_status}
+                                                        className="ml-1"
+                                                        onChange={(e) => set_Online_status(e.target.checked)}
+                                                    />
+                                                }
+                                                label="Online"
+                                            />
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xl={3} lg={2}>
+                                        <Box>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        name="status"
+                                                        color="primary"
+                                                        value={offline_status}
+                                                        checked={offline_status}
+                                                        className="ml-1"
+                                                        onChange={(e) => setOffline_status(e.target.checked)}
+                                                    />
+                                                }
+                                                label="Offline"
+                                            />
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xl={3} lg={2}>
+                                        <Box>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        name="status"
+                                                        color="primary"
+                                                        value={both_status}
+                                                        checked={both_status}
+                                                        className="ml-1"
+                                                        onChange={(e) => setBoth_status(e.target.checked)}
+                                                    />
+                                                }
+                                                label="Both"
                                             />
                                         </Box>
                                     </Grid>

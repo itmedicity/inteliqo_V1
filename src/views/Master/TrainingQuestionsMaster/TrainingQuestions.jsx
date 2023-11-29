@@ -445,6 +445,7 @@ const TrainingQuestions = () => {
                     formData.append('files', file.name);
                     formData.append('imgId', file.Id);
                 });
+
                 await Promise.all(compressedFilesPromises);
                 const uploadResult = await axioslogin.post('/trainUploadCheck/uploadtrainingfiles', formData, {
                     headers: {
@@ -545,19 +546,19 @@ const TrainingQuestions = () => {
             uploads?.map((val) => {
                 if (val.id === "A") {
                     setAFlag(1)
-                    setAFlagFile(val.file)
+                    return setAFlagFile(val.file)
                 }
                 else if (val.id === "B") {
                     setBFlag(1)
-                    setBFlagFile(val.file)
+                    return setBFlagFile(val.file)
                 }
                 else if (val.id === "C") {
                     setCFlag(1)
-                    setCFlagFile(val.file)
+                    return setCFlagFile(val.file)
                 }
                 else if (val.id === "D") {
                     setDFlag(1)
-                    setDFlagFile(val.file)
+                    return setDFlagFile(val.file)
                 }
             })
         }

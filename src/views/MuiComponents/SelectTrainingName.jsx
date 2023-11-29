@@ -6,9 +6,8 @@ const SelectTrainingName = ({ value, setValue }) => {
     const [view, setView] = useState([]);
     useEffect(() => {
         const selectData = async () => {
-            const result = await axioslogin.get('TrainingSchedule/selecttrainingname')
+            const result = await axioslogin.get('/TrainingSchedule/selecttrainingname')
             const { success, data } = result.data;
-            setView(data);
             if (success === 2) {
                 setView(data);
             } else {
@@ -17,6 +16,7 @@ const SelectTrainingName = ({ value, setValue }) => {
         }
         selectData()
     }, [])
+
     return (
         <Fragment>
             <FormControl

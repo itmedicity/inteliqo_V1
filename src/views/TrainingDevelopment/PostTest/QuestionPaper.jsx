@@ -120,7 +120,6 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
         }
     }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
 
-
     const PostData = useMemo(() => {
         return {
             slno: sno,
@@ -129,7 +128,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
             emp_dept_sec: sect_id,
             emp_desg: desg_slno,
             emp_topic: topic_slno,
-            pretest_status: 1,
+            posttest_status: 1,
             mark: correct,
             create_user: em_id
         }
@@ -138,8 +137,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
     useEffect(() => {
         if (checkInsert === 1) {
             const InsertData = async (PostData) => {
-                console.log(PostData);
-                const result = await axioslogin.post('/TrainingProcess/pretest', PostData)
+                const result = await axioslogin.post('/TrainingProcess/postTest', PostData)
                 const { success, message } = result.data
                 if (success === 1) {
                     setopen(true)
