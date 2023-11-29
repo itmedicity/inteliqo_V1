@@ -1,22 +1,26 @@
-import React, { Fragment, useContext, useState } from 'react'
-import { Checkbox, FormControlLabel } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
-import EmployeType from 'src/views/CommonCode/EmployeType'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
-import CarryforwardTable from './CarryforwardTable'
-import DeptSectionMastSelect from 'src/views/CommonCode/DeptSectionMastSelect'
-import { PayrolMasterContext } from 'src/Context/MasterContext';
+import { employeeNumber } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
-import PageLayoutSaveClose from 'src/views/CommonCode/PageLayoutSaveClose'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SessionCheck from 'src/views/Axios/SessionCheck'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import { ToastContainer } from 'react-toastify'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import DeptSectionOnlySelect from 'src/views/MuiComponents/JoyComponent/DeptSectionOnlySelect'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import JoyEmployeeTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyEmployeeTypeSelect'
 
 const CarryforwardMast = () => {
-    const history = useHistory();
     const [count, setCount] = useState(0);
-    const { getDeptSection, updateDeptSection,
-        selectEmployeeType, updateEmployeetype } = useContext(PayrolMasterContext)
-    const { employeedetails } = useContext(PayrolMasterContext)
-    const { em_id } = employeedetails
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [deptSect, setDeptSect] = useState(0)
+    const [emptype, setEmptype] = useState(0)
     const [carry, setCarry] = useState({
         dept_sec: '',
         emp_type: '',
@@ -26,145 +30,206 @@ const CarryforwardMast = () => {
         carry_sl: false
     })
     const { carry_hl, carry_cl, carry_el, carry_sl } = carry
-    const updateCarryForward = async (e) => {
+
+    const updateCarryForward = useCallback(async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setCarry({ ...carry, [e.target.name]: value })
-    }
-    const postdata = {
-        dept_sec: getDeptSection,
-        emp_type: selectEmployeeType,
-        carry_hl: carry_hl === true ? 1 : 0,
-        carry_cl: carry_cl === true ? 1 : 0,
-        carry_el: carry_el === true ? 1 : 0,
-        carry_sl: carry_sl === true ? 1 : 0,
-        create_user: em_id
-    }
-    const resetfrm = {
-        dept_sec: '',
-        emp_type: '',
-        carry_hl: false,
-        carry_cl: false,
-        carry_el: false,
-        carry_sl: false
-    }
-    const reset = () => {
-        updateDeptSection(0)
-        updateEmployeetype(0)
-    }
-    const submitCarryForward = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.post('/carryforward', postdata);
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setCarry(resetfrm);
-            reset()
-        } else if (success === 0 || success === 3) {
-            infoNofity(message);
-        }
-    }
+    }, [carry])
 
-    const RedirectToProfilePage = () => {
-        history.push('/Home/Settings');
-    }
+    const postdata = useMemo(() => {
+        return {
+            dept_sec: deptSect,
+            emp_type: emptype,
+            carry_hl: carry_hl === true ? 1 : 0,
+            carry_cl: carry_cl === true ? 1 : 0,
+            carry_el: carry_el === true ? 1 : 0,
+            carry_sl: carry_sl === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [deptSect, emptype, carry_hl, carry_cl, carry_el, carry_sl])
+
+    const resetfrm = useMemo(() => {
+        return {
+            dept_sec: '',
+            emp_type: '',
+            carry_hl: false,
+            carry_cl: false,
+            carry_el: false,
+            carry_sl: false
+        }
+    }, [])
+
+    const patchdata = useMemo(() => {
+        return {
+            dept_sec: deptSect,
+            emp_type: emptype,
+            carry_hl: carry_hl === true ? 1 : 0,
+            carry_cl: carry_cl === true ? 1 : 0,
+            carry_el: carry_el === true ? 1 : 0,
+            carry_sl: carry_sl === true ? 1 : 0,
+            edit_user: employeeNumber(),
+            carry_slno: slno
+        }
+    }, [slno, deptSect, emptype, carry_hl, carry_cl, carry_el, carry_sl])
+
+    const submitCarryForward = useCallback(async (e) => {
+        e.preventDefault();
+        if (flag === 1) {
+            const result = await axioslogin.patch('/carryforward', patchdata)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setCarry(resetfrm);
+                setCount(count + 1);
+                setDeptSect(0)
+                setEmptype(0)
+                setSlno(0)
+                setFlag(0)
+                succesNofity(message);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        } else {
+            const result = await axioslogin.post('/carryforward', postdata);
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setCarry(resetfrm);
+                setDeptSect(0)
+                setEmptype(0)
+            } else if (success === 0 || success === 3) {
+                infoNofity(message);
+            }
+        }
+    }, [flag, resetfrm, count, patchdata, postdata])
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'carry_slno', width: 100 },
+        { headerName: 'Grade Name', field: 'sect_name', filter: true, width: 150 },
+        { headerName: 'Emp Type', field: 'emptype_name', filter: true, width: 150 },
+        { headerName: 'NH', field: 'hl', filter: true, width: 100 },
+        { headerName: 'CL', field: 'cl', filter: true, width: 100 },
+        { headerName: 'EL', field: 'el', filter: true, width: 100 },
+        { headerName: 'SL', field: 'sl', filter: true, width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    //GetData
+    useEffect(() => {
+        const getCarryForward = async () => {
+            const result = await axioslogin.get('/carryforward')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getCarryForward();
+    }, [count]);
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { carry_slno, dept_sec, emp_type, carry_hl, carry_cl, carry_el, carry_sl } = params.data
+        const frmdata = {
+            carry_hl: carry_hl === 1 ? true : false,
+            carry_cl: carry_cl === 1 ? true : false,
+            carry_el: carry_el === 1 ? true : false,
+            carry_sl: carry_sl === 1 ? true : false
+        }
+        setSlno(carry_slno)
+        setCarry(frmdata)
+        setDeptSect(dept_sec)
+        setEmptype(emp_type)
+    }, [])
 
     return (
-        <Fragment>
-            <PageLayoutSaveClose
-                heading="Carry Forward Leave Settings"
-                redirect={RedirectToProfilePage}
-                submit={submitCarryForward}
-            >
-                <div className="col-md-12">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <div className="col-md-12 ">
-                                <DeptSectionMastSelect style={SELECT_CMP_STYLE} />
-                            </div>
-                            <div className="col-md-12 pt-2">
-                                <EmployeType style={SELECT_CMP_STYLE} />
-                            </div>
-                            <div className="col-md-12">
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_hl"
-                                                    color="primary"
-                                                    value={carry_hl}
-                                                    checked={carry_hl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCarryForward(e)}
-                                                />
-                                            }
-                                            label="National Holiday"
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_cl"
-                                                    color="primary"
-                                                    value={carry_cl}
-                                                    checked={carry_cl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCarryForward(e)}
-                                                />
-                                            }
-                                            label="Casual Leave"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_el"
-                                                    color="primary"
-                                                    value={carry_el}
-                                                    checked={carry_el}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCarryForward(e)}
-                                                />}
-                                            label="Earn Leave"
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_sl"
-                                                    color="primary"
-                                                    value={carry_sl}
-                                                    checked={carry_sl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCarryForward(e)}
-                                                />
-                                            }
-                                            label="Sick Leave"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-8">
-                            <CarryforwardTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </PageLayoutSaveClose>
-        </Fragment >
+        <MasterLayout title="Carry Forward Leave Settings" displayClose={true} >
+            <ToastContainer />
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <DeptSectionOnlySelect sectValue={deptSect} getDeptSection={setDeptSect} />
+                        </Box>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <JoyEmployeeTypeSelect value={emptype} setValue={setEmptype} />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5, display: 'flex', flexDirection: 'row' }} >
+                            <Box sx={{ flex: 1 }}>
+                                <JoyCheckbox
+                                    label='National Holiday'
+                                    checked={carry_hl}
+                                    name="carry_hl"
+                                    onchange={(e) => updateCarryForward(e)}
+                                />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <JoyCheckbox
+                                    label='Casual Leave'
+                                    checked={carry_cl}
+                                    name="carry_cl"
+                                    onchange={(e) => updateCarryForward(e)}
+                                />
+                            </Box>
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5, display: 'flex', flexDirection: 'row' }} >
+                            <Box sx={{ flex: 1 }}>
+                                <JoyCheckbox
+                                    label='Earn Leave'
+                                    checked={carry_el}
+                                    name="carry_el"
+                                    onchange={(e) => updateCarryForward(e)}
+                                />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <JoyCheckbox
+                                    label='Sick Leave'
+                                    checked={carry_sl}
+                                    name="carry_sl"
+                                    onchange={(e) => updateCarryForward(e)}
+                                />
+                            </Box>
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitCarryForward}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default CarryforwardMast
+export default memo(CarryforwardMast) 

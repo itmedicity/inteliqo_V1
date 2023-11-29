@@ -25,10 +25,11 @@ const EmployeeCompnt = ({ em_no }) => {
     const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
+
         const postdata = {
             em_no: empNo,
-            from: moment(startOfMonth(value)).format('YYYY-MM-DD'),
-            to: moment(endOfMonth(value)).format('YYYY-MM-DD')
+            from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
+            to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
         }
         const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
         const { success, data } = result.data

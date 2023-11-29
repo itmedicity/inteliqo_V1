@@ -1,139 +1,187 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import EmpDesignationtable from './EmpDesignationtable'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import { useMemo } from 'react'
 
 const EmpDesignationtype = () => {
-    const classess = useStyles();
-    const history = useHistory();
+
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [count, setCount] = useState(0);
+
     const [formData, getFormData] = useState({
         inst_emp_type: '',
         inst_emp_status: false
     });
-    const [count, setCount] = useState(0);
     const { inst_emp_type, inst_emp_status } = formData;
-    const updateFormDatatoState = (e) => {
+
+    const updateFormDatatoState = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         getFormData({ ...formData, [e.target.name]: value });
-    }
+    }, [formData])
 
-    const postFormdata = {
-        inst_emp_type,
-        inst_emp_status: inst_emp_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
-    const resetForm = {
-        inst_emp_type: '',
-        inst_emp_status: false
-    }
-    const submitFormData = async (e) => {
+    const postFormdata = useMemo(() => {
+        return {
+            inst_emp_type,
+            inst_emp_status: inst_emp_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [inst_emp_type, inst_emp_status])
+
+    const resetForm = useMemo(() => {
+        return {
+            inst_emp_type: '',
+            inst_emp_status: false
+        }
+    }, [])
+
+    const postInstitutionData = useMemo(() => {
+        return {
+            inst_emp_type,
+            inst_emp_status: inst_emp_status === true ? 1 : 0,
+            edit_user: employeeNumber(),
+            inst_slno: slno
+        }
+    }, [inst_emp_type, inst_emp_status, slno])
+
+    const submitFormData = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/inst', postFormdata);
-        const { success, message } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            getFormData(resetForm);
-        } else if (success === 0 || success === 2) {
-            infoNofity(message);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/inst', postInstitutionData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                getFormData(resetForm);
+                setCount(count + 1);
+                succesNofity(message);
+                setFlag(1)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        } else {
+            const result = await axioslogin.post('/inst', postFormdata);
+            const { success, message } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                getFormData(resetForm);
+            } else if (success === 0 || success === 2) {
+                infoNofity(message);
+            }
+            else if (success === 7) {
+                errorNofity(message)
+            }
+            else {
+                errorNofity("Error! Please Contact EDP")
+            }
         }
-        else if (success === 7) {
-            errorNofity(message)
-        }
-        else {
-            errorNofity("Error! Please Contact EDP")
-        }
-    }
+    }, [postFormdata, flag, count, resetForm, postInstitutionData])
 
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    useEffect(() => {
+        const getemptypedetil = async () => {
+            const result = await axioslogin.get('/inst');
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getemptypedetil();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'inst_slno' },
+        { headerName: 'Employee Type', field: 'inst_emp_type', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { inst_slno, inst_emp_type, inst_emp_status, } = params.data
+        const frmdata = {
+            inst_emp_type: inst_emp_type,
+            inst_emp_status: inst_emp_status === 1 ? true : false
+        }
+        getFormData(frmdata)
+        setSlno(inst_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Employee Institution Type" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header">
-                    <h5>Employee Institution Type</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classess.root} onSubmit={submitFormData}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Employee Institution Type"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="inst_emp_type"
-                                            value={inst_emp_type}
-                                            onChange={(e) => updateFormDatatoState(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="inst_emp_status"
-                                                    color="primary"
-                                                    value={inst_emp_status}
-                                                    checked={inst_emp_status}
-                                                    className="ml-2 "
-                                                    onChange={(e) => updateFormDatatoState(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <EmpDesignationtable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Employee Institution Type'}
+                                type="text"
+                                size="sm"
+                                name="inst_emp_type"
+                                value={inst_emp_type}
+                                onchange={(e) => updateFormDatatoState(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={inst_emp_status}
+                                name="inst_emp_status"
+                                onchange={(e) => updateFormDatatoState(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitFormData}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default EmpDesignationtype
+export default memo(EmpDesignationtype) 

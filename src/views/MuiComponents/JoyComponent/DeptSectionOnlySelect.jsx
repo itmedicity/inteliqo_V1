@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import _ from 'underscore'
 
-const DeptSectionOnlySelect = ({ getDeptSection }) => {
+const DeptSectionOnlySelect = ({ sectValue, getDeptSection }) => {
     const dispatch = useDispatch()
     useEffect(() => dispatch(setDeptWiseSection()), [dispatch])
 
@@ -16,13 +16,14 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
-        if (value !== null) {
-            getDeptSection(value.sect_id)
+        if (sectValue !== 0) {
+            const array = deptSect?.filter((e) => e.sect_id === sectValue)
+            setValue(array[0]);
         } else {
-            getDeptSection(0)
+            setValue({})
         }
-        return
-    }, [value, getDeptSection])
+
+    }, [sectValue, deptSect])
 
     useEffect(() => {
         depatSecValues.length > 0 && setDeptSect(depatSecValues)
@@ -34,7 +35,8 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                setValue(newValue);
+                setValue(newValue)
+                getDeptSection(newValue.sect_id)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {

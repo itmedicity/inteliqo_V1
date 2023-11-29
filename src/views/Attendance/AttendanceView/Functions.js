@@ -7,14 +7,14 @@ export const AttendanceViewFun = async (value, punchData, holidayList) => {
     let holidayFilterList = []; // filter holidays based on from to dates
     if (status === 1) {
         holidayFilterList = data && data.map((values) => {
-            return values.hld_date >= moment(startOfMonth(value)).format('YYYY-MM-DD') && values.hld_date <= moment(endOfMonth(value)).format('YYYY-MM-DD') ? values : null;
+            return values.hld_date >= moment(startOfMonth(new Date(value))).format('YYYY-MM-DD') && values.hld_date <= moment(endOfMonth(new Date(value))).format('YYYY-MM-DD') ? values : null;
         }).filter((val) => val !== null);
     } else {
         return { ...message, status: 0, message: 'Holiday List Not Updated', data: [] }
     }
 
     //finding the dates between start date and end date
-    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(value)), end: new Date(endOfMonth(value)) });
+    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) });
 
     //date format for top Head
     const dateAndDayFormat = dateRange.map((val) => {
@@ -59,7 +59,8 @@ export const AttendanceViewFun = async (value, punchData, holidayList) => {
 }
 
 
-export const DeptWiseAttendanceViewFun = async (value, punchData, holidayList, empData) => {
+export const DeptWiseAttendanceViewFun = async (value, holidayList) => {
+
     let message = { status: 0, message: '', data: [], dateFormat: [] };
     const { status, data } = holidayList;
     let holidayFilterList = []; // filter holidays based on from to dates
@@ -67,14 +68,14 @@ export const DeptWiseAttendanceViewFun = async (value, punchData, holidayList, e
 
     if (status === 1) {
         holidayFilterList = data && data.map((values) => {
-            return values.hld_date >= moment(startOfMonth(value)).format('YYYY-MM-DD') && values.hld_date <= moment(endOfMonth(value)).format('YYYY-MM-DD') ? values : null;
+            return values.hld_date >= moment(startOfMonth(new Date(value))).format('YYYY-MM-DD') && values.hld_date <= moment(endOfMonth(new Date(value))).format('YYYY-MM-DD') ? values : null;
         }).filter((val) => val !== null);
     } else {
         return { ...message, status: 0, message: 'Holiday List Not Updated', data: [] }
     }
 
     //finding the dates between start date and end date
-    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(value)), end: new Date(endOfMonth(value)) });
+    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) });
 
     //date format for top Head
     const dateAndDayFormat = dateRange.map((val) => {

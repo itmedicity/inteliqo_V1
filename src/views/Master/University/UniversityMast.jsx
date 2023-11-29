@@ -1,18 +1,24 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { employeeNumber } from 'src/views/Constant/Constant'
-import UniVersityTable from './UniVersityTable'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import { useMemo } from 'react'
 
 const UniversityMast = () => {
-    const classes = useStyles();
     const [count, setcount] = useState(0);
-    const history = useHistory();
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [slno, setSlno] = useState(0)
 
     //Initializing
     const [formData, setFormData] = useState({
@@ -28,136 +34,171 @@ const UniversityMast = () => {
         setFormData({ ...formData, [e.target.name]: value });
     }
 
-    const postFormData = {
-        unver_name,
-        unver_alias,
-        unver_status: unver_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
+    const postFormData = useMemo(() => {
+        return {
+            unver_name,
+            unver_alias,
+            unver_status: unver_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [unver_name, unver_alias, unver_status])
 
     // reset form
-    const resetForm = {
-        unver_name: '',
-        unver_alias: '',
-        unver_status: false
-    }
+    const resetForm = useMemo(() => {
+        return {
+            unver_name: '',
+            unver_alias: '',
+            unver_status: false
+        }
+    }, [])
+    const postUniversity = useMemo(() => {
+        return {
+            unver_name,
+            unver_status: unver_status === true ? 1 : 0,
+            unver_alias,
+            unver_slno: slno,
+            edit_user: employeeNumber()
+        }
+    }, [unver_name, unver_alias, unver_status, slno])
 
     //Insert
-    const submitFormUpdate = async (e) => {
+    const submitFormUpdate = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/university', postFormData);
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setcount(count + 1);
-            setFormData(resetForm);
-        } else if (success === 0) {
-            errorNofity(message);
-        } else if (success === 2) {
-            infoNofity(message.sqlMessage);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/university', postUniversity)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setFormData(resetForm);
+                setcount(count + 1);
+                succesNofity(message);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        } else {
+            const result = await axioslogin.post('/university', postFormData);
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setcount(count + 1);
+                setFormData(resetForm);
+            } else if (success === 0) {
+                errorNofity(message);
+            } else if (success === 2) {
+                infoNofity(message.sqlMessage);
+            } else {
+                errorNofity(message)
+            }
         }
-        else {
-            errorNofity(message)
-        }
-    }
+    }, [flag, count, resetForm, postFormData, postUniversity])
 
-    //Back to home
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    //GetData
+    useEffect(() => {
+        const getUniversityDetl = async () => {
+            const result = await axioslogin.get('/university');
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setcount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getUniversityDetl();
+    }, [count]);
+
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'unver_slno' },
+        { headerName: 'University Name', field: 'unver_name', filter: true, width: 150 },
+        { headerName: 'Alias', field: 'unver_alias', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { unver_slno, unver_name, unver_alias, unver_status } = params.data
+        const frmdata = {
+            unver_name: unver_name,
+            unver_alias: unver_alias,
+            unver_status: unver_status === 1 ? true : false
+        }
+        setFormData(frmdata)
+        setSlno(unver_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="University Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-secondary text-white">
-                    <h5>University</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitFormUpdate} >
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="University Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="unver_name"
-                                            value={unver_name}
-                                            onChange={(e) => getUniversityFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Short Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="unver_alias"
-                                            value={unver_alias}
-                                            onChange={(e) => getUniversityFormData(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12 pb-0 mb-0">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="unver_status"
-                                                    color="primary"
-                                                    value={unver_status}
-                                                    checked={unver_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => getUniversityFormData(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <UniVersityTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'University Name'}
+                                type="text"
+                                size="sm"
+                                name="unver_name"
+                                value={unver_name}
+                                onchange={(e) => getUniversityFormData(e)}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Short Name'}
+                                type="text"
+                                size="sm"
+                                name="unver_alias"
+                                value={unver_alias}
+                                onchange={(e) => getUniversityFormData(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={unver_status}
+                                name="unver_status"
+                                onchange={(e) => getUniversityFormData(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitFormUpdate}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default UniversityMast
+export default memo(UniversityMast) 
