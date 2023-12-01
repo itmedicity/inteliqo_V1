@@ -248,8 +248,8 @@ const InchargeHodPage = ({ em_id, em_department }) => {
                 } else {
                     //TO FETCH PUNCH DATA FROM TABLE
                     const postDataForpunchMaster = {
-                        date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                        date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                        date1: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                        date2: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
                         em_no: employee
                     }
                     //FETCH THE PUNCH TIME FROM PUNCH DATA

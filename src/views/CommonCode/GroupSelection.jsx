@@ -1,11 +1,9 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
+import { Option, Select } from '@mui/joy'
+import React, { memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios'
 
-const GroupSelection = () => {
+const GroupSelection = ({ value, setValue }) => {
     const [groupName, setGroupName] = useState([])
-    const { selectGroupName, updateGroupNameList } = useContext(PayrolMasterContext)
 
     useEffect(() => {
         const getGroupNameList = async () => {
@@ -13,44 +11,30 @@ const GroupSelection = () => {
             const { data, success } = result.data
             if (success === 1) {
                 setGroupName(data)
+            } else {
+                setGroupName([])
             }
         }
         getGroupNameList()
-        return (
-            updateGroupNameList(0)
-        )
-    }, [updateGroupNameList])
+    }, [])
 
     return (
-        <Fragment>
-            <FormControl
-                fullWidth
-                margin="dense"
-                className="mt-1"
-            >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="selectGroupName"
-                    value={selectGroupName}
-                    onChange={(e) => updateGroupNameList(e.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    className="ml-2"
-                    defaultValue={0}
-                >
-                    <MenuItem value='0' disabled>
-                        Select Group Name
-                    </MenuItem>
-                    {
-                        groupName && groupName.map((val, index) => {
-                            return <MenuItem key={index} value={val.user_grp_slno}>{val.user_group_name}</MenuItem>
-                        })
-                    }
-                </Select>
-            </FormControl>
-        </Fragment>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}>Select Group Name</Option>
+            {
+                groupName?.map((val, index) => {
+                    return <Option key={index} value={val.user_grp_slno}>{val.user_group_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 
-export default GroupSelection
+export default memo(GroupSelection) 

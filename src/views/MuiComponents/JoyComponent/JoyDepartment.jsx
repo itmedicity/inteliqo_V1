@@ -27,7 +27,6 @@ const JoyDepartment = ({ deptValue, getDept }) => {
         departments.length > 0 && setDept(departments)
     }, [departments])
 
-
     return (
         <Autocomplete
             placeholder="Select Department"
@@ -35,9 +34,10 @@ const JoyDepartment = ({ deptValue, getDept }) => {
             //value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                setValue(newValue);
-                dispatch(getDepartmentSection(newValue.dept_id))
-                getDept(newValue.dept_id)
+                let obj = { dept_id: 0, dept_name: 'Select Department' }
+                setValue(newValue === null ? obj : newValue);
+                dispatch(getDepartmentSection(newValue?.dept_id))
+                getDept(newValue?.dept_id)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
