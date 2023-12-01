@@ -18,15 +18,15 @@ const BranchMast = React.lazy(() => import('./views/Master/BranchMaster/BranchMa
 const BankMaster = React.lazy(() => import('./views/Master/BankMaster/BankMaster'));
 const RegionMaster = React.lazy(() => import('./views/Master/Region/RegionMast'));
 const DepartmentShift = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftMast'));
-const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
+//const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
 const EmployeeRecrd = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecord'));
 const EmploymentType = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeMast'));
 const EmploymentTypeList = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypetable'));
 const EmploymentTypetable = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeEdit'));
 const ModulegroupMaster = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMast'))
-const ModulegroupMasterEdit = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMastEdit'))
+//const ModulegroupMasterEdit = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMastEdit'))
 const ModuleUserRights = React.lazy(() => import('./views/Master/ModuleUserRights/MdleUserRightMast'))
-const ModuleUserRightsEdit = React.lazy(() => import('./views/Master/ModuleUserRights/ModuleUserRightEdit'))
+//const ModuleUserRightsEdit = React.lazy(() => import('./views/Master/ModuleUserRights/ModuleUserRightEdit'))
 const UserGroupMaster = React.lazy(() => import('./views/Master/GroupMaster/Groupmaster'))
 const GroupRights = React.lazy(() => import('./views/Master/GroupRights/GrouprightsMast'))
 const EmployeeProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile'))
@@ -117,7 +117,7 @@ const BoardEdu = React.lazy(() => import('./views/Master/BoardMaster/BoardMaster
 const HodMarking = React.lazy(() => import('./views/Master/AuthorisationHod/HodMarking'))
 const HodAuthorisation = React.lazy(() => import('./views/Master/AuthorisationHod/HodAuthorisation'))
 const DueClearenceDepartment = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDepartment'))
-const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
+//const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
 const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/DueClearence'))
 // const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OtCeoApproval'))
@@ -146,7 +146,7 @@ const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Ann
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
 const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
 const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
-const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
+// const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
@@ -256,15 +256,15 @@ const routes = [
   { path: '/Home/Bank', exact: true, name: 'Bank Master', component: BankMaster },
   { path: '/Home/Region', exact: true, name: 'Region Master', component: RegionMaster },
   { path: '/Home/DepartmentShift', exact: true, name: 'Department Shift Master', component: DepartmentShift },
-  { path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
+  //{ path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
   { path: '/Home/EmployeeRecord', exact: true, name: 'Employee Records', component: EmployeeRecrd },
   { path: '/Home/EmploymentType', exact: true, name: 'Employment Type', component: EmploymentType },
   { path: '/Home/EmploymentTypeList', exact: true, name: 'Employment Type List', component: EmploymentTypeList },
   { path: '/Home/EmploymentTypeEdit/:id', exact: true, name: 'Employment Type Edit', component: EmploymentTypetable },
   { path: '/Home/ModuleGroupMaster', exact: true, name: 'Module Group Master', component: ModulegroupMaster },
-  { path: '/Home/MdulGrpMastEdit/:id', exact: true, name: 'Module Group Master Edit', component: ModulegroupMasterEdit },
+  //{ path: '/Home/MdulGrpMastEdit/:id', exact: true, name: 'Module Group Master Edit', component: ModulegroupMasterEdit },
   { path: '/Home/ModuleUserRights', exact: true, name: 'Module User Rights', component: ModuleUserRights },
-  { path: '/Home/ModuleUserRightEdit/:id', exact: true, name: 'Module User Rights Master Edit', component: ModuleUserRightsEdit },
+  //{ path: '/Home/ModuleUserRightEdit/:id', exact: true, name: 'Module User Rights Master Edit', component: ModuleUserRightsEdit },
   { path: '/Home/UserGroup', exact: true, name: 'User Group Master', component: UserGroupMaster },
   { path: '/Home/GroupRights', exact: true, name: 'Group Rights', component: GroupRights },
   { path: '/Home/DoctorType', exact: true, name: 'Doctor Type', component: DoctorType },
@@ -346,7 +346,7 @@ const routes = [
   { path: '/Home/Authorisation', exact: true, name: 'hod and Incharge Marking', component: HodMarking },
   { path: '/Home/HodMark', exact: true, name: 'Hod Authorisation', component: HodAuthorisation },
   { path: '/Home/DueClearenceDepartment', exact: true, name: 'Due Clearence Department', component: DueClearenceDepartment },
-  { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
+  //  { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
   { path: '/Home/DueClearence', exact: true, name: 'Due Clearence', component: DueClearence },
   { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
   { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
@@ -372,7 +372,7 @@ const routes = [
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
   { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
-  { path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
+  //{ path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
   { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR },

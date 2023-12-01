@@ -136,7 +136,7 @@ const HodMarking = () => {
             <Box sx={{ width: "100%" }} >
                 <Paper variant='outlined' square sx={{ width: '100%', display: 'flex', py: 2, px: 0.5 }} >
                     <Box sx={{ flex: 1, px: 0.2 }}>
-                        <DeptSectionOnlySelect getDeptSection={getDeptSection} />
+                        <DeptSectionOnlySelect sectValue={deptSection} getDeptSection={getDeptSection} />
                     </Box>
                     <Box sx={{ mt: 1, ml: 2 }}>
                         <JoyCheckbox
@@ -155,10 +155,10 @@ const HodMarking = () => {
                         />
                     </Box>
                     <Box sx={{ flex: 1, ml: 1, px: 0.2 }}>
-                        <DeptSectionOnlySelect getDeptSection={setSelectDeptSect} />
+                        <DeptSectionOnlySelect sectValue={selectDepSect} getDeptSection={setSelectDeptSect} />
                     </Box>
                     <Box sx={{ flex: 1, px: 0.2 }}>
-                        <JoySectionEmployee setValue={setSelectEmp} deptSect={deptSection} />
+                        <JoySectionEmployee value={selectEmp} setValue={setSelectEmp} deptSect={selectDepSect} />
                     </Box>
                     <Box sx={{}}>
                         <CssVarsProvider>
