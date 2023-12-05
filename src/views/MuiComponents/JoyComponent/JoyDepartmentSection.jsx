@@ -39,7 +39,7 @@ const JoyDepartmentSection = ({ sectValues, getSection }) => {
             clearOnBlur
             onChange={(event, newValue) => {
                 setValue(newValue);
-                getSection(newValue.sect_id)
+                getSection(newValue?.sect_id)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
