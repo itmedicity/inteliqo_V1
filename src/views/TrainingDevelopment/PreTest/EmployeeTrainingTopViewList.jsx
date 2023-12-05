@@ -48,11 +48,12 @@ const EmployeeTrainingTopViewList = () => {
                 sect_id: val.sect_id,
                 pretest_status: val.pretest_status,
                 schedule_date: val.schedule_date,
+                posttest_permission: val.posttest_permission,
                 date: moment(val.schedule_date).format('YYYY-MM-DD'),
             }
             return object;
         })
-        const filterToday = displayData?.filter((val) => val.date === moment(new Date()).format("YYYY-MM-DD"))
+        const filterToday = displayData?.filter((val) => val.date === moment(new Date()).format("YYYY-MM-DD") && val.posttest_permission === 0)
         setTabledata(filterToday)
     }, [EmpTopics, setTabledata])
 

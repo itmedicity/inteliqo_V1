@@ -58,7 +58,10 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                 questions: val.questions,
                 right_answer: val.right_answer,
                 upload_status: val.upload_status,
-                writtenStatus: val.writtenStatus
+                writtenStatus: val.writtenStatus,
+                online_status: val.online_status,
+                offline_status: val.offline_status,
+                both_status: val.both_status
             }
             return object;
         })
@@ -138,7 +141,6 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
     useEffect(() => {
         if (checkInsert === 1) {
             const InsertData = async (PostData) => {
-                console.log(PostData);
                 const result = await axioslogin.post('/TrainingProcess/pretest', PostData)
                 const { success, message } = result.data
                 if (success === 1) {
@@ -177,21 +179,24 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
 
     return (
         <Fragment>
-            <Box sx={{ p: 2, width: "100%", height: 650, backgroundColor: "#F5F7F8" }}>
+            <Box sx={{ p: 2, width: "100%", height: 500, backgroundColor: "#F5F7F8" }}>
 
-                <Box sx={{ display: "flex", flexDirection: "row", width: "100%", gap: 2 }}>
-                    <Box sx={{ width: "4%", height: 60, borderRadius: 10, textAlign: "center", border: 4, borderColor: "#6F1AB6", p: 0.3 }}>  <CountDownTimer sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
+                <Box sx={{ display: "flex", flexDirection: "row", width: "100%", gap: 2, flexWrap: "wrap" }}>
 
                     {/* Header Portion */}
-                    <Box sx={{ width: "95%", display: "flex", flexDirection: "column", gap: 1 }}>
+                    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
+
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+
                             <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount}</Box>
+                            <Box sx={{ textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>  <CountDownTimer sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
+
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                <Box sx={{ backgroundColor: "#A2C579", display: "flex", flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
+                                <Box sx={{ backgroundColor: "#A2C579", display: "flex", height: 25, flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
                                     <Box><CheckIcon /></Box>
                                     <Box>{correct}</Box>
                                 </Box>
-                                <Box sx={{ backgroundColor: "#FA7070", display: "flex", flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
+                                <Box sx={{ backgroundColor: "#FA7070", display: "flex", height: 25, flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
                                     <Box><ClearIcon /></Box>
                                     <Box>{wrong}</Box>
                                 </Box>
@@ -205,14 +210,14 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
 
                 {/* Next Question  */}{
                     order < datalen ?
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}>
                             <Button
                                 onClick={HandleNextQuestion}
                                 sx={{ width: "12%", p: 2, backgroundColor: "#3085C3", borderRadius: 3, fontSize: "large" }}>
                                 Next Question <ArrowForwardIosIcon />
                             </Button>
                         </Box>
-                        : <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                        : <Box sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}>
                             <Button
                                 onClick={SubmitAnswers}
                                 sx={{ width: "12%", p: 2, backgroundColor: "#3085C3", borderRadius: 3, fontSize: "large" }}>
@@ -221,7 +226,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                         </Box>
                 }
             </Box>
-            {open === true ? <ShowModal open={open} setopen={setopen} setOpen={setOpen} /> : null}
+            {open === true ? <ShowModal data={data} open={open} setopen={setopen} setOpen={setOpen} /> : null}
         </Fragment >
     )
 }

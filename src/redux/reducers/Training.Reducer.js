@@ -15,6 +15,8 @@ const {
     FETCH_DEPT_EMP_NAME_DESG,
     FETCH_SCHEDULE_TOPIC_BASED_ON_EMP,
     FETCH_ALL_QUESTIONS,
+    FETCH_ONLINE_TRAINING_DETAILS,
+    FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW,
 } = Actiontypes;
 
 const TrainingData = {
@@ -73,6 +75,14 @@ const TrainingData = {
     QuestionDetails: {
         QuestionDetailsList: [],
         QuestionDetailsStatus: false
+    },
+    OnlineTraining: {
+        OnlineTrainingList: [],
+        OnlineTrainingStatus: false
+    },
+    ScheduletopicDropdown: {
+        ScheduletopicDropdownList: [],
+        ScheduletopicDropdownStatus: false
     }
 }
 
@@ -202,6 +212,24 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.QuestionDetails,
                     QuestionDetailsList: payload,
                     QuestionDetailsStatus: true
+                }
+            }
+        case FETCH_ONLINE_TRAINING_DETAILS:
+            return {
+                ...state,
+                OnlineTraining: {
+                    ...state.OnlineTraining,
+                    OnlineTrainingList: payload,
+                    OnlineTrainingStatus: true
+                }
+            }
+        case FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW:
+            return {
+                ...state,
+                ScheduletopicDropdown: {
+                    ...state.ScheduletopicDropdown,
+                    ScheduletopicDropdownList: payload,
+                    ScheduletopicDropdownStatus: true
                 }
             }
         default:

@@ -48,11 +48,12 @@ const EmpViewpage = () => {
                 pretest_status: val.pretest_status,
                 posttest_status: val.posttest_status,
                 schedule_date: val.schedule_date,
+                posttest_permission: val.posttest_permission,
                 date: moment(val.schedule_date).format('YYYY-MM-DD'),
             }
             return object;
         })
-        const test = displayData?.filter((val) => val.pretest_status === 1)
+        const test = displayData?.filter((val) => val.pretest_status === 1 && val.posttest_permission === 1)
         setTabledata(test)
     }, [EmpTopics, setTabledata])
 

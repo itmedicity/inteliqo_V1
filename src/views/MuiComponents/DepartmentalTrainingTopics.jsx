@@ -2,10 +2,11 @@ import { FormControl, MenuItem, Select } from '@mui/material';
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 
-const DepartmentalTrainingTopics = ({ setTopic, topic, dept }) => {
+const DepartmentalTrainingTopics = ({ setTopic, dept }) => {
     const [view, setView] = useState([]);
+    const [topicname, setTopicname] = useState([]);
     useEffect(() => {
-        if (dept === 0) {
+        if (dept !== 0) {
             const getData = async (dept) => {
                 const result = await axioslogin.get(`/TrainingAfterJoining/deptTrainingtopic/${dept}`)
                 const { data, success } = result.data
@@ -19,12 +20,15 @@ const DepartmentalTrainingTopics = ({ setTopic, topic, dept }) => {
         }
     }, [dept])
 
+    useEffect(() => {
+        setTopic(topicname)
+    }, [setTopic, topicname])
     return (
         <Fragment>
             <FormControl fullWidth size='small'>
                 <Select
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
+                    value={topicname}
+                    onChange={(e) => setTopicname(e.target.value)}
                     size="small"
                     fullWidth
                     variant='outlined'

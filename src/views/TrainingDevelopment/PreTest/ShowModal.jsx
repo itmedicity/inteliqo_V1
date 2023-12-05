@@ -1,18 +1,74 @@
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Box, Paper, Typography } from '@mui/material';
-import React, { Fragment, memo, useCallback } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { useHistory } from 'react-router'
 
-const ShowModal = ({ open, setopen, setOpen }) => {
+const ShowModal = ({ data, open, setopen, setOpen }) => {
 
+    const history = useHistory()
     const handleClose = useCallback(() => {
         setopen(false);
     }, [setopen]);
 
+    // const BtnClose = useCallback(() => {
+    //     setopen(false);
+    //     setOpen(false);
+    // }, [setopen, setOpen]);
+
+    const [datas, setDatas] = useState({
+        online_status: false,
+        offline_status: false,
+        both_status: false
+    });
+
+    const { online_status, offline_status, both_status } = datas;
+    useEffect(() => {
+        if (Object.keys(data).length !== 0) {
+            const { online_status, offline_status, both_status } = data[0];
+            const obj = {
+                online_status: online_status === 1 ? true : false,
+                offline_status: offline_status === 1 ? true : false,
+                both_status: both_status === 1 ? true : false
+            }
+            setDatas(obj);
+        }
+    }, [data, setDatas])
+
+    const OnlineSection = useCallback((e) => {
+        if (e.target.checked === true) {
+            history.push('/Home/OnlineTraining')
+            setopen(false);
+            setOpen(false);
+        }
+    }, [setopen, history, setOpen])
+
+    const OfflineSection = useCallback((e) => {
+        if (e.target.checked === true) {
+            setopen(false);
+            setOpen(false);
+        }
+        else {
+
+        }
+    }, [setopen, setOpen])
+
     const BtnClose = useCallback(() => {
-        setopen(false);
-        setOpen(false);
-    }, [setopen, setOpen]);
+        if (online_status === true) {
+            history.push('/Home/OnlineTraining')
+            setopen(false);
+            setOpen(false);
+        }
+        else if (offline_status === true) {
+            setopen(false);
+            setOpen(false);
+        }
+        else {
+
+        }
+    }, [online_status, history, offline_status, setopen, setOpen]);
+
 
     return (
         <Fragment>
@@ -36,7 +92,38 @@ const ShowModal = ({ open, setopen, setOpen }) => {
                     />
                     <Paper elevation={0} sx={{ size: 'lg', fontWeight: "bold", width: "100%", textAlign: "center", p: 1 }}>
                         <Typography sx={{ size: 'lg', color: "#186F65", fontWeight: "bold" }}>Good attempt!</Typography>
-                        <Typography sx={{ color: "steelblue", mt: 1 }}>Your next section will be continued...</Typography>
+                        {online_status === true ?
+                            <Typography sx={{ color: "steelblue", mt: 1 }}>Your next section will be held Online</Typography>
+                            : null}
+
+                        {offline_status === true ?
+                            <Typography sx={{ color: "steelblue", mt: 1 }}>Your next section will be held Offline</Typography>
+                            : null}
+
+                        {both_status === true ?
+                            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                <Box>
+                                    <JoyCheckbox
+                                        label='Online'
+                                        checked={online_status}
+                                        name="online_status"
+                                        sx={{}}
+                                        onchange={(e) => OnlineSection(e.target.checked)}
+                                    />
+
+                                </Box>
+                                <Box>
+                                    <JoyCheckbox
+                                        label='Offline'
+                                        checked={offline_status}
+                                        name="offline_status"
+                                        onchange={(e) => OfflineSection(e.target.checked)}
+                                    />
+
+                                </Box>
+                            </Box>
+                            : null}
+
 
                         <Box sx={{ mt: 1 }}>
                             <Button onClick={BtnClose}>
@@ -46,7 +133,7 @@ const ShowModal = ({ open, setopen, setOpen }) => {
                     </Paper>
                 </ModalDialog>
             </Modal>
-        </Fragment>
+        </Fragment >
     );
 }
 export default memo(ShowModal)

@@ -20,7 +20,8 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
         handwrite_answer: '',
         right_answer: '',
         q_slno: 0,
-        topic_slno: 0
+        topic_slno: 0,
+        training_topic_name: ''
     })
 
     const { Questn, optionA, optionB, optionC, optionD } = disQuestn;
@@ -28,7 +29,7 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
     useEffect(() => {
         if (data.length !== 0) {
             const questDetails = data?.find((val) => val.oder === order)
-            const { questions, answer_a, answer_b, answer_c, answer_d, writtenStatus, upload_status, oder, marks, handwrite_answer, right_answer, q_slno, topic_slno } = questDetails;
+            const { questions, answer_a, answer_b, answer_c, answer_d, writtenStatus, upload_status, oder, marks, training_topic_name, handwrite_answer, right_answer, q_slno, topic_slno } = questDetails;
             const obj = {
                 Questn: questions,
                 optionA: answer_a,
@@ -42,7 +43,8 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
                 handwrite_answer: handwrite_answer,
                 right_answer: right_answer,
                 q_slno: q_slno,
-                topic_slno: topic_slno
+                topic_slno: topic_slno,
+                training_topic_name: training_topic_name
             }
             setDisQuestn(obj);
             setRightAns(right_answer)
@@ -202,55 +204,63 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
                     <Box>
                         {
                             clrFlagA === 1 ?
-                                <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                                <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionA}
                                 >
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box>
-                                    <Box sx={{ width: "80%" }}>{optionA}</Box>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 1, p: 0.5, borderRadius: 5 }}>1</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>1.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionA}</Box>
                                 </Paper>
                                 :
-                                <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionA}>
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box>
-                                    <Box sx={{ width: "80%" }}>{optionA}</Box>
+                                <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionA}>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>1</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>1.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionA}</Box>
                                 </Paper>
                         }
                         {
                             clrFlagB === 1 ?
-                                <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                                <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionB}
                                 >
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box>
-                                    <Box sx={{ width: "80%" }}>{optionB}</Box>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>2</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>2.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionB}</Box>
                                 </Paper>
-                                : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionB}>
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box>
-                                    <Box sx={{ width: "80%" }}>{optionB}</Box>
+                                : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionB}>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>2</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>2.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionB}</Box>
                                 </Paper>
                         }
                         {
                             clrFlagC === 1 ?
-                                <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                                <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionC}
                                 >
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box>
-                                    <Box sx={{ width: "80%" }}>{optionC}</Box>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>3</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>3.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionC}</Box>
                                 </Paper>
-                                : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionC}>
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box>
-                                    <Box sx={{ width: "80%" }}>{optionC}</Box>
+                                : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionC}>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>3</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>3.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionC}</Box>
                                 </Paper>
                         }
                         {
                             clrFlagD === 1 ?
-                                <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                                <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionD}
                                 >
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box>
-                                    <Box sx={{ width: "80%" }}>{optionD}</Box>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>4</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>4.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionD}</Box>
                                 </Paper>
-                                : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionD}>
-                                    <Box sx={{ width: "2%", borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box>
-                                    <Box sx={{ width: "80%" }}>{optionD}</Box>
+                                : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionD}>
+                                    {/* <Box sx={{ textAlign: "center", border: 2, borderColor: "#674188", p: 0.5, borderRadius: 5 }}>4</Box> */}
+                                    <Box sx={{ fontWeight: "bold" }}>4.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionD}</Box>
                                 </Paper>
                         }
                     </Box>
@@ -261,7 +271,7 @@ const QuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrF
                         setDisQuestn={setDisQuestn} Questn={Questn} />
             }
             {/* } */}
-        </Fragment>
+        </Fragment >
     )
 }
 

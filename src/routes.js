@@ -248,6 +248,7 @@ const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeAc
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/EmployeeTrainingTopViewList'))
 const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/EmpViewpage'))
+const OnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTraining'))
 
 
 const routes = [
@@ -489,6 +490,7 @@ const routes = [
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
   { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
+  { path: '/Home/OnlineTraining', exact: true, name: 'Online Training', component: OnlineTraining },
 
 ]
 

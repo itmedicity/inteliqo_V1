@@ -63,7 +63,7 @@ const TodayTrainings = ({ setShow, Todaydata, count, Setcount, Details }) => {
                         columnDefs={columnDef}
                         tableData={todayData}
                         sx={{
-                            height: 700,
+                            height: 690,
                             width: "100%",
                             mt: 1
                         }}

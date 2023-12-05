@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
+import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 
 const TrainingTopic = () => {
     const [dept_status, set_dept_status] = useState(false);
@@ -35,6 +36,7 @@ const TrainingTopic = () => {
     const [dept_flag, setdept_Flag] = useState(0);
     const [trainingname, setTrainingname] = useState(0);
     const [hours, setHours] = useState('');
+    const [videos, SetVideos] = useState('');
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -57,6 +59,7 @@ const TrainingTopic = () => {
         set_Online_status(false)
         setOffline_status(false)
         setBoth_status(false)
+        SetVideos('');
     }, [])
     //check dept
     const checkDepartment = useCallback((e) => {
@@ -88,9 +91,10 @@ const TrainingTopic = () => {
             offline_status: offline_status === true ? 1 : 0,
             both_status: both_status === true ? 1 : 0,
             create_user: em_id,
-            hours: hours
+            hours: hours,
+            video_link: videos
         }
-    }, [depttype, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
+    }, [depttype, videos, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
@@ -110,9 +114,10 @@ const TrainingTopic = () => {
             both_status: both_status === true ? 1 : 0,
             edit_user: em_id,
             topic_slno: topic_slno,
-            hours: hours
+            hours: hours,
+            video_link: videos
         }
-    }, [dept_status, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
+    }, [dept_status, videos, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
@@ -149,7 +154,8 @@ const TrainingTopic = () => {
                         offline_status: val.offline_status,
                         offline: val.offline_status === 0 ? "NO" : "YES",
                         both_status: val.both_status,
-                        both: val.both_status === 0 ? "NO" : "YES"
+                        both: val.both_status === 0 ? "NO" : "YES",
+                        video_link: val.video_link === null ? "NILL" : val.video_link
                     }
                     return obj;
                 })
@@ -166,7 +172,7 @@ const TrainingTopic = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
+        const { topic_slno, video_link, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
         setFlag(1);
         setdepttype(dept_id)
         set_dept_status(dept_status === 0 ? false : true)
@@ -184,6 +190,7 @@ const TrainingTopic = () => {
         set_Online_status(online_status === 1 ? true : false)
         setOffline_status(offline_status === 1 ? true : false)
         setBoth_status(both_status === 1 ? true : false)
+        SetVideos(video_link);
     }, [])
 
     //submit
@@ -245,16 +252,59 @@ const TrainingTopic = () => {
         { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
         { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
         { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
+        { headerName: 'Link ', field: 'video_link', filter: true, minWidth: 300 },
         { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
         {
             headerName: 'Edit', minWidth: 150, cellRenderer: params =>
-                <Fragment>
+                < Fragment >
                     <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)}>
                         <EditIcon color='primary' />
                     </IconButton>
-                </Fragment>
+                </Fragment >
         }
     ])
+
+    const HandleOnline = useCallback((e) => {
+        if (e.target.checked === true) {
+            set_Online_status(e.target.checked)
+            setOffline_status(false);
+            setBoth_status(false);
+        }
+        else {
+            set_Online_status(false)
+            setOffline_status(false);
+            setBoth_status(false);
+        }
+    }, [set_Online_status, setOffline_status, setBoth_status])
+
+
+    const HandleOffline = useCallback((e) => {
+        if (e.target.checked === true) {
+            setOffline_status(e.target.checked)
+            set_Online_status(false);
+            setBoth_status(false);
+        }
+        else {
+            set_Online_status(false)
+            setOffline_status(false);
+            setBoth_status(false);
+        }
+    }, [set_Online_status, setOffline_status, setBoth_status])
+
+    const HandleBoth = useCallback((e) => {
+        if (e.target.checked === true) {
+            setBoth_status(e.target.checked)
+            setOffline_status(false);
+            set_Online_status(false);
+        }
+        else {
+            set_Online_status(false)
+            setOffline_status(false);
+            setBoth_status(false);
+        }
+    }, [set_Online_status, setOffline_status, setBoth_status])
+
+    console.log(videos);
 
     return (
         <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
@@ -435,7 +485,8 @@ const TrainingTopic = () => {
                                                         value={online_status}
                                                         checked={online_status}
                                                         className="ml-1"
-                                                        onChange={(e) => set_Online_status(e.target.checked)}
+                                                        //onChange={(e) => set_Online_status(e.target.checked)}
+                                                        onChange={(e) => HandleOnline(e)}
                                                     />
                                                 }
                                                 label="Online"
@@ -452,7 +503,7 @@ const TrainingTopic = () => {
                                                         value={offline_status}
                                                         checked={offline_status}
                                                         className="ml-1"
-                                                        onChange={(e) => setOffline_status(e.target.checked)}
+                                                        onChange={(e) => HandleOffline(e)}
                                                     />
                                                 }
                                                 label="Offline"
@@ -469,7 +520,7 @@ const TrainingTopic = () => {
                                                         value={both_status}
                                                         checked={both_status}
                                                         className="ml-1"
-                                                        onChange={(e) => setBoth_status(e.target.checked)}
+                                                        onChange={(e) => HandleBoth(e)}
                                                     />
                                                 }
                                                 label="Both"
@@ -477,6 +528,19 @@ const TrainingTopic = () => {
                                         </Box>
                                     </Grid>
                                 </Grid>
+                                {
+                                    both_status === true || online_status === true ?
+                                        <JoyInput
+                                            type='text'
+                                            name='video link'
+                                            id='videos'
+                                            placeholder="Enter Video Link"
+                                            value={videos}
+                                            onchange={(e) => SetVideos(e)}
+                                        />
+                                        : null
+                                }
+
                                 <Box sx={{ px: 0.5, mt: 0.9 }}>
                                     <CssVarsProvider>
                                         <Button

@@ -166,27 +166,28 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
         <Box>
             {
                 clrFlagA === 1 ?
-                    <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                    <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionA}
                     >
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box></Box>
-
-                        <Box sx={{ width: "80%" }}>
+                        {/* <Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             />
                         </Box>
                     </Paper>
                     :
-                    <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionA}>
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box></Box>
-                        <Box sx={{ width: "80%" }}>
+                    <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionA}>
+
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             />
@@ -195,24 +196,26 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
             }
             {
                 clrFlagB === 1 ?
-                    <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                    <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionB}
                     >
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box>
-                        <Box sx={{ width: "80%" }}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>
                     </Paper>
-                    : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionB}>
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box>
-                        <Box sx={{ width: "80%" }}>
+                    : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionB}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>
@@ -220,25 +223,26 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
             }
             {
                 clrFlagC === 1 ?
-                    <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                    <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF", flexWrap: "wrap" }}
                         onClick={HandleOptionC}
                     >
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box>
-                        <Box sx={{ width: "80%" }}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>
                     </Paper>
-                    : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionC}>
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box>
-
-                        <Box sx={{ width: "80%" }}>
+                    : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionC}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>
@@ -246,25 +250,26 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
             }
             {
                 clrFlagD === 1 ?
-                    <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF" }}
+                    <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionD}
                     >
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box>
-                        <Box sx={{ width: "80%" }}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>
                     </Paper>
-                    : <Paper sx={{ mt: 2, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer" }} onClick={HandleOptionD}>
-                        <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box>
-
-                        <Box sx={{ width: "80%" }}>
+                    : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionD}>
+                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box> */}
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}
-                                height={60}
+                                height={50}
                                 alt='Error'
                                 style={{ maxWidth: '100%', maxHeight: '100%' }}
                             /></Box>

@@ -106,8 +106,6 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         }
     }, [setDept_all])
 
-
-
     return (
         <Fragment>
             <Dialog

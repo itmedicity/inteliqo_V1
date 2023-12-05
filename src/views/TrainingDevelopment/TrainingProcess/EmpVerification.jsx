@@ -1,4 +1,4 @@
-import { Button, CssVarsProvider, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
+import { Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
 import { Box } from '@mui/material'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
@@ -8,14 +8,12 @@ import DoneIcon from '@mui/icons-material/Done';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { IconButton as OpenIcon } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import moment from 'moment';
-import SaveIcon from '@mui/icons-material/Save';
 
-const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) => {
+const EmpVerification = ({ count, Setcount, open, Setopen, Details, getData }) => {
     const [tableData, setTableData] = useState([]);
     const [setData, setsetData] = useState([]);
-    const [question_count, setQuestion_count] = useState('');
 
     useEffect(() => {
         const filterdata = Details?.filter((val) => {
@@ -44,7 +42,8 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
                 slno: val.slno,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                training_status: val.training_status
+                training_status: val.training_status,
+                posttest_permission: val.posttest_permission
             }
             return object;
         })
@@ -52,13 +51,13 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
     }, [setData, setTableData])
 
     //mark attendance
-    const markAttendance = useCallback(async (params) => {
+    const HandleVerification = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
         const { slno } = data[0]
         const patchdata = {
             slno: slno
         }
-        const result = await axioslogin.patch('/TrainingProcess/attendance', patchdata)
+        const result = await axioslogin.patch('/TrainingProcess/empverification', patchdata)
         const { success, message } = result.data;
         if (success === 2) {
             Setcount(count + 1)
@@ -71,21 +70,20 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
     const [columnDef] = useState([
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 150 },
-        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 150 },
         {
-            headerName: 'Mark Attendance',
+            headerName: 'Verify Employee ',
             cellRenderer: params => {
-                if (params.data.training_status === 1) {
+                if (params.data.posttest_permission === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Attendance Marked">
+                        <Tooltip title="Verified">
                             <DoneIcon />
                         </Tooltip>
                     </OpenIcon>
                 } else {
-                    return <OpenIcon onClick={() => markAttendance(params)}
+                    return <OpenIcon onClick={() => HandleVerification(params)}
                         sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Mark Attendance">
+                        <Tooltip title="Not Verified">
                             <HowToRegIcon color='primary' />
                         </Tooltip>
                     </OpenIcon>
@@ -95,28 +93,6 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
     ])
 
 
-    const handleSubmit = useCallback(async () => {
-        const { slno, date } = getData[0]
-        const patchdata = {
-            slno: slno,
-            schedule_date: moment(date).format("YYYY-MM-DD HH:MM:SS"),
-            question_count: question_count
-        }
-
-        const result = await axioslogin.patch('/TrainingProcess/questionCount', patchdata)
-        const { success, message } = result.data;
-        if (success === 1) {
-            succesNofity(message)
-            Setcount(count + 1)
-            setQuestion_count('');
-            Setopen(false)
-        }
-        else {
-            warningNofity(message)
-            setQuestion_count('')
-        }
-    }, [Setcount, count, getData, question_count, Setopen, setQuestion_count])
-
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -125,7 +101,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
             onClose={Handleclose}
             sx={{ display: 'flex' }}
         >
-            <ModalDialog size="lg" sx={{ width: "60%", height: 600 }}>
+            <ModalDialog size="lg" sx={{ width: "60%", height: 550 }}>
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -144,7 +120,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
                     }
                     sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                 >
-                    Training Attendance
+                    Employee Verification
                 </Typography>
                 <Box sx={{ overflow: 'auto', mt: 1 }}>
                     <CommonAgGrid
@@ -158,33 +134,10 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
                         headerHeight={30}
                     />
                 </Box>
-                <Box sx={{ display: "flex", flexDirection: "row", mt: 2, width: "100%", justifyContent: "flex-end", gap: 3 }} >
-                    <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
-                    <Box >
-                        <input
-                            type='number'
-                            name='question count'
-                            value={question_count}
-                            onChange={(e) => { setQuestion_count(e.target.value) }}
-                        />
-                    </Box>
-                    <Box>
-                        <CssVarsProvider>
-                            <Button
-                                variant="outlined"
-                                color="success"
-                                onClick={handleSubmit}
-                                size="sm"
-                                sx={{ py: 0, color: '#81c784' }}
-                            >
-                                <SaveIcon sx={{ fontSize: 25 }} />
-                            </Button>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
             </ModalDialog>
         </Modal >
     )
 }
 
-export default memo(AttendanceModal)
+export default memo(EmpVerification)
+

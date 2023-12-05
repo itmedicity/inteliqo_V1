@@ -16,6 +16,8 @@ const {
     FETCH_DEPT_EMP_NAME_DESG,
     FETCH_SCHEDULE_TOPIC_BASED_ON_EMP,
     FETCH_ALL_QUESTIONS,
+    FETCH_ONLINE_TRAINING_DETAILS,
+    FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW,
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -156,6 +158,28 @@ export const QuestionList = (questCount) => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_ALL_QUESTIONS, payload: [], status: false })
+    }
+}
+export const OnlineTrainingTopicListOfEmp = (em_id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingOnline/empOnlineTopics/${em_id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_ONLINE_TRAINING_DETAILS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_ONLINE_TRAINING_DETAILS, payload: [], status: false })
+    }
+}
+export const DepartmentalScheduledTopicsDpDw = (dept) => async (dispatch) => {
+    console.log("action", dept);
+    const result = await axioslogin.get(`/TrainingAfterJoining/deptTrainingtopic/${dept}`)
+    const { data, success } = result.data
+    console.log(data);
+    if (success === 1) {
+        dispatch({ type: FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW, payload: [], status: false })
     }
 }
 
