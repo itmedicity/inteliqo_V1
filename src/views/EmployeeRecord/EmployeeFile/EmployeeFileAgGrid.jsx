@@ -161,7 +161,7 @@ const EmployeeFileAgGrid = () => {
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
                                 <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Employee Contract End List
+                                    Employee File List
                                 </Typography>
                             </CssVarsProvider>
                         </Box>

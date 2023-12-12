@@ -27,7 +27,7 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
         if (value !== null) {
             setFlag(1)
             setValue(value)
-            getDesg(value.desg_slno)
+            getDesg(value?.desg_slno)
         } else {
             getDesg(0)
             setValue({})
