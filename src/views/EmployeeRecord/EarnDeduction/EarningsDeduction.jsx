@@ -1,9 +1,7 @@
-import { Button, } from '@mui/joy'
-import { Box, IconButton, TextField, FormControlLabel, Checkbox, Tooltip } from '@mui/material'
-import React, { Fragment, memo, useState } from 'react'
+import { Button, CssVarsProvider, } from '@mui/joy'
+import { Box, IconButton, Tooltip } from '@mui/material'
+import React, { Fragment, memo, useCallback, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux';
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -12,9 +10,16 @@ import EarnDeductionModel from './EarnDeductionModel';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import { useDispatch } from 'react-redux';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 
 const EarningsDeduction = () => {
 
+    const dispatch = useDispatch()
     const [dept, setDept] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
     const [Empno, setEmpNo] = useState('')
@@ -24,9 +29,10 @@ const EarningsDeduction = () => {
     const [empId, setEmpId] = useState(0)
     const [newEmp, setNewEmp] = useState(true)
     const [recomendeSalary, setRecomendSalary] = useState(0)
-    const getEmpNO = async (e) => {
-        setEmpNo(e.target.value)
-    }
+
+    useEffect(() => {
+        dispatch(setDepartment());
+    }, [dispatch])
 
     const updateNewEmp = (e) => {
         if (e.target.checked === true) {
@@ -64,9 +70,8 @@ const EarningsDeduction = () => {
 
 
     }, [dept, deptSection, Empno, newEmp])
-    const dataDisplay = async () => {
 
-
+    const dataDisplay = useCallback(async () => {
         if (dept !== 0 && deptSection !== 0 && Empno === '') {
             const postData = {
                 em_department: dept,
@@ -105,9 +110,9 @@ const EarningsDeduction = () => {
             }
 
         }
-    }
+    }, [Empno, dept, deptSection])
 
-    const toOpenModel = async (params) => {
+    const toOpenModel = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
         const { em_id, em_no, recomend_salary } = data[0]
         setEmpId(em_id)
@@ -115,7 +120,7 @@ const EarningsDeduction = () => {
         setRecomendSalary(recomend_salary)
         setModel(1)
         setOpen(true)
-    }
+    }, [])
 
     const [columnDef] = useState([
         {
@@ -126,12 +131,8 @@ const EarningsDeduction = () => {
                         <CheckCircleOutlineIcon color='primary' />
                     </Tooltip>
                 </IconButton>
-            // <Fragment>
-            //     <CheckCircleOutlineIcon onClick={() => toOpenModel(params)} color='primary' />
-            // </Fragment>
         },
         { headerName: 'Emp No', field: 'em_no', minWidth: 90 },
-        // { headerName: 'Emp Id', field: 'em_id', minWidth: 90 },
         { headerName: 'Employee Name', field: 'em_name' },
         { headerName: 'Department', field: 'dept_name' },
         { headerName: 'Department Section', field: 'sect_name' },
@@ -157,42 +158,41 @@ const EarningsDeduction = () => {
                 <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
-                            <DeptSelectByRedux setValue={setDept} value={dept} />
+                            <DepartmentDropRedx getDept={setDept} />
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }} >
-                            <DeptSecSelectByRedux dept={dept} setValue={setDeptSection} value={deptSection} />
+                            <DepartmentSectionRedx getSection={setDeptSection} />
                         </Box>
                         <Tooltip title="Employee Number" followCursor placement='top' arrow>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                                <TextField fullWidth
-                                    id="fullWidth" size="small"
-                                    onChange={getEmpNO}
+                                <InputComponent
+                                    type="text"
+                                    size="sm"
+                                    placeholder="Employee Number"
+                                    name="Empno"
+                                    value={Empno}
+                                    onchange={(e) => setEmpNo(e.target.value)}
                                 />
                             </Box>
                         </Tooltip>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, ml: 1 }}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        color="secondary"
-                                        name="newEmp"
-                                        value={newEmp}
-                                        checked={newEmp}
-                                        className="ml-2"
-                                        onChange={(e) => { updateNewEmp(e) }}
-                                    />
-                                }
-                                label="New Employees"
+                        <Box sx={{ flex: 1, mt: 1.5, px: 0.3, ml: 2 }}>
+                            <JoyCheckbox
+                                label='New Employees'
+                                name="newEmp"
+                                checked={newEmp}
+                                onchange={(e) => { updateNewEmp(e) }}
                             />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.3 }}>
-                            <Button aria-label="Like" variant="outlined" color="neutral"
-                                onClick={dataDisplay}
-                                sx={{
-                                    color: '#81c784'
-                                }}>
-                                <PublishedWithChangesIcon />
-                            </Button>
+                            <CssVarsProvider>
+                                <Button aria-label="Like" variant="outlined" color="neutral"
+                                    onClick={dataDisplay}
+                                    sx={{
+                                        color: '#81c784'
+                                    }}>
+                                    <PublishedWithChangesIcon />
+                                </Button>
+                            </CssVarsProvider>
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", pt: 1, width: "100%" }}>
@@ -220,17 +220,6 @@ const EarningsDeduction = () => {
                                     headerHeight={30} />
 
                         }
-
-
-                        {/* <CommonAgGrid
-                            columnDefs={columnDef}
-                            tableData={nameList}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30} /> */}
 
                     </Box>
                 </Box>

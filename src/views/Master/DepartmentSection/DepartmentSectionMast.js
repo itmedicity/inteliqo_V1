@@ -123,7 +123,7 @@ const DepartmentSectionMast = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'sect_id', width: 100 },
-        { headerName: 'Section Name', field: 'sect_name', filter: true, width: 200 },
+        { headerName: 'Section Name', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Department Name', field: 'dept_name', filter: true, width: 200 },
         { headerName: 'Sub Section', field: 'sub_sect_name', filter: true, width: 150 },
         { headerName: 'Incharge Authorization', field: 'incharge', filter: true, width: 150 },
