@@ -7,9 +7,8 @@ const Vacancy = React.lazy(() => import('./views/recruitment/VacancyAnounce/Vaca
 const Settings = React.lazy(() => import('./Menus/Settings'));
 const Reports = React.lazy(() => import('./Menus/Reports'));
 const Departmentmaster = React.lazy(() => import('./views/Master/DepartmentMaster/DepartmentMasterPage'));
-// const DepatmentEdit = React.lazy(() => import('./views/Master/DepartmentMaster/DeptEdit'));
 const DepartmentSectionMast = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSectionMast'));
-const DepartmentSectionEdit = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSecEdit'));
+//const DepartmentSectionEdit = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSecEdit'));
 const EmployeeTypeMast = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeMast'));
 const DesignatoionType = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeMast'));
 const Designation = React.lazy(() => import('./views/Master/Designation/DesignationMast'));
@@ -19,53 +18,43 @@ const BranchMast = React.lazy(() => import('./views/Master/BranchMaster/BranchMa
 const BankMaster = React.lazy(() => import('./views/Master/BankMaster/BankMaster'));
 const RegionMaster = React.lazy(() => import('./views/Master/Region/RegionMast'));
 const DepartmentShift = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftMast'));
-const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
+//const DepartmentShiftEdit = React.lazy(() => import('./views/Master/DepartmentShift/DepartmentShiftEdit'));
 const EmployeeRecrd = React.lazy(() => import('./views/EmployeeRecord/EmployeeRegister/EmployeeRecord'));
-// const EmployeeFile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFile'));
 const EmploymentType = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeMast'));
 const EmploymentTypeList = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypetable'));
 const EmploymentTypetable = React.lazy(() => import('./views/Master/EmploymentType/EmploymentTypeEdit'));
 const ModulegroupMaster = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMast'))
-const ModulegroupMasterEdit = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMastEdit'))
+//const ModulegroupMasterEdit = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleGroupMastEdit'))
 const ModuleUserRights = React.lazy(() => import('./views/Master/ModuleUserRights/MdleUserRightMast'))
-const ModuleUserRightsEdit = React.lazy(() => import('./views/Master/ModuleUserRights/ModuleUserRightEdit'))
+//const ModuleUserRightsEdit = React.lazy(() => import('./views/Master/ModuleUserRights/ModuleUserRightEdit'))
 const UserGroupMaster = React.lazy(() => import('./views/Master/GroupMaster/Groupmaster'))
-// const UserGroupMasterEdit = React.lazy(() => import('./views/Master/GroupMaster/GroupmasterEdit'))
 const GroupRights = React.lazy(() => import('./views/Master/GroupRights/GrouprightsMast'))
 const EmployeeProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile'))
 const Grade = React.lazy(() => import('./views/Master/GradeMaster/GradeMaster'))
-const GradeEdit = React.lazy(() => import('./views/Master/GradeMaster/GradeMastEdit'))
 const EarnType = React.lazy(() => import('./views/Master/EarnTypeMaster/EarntypeMast'))
 const EarnDeduction = React.lazy(() => import('./views/Master/EarningDeductionMaster/EarnDectmast'))
-const EarnDectEdit = React.lazy(() => import('./views/Master/EarningDeductionMaster/EarnDectEdit'))
+// const EarnDectEdit = React.lazy(() => import('./views/Master/EarningDeductionMaster/EarnDectEdit'))
 const ReligionMaster = React.lazy(() => import('./views/Master/ReligionMaster/ReligionMast'))
-const ReligionMastEdit = React.lazy(() => import('./views/Master/ReligionMaster/ReligionMastEdit'))
 const LeaveTypeMaster = React.lazy(() => import('./views/Master/LeaveTypeMaster/LeaveTypeMast'))
-// const LeaveTypeMastEdit = React.lazy(() => import('./views/Master/LeaveTypeMaster/LeaveTypeMastEdit'))
 const YearlyLeaveCount = React.lazy(() => import('./views/Master/YearlyLeaveCount/YearlyLeaveCountMast'))
 const YearlyLeaveCountMastEdit = React.lazy(() => import('./views/Master/YearlyLeaveCount/YearlyLeaveCountMastEdit'))
 const YearlyLeaveCalendar = React.lazy(() => import('./views/Master/YearlyLeaveCalendar/YearlyLeaveCalendarMast'))
-const YearlyLeaveCalendarEdit = React.lazy(() => import('./views/Master/YearlyLeaveCalendar/YearlyLeaveCalendarEdit'))
+//const YearlyLeaveCalendarEdit = React.lazy(() => import('./views/Master/YearlyLeaveCalendar/YearlyLeaveCalendarEdit'))
 const ApplicationForm = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/ApplicationForm'))
 const PersonalInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/PersonalInformation'))
 const DoctorType = React.lazy(() => import('./views/Master/DoctorType/DoctorMaster'))
-const DoctorMastEdit = React.lazy(() => import('./views/Master/DoctorType/DoctorMastEdit'))
+// const DoctorMastEdit = React.lazy(() => import('./views/Master/DoctorType/DoctorMastEdit'))
 const Nation = React.lazy(() => import('./views/CommonCode/NationSlnoSelection'))
 const State = React.lazy(() => import('./views/Master/State/StateMaster'))
-const StateMastEdit = React.lazy(() => import('./views/Master/State/StateMastEdit'))
 const StateSelection = React.lazy(() => import('./views/CommonCode/StateSelect'))
 const District = React.lazy(() => import('./views/Master/District/DistrictMaster'))
-const DistrictMastEdit = React.lazy(() => import('./views/Master/District/DistrictMastEdit'))
 const University = React.lazy(() => import('./views/Master/University/UniversityMast'))
 const EducationMaster = React.lazy(() => import('./views/Master/EducationMaster/EducationMaster'))
-// const EducationTableEdit = React.lazy(() => import('./views/Master/EducationMaster/EducationTableEdit'))
 const CourseMaster = React.lazy(() => import('./views/Master/CourseMaster/CourseMaster'))
-const CourseTableEdit = React.lazy(() => import('./views/Master/CourseMaster/CourseMastTableEdit'))
-const UniversityTableEdit = React.lazy(() => import('./views/Master/University/UniversityMastEdit'))
 const SpecializationMaster = React.lazy(() => import('./views/Master/Specialization/SpecializationMaster'))
-const SpecializationTableEdit = React.lazy(() => import('./views/Master/Specialization/SpecializationTableEdit'))
+//const SpecializationTableEdit = React.lazy(() => import('./views/Master/Specialization/SpecializationTableEdit'))
 const RegistrationType = React.lazy(() => import('./views/Master/RegistrationType/RegistrationMaster'))
-const RegistrationTableEdit = React.lazy(() => import('./views/Master/RegistrationType/RegistrationTableEdit'))
+//const RegistrationTableEdit = React.lazy(() => import('./views/Master/RegistrationType/RegistrationTableEdit'))
 // const EmployeeQualification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeQualification'))
 //const EmpQualificationEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/QualificationTableEdit'))
 // const EmployeeExperience = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeExperience'))
@@ -87,6 +76,11 @@ const RegionMastTableEdit = React.lazy(() => import('./views/Master/Region/Regio
 const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
 const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
 const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
+const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
+// const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
+// const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
+//const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
+
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
@@ -118,7 +112,6 @@ const OTApprovalHR = React.lazy(() => import('./views/LeaveManagement/OTApproval
 // const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdation'))
 const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OtUpdtnCalculation'))
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
-const LeaveRequestTypeEdit = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestEdit'))
 const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
 const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationMainPage'))
 const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Inchargeapproval'))
@@ -127,11 +120,10 @@ const ResignationApprovalHR = React.lazy(() => import('./views/Resignation/Resig
 const ResignationApprovalCEO = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/CeoApproval'))
 const ResignationCancel = React.lazy(() => import('./views/Resignation/ResigantionRequest/Cancel/ResignationCancel'))
 const BoardEdu = React.lazy(() => import('./views/Master/BoardMaster/BoardMaster'))
-const BoardMastEdit = React.lazy(() => import('./views/Master/BoardMaster/BoardMastTableEdit'))
 const HodMarking = React.lazy(() => import('./views/Master/AuthorisationHod/HodMarking'))
 const HodAuthorisation = React.lazy(() => import('./views/Master/AuthorisationHod/HodAuthorisation'))
 const DueClearenceDepartment = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDepartment'))
-const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
+//const DueClearenceDeptEdit = React.lazy(() => import('./views/Master/DueClearenceDepartment/DueClearenceDeptEdit'))
 const DueClearence = React.lazy(() => import('./views/Resignation/DueClearence/DueClearence'))
 // const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OTApprovalCEO'))
 const OTApprovalCEO = React.lazy(() => import('./views/LeaveManagement/OTApprovalCEO/OtCeoApproval'))
@@ -142,11 +134,11 @@ const ApprovalCEO = React.lazy(() => import('./views/LeaveManagement/ApprovalCEO
 //const CommonSettings = React.lazy(() => import('./views/Master/CommonSettings/CommonSettings'))
 const DueClearenceHR = React.lazy(() => import('./views/Resignation/DueClearenceHR/DueClearenceHR'))
 const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceMaster'))
-const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
+// const DueClearenceEdit = React.lazy(() => import('./views/Master/DueClearenceMaster/DueClearenceEdit'))
 const EmployeeReport = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReport'))
 const EmployeeReportInactive = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReportInactive'))
 const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMast'))
-const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
+//const CarryforwardLeaveEdit = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMastEdit'))
 const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
 const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryForwad/LeaveCarryForwad'))
 const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
@@ -160,7 +152,7 @@ const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Ann
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
 const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
 const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
-const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
+// const proTaxEdit = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMastEdit'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
@@ -268,9 +260,8 @@ const routes = [
   { path: '/Home/Settings', exact: true, name: 'Settings', component: Settings },
   { path: '/Home/Reports', exact: true, name: 'Reports', component: Reports },
   { path: '/Home/DepartmentMaster', exact: true, name: 'DeptMasrter', component: Departmentmaster },
-  // { path: '/Home/EditDepartment/:id', exact: true, name: 'EditDepartment', component: DepatmentEdit },
   { path: '/Home/DeptSection', exact: true, name: 'Department Section', component: DepartmentSectionMast },
-  { path: '/Home/SectionEdit/:id', exact: true, name: 'Department Section Edit', component: DepartmentSectionEdit },
+  //  { path: '/Home/SectionEdit/:id', exact: true, name: 'Department Section Edit', component: DepartmentSectionEdit },
   { path: '/Home/EmployeeType', exact: true, name: 'Employee Type', component: EmployeeTypeMast },
   { path: '/Home/DesignationType', exact: true, name: 'Designation Type', component: DesignatoionType },
   { path: '/Home/Designation', exact: true, name: 'Designation', component: Designation },
@@ -281,56 +272,45 @@ const routes = [
   { path: '/Home/Bank', exact: true, name: 'Bank Master', component: BankMaster },
   { path: '/Home/Region', exact: true, name: 'Region Master', component: RegionMaster },
   { path: '/Home/DepartmentShift', exact: true, name: 'Department Shift Master', component: DepartmentShift },
-  { path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
+  //{ path: '/Home/DepartmentShiftEdit/:id', exact: true, name: 'Department Shift Master Edit', component: DepartmentShiftEdit },
   { path: '/Home/EmployeeRecord', exact: true, name: 'Employee Records', component: EmployeeRecrd },
-  // { path: '/Home/EmployeeFile', exact: true, name: 'Employee File', component: EmployeeFile },
   { path: '/Home/EmploymentType', exact: true, name: 'Employment Type', component: EmploymentType },
   { path: '/Home/EmploymentTypeList', exact: true, name: 'Employment Type List', component: EmploymentTypeList },
   { path: '/Home/EmploymentTypeEdit/:id', exact: true, name: 'Employment Type Edit', component: EmploymentTypetable },
   { path: '/Home/ModuleGroupMaster', exact: true, name: 'Module Group Master', component: ModulegroupMaster },
-  { path: '/Home/MdulGrpMastEdit/:id', exact: true, name: 'Module Group Master Edit', component: ModulegroupMasterEdit },
+  //{ path: '/Home/MdulGrpMastEdit/:id', exact: true, name: 'Module Group Master Edit', component: ModulegroupMasterEdit },
   { path: '/Home/ModuleUserRights', exact: true, name: 'Module User Rights', component: ModuleUserRights },
-  { path: '/Home/ModuleUserRightEdit/:id', exact: true, name: 'Module User Rights Master Edit', component: ModuleUserRightsEdit },
+  //{ path: '/Home/ModuleUserRightEdit/:id', exact: true, name: 'Module User Rights Master Edit', component: ModuleUserRightsEdit },
   { path: '/Home/UserGroup', exact: true, name: 'User Group Master', component: UserGroupMaster },
-  //  { path: '/Home/UserGroupEdit/:id', exact: true, name: 'User Group Master Edit', component: UserGroupMasterEdit },
   { path: '/Home/GroupRights', exact: true, name: 'Group Rights', component: GroupRights },
   { path: '/Home/DoctorType', exact: true, name: 'Doctor Type', component: DoctorType },
-  { path: '/Home/DoctorMastEdit/:id', exact: true, name: 'Doctor Type Master Edit', component: DoctorMastEdit },
+  //{ path: '/Home/DoctorMastEdit/:id', exact: true, name: 'Doctor Type Master Edit', component: DoctorMastEdit },
   { path: '/Home/CommonCode', exact: true, name: 'Nation', component: Nation },
   { path: '/Home/State', exact: true, name: 'State', component: State },
-  { path: '/Home/StateMastEdit/:id', exact: true, name: 'State Master Edit', component: StateMastEdit },
   { path: '/Home/StateSelection', exact: true, name: 'State select', component: StateSelection },
   { path: '/Home/District', exact: true, name: 'District', component: District },
-  { path: '/Home/DistrictMastEdit/:id', exact: true, name: 'District Master Edit', component: DistrictMastEdit },
   { path: '/Home/Profile/:id/:no', exact: true, name: 'Employee Profile ', component: EmployeeProfile },
   { path: '/Home/Grade', exact: true, name: 'Grade', component: Grade },
-  { path: '/Home/GradeTableEdit/:id', exact: true, name: 'GradeEdit', component: GradeEdit },
   { path: '/Home/EarnType', exact: true, name: 'EarnType', component: EarnType },
   { path: '/Home/EarnDeduct', exact: true, name: 'EarnDeduction', component: EarnDeduction },
-  { path: '/Home/EarnDectEdit/:id', exact: true, name: 'EarnDectEdit', component: EarnDectEdit },
   { path: '/Home/ReligionMaster', exact: true, name: 'Religion Master', component: ReligionMaster },
-  { path: '/Home/ReligionMastEdit/:id', exact: true, name: 'Religion Edit', component: ReligionMastEdit },
   { path: '/Home/LeaveTypeMaster', exact: true, name: 'Leave Type', component: LeaveTypeMaster },
-  // { path: '/Home/LeaveTypeMastEdit/:id', exact: true, name: 'Leave Type Edit', component: LeaveTypeMastEdit },
   { path: '/Home/YearlyLeaveCount', exact: true, name: 'Yearly Leave Count', component: YearlyLeaveCount },
   { path: '/Home/YearlyLeaveCountMastEdit/:id', exact: true, name: 'Leave Count Edit', component: YearlyLeaveCountMastEdit },
   { path: '/Home/YearlyLeaveCalendar', exact: true, name: 'Yearly Leave Calendar', component: YearlyLeaveCalendar },
-  { path: '/Home/YearlyLeaveCalendarEdit/:id', exact: true, name: 'Yearly Leave Calendar Edit', component: YearlyLeaveCalendarEdit },
+  //{ path: '/Home/YearlyLeaveCalendarEdit/:id', exact: true, name: 'Yearly Leave Calendar Edit', component: YearlyLeaveCalendarEdit },
   { path: '/Home/ApplicationForm/:id/:no/:slno', exact: true, name: 'Application Form', component: ApplicationForm },
   { path: '/Home/PersonalInformation/:id/:no', exact: true, name: 'Personal Information', component: PersonalInformation },
   //{ path: '/Home/EmployeeExperience/:id/:no', exact: true, name: 'Experience', component: EmployeeExperience },
   // { path: '/Home/EmployeeExperienceEdit/:slno/:id/:no', exact: true, name: 'Experience Edit', component: EmployeeExperienceEdit },
-  { path: '/Home/EarnDectEdit/:id', exact: true, name: 'EarnDectEdit', component: EarnDectEdit },
   { path: '/Home/EducationMaster', exact: true, name: 'Education', component: EducationMaster },
   // { path: '/Home/EducationTableEdit/:id', exact: true, name: 'Education Table Edit', component: EducationTableEdit },
   { path: '/Home/CourseMaster', exact: true, name: 'Education', component: CourseMaster },
-  { path: '/Home/CourseMastTableEdit/:id', exact: true, name: 'Course Table Edit', component: CourseTableEdit },
-  { path: '/Home/UniversityMastEdit/:id', exact: true, name: 'University Table Edit', component: UniversityTableEdit },
   { path: '/Home/Specialization', exact: true, name: "Specialization Master", component: SpecializationMaster },
-  { path: '/Home/SpecializationTableEdit/:id', exact: true, name: "Specialization Table Edit", component: SpecializationTableEdit },
+  //{ path: '/Home/SpecializationTableEdit/:id', exact: true, name: "Specialization Table Edit", component: SpecializationTableEdit },
   { path: '/Home/RegistrationType', exact: true, name: "Registration Type", component: RegistrationType },
   // { path: '/Home/QualificationTableEdit/:slno/:id/:no', exact: true, name: "Emp Qualification Table Edit", component: EmpQualificationEdit },
-  { path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
+  //{ path: '/Home/RegistrationTableEdit/:id', exact: true, name: "Registration table Edit", component: RegistrationTableEdit },
   //{ path: '/Home/EmployeeQualification/:id/:no', exact: true, name: 'Qualification', component: EmployeeQualification },
   // { path: '/Home/EmployeeExperience/:id', exact: true, name: 'Experience', component: EmployeeExperience },
   //{ path: '/Home/StatutoryInformation/:id/:no', exact: true, name: 'Statutory information', component: StatutoryInformation },
@@ -346,10 +326,16 @@ const routes = [
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
   // { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
   //{ path: '/Home/QualificationMastTableEdit/:id', exact: true, name: 'Qualification  Table Edit', component: QualificationMastTableEdit },
+
   { path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
   { path: '/Home/BankMastTableEdit/:id', exact: true, name: 'Bank master Table Edit', component: BankMastTableEdit },
   { path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
   { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
+  //{ path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
+  { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
+  // { path: '/Home/BankMastTableEdit/:id', exact: true, name: 'Bank master Table Edit', component: BankMastTableEdit },
+  //{ path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
+  // { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
@@ -370,7 +356,6 @@ const routes = [
   { path: '/Home/OTApprovalHR', exact: true, name: 'OT Approval HR', component: OTApprovalHR },
   { path: '/Home/OTUpdation', exact: true, name: 'OT Updation', component: OTUpdation },
   { path: '/Home/LeaveRequestType', exact: true, name: 'Leave Request Type', component: LeaveRequestType },
-  { path: '/Home/LeaveRequestTypeEdit/:id', exact: true, name: 'Leave Request Type Edit', component: LeaveRequestTypeEdit },
   { path: '/Home/ShiftUpdation', exact: true, name: 'Shift Details Updation', component: ShiftUpdation },
   { path: '/Home/ResignationRequest', exact: true, name: 'Resignation Request', component: ResignationRequest },
   { path: '/Home/ResignationApprovalIncharge', exact: true, name: 'Resignation Request Incharge Approval', component: ResignationApprovalIncharge },
@@ -379,11 +364,10 @@ const routes = [
   { path: '/Home/ResignationApprovalCEO', exact: true, name: 'Resignation Request CEO Approval', component: ResignationApprovalCEO },
   { path: '/Home/ResignationCancel', exact: true, name: 'Resignation Request Cancel', component: ResignationCancel },
   { path: '/Home/BoardEdu', exact: true, name: 'Educations board master', component: BoardEdu },
-  { path: '/Home/BoardMastEdit/:id', exact: true, name: 'Educations Board Master Edit', component: BoardMastEdit },
   { path: '/Home/Authorisation', exact: true, name: 'hod and Incharge Marking', component: HodMarking },
   { path: '/Home/HodMark', exact: true, name: 'Hod Authorisation', component: HodAuthorisation },
   { path: '/Home/DueClearenceDepartment', exact: true, name: 'Due Clearence Department', component: DueClearenceDepartment },
-  { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
+  //  { path: '/Home/DueClearenceDeptEdit/:id', exact: true, name: 'Due Clearence Department Edit', component: DueClearenceDeptEdit },
   { path: '/Home/DueClearence', exact: true, name: 'Due Clearence', component: DueClearence },
   { path: '/Home/OTApprovalCEO', exact: true, name: 'OT Approval CEO', component: OTApprovalCEO },
   { path: '/Home/OTWageMaster', exact: true, name: 'OT Wage Master', component: OTWageMaster },
@@ -392,11 +376,10 @@ const routes = [
   { path: '/Home/CommonSettings', exact: true, name: 'Common Settings', component: CommonSettings },
   { path: '/Home/DueClearenceHR', exact: true, name: 'DueClearence HR', component: DueClearenceHR },
   { path: '/Home/DueClearenceMaster', exact: true, name: 'Due Clearence Master', component: DueClearenceMaster },
-  { path: '/Home/DueClearenceEdit/:id', exact: true, name: 'Due Clearence Edit', component: DueClearenceEdit },
   { path: '/Home/EmployeeReport', exact: true, name: 'Active Employees', component: EmployeeReport },
   { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
   { path: '/Home/CarryForwardSetting', exact: true, name: 'Carry Forward Leave Setting', component: CarryforwardLeaveSetting },//Leave carryforward
-  { path: '/Home/CarryforwardEdit/:id', exact: true, name: 'Due Clearence Edit', component: CarryforwardLeaveEdit },
+  //  { path: '/Home/CarryforwardEdit/:id', exact: true, name: 'Due Clearence Edit', component: CarryforwardLeaveEdit },
   { path: '/Home/AttendanceMarking', exact: true, name: 'Attendance Marking', component: AttendanceMarking },
   { path: '/Home/LeaveCarryForwad', exact: true, name: 'Leave Carry Forwad', component: LeaveCarryForwad },
   { path: '/Home/Hrm_Alert', exact: true, name: 'Hrm Alert', component: Hrm_Alert },
@@ -410,7 +393,7 @@ const routes = [
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
   { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
-  { path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
+  //{ path: '/Home/ProTaxEdit/:id', exact: true, name: 'Proffessional Tax master Edit', component: proTaxEdit },
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
   { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR },

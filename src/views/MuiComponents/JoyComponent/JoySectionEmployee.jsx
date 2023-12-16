@@ -1,23 +1,16 @@
 import { Option, Select } from '@mui/joy'
-import React, { memo, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setEmpUnderDeptSec } from 'src/redux/actions/EmpUnderDeptSec.Action'
+import React, { memo, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
 const JoySectionEmployee = ({ value, setValue, deptSect }) => {
 
-    const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(setEmpUnderDeptSec(deptSect))
-    }, [deptSect, dispatch])
-
     const EmpUnderDeptSec = useSelector((state) => state?.getEmpUnderDeptsecList?.empNamesList, _.isEqual)
     const employeeLIst = useMemo(() => EmpUnderDeptSec, [EmpUnderDeptSec]);
 
-
     return (
         <Select
-            value={value}
+            value={value === null ? 0 : value}
             onChange={(event, newValue) => {
                 setValue(newValue);
             }}

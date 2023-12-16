@@ -1,13 +1,10 @@
-import { Autocomplete } from '@mui/joy';
+import { Autocomplete } from '@mui/joy'
 import React, { memo, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { getDepartmentSection } from 'src/redux/actions/Common.Action';
-import { setEmployee } from 'src/redux/actions/Employee.Action';
+import { useSelector } from 'react-redux'
+import _ from 'underscore'
 
-import _ from 'underscore';
+const DepartmentSelect = ({ deptValue, getDept }) => {
 
-const JoyDepartment = ({ deptValue, getDept }) => {
-    const dispatch = useDispatch()
     const departments = useSelector((state) => state?.getDepartmentList?.empDepartmentList, _.isEqual)
     const [dept, setDept] = useState([{ dept_id: 0, dept_name: 'Select Department' }])
     const [value, setValue] = useState(dept[0]);
@@ -17,17 +14,15 @@ const JoyDepartment = ({ deptValue, getDept }) => {
         if (deptValue !== 0) {
             const array = dept?.filter((e) => e.dept_id === deptValue)
             setValue(array[0]);
-            dispatch(getDepartmentSection(deptValue))
         } else {
-            dispatch(getDepartmentSection(0))
             setValue({})
         }
-
-    }, [deptValue, dept, dispatch])
+    }, [deptValue, dept])
 
     useEffect(() => {
         departments.length > 0 && setDept(departments)
     }, [departments])
+
     return (
         <Autocomplete
             placeholder="Select Department"
@@ -35,8 +30,8 @@ const JoyDepartment = ({ deptValue, getDept }) => {
             //value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                dispatch(getDepartmentSection(newValue?.dept_id))
-                getDept(newValue?.dept_id)
+                setValue(newValue);
+                getDept(newValue.dept_id)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
@@ -53,4 +48,4 @@ const JoyDepartment = ({ deptValue, getDept }) => {
     )
 }
 
-export default memo(JoyDepartment) 
+export default memo(DepartmentSelect) 

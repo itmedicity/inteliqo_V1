@@ -100,50 +100,55 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   }, [])
 
   useEffect(() => {
-    //employee category and contract detailed based on after hrm_leave_process
-    dispatch(setEmployeeProcessDetail(employeeIDs.em_id))
 
-    //Set Current Category Infromation
-    getEmployeeCurrentCategoryInfom(employeeIDs.em_no)
-      .then((value) => {
-        const { success, data } = value.data
-        if (success === 1) {
-          setEmpCategory(data[0])
-        }
-      })
-      .catch((error) =>
-        warningNofity(
-          `error ! ${error} , LeaveProcessMainCard line # 82, Contact Information Technology`,
-        ),
-      )
+    if (Object.keys(employeeIDs).length !== 0) {
+      //employee category and contract detailed based on after hrm_leave_process
+      dispatch(setEmployeeProcessDetail(employeeIDs.em_id))
 
-    // Set Current Leave Process table Data if Active or Excist
-    getEmployeeCurrentLeaveProcessInfom(employeeIDs)
-      .then((value) => {
-        const { success, message } = value.data
-        if (success === 1) {
-          setEmpLeaveProcess(message[0])
-          let data = message[0]
-          const processedLeaveData = [
-            { ...data, name: 'Casual Leave', value: data?.hrm_clv ?? 2, leave: 1 },
-            { ...data, name: 'Common Leave', value: data?.hrm_cmn ?? 2, leave: 2 },
-            { ...data, name: 'Privilege Leave', value: data?.hrm_ern_lv ?? 2, leave: 3 },
-            { ...data, name: 'Holiday Leave', value: data?.hrm_hld ?? 2, leave: 4 },
-          ]
-          setProcessedLeave(processedLeaveData)
-        }
-      })
-      .catch((error) =>
-        warningNofity(
-          `error ! ${error} , LeaveProcessMainCard line # 90, Contact Information Technology`,
-        ),
-      )
-
-    return () => {
+      //Set Current Category Infromation
+      getEmployeeCurrentCategoryInfom(employeeIDs.em_no)
+        .then((value) => {
+          const { success, data } = value.data
+          if (success === 1) {
+            setEmpCategory(data[0])
+          }
+        })
+        .catch((error) =>
+          warningNofity(
+            `error ! ${error} , LeaveProcessMainCard line # 82, Contact Information Technology`,
+          ),
+        )
+      // Set Current Leave Process table Data if Active or Excist
+      getEmployeeCurrentLeaveProcessInfom(employeeIDs)
+        .then((value) => {
+          const { success, message } = value.data
+          if (success === 1) {
+            setEmpLeaveProcess(message[0])
+            let data = message[0]
+            const processedLeaveData = [
+              { ...data, name: 'Casual Leave', value: data?.hrm_clv ?? 2, leave: 1 },
+              { ...data, name: 'Common Leave', value: data?.hrm_cmn ?? 2, leave: 2 },
+              { ...data, name: 'Privilege Leave', value: data?.hrm_ern_lv ?? 2, leave: 3 },
+              { ...data, name: 'Holiday Leave', value: data?.hrm_hld ?? 2, leave: 4 },
+            ]
+            setProcessedLeave(processedLeaveData)
+          }
+        })
+        .catch((error) =>
+          warningNofity(
+            `error ! ${error} , LeaveProcessMainCard line # 90, Contact Information Technology`,
+          ),
+        )
+    } else {
       setEmpCategory({})
       setEmpLeaveProcess({})
       // dispatch(setEmployeeProcessDetail(0))
     }
+    // return () => {
+    //   setEmpCategory({})
+    //   setEmpLeaveProcess({})
+    //   // dispatch(setEmployeeProcessDetail(0))
+    // }
   }, [employeeIDs, dispatch, updateStatus, leaveUpdateStat])
 
   const category = useMemo(() => empCategory, [empCategory])
@@ -227,6 +232,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
     if (contractStatus.status === true) {
+      console.log(processedLveDetl);
       //   // 4->
       if (processedLveDetl.newProcess === true) {
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
@@ -250,7 +256,8 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
               `error ! ${error} , LeaveProcessMainCard line # 184, Contact Information Technology`,
             ),
           )
-      } else if (processedLveDetl.categoryStatus === 0) {
+      }
+      else if (processedLveDetl.categoryStatus === 0) {
         //Category changed in 'hrm_emp_mast' ( check both the table ''hrm_emp_mast' & 'hrm_process_table' )
 
         // 1 -- > first create a new object with current category and currenct active 'hrm_emp_process' table data
@@ -323,7 +330,8 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
               `error ! ${error} , LeaveProcessMainCard line # 237, Contact Information Technology`,
             ),
           )
-      } else if (processedLveDetl.dateExceed === true) {
+      }
+      else if (processedLveDetl.dateExceed === true) {
         //Next updation date is exceed the current date
         warningNofity('Next Updated Date Exceeded !, Pleace contact Information Technology')
       }

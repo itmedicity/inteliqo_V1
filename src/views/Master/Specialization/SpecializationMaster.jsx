@@ -1,22 +1,27 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useContext, useState } from 'react'
-import { useHistory } from 'react-router'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import CourseSelectionMast from 'src/views/CommonCode/CourseSelectionMast'
-import PageLayout from 'src/views/CommonCode/PageLayout'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import SpecializationTable from './SpecializationTable'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import { useCallback } from 'react'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import CourseSelect from '../MasterComponents/CourseSelect'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
 
 const SpecializationMaster = () => {
-    const classes = useStyles();
-    const history = useHistory();
+
     const [count, setCount] = useState(0);
-    const { selectCourse, updateCourse } = useContext(PayrolMasterContext)
+    const [course, setCourse] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [slno, setSlno] = useState(0)
 
     //Initializing
     const [type, setType] = useState({
@@ -27,130 +32,171 @@ const SpecializationMaster = () => {
 
     //Destucturing
     const { spec_desc, spec_status } = type;
-    const updateType = (e) => {
+    const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
-    }
+    }, [type])
 
     //Insert
-    const postSpecData = {
-        spec_desc,
-        cour_slno: selectCourse,
-        spec_status: spec_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
+    const postSpecData = useMemo(() => {
+        return {
+            spec_desc,
+            cour_slno: course,
+            spec_status: spec_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [spec_desc, course, spec_status])
 
     //Form resting
-    const resetForm = {
-        spec_desc: '',
-        cour_slno: '',
-        spec_status: false
-    }
-    const reset = () => {
-        updateCourse(0)
-    }
+    const resetForm = useMemo(() => {
+        return {
+            spec_desc: '',
+            cour_slno: '',
+            spec_status: false
+        }
+    }, [])
+
+    const updateData = useMemo(() => {
+        return {
+            spec_desc,
+            cour_slno: course,
+            spec_status: spec_status === true ? 1 : 0,
+            edit_user: employeeNumber(),
+            spec_slno: slno
+        }
+    }, [spec_desc, course, slno, spec_status])
 
     //Form Submitting
-    const submitType = async (e) => {
+    const submitType = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/specilization', postSpecData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-            reset();
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/specilization', updateData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setType(resetForm);
+                setCount(count + 1);
+                succesNofity(message);
+                setCourse(0)
+                setFlag(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/specilization', postSpecData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+                setCourse(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         }
-    }
+    }, [postSpecData, resetForm, count, updateData, flag])
 
-    //Back to home page
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    //Get data
+    useEffect(() => {
+        const getSpec = async () => {
+            const result = await axioslogin.get('/specilization')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getSpec();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'spec_slno', width: 100 },
+        { headerName: 'Specialization', field: 'spec_desc', filter: true, width: 150 },
+        { headerName: 'Course', field: 'cour_desc', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { spec_slno, spec_desc, cour_slno, spec_status } = params.data
+        const frmdata = {
+            spec_desc: spec_desc,
+            spec_status: spec_status === 1 ? true : false
+        }
+        setType(frmdata)
+        setCourse(cour_slno)
+        setSlno(spec_slno)
+    }, [])
+
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Specialization Master" displayClose={true} >
             <ToastContainer />
-            <PageLayout heading="Specialization">
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType} >
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Specialization"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="spec_desc"
-                                            value={spec_desc}
-                                            onChange={(e) => updateType(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <CourseSelectionMast />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="spec_status"
-                                                    color="primary"
-                                                    value={spec_status}
-                                                    checked={spec_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <SpecializationTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </PageLayout>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Specialization*'}
+                                type="text"
+                                size="sm"
+                                name="spec_desc"
+                                value={spec_desc}
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <CourseSelect courseValue={course} getCourse={setCourse} />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={spec_status}
+                                name="spec_status"
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitType}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default SpecializationMaster
+export default memo(SpecializationMaster) 

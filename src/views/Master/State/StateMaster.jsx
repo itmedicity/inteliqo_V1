@@ -1,21 +1,25 @@
-import React, { Fragment, useContext, useState } from 'react'
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import NationSlnoSelection from 'src/views/CommonCode/NationSlnoSelection'
-import { useHistory } from 'react-router'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import StateMasterTable from './StateMasterTable'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import { Button, Box, CssVarsProvider } from '@mui/joy'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import { Grid, IconButton } from '@mui/material'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 
 const StateMaster = () => {
-    const classes = useStyles();
-    const history = useHistory();
     const [count, setCount] = useState(0);
-    const { selectNation, updateNation } = useContext(PayrolMasterContext);
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [nation, setNation] = useState(0)
 
     //Initializing
     const [type, setType] = useState({
@@ -27,135 +31,172 @@ const StateMaster = () => {
 
     //destructuring
     const { state_name, state_status } = type;
-    const updateType = (e) => {
+
+    const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
-    }
+    }, [type])
 
     //insert
-    const postStateData = {
-        state_name,
-        state_nat_slno: selectNation,
-        state_status: state_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
+    const postStateData = useMemo(() => {
+        return {
+            state_name,
+            state_nat_slno: nation,
+            state_status: state_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [state_name, nation, state_status])
 
     //Form Reseting
-    const resetForm = {
-        state_name: '',
-        state_nat_slno: '',
-        state_status: false
-    }
-    const reset = () => {
-        updateNation(0)
-    }
+    const resetForm = useMemo(() => {
+        return {
+            state_name: '',
+            state_nat_slno: '',
+            state_status: false
+        }
+    }, [])
+
+    const updatedata = useMemo(() => {
+        return {
+            state_name,
+            state_nat_slno: nation,
+            state_status: state_status === true ? 1 : 0,
+            edit_user: employeeNumber(),
+            state_slno: slno
+        }
+    }, [state_name, nation, state_status, slno])
 
     //Form Submitting
-    const submitType = async (e) => {
+    const submitType = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/state', postStateData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-            reset();
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/state', updatedata)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setType(resetForm);
+                setCount(count + 1);
+                succesNofity(message);
+                setFlag(0)
+                setNation(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage)
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/state', postStateData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+                setNation(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         }
-    }
+    }, [postStateData, count, updatedata, resetForm, flag])
 
-    //Back to home page
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    //Getdata
+    useEffect(() => {
+        const getStateList = async () => {
+            const result = await axioslogin.get('/state')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([]);
+            }
+        }
+        getStateList();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'state_slno' },
+        { headerName: 'State Name', field: 'state_name', filter: true, width: 150 },
+        { headerName: 'Nation', field: 'nat_name', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { state_slno, state_name, state_nat_slno, state_status } = params.data
+        const frmdata = {
+            state_name: state_name,
+            state_status: state_status === 1 ? true : false
+        }
+        setType(frmdata)
+        setSlno(state_slno)
+        setNation(state_nat_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="State Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>State</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="State Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="state_name"
-                                            value={state_name}
-                                            onChange={(e) => updateType(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <NationSlnoSelection />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="state_status"
-                                                    color="primary"
-                                                    value={state_status}
-                                                    checked={state_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <StateMasterTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'State Name'}
+                                type="text"
+                                size="sm"
+                                name="state_name"
+                                value={state_name}
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <NationSlnoSelection value={nation} setValue={setNation} />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={state_status}
+                                name="state_status"
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitType}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default StateMaster
+export default memo(StateMaster) 

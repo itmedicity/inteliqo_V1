@@ -1,22 +1,25 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useContext, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { useHistory } from 'react-router'
-import EducationSelection from 'src/views/CommonCode/EducationSelection'
-import PageLayout from 'src/views/CommonCode/PageLayout'
-import CourseMasterTable from './CourseMasterTable'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import EducationSelect from '../MasterComponents/EducationSelect'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, Grid } from '@mui/material'
 
 const CourseMaster = () => {
-    const classes = useStyles();
-    const history = useHistory();
     const [count, setCount] = useState(0);
-    const { selectEducation, updateEducation } = useContext(PayrolMasterContext);
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
+    const [slno, setSlno] = useState(0)
+    const [education, setEducation] = useState(0)
 
     //Initializing
     const [type, setType] = useState({
@@ -28,130 +31,170 @@ const CourseMaster = () => {
 
     //Destructuring
     const { cour_desc, cour_status } = type;
-    const updateType = (e) => {
+    const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
-    }
+    }, [type])
 
     //Insert
-    const postCourseData = {
-        cour_desc,
-        edu_slno: selectEducation,
-        cour_status: cour_status === true ? 1 : 0,
-        cour_created: employeeNumber()
-    }
+    const postCourseData = useMemo(() => {
+        return {
+            cour_desc,
+            edu_slno: education,
+            cour_status: cour_status === true ? 1 : 0,
+            cour_created: employeeNumber()
+        }
+    }, [cour_desc, education, cour_status])
 
     //Form resting
-    const resetForm = {
-        cour_desc: '',
-        edu_slno: '',
-        cour_status: false
-    }
-    const reset = () => {
-        updateEducation(0)
-    }
+    const resetForm = useMemo(() => {
+        return {
+            cour_desc: '',
+            edu_slno: '',
+            cour_status: false
+        }
+    }, [])
+
+    const updateData = useMemo(() => {
+        return {
+            cour_desc,
+            edu_slno: education,
+            cour_status: cour_status === true ? 1 : 0,
+            cour_edit: employeeNumber(),
+            cour_slno: slno
+        }
+    }, [cour_desc, education, cour_status, slno])
 
     //Form Submitting
-    const submitType = async (e) => {
+    const submitType = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/course', postCourseData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-            reset();
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/course', updateData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+                setEducation(0);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/course', postCourseData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+                setEducation(0);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         }
-    }
+    }, [count, flag, resetForm, updateData, postCourseData])
 
-    //Back to home page
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    //Get Data
+    useEffect(() => {
+        const getCourse = async () => {
+            const result = await axioslogin.get('/course')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getCourse();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'cour_slno' },
+        { headerName: 'Board Name', field: 'cour_desc', filter: true, width: 150 },
+        { headerName: 'Education Name', field: 'edu_desc', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { cour_slno, cour_desc, cour_status, edu_slno } = params.data
+        const frmdata = {
+            cour_desc: cour_desc,
+            cour_status: cour_status === 1 ? true : false
+        }
+        setType(frmdata)
+        setSlno(cour_slno)
+        setEducation(edu_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Course Master" displayClose={true} >
             <ToastContainer />
-            <PageLayout heading="Course">
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Course"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="cour_desc"
-                                            value={cour_desc}
-                                            onChange={(e) => updateType(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <EducationSelection />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="cour_status"
-                                                    color="primary"
-                                                    value={cour_status}
-                                                    checked={cour_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <CourseMasterTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </PageLayout>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Board Name'}
+                                type="text"
+                                size="sm"
+                                name="cour_desc"
+                                value={cour_desc}
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <EducationSelect value={education} setValue={setEducation} />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={cour_status}
+                                name="cour_status"
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitType}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default CourseMaster
+export default memo(CourseMaster) 

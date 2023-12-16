@@ -2,9 +2,10 @@ import { Autocomplete } from '@mui/joy'
 import React, { memo, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
+import { setEmpUnderDeptSec } from 'src/redux/actions/EmpUnderDeptSec.Action'
 import _ from 'underscore'
 
-const DeptSectionOnlySelect = ({ getDeptSection }) => {
+const DeptSectionOnlySelect = ({ sectValue, getDeptSection }) => {
     const dispatch = useDispatch()
     useEffect(() => dispatch(setDeptWiseSection()), [dispatch])
 
@@ -16,13 +17,14 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
-        if (value !== null) {
-            getDeptSection(value.sect_id)
+        if (sectValue !== 0) {
+            const array = deptSect?.filter((e) => e.sect_id === sectValue)
+            setValue(array[0]);
+            dispatch(setEmpUnderDeptSec(array[0]?.sect_id))
         } else {
-            getDeptSection(0)
+            setValue({})
         }
-        return
-    }, [value, getDeptSection])
+    }, [sectValue, dispatch, deptSect])
 
     useEffect(() => {
         depatSecValues.length > 0 && setDeptSect(depatSecValues)
@@ -34,7 +36,10 @@ const DeptSectionOnlySelect = ({ getDeptSection }) => {
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                setValue(newValue);
+                // let obj = { sect_id: 0, sect_name: 'Select Department Section' }
+                setValue(newValue)
+                getDeptSection(newValue?.sect_id)
+                dispatch(setEmpUnderDeptSec(newValue?.sect_id))
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {

@@ -199,7 +199,7 @@ const LeaveTypeMast = () => {
         <Fragment>
             <SessionCheck />
             <ToastContainer />
-            <Box sx={{ display: "flex", flexGrow: 1, bgcolor: 'pink', width: "100%" }} >
+            <Box sx={{ display: "flex", flexGrow: 1, width: "100%" }} >
                 <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
                     <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
@@ -209,7 +209,7 @@ const LeaveTypeMast = () => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <Box sx={{ px: 0.5, mt: 0.5 }}>
                             <CssVarsProvider>
                                 <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
                                     <CloseIcon />

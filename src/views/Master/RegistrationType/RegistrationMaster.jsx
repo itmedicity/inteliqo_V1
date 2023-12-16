@@ -1,19 +1,23 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import PageLayout from 'src/views/CommonCode/PageLayout'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { useHistory } from 'react-router'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import RegistrationMastTable from './RegistrationMastTable'
 import { employeeNumber } from 'src/views/Constant/Constant'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import { Box, Button, CssVarsProvider } from '@mui/joy'
+import { Grid, IconButton } from '@mui/material'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 
 const RegistrationMaster = () => {
-    const classes = useStyles();
     const [count, setCount] = useState(0);
-    const history = useHistory();
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
 
     //Intializing
     const [type, setType] = useState({
@@ -24,117 +28,160 @@ const RegistrationMaster = () => {
 
     //Destructuring
     const { registration_name, registration_status } = type;
-    const updateType = (e) => {
+
+    const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
-    }
+    }, [type])
 
-    const postRegistationData = {
-        registration_name,
-        registration_status: registration_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
-    const resetForm = {
-        registration_name: '',
-        registration_status: false
-    }
+    const postRegistationData = useMemo(() => {
+        return {
+            registration_name,
+            registration_status: registration_status === true ? 1 : 0,
+            create_user: employeeNumber()
+        }
+    }, [registration_name, registration_status])
+
+    const resetForm = useMemo(() => {
+        return {
+            registration_name: '',
+            registration_status: false
+        }
+    }, [])
+
+    const postRegistation = useMemo(() => {
+        return {
+            registration_name,
+            registration_status: registration_status === true ? 1 : 0,
+            reg_id: slno,
+            edit_user: employeeNumber()
+        }
+    }, [registration_name, registration_status, slno])
 
     //Insert
-    const submitType = async (e) => {
+    const submitType = useCallback(async (e) => {
         e.preventDefault();
-        const result = await axioslogin.post('/regtype', postRegistationData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setType(resetForm);
-        } else if (success === 0) {
-            infoNofity(message);
+        if (flag === 1) {
+            const result = await axioslogin.patch('/regtype', postRegistation)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setType(resetForm);
+                succesNofity(message);
+                setCount(count + 1);
+                setFlag(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
         } else {
-            infoNofity(message)
+            const result = await axioslogin.post('/regtype', postRegistationData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setType(resetForm);
+            } else if (success === 0) {
+                infoNofity(message);
+            } else {
+                infoNofity(message)
+            }
         }
-    }
+    }, [flag, count, postRegistationData, postRegistation, resetForm])
 
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    //GetData
+    useEffect(() => {
+        const getRegistration = async () => {
+            const result = await axioslogin.get('/regtype')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        getRegistration();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'reg_id' },
+        { headerName: 'Registration Name', field: 'registration_name', filter: true, width: 150 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { reg_id, registration_name, registration_status } = params.data
+        const frmdata = {
+            registration_name: registration_name,
+            registration_status: registration_status === 1 ? true : false
+        }
+        setType(frmdata)
+        setSlno(reg_id)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Registation Type" displayClose={true} >
             <ToastContainer />
-            <PageLayout heading="Registation Type">
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitType}>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Registration Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="registration_name"
-                                            value={registration_name}
-                                            onChange={(e) => updateType(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="registration_status"
-                                                    color="primary"
-                                                    value={registration_status}
-                                                    checked={registration_status}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateType(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <RegistrationMastTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </PageLayout>
-        </Fragment>
+            <SessionCheck />
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+                            <InputComponent
+                                placeholder={'Registration Name'}
+                                type="text"
+                                size="sm"
+                                name="registration_name"
+                                value={registration_name}
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={registration_status}
+                                name="registration_status"
+                                onchange={(e) => updateType(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitType}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 400,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default RegistrationMaster
+export default memo(RegistrationMaster) 

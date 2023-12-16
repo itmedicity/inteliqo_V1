@@ -1,5 +1,5 @@
 import { Autocomplete } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 const JoyDepartmentSection = ({ sectValues, getSection }) => {
@@ -11,17 +11,16 @@ const JoyDepartmentSection = ({ sectValues, getSection }) => {
     //SELECTED STATE FOR EPAT SECTION AND NAME
     const [value, setValue] = useState(deptSec[0]);
     const [inputValue, setInputValue] = useState('');
-    const [flag, setFlag] = useState(0)
 
     useEffect(() => {
-        if ((sectValues !== 0) && (flag === 0)) {
+        if (sectValues !== 0) {
             const array = deptSec?.filter((e) => e.sect_id === sectValues)
             setValue(array[0]);
         } else {
             setValue({})
         }
 
-    }, [sectValues, flag, deptSec])
+    }, [sectValues, deptSec])
 
     useEffect(() => {
         deptSection.length > 0 && setDeptSec(deptSection)
@@ -31,26 +30,16 @@ const JoyDepartmentSection = ({ sectValues, getSection }) => {
         // deptSection.length === 0 && setInputValue('')
     }, [deptSection])
 
-    const Onclick = useCallback((value) => {
-        if (value !== null) {
-            setFlag(1)
-            setValue(value);
-            getSection(value.sect_id)
-        } else {
-            getSection(0)
-            setValue({})
-            setFlag(0)
-        }
-    }, [getSection])
 
     return (
         <Autocomplete
             placeholder="Select Department Section"
-            value={sectValues === 0 ? deptSec : value}
+            value={value}
             // value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                Onclick(newValue);
+                setValue(newValue);
+                getSection(newValue?.sect_id)
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {

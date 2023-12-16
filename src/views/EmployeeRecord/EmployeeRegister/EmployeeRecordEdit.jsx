@@ -333,10 +333,6 @@ const EmployeeRecordEdit = () => {
         setDoctor(false)
     }, [])
 
-    const Notification = useCallback(() => {
-        history.push('/Home/EmployeeRecord')
-    }, [history])
-
 
     const submitemployeerecord = useCallback(() => {
 
@@ -363,7 +359,8 @@ const EmployeeRecordEdit = () => {
                     const result = await axioslogin.post('/empmast/createContract', postContractDetl)
                     const { success, message } = result.data
                     if (success === 1) {
-                        Notification().then(succesNofity("Data Updated Successfully!"))
+                        succesNofity("Data Updated Successfully!")
+                        history.push('/Home/EmployeeRecord')
                         clearForm()
                     }
                     else {
@@ -392,8 +389,8 @@ const EmployeeRecordEdit = () => {
                 if (success === 1) {
                     succesNofity(message)
                     clearForm()
-                    Notification().then(succesNofity("Data Updated Successfully!"))
-                    // history.push('/Home/EmployeeRecord')
+                    succesNofity("Data Updated Successfully!")
+                    history.push('/Home/EmployeeRecord')
                 }
                 else {
                     errorNofity("Error Occured!!Please Contact EDP")
@@ -414,16 +411,16 @@ const EmployeeRecordEdit = () => {
                 updateContractEmp(submitdata)
             }
         } else {
-            if (probdate < today || oldCategory !== category) {
+            if ((probdate < today && probdate !== '2000-01-01') || oldCategory !== category) {
                 infoNofity("Employee Probation date already Exceeded!!You Can Edit This Employee Through Company Information!")
             } else {
                 updateFunction(submitdata)
             }
 
         }
-    }, [submitdata, oldprob_end_date, old_cont_end_date, id, category, Notification, clearForm,
+    }, [submitdata, oldprob_end_date, old_cont_end_date, id, category, clearForm,
         oldCategory, cont_gracedate, cont_perioddate,
-        contractflag, dateofjoining, no, probationendDate])
+        contractflag, dateofjoining, no, probationendDate, history])
 
     return (
         <>
@@ -455,6 +452,7 @@ const EmployeeRecordEdit = () => {
                                 placeholder="Employee Number"
                                 name="empno"
                                 value={empno}
+                                disabled={true}
                                 onchange={(e) => setEmpno(e.target.value)}
                             />
                         </Box>
