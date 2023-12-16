@@ -58,6 +58,7 @@ const Viewpageall = ({ setflag, Files }) => {
                                 <img
                                     src={file}
                                     height={820}
+                                    alt=''
                                     style={{ maxWidth: '100%', maxHeight: '100%' }}
                                 />
                             )}

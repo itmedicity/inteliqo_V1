@@ -1,41 +1,95 @@
-import React, { useMemo, useEffect } from 'react'
-import { memo } from 'react'
-import { Box, Button, Typography, Modal } from '@mui/joy'
+import React, { useMemo, useState, useCallback, memo } from 'react'
+import { Box, Button, Typography, Modal, Tooltip, IconButton } from '@mui/joy'
 import ModalClose from '@mui/joy/ModalClose';
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { useDispatch } from 'react-redux';
+import RegionJoy from 'src/views/MuiComponents/JoyComponent/RegionJoy';
+import { setRegionByPin } from 'src/redux/actions/Region.Action';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
-import { setRegionList } from 'src/redux/actions/Region.Actions'
-import _ from 'underscore';
-import { Option, Select } from '@mui/joy';
+
+const ExperienceModal = ({ setIsModalOpen, isModalOpen, Regionexp, setRegionexp, formdata, setformdata, expdata, expdataset, experience, setexprience }) => {
+
+    const { Employer, expstartdate, expenddate,
+        Workingstatus, Responsibilities, jobexp, SupervisorName, Additionalinf, Other } = experience;
 
 
-const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, setjob, job,
-    expstartdate, setexpstartdate, expenddate, setexpenddate, Workingstatus, setWorkingstatus,
-    Responsibilities, setResponsibilities, SupervisorName, setSupervisorName, Additionalinf,
-    setAdditionalinf, Other, setOther, setRegionexp, Regionexp }) => {
-    const dispatch = useDispatch();
-    useEffect(() => dispatch(setRegionList()), [dispatch])
-    const emRegion = useSelector((state) => state?.getRegionList?.RegionList, _.isEqual)
-    // data save
-    const postdata = useMemo(() => {
+    const defaultState = useMemo(() => {
         return {
+            Employer: '',
+            expstartdate: moment(new Date()).format('YYYY-MM-DD'), expenddate: moment(new Date()).format('YYYY-MM-DD'),
+            Workingstatus: false, Responsibilities: '', jobexp: "", SupervisorName: '', Additionalinf: '', Other: ""
+        }
+    }, [])
+
+
+    const updateBoard = useCallback((e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setexprience({ ...experience, [e.target.name]: value })
+    }, [experience, setexprience]);
+
+    const dispatch = useDispatch();
+    const [permnt_pin, setPermnt_pin] = useState(0)
+    const contPin = useMemo(() => permnt_pin, [permnt_pin])
+
+
+    const getRegion = useCallback(() => {
+        if (contPin !== null) {
+            dispatch(setRegionByPin(contPin));
+        } else {
+            dispatch(setRegionByPin(0));
+        }
+    }, [contPin, dispatch])
+
+
+    //adding  exp
+    const addexpData = useCallback(() => {
+        const newdata = {
+            id: Math.ceil(Math.random() * 1000),
             Employer: Employer,
-            job: job,
-            expstartdate: moment(expstartdate).format('yyyy-MM-DD'),
-            expenddate: moment(expenddate).format('yyyy-MM-DD'),
-            Workingstatus: Workingstatus === true ? 1 : 0,
-            Regionexp: Regionexp,
+            expstartdate: expstartdate,
+            expenddate: expenddate,
+            Workingstatus: Workingstatus,
             Responsibilities: Responsibilities,
+            jobexp: jobexp,
             SupervisorName: SupervisorName,
             Additionalinf: Additionalinf,
-            Other: Other
+            Other: Other,
+            Regionexp: Regionexp
         }
-    }, [Employer, job, expstartdate, expenddate, Workingstatus, Regionexp, Responsibilities, SupervisorName, Additionalinf, Other])
+        const newdatas = [...expdata, newdata]
+        expdataset(newdatas)
+        setexprience(defaultState)
+        setRegionexp(0)
+        setPermnt_pin(0)
+    }, [defaultState, Employer, expstartdate, expenddate, Workingstatus, Responsibilities, jobexp, SupervisorName, Additionalinf,
+        Other, Regionexp, expdataset, setexprience, setRegionexp, setPermnt_pin, expdata])
 
-
+    const Datasave = useCallback(() => {
+        const newdata = {
+            id: Math.ceil(Math.random() * 1000),
+            Employer: Employer,
+            expstartdate: expstartdate,
+            expenddate: expenddate,
+            Workingstatus: Workingstatus,
+            Responsibilities: Responsibilities,
+            jobexp: jobexp,
+            SupervisorName: SupervisorName,
+            Additionalinf: Additionalinf,
+            Other: Other,
+            Regionexp: Regionexp
+        }
+        const newdatas = [...expdata, newdata]
+        expdataset(newdatas)
+        setexprience(defaultState)
+        setRegionexp(0)
+        setPermnt_pin(0)
+        setIsModalOpen(false)
+    }, [defaultState, Employer, expstartdate, expenddate, Workingstatus, Responsibilities, jobexp, SupervisorName, Additionalinf,
+        Other, Regionexp, expdataset, setexprience, setRegionexp, setPermnt_pin, setIsModalOpen, expdata])
 
     return (
         <Box>
@@ -73,11 +127,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
                                 value={Employer}
-                                onchange={setEmployer}
+                                name="Employer"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -87,11 +142,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
-                                value={job}
-                                onchange={setjob}
+                                value={jobexp}
+                                name="jobexp"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -101,11 +157,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="date"
                                 value={expstartdate}
-                                onchange={setexpstartdate}
+                                name="expstartdate"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -115,11 +172,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="date"
                                 value={expenddate}
-                                onchange={setexpenddate}
+                                name="expenddate"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -128,48 +186,49 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                                 label='Currently Working'
                                 name="Workingstatus"
                                 checked={Workingstatus}
-                                onchange={(e) => setWorkingstatus(e.target.checked)}
+                                onchange={(e) => updateBoard(e)}
                             />
                         </Box>
                         <Box sx={{}}>
-                            <Typography sx={{ mt: 3, }}>Region
-
+                            <Typography sx={{ mt: 3, }}>Enter Pincode
+                                <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                             </Typography>
                         </Box>
-                        <Box sx={{}}>
-                            <Select
-                                // disabled={false}
-                                placeholder="education"
+                        <Box sx={{ display: 'flex' }}>
+                            <JoyInput
+                                // variant="plain"
+                                type="text"
+                                value={permnt_pin}
+                                onchange={setPermnt_pin}
                                 size="md"
-                                variant="outlined"
-                                slotProps={{
-                                    listbox: {
-                                        component: 'div',
-                                        sx: {
-                                            maxHeight: 240,
-                                            overflow: 'auto',
-                                            '--List-padding': '0px',
-                                            '--ListItem-radius': '0px',
-                                        },
-                                    },
-                                }}
-                                // value={inTime}
-                                onChange={(e) => setRegionexp(e.target.innerText)}
-                            >
-                                {emRegion?.map((val, idx) => <Option sx={{ overflow: 'auto' }} key={idx} value={val?.reg_name} >{val.reg_name}</Option>)}
-                            </Select>
-                            {/* <JoyRegion regValue={Region} getRegion={setRegion} /> */}
+                            />
+                            <Tooltip title="Click" followCursor placement='top' arrow >
+                                <IconButton sx={{ paddingY: 0.5, ml: 2 }}
+                                    onClick={(e) => getRegion(e)}
+                                >
+                                    <ArrowCircleRightIcon />
+                                </IconButton>
+                            </Tooltip>
                         </Box>
+                        <Box sx={{ display: 'flex', }}>
+                            <Typography sx={{ mt: 3, }}>Region </Typography>
+                            <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                        </Box>
+                        <Box>
+                            <RegionJoy regValue={Regionexp} getRegion={setRegionexp} />
+                        </Box>
+
                         <Box sx={{}}>
                             <Typography sx={{ mt: 3, }}>Responsibilities
                             </Typography>
                         </Box>
                         <Box sx={{}}>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
                                 value={Responsibilities}
-                                onchange={setResponsibilities}
+                                name="Responsibilities"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -179,11 +238,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box sx={{}}>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
                                 value={SupervisorName}
-                                onchange={setSupervisorName}
+                                name="SupervisorName"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -193,11 +253,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box sx={{}}>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
                                 value={Additionalinf}
-                                onchange={setAdditionalinf}
+                                name="Additionalinf"
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -207,11 +268,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
                             </Typography>
                         </Box>
                         <Box sx={{}}>
-                            <JoyInput
+                            <InputComponent
                                 // variant="plain"
                                 type="text"
                                 value={Other}
-                                onchange={setOther}
+                                name='Other'
+                                onchange={(e) => updateBoard(e)}
                                 size="md"
                             />
                         </Box>
@@ -219,8 +281,12 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, setEmployer, Employer, s
 
                     </Box>
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                        <Button sx={{ p: 0, width: "15%", }} size='sm' variant="outlined" color="success" >
+                        <Button sx={{ p: 0, width: "15%", }} size='sm' variant="outlined" color="success" onClick={addexpData}
+                        >
                             Add more
+                        </Button>
+                        <Button sx={{ p: 0, width: "15%" }} size='sm' variant="outlined" color="primary" onClick={Datasave}>
+                            Save
                         </Button>
                     </Box>
 

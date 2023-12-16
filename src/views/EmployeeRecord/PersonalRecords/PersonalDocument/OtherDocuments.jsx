@@ -21,7 +21,7 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
                 em_id: selectedRowData?.em_id
             }
             const response = await axioslogin.post('/upload/files', postData)
-            const { success, data } = response.data
+            const { success, } = response.data
             if (success === 1) {
                 const data = response.data;
                 const fileNames = data.data
@@ -39,7 +39,7 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
         } else {
             warningNofity("no Employee Found")
         }
-    }, [setflag, selectedRowData]);
+    }, [setflag, selectedRowData, setFiles]);
     return (
         <ListItem
             nested

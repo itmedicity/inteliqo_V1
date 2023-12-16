@@ -72,7 +72,7 @@ const HodRequestapproval = () => {
             }
         }
         fetchData()
-    }, [count])
+    }, [count, postData])
 
     const handleIconClick = useCallback((params) => {
         setIsModalOpen(true)

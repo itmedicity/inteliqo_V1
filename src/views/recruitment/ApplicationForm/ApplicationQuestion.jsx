@@ -1,112 +1,24 @@
 import { Box, Typography } from '@mui/joy'
-import React, { memo, useCallback, useState } from 'react'
-import { lazy } from 'react';
+import React, { memo, lazy, useCallback } from 'react'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
+
 const WorkAndEducation = lazy(() => import('./WorkAndEducation'))
 
-const ApplicationQuestion = () => {
-    const [Health_statusyes, sethealthyes] = useState(false)
-    const [Health_statusno, sethealthno] = useState(false)
-    const [Health, sethealth] = useState('')
-    const [job, setjob] = useState('')
-    const [empemail, setempemail] = useState('')
-    const [empname, setempname] = useState('')
-    const [empno, setempno] = useState('')
-    const [criminal_statusyes, setcriminal_statusyes] = useState(false)
-    const [criminal_statusno, setcriminal_statusno] = useState(false)
-    const [criminal, setcriminal] = useState('')
-    const [obligation_status_yes, setobligation_status_yes] = useState(false)
-    const [obligation_status_no, setobligation_status_no] = useState(false)
-    const [obligation, setobligation] = useState('')
-    const [relatives_status_yes, setrelatives_status_yes] = useState(false)
-    const [relatives_status_no, setrelatives_status_no] = useState(false)
-    const [recruitment_status_yes, setrecruitment_status_yes] = useState(false)
-    const [recruitment_status_no, setrecruitment_status_no] = useState(false)
-    const [recruitment, setrecruitment] = useState('')
-    const [status_yes, setstatus_yes] = useState(false)
-    const [status_no, setstatus_no] = useState(false)
-    const [vaccinated_statusyes, setvaccinated_statusyes] = useState(false)
-    const [vaccinated_statusno, setvaccinated_statusno] = useState(false)
-    const [vaccinated_statuspar, setvaccinated_statuspar] = useState(false)
+const ApplicationQuestion = ({ setformdata, formdata, seteducation, Regionexp, setRegionexp, Regionedu, setRegionedu, eduname,
+    handleOnClick, education, expdata, expdataset, experience, setexprience, education_details, seteducation_details, edudata, edudataset }) => {
 
-    const handleCheckBoxhealth = useCallback((name) => {
-        if (name === 'Health_statusyes') {
-            sethealthyes(true)
-            sethealthno(false)
-        } else if (name === 'Health_statusno') {
-            sethealthyes(false)
-            sethealthno(true)
-        }
-    }, [sethealthyes, sethealthno]);
+    const { status_yes, status_no, relatives_status_no, vaccinated_statuspar, recruitment, vaccinated_statusyes,
+        vaccinated_statusno, recruitment_status_no, recruitment_status_yes, criminal_statusyes, criminal_statusno,
+        criminal, obligation_status_yes, obligation_status_no, obligation, relatives_status_yes, Health_statusyes,
+        Health_statusno, Health, job, empemail, empname, empno } = formdata;
 
-    const handleCheckBoxcriminal = useCallback((name) => {
-        if (name === 'criminal_statusyes') {
-            setcriminal_statusyes(true)
-            setcriminal_statusno(false)
-        } else if (name === 'criminal_statusno') {
-            setcriminal_statusyes(false)
-            setcriminal_statusno(true)
-        }
-    }, [setcriminal_statusyes, setcriminal_statusno]);
 
-    const handleCheckBox_obligation = useCallback((name) => {
-        if (name === 'obligation_status_yes') {
-            setobligation_status_yes(true)
-            setobligation_status_no(false)
-        } else if (name === 'obligation_status_no') {
-            setobligation_status_yes(false)
-            setobligation_status_no(true)
-        }
-    }, [setobligation_status_yes, setobligation_status_no]);
+    const updateBoard = useCallback((e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setformdata({ ...formdata, [e.target.name]: value })
+    }, [formdata, setformdata]);
 
-    const handleCheckBoxrelatives = useCallback((name) => {
-        if (name === 'relatives_status_yes') {
-            setrelatives_status_yes(true)
-            setrelatives_status_no(false)
-        } else if (name === 'relatives_status_no') {
-            setrelatives_status_yes(false)
-            setrelatives_status_no(true)
-        }
-    }, [setrelatives_status_yes, setrelatives_status_no]);
-
-    const handleCheckBoxrecruitment = useCallback((name) => {
-        if (name === 'recruitment_status_yes') {
-            setrecruitment_status_yes(true)
-            setrecruitment_status_no(false)
-        } else if (name === 'recruitment_status_no') {
-            setrecruitment_status_yes(false)
-            setrecruitment_status_no(true)
-        }
-    }, [setrecruitment_status_yes, setrecruitment_status_no]);
-
-    const handleCheckBox = useCallback((name) => {
-        if (name === 'status_yes') {
-            setstatus_yes(true)
-            setstatus_no(false)
-        } else if (name === 'status_no') {
-            setstatus_yes(false)
-            setstatus_no(true)
-        }
-    }, [setstatus_yes, setstatus_no]);
-
-    const handleCheckBoxvaccinated = useCallback((name) => {
-        if (name === 'vaccinated_statusyes') {
-            setvaccinated_statusyes(true)
-            setvaccinated_statusno(false)
-            setvaccinated_statuspar(false)
-
-        } else if (name === 'vaccinated_statusno') {
-            setvaccinated_statusyes(false)
-            setvaccinated_statusno(true)
-            setvaccinated_statuspar(false)
-        }
-        else if (name === 'vaccinated_statuspar') {
-            setvaccinated_statusyes(false)
-            setvaccinated_statusno(false)
-            setvaccinated_statuspar(true)
-        }
-    }, [setvaccinated_statusyes, setvaccinated_statusno, setvaccinated_statuspar]);
     return (
         <>
             <Box sx={{}}>
@@ -128,8 +40,11 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="status_yes"
                         checked={status_yes}
-                        onchange={(e) => handleCheckBox(e.target.name, e.target.checked)}
+                        disabled={status_no === true ? true : false}
+                        onchange={(e) => updateBoard(e)}
                     />
+
+
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -137,7 +52,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="status_no"
                         checked={status_no}
-                        onchange={(e) => handleCheckBox(e.target.name, e.target.checked)}
+                        disabled={status_yes === true ? true : false}
+                        onchange={(e) => updateBoard(e)}
                     />
                 </Box>
             </Box>
@@ -152,8 +68,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="vaccinated_statusyes"
                         checked={vaccinated_statusyes}
-                        onchange={(e) => handleCheckBoxvaccinated(e.target.name, e.target.checked)}
-                    />
+                        disabled={vaccinated_statusno === true ? true : vaccinated_statuspar === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -161,16 +77,16 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="vaccinated_statusno"
                         checked={vaccinated_statusno}
-                        onchange={(e) => handleCheckBoxvaccinated(e.target.name, e.target.checked)}
-                    />
+                        disabled={vaccinated_statusyes === true ? true : vaccinated_statuspar === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
                 <Box sx={{ ml: 1 }}>
                     <JoyCheckbox
                         label='Partially Vaccinated'
                         name="vaccinated_statuspar"
                         checked={vaccinated_statuspar}
-                        onchange={(e) => handleCheckBoxvaccinated(e.target.name, e.target.checked)}
-                    />
+                        disabled={vaccinated_statusyes === true ? true : vaccinated_statusno === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             <Box sx={{}}>
@@ -187,8 +103,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="Health_statusyes"
                         checked={Health_statusyes}
-                        onchange={(e) => handleCheckBoxhealth(e.target.name, e.target.checked)}
-                    />
+                        disabled={Health_statusno === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -196,8 +112,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="Health_statusno"
                         checked={Health_statusno}
-                        onchange={(e) => handleCheckBoxhealth(e.target.name, e.target.checked)}
-                    />
+                        disabled={Health_statusyes === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             {Health_statusyes === true ?
@@ -208,11 +124,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={Health}
-                            onchange={sethealth}
+                            name="Health"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -227,11 +144,12 @@ const ApplicationQuestion = () => {
                 </Typography>
             </Box>
             <Box>
-                <JoyInput
+                <InputComponent
                     // variant="plain"
                     type="text"
                     value={job}
-                    onchange={setjob}
+                    name='job'
+                    onchange={(e) => updateBoard(e)}
                     size="md"
                 />
             </Box>
@@ -247,8 +165,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="criminal_statusyes"
                         checked={criminal_statusyes}
-                        onchange={(e) => handleCheckBoxcriminal(e.target.name, e.target.checked)}
-                    />
+                        disabled={criminal_statusno === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -256,8 +174,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="criminal_statusno"
                         checked={criminal_statusno}
-                        onchange={(e) => handleCheckBoxcriminal(e.target.name, e.target.checked)}
-                    />
+                        disabled={criminal_statusyes === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             {criminal_statusyes === true ?
@@ -268,11 +186,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={criminal}
-                            onchange={setcriminal}
+                            name="criminal"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -291,8 +210,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="obligation_status_yes"
                         checked={obligation_status_yes}
-                        onchange={(e) => handleCheckBox_obligation(e.target.name, e.target.checked)}
-                    />
+                        disabled={obligation_status_no === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -300,8 +219,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="obligation_status_no"
                         checked={obligation_status_no}
-                        onchange={(e) => handleCheckBox_obligation(e.target.name, e.target.checked)}
-                    />
+                        disabled={obligation_status_yes === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             {obligation_status_yes === true ?
@@ -312,11 +231,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={obligation}
-                            onchange={setobligation}
+                            name="obligation"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -335,8 +255,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="relatives_status_yes"
                         checked={relatives_status_yes}
-                        onchange={(e) => handleCheckBoxrelatives(e.target.name, e.target.checked)}
-                    />
+                        disabled={relatives_status_no === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -344,8 +264,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="relatives_status_no"
                         checked={relatives_status_no}
-                        onchange={(e) => handleCheckBoxrelatives(e.target.name, e.target.checked)}
-                    />
+                        disabled={relatives_status_yes === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             {relatives_status_yes === true ?
@@ -356,11 +276,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={empemail}
-                            onchange={setempemail}
+                            name="empemail"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -370,11 +291,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={empname}
-                            onchange={setempname}
+                            name="empname"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -384,11 +306,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={empno}
-                            onchange={setempno}
+                            name='empno'
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -408,8 +331,8 @@ const ApplicationQuestion = () => {
                         label='Yes'
                         name="recruitment_status_yes"
                         checked={recruitment_status_yes}
-                        onchange={(e) => handleCheckBoxrecruitment(e.target.name, e.target.checked)}
-                    />
+                        disabled={recruitment_status_no === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
 
                 <Box sx={{ ml: 1 }}>
@@ -417,8 +340,8 @@ const ApplicationQuestion = () => {
                         label='No'
                         name="recruitment_status_no"
                         checked={recruitment_status_no}
-                        onchange={(e) => handleCheckBoxrecruitment(e.target.name, e.target.checked)}
-                    />
+                        disabled={recruitment_status_yes === true ? true : false}
+                        onchange={(e) => updateBoard(e)} />
                 </Box>
             </Box>
             {recruitment_status_yes === true ?
@@ -429,11 +352,12 @@ const ApplicationQuestion = () => {
                         </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={recruitment}
-                            onchange={setrecruitment}
+                            name="recruitment"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -442,9 +366,12 @@ const ApplicationQuestion = () => {
                 : <Box></Box>
             }
 
-            <Typography level="h5" sx={{ mt: 3 }}>WORK AND EDUCATION HISTORY</Typography>
+            <Typography level="h4" sx={{ mt: 3 }}>WORK AND EDUCATION HISTORY</Typography>
             <Typography sx={{}}>Please enter details about your work experience and education.</Typography>
-            <WorkAndEducation />
+            <WorkAndEducation setformdata={setformdata} formdata={formdata} seteducation={seteducation} Regionexp={Regionexp}
+                setRegionexp={setRegionexp} Regionedu={Regionedu} setRegionedu={setRegionedu} handleOnClick={handleOnClick} eduname={eduname}
+                education={education} expdata={expdata} expdataset={expdataset} experience={experience} setexprience={setexprience}
+                education_details={education_details} seteducation_details={seteducation_details} edudata={edudata} edudataset={edudataset} />
         </>
     )
 }

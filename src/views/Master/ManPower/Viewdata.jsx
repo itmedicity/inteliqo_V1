@@ -2,7 +2,7 @@ import React, { lazy, memo, } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { Box } from '@mui/joy';
 const Mainviewdata = lazy(() => import('./Mainviewdata'))
-const Viewdata = ({ tableData, setTableData, mincount, maxcount, setmincount, setmaxcount, newdesig, salaryfrom, salaryto }) => {
+const Viewdata = ({ tableData, setTableData, mincount, maxcount, setmincount, setmaxcount, newdesig, }) => {
 
     return (
         <Box sx={{
@@ -29,7 +29,7 @@ const Viewdata = ({ tableData, setTableData, mincount, maxcount, setmincount, se
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {/* {rows} */}<Mainviewdata salaryfrom={salaryfrom} salaryto={salaryto} mincount={mincount} maxcount={maxcount} tableData={tableData} setmincount={setmincount} setmaxcount={setmaxcount} setTableData={setTableData} />
+                            {/* {rows} */}<Mainviewdata mincount={mincount} maxcount={maxcount} tableData={tableData} setmincount={setmincount} setmaxcount={setmaxcount} setTableData={setTableData} />
                         </TableBody>
                     </Table>
                 </TableContainer>

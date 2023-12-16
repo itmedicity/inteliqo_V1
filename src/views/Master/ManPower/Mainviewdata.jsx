@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, memo, useCallback } from 'react';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import { TableCell, TableRow } from '@mui/material';
 import { Box, Typography } from '@mui/joy';
@@ -84,4 +84,4 @@ const Mainviewdata = ({ tableData, setTableData, }) => {
     );
 }
 
-export default Mainviewdata;
+export default memo(Mainviewdata);

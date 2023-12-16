@@ -35,8 +35,8 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
                         MaxCount: maxcount,
                         MinCount: mincount,
                         desg_name: designame,
-                        salaryto: salaryto,
-                        salaryfrom: salaryfrom,
+                        salaryto: 0,
+                        salaryfrom: 0,
                         status: 0,
                         dept_id: dept,
                         sect_id: section,
@@ -50,7 +50,7 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
                 }
             }
         },
-        [designation, maxcount, mincount, handleCloseModal, salaryto, salaryfrom, section,],
+        [designation, maxcount, mincount, handleCloseModal, section, dept, setnewdesig],
     )
     return (
         <Box>
@@ -80,24 +80,7 @@ const Modalmanpower = ({ isModalOpen, setIsModalOpen, setmincount, setmaxcount, 
                             </Box>
 
                         </Box>
-                        {/* <Box sx={{ mt: 2, display: "flex" }}>
-                            <Box sx={{ width: "50%" }}>
-                                <Typography>Min Count:</Typography>
-                            </Box>
-                            <Box sx={{ width: "50%" }}>
-                                <JoyInput type="number" onchange={setmincount} size="sm" />
-                            </Box>
 
-                        </Box> */}
-                        {/* <Box sx={{ mt: 2, display: "flex" }}>
-                            <Box sx={{ width: "50%" }}>
-                                <Typography>Max Count:</Typography>
-                            </Box>
-                            <Box sx={{ width: "50%" }}>
-                                <JoyInput type="number" onchange={setmaxcount} size="sm" />
-                            </Box>
-
-                        </Box> */}
                         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                             <Button sx={{ p: 0, width: "10%", }} size='sm' variant="outlined" color="success" onClick={handleOnClick} >
                                 Save

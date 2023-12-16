@@ -10,9 +10,9 @@ const ManpowerRequest = () => {
         history.push('/Home');
     }
     return (
-        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', }} >
+        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', overflow: "auto", }} >
             <DasboardCustomLayout title={" Manpower Requisition Form"} displayClose={true} setClose={toRedirectToHome} >
-                <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: window.innerHeight - 120 }} >
+                <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: window.innerHeight - 120, overflow: "auto" }} >
                     <ManpowerForm />
                 </Box>
             </DasboardCustomLayout>

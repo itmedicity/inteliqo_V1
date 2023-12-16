@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@mui/joy'
 import { useState, memo, useCallback, useEffect } from 'react';
-import _ from 'underscore';
 const JoyEmployee = ({ selectEmpno, setSelectEmpno }) => {
 
     const empname = useSelector((state) => state?.getemp?.Employelist)
@@ -26,7 +25,7 @@ const JoyEmployee = ({ selectEmpno, setSelectEmpno }) => {
             setSelectEmpno(0)
             setValue({})
         }
-    }, [])
+    }, [setSelectEmpno])
     return (
         <Autocomplete
             placeholder="Select Employee Name"

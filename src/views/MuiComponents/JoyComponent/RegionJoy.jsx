@@ -1,23 +1,15 @@
 import { Autocomplete } from '@mui/joy'
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setRegionList } from 'src/redux/actions/Region.Actions'
+import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
-const JoyRegion = ({ regValue, getRegion }) => {
-
-    const dispatch = useDispatch()
-    useEffect(() => dispatch(setRegionList()), [dispatch])
-
-    const emRegion = useSelector((state) => state?.getRegionList?.RegionList, _.isEqual)
-    console.log(emRegion);
+const RegionJoy = ({ regValue, getRegion }) => {
+    const pinwiseRegion = useSelector((state) => state.getPinWiseRegionData.pinWiseRegionList, _.isEqual)
     const [region, setRegion] = useState([{ reg_slno: 0, reg_name: 'Select Region' }])
-    const regionList = useMemo(() => emRegion, [emRegion])
-
+    const regionList = useMemo(() => pinwiseRegion, [pinwiseRegion]);
     const [value, setValue] = useState(region[0]);
     const [inputValue, setInputValue] = useState('');
     const [flag, setFlag] = useState(0)
-
     useEffect(() => {
         if ((regValue !== 0) && (flag === 0)) {
             const array = regionList?.filter((e) => e.reg_slno === parseInt(regValue))
@@ -29,7 +21,6 @@ const JoyRegion = ({ regValue, getRegion }) => {
     useEffect(() => {
         regionList.length > 0 && setRegion(regionList)
     }, [regionList])
-
 
     const Onclick = useCallback((value) => {
         if (value !== null) {
@@ -65,4 +56,4 @@ const JoyRegion = ({ regValue, getRegion }) => {
     )
 }
 
-export default memo(JoyRegion)
+export default memo(RegionJoy)

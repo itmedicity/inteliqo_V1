@@ -1,10 +1,9 @@
 
-import React, { memo, useCallback, useMemo, useState } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { Box, Button, Modal, Typography, Textarea } from '@mui/joy'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { Box, Button, Modal, Typography, } from '@mui/joy'
 import moment from 'moment'
 import ModalClose from '@mui/joy/ModalClose';
 
@@ -30,7 +29,7 @@ const VacancyModal = ({ isModalOpen, setIsModalOpen, selectedRowData, setcount, 
             warningNofity(message)
         }
 
-    }, [count, postdata])
+    }, [count, postdata, setIsModalOpen, setcount])
     return (
         <Box>
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>

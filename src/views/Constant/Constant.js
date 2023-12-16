@@ -33,6 +33,16 @@ export const getProcessserialnum = async () => {
         return serial_current.serial_current
     }
 }
+// for getting application id
+export const getApplicationnum = async () => {
+    const result = await axioslogin.get('/common/getapplicationid')
+    const { success } = result.data;
+    const [serial_current] = result.data.data
+    if (success === 1) {
+        return serial_current.serial_current
+    }
+}
+
 //generating jobid
 export const getJobid = async () => {
     const result = await axioslogin.get('/jobsummary')

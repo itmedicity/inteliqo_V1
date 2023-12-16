@@ -17,7 +17,7 @@ const Checklistmodalview = lazy(() => import('./ChecklistmodalView'))
 const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname, Setitem, checklistid, Files, setcount, count }) => {
 
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
-    const { emp_name, sect_name, em_no, desg_name } = empdata
+    const { emp_name, sect_name, em_no, } = empdata
     const [selectedFiles, setSelectedFiles] = useState([])
     const [selectedFileIndex, setSelectedFileIndex] = useState(-1)
 
@@ -124,7 +124,8 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
 
             selectedRowData,
             handleImageUpload,
-            selectedFiles
+            selectedFiles, setcount,
+            checklistid, count, itemname, setIsModalOpen,
 
         ],
     )
@@ -149,7 +150,7 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
         Setitem("")
         setSelectedFiles([])
 
-    }, [setIsModalOpen])
+    }, [setIsModalOpen, Setitem])
     // Render selected files with view buttons
     const renderSelectedFiles = () => {
         return selectedFiles.map((file, index) => (

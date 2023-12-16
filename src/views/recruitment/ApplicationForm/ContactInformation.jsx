@@ -1,19 +1,41 @@
-import { Box, Typography } from '@mui/joy'
-import React, { memo, lazy } from 'react'
+import { Box, IconButton, Tooltip, Typography } from '@mui/joy'
+import React, { memo, lazy, useCallback, useMemo } from 'react'
 import JoySalutation from 'src/views/MuiComponents/JoyComponent/JoySalutation'
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import JoyReligion from 'src/views/MuiComponents/JoyComponent/JoyReligion';
-import JoyRegion from 'src/views/MuiComponents/JoyComponent/JoyRegion';
+import { useDispatch } from 'react-redux';
+import { setRegionByPin } from 'src/redux/actions/Region.Action';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import RegionJoy from 'src/views/MuiComponents/JoyComponent/RegionJoy';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 
 const ApplicationQuestion = lazy(() => import('./ApplicationQuestion'))
 
-const ContactInformation = ({ setValue, value, Religion, date, setdate, setReligion, Region, setRegion, name, setname, lname, setlname, mname, mobile, setmobile, setmname, email, setemail, setreemail, reemail }) => {
+const ContactInformation = ({ formdata, setformdata, Religion, Region, value, setRegion, setReligion, setValue, seteducation, Regionexp,
+    setRegionexp, Regionedu, setRegionedu, handleOnClick, education, expdata, expdataset, experience, setexprience, education_details,
+    seteducation_details, edudata, edudataset, eduname }) => {
+
+    const { name, lname, mname, email, reemail, mobile, date, permnt_pin } = formdata;
+    const dispatch = useDispatch();
+    const contPin = useMemo(() => permnt_pin, [permnt_pin])
+
+    const getRegion = useCallback(() => {
+        if (contPin !== null) {
+            dispatch(setRegionByPin(contPin));
+        } else {
+            dispatch(setRegionByPin(0));
+        }
+    }, [contPin, dispatch])
+
+    const updateBoard = useCallback((e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setformdata({ ...formdata, [e.target.name]: value })
+    }, [formdata, setformdata]);
 
     return (
         <Box sx={{ display: "flex", justifyContent: 'center', width: "100%", overflow: 'auto' }}>
             <Box sx={{ width: "50%", }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', }}>
-                    <Typography level="h5" sx={{}}>CONTACT INFORMATION</Typography>
+                    <Typography level="h4" sx={{}}>CONTACT INFORMATION</Typography>
                     <Typography sx={{}}>Please enter your contact information.</Typography>
                     <Box sx={{ display: 'flex', }}>
                         <Typography sx={{ mt: 3, }}>Title </Typography>
@@ -27,11 +49,11 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
-
+                        <InputComponent
                             type="text"
                             value={name}
-                            onchange={setname}
+                            name="name"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -40,11 +62,13 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={lname}
-                            onchange={setlname}
+                            name="lname"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -53,11 +77,12 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
 
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={mname}
-                            onchange={setmname}
+                            name="mname"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -66,11 +91,12 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={email}
-                            onchange={setemail}
+                            name="email"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
@@ -79,34 +105,61 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={reemail}
-                            onchange={setreemail}
+                            name="reemail"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
+
+
+                    {email === '' ? <Typography sx={{}}></Typography> : email !== reemail ?
+                        <Typography sx={{ color: "red" }}>Please check the email your entered</Typography> : <Typography sx={{ color: 'green' }}>Correct</Typography>}
                     <Box sx={{ display: 'flex', }}>
                         <Typography sx={{ mt: 3, }}>Mobile Number </Typography>
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="text"
                             value={mobile}
-                            onchange={setmobile}
+                            name="mobile"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
-                    <Typography level="h5" sx={{ mt: 3 }}>DIVERSITY INFORMATION</Typography>
+                    <Typography level="h4" sx={{ mt: 3 }}>DIVERSITY INFORMATION</Typography>
+                    <Box sx={{ display: 'flex', }}>
+                        <Typography sx={{ mt: 3, }}>Pincode </Typography>
+                        <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex' }}>
+                        <InputComponent
+                            // variant="plain"
+                            type="text"
+                            value={permnt_pin}
+                            name='permnt_pin'
+                            onchange={(e) => updateBoard(e)}
+                            size="md"
+                        />
+                        <Tooltip title="Click" followCursor placement='top' arrow >
+                            <IconButton sx={{ paddingY: 0.5, ml: 2 }}
+                                onClick={(e) => getRegion(e)}
+                            >
+                                <ArrowCircleRightIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                     <Box sx={{ display: 'flex', }}>
                         <Typography sx={{ mt: 3, }}>Region </Typography>
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyRegion regValue={Region} getRegion={setRegion} />
+                        <RegionJoy regValue={Region} getRegion={setRegion} />
                     </Box>
                     <Box sx={{ display: 'flex', }}>
                         <Typography sx={{ mt: 3, }}>Religion </Typography>
@@ -120,18 +173,23 @@ const ContactInformation = ({ setValue, value, Religion, date, setdate, setRelig
                         <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                     </Box>
                     <Box>
-                        <JoyInput
+                        <InputComponent
                             // variant="plain"
                             type="date"
                             value={date}
-                            onchange={setdate}
+                            name="date"
+                            onchange={(e) => updateBoard(e)}
                             size="md"
                         />
                     </Box>
 
-                    <Typography level="h5" sx={{ mt: 3 }}>APPLICATION QUESTIONS </Typography>
+                    <Typography level="h4" sx={{ mt: 3, color: 'black' }}>APPLICATION QUESTIONS </Typography>
                     <Typography sx={{}}>Please answer the following questions.</Typography>
-                    <ApplicationQuestion />
+                    <ApplicationQuestion setformdata={setformdata} formdata={formdata} seteducation={seteducation}
+                        Regionexp={Regionexp} setRegionexp={setRegionexp} Regionedu={Regionedu} education={education}
+                        setRegionedu={setRegionedu} handleOnClick={handleOnClick} expdata={expdata} expdataset={expdataset}
+                        experience={experience} setexprience={setexprience} education_details={education_details}
+                        seteducation_details={seteducation_details} edudata={edudata} edudataset={edudataset} eduname={eduname} />
                 </Box>
             </Box>
         </Box>

@@ -6,7 +6,6 @@ import _ from 'underscore'
 const RegionSelectRedux = ({ value, setValue }) => {
 
     const pinwiseRegion = useSelector((state) => state.getPinWiseRegionData.pinWiseRegionList, _.isEqual)
-
     const reigionList = useMemo(() => pinwiseRegion, [pinwiseRegion]);
 
     return (

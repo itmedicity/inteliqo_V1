@@ -1,10 +1,8 @@
 // import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import { Checkbox, FormControlLabel, Grid, IconButton, Paper, TextField } from '@mui/material'
 import { Button, Box, CssVarsProvider } from '@mui/joy'
@@ -15,9 +13,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import GradeSelectRedux from 'src/views/MuiComponents/GradeSelectRedux'
 
 const DesignationMast = () => {
-    const classes = useStyles();
+
     const [count, setCount] = useState(0);
-    const history = useHistory();
     const [grade, setGrade] = useState(0)
     const [data, setTableData] = useState([]);
     const [flag, setFlag] = useState(0)
@@ -37,11 +34,15 @@ const DesignationMast = () => {
 
 
     // reset forn
-    const resetForm = {
-        desg_name: '',
-        desg_notice_prd: '',
-        desg_status: false
-    }
+    const resetForm = useMemo(() => {
+        return {
+            desg_name: '',
+            desg_notice_prd: '',
+            desg_status: false
+        }
+    }, [])
+
+
 
     // submit fnc
 
@@ -100,12 +101,10 @@ const DesignationMast = () => {
         } else {
             submitFun()
         }
-    }, [desg_name, desg_notice_prd, desg_status, grade, count, flag])
+    }, [desg_name, desg_notice_prd, desg_status, grade, count, flag, desg_slno, resetForm])
 
-    // redirect to setting
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+
+
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'slno' },
         { headerName: 'Designation ', field: 'desg_name', filter: true, width: 250 },
@@ -137,14 +136,14 @@ const DesignationMast = () => {
     const getDataTable = useCallback((params) => {
         setFlag(1)
         const data = params.api.getSelectedRows()
-        const { desg_name, desg_notice_prd, status, desg_status, desg_grade, desg_slno } = data[0]
+        const { desg_name, desg_notice_prd, desg_status, desg_grade, desg_slno } = data[0]
         const obj = {
             desg_name: desg_name === null ? '' : desg_name, desg_notice_prd: desg_notice_prd === null ? '' : desg_notice_prd, desg_status: desg_status === 1 ? true : false
         }
         setDesignation(obj)
         setslno(desg_slno)
         setGrade(desg_grade === null ? 0 : desg_grade)
-    }, [desg_name])
+    }, [])
 
 
 

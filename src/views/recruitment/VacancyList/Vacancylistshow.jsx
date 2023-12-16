@@ -6,7 +6,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 const Vacancylistshow = ({ setShowGeneral, showGeneral, data }) => {
     const toRedirectToHome = useCallback(() => {
         setShowGeneral(0)
-    }, [showGeneral, setShowGeneral])
+    }, [setShowGeneral])
 
     const [columnDef] = useState([
         { headerName: 'Department', field: 'dept_name', filter: true },

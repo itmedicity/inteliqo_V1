@@ -17,8 +17,7 @@ const Viewdata = lazy(() => import('./Viewdata'))
 const Manpowersearch = () => {
     const [mincount, setmincount] = useState(0);
     const [maxcount, setmaxcount] = useState(0);
-    const [salaryfrom, setsalaryfrom] = useState(0);
-    const [salaryto, setsalaryto] = useState(0);
+
 
     const [update, setupdate] = useState(0);
     const [dept, changeDept] = useState(0);
@@ -44,9 +43,9 @@ const Manpowersearch = () => {
         }
     }, [dept, section])
 
-    const postDataDept = useMemo(() => {
-        return { dept_id: dept }
-    }, [dept])
+    // const postDataDept = useMemo(() => {
+    //     return { dept_id: dept }
+    // }, [dept])
 
 
 
@@ -94,8 +93,8 @@ const Manpowersearch = () => {
                             ...val,
                             MaxCount: maxcount,
                             MinCount: mincount,
-                            salaryfrom: salaryfrom,
-                            salaryto: salaryto,
+                            salaryfrom: 0,
+                            salaryto: 0,
                             status: 0,
                             dept_id: dept,
                             sect_id: section
@@ -117,7 +116,7 @@ const Manpowersearch = () => {
         }
         // }
         // submitfunc()
-    }, [postDataDept, postData, dept, section, maxcount, mincount, salaryfrom, salaryto])
+    }, [postData, dept, section, maxcount, mincount,])
 
     // data save
     const submitmanpower = useCallback(async (event) => {
@@ -265,7 +264,7 @@ const Manpowersearch = () => {
                 </Box> : null}
 
             </Box>
-            {flag === 1 ? <Viewdata salaryfrom={salaryfrom} salaryto={salaryto} newdesig={newdesig} setmincount={setmincount} setmaxcount={setmaxcount} mincount={mincount} maxcount={maxcount} tableData={tableData} setTableData={setTableData} /> : null}
+            {flag === 1 ? <Viewdata newdesig={newdesig} setmincount={setmincount} setmaxcount={setmaxcount} mincount={mincount} maxcount={maxcount} tableData={tableData} setTableData={setTableData} /> : null}
             <Modal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
@@ -274,8 +273,6 @@ const Manpowersearch = () => {
                 mincount={mincount}
                 maxcount={maxcount}
                 setnewdesig={setnewdesig}
-                salaryto={salaryto}
-                salaryfrom={salaryfrom}
                 section={section}
                 dept={dept}
             />

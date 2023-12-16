@@ -45,16 +45,22 @@ const recruitMenuArray = [
         to: '/Home/Applicationform',
     },
     {
+        men_slno: 21,
+        component: CNavItem,
+        name: 'Submitted Applications',
+        to: '/Home/SubmittedForm',
+    },
+    {
         men_slno: 6,
         component: CNavItem,
         name: 'Short List',
-        to: '/homes',
+        to: '/Home/Shortlist',
     },
     {
         men_slno: 7,
         component: CNavItem,
         name: 'Call letter Preperation',
-        to: '/homes',
+        to: '/Home/Callletter',
     },
     {
         men_slno: 8,
@@ -122,6 +128,7 @@ const recruitMenuArray = [
         name: 'Announcement Closing',
         to: '/homes',
     },
+
 
 ]
 

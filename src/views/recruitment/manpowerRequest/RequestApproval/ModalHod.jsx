@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react'
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { Box, Button, Modal, Typography, Textarea } from '@mui/joy'
@@ -38,7 +37,7 @@ const ModalHod = ({ setIsModalOpen, isModalOpen, selectedRowData, setcount, coun
                 warningNofity(message)
             }
         }
-    }, [rejectpostdata, count])
+    }, [rejectpostdata, count, remark, setcount, setIsModalOpen])
     // data save
     const postdata = useMemo(() => {
         return {
@@ -66,7 +65,7 @@ const ModalHod = ({ setIsModalOpen, isModalOpen, selectedRowData, setcount, coun
                 warningNofity(message)
             }
         }
-    }, [postdata, count])
+    }, [postdata, count, remark, setcount, setIsModalOpen])
     return (
         <Box>
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>

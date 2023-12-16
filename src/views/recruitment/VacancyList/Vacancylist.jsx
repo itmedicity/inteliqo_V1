@@ -23,6 +23,7 @@ const Vacancylist = () => {
         const fetchData = async () => {
             const result = await axioslogin.get('/Manpower/approvalget/all')
             const { success, data } = result.data
+
             if (success === 1) {
                 const count =
                     data?.filter((val) => val.announcement_status === 1)

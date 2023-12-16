@@ -8,7 +8,7 @@ import { Autocomplete } from '@mui/joy';
 const JoyEducationSelect = ({ value, setValue, variant }) => {
 
     const dispatch = useDispatch();
-    const [flag, setFlag] = useState(0);
+    // const [flag, setFlag] = useState(0);
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => dispatch(setEducation()), [dispatch]);
@@ -22,12 +22,12 @@ const JoyEducationSelect = ({ value, setValue, variant }) => {
         if (values !== null) {
             const eduSlnoArray = values.map((value) => value.edu_slno);
             setSelectedValues(values);
-            setFlag(1);
+
             setValue(eduSlnoArray);
         } else {
             setSelectedValues([]);
         }
-    }, [setSelectedValues]);
+    }, [setSelectedValues, setValue]);
 
     useEffect(() => {
         if (empEducation.length > 0) {

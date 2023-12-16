@@ -254,7 +254,9 @@ const HrRequestApproval = React.lazy(() => import('./views/recruitment/manpowerR
 const VacancyAnnoncment = React.lazy(() => import('./views/recruitment/manpowerRequest/Vacancy'))
 const VacancyList = React.lazy(() => import('./views/recruitment/VacancyList/Vacancylist'))
 const Applicationform = React.lazy(() => import('./views/recruitment/ApplicationForm/Applicationform'))
-
+const SubmittedForm = React.lazy(() => import('./views/recruitment/ApplicationForm/SubmittedForm'))
+const Shortlist = React.lazy(() => import('./views/recruitment/ApplicationForm/Shortlist/Shortlist'))
+const Callletter = React.lazy(() => import('./views/recruitment/CallLetter/Callletter'))
 
 const routes = [
 
@@ -500,6 +502,10 @@ const routes = [
   { path: '/Home/VacancyAnnouncement', exact: true, name: 'Vacancy Announcement', component: VacancyAnnoncment },
   { path: '/Home/VacancyList', exact: true, name: 'Vacancy List', component: VacancyList },
   { path: '/Home/Applicationform', exact: true, name: 'Application Form', component: Applicationform },
+  { path: '/Home/SubmittedForm', exact: true, name: 'Submitted Applications', component: SubmittedForm },
+  { path: '/Home/Shortlist', exact: true, name: 'Short List', component: Shortlist },
+  { path: '/Home/Callletter', exact: true, name: 'Call letter Preperation', component: Callletter },
+  { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
 
 ]
 

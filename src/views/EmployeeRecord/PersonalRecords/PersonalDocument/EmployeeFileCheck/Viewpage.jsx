@@ -53,6 +53,7 @@ const Viewpage = ({ setflag, src }) => {
                         />
                     ) : (
                         <img
+                            alt=''
                             src={src}
                             height={820}
                             style={{ maxWidth: '100%', maxHeight: '100%' }}

@@ -8,7 +8,6 @@ import AddTaskIcon from '@mui/icons-material/AddTask'
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
 import BeenhereIcon from '@mui/icons-material/Beenhere'
-import ClearIcon from '@mui/icons-material/Clear';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 const ModalApproval = lazy(() => import('./ModalApproval'))
@@ -56,7 +55,7 @@ const RequestApproval = () => {
                             salaryfrom: val?.salaryfrom,
                             salaryto: val?.salaryto,
                             trainee_status: val?.trainee_status,
-                            ed_approval_status: val?.ed_approval_status,
+
                             Hod_approval_status: val?.Hod_approval_status,
                             ed_approval: val?.ed_approval_status === 1 ? "Approved" : val?.ed_approval_status === 2 ? "Rejected" : "Pending"
 

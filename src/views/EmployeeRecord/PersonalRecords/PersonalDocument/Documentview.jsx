@@ -7,7 +7,7 @@ const EmployeeChecklist = lazy(() => import('./EmployeeFileCheck/EmployeeCheckli
 
 const Documentview = ({ selectedRowData, setflag, Files, setFiles, src, setSrc }) => {
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
-    const { emp_name, sect_name, em_no, desg_name } = empdata
+    // const { emp_name, sect_name, em_no, desg_name } = empdata
 
     useEffect(() => {
         if (Object.keys(selectedRowData).length !== 0) {
@@ -29,7 +29,7 @@ const Documentview = ({ selectedRowData, setflag, Files, setFiles, src, setSrc }
 
         <Box sx={{}}>
 
-            <EmployeeChecklist selectedRowData={selectedRowData} setflag={setflag} Files={Files} setFiles={setFiles} src={src} setSrc={setSrc} />
+            <EmployeeChecklist empdata={empdata} selectedRowData={selectedRowData} setflag={setflag} Files={Files} setFiles={setFiles} src={src} setSrc={setSrc} />
 
         </Box>
 

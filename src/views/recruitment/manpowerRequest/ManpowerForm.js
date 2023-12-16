@@ -232,7 +232,7 @@ const ManpowerForm = () => {
                 warningNofity(message)
             }
         }
-    }, [desg, insertData,])
+    }, [desg, insertData, count])
 
     // for getting the approve and reject table detials
     const postapprove = useMemo(() => {
@@ -259,7 +259,7 @@ const ManpowerForm = () => {
         }
     }, [dispatch, em_department, count, postapprove])
     return (
-        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', p: 1 }}>
+        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', p: 1, overflow: "auto", }}>
             <Box sx={{ display: 'flex' }}>
                 <Box sx={{ width: "30%", mt: 0.8, px: 0.2, }}>
                     <JoyInput

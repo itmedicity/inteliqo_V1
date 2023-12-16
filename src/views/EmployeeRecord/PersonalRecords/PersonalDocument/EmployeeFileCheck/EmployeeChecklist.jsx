@@ -1,13 +1,10 @@
 
 import { Box, Tooltip, Typography, IconButton } from '@mui/joy'
 import React, { Fragment, lazy, memo, useCallback, useEffect, useState } from 'react'
-import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { urlExist } from 'src/views/Constant/Constant'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 import { axioslogin } from 'src/views/Axios/Axios';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -58,7 +55,7 @@ const EmployeeChecklist = ({ selectedRowData, setflag, Files, setFiles, setSrc, 
           em_id: selectedRowData?.em_id
         }
         const response = await axioslogin.post('/upload/files', postData)
-        const { success, data } = response.data
+        const { success, } = response.data
         if (success === 1) {
           const data = response.data;
           const fileNames = data.data
@@ -84,7 +81,7 @@ const EmployeeChecklist = ({ selectedRowData, setflag, Files, setFiles, setSrc, 
     } else {
       warningNofity("no Employee Found")
     }
-  }, [selectedRowData, expandedItemID]);
+  }, [selectedRowData, expandedItemID, setFiles]);
 
   const preJoining = [
     { id: 1, name: 'Application For Employment' },

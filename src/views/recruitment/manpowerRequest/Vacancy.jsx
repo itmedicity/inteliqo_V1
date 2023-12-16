@@ -63,13 +63,13 @@ const Vacancy = () => {
             fetchData()
         } else {
         }
-    }, [dept, count])
+    }, [dept, count, postData])
 
     // view data
     const handleIconClick = useCallback((params) => {
         setIsModalOpen(true)
         setSelectedRowData(params?.data)
-    }, [setIsModalOpen, setIsModalOpen])
+    }, [setIsModalOpen])
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'sl_no' },
