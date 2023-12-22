@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControl, FormControlLabel, MenuItem, Paper, Select } from '@mui/material'
+import { Box, Paper, } from '@mui/material'
 import React, { Fragment, memo, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -8,14 +8,15 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import ShiftSelectByRedux from 'src/views/MuiComponents/ShiftSelectByRedux'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import LeaveTypeMultipeSelect from 'src/views/MuiComponents/LeaveTypeMultipeSelect'
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { CssVarsProvider, Option, Select, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import IconButton from '@mui/joy/IconButton'
 import { ToastContainer } from 'react-toastify'
 import CloseIcon from '@mui/icons-material/Close';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 
 const CommonSettingNew = () => {
 
@@ -51,13 +52,14 @@ const CommonSettingNew = () => {
         pf_employer_amount: '',
         noff_count: 0,
         onHourRq_no: 0,
-        max_late_day_count: 0
+        max_late_day_count: 0,
+        leave_count: 0
     })
 
     const {
         slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
-        pf_employee, pf_age, max_salary, verification_level, salary_above,
+        pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count
     } = FormData
 
@@ -94,9 +96,7 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count } = data[0]
-
-
+                    areartype, max_late_day_count, leave_count } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -123,7 +123,8 @@ const CommonSettingNew = () => {
                     noff_count: noff_count,
                     onHourRq_no: onehour_rqst_count,
                     areartype: areartype,
-                    max_late_day_count: max_late_day_count
+                    max_late_day_count: max_late_day_count,
+                    leave_count: leave_count
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
@@ -177,7 +178,8 @@ const CommonSettingNew = () => {
         noff_count: noff_count,
         onehour_rqst_count: onHourRq_no,
         areartype: areartype,
-        max_late_day_count: max_late_day_count
+        max_late_day_count: max_late_day_count,
+        leave_count: leave_count
     }
 
 
@@ -213,8 +215,8 @@ const CommonSettingNew = () => {
         noff_count: noff_count,
         onehour_rqst_count: onHourRq_no,
         areartype: areartype,
-        max_late_day_count: max_late_day_count
-
+        max_late_day_count: max_late_day_count,
+        leave_count: leave_count
     }
 
     //save
@@ -303,13 +305,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="commn_grace"
                                             value={commn_grace}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -325,13 +327,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="commn_latein"
                                             value={commn_latein}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -348,13 +350,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="commn_earlyout"
                                             value={commn_earlyout}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -370,13 +372,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="max_late_day_count"
                                             value={max_late_day_count}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -439,13 +441,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="verification_level"
                                             value={verification_level}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -461,13 +463,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="salary_above"
                                             value={salary_above}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }}  >
@@ -488,70 +490,38 @@ const CommonSettingNew = () => {
                                 </Paper>
 
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_hl"
-                                                    color="primary"
-                                                    value={carry_hl}
-                                                    checked={carry_hl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCommonSettings(e)}
-                                                />
-                                            }
-                                            label="National Holiday"
+                                    <Box sx={{ flex: 1, px: 0.5, mt: 1 }} >
+                                        <JoyCheckbox
+                                            label='National Holiday'
+                                            checked={carry_hl}
+                                            name="carry_hl"
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_cl"
-                                                    color="primary"
-                                                    value={carry_cl}
-                                                    checked={carry_cl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCommonSettings(e)}
-                                                />
-                                            }
-                                            label="Casual Leave"
+                                    <Box sx={{ flex: 1, px: 0.5, mt: 1 }} >
+                                        <JoyCheckbox
+                                            label='Casual Leave'
+                                            checked={carry_cl}
+                                            name="carry_cl"
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_el"
-                                                    color="primary"
-                                                    value={carry_el}
-                                                    checked={carry_el}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCommonSettings(e)}
-                                                />
-                                            }
-                                            label="Earn Leave"
+                                        <JoyCheckbox
+                                            label='Earn Leave'
+                                            checked={carry_el}
+                                            name="carry_el"
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="carry_sl"
-                                                    color="primary"
-                                                    value={carry_sl}
-                                                    checked={carry_sl}
-                                                    className="ml-2"
-                                                    onChange={(e) => updateCommonSettings(e)}
-                                                />
-                                            }
-                                            label="Sick Leave"
+                                        <JoyCheckbox
+                                            label='Sick Leave'
+                                            checked={carry_sl}
+                                            name="carry_sl"
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -570,13 +540,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="esi_limit"
                                             value={esi_limit}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -587,13 +557,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="esi_employee"
                                             value={esi_employee}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -605,13 +575,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="esi_employer"
                                             value={esi_employer}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -782,13 +752,13 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="onHourRq_no"
                                             value={onHourRq_no}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -813,7 +783,7 @@ const CommonSettingNew = () => {
                                     </Box>
 
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={defshift} setValue={setDefShift} />
+                                        <ShiftSelectByRedux value={defshift} setValue={setDefShift} />
                                     </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
@@ -823,7 +793,7 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={notappshift} setValue={setnoappshift} />
+                                        <ShiftSelectByRedux value={notappshift} setValue={setnoappshift} />
                                     </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
@@ -833,7 +803,7 @@ const CommonSettingNew = () => {
                                         </CssVarsProvider>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux style={SELECT_CMP_STYLE} value={workoff} setValue={setworkoff} />
+                                        <ShiftSelectByRedux value={workoff} setValue={setworkoff} />
                                     </Box>
                                 </Box>
                             </Paper>
@@ -854,13 +824,13 @@ const CommonSettingNew = () => {
                                     </Box>
 
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
+                                        <InputComponent
+                                            placeholder={''}
                                             type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
+                                            size="sm"
                                             name="noff_count"
                                             value={noff_count}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
+                                            onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
@@ -879,29 +849,59 @@ const CommonSettingNew = () => {
                                     </Box>
 
                                     <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
-                                        <FormControl fullWidth size="small"  >
-                                            <Select
-                                                value={areartype}
-                                                onChange={(e) => setAreartype(e.target.value)}
-                                                size="small"
-                                                fullWidth
-                                                variant='outlined'
-                                                sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
-                                            >
-                                                <MenuItem value={0} disabled >Select Earn Type</MenuItem>
-                                                {
-                                                    earntype && earntype.map((val, index) => {
-                                                        return <MenuItem key={index} value={val.erning_type_id}>{val.earning_type_name}</MenuItem>
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormControl>
+                                        <Select
+                                            value={areartype}
+                                            onChange={(event, newValue) => {
+                                                setAreartype(newValue);
+                                            }}
+                                            size='md'
+                                            variant='outlined'
+                                        >
+                                            <Option disabled value={0}> Select Earn Type</Option>
+                                            {
+                                                earntype?.map((val, index) => {
+                                                    return <Option key={index} value={val.erning_type_id}>{val.earning_type_name}</Option>
+                                                })
+                                            }
+                                        </Select>
                                     </Box>
                                 </Box>
                             </Paper>
                         </Box>
                     </Box>
-                </Paper>
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ width: '50%', bgcolor: 'yellow' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Leave Request Count Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Leave Count</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="leave_count"
+                                            value={leave_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+                        <Box sx={{ width: '50%' }}>
+                        </Box>
+                    </Box>
+                </Paper >
                 <Paper square sx={{ backgroundColor: "#F8F8F8", display: "flex", flexDirection: "row" }}>
                     <Box sx={{ flex: 0, pl: 2 }} >
                         <CssVarsProvider>
@@ -911,8 +911,8 @@ const CommonSettingNew = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-            </Box>
-        </Fragment>
+            </Box >
+        </Fragment >
     )
 }
 
