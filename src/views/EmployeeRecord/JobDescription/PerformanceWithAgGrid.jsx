@@ -1,28 +1,27 @@
-import { CssVarsProvider } from '@mui/joy'
+import { CssVarsProvider, Textarea } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper, TextareaAutosize } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import KraSelect from './Jobdesccomponent/KraSelect';
 import { infoNofity, succesNofity, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
-import TextInput from 'src/views/Component/TextInput';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
+
     const [Kra, setKra] = useState(0)
-    // const [KraName, setKraName] = useState(0)
     const [Kraview, setKraview] = useState(0)
     const [slno, setSlno] = useState(0)
-
-    //table
     const [tableData, settableData] = useState([])
     const [deletecount, setdeletecount] = useState(0)
     const [submitflag, setsubmitflag] = useState(0)
@@ -43,16 +42,16 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     const AddKra = () => {
         if (Kra === 0) {
             infoNofity("Select Key Result Area")
-        }
-        else {
+        } else {
             setKraview(1)
         }
     }
+
     //getting form data
-    const updatKeyPerformance = async (e) => {
+    const updatKeyPerformance = useCallback(async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
-    }
+    }, [formData])
 
     //colomun for table
     const [columnDef] = useState([
@@ -60,10 +59,16 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         { headerName: 'Key Result Area ', field: 'kra_desc', },
         { headerName: 'Key Performance Indicator', field: 'kpi', autoHeight: true, wrapText: true, minWidth: 200, },
         { headerName: 'KPI Score', field: 'kpi_score', width: 50, },
-        //{ headerName: 'Department', field: 'dept_name', width: 60, },
-        //{ headerName: 'Designation', field: 'desg_name', width: 60, },
-        { headerName: 'Edit', width: 20, cellRenderer: params => <EditIcon onClick={() => EditData(params)} /> },
-        { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
+        {
+            headerName: 'Edit', width: 20, cellRenderer: params => <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => EditData(params)}>
+                <EditIcon />
+            </OpenIcon>
+        },
+        {
+            headerName: 'Delete', width: 20, cellRenderer: params => <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => DeleteItem(params)}>
+                <DeleteIcon />
+            </OpenIcon>
+        },
     ])
 
     const checkData = useMemo(() => {
@@ -87,11 +92,13 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         if (jobedit > 0 || submitflag === 1) {
             const getPerformace = async () => {
                 const result = await axioslogin.post('/jobsummary/getjobspecific', checkData)
-                const { success, data } = result.data
+                const { success, message, data } = result.data
 
                 if (success === 1) {
                     settableData(data)
                     setdeletecount(0)
+                } else {
+                    infoNofity(message)
                 }
             }
             getPerformace()
@@ -232,80 +239,62 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         <Fragment>
             <ToastContainer />
             {/* Job Specification : Performance  */}
-            <Box sx={{ p: 1, display: "flex" }} >
+            <Box sx={{ flex: 1 }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2, }}
-                    >
+                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                         Job Specification : Performance
                     </Typography>
                 </CssVarsProvider>
-                {/* <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm'
-                        //onClick={saveJobSpecification} 
-                        sx={{ color: 'green' }}>
-                        <LibraryAddCheckOutlinedIcon />
-                    </IconButton>
-                </Box> */}
             </Box>
-
-            {/* Peformance & Competency descriptive table */}
-
-            <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Paper square variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", alignItems: "center" }} >
                     <Box sx={{ flex: 1 }} >
-                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE}
-                        // setKraName={setKraName} 
-                        />
+                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} />
                     </Box>
-                    <Box sx={{ flex: 1, px: 2 }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={AddKra}
-                            sx={{ color: 'blue' }}>
-                            <AddToPhotosIcon />
+                    <Box sx={{ flex: 0, px: 0.5 }} >
+                        <IconButton variant="outlined" size='sm' onClick={AddKra} sx={{ color: 'green' }}>
+                            < AddToPhotosIcon />
                         </IconButton>
                     </Box>
+                    <Box sx={{ flex: 1 }} ></Box>
+                    <Box sx={{ flex: 1 }} ></Box>
                 </Box>
                 {
-                    Kraview === 0 ? null : <Box sx={{ display: "flex", alignItems: "center", py: 0.1 }} >
+                    Kraview === 0 ? null : <Box sx={{ display: "flex", alignItems: "center", py: 0.5 }} >
                         <Box sx={{ flex: 3 }} >
-                            <TextareaAutosize
-                                style={{ width: "100%", display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13 }}
-                                minRows={1}
+                            <Textarea
+                                label="Outlined"
                                 placeholder="Key Performance Indicators (KPI's) "
-                                name="kpi"
+                                variant="outlined"
+                                size="lg"
+                                minRows={1}
+                                maxRows={1}
+                                name='kpi'
                                 value={kpi}
                                 onChange={(e) => updatKeyPerformance(e)}
+                                sx={{ flex: 1 }}
                             />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }} >
-                            <TextInput
-                                style={{ width: "100%", paddingLeft: 13 }}
-                                placeholder="KPI Score"
+                            <InputComponent
                                 type="number"
+                                size="sm"
                                 name="kpiscore"
                                 value={kpiscore}
-                                changeTextValue={(e) => updatKeyPerformance(e)}
+                                onchange={(e) => updatKeyPerformance(e)}
                             />
                         </Box>
                         <Box sx={{ flex: 0, px: 1 }} >
                             <IconButton variant="outlined" size='sm'
                                 onClick={saveJobSpecification}
-                                sx={{ color: 'blue' }} >
-                                <AddToPhotosIcon />
+                                sx={{ color: 'green' }} >
+                                <LibraryAddCheckOutlinedIcon />
                             </IconButton>
                         </Box>
                     </Box>
                 }
             </Paper>
-            <Paper square elevation={0} sx={{
-                pt: 1,
-                mt: 0.5,
-                display: 'flex',
-                flexDirection: "column"
-            }} >
+            <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                 <CommonAgGrid
                     columnDefs={columnDef}
                     tableData={TableValues}
@@ -314,7 +303,6 @@ const PerformanceWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                         width: "100%"
                     }} rowHeight={30} headerHeight={30} />
             </Paper>
-
         </Fragment>
     )
 }

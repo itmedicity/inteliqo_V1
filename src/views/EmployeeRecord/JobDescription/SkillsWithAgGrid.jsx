@@ -1,9 +1,8 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
-import { Box, IconButton, Paper, TextareaAutosize } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
+import { CssVarsProvider, Textarea, IconButton, Typography } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
+import React, { Fragment, memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import { useCallback } from 'react';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,6 +10,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useMemo } from 'react';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
 
@@ -55,16 +56,24 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'slno', width: 50, },
         { headerName: 'Skills ', field: 'skill_desc', autoHeight: true, wrapText: true, minWidth: 200, },
-        { headerName: 'Edit', width: 20, cellRenderer: params => <EditIcon onClick={() => EditData(params)} /> },
-        { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
+        {
+            headerName: 'Edit', width: 20, cellRenderer: params =>
+                <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => EditData(params)}>
+                    <EditIcon />
+                </OpenIcon>
+        },
+        {
+            headerName: 'Delete', width: 20, cellRenderer: params =>
+                <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => DeleteItem(params)}>
+                    <DeleteIcon />
+                </OpenIcon>
+        },
     ])
-
-
 
     const SubmitFormData = useCallback(() => {
         const submitFunc = async (checkData) => {
             const result = await axioslogin.post('/jobsummary/check', checkData)
-            const { data, success } = result.data
+            const { data, success, message } = result.data
             if (success === 1) {
                 const { summary_slno } = data[0]
                 const saveSkills = {
@@ -87,7 +96,7 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
                 warningNofity("Please Save Job Summary Before Saving Job Specification")
             }
             else {
-                errorNofity("Error Occured!!!Please Contact EDP")
+                errorNofity(message)
             }
         }
         const updateEach = async () => {
@@ -141,33 +150,34 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ p: 1, display: "flex" }} >
+            <Box sx={{ flex: 1 }} >
                 <CssVarsProvider>
-                    <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="body2" sx={{ flex: 2 }}  >
+                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                         Skills
                     </Typography>
                 </CssVarsProvider>
             </Box>
-            <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Paper square variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", alignItems: "center", pb: 0.5 }} >
                     <Box sx={{ flex: 1, pr: 1 }}>
-                        <TextareaAutosize
-                            style={{ width: "100%", display: "flex" }}
-                            minRows={2}
+                        <Textarea
+                            label="Outlined"
                             placeholder="Skills"
+                            variant="outlined"
+                            size="lg"
+                            minRows={1}
+                            maxRows={2}
+                            name='skills'
                             value={skills}
-                            name="skills"
                             onChange={(e) => setSkills(e.target.value)}
+                            sx={{ flex: 1 }}
                         />
                     </Box>
-                    <Box sx={{ flex: 0, }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={SubmitFormData}
-                            sx={{ color: 'blue' }}>
-                            <AddToPhotosIcon />
+                    <Box sx={{ flex: 0, px: 0.5 }} >
+                        <IconButton variant="outlined" size='sm' onClick={SubmitFormData} sx={{ color: 'green' }}>
+                            <LibraryAddCheckOutlinedIcon />
                         </IconButton>
                     </Box>
-
                 </Box>
             </Paper>
             <Paper square elevation={0} sx={{
@@ -188,4 +198,4 @@ const SkillsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDept
     )
 }
 
-export default SkillsWithAgGrid
+export default memo(SkillsWithAgGrid) 

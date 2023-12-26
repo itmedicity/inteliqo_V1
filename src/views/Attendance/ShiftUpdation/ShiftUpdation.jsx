@@ -140,10 +140,11 @@ const ShiftUpdation = () => {
                             dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
                             const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
                             const { success, planData } = punch_master_data.data;
+                            const arr = planData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
 
                             if (success === 1) {
 
-                                const tableData = planData?.map((data) => {
+                                const tableData = arr?.map((data) => {
                                     //FIND THE CROSS DAY
                                     const crossDay = shift?.find(shft => shft.shft_slno === data.shift_id);
                                     const crossDayStat = crossDay?.shft_cross_day ?? 0;

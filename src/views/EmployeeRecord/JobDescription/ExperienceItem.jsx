@@ -9,38 +9,29 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 
-const ExperienceItem = ({ val, setDeleteItem, jobedit, setsubmitdelt, DeleteValue,
-    setOpen, open, handleClose, Close, Active, setActive }) => {
+const ExperienceItem = ({ val, setDeleteItem, jobedit, setsubmitdelt }) => {
 
-    const deleteexperience = useCallback((val) => {
+    const deleteexperience = useCallback(async (val) => {
         setDeleteItem(val.id)
         const { qualification_slno, qualification_id } = val
         setsubmitdelt(qualification_id)
-        const deltevalue = async (value) => {
-            const result = await axioslogin.delete(`/jobsummary/deleteQualification/${value}`)
-            const { success, message } = result.data
-            if (success === 5) {
-                succesNofity(message)
-            }
-            else {
-                warningNofity(message)
-            }
+        const result = await axioslogin.delete(`/jobsummary/deleteQualification/${qualification_slno}`)
+        const { success, message } = result.data
+        if (success === 5) {
+            succesNofity(message)
         }
-        deltevalue(qualification_slno)
+        else {
+            warningNofity(message)
+        }
+
     }, [setDeleteItem, setsubmitdelt])
 
     return (
         <Box sx={{ display: "flex", width: "100%", alignItems: "center", px: 0.1 }} >
-            {/* {Active === 1 ? <JobDeletionModal
-                open={open} heading="Experience"
-                setOpen={setOpen} handleClose={handleClose}
-                DeleteValue={DeleteValue} Close={Close} /> : null} */}
             <Box sx={{ flex: 3, px: 0.2 }} >
                 <Paper square variant="outlined" sx={{ display: "flex", justifyContent: "center" }} >
                     <CssVarsProvider>
-                        <Typography
-                            level="body1"
-                        >
+                        <Typography level="body1" >
                             {jobedit === 0 || val.id > 0 ? val.course : val.cour_desc}
                         </Typography>
                     </CssVarsProvider>
@@ -49,9 +40,7 @@ const ExperienceItem = ({ val, setDeleteItem, jobedit, setsubmitdelt, DeleteValu
             <Box sx={{ flex: 3, px: 0.2 }} >
                 <Paper square variant="outlined" sx={{ display: "flex", justifyContent: "center" }} >
                     <CssVarsProvider>
-                        <Typography
-                            level="body1"
-                        >
+                        <Typography level="body1" >
                             {jobedit === 0 || val.id > 0 ? val.specialization : val.spec_desc}
                         </Typography>
                     </CssVarsProvider>

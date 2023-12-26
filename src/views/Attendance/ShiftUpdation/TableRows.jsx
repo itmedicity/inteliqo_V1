@@ -4,13 +4,16 @@ import { memo } from 'react'
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import { Suspense } from 'react';
 import { useState } from 'react';
+import moment from 'moment';
 
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable }) => {
-
     //MODAL OPEN STATE
     const [open, setOpen] = useState(false);
+
+
+
 
     return (
         <>
@@ -29,7 +32,7 @@ const TableRows = ({ data, disable }) => {
                     </IconButton>}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    {data.duty_day}</TableCell>
+                    {moment(data.duty_day).format('DD-MM-YYYY')}</TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
                     {data.em_no}
                 </TableCell>

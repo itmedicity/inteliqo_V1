@@ -67,6 +67,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     hrstatus: val.hr_apprv_status,
+                    status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -107,6 +112,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     hrstatus: val.np_hr_apprv_status,
+                    status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: val.nopunchdate,
@@ -123,6 +133,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     cancelstatus: val.lv_cancel_status,
+                    status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -146,6 +161,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     hrstatus: val.hr_apprv_status,
+                    status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -166,6 +186,12 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     hrstatus: val.hf_hr_apprv_status,
+                    status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 2,
                     reqDate: val.requestdate,
                     leaveDate: val.leavedate,
@@ -187,6 +213,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     hrstatus: val.np_hr_apprv_status,
+                    status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: val.nopunchdate,
@@ -207,6 +238,11 @@ const RequestedLeaveTable = () => {
                     name: val.em_name,
                     section: val.dept_name,
                     cancelstatus: val.lv_cancel_status,
+                    status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -279,6 +315,7 @@ const RequestedLeaveTable = () => {
                                     <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Request Type</TableCell>
                                     <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Date</TableCell>
                                     <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Reason</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Status</TableCell>
                                     <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Cancel</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -293,6 +330,7 @@ const RequestedLeaveTable = () => {
                                             <TableCell align="center">{val.type} </TableCell>
                                             <TableCell align="center">{moment(val.fromDate).format("DD-MM-YYYY")}</TableCell>
                                             <TableCell align="center">{val.reason}</TableCell>
+                                            <TableCell align="center">{val.status}</TableCell>
                                             <TableCell align="center">
                                                 <IconButton size="small"
                                                     onClick={(e) => {

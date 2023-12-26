@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { setJobSummary } from 'src/redux/actions/JobDescription.Action';
 import { axioslogin } from 'src/views/Axios/Axios';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 
 const Progress = () => {
     return (
@@ -163,10 +164,15 @@ const JobDescriptionList = ({ flag, setflag, id }) => {
                 <Paper square variant="outlined" sx={{ p: 0.5, display: "flex", flexDirection: "row", }}   >
                     <Box sx={{ flex: 1, textAlign: 'center', fontWeight: 600, pt: 0.5 }} >
                         <CssVarsProvider>
-                            <Typography textColor="text.secondary">
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                 JOB DESCRIPTION - {flag === 1 ? desig.toUpperCase() : getempData.desg_name.toUpperCase()}
                             </Typography>
                         </CssVarsProvider>
+                        {/* <CssVarsProvider>
+                            <Typography textColor="text.secondary">
+                                
+                            </Typography>
+                        </CssVarsProvider> */}
                     </Box>
                     {/* Close icon for return to Job Description Page  */}
                     {

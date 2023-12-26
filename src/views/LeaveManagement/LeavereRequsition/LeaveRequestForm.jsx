@@ -6,7 +6,7 @@ import React, { lazy, useCallback } from 'react'
 import { useState } from 'react'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CommonLeaveOptionCmp from './Func/CommonLeaveOptionCmp'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { memo } from 'react'
 import moment from 'moment'
 import { Actiontypes } from 'src/redux/constants/action.type'
@@ -15,6 +15,8 @@ import { differenceInCalendarDays, differenceInDays } from 'date-fns'
 import { useEffect } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import _ from 'underscore'
 
 const SingleLeaveRequestForm = lazy(() => import('./SingleLeaveRequestForm'));
 const MultiLeaveRequestForm = lazy(() => import('./MultiLeaveRequestForm'));
@@ -37,6 +39,11 @@ const LeaveRequestForm = ({ em_id }) => {
     const [commnLevType, setCommnLevType] = useState(0)
     const [commnLevDesc, setCommnLevDesc] = useState('')
 
+    useEffect(() => {
+        dispatch(setCommonSetting())
+    }, [dispatch])
+
+
     const singleLeaveTypeCheckOption = useCallback((e) => {
         setSgleCheck(e.target.checked)
     }, [])
@@ -48,17 +55,20 @@ const LeaveRequestForm = ({ em_id }) => {
         }
     }, [singleLeveTypeCheck, dateCheckBox])
 
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const { leave_count } = state;
+
     const leaveRequestSubmitFun = useCallback(async () => {
-        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-            warningNofity("Can't Apply for Leave Request, limitted days exceeded!!")
-        }
-        else if (fromDate > toDate && dateCheckBox === true) {
+
+        if (fromDate > toDate && dateCheckBox === true) {
             warningNofity("To Date Should be Greater Than From Date")
         } else {
-
+            //for single leave 
             if (singleLeveTypeCheck === true) {
-                // console.log('single leaves')
-                if (commnLevType === 0) {
+                if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+                    warningNofity("Can't Apply for Leave Request, limitted days exceeded!!")
+                }
+                else if (commnLevType === 0) {
                     warningNofity("Please Select The Leave Type")
                 } else {
                     setRequestFom(true)
@@ -227,7 +237,7 @@ const LeaveRequestForm = ({ em_id }) => {
         }
 
     }, [fromDate, toDate, singleLeveTypeCheck, commnLevType, dateCheckBox, em_id,
-        FETCH_SINGLE_LEAVE_REQ_FORM_DATA, commnLevDesc, dispatch])
+        FETCH_SINGLE_LEAVE_REQ_FORM_DATA, commnLevDesc, dispatch, leave_count])
 
     return (
         <Box>

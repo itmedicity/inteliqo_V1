@@ -1,10 +1,9 @@
-// import { Box, FormControl, MenuItem, Select } from '@mui/material'
-import React, { Fragment, memo, useEffect } from 'react'
+import { Option, Select } from '@mui/joy'
+import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setShiftDetails } from 'src/redux/actions/Shift.Action'
-import { FormControl, MenuItem, Select } from '@material-ui/core';
 
-const ShiftSelectByRedux = ({ value, setValue, style, disabled }) => {
+const ShiftSelectByRedux = ({ value, setValue, disabled }) => {
 
     const dispatch = useDispatch()
 
@@ -17,61 +16,22 @@ const ShiftSelectByRedux = ({ value, setValue, style, disabled }) => {
     })
 
     return (
-        <Fragment>
-            <FormControl
-                fullWidth
-                margin="dense"
-                className="mt-1"
-            >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="value"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    className="ml-3"
-                    defaultValue={0}
-                    style={style}
-                    disabled={disabled}
-                >
-                    <MenuItem value='0' disabled>
-                        Select Shift
-                    </MenuItem>
-                    {
-                        shift && shift.map((val, index) => {
-                            return <MenuItem key={index} value={val.shft_slno}>{val.shft_desc}</MenuItem>
-                        })
-                    }
-
-                </Select>
-            </FormControl>
-        </Fragment >
-
-
-
-        // <Box >
-        //     <FormControl fullWidth size="medium"  >
-        //         <Select
-        //             labelId="demo-simple-select-label"
-        //             id="demo-simple-select"
-        //             value={value}
-        //             onChange={(e) => setValue(e.target.value)}
-        //             size="medium"
-        //             fullWidth
-        //             variant='outlined'
-        //             sx={{ height: 24, p: 0, m: 0, lineHeight: 1.200 }}
-        //         >
-        //             <MenuItem value={0} disabled >Select shift</MenuItem>
-        //             {
-        //                 shift && shift.map((val, index) => {
-        //                     return <MenuItem key={index} value={val.shft_slno}>{val.shft_desc}</MenuItem>
-        //                 })
-        //             }
-        //         </Select>
-        //     </FormControl>
-        // </Box >
+        <Select
+            disabled={disabled}
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}> Select Shift</Option>
+            {
+                shift?.map((val, index) => {
+                    return <Option key={index} value={val.shft_slno}>{val.shft_desc}</Option>
+                })
+            }
+        </Select>
     )
 }
 

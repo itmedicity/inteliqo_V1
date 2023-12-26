@@ -74,6 +74,7 @@ const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
                             <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Request Type</TableCell>
                             <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Date</TableCell>
                             <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Reason</TableCell>
+                            <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Status</TableCell>
                             <TableCell align="center" style={{ fontWeight: 'bold', color: '#4f5d73', fontFamily: 'sans-serif' }} >Leave Cancel</TableCell>
                         </TableRow>
                     </TableHead>
@@ -89,6 +90,7 @@ const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
                                     <TableCell align="center">{val.type} </TableCell>
                                     <TableCell align="center">{moment(val.fromDate).format("DD-MM-YYYY")}</TableCell>
                                     <TableCell align="center">{val.reason}</TableCell>
+                                    <TableCell align="center">{val.status}</TableCell>
                                     <TableCell align="center">
                                         <IconButton size="small"
                                             onClick={(e) => {

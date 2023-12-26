@@ -1,24 +1,17 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { memo } from 'react'
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import TextField from '@mui/material/TextField'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import { useReducer } from 'react'
 import { lastDayOfMonth } from 'date-fns/esm'
 import { useDispatch, useSelector } from 'react-redux'
-import { CssVarsProvider, Button, Tooltip } from '@mui/joy'
+import { CssVarsProvider, Button, Tooltip, Input } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
 import {
-    dutyPlanInitialState,
-    dutyPlanReducer,
-    planInitialState,
     getEmployeeDetlDutyPlanBased,
 } from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -31,6 +24,9 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ExporttoExcel } from './ExportToExcel'
+import { setDepartment } from 'src/redux/actions/Department.action'
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 
 const UpdationTopCard = () => {
 
@@ -41,14 +37,17 @@ const UpdationTopCard = () => {
     const reduxDispatch = useDispatch()
     const { GET_EXCEL_DATA } = Actiontypes;
 
-    const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
+    const redispatch = useDispatch()
+    const [fromDate, setFromDate] = useState(moment().format('YYYY-MM-DD'))
+    const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'))
+    const [deptName, setDepartmentName] = useState(0)
+    const [deptSecName, setDepartSecName] = useState(0)
 
-    const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
-    const setDepartSecName = (deptSecSlno) => dispatch({ type: DEPT_SEC_NAME, deptSecSlno })
-
-    const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
-    const { fromDate, toDate, deptName, deptSecName } = planState
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
+
+    useEffect(() => {
+        redispatch(setDepartment());
+    }, [redispatch])
 
     useEffect(() => {
         // common settings
@@ -181,33 +180,37 @@ const UpdationTopCard = () => {
             }
             return obje
         })
-        const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
-        const { success } = result.data
-        if (success === 1) {
-            infoNofity("Attendance is already processed for this month!")
+        if (deptName === 0 || deptSecName === 0) {
+            warningNofity("Please Select Department || Department Section")
         } else {
-            const result = await axioslogin.post("/payrollprocess/create/manual", array1)
-            const { success, message } = result.data
+            const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
+            const { success } = result.data
             if (success === 1) {
-                const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
-                const { success } = result1.data
-                if (success === 1) {
-                    succesNofity("Attendance Marking Done")
-                }
-                else {
-                    errorNofity("Error occure in duty plan lock")
-                }
+                infoNofity("Attendance is already processed for this month!")
             } else {
-                errorNofity(message)
+                const result = await axioslogin.post("/payrollprocess/create/manual", array1)
+                const { success, message } = result.data
+                if (success === 1) {
+                    const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
+                    const { success } = result1.data
+                    if (success === 1) {
+                        succesNofity("Attendance Marking Done")
+                    }
+                    else {
+                        errorNofity("Error occure in duty plan lock")
+                    }
+                } else {
+                    errorNofity(message)
+                }
             }
         }
     }
 
     //to download excel format
-    const downloadFormat = async () => {
+    const downloadFormat = useCallback(async () => {
         const fileName = "Excelformat"
         ExporttoExcel(fileName)
-    }
+    }, [])
 
     return (
         <Paper
@@ -226,10 +229,16 @@ const UpdationTopCard = () => {
                             inputFormat="DD-MM-YYYY"
                             value={fromDate}
                             onChange={(date) =>
-                                dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
+                                setFromDate(moment(date).format('YYYY-MM-DD'))
+                                // dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
                             }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <CssVarsProvider>
+                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    </CssVarsProvider>
+                                    {InputProps?.endAdornment}
+                                </Box>
                             )}
                         />
                     </LocalizationProvider>
@@ -243,19 +252,25 @@ const UpdationTopCard = () => {
                             inputFormat="DD-MM-YYYY"
                             value={toDate}
                             onChange={(date) =>
-                                dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
+                                setToDate(moment(date).format('YYYY-MM-DD'))
+                                // dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
                             }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <CssVarsProvider>
+                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    </CssVarsProvider>
+                                    {InputProps?.endAdornment}
+                                </Box>
                             )}
                         />
                     </LocalizationProvider>
                 </Box>
                 <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSelectByRedux setValue={setDepartment} value={deptName} />
+                    <DepartmentDropRedx getDept={setDepartmentName} />
                 </Box>
                 <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
+                    <DepartmentSectionRedx getSection={setDepartSecName} />
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
@@ -275,7 +290,7 @@ const UpdationTopCard = () => {
                     </Box>
                     <Tooltip title="Upload Excel" followCursor placement='top' arrow >
                         <Box sx={{ p: 0.2 }}>
-                            <Button aria-label="Like" variant="outlined" color="neutral"
+                            <Button aria-label="Like" variant="outlined" color="success"
                                 onClick={handleSubmit}
                                 sx={{ color: '#90caf9' }} >
                                 <UploadIcon />
@@ -284,9 +299,9 @@ const UpdationTopCard = () => {
                     </Tooltip>
                     <Tooltip title="Save" followCursor placement='top' arrow >
                         <Box sx={{ p: 0.2 }}>
-                            <Button aria-label="Like" variant="outlined" color="neutral"
+                            <Button aria-label="Like" variant="outlined" color="success"
                                 onClick={onClickSave}
-                                sx={{ color: '#81c784' }}>
+                                sx={{ color: '#65B741' }}>
                                 <SaveIcon />
                             </Button>
                         </Box>
