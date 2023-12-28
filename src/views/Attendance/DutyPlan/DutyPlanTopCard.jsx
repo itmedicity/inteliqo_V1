@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { memo } from 'react'
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
@@ -8,8 +8,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { useState } from 'react'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import { useReducer } from 'react'
 import { lastDayOfMonth } from 'date-fns/esm'
 import {
@@ -33,6 +31,8 @@ import { CssVarsProvider, Button } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
+import { getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
+import DepartmentSection from 'src/views/LeaveManagement/LeavereRequsition/Func/DepartmentSection'
 
 const DutyPlanTopCard = () => {
     const [open, setOpen] = useState(false)
@@ -46,7 +46,7 @@ const DutyPlanTopCard = () => {
     const setDepartSecName = (deptSecSlno) => dispatch({ type: DEPT_SEC_NAME, deptSecSlno })
 
     const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
-    const { fromDate, toDate, deptName, deptSecName } = planState
+    const { fromDate, toDate, deptSecName } = planState
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
 
     useEffect(() => {
@@ -61,9 +61,29 @@ const DutyPlanTopCard = () => {
     }, [FETCH_EMP_DETAILS, reduxDispatch])
 
 
-    // state variable from reducx state
+
+    //get the employee details for taking the HOd and Incharge Details
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { hod, incharge, em_id, em_department } = employeeProfileDetl;
+
+
+    useEffect(() => {
+        if (hod === 1 || incharge === 1) {
+            reduxDispatch(getHodBasedDeptSectionName(em_id));
+        }
+    }, [hod, incharge, em_id, reduxDispatch])
+
+    useEffect(() => {
+        if (em_department !== 0) {
+            setDepartment(em_department)
+        }
+    }, [em_department])
+
+    // state variable from redux state
     // EMployee detaild selected dept & dept_section
     //const employeeDetl = useSelector((state) => state.getEmployeedetailsDutyplan.EmpdetlInitialdata, _.isEqual);
+
     //Common settings
     const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
     // get holiday 
@@ -80,17 +100,17 @@ const DutyPlanTopCard = () => {
     const getUpdatedShiftId = useSelector((state) => state.getUpdatedShiftId, _.isEqual);
     const shiftId = useMemo(() => getUpdatedShiftId, [getUpdatedShiftId]);
 
-    const onClickSaveShiftUpdation = async (e) => {
+    const onClickSaveShiftUpdation = useCallback(async (e) => {
         e.preventDefault();
         const updateShiftChanges = await axioslogin.patch("/plan", shiftId)
-        const { success } = updateShiftChanges.data
+        const { success, message } = updateShiftChanges.data
         if (success === 1) {
             succesNofity("Duty Plan Updated")
         }
         else {
-            errorNofity("Error Occured!!!Please Contact EDP")
+            errorNofity(message)
         }
-    }
+    }, [shiftId])
 
 
     /****
@@ -100,10 +120,11 @@ const DutyPlanTopCard = () => {
      * 2-> dispatch for gettting employee details
      */
 
-    const onClickDutyPlanButton = async (e) => {
+    const onClickDutyPlanButton = useCallback(async (e) => {
         setOpen(true)
         e.preventDefault()
-        if (deptName === 0 || deptSecName === 0) {
+
+        if (em_department === 0 || deptSecName === 0) {
             infoNofity('Check The Department || Department Section Feild');
             setOpen(false);
         } else if (moment(toDate) > moment(calanderMaxDate)) {
@@ -112,12 +133,12 @@ const DutyPlanTopCard = () => {
         } else {
             //For get shift Details
             const postData = {
-                em_department: deptName,
+                em_department: em_department,
                 em_dept_section: deptSecName,
             }
 
             const departmentDetlFrShiftGet = {
-                dept_id: deptName,
+                dept_id: em_department,
                 sect_id: deptSecName
             }
 
@@ -144,7 +165,9 @@ const DutyPlanTopCard = () => {
                 }
             })
         }
-    }
+    }, [em_department, deptSecName, GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS,
+        calanderMaxDate, commonSettings, deptShift, holidayList, planState, reduxDispatch, toDate])
+
     return (
         <Paper
             square
@@ -153,8 +176,7 @@ const DutyPlanTopCard = () => {
         >
             <CustomBackDrop open={open} text="Please Wait" />
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}  >
-                <Box
-                    sx={{ flex: 1, mt: 0.5, px: 0.3, }}  >
+                <Box sx={{ flex: 1, mt: 1, px: 0.3, }}  >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -170,7 +192,7 @@ const DutyPlanTopCard = () => {
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                <Box sx={{ flex: 1, mt: 1, px: 0.3, }}>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
@@ -187,11 +209,12 @@ const DutyPlanTopCard = () => {
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                {/* <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                     <DeptSelectByRedux setValue={setDepartment} value={deptName} />
-                </Box>
-                <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
+                </Box> */}
+                <Box sx={{ flex: 1, px: 0.3, }} >
+                    <DepartmentSection setSection={setDepartSecName} sectionVal={deptSecName} />
+                    {/* <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} /> */}
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >

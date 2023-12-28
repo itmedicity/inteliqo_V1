@@ -32,23 +32,22 @@ const EmployeeInactiveHR = () => {
                 em_dept_section: deptSect,
                 em_branch: branch
             }
-            const result = await axioslogin.post("/plan/create", postData);
+            const result = await axioslogin.post("/empmast/emplist/show", postData);
             const { success, data } = result.data
             if (success === 1) {
                 setempData(data)
                 setCount(0)
-            }
-            else {
+                setState(0)
+            } else {
                 warningNofity("There is No employees In This Department And Department Section")
-
             }
         }
-        if (branch !== 0 && dept !== 0 && deptSect !== 0) {
+        if (state === 1) {
             getempdetl()
         } else {
         }
 
-    }, [count, branch, dept, deptSect])
+    }, [count, state, branch, dept, deptSect])
 
     const getemployeedetails = useCallback(async () => {
         if (dept === 0 && deptSect === 0) {
@@ -114,7 +113,7 @@ const EmployeeInactiveHR = () => {
                 <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={column}
-                        tableData={state === 1 ? empData : null}
+                        tableData={empData}
                         sx={{
                             height: 400,
                             width: "100%"
