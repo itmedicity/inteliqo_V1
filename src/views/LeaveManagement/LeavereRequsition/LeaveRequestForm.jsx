@@ -1,4 +1,4 @@
-import { Button, Checkbox, CssVarsProvider } from '@mui/joy'
+import { Button, Checkbox, CssVarsProvider, Tooltip } from '@mui/joy'
 import { Box, Paper, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
@@ -65,7 +65,7 @@ const LeaveRequestForm = ({ em_id }) => {
         } else {
             //for single leave 
             if (singleLeveTypeCheck === true) {
-                if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+                if (differenceInDays(new Date(), new Date(fromDate)) > leave_count) {
                     warningNofity("Can't Apply for Leave Request, limitted days exceeded!!")
                 }
                 else if (commnLevType === 0) {
@@ -152,7 +152,7 @@ const LeaveRequestForm = ({ em_id }) => {
                 }
             } else {
                 setRequestFom(false)
-                if ((differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1) > 3) {
+                if ((differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1) > leave_count) {
                     warningNofity("You Can't apply leave for more than 3 days!!")
                 } else {
                     //Not a single Leave type Leave Selection
@@ -311,16 +311,18 @@ const LeaveRequestForm = ({ em_id }) => {
                 </Box>
                 <Box sx={{ display: "flex", p: 0.2 }} >
                     <CssVarsProvider>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={leaveRequestSubmitFun}
-                            sx={{
-                                // color: '#90caf9'
-                            }} >
-                            <PublishedWithChangesIcon />
-                        </Button>
+                        <Tooltip title="Show Leaves" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={leaveRequestSubmitFun}
+                                sx={{
+                                    // color: '#90caf9'
+                                }} >
+                                <PublishedWithChangesIcon />
+                            </Button>
+                        </Tooltip>
                     </CssVarsProvider>
                 </Box>
             </Paper >

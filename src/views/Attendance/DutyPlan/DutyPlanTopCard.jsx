@@ -27,7 +27,7 @@ import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import _ from 'underscore'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { CssVarsProvider, Button } from '@mui/joy'
+import { CssVarsProvider, Button, Tooltip } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -220,18 +220,22 @@ const DutyPlanTopCard = () => {
             <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
                 <CssVarsProvider>
                     <Box sx={{ p: 0.2 }} >
-                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
-                            color: '#90caf9'
-                        }} >
-                            <PublishedWithChangesIcon />
-                        </Button>
+                        <Tooltip title="Process" followCursor placement='top' arrow >
+                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
+                                color: '#90caf9'
+                            }} >
+                                <PublishedWithChangesIcon />
+                            </Button>
+                        </Tooltip>
                     </Box>
                     <Box sx={{ p: 0.2 }}>
-                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickSaveShiftUpdation} sx={{
-                            color: '#81c784'
-                        }}>
-                            <SaveIcon />
-                        </Button>
+                        <Tooltip title="Save" followCursor placement='top' arrow >
+                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickSaveShiftUpdation} sx={{
+                                color: '#81c784'
+                            }}>
+                                <SaveIcon />
+                            </Button>
+                        </Tooltip>
                     </Box>
                 </CssVarsProvider>
             </Box>

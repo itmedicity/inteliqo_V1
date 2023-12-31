@@ -9,7 +9,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { Button, CssVarsProvider, Typography } from '@mui/joy';
-import { addDays } from 'date-fns';
+import { addDays, differenceInDays, isAfter } from 'date-fns';
 import { ToastContainer } from 'react-toastify';
 import _ from 'underscore';
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
@@ -45,37 +45,62 @@ const NightOffRequest = () => {
             todate: moment(todate).format('yyyy-MM-DD'),
             em_no: hod === 0 && incharge === 0 ? em_no : employee
         }
-        const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
-        const { success } = result.data
-        if (success === 1) {
-            const findata = result.data.message
-            if (findata.length === commonSettings.noff_count) {
-                const submitdata = {
-                    duty_day: moment(requiredate).format('yyyy-MM-DD'),
-                    duty_desc: 'NOFF',
-                    duty_status: 1,
-                    lve_tble_updation_flag: 1,
-                    em_no: hod === 0 && incharge === 0 ? em_no : employee,
-                    frmdate: moment(fromdate).format('yyyy-MM-DD'),
-                    todate: moment(todate).format('yyyy-MM-DD')
-                }
-                const result = await axioslogin.patch('/attandancemarking/updatenightoff', submitdata)
+        console.log(requiredate);
+        console.log(fromdate);
+        console.log(todate);
+        if (isAfter(new Date(requiredate), new Date(todate))) {
+
+            if (differenceInDays(new Date(todate), new Date(fromdate)) === commonSettings.noff_count) {
+                const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
                 const { success } = result.data
+                console.log(result.data);
                 if (success === 1) {
-                    succesNofity("NOFF Requested Sucessfully");
-                    setRequireDate(new Date())
-                    setFromDate(new Date())
-                    setToDate(new Date())
+
+                } else {
+                    warningNofity('Plaese mark Punch In Out!')
                 }
-            } else if (findata.length > commonSettings.noff_count) {
+            } else if (differenceInDays(new Date(todate), new Date(fromdate)) > commonSettings.noff_count) {
                 warningNofity('More Night duties Selected,You Can Reduce the Date Range')
-            }
-            else {
+            } else {
                 warningNofity('Less Night duties Under Selected Dates,Not Applicable for NOFF')
             }
-        } else if (success === 0) {
-            warningNofity('No Night duties Under Selected Dates')
+
+        } else {
+            warningNofity("Plase Select Required date after to Date!!")
         }
+
+
+        // const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
+        // const { success } = result.data
+        // if (success === 1) {
+        //     const findata = result.data.message
+        //     if (findata.length === commonSettings.noff_count) {
+        //         const submitdata = {
+        //             duty_day: moment(requiredate).format('yyyy-MM-DD'),
+        //             duty_desc: 'NOFF',
+        //             duty_status: 1,
+        //             lve_tble_updation_flag: 1,
+        //             em_no: hod === 0 && incharge === 0 ? em_no : employee,
+        //             frmdate: moment(fromdate).format('yyyy-MM-DD'),
+        //             todate: moment(todate).format('yyyy-MM-DD')
+        //         }
+        //         const result = await axioslogin.patch('/attandancemarking/updatenightoff', submitdata)
+        //         const { success } = result.data
+        //         if (success === 1) {
+        //             succesNofity("NOFF Requested Sucessfully");
+        //             setRequireDate(new Date())
+        //             setFromDate(new Date())
+        //             setToDate(new Date())
+        //         }
+        //     } else if (findata.length > commonSettings.noff_count) {
+        //         warningNofity('More Night duties Selected,You Can Reduce the Date Range')
+        //     }
+        //     else {
+        //         warningNofity('Less Night duties Under Selected Dates,Not Applicable for NOFF')
+        //     }
+        // } else if (success === 0) {
+        //     warningNofity('No Night duties Under Selected Dates')
+        // }
     }
 
 
