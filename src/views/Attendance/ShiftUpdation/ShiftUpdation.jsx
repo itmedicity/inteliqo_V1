@@ -55,7 +55,7 @@ const ShiftUpdation = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [dept, changeDept] = useState(0);
     const [section, changeSection] = useState(0);
-    const [emply, getEmployee] = useState(0);
+    const [emply, getEmployee] = useState({});
     const [tableArray, setTableArray] = useState([]);
     const [disable, setDisable] = useState(false)
     const { em_no } = emply
@@ -73,7 +73,7 @@ const ShiftUpdation = () => {
         setOpenBkDrop(true)
         setTableArray([])
         const selectedDate = moment(value).format('YYYY-MM-DD');
-        if (dept !== 0 && section !== 0 && emply !== 0) {
+        if (dept !== 0 && section !== 0 && emply.em_id !== 0) {
             const postdata = {
                 em_no: em_no,
                 attendance_marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
@@ -199,6 +199,7 @@ const ShiftUpdation = () => {
             }
         }
         else {
+            warningNofity("Plaese Select All Option!!")
             setOpenBkDrop(false)
 
         }

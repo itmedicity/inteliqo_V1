@@ -870,7 +870,7 @@ const CommonSettingNew = () => {
                         </Box>
                     </Box>
                     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ width: '50%', bgcolor: 'yellow' }}>
+                        <Box sx={{ width: '50%', }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
                                     <CssVarsProvider>
