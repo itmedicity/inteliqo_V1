@@ -39,8 +39,14 @@ const ShiftModal = ({ open, setOpen, data }) => {
     let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
     let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
+    const endTimeVale = format(new Date(checkOutEnd), 'HH')
+    const check = endTimeVale < 5
+    const checkOutEndTime = `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
+
     let punchInData = punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEnd))
-    let punchOutData = punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEnd))
+    let punchOutData = check === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEndTime))
+        : punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEnd))
+
 
     //SELECT AND UPDATE DATA'S
     const [inTime, setInTime] = useState(null)
