@@ -105,7 +105,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
 
     if (Object.keys(employeeDetails).length > 0) {
 
-        const checkingForShiftMapped = await axioslogin.post("/departmentshift/checkshift", departmentDetl);
+        const checkingForShiftMapped = await axioslogin.post("/departmentshift/checkSection", departmentDetl);
         const { successs } = checkingForShiftMapped.data
         if (successs === 1) {
 
