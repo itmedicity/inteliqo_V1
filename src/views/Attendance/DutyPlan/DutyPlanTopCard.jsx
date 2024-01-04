@@ -19,7 +19,7 @@ import {
 } from './DutyPlanFun/DutyPlanFun'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch } from 'react-redux'
-import { getdeptShift } from 'src/redux/actions/dutyplan.action'
+import { getdeptShift, getSectionShift } from 'src/redux/actions/dutyplan.action'
 import { useEffect } from 'react'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { useSelector } from 'react-redux'
@@ -146,7 +146,7 @@ const DutyPlanTopCard = () => {
                 const { status, data } = emplyDataArray;
                 if (status === 1) {
                     dispatch({ type: FETCH_EMP_DETAILS, payload: data });
-                    reduxDispatch(getdeptShift(departmentDetlFrShiftGet));
+                    reduxDispatch(getSectionShift(departmentDetlFrShiftGet));
                     //process function
                     dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
                         // employee details based on selected dept and dept sec

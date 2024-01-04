@@ -780,8 +780,8 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 }
 
 //Update Common Leaves 
-export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi) => {
-
+export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi, category) => {
+  const { ecat_sl } = category;
   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
   const { successcommonleave, messagecommonleave } = result.data;
   let commonLeaveMessage = { status: 0, data: [] }
@@ -792,6 +792,7 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
     const obj = {
       leave_credit_policy_count: 365 - res
     }
+
     const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
     // Filter the Maternity For the Male Employee
     const filterCommonArray = arr.filter((val) => val.lvetype_slno !== 2);
@@ -810,9 +811,14 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
         cmn_lv_year: moment().format('YYYY-MM-DD')
       }
       return commonleave
-    }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 || statutory_esi === 1 && val.llvetype_slno !== 7)
-    return { ...commonLeaveMessage, status: 1, data: commondata }
-
+    }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 ||
+      statutory_esi === 1 && val.llvetype_slno !== 7)
+    if (ecat_sl === 0) {
+      const list = commondata.filter((val) => val.llvetype_slno !== 7)
+      return { ...commonLeaveMessage, status: 1, data: list }
+    } else {
+      return { ...commonLeaveMessage, status: 1, data: commondata }
+    }
   } else {
     return { ...commonLeaveMessage, status: 0, data: [] }
   }

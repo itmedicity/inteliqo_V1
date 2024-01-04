@@ -53,9 +53,24 @@ const NightOffRequest = () => {
             if (differenceInDays(new Date(todate), new Date(fromdate)) === commonSettings.noff_count) {
                 const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
                 const { success } = result.data
-                console.log(result.data);
                 if (success === 1) {
-
+                    const submitdata = {
+                        duty_day: moment(requiredate).format('yyyy-MM-DD'),
+                        duty_desc: 'NOFF',
+                        duty_status: 1,
+                        lve_tble_updation_flag: 1,
+                        em_no: hod === 0 && incharge === 0 ? em_no : employee,
+                        frmdate: moment(fromdate).format('yyyy-MM-DD'),
+                        todate: moment(todate).format('yyyy-MM-DD')
+                    }
+                    const result = await axioslogin.patch('/attandancemarking/updatenightoff', submitdata)
+                    const { success } = result.data
+                    if (success === 1) {
+                        succesNofity("NOFF Requested Sucessfully");
+                        setRequireDate(new Date())
+                        setFromDate(new Date())
+                        setToDate(new Date())
+                    }
                 } else {
                     warningNofity('Plaese mark Punch In Out!')
                 }

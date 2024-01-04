@@ -27,6 +27,7 @@ const CommonSettingNew = () => {
     const [defshift, setDefShift] = useState(0)
     const [notappshift, setnoappshift] = useState(0)
     const [workoff, setworkoff] = useState(0)
+    const [noff, setNoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -53,14 +54,16 @@ const CommonSettingNew = () => {
         noff_count: 0,
         onHourRq_no: 0,
         max_late_day_count: 0,
-        leave_count: 0
+        leave_count: 0,
+        noff_selct_day_count: 0
     })
 
     const {
         slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
-        pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count
+        pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
+        noff_selct_day_count
     } = FormData
 
     const [levaetype, setLeaveType] = useState([])
@@ -96,7 +99,7 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count, leave_count } = data[0]
+                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -124,7 +127,9 @@ const CommonSettingNew = () => {
                     onHourRq_no: onehour_rqst_count,
                     areartype: areartype,
                     max_late_day_count: max_late_day_count,
-                    leave_count: leave_count
+                    leave_count: leave_count,
+                    noff_selct_day_count: noff_selct_day_count,
+                    noff: noff
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
@@ -179,7 +184,9 @@ const CommonSettingNew = () => {
         onehour_rqst_count: onHourRq_no,
         areartype: areartype,
         max_late_day_count: max_late_day_count,
-        leave_count: leave_count
+        leave_count: leave_count,
+        noff_selct_day_count: noff_selct_day_count,
+        noff: noff
     }
 
 
@@ -216,7 +223,9 @@ const CommonSettingNew = () => {
         onehour_rqst_count: onHourRq_no,
         areartype: areartype,
         max_late_day_count: max_late_day_count,
-        leave_count: leave_count
+        leave_count: leave_count,
+        noff_selct_day_count: noff_selct_day_count,
+        noff: noff
     }
 
     //save
@@ -806,6 +815,16 @@ const CommonSettingNew = () => {
                                         <ShiftSelectByRedux value={workoff} setValue={setworkoff} />
                                     </Box>
                                 </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Night OFF</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux value={noff} setValue={setNoff} />
+                                    </Box>
+                                </Box>
                             </Paper>
                         </Box>
 
@@ -816,6 +835,24 @@ const CommonSettingNew = () => {
                                         <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>NOFF Count Setting</Typography>
                                     </CssVarsProvider>
                                 </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Max Select NOFF Days</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="noff_selct_day_count"
+                                            value={noff_selct_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <CssVarsProvider>
@@ -834,6 +871,7 @@ const CommonSettingNew = () => {
                                         />
                                     </Box>
                                 </Box>
+
                             </Paper>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>

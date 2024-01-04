@@ -64,56 +64,53 @@ const EmployeeFileAgGrid = () => {
     }
 
     // Employee Record List
-    const getEmployeeList = useCallback((e) => {
+    const getEmployeeList = useCallback(async (e) => {
         e.preventDefault()
-        const submitfunc = async () => {
-            if (deptName !== 0 && deptSecName !== 0 && activestatus === true) {
-                const result = await axioslogin.post('/empmast/getEmpDet', postData)
-                const { success, data, message } = result.data
-                if (success === 1) {
-                    setTableData(data)
-                    dispatch(setEmployeeList(data))
-                }
-                else {
-                    warningNofity(message)
-                }
-            }
-            else if (deptName !== 0 && deptSecName === 0 && activestatus === true) {
-                const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
-                const { success, data, message } = result.data
-                if (success === 1) {
-                    setTableData(data)
-                    dispatch(setEmployeeList(data))
-                }
-                else {
-                    warningNofity(message)
-                }
-            }
-            else if (deptName !== 0 && deptSecName !== 0 && activestatus === false) {
-                const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
-                const { success, data, message } = result.data
-                if (success === 1) {
-                    setTableData(data)
-                    dispatch(setEmployeeList(data))
-                }
-                else {
-                    warningNofity(message)
-                }
-            } else if (deptName === 0 && deptSecName === 0 && activestatus === true && Empno !== 0) {
-                const result = await axioslogin.get(`/empearndeduction/getAll/${Empno}`)
-                const { data, success } = result.data;
-                if (success === 1) {
-                    setTableData(data);
-                } else {
-                    infoNofity("No employee exist with this employee number!!")
-                    setTableData([]);
-                }
+        if (deptName !== 0 && deptSecName !== 0 && activestatus === true) {
+            const result = await axioslogin.post('/empmast/getEmpDet', postData)
+            const { success, data, message } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
             }
             else {
-                warningNofity("Choose All Option")
+                warningNofity(message)
             }
         }
-        submitfunc()
+        else if (deptName !== 0 && deptSecName === 0 && activestatus === true) {
+            const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
+            const { success, data, message } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+            else {
+                warningNofity(message)
+            }
+        }
+        else if (deptName !== 0 && deptSecName !== 0 && activestatus === false) {
+            const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
+            const { success, data, message } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+            else {
+                warningNofity(message)
+            }
+        } else if (deptName === 0 && deptSecName === 0 && activestatus === true && Empno !== 0) {
+            const result = await axioslogin.get(`/empearndeduction/getAll/${Empno}`)
+            const { data, success } = result.data;
+            if (success === 1) {
+                setTableData(data);
+            } else {
+                infoNofity("No employee exist with this employee number!!")
+                setTableData([]);
+            }
+        }
+        else {
+            warningNofity("Choose All Option")
+        }
     }, [postDataDept, postData, deptName, deptSecName, activestatus, dispatch, Empno])
 
     // Route to Empl Record
@@ -137,15 +134,10 @@ const EmployeeFileAgGrid = () => {
         { headerName: 'Emp No', field: 'em_no', minWidth: 150, filter: true },
         { headerName: 'Name', field: 'emp_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Gender', field: 'gender', minWidth: 90 },
-        // { headerName: 'Age', field: 'em_age_year', minWidth: 90 },
-        // { headerName: 'DOJ', field: 'em_doj', minWidth: 100 },
-        //{ headerName: 'Mobile', field: 'em_mobile', minWidth: 90 },
-        //{ headerName: 'Branch', field: 'branch_name', minWidth: 90 },
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 250 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 250 },
         { headerName: 'Designation', field: 'desg_name', minWidth: 250 },
         { headerName: 'Status', field: 'emp_status', minWidth: 90 },
-
     ])
 
     const toSettings = useCallback(() => {
