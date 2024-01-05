@@ -19,7 +19,6 @@ import _ from 'underscore';
 const InchargeHodCompnt = ({ em_id, em_department }) => {
 
     const empid = useMemo(() => em_id, [em_id])
-    const dept = useMemo(() => em_department, [em_department])
     const [value, setValue] = useState(moment(new Date()));
     const [deptSection, setDeptSection] = useState(0)
     const [dateArray, setDateArray] = useState([])
@@ -35,13 +34,12 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
             warningNofity("Please Select Any Department Section")
         } else {
             const getEmpData = {
-                em_department: dept,
                 em_dept_section: deptSection,
             }
-            const result1 = await axioslogin.post("/payrollprocess/getEmpNoDeptWise", getEmpData);
-            const { succes, dataa } = result1.data
-            if (succes === 1) {
-                const arr = dataa && dataa.map((val, index) => {
+            const result1 = await axioslogin.post("/attendCal/emplist/show", getEmpData);
+            const { success, data } = result1.data
+            if (success === 1) {
+                const arr = data && data.map((val, index) => {
                     return val.em_no
                 })
                 const postdata = {
@@ -49,11 +47,11 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
                     to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
-                let empData = dataa;
+                let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-                const { success, data } = result.data
+                const { success } = result.data
                 if (success === 1) {
-                    let punchData = data;
+                    let punchData = result.data.data;
                     DeptWiseAttendanceViewFun(value, holidayList).then((values) => {
                         setDateArray(values);
                         const newFun = (val) => {

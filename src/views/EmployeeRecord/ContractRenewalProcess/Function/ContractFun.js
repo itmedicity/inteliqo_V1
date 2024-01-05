@@ -87,8 +87,8 @@ export const updateEmployeeMasterTable = async (updateempMast, no, newempId, upd
                     emp_no: em_no,
                     emp_id: em_id,
                     emp_status: 1,
-                    emp_username: newempId,
-                    emp_password: newempId,
+                    emp_username: updateempMast.em_no,
+                    emp_password: updateempMast.em_no,
                     emp_email: em_email,
                     create_user: employeeNumber()
                 }

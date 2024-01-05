@@ -133,7 +133,7 @@ const LeaveProcessCard = ({ data, category }) => {
                 }
                 else if (leaveName === 2) {
                     //Common Off days Leave Credit option
-                    updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi).then((values) => {
+                    updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
                         const { status, data } = values;
                         //insert Common Leaves
                         if (status === 1) {
