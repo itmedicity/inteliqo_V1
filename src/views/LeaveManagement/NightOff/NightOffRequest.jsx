@@ -45,11 +45,7 @@ const NightOffRequest = () => {
             todate: moment(todate).format('yyyy-MM-DD'),
             em_no: hod === 0 && incharge === 0 ? em_no : employee
         }
-        console.log(requiredate);
-        console.log(fromdate);
-        console.log(todate);
         if (isAfter(new Date(requiredate), new Date(todate))) {
-
             if (differenceInDays(new Date(todate), new Date(fromdate)) === commonSettings.noff_count) {
                 const result = await axioslogin.post('/attandancemarking/getnightoffdata', empdata)
                 const { success } = result.data
@@ -74,7 +70,7 @@ const NightOffRequest = () => {
                 } else {
                     warningNofity('Plaese mark Punch In Out!')
                 }
-            } else if (differenceInDays(new Date(todate), new Date(fromdate)) > commonSettings.noff_count) {
+            } else if (differenceInDays(new Date(todate), new Date(fromdate)) > commonSettings.noff_selct_day_count) {
                 warningNofity('More Night duties Selected,You Can Reduce the Date Range')
             } else {
                 warningNofity('Less Night duties Under Selected Dates,Not Applicable for NOFF')

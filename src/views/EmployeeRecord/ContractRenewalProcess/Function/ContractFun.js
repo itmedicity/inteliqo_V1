@@ -67,7 +67,7 @@ export const updateArrearSalary = async (arreardetails) => {
     }
 }
 
-export const updateEmployeeMasterTable = async (updateempMast, no, newempId, updateSlno) => {
+export const updateEmployeeMasterTable = async (updateempMast, no, updateSlno) => {
     let messsage = { modelStatus: 0 }
     const delteId = {
         emp_slno: updateSlno

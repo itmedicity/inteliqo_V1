@@ -114,6 +114,9 @@ const MultiLeaveRequestForm = () => {
         setnewData(leaveSelectedData)
     }, [fromDate, toDate]);
 
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const { leave_count } = state;
+
 
     //allowed leave type 
 
@@ -225,17 +228,16 @@ const MultiLeaveRequestForm = () => {
             || newData?.some(key => key.leaveTypeSlno === '8') || newData?.some(key => key.leaveTypeSlno === '3')
             || newData?.some(key => key.leaveTypeSlno === '4') || newData?.some(key => key.leaveTypeSlno === '6'));
 
-
         if (checkIfSelectedLeveReqType?.length > 0 || checkIfSelectedLeve?.length > 0 || checkIfAnyLeaveSelected?.length > 0) {
             warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
             setDropOpen(false)
         } else if (reason === '') {
             warningNofity("Leave Request Reason is Blank")
             setDropOpen(false)
-        } else if (CheckIfCasualLeave.length === numberOfDays) {
+        } else if (CheckIfCasualLeave.length > 3) {
             warningNofity("Casual Leave Max 3 Days Not Possible!!")
             setDropOpen(false)
-        } else if (CheckIfEarnLeave.length === numberOfDays) {
+        } else if (CheckIfEarnLeave.length > 3) {
             warningNofity("Earn Leave Max 3 Days Not Possible!!")
             setDropOpen(false)
         } else if (sickLeave === true) {

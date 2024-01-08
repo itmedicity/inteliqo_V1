@@ -27,13 +27,30 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
         let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
+        const checkInTimeVale = format(new Date(checkinStart), 'HH')
+        const incheckStart = checkInTimeVale > 20
+        const checkinStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
+
+        const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
+        const outcheckStart = checkoutTimeVale > 20
+        const checkoutStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
+
+        const inTimeVale = format(new Date(checkinEnd), 'HH')
+        const incheck = inTimeVale < 8
+        const checkinEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
+
         const endTimeVale = format(new Date(checkOutEnd), 'HH')
-        const check = endTimeVale < 5
+        const check = endTimeVale < 8
         const checkOutEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
 
-        const punchIn = punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd)) ?? '0000-00-00 00:00';
-        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime)) ?? '0000-00-00 00:00' :
-            punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd)) ?? '0000-00-00 00:00';
+        const punchIn = incheck === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEndTime)) :
+            incheckStart === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStartTime) && new Date(val) <= new Date(checkinEnd)) :
+                punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd))
+
+
+        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime))
+            : outcheckStart === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkoutStartTime) && new Date(val) <= new Date(checkOutEnd))
+                : punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd))
 
         // GET THE HOURS WORKED IN MINITS
         let interVal = intervalToDuration({
@@ -122,13 +139,39 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
         let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
+        const checkInTimeVale = format(new Date(checkinStart), 'HH')
+        const incheckStart = checkInTimeVale > 20
+        const checkinStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
+
+        const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
+        const outcheckStart = checkoutTimeVale > 20
+        const checkoutStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
+
+        const inTimeVale = format(new Date(checkinEnd), 'HH')
+        const incheck = inTimeVale < 8
+        const checkinEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
+
         const endTimeVale = format(new Date(checkOutEnd), 'HH')
-        const check = endTimeVale < 5
+        const check = endTimeVale < 8
         const checkOutEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
 
-        const punchIn = punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd)) ?? '0000-00-00 00:00';
-        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime)) ?? '0000-00-00 00:00' :
-            punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd)) ?? '0000-00-00 00:00';
+        const punchIn = incheck === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEndTime)) :
+            incheckStart === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStartTime) && new Date(val) <= new Date(checkinEnd)) :
+                punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd))
+
+
+        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime))
+            : outcheckStart === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkoutStartTime) && new Date(val) <= new Date(checkOutEnd))
+                : punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd))
+
+        // const punchIn = punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd)) ?? '0000-00-00 00:00';
+
+
+
+        // const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime)) ?? '0000-00-00 00:00' :
+        //     punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd)) ?? '0000-00-00 00:00';
+
+
 
         //Grace period calculation
         const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')

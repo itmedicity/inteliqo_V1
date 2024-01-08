@@ -126,7 +126,7 @@ const HaldayRequetsMainForm = () => {
             setShiftTime(0)
             setDisable(true)
         } else if (leveType?.length === 0) {
-            warningNofity("Not Emough Credited Leaves")
+            warningNofity("Not Enough Credited Leaves")
             setShiftTime(0)
             setDisable(true)
         } else {
