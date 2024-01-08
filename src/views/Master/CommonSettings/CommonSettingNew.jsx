@@ -17,6 +17,7 @@ import { ToastContainer } from 'react-toastify'
 import CloseIcon from '@mui/icons-material/Close';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import GroupSelection from '../GroupRights/GroupSelection'
 
 const CommonSettingNew = () => {
 
@@ -28,6 +29,7 @@ const CommonSettingNew = () => {
     const [notappshift, setnoappshift] = useState(0)
     const [workoff, setworkoff] = useState(0)
     const [noff, setNoff] = useState(0)
+    const [group_slno, setGroup_Slno] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -99,7 +101,7 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff } = data[0]
+                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -129,8 +131,7 @@ const CommonSettingNew = () => {
                     max_late_day_count: max_late_day_count,
                     leave_count: leave_count,
                     noff_selct_day_count: noff_selct_day_count,
-                    noff: noff
-
+                    noff: noff,
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -141,6 +142,7 @@ const CommonSettingNew = () => {
                 setValue(1)
                 setCount(0)
                 setAreartype(areartype === null ? 0 : areartype)
+                setGroup_Slno(group_slno)
             }
             else if (success === 0) {
                 setValue(0)
@@ -186,7 +188,8 @@ const CommonSettingNew = () => {
         max_late_day_count: max_late_day_count,
         leave_count: leave_count,
         noff_selct_day_count: noff_selct_day_count,
-        noff: noff
+        noff: noff,
+        group_slno: group_slno
     }
 
 
@@ -225,7 +228,8 @@ const CommonSettingNew = () => {
         max_late_day_count: max_late_day_count,
         leave_count: leave_count,
         noff_selct_day_count: noff_selct_day_count,
-        noff: noff
+        noff: noff,
+        group_slno: group_slno
     }
 
     //save
@@ -937,6 +941,25 @@ const CommonSettingNew = () => {
                             </Paper>
                         </Box>
                         <Box sx={{ width: '50%' }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Master Group Setting</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Master Group</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <GroupSelection value={group_slno} setValue={setGroup_Slno} />
+                                    </Box>
+                                </Box>
+                            </Paper>
                         </Box>
                     </Box>
                 </Paper >

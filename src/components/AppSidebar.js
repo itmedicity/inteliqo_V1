@@ -202,9 +202,8 @@ const AppSidebar = () => {
     getModuleUserRight()
   }, [count])
 
-  const empdata = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
-  const { em_name, sect_name } = empdata;
-
+  const emplogin = useSelector((state) => state?.LoginCredential)
+  const { em_name, sect_name } = emplogin
   return (
     <Fragment>
       <CSidebar

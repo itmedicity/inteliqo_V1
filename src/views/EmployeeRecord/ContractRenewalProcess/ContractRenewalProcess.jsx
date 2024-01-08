@@ -201,6 +201,9 @@ const ContractRenewalProcess = () => {
     }
     dutyplandata(id)
 
+  }, [newcontractstart, id, contstatus, contractrenew, newempId, permanentEmpNo])
+
+  useEffect(() => {
     const getLoginDetails = async () => {
       const result = await axioslogin.get(`/empcontract/empdetails/${id}`)
       const { success, data } = result.data
@@ -212,7 +215,8 @@ const ContractRenewalProcess = () => {
       }
     }
     getLoginDetails(id)
-  }, [newcontractstart, id, contstatus, contractrenew, newempId, permanentEmpNo])
+  }, [id])
+
 
   //function for saving new contract
   const RenewOldContract = async (e) => {
@@ -265,7 +269,7 @@ const ContractRenewalProcess = () => {
            *  d-> salary head split details (earning and deduction details)
            *  e-> contract log updation
            */
-          updateEmployeeMasterTable(updateempMast, no, newempId, updateSlno).then((messsage) => {
+          updateEmployeeMasterTable(updateempMast, no, updateSlno).then((messsage) => {
             const { modelStatus } = messsage;
             if (modelStatus === 1 && contstatus === 0) {
               employeeRecordUpdationMandatory(oldPersonalData).then((values) => {

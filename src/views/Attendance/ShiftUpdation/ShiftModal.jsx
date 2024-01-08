@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { Option, Select } from '@mui/joy';
-import { addDays, differenceInMinutes, format, formatDuration, intervalToDuration, isValid } from 'date-fns';
+import { addDays, differenceInMinutes, format, formatDuration, intervalToDuration, isValid, subDays } from 'date-fns';
 import moment from 'moment';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
@@ -39,20 +39,35 @@ const ShiftModal = ({ open, setOpen, data }) => {
     let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
     let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
+    const checkInTimeVale = format(new Date(checkinStart), 'HH')
+    const incheckStart = checkInTimeVale > 20
+    const checkinStartTime = `${format(subDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
+
+    const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
+    const outcheckStart = checkoutTimeVale > 20
+    const checkoutStartTime = `${format(subDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
+
+    const inTimeVale = format(new Date(checkinEnd), 'HH')
+    const incheck = inTimeVale < 8
+    const checkinEndTime = `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
+
+
+    //punch out check out time max count 
     const endTimeVale = format(new Date(checkOutEnd), 'HH')
-    const check = endTimeVale < 5
+    const check = endTimeVale < 8
     const checkOutEndTime = `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
 
-    let punchInData = punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEnd))
-    let punchOutData = check === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEndTime))
-        : punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEnd))
+    const punchInData = incheck === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEndTime)) :
+        incheckStart === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStartTime) && new Date(val.punch_time) <= new Date(checkinEnd)) :
+            punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEnd))
 
+    const punchOutData = check === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEndTime))
+        : outcheckStart === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkoutStartTime) && new Date(val.punch_time) <= new Date(checkOutEnd))
+            : punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEnd))
 
     //SELECT AND UPDATE DATA'S
     const [inTime, setInTime] = useState(null)
     const [outTime, setOutTime] = useState(null)
-
-
 
     const updatePunchInOut = useCallback(async () => {
         if (inTime !== null && outTime !== null) {
