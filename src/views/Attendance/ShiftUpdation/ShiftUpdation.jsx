@@ -115,7 +115,7 @@ const ShiftUpdation = () => {
 
                     const gracePeriod = await axioslogin.get('/commonsettings')
                     const { data } = gracePeriod.data
-                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in } = data[0]
+                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -131,7 +131,7 @@ const ShiftUpdation = () => {
                     //Function for punch master updation. Based on duty plan and punch details in punch data 
                     const result = await getAndUpdatePunchingData(postData, holidaydata,
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
-                        gross_salary, empInform, dispatch)
+                        gross_salary, empInform, dispatch, salary_above)
 
                     if (result !== undefined) {
                         const { status, message, shift, punch_data } = result;
