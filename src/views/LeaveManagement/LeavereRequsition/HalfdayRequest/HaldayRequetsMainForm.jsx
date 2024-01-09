@@ -165,112 +165,112 @@ const HaldayRequetsMainForm = () => {
             fromDate: moment(fromDate).format('YYYY-MM-DD'),
             toDate: moment(fromDate).format('YYYY-MM-DD')
         }
-        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-            warningNofity("Can't Apply for Halfday Request, limitted days exceeded!!")
+        // if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+        //     warningNofity("Can't Apply for Halfday Request, limitted days exceeded!!")
+        // } else {
+
+        //Checking attendance marking is saved in  current month || start of month b/w current date 
+        const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
+        const { success } = result.data;
+        if (success === 1) {
+            warningNofity("Attendance Marking Processed ! Contact HRD")
         } else {
-
-            //Checking attendance marking is saved in  current month || start of month b/w current date 
-            const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
-            const { success } = result.data;
-            if (success === 1) {
-                warningNofity("Attendance Marking Processed ! Contact HRD")
+            const postDataForpunchMaster = {
+                date1: format(new Date(fromDate), 'yyyy-MM-dd'),
+                date2: format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd'),
+                em_no: em_no
+            }
+            //FETCH THE PUNCH TIME FROM PUNCH DATA
+            const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
+            const { data } = result.data;
+            if (data.length === 1) {
+                warningNofity("There is only One Punch, You cant Proceed for halfday request!!")
+                setDropOpen(false)
+            } else if (data.length === 0) {
+                warningNofity("There is only No Punch")
+                setDropOpen(false)
             } else {
-                const postDataForpunchMaster = {
-                    date1: format(new Date(fromDate), 'yyyy-MM-dd'),
-                    date2: format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd'),
-                    em_no: em_no
-                }
-                //FETCH THE PUNCH TIME FROM PUNCH DATA
-                const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                const { data } = result.data;
-                if (data.length === 1) {
-                    warningNofity("There is only One Punch, You cant Proceed for halfday request!!")
-                    setDropOpen(false)
-                } else if (data.length === 0) {
-                    warningNofity("There is only No Punch")
-                    setDropOpen(false)
+                setDropOpen(true)
+                if (shiftTime === 0 || leveTypeState === 0 || leaveName === 0) {
+                    warningNofity("Select All The Feild")
+                } else if (reason === '') {
+                    warningNofity("Leave Request Reason Is Mandatory")
                 } else {
-                    setDropOpen(true)
-                    if (shiftTime === 0 || leveTypeState === 0 || leaveName === 0) {
-                        warningNofity("Select All The Feild")
-                    } else if (reason === '') {
-                        warningNofity("Leave Request Reason Is Mandatory")
-                    } else {
 
-                        const first_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_in).format('HH:mm')}`;
-                        const first_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_out).format('HH:mm')}`;
-                        const second_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_in).format('HH:mm')}`;
-                        const second_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_out).format('HH:mm')}`;
+                    const first_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_in).format('HH:mm')}`;
+                    const first_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(first_half_out).format('HH:mm')}`;
+                    const second_half_inTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_in).format('HH:mm')}`;
+                    const second_half_outTime = `${moment(fromDate).format('YYYY-MM-DD')} ${moment(second_half_out).format('HH:mm')}`;
 
-                        // console.log(moment(first_half_in).format('hh:mm'))
-                        const halfdaysavedata = {
-                            checkIn: shiftTime === 1 ? first_half_inTime : second_half_inTime,
-                            checkOut: shiftTime === 1 ? first_half_outTime : second_half_outTime,
-                            leavedate: moment(fromDate).format('YYYY-MM-DD HH:mm:ss'),
-                            planslno: leaveName, // selected leave name slno 
-                            shiftid: shift_id,
-                            month: name, // Selected leave Name
-                            em_id: em_id,
-                            em_no: em_no,
-                            em_department: em_department,
-                            em_dept_section: em_dept_section,
-                            inc_apprv_req:
-                                (authorization_incharge === 1 && incharge === 1) ? 1 :
-                                    (authorization_incharge === 1 && incharge === 0) ? 1 :
-                                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                            incapprv_status:
-                                (authorization_incharge === 1 && incharge === 1) ? 1 :
-                                    (hod === 1) ? 1 :
-                                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                            inc_apprv_cmnt:
-                                (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                                    (hod === 1) ? "DIRECT" :
-                                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
-                            inc_apprv_time:
-                                (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                    (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                            hod_apprv_req:
-                                (authorization_hod === 1 && hod === 1) ? 1 :
-                                    (authorization_hod === 1 && hod === 0) ? 1 :
-                                        (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                            hod_apprv_status:
-                                (authorization_hod === 1 && hod === 1) ? 1 :
+                    // console.log(moment(first_half_in).format('hh:mm'))
+                    const halfdaysavedata = {
+                        checkIn: shiftTime === 1 ? first_half_inTime : second_half_inTime,
+                        checkOut: shiftTime === 1 ? first_half_outTime : second_half_outTime,
+                        leavedate: moment(fromDate).format('YYYY-MM-DD HH:mm:ss'),
+                        planslno: leaveName, // selected leave name slno 
+                        shiftid: shift_id,
+                        month: name, // Selected leave Name
+                        em_id: em_id,
+                        em_no: em_no,
+                        em_department: em_department,
+                        em_dept_section: em_dept_section,
+                        inc_apprv_req:
+                            (authorization_incharge === 1 && incharge === 1) ? 1 :
+                                (authorization_incharge === 1 && incharge === 0) ? 1 :
+                                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                        incapprv_status:
+                            (authorization_incharge === 1 && incharge === 1) ? 1 :
+                                (hod === 1) ? 1 :
+                                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
+                        inc_apprv_cmnt:
+                            (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
+                                (hod === 1) ? "DIRECT" :
+                                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
+                        inc_apprv_time:
+                            (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                        hod_apprv_req:
+                            (authorization_hod === 1 && hod === 1) ? 1 :
+                                (authorization_hod === 1 && hod === 0) ? 1 :
                                     (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                            hod_apprv_cmnt:
-                                (authorization_hod === 1 && hod === 1) ? "DIRECT" :
-                                    (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
-                            hod_apprv_time:
-                                (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                            hr_aprrv_requ: 1,
-                            ceo_req_status: empHodStat === 1 ? 1 : 0,
-                            resonforleave: reason,
-                            dutyPlanSlno: plan_slno // duty plan table slno 
-                        }
-                        const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                        const { success, message } = result.data;
-                        if (success === 1) {
-                            succesNofity(message)
-                            changeForm()
-                            setDropOpen(false)
-                            dispatch(getCreditedCasualLeave(em_id))
-                        } else if (success === 2) {
-                            warningNofity(message)
-                            changeForm()
-                            setDropOpen(false)
-                        } else {
-                            warningNofity(`Contact EDP ${JSON.stringify(message)}`)
-                            changeForm()
-                            setDropOpen(false)
-                        }
+                        hod_apprv_status:
+                            (authorization_hod === 1 && hod === 1) ? 1 :
+                                (authorization_hod === 0 && hod === 1) ? 1 : 0,
+                        hod_apprv_cmnt:
+                            (authorization_hod === 1 && hod === 1) ? "DIRECT" :
+                                (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
+                        hod_apprv_time:
+                            (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
+                                (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                        hr_aprrv_requ: 1,
+                        ceo_req_status: empHodStat === 1 ? 1 : 0,
+                        resonforleave: reason,
+                        dutyPlanSlno: plan_slno // duty plan table slno 
+                    }
+                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        changeForm()
+                        setDropOpen(false)
+                        dispatch(getCreditedCasualLeave(em_id))
+                    } else if (success === 2) {
+                        warningNofity(message)
+                        changeForm()
+                        setDropOpen(false)
+                    } else {
+                        warningNofity(`Contact EDP ${JSON.stringify(message)}`)
+                        changeForm()
+                        setDropOpen(false)
                     }
                 }
-
-
-
             }
+
+
+
         }
+        //}
 
     }, [name, reason, authorization_hod, authorization_incharge, dispatch, changeForm, em_department,
         em_dept_section, em_id, em_no, empHodStat, empIdInform, first_half_in, first_half_out, fromDate,

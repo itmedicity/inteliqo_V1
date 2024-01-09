@@ -711,7 +711,7 @@ export const casualLeaveInsertFun = async (value, lv_process_slno) => {
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Casual Leave! Contact EDP, line-621',
+      message: errorMsg ?? 'Error Updating Casual Leave! Contact EDP, line-696',
     }
   }
 
@@ -774,7 +774,7 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Holiday Leave! Contact EDP, line-688',
+      message: errorMsg ?? 'Error Updating Holiday Leave! Contact EDP, line-760',
     }
   }
 }
@@ -851,7 +851,7 @@ export const insertCommonLeaves = async (data, lv_process_slno) => {
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Common Leave! Contact EDP, line-688',
+      message: errorMsg ?? 'Error Updating Common Leave! Contact EDP, line-834',
     }
   }
 }
@@ -931,7 +931,7 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
     return {
       ...returnMessage,
       status: 0,
-      message: errorMsg ?? 'Error Updating Earn Leave! Contact EDP, line-621',
+      message: errorMsg ?? 'Error Updating Earn Leave! Contact EDP, line-915',
     }
   }
 }
