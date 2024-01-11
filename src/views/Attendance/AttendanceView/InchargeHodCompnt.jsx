@@ -1,4 +1,4 @@
-import { Button, CssVarsProvider, Input } from '@mui/joy';
+import { Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy';
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -75,6 +75,9 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+
+
+
                 <Paper
                     square
                     variant="outlined"
@@ -110,16 +113,118 @@ const InchargeHodCompnt = ({ em_id, em_department }) => {
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
                         <CssVarsProvider>
-                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
-                                color: '#90caf9'
-                            }} >
-                                <PublishedWithChangesIcon />
-                            </Button>
+                            <Tooltip title="Process" followCursor placement='top' arrow >
+                                <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
+                                    color: '#90caf9'
+                                }} >
+                                    <PublishedWithChangesIcon />
+                                </Button>
+                            </Tooltip>
                         </CssVarsProvider>
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} >
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} ></Box>
+                </Paper>
+                <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                P
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: "center" }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Present
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                OFF
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Work OFF
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                EG
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Early Going
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                LC
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Late Coming
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                HFD
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Half Day
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                A
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Absent
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                H
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Holiday
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
                 </Paper>
                 <Box sx={{ width: "100%" }} >
                     <Paper square elevation={0} sx={{

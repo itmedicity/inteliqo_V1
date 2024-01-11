@@ -31,6 +31,8 @@ const AttendanceView = () => {
 
     return (
         <Fragment>
+
+
             {
                 empFlag === 1 ? <EmployeeCmpnt em_no={em_no} /> : <InchargeHodCompnt em_id={em_id} em_department={em_department} />
             }

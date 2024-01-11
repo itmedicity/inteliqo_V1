@@ -9,7 +9,8 @@ import { getPunchMasterData } from "src/redux/actions/Common.Action";
 
 const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn_early_out, cmmn_grace_period, cmmn_late_in,
     //cmmn_late_in_grace, cmmn_early_out_grace,
-    gross_salary, punchMaster, InsertedPunchMasterData, shiftData, salary_above) => {
+    gross_salary, punchMaster, InsertedPunchMasterData, shiftData, salary_above,
+    week_off_day, notapplicable_shift, default_shift) => {
 
     const punchTimeData = punchData?.map(val => new Date(val.punch_time))
 
@@ -86,35 +87,35 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         //     isAfter(new Date(punchOut), new Date(earlyGo)) ? 1 : 0
 
 
-        if (val.shift_id === 3) {
-            const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
-                const getpunchFromTo = {
-                    fromDate: wDay,
-                    toDate: duty_day,
-                    em_no: emno
-                }
-                const punchmastdata = await axioslogin.post("/attendCal/getPunchMastDataCheckWoff/", getpunchFromTo);
-                const { success, punchCheckdata } = punchmastdata.data;
+        // if (val.shift_id === week_off_day) {
+        //     const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
+        //         const getpunchFromTo = {
+        //             fromDate: wDay,
+        //             toDate: duty_day,
+        //             em_no: emno
+        //         }
+        //         const punchmastdata = await axioslogin.post("/attendCal/getPunchMastDataCheckWoff/", getpunchFromTo);
+        //         const { success, punchCheckdata } = punchmastdata.data;
 
-                if (success === 1) {
-                    const presentdata = punchCheckdata?.filter(val => val.duty_status === 1)
-                    const count = presentdata.length
-                    if (count < 4) {
+        //         if (success === 1) {
+        //             const presentdata = punchCheckdata?.filter(val => val.duty_status === 1)
+        //             const count = presentdata.length
+        //             if (count < 4) {
 
-                        const postdata = {
-                            punch_slno: punch_slno,
-                            duty_status: 0,
-                            duty_desc: "A"
-                        }
-                        await axioslogin.post("/attendCal/updatePunchMasWoff/", postdata);
-                    }
-                }
-            }
+        //                 const postdata = {
+        //                     punch_slno: punch_slno,
+        //                     duty_status: 0,
+        //                     duty_desc: "A"
+        //                 }
+        //                 await axioslogin.post("/attendCal/updatePunchMasWoff/", postdata);
+        //             }
+        //         }
+        //     }
 
-            const weekDay = subDays(new Date(val.duty_day), 6)
-            const wDay = format(new Date(weekDay), 'yyyy-MM-dd')
-            calculateNoWorkday(val.duty_day, wDay, val.em_no, val.punch_slno);
-        }
+        //     const weekDay = subDays(new Date(val.duty_day), 6)
+        //     const wDay = format(new Date(weekDay), 'yyyy-MM-dd')
+        //     calculateNoWorkday(val.duty_day, wDay, val.em_no, val.punch_slno);
+        // }
 
         return {
             duty_day: val.duty_day,
@@ -126,16 +127,16 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             punch_out: isValid(new Date(punchOut)) ? format(new Date(punchOut), 'yyyy-MM-dd HH:mm') : null,
             punch_slno: val.punch_slno,
             shift_id: val.shift_id,
-            shift_in: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-            shift_out: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+            shift_in: (val.shift_id === default_shift || val.shift_id === notapplicable_shift || val.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+            shift_out: (val.shift_id === default_shift || val.shift_id === notapplicable_shift || val.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
             earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
             duty_status: CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? 0.5 :
-                HoliDay !== undefined || val.shift_id === 3 ? 1 :
+                HoliDay !== undefined || val.shift_id === week_off_day ? 1 :
                     CaluculateLateInOut.lateIn <= cmmn_late_in &&
                         CaluculateLateInOut.earlyOut === 0 ? 1 :
                         0,
-            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
+            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
                 CaluculateLateInOut.lateIn > cmmn_late_in ? "LC" :
                     CaluculateLateInOut.earlyOut > cmmn_early_out ? "EG" :
                         CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? "HFD" : "A",
@@ -161,7 +162,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
 
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
-            woff: val.shift_id === 3 ? 1 : 0
+            woff: val.shift_id === week_off_day ? 1 : 0
         }
     })
 
@@ -244,7 +245,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                             CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0.5 :
                                 early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
                                     early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
-                                        HoliDay !== undefined ? 1 : val.shift_id === 3 ? 1 :
+                                        HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
                                             0,
 
             duty_desc: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined ? "HP" :
@@ -253,7 +254,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "EG" :
                             early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
                                 early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
-                                    HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
+                                    HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
                                         "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
@@ -275,7 +276,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
 //GET AND UPDATE PUNCH IN / OUT DATA
 export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_early_out, cmmn_grace_period, cmmn_late_in,
     //cmmn_late_in_grace, cmmn_early_out_grace,
-    gross_salary, empInform, dispatch, salary_above) => {
+    gross_salary, empInform, dispatch, salary_above, week_off_day, notapplicable_shift, default_shift) => {
 
     // `RECIVE THE COMMON SETTING DATA SHIFT`
     /******
@@ -320,7 +321,7 @@ export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_early
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
                         //cmmn_late_in_grace, cmmn_early_out_grace, 
                         gross_salary, notUpdatedPunchMasterData, InsertedPunchMasterData,
-                        shiftData, salary_above);
+                        shiftData, salary_above, week_off_day, notapplicable_shift, default_shift);
 
                     // const dataResult = await CaluculatePunchinandOut(data, planData, shiftData);
                     // message, resData
