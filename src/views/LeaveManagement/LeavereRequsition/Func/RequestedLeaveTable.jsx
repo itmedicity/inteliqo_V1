@@ -56,7 +56,8 @@ const RequestedLeaveTable = () => {
 
     useEffect(() => {
         if (hod === 0 && incharge === 0) {
-            const leaveRequestList = leaveRqList?.filter((val) => val.em_no === em_no && val.inc_apprv_cmnt !== "DIRECT" && val.hod_apprv_cmnt !== "DIRECT")
+            const leaveRequestList = leaveRqList?.filter((val) => val.em_no === em_no)
+
             const newList = leaveRequestList?.map((val) => {
                 return {
                     leaveid: val.leave_slno,
@@ -78,7 +79,7 @@ const RequestedLeaveTable = () => {
                     toDate: val.leavetodate
                 }
             })
-            const haldayRq = halfdayRqList?.filter((val) => val.em_no === em_no && val.hf_inc_apprv_cmnt !== "DIRECT" && val.hf_hod_apprv_cmnt !== "DIRECT")
+            const haldayRq = halfdayRqList?.filter((val) => val.em_no === em_no)
 
             const newHalfday = haldayRq?.map((val) => {
                 return {
@@ -102,7 +103,7 @@ const RequestedLeaveTable = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === em_no && val.np_inc_apprv_cmnt !== "DIRECT" && val.np_hod_apprv_cmnt !== "DIRECT")
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === em_no)
             const newNopunch = NopunchRq?.map((val) => {
                 return {
                     type: "No Punch Request",
@@ -123,7 +124,7 @@ const RequestedLeaveTable = () => {
                     toDate: val.leavetodate
                 }
             })
-            const CompReq = compOffRqList?.filter((val) => val.em_no === em_no && val.cf_inc_apprv_cmnt !== "DIRECT" && val.cf_hod_apprv_cmnt !== "DIRECT")
+            const CompReq = compOffRqList?.filter((val) => val.em_no === em_no)
             const newCompRq = CompReq?.map((val) => {
                 return {
                     type: "Compensatory Off Request",

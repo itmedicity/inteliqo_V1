@@ -115,7 +115,8 @@ const ShiftUpdation = () => {
 
                     const gracePeriod = await axioslogin.get('/commonsettings')
                     const { data } = gracePeriod.data
-                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above } = data[0]
+                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+                        week_off_day, notapplicable_shift, default_shift } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -131,7 +132,8 @@ const ShiftUpdation = () => {
                     //Function for punch master updation. Based on duty plan and punch details in punch data 
                     const result = await getAndUpdatePunchingData(postData, holidaydata,
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
-                        gross_salary, empInform, dispatch, salary_above)
+                        gross_salary, empInform, dispatch, salary_above,
+                        week_off_day, notapplicable_shift, default_shift)
 
                     if (result !== undefined) {
                         const { status, message, shift, punch_data } = result;
@@ -165,10 +167,10 @@ const ShiftUpdation = () => {
                                         shift_id: data.shift_id,
                                         emp_id: data.emp_id,
                                         em_no: data.em_no,
-                                        punch_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_in,
-                                        punch_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_out,
-                                        shift_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                                        shift_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                        punch_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : data.punch_in,
+                                        punch_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : data.punch_out,
+                                        shift_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                        shift_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                         hrs_worked: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
                                             formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                         hrsWrkdInMints: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
