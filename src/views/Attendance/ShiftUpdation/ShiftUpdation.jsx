@@ -116,7 +116,7 @@ const ShiftUpdation = () => {
                     const gracePeriod = await axioslogin.get('/commonsettings')
                     const { data } = gracePeriod.data
                     const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
-                        week_off_day, notapplicable_shift, default_shift } = data[0]
+                        week_off_day, notapplicable_shift, default_shift, noff } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -133,7 +133,7 @@ const ShiftUpdation = () => {
                     const result = await getAndUpdatePunchingData(postData, holidaydata,
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
                         gross_salary, empInform, dispatch, salary_above,
-                        week_off_day, notapplicable_shift, default_shift)
+                        week_off_day, notapplicable_shift, default_shift, noff)
 
                     if (result !== undefined) {
                         const { status, message, shift, punch_data } = result;
