@@ -221,12 +221,12 @@ const MultiLeaveRequestForm = () => {
         const checkIfSelectedLeveReqType = newData?.filter((val) => val.leaveTypeSlno === 0 && val.singleLeave === 1);
         const checkIfSelectedLeve = newData?.filter((val) => val.selectedLveSlno === 0 && val.singleLeave === 0);
         const checkIfAnyLeaveSelected = newData?.filter((val) => val.leaveTypeSlno === 0 && val.selectedLveSlno === 0);
-        const CheckIfCasualLeave = newData?.filter((val) => val.leaveTypeSlno === '1' && val.singleLeave === 0);
-        const CheckIfEarnLeave = newData?.filter((val) => val.leaveTypeSlno === '8' && val.singleLeave === 0);
+        // const CheckIfCasualLeave = newData?.filter((val) => val.leaveTypeSlno === '1' && val.singleLeave === 0);
+        // const CheckIfEarnLeave = newData?.filter((val) => val.leaveTypeSlno === '8' && val.singleLeave === 0);
 
-        const sickLeave = newData?.some(key => key.leaveTypeSlno === '7') && (newData?.some(key => key.leaveTypeSlno === '1')
-            || newData?.some(key => key.leaveTypeSlno === '8') || newData?.some(key => key.leaveTypeSlno === '3')
-            || newData?.some(key => key.leaveTypeSlno === '4') || newData?.some(key => key.leaveTypeSlno === '6'));
+        // const sickLeave = newData?.some(key => key.leaveTypeSlno === '7') && (newData?.some(key => key.leaveTypeSlno === '1')
+        //     || newData?.some(key => key.leaveTypeSlno === '8') || newData?.some(key => key.leaveTypeSlno === '3')
+        //     || newData?.some(key => key.leaveTypeSlno === '4') || newData?.some(key => key.leaveTypeSlno === '6'));
 
         if (checkIfSelectedLeveReqType?.length > 0 || checkIfSelectedLeve?.length > 0 || checkIfAnyLeaveSelected?.length > 0) {
             warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
@@ -234,16 +234,19 @@ const MultiLeaveRequestForm = () => {
         } else if (reason === '') {
             warningNofity("Leave Request Reason is Blank")
             setDropOpen(false)
-        } else if (CheckIfCasualLeave.length > 3) {
-            warningNofity("Casual Leave Max 3 Days Not Possible!!")
-            setDropOpen(false)
-        } else if (CheckIfEarnLeave.length > 3) {
-            warningNofity("Earn Leave Max 3 Days Not Possible!!")
-            setDropOpen(false)
-        } else if (sickLeave === true) {
-            warningNofity("Sick Leave Can't be Clubbed with any other leaves!!")
-            setDropOpen(false)
         }
+        // else if (CheckIfCasualLeave.length > 3) {
+        //     warningNofity("Casual Leave Max 3 Days Not Possible!!")
+        //     setDropOpen(false)
+        // }
+        // else if (CheckIfEarnLeave.length > 3) {
+        //     warningNofity("Earn Leave Max 3 Days Not Possible!!")
+        //     setDropOpen(false)
+        // }
+        // else if (sickLeave === true) {
+        //     warningNofity("Sick Leave Can't be Clubbed with any other leaves!!")
+        //     setDropOpen(false)
+        // }
         else {
             const findSingleTypeLeave = newData?.filter((val) => val.singleLeave === 1);
 
