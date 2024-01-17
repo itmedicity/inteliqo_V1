@@ -1,22 +1,23 @@
 import { CssVarsProvider } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box, CircularProgress, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, Suspense, useContext, memo } from 'react'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect';
+import React, { Suspense, memo, useCallback, useEffect, useMemo } from 'react'
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import DesignationMast from 'src/views/CommonCode/DesignationMast';
-import { PayrolMasterContext } from 'src/Context/MasterContext';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // import Competency from './Competency';
 import { axioslogin } from 'src/views/Axios/Axios';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
+import { useDispatch } from 'react-redux';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import JoyDeptWithName from 'src/views/MuiComponents/JoyComponent/JoyDeptWithName';
+import JoyDeptSectWithName from 'src/views/MuiComponents/JoyComponent/JoyDeptSectWithName';
+import JoyDesgWithName from 'src/views/MuiComponents/JoyComponent/JoyDesgWithName';
 
 const JobSummary = React.lazy(() => import('./JobSummary'));
 // const DutyRespos = React.lazy(() => import('./DutyRespos'));
@@ -35,25 +36,38 @@ const Progress = () => {
 };
 
 const JobDescription = () => {
-    const { selectDesignation,
-        selectedDept,
-        selectDesignationName, selectedDeptName,
-        selectDeptSection, deptsectName
-    } = useContext(PayrolMasterContext)
+
+    const dispatch = useDispatch()
+    const history = useHistory()
+    useEffect(() => {
+        dispatch(setDepartment());
+    }, [dispatch])
+
+    const [dept, setDept] = useState(0)
+    const [deptSect, setDeptSect] = useState(0)
+    const [desg, setDesg] = useState(0)
+    const [deptName, setDeptName] = useState('')
+    const [sectName, setSectName] = useState('')
+    const [desgName, setDesgName] = useState('')
     const [jobview, setjobview] = useState(0)//use sate job description view
     const [jobedit, setjobEdit] = useState(0)
 
 
-    /** checkdata for checking department , dept section and designation */
-    const checkData = {
-        designation: selectDesignation,
-        dept_id: selectedDept,
-        sect_id: selectDeptSection
-    }
+    const Redirect = useCallback(async () => {
+        history.push(`/Home`)
+    }, [history])
 
+    /** checkdata for checking department , dept section and designation */
+    const checkData = useMemo(() => {
+        return {
+            designation: desg,
+            dept_id: dept,
+            sect_id: deptSect
+        }
+    }, [desg, dept, deptSect])
     /** checking department , dept section and designation already exist in jobsummary database table */
-    const addtojobSummary = async () => {
-        if (selectDesignation !== 0 && selectedDept !== 0 && selectDeptSection !== 0) {
+    const addtojobSummary = useCallback(async () => {
+        if (desg !== 0 && dept !== 0 && deptSect !== 0) {
             const result = await axioslogin.post('/jobsummary/check', checkData)
             const { data, success } = result.data
             if (success === 1) {
@@ -65,55 +79,48 @@ const JobDescription = () => {
                 setjobview(1)
                 setjobEdit(0)
             }
-        }
-        else {
+        } else {
             infoNofity("Choose All Option")
         }
-    }
-    const history = useHistory()
-    const Redirect = async () => {
-        history.push(`/Home`)
-    }
-    const ViewPage = async () => {
+
+    }, [desg, dept, deptSect, checkData])
+
+    const ViewPage = useCallback(async () => {
         history.push(`/Home/JobDescriptionViewTable`)
-    }
+    }, [history])
 
     return (
-        <Fragment>
+        <Box sx={{ display: "flex", flexGrow: 1, width: "100%" }} >
             <ToastContainer />
-            <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                {/* Outer Main Box */}
-                <Paper square elevation={2} sx={{ p: 0.5, }}   >
-                    {/* Main Heading Section Box */}
-                    <Paper square elevation={0} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
+            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', }}>
+                <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
+                    <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} level="h6" >
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                     Job Description
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
                         <Tooltip title="Job Description View" followCursor placement='top' arrow >
-                            <Box>
-                                <IconButton variant="outlined" size='sm' onClick={ViewPage} sx={{ color: 'primary' }}>
-                                    <VisibilityIcon />
-                                </IconButton>
+                            <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                                <CssVarsProvider>
+                                    <IconButton variant="outlined" size='xs' color="primary" onClick={ViewPage}>
+                                        <SummarizeIcon />
+                                    </IconButton>
+                                </CssVarsProvider>
                             </Box>
                         </Tooltip>
-                        <Box sx={{ pl: 1 }}>
-                            <IconButton variant="outlined" size='sm' onClick={Redirect} sx={{ color: 'red' }}>
-                                <CloseIcon />
-                            </IconButton>
+                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='xs' color="danger" onClick={Redirect}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </CssVarsProvider>
                         </Box>
-
                     </Paper>
-
                     {/* Depertment Selection Box */}
-                    <Paper square elevation={3} sx={{
+                    <Paper square variant='outlined' sx={{
                         p: 0.5,
                         mt: 0.5,
                         display: 'flex',
@@ -122,16 +129,16 @@ const JobDescription = () => {
                         // backgroundColor: "lightcyan"
                     }} >
                         <Box sx={{ flex: 1, px: 0.5 }} >
-                            <DepartmentSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                            <JoyDeptWithName deptValue={dept} getDept={setDept} setDeptName={setDeptName} />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }} >
-                            <DepartmentSectionSelect style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                            <JoyDeptSectWithName sectValues={deptSect} getSection={setDeptSect} setSectName={setSectName} />
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}  >
-                            <DesignationMast style={{ p: 0, height: 25, lineHeight: 1.200, m: 0 }} />
+                            <JoyDesgWithName desgValue={desg} getDesg={setDesg} setDesgName={setDesgName} />
                         </Box>
                         <Box sx={{ flex: 0, px: 0.5 }} >
-                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary} sx={{ color: 'blue' }}>
+                            <IconButton variant="outlined" size='sm' onClick={addtojobSummary} sx={{ color: 'green' }}>
                                 <AddToPhotosIcon />
                             </IconButton>
                         </Box>
@@ -141,72 +148,64 @@ const JobDescription = () => {
                         <JobSummary
                             jobview={jobview}
                             jobedit={jobedit}
-                            selectDesignationName={selectDesignationName}
-                            selectedDeptName={selectedDeptName}
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
-                            selectDeptSection={selectDeptSection}
-                            deptsectName={deptsectName}
+                            selectedDept={dept}
+                            selectDeptSection={deptSect}
+                            selectDesignation={desg}
+                            selectedDeptName={deptName}
+                            deptsectName={sectName}
+                            selectDesignationName={desgName}
                         />
                     </Suspense>
                     {/* Dutieds And Responsibilities */}
                     <Suspense fallback={<Progress />} >
                         <DutyRespos
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
+                            selectDesignation={desg}
+                            selectedDept={dept}
                             jobedit={jobedit}
-                            selectDeptSection={selectDeptSection}
+                            selectDeptSection={deptSect}
                             setjobEdit={setjobEdit}
                         />
 
                     </Suspense>
                     {/* Skills */}
                     <Suspense fallback={<Progress />} >
-
                         <Skill
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
+                            selectedDept={dept}
+                            selectDeptSection={deptSect}
+                            selectDesignation={desg}
                             jobedit={jobedit}
-                            selectDeptSection={selectDeptSection}
+
                         />
                     </Suspense>
-
                     {/* Job Specification : Performance */}
                     <Suspense fallback={<Progress />} >
                         <Performance
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
+                            selectedDept={dept}
+                            selectDeptSection={deptSect}
+                            selectDesignation={desg}
                             jobedit={jobedit}
-                            selectDeptSection={selectDeptSection}
                         />
-                        {/* <Competency /> */}
                     </Suspense>
-
-
                     <Suspense fallback={<Progress />} >
                         <Competency
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
+                            selectedDept={dept}
+                            selectDeptSection={deptSect}
+                            selectDesignation={desg}
                             jobedit={jobedit}
-                            selectDeptSection={selectDeptSection}
                         />
-
-
-                        {/* <Competency /> */}
                     </Suspense>
-
                     {/* Generic */}
                     <Suspense fallback={<Progress />} >
                         <Generic
-                            selectDesignation={selectDesignation}
-                            selectedDept={selectedDept}
+                            selectedDept={dept}
+                            selectDeptSection={deptSect}
+                            selectDesignation={desg}
                             jobedit={jobedit}
-                            selectDeptSection={selectDeptSection}
                         />
                     </Suspense>
-                </Paper>
-            </Box>
-        </Fragment >
+                </Box>
+            </Paper >
+        </Box>
     )
 }
 

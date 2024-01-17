@@ -44,7 +44,7 @@ const MdleUserRightMast = () => {
         return {
             emp_slno: empno,
             mdgrp_slno: modulegrp,
-            mdlstatus: mdlstatus === true ? 1 : 0,
+            mdlstatus: mdlstatus,
             mdrte_slno: slno,
             user_grp_slno: groupName
         }
@@ -121,8 +121,8 @@ const MdleUserRightMast = () => {
     const getEdit = useCallback((params) => {
         setFlag(1)
         const { emp_slno, mdgrp_slno, status, user_grp_slno, em_dept_section, mdrte_slno } = params.data
-        const mdlStatsus = status === 1 ? true : false;
-        setmdlstatus(mdlStatsus)
+        //const mdlStatsus = status === 1 ? true : false;
+        setmdlstatus(status === 1 ? true : false)
         setEmpno(emp_slno)
         setDeptSect(em_dept_section)
         setmodulegrp(mdgrp_slno)

@@ -36,7 +36,7 @@ export const dutyPlanReducer = (state = dutyPlanInitialState, action) => {
 //get employee details 
 export const getEmployeeDetlDutyPlanBased = async (postData) => {
     let dataObj = { status: 0, data: [] }
-    const result = await axioslogin.post("/plan/create", postData);
+    const result = await axioslogin.post("/plan/empdetl", postData);
     const { success, data } = result.data
     if (success === 1) {
         return { ...dataObj, status: 1, data: data }
@@ -105,7 +105,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
 
     if (Object.keys(employeeDetails).length > 0) {
 
-        const checkingForShiftMapped = await axioslogin.post("/departmentshift/checkshift", departmentDetl);
+        const checkingForShiftMapped = await axioslogin.post("/departmentshift/checkSection", departmentDetl);
         const { successs } = checkingForShiftMapped.data
         if (successs === 1) {
 

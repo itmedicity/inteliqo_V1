@@ -55,7 +55,7 @@ const ShiftUpdation = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [dept, changeDept] = useState(0);
     const [section, changeSection] = useState(0);
-    const [emply, getEmployee] = useState(0);
+    const [emply, getEmployee] = useState({});
     const [tableArray, setTableArray] = useState([]);
     const [disable, setDisable] = useState(false)
     const { em_no } = emply
@@ -73,7 +73,7 @@ const ShiftUpdation = () => {
         setOpenBkDrop(true)
         setTableArray([])
         const selectedDate = moment(value).format('YYYY-MM-DD');
-        if (dept !== 0 && section !== 0 && emply !== 0) {
+        if (dept !== 0 && section !== 0 && emply.em_id !== 0) {
             const postdata = {
                 em_no: em_no,
                 attendance_marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
@@ -115,7 +115,8 @@ const ShiftUpdation = () => {
 
                     const gracePeriod = await axioslogin.get('/commonsettings')
                     const { data } = gracePeriod.data
-                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in } = data[0]
+                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+                        week_off_day, notapplicable_shift, default_shift, noff } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -131,7 +132,8 @@ const ShiftUpdation = () => {
                     //Function for punch master updation. Based on duty plan and punch details in punch data 
                     const result = await getAndUpdatePunchingData(postData, holidaydata,
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
-                        gross_salary, empInform, dispatch)
+                        gross_salary, empInform, dispatch, salary_above,
+                        week_off_day, notapplicable_shift, default_shift, noff)
 
                     if (result !== undefined) {
                         const { status, message, shift, punch_data } = result;
@@ -140,10 +142,11 @@ const ShiftUpdation = () => {
                             dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
                             const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
                             const { success, planData } = punch_master_data.data;
+                            const arr = planData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
 
                             if (success === 1) {
 
-                                const tableData = planData?.map((data) => {
+                                const tableData = arr?.map((data) => {
                                     //FIND THE CROSS DAY
                                     const crossDay = shift?.find(shft => shft.shft_slno === data.shift_id);
                                     const crossDayStat = crossDay?.shft_cross_day ?? 0;
@@ -164,10 +167,10 @@ const ShiftUpdation = () => {
                                         shift_id: data.shift_id,
                                         emp_id: data.emp_id,
                                         em_no: data.em_no,
-                                        punch_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_in,
-                                        punch_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : data.punch_out,
-                                        shift_in: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                                        shift_out: (data.shift_id === 1 || data.shift_id === 2 || data.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                        punch_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : data.punch_in,
+                                        punch_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : data.punch_out,
+                                        shift_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                        shift_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                         hrs_worked: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
                                             formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                         hrsWrkdInMints: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
@@ -198,6 +201,7 @@ const ShiftUpdation = () => {
             }
         }
         else {
+            warningNofity("Plaese Select All Option!!")
             setOpenBkDrop(false)
 
         }

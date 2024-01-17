@@ -1,9 +1,8 @@
-import { CssVarsProvider } from '@mui/joy'
+import { CssVarsProvider, Textarea } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper, TextareaAutosize } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -14,6 +13,8 @@ import { useCallback } from 'react';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selectDeptSection }) => {
 
@@ -24,7 +25,6 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
     //table
     const [tableData, settableData] = useState([])
     const [deletecount, setdeletecount] = useState(0)
-    const [count, setcount] = useState(0)
 
     const [formData, setFormData] = useState({
         duties: ''
@@ -35,19 +35,30 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         }
     }, [])
     const { duties } = formData
-    const updateDutiesandResponsibility = (e) => {
+
+    const updateDutiesandResponsibility = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
         setFormData({ ...formData, [e.target.name]: value })
-    }
+    }, [formData])
+
     //colomun for table
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'slno', width: 50, },
         { headerName: 'Duties & Responsibilities ', field: 'duties_and_resp', autoHeight: true, wrapText: true, minWidth: 200, },
-        //{ headerName: 'Department', field: 'dept_name', width: 60, },
-        //{ headerName: 'Designation', field: 'desg_name', width: 60, },
-        { headerName: 'Edit', width: 20, cellRenderer: params => <EditIcon onClick={() => EditData(params)} /> },
-        { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
+        {
+            headerName: 'Edit', width: 20, cellRenderer: params =>
+                <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => EditData(params)}>
+                    <EditIcon />
+                </OpenIcon>
+        },
+        {
+            headerName: 'Delete', width: 20, cellRenderer: params =>
+                <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => DeleteItem(params)}>
+                    <DeleteIcon />
+                </OpenIcon>
+        },
     ])
+
     const checkData = useMemo(() => {
         return {
             designation: selectDesignation,
@@ -62,6 +73,7 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         }
     }, [selectDesignation])
     //use effect for getting data for edit
+
     useEffect(() => {
         if (jobedit > 0 || submitflag === 1) {
             const getdutiesandResp = async () => {
@@ -70,14 +82,12 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                 if (success === 1) {
                     settableData(data)
                     setdeletecount(0)
-                }
-                else {
+                } else {
                     settableData([])
                 }
             }
             getdutiesandResp()
-        }
-        else {
+        } else {
             settableData([])
         }
 
@@ -140,7 +150,6 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
                 const result = await axioslogin.post('/jobsummary/jobduties', saveDuties)
                 const { success, message } = result.data
                 if (success === 1) {
-                    setcount(count + 1)
                     setFormData(defaultstate)
                     setdeletecount(deletecount + 1)
                     setsubmitflag(1)
@@ -186,61 +195,42 @@ const DutyResponsWithAgGrid = ({ jobedit, selectDesignation, selectedDept, selec
         else {
             updateEach()
         }
-    }, [checkData, deletecount, duties, selectDeptSection, selectDesignation, selectedDept, value, defaultstate, slno, count])
+    }, [checkData, deletecount, duties, selectDeptSection, selectDesignation, selectedDept, value, defaultstate, slno])
 
     return (
         <Fragment>
             <ToastContainer />
-            {/* Description */}
-            <Box sx={{ p: 1, display: "flex" }} >
+            <Box sx={{ flex: 1 }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
+                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                         Duties & Responsibilities
                     </Typography>
                 </CssVarsProvider>
-                {/* <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm'
-                        //onClick={SubmitFormData} 
-                        sx={{ color: 'green' }}>
-                        <LibraryAddCheckOutlinedIcon />
-                    </IconButton>
-                </Box> */}
             </Box>
-
-            {/* Dutieds And Responsibilities */}
-
-            <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column" }} >
+            <Paper square variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", alignItems: "center", pb: 0.5 }} >
                     <Box sx={{ flex: 1, pr: 1 }}>
-                        <TextareaAutosize
-                            style={{ width: "100%", display: "flex" }}
-                            minRows={2}
+                        <Textarea
+                            label="Outlined"
                             placeholder="Duties & Responsibilities"
+                            variant="outlined"
+                            size="lg"
+                            minRows={1}
+                            maxRows={2}
+                            name='duties'
                             value={duties}
-                            name="duties"
                             onChange={(e) => updateDutiesandResponsibility(e)}
+                            sx={{ flex: 1 }}
                         />
                     </Box>
-                    <Box sx={{ flex: 0, }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={SubmitFormData}
-                            sx={{ color: 'blue' }}>
-                            <AddToPhotosIcon />
+                    <Box sx={{ flex: 0, px: 0.5 }} >
+                        <IconButton variant="outlined" size='sm' onClick={SubmitFormData} sx={{ color: 'green' }}>
+                            <LibraryAddCheckOutlinedIcon />
                         </IconButton>
                     </Box>
-
                 </Box>
             </Paper>
-            <Paper square elevation={0} sx={{
-                pt: 1,
-                mt: 0.5,
-                display: 'flex',
-                flexDirection: "column"
-            }} >
+            <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                 <CommonAgGrid columnDefs={columnDef}
                     tableData={TableValues}
                     sx={{

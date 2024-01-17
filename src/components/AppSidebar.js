@@ -33,7 +33,8 @@ import { getMenuSlno } from 'src/views/Constant/Constant'
 // import { CssVarsProvider, Typography } from '@mui/joy'
 // import { Box } from '@mui/material'
 import VaccinationInfo from '../Menus/VaccinationMenu'
-// import _ from 'underscore'
+import { Box, CssVarsProvider, Typography } from '@mui/joy'
+import _ from 'underscore'
 
 
 const AppSidebar = () => {
@@ -124,8 +125,8 @@ const AppSidebar = () => {
   ]
 
   const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.changeState.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.changeState.sidebarShow)
+  const unfoldable = useSelector((state) => state?.changeState?.sidebarUnfoldable)
+  const sidebarShow = useSelector((state) => state?.changeState?.sidebarShow)
 
   const [menu, setMenu] = useState([])
 
@@ -201,8 +202,8 @@ const AppSidebar = () => {
     getModuleUserRight()
   }, [count])
 
-  //const em_name = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_name, _.isEqual)
-
+  const emplogin = useSelector((state) => state?.LoginCredential)
+  const { em_name, sect_name } = emplogin
   return (
     <Fragment>
       <CSidebar
@@ -215,22 +216,22 @@ const AppSidebar = () => {
       >
         <CSidebarBrand className="d-none d-md-flex" to="/">
 
-          {/* <Box sx={{ display: "flex", flexDirection: "row", px: 1, }}>
-            <Box sx={{ p: 1, display: "flex", }} >
+          <Box sx={{ display: "flex", flexDirection: "column", px: 1, }}>
+            <Box sx={{ display: "flex", textTransform: 'capitalize', fontStyle: "oblique" }} >
               <CssVarsProvider>
-                <Typography textColor="text.secondary">
-                  WELCOME
-                </Typography>
-              </CssVarsProvider>
-            </Box>
-            <Box sx={{ p: 1, display: "flex", textTransform: 'capitalize', fontStyle: "oblique", }} >
-              <CssVarsProvider>
-                <Typography textColor="text.secondary">
+                <Typography textColor="#ffffff" level='h4'>
                   {em_name?.toLowerCase()}
                 </Typography>
               </CssVarsProvider>
             </Box>
-          </Box> */}
+            <Box sx={{ display: "flex", textTransform: 'capitalize', fontStyle: "oblique" }} >
+              <CssVarsProvider>
+                <Typography textColor="#ffffff">
+                  {sect_name?.toLowerCase()}
+                </Typography>
+              </CssVarsProvider>
+            </Box>
+          </Box>
 
 
           {/* Company Logo Big Size */}

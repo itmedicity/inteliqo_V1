@@ -299,6 +299,7 @@ const EmployeeRecord = () => {
                   em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
                   em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
                   em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+                  status: 0
                 }
                 const result = await axioslogin.post('/empmast/createContract', postContractDetl)
                 const { success, message } = result.data

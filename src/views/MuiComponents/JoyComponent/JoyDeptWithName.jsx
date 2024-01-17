@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
 import _ from 'underscore';
 
-const JoyDepartment = ({ deptValue, getDept }) => {
+const JoyDeptWithName = ({ deptValue, getDept, setDeptName }) => {
     const dispatch = useDispatch()
     const departments = useSelector((state) => state?.getDepartmentList?.empDepartmentList, _.isEqual)
     const [dept, setDept] = useState([{ dept_id: 0, dept_name: 'Select Department' }])
@@ -26,7 +26,6 @@ const JoyDepartment = ({ deptValue, getDept }) => {
     useEffect(() => {
         departments.length > 0 && setDept(departments)
     }, [departments])
-
     return (
         <Autocomplete
             placeholder="Select Department"
@@ -34,6 +33,7 @@ const JoyDepartment = ({ deptValue, getDept }) => {
             //value={value}
             clearOnBlur
             onChange={(event, newValue) => {
+                setDeptName(event.target.innerText)
                 dispatch(getDepartmentSection(newValue?.dept_id))
                 getDept(newValue?.dept_id)
             }}
@@ -52,4 +52,4 @@ const JoyDepartment = ({ deptValue, getDept }) => {
     )
 }
 
-export default memo(JoyDepartment) 
+export default memo(JoyDeptWithName) 

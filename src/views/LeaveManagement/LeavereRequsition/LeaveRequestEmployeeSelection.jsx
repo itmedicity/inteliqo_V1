@@ -12,7 +12,7 @@ import DepartmentSection from './Func/DepartmentSection'
 import EmployeeAgainSection from './Func/EmployeeAgainSection'
 import LeaveRequestType from './Func/LeaveRequestType'
 import { Actiontypes } from 'src/redux/constants/action.type'
-import { Button, CssVarsProvider } from '@mui/joy'
+import { Button, CssVarsProvider, Tooltip } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -172,32 +172,36 @@ const LeaveRequestEmployeeSelection = () => {
             </Box>
             <Box sx={{ display: "flex", p: 0.2 }} >
                 <CssVarsProvider>
-                    <Button
-                        aria-label="Like"
-                        variant="outlined"
-                        color="primary"
-                        onClick={onSubmitLeaveRequestEntry}
-                        sx={{
-                            // color: 'green',
-                        }}
-                    >
-                        <AddCircleOutlineIcon />
-                    </Button>
+                    <Tooltip title="Process" followCursor placement='top' arrow >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={onSubmitLeaveRequestEntry}
+                            sx={{
+                                // color: 'green',
+                            }}
+                        >
+                            <AddCircleOutlineIcon />
+                        </Button>
+                    </Tooltip>
                 </CssVarsProvider>
             </Box>
             <Box sx={{ display: "flex", p: 0.2 }} >
                 <CssVarsProvider>
-                    <Button
-                        aria-label="Like"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => changeForm()}
-                        sx={{
-                            // color: 'green',
-                        }}
-                    >
-                        <RefreshIcon />
-                    </Button>
+                    <Tooltip title="Clear Data" followCursor placement='top' arrow >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => changeForm()}
+                            sx={{
+                                // color: 'green',
+                            }}
+                        >
+                            <RefreshIcon />
+                        </Button>
+                    </Tooltip>
                 </CssVarsProvider>
             </Box>
         </Paper>

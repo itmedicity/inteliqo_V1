@@ -4,7 +4,7 @@ import { setDesignation } from 'src/redux/actions/Designation.Action'
 import _ from 'underscore'
 import { Autocomplete } from '@mui/joy';
 
-const JoyDesignationSelect = ({ desgValue, getDesg }) => {
+const JoyDesgWithName = ({ desgValue, getDesg, setDesgName }) => {
     const dispatch = useDispatch()
 
     useEffect(() => dispatch(setDesignation()), [dispatch])
@@ -23,29 +23,29 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
 
     }, [desgValue, empDesignation, flag])
 
-    const Onclick = useCallback((value) => {
+    const Onclick = useCallback((event, value) => {
         if (value !== null) {
             setFlag(1)
             setValue(value)
+            setDesgName(event.target.innerText)
             getDesg(value?.desg_slno)
         } else {
             getDesg(0)
             setValue({})
             setFlag(0)
         }
-    }, [getDesg])
+    }, [getDesg, setDesgName])
 
     useEffect(() => {
         empDesignation.length > 0 && setDesignationList(empDesignation)
     }, [empDesignation])
-
     return (
         <Autocomplete
             placeholder="Select Designation"
             value={value}
             clearOnBlur
             onChange={(event, newValue) => {
-                Onclick(newValue);
+                Onclick(event, newValue);
             }}
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
@@ -62,4 +62,4 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
     )
 }
 
-export default memo(JoyDesignationSelect) 
+export default memo(JoyDesgWithName) 

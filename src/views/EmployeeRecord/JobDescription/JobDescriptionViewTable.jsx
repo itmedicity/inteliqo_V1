@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { Box, Paper, Tooltip } from '@mui/material';
 import { CssVarsProvider, Typography } from '@mui/joy';
@@ -11,7 +11,6 @@ import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
 import JobDescriptionList from '../EmployeeFile/EmployeeProfile/EmpMenus/JobDescription/JobDescriptionList';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import JobDescriptionEdit from './JobDescriptionEdit/JobDescriptionEdit';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 // import JobDescriptionpdf from './JobDescriptionpdf';
 import { setJobSummary } from 'src/redux/actions/JobDescription.Action';
@@ -228,41 +227,30 @@ const JobDescriptionViewTable = () => {
     }, [dispatch])
 
     return (
-        <Fragment>
-            <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
+        <Box sx={{ display: "flex", flexGrow: 1, width: "100%" }} >
+            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', }}>
+                <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
+
                     {
                         flag === 1 ? <JobDescriptionList setflag={setflag} flag={flag} id={id} /> :
-                            flag === 2 ? <JobDescriptionEdit /> :
-                                // downloads === 1 ? < JobDescriptionpdf setDownload={setDownload} desgname={desgname} /> :
-                                <Paper square elevation={0} sx={{
-                                    pt: 2,
-                                    p: 1,
-                                    display: 'flex',
-                                    flexDirection: "column"
-                                }} >
-
-                                    <Paper square elevation={3} sx={{
-                                        display: "flex",
-                                        p: 1,
-                                        alignItems: "center",
-                                    }}  >
-                                        <Box sx={{ flex: 1 }} >
-                                            <CssVarsProvider>
-                                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                                    Job Description View
-                                                </Typography>
-                                            </CssVarsProvider>
-                                        </Box>
-                                        <Box>
-                                            <CssVarsProvider>
-                                                <IconButton variant="outlined" size='sm' color="danger" onClick={toSettings}>
-                                                    <CloseIcon color='info' />
-                                                </IconButton>
-                                            </CssVarsProvider>
-                                        </Box>
-                                    </Paper>
-
+                            <>
+                                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                                    <Box sx={{ flex: 1 }} >
+                                        <CssVarsProvider>
+                                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                                Job Description List
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                                        <CssVarsProvider>
+                                            <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Paper>
+                                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                                     <CommonAgGrid
                                         columnDefs={columnDef}
                                         tableData={tableData}
@@ -271,13 +259,15 @@ const JobDescriptionViewTable = () => {
                                             width: "100%"
                                         }}
                                         rowHeight={30}
-                                        headerHeight={30} />
+                                        headerHeight={30}
+                                    />
                                 </Paper>
+                            </>
                     }
-                </Paper>
-            </Box>
-        </Fragment >
+                </Box>
+            </Paper>
+        </Box>
     )
 }
 
-export default JobDescriptionViewTable
+export default memo(JobDescriptionViewTable) 

@@ -17,7 +17,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns'
 import { getleaverequest } from 'src/views/Constant/Constant'
 import { useCallback } from 'react'
-
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import { fetchleaveInformationFun } from './Func/LeaveFunction'
@@ -59,8 +58,6 @@ const SingleLeaveRequestForm = () => {
         hod: empHodStat,
         //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
-
-    // console.log(empHodStat, empInchrgStat)
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))

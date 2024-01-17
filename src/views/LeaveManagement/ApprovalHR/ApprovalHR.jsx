@@ -67,7 +67,7 @@ const ApprovalHR = () => {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -95,7 +95,7 @@ const ApprovalHR = () => {
                         slno: val.half_slno,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -123,7 +123,7 @@ const ApprovalHR = () => {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -152,7 +152,7 @@ const ApprovalHR = () => {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -185,7 +185,7 @@ const ApprovalHR = () => {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -210,7 +210,7 @@ const ApprovalHR = () => {
                         slno: val.half_slno,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -236,7 +236,7 @@ const ApprovalHR = () => {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -261,7 +261,7 @@ const ApprovalHR = () => {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
                         name: val.em_name,
-                        section: val.dept_name,
+                        section: val.sect_name,
                         status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                             (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                                 (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
@@ -288,7 +288,7 @@ const ApprovalHR = () => {
         { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {

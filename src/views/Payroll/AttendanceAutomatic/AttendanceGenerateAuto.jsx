@@ -1,17 +1,24 @@
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material'
-import React, { useEffect, useMemo, useState, memo } from 'react'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import React, { useEffect, useMemo, useState, memo, useCallback } from 'react'
 import _ from 'underscore'
-import { ToastContainer } from 'react-toastify'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import AttendanceMainCard from './AttendanceMainCard'
-import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from "src/views/Axios/Axios";
 import { useDispatch, useSelector } from 'react-redux'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import CustomInnerHeigtComponent from 'src/views/Component/MuiCustomComponent/CustomInnerHeigtComponent'
+import { useHistory } from 'react-router-dom'
+import { Exportfile } from '../AttendanceUpdation/ExportToExcel';
 
 const AttendanceGenerateAuto = () => {
+
+    const history = useHistory();
+
+    const toRedirectToHome = () => {
+        history.push(`/Home`)
+    }
 
     const [fromdate, setfromdate] = useState('')
     const [todate, setTodate] = useState('')
@@ -139,42 +146,73 @@ const AttendanceGenerateAuto = () => {
             }
             return obje
         })
-        const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
-        const { success } = result.data
-        if (success === 1) {
-            infoNofity("Attendance is already processed for this month!")
+        if (dept === 0 || deptSec === 0) {
+            warningNofity("Please Select Department || Department Section")
         } else {
-            const result = await axioslogin.post("/payrollprocess/create/manual", array1)
-            const { success, message } = result.data
+            const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
+            const { success } = result.data
             if (success === 1) {
-                const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
-                const { success } = result1.data
-                if (success === 1) {
-                    succesNofity("Attendance Marking Done")
-                }
-                else {
-                    errorNofity("Error occure in duty plan lock")
-                }
-
+                infoNofity("Attendance is already processed for this month!")
             } else {
-                errorNofity(message)
+                const result = await axioslogin.post("/payrollprocess/create/manual", array1)
+                const { success, message } = result.data
+                if (success === 1) {
+                    const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
+                    const { success } = result1.data
+                    if (success === 1) {
+                        succesNofity("Attendance Marking Done")
+                    }
+                    else {
+                        errorNofity("Error occure in duty plan lock")
+                    }
+
+                } else {
+                    errorNofity(message)
+                }
             }
         }
     }
 
-    return (
-        <CustomLayout title="Attendance Marking - Automatic" displayClose={true} >
-            <ToastContainer />
-            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column', width: '100%' }}>
 
-                {/* HeaderCard */}
+    const downloadFormat = useCallback(() => {
+        const fileName = "attendance"
+        if (final.length === 0) {
+            warningNofity("please Select Department Department Section");
+        } else {
+            const array = final.map((val) => {
+                return {
+                    "EmpID": val.em_no,
+                    "Name": val.em_name,
+                    "Total Days": val.total,
+                    "Actual Worked": val.actual,
+                    "Calculated Worked": val.calculated,
+                    "OFF Days": val.offdays,
+                    "Leaves": val.leaves,
+                    "Leave Without Pay": val.lwp,
+                    "Loss Of Pay": val.lossofpay,
+                    "Calculated LOP ": val.calculatedlop,
+                    "Holiday": val.holiday,
+                    "Holiday Worked": val.holidayworked,
+                    "Total Pay Day": val.paydays
+                }
+            })
+            Exportfile(array, fileName)
+        }
+
+    }, [final])
+
+    return (
+
+        <CustomInnerHeigtComponent title="Attendance Marking - Automatic" toClose={toRedirectToHome}>
+            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column', width: '100%' }}>
                 <AttendanceMainCard setfromdate={setfromdate} setTodate={setTodate}
                     setdept={setdept}
                     setDeptsec={setDeptsec}
                     getData={getData}
                     saveData={saveData}
-                    setEmpdata={setEmpdata} empData={empData} />
-
+                    setEmpdata={setEmpdata} empData={empData}
+                    downloadFormat={downloadFormat}
+                />
                 <Paper square variant='outlined' elevation={0} sx={{ display: "flex", alignItems: "center", }}  >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
@@ -184,7 +222,6 @@ const AttendanceGenerateAuto = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-
                 <Paper square variant="outlined" sx={{ display: 'flex', p: 0.5, flex: 1 }}>
                     {/* employee Name Section */}
                     <Box sx={{ width: '100%' }}>
@@ -364,7 +401,7 @@ const AttendanceGenerateAuto = () => {
                     </Box>
                 </Paper>
             </Box>
-        </CustomLayout>
+        </CustomInnerHeigtComponent>
     )
 }
 

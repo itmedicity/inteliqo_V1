@@ -129,10 +129,11 @@ const MissPunchRequest = () => {
 
     const handleChangeMissPunchRequest = useCallback(async () => {
 
-        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-            warningNofity("Can't Apply for Miss punch Request, limitted days exceeded!!")
-        }
-        else if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
+        // if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
+        //     warningNofity("Can't Apply for Miss punch Request, limitted days exceeded!!")
+        // }
+        //else 
+        if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
             warningNofity("Duty Not Planned For the Selected Date")
         } else if (checkInCheck === false && checkOutCheck === false) {
             warningNofity("Check In || Check Out Needs To Check")
@@ -199,8 +200,6 @@ const MissPunchRequest = () => {
             if (success === 1) {
                 warningNofity("Attendance Marking Processed ! Contact HRD")
             } else {
-
-                console.log(misspunchReqPostData);
 
                 const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                 const { success, message } = result.data;

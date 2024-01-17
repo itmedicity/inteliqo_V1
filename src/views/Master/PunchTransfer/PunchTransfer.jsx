@@ -55,7 +55,7 @@ const PunchTransfer = () => {
 
     return (
         <Fragment>
-            <CustomBackDrop open={backDrop} text="Please Wait ! Verifying the Duty Schedule for the Selected Date" />
+            <CustomBackDrop open={backDrop} text="Please Wait ! Updating punch for the Selected Date" />
             <MasterLayout title="Punch Transfer" displayClose={true} >
                 <Box
                     sx={{ display: 'flex', flex: 1, flexDirection: 'row', width: "100%", }} >

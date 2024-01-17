@@ -1,6 +1,6 @@
 import {
     addDays, addMinutes, differenceInMinutes, format, formatDuration, intervalToDuration,
-    isAfter, isBefore, isValid, subDays, subMinutes
+    isAfter, isBefore, isEqual, isValid, subDays, subMinutes
 } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
@@ -9,7 +9,9 @@ import { getPunchMasterData } from "src/redux/actions/Common.Action";
 
 const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn_early_out, cmmn_grace_period, cmmn_late_in,
     //cmmn_late_in_grace, cmmn_early_out_grace,
-    gross_salary, punchMaster, InsertedPunchMasterData, shiftData) => {
+    gross_salary, punchMaster, InsertedPunchMasterData, shiftData, salary_above,
+    week_off_day, notapplicable_shift, default_shift, noff) => {
+
     const punchTimeData = punchData?.map(val => new Date(val.punch_time))
 
     const result = await punchMaster?.map((val) => {
@@ -27,8 +29,30 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
         let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
-        const punchIn = punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd)) ?? '0000-00-00 00:00';
-        const punchOut = punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd)) ?? '0000-00-00 00:00';
+        const checkInTimeVale = format(new Date(checkinStart), 'HH')
+        const incheckStart = checkInTimeVale > 20
+        const checkinStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
+
+        const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
+        const outcheckStart = checkoutTimeVale > 20
+        const checkoutStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
+
+        const inTimeVale = format(new Date(checkinEnd), 'HH')
+        const incheck = inTimeVale < 8
+        const checkinEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
+
+        const endTimeVale = format(new Date(checkOutEnd), 'HH')
+        const check = endTimeVale < 8
+        const checkOutEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
+
+        const punchIn = incheck === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEndTime)) :
+            incheckStart === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStartTime) && new Date(val) <= new Date(checkinEnd)) :
+                punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd))
+
+
+        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime))
+            : outcheckStart === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkoutStartTime) && new Date(val) <= new Date(checkOutEnd))
+                : punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd))
 
         // GET THE HOURS WORKED IN MINITS
         let interVal = intervalToDuration({
@@ -41,37 +65,58 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             { lateIn: differenceInMinutes(new Date(punchIn), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(punchOut)) }
             : { lateIn: 0, earlyOut: 0 };
 
-
         const HoliDay = holidaydata.find((holi) => holi.hld_date === val.duty_day)
-        if (val.shift_id === 3) {
-            const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
-                const getpunchFromTo = {
-                    fromDate: wDay,
-                    toDate: duty_day,
-                    em_no: emno
-                }
-                const punchmastdata = await axioslogin.post("/attendCal/getPunchMastDataCheckWoff/", getpunchFromTo);
-                const { success, punchCheckdata } = punchmastdata.data;
 
-                if (success === 1) {
-                    const presentdata = punchCheckdata?.filter(val => val.duty_desc === 'P')
-                    const count = presentdata.length
-                    if (count < 4) {
 
-                        const postdata = {
-                            punch_slno: punch_slno,
-                            duty_status: 0,
-                            duty_desc: "A"
-                        }
-                        await axioslogin.post("/attendCal/updatePunchMasWoff/", postdata);
-                    }
-                }
-            }
+        // //Grace period calculation
+        // const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
+        // const lateCommon = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')
 
-            const weekDay = subDays(new Date(val.duty_day), 6)
-            const wDay = format(new Date(weekDay), 'yyyy-MM-dd')
-            calculateNoWorkday(val.duty_day, wDay, val.em_no, val.punch_slno);
-        }
+        // //checking punch in before 30 minute and grace period
+        // const CheckGraceIn = isEqual(new Date(relaxTime), new Date(punchIn)) ||
+        //     isBefore(new Date(punchIn), new Date(relaxTime)) ? 1 :
+        //     isAfter(new Date(punchIn), new Date(relaxTime)) &&
+        //         isBefore(new Date(punchIn), new Date(lateCommon)) ? 2 :
+        //         isAfter(new Date(punchIn), new Date(lateCommon)) ? 3 : 0
+
+        // //for early punch out before shift out
+        // const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out), 'yyyy-MM-dd H:mm')
+        // const PunchOutOnlyMM = format(new Date(punchOut), 'yyyy-MM-dd H:mm')
+
+        // const early = isEqual(new Date(earlyGo), new Date(PunchOutOnlyMM)) ||
+        //     isAfter(new Date(punchOut), new Date(earlyGo)) ? 1 : 0
+
+
+        // if (val.shift_id === week_off_day) {
+        //     const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
+        //         const getpunchFromTo = {
+        //             fromDate: wDay,
+        //             toDate: duty_day,
+        //             em_no: emno
+        //         }
+        //         const punchmastdata = await axioslogin.post("/attendCal/getPunchMastDataCheckWoff/", getpunchFromTo);
+        //         const { success, punchCheckdata } = punchmastdata.data;
+
+        //         if (success === 1) {
+        //             const presentdata = punchCheckdata?.filter(val => val.duty_status === 1)
+        //             const count = presentdata.length
+        //             if (count < 4) {
+
+        //                 const postdata = {
+        //                     punch_slno: punch_slno,
+        //                     duty_status: 0,
+        //                     duty_desc: "A"
+        //                 }
+        //                 await axioslogin.post("/attendCal/updatePunchMasWoff/", postdata);
+        //             }
+        //         }
+        //     }
+
+        //     const weekDay = subDays(new Date(val.duty_day), 6)
+        //     const wDay = format(new Date(weekDay), 'yyyy-MM-dd')
+        //     calculateNoWorkday(val.duty_day, wDay, val.em_no, val.punch_slno);
+        // }
+
         return {
             duty_day: val.duty_day,
             em_no: val.em_no,
@@ -82,34 +127,54 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             punch_out: isValid(new Date(punchOut)) ? format(new Date(punchOut), 'yyyy-MM-dd HH:mm') : null,
             punch_slno: val.punch_slno,
             shift_id: val.shift_id,
-            shift_in: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-            shift_out: (val.shift_id === 1 || val.shift_id === 2 || val.shift_id === 3) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+            shift_in: (val.shift_id === default_shift || val.shift_id === notapplicable_shift || val.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+            shift_out: (val.shift_id === default_shift || val.shift_id === notapplicable_shift || val.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
             earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
             duty_status: CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? 0.5 :
-                HoliDay !== undefined || val.shift_id === 3 ? 1 :
+                HoliDay !== undefined || val.shift_id === week_off_day ? 1 :
                     CaluculateLateInOut.lateIn <= cmmn_late_in &&
                         CaluculateLateInOut.earlyOut === 0 ? 1 :
-                        0,
-            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
+                        val.shift_id === noff ? 1 :
+                            0,
+            duty_desc: HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
                 CaluculateLateInOut.lateIn > cmmn_late_in ? "LC" :
                     CaluculateLateInOut.earlyOut > cmmn_early_out ? "EG" :
-                        CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? "HFD" : "A",
+                        CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? "HFD" :
+                            val.shift_id === noff ? "NOFF" : "A",
+
+            // duty_status: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary <= salary_above ? 2 :
+            //     CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary > salary_above ? 1 :
+            //         CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? 1 :
+            //             CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? 1 :
+            //                 CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0.5 :
+            //                     early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
+            //                         early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
+            //                             HoliDay !== undefined ? 1 : val.shift_id === 3 ? 1 :
+            //                                 0,
+
+            // duty_desc: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined ? "HP" :
+            //     CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? "P" :
+            //         CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? "P" :
+            //             CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "EG" :
+            //                 early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
+            //                     early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
+            //                         HoliDay !== undefined ? "H" : val.shift_id === 3 ? "OFF" :
+            //                             "A",
+
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
-            woff: val.shift_id === 3 ? 1 : 0
+            woff: val.shift_id === week_off_day ? 1 : 0
         }
-
     })
-
 
     const resultduty = InsertedPunchMasterData.map((val) => {
 
         const crossDay = shiftData?.find(shft => shft.shft_slno === val.shift_id);
         const crossDayStat = crossDay?.shft_cross_day ?? 0;
         let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
-        let shiftOut = crossDayStat === 0 ? `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}` :
-            `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
+        let shiftOut = crossDayStat === 0 ? `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm:ss')}` :
+            `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm:ss')}`;
 
         let checkinStart = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_start), 'HH:mm')}`;
         let checkinEnd = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_end), 'HH:mm')}`;
@@ -117,26 +182,49 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
         let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
 
-        const punchIn = punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd)) ?? '0000-00-00 00:00';
-        const punchOut = punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd)) ?? '0000-00-00 00:00';
+        const checkInTimeVale = format(new Date(checkinStart), 'HH')
+        const incheckStart = checkInTimeVale > 20
+        const checkinStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
+
+        const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
+        const outcheckStart = checkoutTimeVale > 20
+        const checkoutStartTime = `${format(subDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
+
+        const inTimeVale = format(new Date(checkinEnd), 'HH')
+        const incheck = inTimeVale < 8
+        const checkinEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
+
+        const endTimeVale = format(new Date(checkOutEnd), 'HH')
+        const check = endTimeVale < 8
+        const checkOutEndTime = `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
+
+        const punchIn = incheck === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEndTime)) :
+            incheckStart === true ? punchTimeData?.find(val => new Date(val) >= new Date(checkinStartTime) && new Date(val) <= new Date(checkinEnd)) :
+                punchTimeData?.find(val => new Date(val) >= new Date(checkinStart) && new Date(val) <= new Date(checkinEnd))
+
+        const punchOut = check === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEndTime))
+            : outcheckStart === true ? punchTimeData?.findLast(val => new Date(val) >= new Date(checkoutStartTime) && new Date(val) <= new Date(checkOutEnd))
+                : punchTimeData?.findLast(val => new Date(val) >= new Date(checkOutStart) && new Date(val) <= new Date(checkOutEnd))
 
         //Grace period calculation
-        const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')
-        const CheckGraceIn = isAfter(new Date(relaxTime), new Date(val.punch_in))// true correct punch
+        const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
+        const lateCommon = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')
 
-        //Late Punch After 30 Min
-        const LateTime = format(addMinutes(new Date(shiftIn), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
-        const CheckLateIn = isAfter(new Date(LateTime), new Date(val.punch_in))// true correct punch
-        // let shiftOut = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
-        const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out), 'yyyy-MM-dd H:mm:ss')
-        const CheckEarlyOut = isBefore(new Date(earlyGo), new Date(val.punch_out))// true correct punch
+        //checking punch in before 30 minute and grace period
+        const CheckGraceIn = isEqual(new Date(relaxTime), new Date(val.punch_in)) ||
+            isBefore(new Date(val.punch_in), new Date(relaxTime)) ? 1 :
+            isAfter(new Date(val.punch_in), new Date(relaxTime)) &&
+                isBefore(new Date(val.punch_in), new Date(lateCommon)) ? 2 :
+                isAfter(new Date(val.punch_in), new Date(lateCommon)) ? 3 : 0
 
+        //for early punch out before shift out
+        const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out), 'yyyy-MM-dd H:mm')
+        const PunchOutOnlyMM = format(new Date(val.punch_out), 'yyyy-MM-dd H:mm')
+
+        const early = isEqual(new Date(earlyGo), new Date(PunchOutOnlyMM)) ||
+            isAfter(new Date(val.punch_out), new Date(earlyGo)) ? 1 : 0
         const HoliDay = holidaydata.find((holi) => holi.hld_date === val.duty_day)
-        // GET THE HOURS WORKED IN MINITS
-        // let interVal = intervalToDuration({
-        //     start: isValid(new Date(punchIn)) ? new Date(punchIn) : 0,
-        //     end: isValid(new Date(punchOut)) ? new Date(punchOut) : 0
-        // })
+
         // CALCULATE THE LATE AND EARLY GO TIME 
         const CaluculateLateInOut = (isValid(new Date(shiftIn)) && isValid(new Date(shiftOut))) && (isValid(new Date(punchIn)) && isValid(new Date(punchOut))) ?
             { lateIn: differenceInMinutes(new Date(punchIn), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(punchOut)) }
@@ -149,19 +237,35 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             hrs_worked: isValid(new Date(punchIn)) && isValid(new Date(punchOut)) ? differenceInMinutes(new Date(punchOut), new Date(punchIn)) : 0,
             late_in: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
             early_out: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
-            duty_status: CheckGraceIn === true && CheckEarlyOut === true && HoliDay !== undefined && gross_salary < 25000 ? 2 :
-                CheckGraceIn === true && CheckEarlyOut === true && HoliDay === undefined ? 1 :
-                    HoliDay !== undefined ? 1 : 0.5,
-            duty_desc: CheckGraceIn === true && CheckEarlyOut === true && HoliDay !== undefined ? "HP" :
-                CheckGraceIn === true && CheckEarlyOut === true && HoliDay === undefined ? "P" :
-                    CheckLateIn === false ? "HFD" : CheckGraceIn === false ? "HFD" :
-                        CheckGraceIn === true && CheckEarlyOut === false ? "EG" : "LC",
+            // duty_status: CheckGraceIn === true && early === 1 && HoliDay !== undefined && gross_salary < salary_above ? 2 :
+            //     CheckGraceIn === true && early === 1 && HoliDay === undefined ? 1 :
+            //         HoliDay !== undefined ? 1 : 0.5,
+            duty_status: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary <= salary_above ? 2 :
+                CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary > salary_above ? 1 :
+                    CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? 1 :
+                        CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? 1 :
+                            CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0.5 :
+                                early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
+                                    early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
+                                        HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
+                                            val.shift_id === noff ? 1 :
+                                                0,
+
+            duty_desc: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined ? "HP" :
+                CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? "P" :
+                    CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? "P" :
+                        CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "EG" :
+                            early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
+                                early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
+                                    HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
+                                        val.shift_id === noff ? "NOFF" :
+                                            "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
         }
     })
 
-    //UPDATE INTO THE PUNCH MASTER TABLE 
+    //UPDATE INTO THE PUNCH MASTER TABLE
     const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMasterData/", result);
     const { success, message } = updatePunchMaster.data;
     if (success === 1) {
@@ -171,13 +275,12 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
     } else {
         return { status: 0, message: message, resData: [] }
     }
-
 }
 
 //GET AND UPDATE PUNCH IN / OUT DATA
 export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_early_out, cmmn_grace_period, cmmn_late_in,
     //cmmn_late_in_grace, cmmn_early_out_grace,
-    gross_salary, empInform, dispatch) => {
+    gross_salary, empInform, dispatch, salary_above, week_off_day, notapplicable_shift, default_shift, noff) => {
 
     // `RECIVE THE COMMON SETTING DATA SHIFT`
     /******
@@ -222,7 +325,7 @@ export const getAndUpdatePunchingData = async (postData, holidaydata, cmmn_early
                         cmmn_early_out, cmmn_grace_period, cmmn_late_in,
                         //cmmn_late_in_grace, cmmn_early_out_grace, 
                         gross_salary, notUpdatedPunchMasterData, InsertedPunchMasterData,
-                        shiftData);
+                        shiftData, salary_above, week_off_day, notapplicable_shift, default_shift, noff);
 
                     // const dataResult = await CaluculatePunchinandOut(data, planData, shiftData);
                     // message, resData

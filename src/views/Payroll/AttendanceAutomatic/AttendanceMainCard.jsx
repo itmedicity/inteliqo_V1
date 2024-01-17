@@ -1,35 +1,34 @@
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import TextField from '@mui/material/TextField'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import { useReducer } from 'react'
 import { lastDayOfMonth } from 'date-fns/esm'
-import { CssVarsProvider, Button } from '@mui/joy'
+import { CssVarsProvider, Button, Input, Tooltip } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
-import {
-    dutyPlanInitialState,
-    dutyPlanReducer,
-    planInitialState,
-} from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun'
 import { ToastContainer } from 'react-toastify'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+import { useDispatch } from 'react-redux'
+import { setDepartment } from 'src/redux/actions/Department.action'
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getData, saveData }) => {
+const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getData, saveData, downloadFormat }) => {
 
-    const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
+    const redispatch = useDispatch()
+    const [fromDate, setFromDate] = useState(moment().format('YYYY-MM-DD'))
+    const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'))
+    const [deptName, setDepartmentName] = useState(0)
+    const [deptSecName, setDepartSecName] = useState(0)
 
-    const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
-    const setDepartSecName = (deptSecSlno) => dispatch({ type: DEPT_SEC_NAME, deptSecSlno })
-
-    const [planState, dispatch] = useReducer(dutyPlanReducer, dutyPlanInitialState)
-    const { fromDate, toDate, deptName, deptSecName } = planState
     const calanderMaxDate = lastDayOfMonth(new Date(fromDate))
+
+    useEffect(() => {
+        redispatch(setDepartment());
+    }, [redispatch])
 
     useEffect(() => {
         if (deptName !== 0 && deptSecName !== 0) {
@@ -39,6 +38,11 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
             setDeptsec(deptSecName);
         }
     }, [fromDate, setfromdate, setTodate, setdept, setDeptsec, deptName, deptSecName, toDate])
+
+    // const downloadFormat = useCallback(() => {
+
+    // }, [])
+
 
     return (
         <Paper
@@ -57,10 +61,16 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
                             inputFormat="DD-MM-YYYY"
                             value={fromDate}
                             onChange={(date) =>
-                                dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
+                                setFromDate(moment(date).format('YYYY-MM-DD'))
+                                // dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
                             }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <CssVarsProvider>
+                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    </CssVarsProvider>
+                                    {InputProps?.endAdornment}
+                                </Box>
                             )}
                         />
                     </LocalizationProvider>
@@ -74,37 +84,54 @@ const AttendanceMainCard = ({ setfromdate, setTodate, setdept, setDeptsec, getDa
                             inputFormat="DD-MM-YYYY"
                             value={toDate}
                             onChange={(date) =>
-                                dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
+                                setToDate(moment(date).format('YYYY-MM-DD'))
+                                // dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
                             }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <CssVarsProvider>
+                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    </CssVarsProvider>
+                                    {InputProps?.endAdornment}
+                                </Box>
                             )}
                         />
                     </LocalizationProvider>
                 </Box>
                 <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSelectByRedux setValue={setDepartment} value={deptName} />
+                    <DepartmentDropRedx getDept={setDepartmentName} />
                 </Box>
                 <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} />
+                    <DepartmentSectionRedx getSection={setDepartSecName} />
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
                 <CssVarsProvider>
                     <Box sx={{ p: 0.2 }} >
-                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
+                        <Button aria-label="Like" variant="outlined" color="primary" onClick={getData} sx={{
                             color: '#90caf9'
                         }} >
                             <PublishedWithChangesIcon />
                         </Button>
                     </Box>
-                    <Box sx={{ p: 0.2 }}>
-                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={saveData} sx={{
-                            color: '#81c784'
-                        }}>
-                            <SaveIcon />
-                        </Button>
-                    </Box>
+                    <Tooltip title="Save" followCursor placement='top' arrow >
+                        <Box sx={{ p: 0.2 }}>
+                            <Button aria-label="Like" variant="outlined" color="success" onClick={saveData} sx={{
+                                color: '#65B741'
+                            }}>
+                                <SaveIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
+                    <Tooltip title="Download Excel" followCursor placement='top' arrow >
+                        <Box sx={{ p: 0.2 }}>
+                            <Button aria-label="Like" variant="outlined" color="neutral"
+                                onClick={downloadFormat}
+                                sx={{ color: '#90caf9' }} >
+                                <FileDownloadIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
                 </CssVarsProvider>
             </Box>
         </Paper>
