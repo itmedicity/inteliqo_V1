@@ -258,8 +258,8 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                             early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
                                 early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
                                     HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
-                                    val.shift_id === noff ? "NOFF" :
-                                        "A",
+                                        val.shift_id === noff ? "NOFF" :
+                                            "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
         }

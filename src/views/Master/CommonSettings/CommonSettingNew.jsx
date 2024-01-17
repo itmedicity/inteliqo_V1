@@ -131,7 +131,6 @@ const CommonSettingNew = () => {
                     max_late_day_count: max_late_day_count,
                     leave_count: leave_count,
                     noff_selct_day_count: noff_selct_day_count,
-                    noff: noff,
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -143,6 +142,7 @@ const CommonSettingNew = () => {
                 setCount(0)
                 setAreartype(areartype === null ? 0 : areartype)
                 setGroup_Slno(group_slno)
+                setNoff(noff)
             }
             else if (success === 0) {
                 setValue(0)

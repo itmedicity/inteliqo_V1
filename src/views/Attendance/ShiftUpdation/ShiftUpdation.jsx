@@ -167,10 +167,10 @@ const ShiftUpdation = () => {
                                         shift_id: data.shift_id,
                                         emp_id: data.emp_id,
                                         em_no: data.em_no,
-                                        punch_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : data.punch_in,
-                                        punch_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : data.punch_out,
-                                        shift_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                                        shift_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                        punch_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : data.punch_in,
+                                        punch_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : data.punch_out,
+                                        shift_in: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                        shift_out: (data.shift_id === default_shift || data.shift_id === notapplicable_shift || data.shift_id === week_off_day || data.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                         hrs_worked: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
                                             formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                         hrsWrkdInMints: (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
