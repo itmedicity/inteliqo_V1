@@ -28,7 +28,6 @@ const EmpViewpage = () => {
 
     //login employee topics
     const EmpTopics = useSelector((state) => state?.gettrainingData?.scheduleTopicOnEmp?.scheduleTopicOnEmpList, _.isEqual)
-    console.log(EmpTopics);
 
     useEffect(() => {
         const displayData = EmpTopics?.map((val) => {

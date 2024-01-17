@@ -64,7 +64,6 @@ const RetestQuestionPage = () => {
 
     const ResetQuestions = useSelector((state) => state?.gettrainingData?.RetestQuestions?.RetestQuestionsList, _.isEqual)
 
-    console.log(ResetQuestions);
     useEffect(() => {
         const displayData = ResetQuestions?.map((val, index) => {
             const object = {
@@ -103,7 +102,6 @@ const RetestQuestionPage = () => {
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
-            console.log(data);
             const { em_id, em_name, retest_status, retest_mark, retest_sl_no, retest_topic, retest_quest_count, candidate_dept, candidate_dept_sec } = data[0];
             const obj = {
                 em_id: em_id,

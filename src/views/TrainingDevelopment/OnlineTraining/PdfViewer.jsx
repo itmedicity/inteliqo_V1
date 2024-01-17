@@ -5,7 +5,6 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const PdfViewer = ({ setOpen, open, reset, Userdata }) => {
-    // const history = useHistory()
     const [uploads, setUploads] = useState([]);
 
     const handleClose = useCallback(() => {

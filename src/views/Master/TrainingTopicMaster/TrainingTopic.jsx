@@ -222,7 +222,7 @@ const TrainingTopic = () => {
             const fileNames = data.data
             const fileUrls = fileNames?.map((filename) => {
                 const url = `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
-                setUploads(url);
+                return setUploads(url);
             });
             return fileUrls
         } else {
@@ -328,7 +328,7 @@ const TrainingTopic = () => {
                 formData.append('insertID', insetId);
 
                 const compressedFilesPromises = selectFile?.map((file) => {
-                    formData.append('files', file, file.name);
+                    return formData.append('files', file, file.name);
                 });
                 await Promise.all(compressedFilesPromises);
                 const uploadResult = await axioslogin.post('/Training_topic_uploads/uploadtrainingfiles', formData, {

@@ -15,7 +15,6 @@ const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
     const Questlink = `http://192.168.22.3:3000/OnlinePreTest/${slno}/${em_id}/${topic_slno}/${question_count}`
 
 
-    console.log(Questlink);
     return (
         <Fragment>
             <Modal

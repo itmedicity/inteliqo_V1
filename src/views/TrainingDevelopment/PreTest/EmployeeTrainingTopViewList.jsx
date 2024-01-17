@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton as OpenIcon, Paper, Tooltip } from '@mui/material';
-import LaunchIcon from '@mui/icons-material/Launch';
+// import LaunchIcon from '@mui/icons-material/Launch';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import { ScheduleTopicListOfEmp } from 'src/redux/actions/Training.Action';

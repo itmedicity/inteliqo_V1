@@ -94,7 +94,6 @@ const DepartmentalCalender = ({ setShow, count, Setcount }) => {
 
     }, [postdata, count, dept, deptSec, year])
 
-    console.log("checkdata", checkdata);
     return (
         <Fragment>
             <ToastContainer />

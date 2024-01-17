@@ -12,7 +12,6 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
-// import _ from 'underscore';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import SelectTopics from 'src/views/MuiComponents/SelectTopics';
@@ -87,11 +86,7 @@ const DepartmentalTrainingCalender = () => {
         { headerName: 'Sl.No', field: 'calender_slno', filter: true, width: 100 },
         { headerName: 'Emp No', field: 'em_id', filter: true, width: 200 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
-        // { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
-        // { headerName: 'Department Section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 200 },
-        // { headerName: 'Online_mode', field: 'online_mode', filter: true, width: 200 },
-        // { headerName: 'Offline_mode', field: 'offline_mode', filter: true, width: 200 },
         { headerName: 'Training Mode', field: 'trainingmode', filter: true, width: 200 },
         { headerName: 'Pree-Test Mark', field: 'Pretest_mark', filter: true, width: 200 },
         { headerName: 'Post-Mark', field: 'posttest_mark', filter: true, width: 200 },

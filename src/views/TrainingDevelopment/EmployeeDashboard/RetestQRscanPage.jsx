@@ -15,7 +15,6 @@ const RetestQRscanPage = ({ Selecteddata, opeQRCodeModal, setopeQRCodeModal }) =
 
     const Questlink = `http://192.168.22.3:3000/OnlineReTest/${retest_sl_no}/${candidate_em_no}/${retest_topic}/${retest_quest_count}`
 
-    console.log(Questlink);
     return (
         <Fragment>
             <Modal
