@@ -14,21 +14,19 @@ const VideoPlayerPage = ({ Userdata }) => {
             const { video_link } = Userdata;
             const obj = {
                 video_link: video_link,
-
             }
             SetData(obj)
         }
     }, [Userdata])
 
     return (
-        <Box sx={{ width: "100%", height: 800 }}>
+        <Box sx={{ width: "100%", height: 700 }}>
             <ReactPlayer
                 url={video_link}
                 width='100%'
                 height='100%'
                 controls={true}
                 muted={false}
-
             />
         </Box>
     )

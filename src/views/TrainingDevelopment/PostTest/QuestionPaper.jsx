@@ -32,13 +32,31 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [open, setopen] = useState(false);
 
+    const [datas, setDatas] = useState({
+        em_id: 0,
+        em_name: '',
+        slno: 0,
+        topic_slno: 0,
+        training_topic_name: '',
+        question_count: 0,
+        dept_id: 0,
+        desg_slno: 0,
+        sect_id: 0
+    });
+
+    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
+
     const dispatch = useDispatch()
 
     useEffect(() => {
         if (questCount !== 0) {
-            dispatch(QuestionList(questCount))
+            const obj = {
+                questCount: questCount,
+                topic_slno: topic_slno
+            }
+            dispatch(QuestionList(obj))
         }
-    }, [dispatch, count, questCount])
+    }, [dispatch, count, questCount, topic_slno])
 
     const Questions = useSelector((state) => state?.gettrainingData?.QuestionDetails?.QuestionDetailsList, _.isEqual)
 
@@ -67,19 +85,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
         setData(displayData)
     }, [Questions, setDatalen, setData])
 
-    const [datas, setDatas] = useState({
-        em_id: 0,
-        em_name: '',
-        slno: 0,
-        topic_slno: 0,
-        training_topic_name: '',
-        question_count: 0,
-        dept_id: 0,
-        desg_slno: 0,
-        sect_id: 0
-    });
 
-    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
     useEffect(() => {
         if (Object.keys(Userdata).length !== 0) {
             const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Userdata[0];

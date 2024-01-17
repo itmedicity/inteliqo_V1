@@ -9,18 +9,18 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { IconButton as OpenIcon } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
 
-const EmpVerification = ({ count, Setcount, open, Setopen, Details, getData }) => {
+const EmpVerification = ({ count, Setcount, open, Setopen, allot, getData }) => {
+
     const [tableData, setTableData] = useState([]);
     const [setData, setsetData] = useState([]);
 
     useEffect(() => {
-        const filterdata = Details?.filter((val) => {
-            return getData?.find((item) => item.topic_slno === val.topic_slno && moment(val.schedule_date).format("YYYY-MM-DD") === moment(new Date()).format('YYYY-MM-DD'));
+        const filterdata = allot?.filter((val) => {
+            return getData?.find((item) => item.topic_slno === val.topic_slno);
         })
         setsetData(filterdata);
-    }, [getData, Details, setsetData])
+    }, [getData, allot, setsetData])
 
     const Handleclose = useCallback((e) => {
         Setopen(false)
@@ -69,7 +69,6 @@ const EmpVerification = ({ count, Setcount, open, Setopen, Details, getData }) =
 
     const [columnDef] = useState([
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
-        { headerName: 'Department', field: 'dept_name', filter: true, width: 150 },
         {
             headerName: 'Verify Employee ',
             cellRenderer: params => {
@@ -118,7 +117,7 @@ const EmpVerification = ({ count, Setcount, open, Setopen, Details, getData }) =
                     startDecorator={
                         <PendingActionsIcon sx={{ color: 'green' }} />
                     }
-                    sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                    sx={{ display: 'flex', alignItems: 'flex-start', mr: 2 }}
                 >
                     Employee Verification
                 </Typography>

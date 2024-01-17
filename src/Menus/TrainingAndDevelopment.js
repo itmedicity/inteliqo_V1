@@ -57,6 +57,13 @@ const TrainingAndDevelopment = [
         to: '/Home/OnlineTraining',
     },
 
+    {
+        men_slno: 263,
+        component: CNavItem,
+        name: 'Employee Dashboard',
+        to: '/Home/EmpDashboardPage',
+    },
+
 
 ]
 

@@ -5,41 +5,50 @@ import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDa
 import AttendanceModal from './AttendanceModal'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
+import moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux'
+import { TrainingAttendance } from 'src/redux/actions/Training.Action'
+import _ from 'underscore'
+import { Paper } from '@material-ui/core'
 
-const TodayTrainings = ({ setShow, Todaydata, count, Setcount, Details }) => {
+const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
     const [todayData, SetTodayData] = useState([])
     const [open, Setopen] = useState(false);
-    const [getData, SetgetData] = useState([]);
+    const [topic, setTopic] = useState(0);
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        const displayData = Todaydata?.map((val) => {
+        if (topic !== 0) {
+            dispatch(TrainingAttendance(topic))
+        }
+    }, [dispatch, topic, count])
+
+    const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList, _.isEqual);
+
+    useEffect(() => {
+        const displayData = todays?.map((val) => {
             const object = {
                 deparment_sect: val.deparment_sect,
                 department: val.department,
-                dept_id: val.dept_id,
-                dept_name: val.dept_name,
-                schedule_topics: val.schedule_topics,
-                date: val.date,
-                schedule_trainers: val.schedule_trainers,
                 schedule_year: val.schedule_year,
-                sect_id: val.sect_id,
-                sect_name: val.sect_name,
+                schedule_date: val.schedule_date,
+                date: moment(val.schedule_date).format("YYYY-MM-DD"),
                 slno: val.slno,
                 topic_slno: val.topic_slno,
-                traineer_name: val.traineer_name,
                 training_topic_name: val.training_topic_name
             }
             return object;
         })
         SetTodayData(displayData)
-    }, [Todaydata, SetTodayData])
+    }, [todays, SetTodayData])
 
     const handleClickOpen = useCallback((params) => {
         const data = params.api.getSelectedRows()
-        SetgetData(data);
+        const { topic_slno } = data[0]
+        setTopic(topic_slno);
         Setopen(true)
-    }, [Setopen, SetgetData])
-
+    }, [Setopen, setTopic])
 
     const [columnDef] = useState([
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
@@ -53,26 +62,28 @@ const TodayTrainings = ({ setShow, Todaydata, count, Setcount, Details }) => {
                 </OpenIcon>
         }
     ])
-
     return (
-        <CustomDashboardPage title="Upcoming Trainings" displayClose={true} setClose={setShow} >
-            {open === true ? <AttendanceModal count={count} Setcount={Setcount} open={open} Setopen={Setopen} getData={getData} Details={Details} />
+        <Paper elevation={0}>
+            <CustomDashboardPage title="Today Training List" displayClose={true} setClose={setShow} >
+                {open === true ? <AttendanceModal count={count} Setcount={Setcount} open={open} Setopen={Setopen} attendance={attendance} />
 
-                : <Box sx={{ width: "100%", height: 700, overflow: 'auto' }}>
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={todayData}
-                        sx={{
-                            height: 690,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    />
-                </Box>
-            }
-        </CustomDashboardPage>
+                    : <Box sx={{ width: "100%", height: 800, overflow: 'auto' }}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={todayData}
+                            sx={{
+                                height: 700,
+                                width: "100%",
+                                mt: 1
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Box>
+                }
+            </CustomDashboardPage>
+        </Paper>
+
     )
 }
 export default memo(TodayTrainings)

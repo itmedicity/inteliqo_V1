@@ -107,6 +107,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
 
     const postdata = newdata?.map((val) => {
         const obj = {
+            slno: slno,
             emp_name: val.em_id,
             emp_desig: val.desg_slno,
             emp_dept: data.dept_id,
@@ -116,7 +117,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
             create_user: em_id
         }
         return obj
-    }, [newdata, scheduleDate, em_id, data])
+    }, [newdata, scheduleDate, slno, em_id, data])
 
     const SubmitSchedule = useCallback(async () => {
         const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
@@ -136,7 +137,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         else {
             warningNofity(message)
         }
-    }, [patchdata, postdata, count, reset, Setcount])
+    }, [patchdata, reset, postdata, count, Setcount])
 
     const end = endOfMonth(new Date(scheduleDate))
 
@@ -181,18 +182,18 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                         }
                         sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                     >
-                        Training Schedule
+                        Training Reschedule & Add Employee
                     </Typography>
 
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 3, pl: 0.5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, pl: 0.5 }}>
                         <Box sx={{}}>Schedule Date</Box>
                         <Box sx={{ px: 10 }}>{data?.schedule_date}</Box>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, pl: 0.5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, pl: 0.5 }}>
                         <Box sx={{}}>Training Topic</Box>
                         <Box sx={{ px: 10.5, textTransform: "capitalize" }}>{data?.training_topic_name.toUpperCase()}</Box>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, pl: 0.5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, pl: 0.5 }}>
                         <Box sx={{}}>Trainer Names</Box>
                         <Box sx={{ px: 10 }}>{data?.traineer_name}</Box>
                     </Box>

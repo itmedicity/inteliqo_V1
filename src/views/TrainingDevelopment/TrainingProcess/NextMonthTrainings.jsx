@@ -1,13 +1,14 @@
-import { Box, TextField } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import moment from 'moment'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import SelectTopics from 'src/views/MuiComponents/SelectTopics'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import SearchIcon from '@mui/icons-material/Search';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
+import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
+import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 
 const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
     const [tabledata, setTableData] = useState([])
@@ -52,9 +53,6 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
     }, [NextmonthData, flag, pickdate])
 
     const [columnDef] = useState([
-        // { headerName: 'Trainer Names', field: 'traineer_name', filter: true, width: 250 },
-        // { headerName: 'Training Department', field: 'dept_name', filter: true, width: 250 },
-        // { headerName: 'Training Department Section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
     ])
@@ -69,45 +67,63 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
         })
         setTableData(scheduleTopic);
     }, [filterdate, topic, tabledata])
-    return (
-        <CustomDashboardPage title="Next Month Trainings" displayClose={true} setClose={setShow} >
-            <Box sx={{ width: "100%", p: 2 }}>
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 5 }}>
-                    <LocalizationProvider dateAdapter={AdapterMoment} >
-                        <DatePicker
-                            views={['day']}
-                            inputFormat="DD-MM-YYYY"
-                            value={filterdate}
-                            onChange={setFilterDate}
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" />
-                            )}
-                        />
-                    </LocalizationProvider>
 
-                    <Box sx={{ width: "20%" }} >
+    const toClose = useCallback(() => {
+        setShow(0)
+    }, [setShow])
+    return (
+        <CustomInnerHeightDashBoard title="Next Month Training List" toClose={toClose} >
+            <Box sx={{ width: "100%", p: 0.2, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                <Paper elevation={0} sx={{ display: 'flex', px: 1, py: 0.5 }}>
+                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                        <LocalizationProvider dateAdapter={AdapterMoment} >
+                            <DatePicker
+                                views={['day']}
+                                inputFormat="DD-MM-YYYY"
+                                value={filterdate}
+                                onChange={(newValue) => {
+                                    setFilterDate(newValue);
+                                }}
+                                renderInput={({ inputRef, inputProps, InputProps }) => (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                        <CssVarsProvider>
+                                            <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} />
+                                        </CssVarsProvider>
+                                        {InputProps?.endAdornment}
+                                    </Box>
+                                )}
+                            />
+                        </LocalizationProvider>
+                    </Box>
+
+                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                         <SelectTopics setTopic={setTopic} />
 
                     </Box>
                     <Box sx={{ p: 1 }}>
-                        <SearchIcon
-                            color="neutral"
-                            onClick={handleDateChange}
-                        />
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='sm' color="primary" onClick={handleDateChange}>
+                                <SearchIcon />
+                            </IconButton>
+                        </CssVarsProvider>
                     </Box>
-                </Box>
-                <CommonAgGrid
-                    columnDefs={columnDef}
-                    tableData={tabledata}
-                    sx={{
-                        height: 700,
-                        width: "100%", mt: 1
-                    }}
-                    rowHeight={30}
-                    headerHeight={30}
-                />
+                    <Box sx={{ flex: 1 }}></Box>
+                    <Box sx={{ flex: 1 }}></Box>
+                </Paper>
+                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                    <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={tabledata}
+                        sx={{
+                            height: 700,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    />
+                </Paper>
             </Box>
-        </CustomDashboardPage>
+        </CustomInnerHeightDashBoard >
     )
 }
 export default memo(NextMonthTrainings)

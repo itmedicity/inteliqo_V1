@@ -18,11 +18,12 @@ const CountDownTimer = ({ setOrder, order, sec, setSec, timeLeft, setTimeLeft })
             if (s === 1) {
                 setOrder(order + 1)
                 warningNofity("Time Expired! Catch Next question")
+                setTimeLeft(60)
             }
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [timeLeft, setTimeLeft, setSec]);
+    }, [timeLeft, setTimeLeft, setOrder, order, setSec]);
 
     return (
 

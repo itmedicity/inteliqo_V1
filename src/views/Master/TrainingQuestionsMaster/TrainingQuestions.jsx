@@ -403,6 +403,7 @@ const TrainingQuestions = () => {
                 return obj;
             });
             setUploads(fileUrls)
+            console.log("questuions", fileUrls);
         } else {
             infoNofity("No File uploads")
         }

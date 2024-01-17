@@ -4,12 +4,14 @@ import { Box, IconButton as OpenIcon, Paper, Tooltip } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
-import { DepartmentalTrainingDetails, ScheduleTopicListOfEmp } from 'src/redux/actions/Training.Action';
+import { ScheduleTopicListOfEmp } from 'src/redux/actions/Training.Action';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import QuestionPaper from './QuestionPaper';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import DoneIcon from '@mui/icons-material/Done';
 import moment from 'moment';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+import QRCodeModalPage from './QRCodeModalPage';
 
 const EmployeeTrainingTopViewList = () => {
 
@@ -19,6 +21,8 @@ const EmployeeTrainingTopViewList = () => {
     const [open, setOpen] = useState(false);
     const [Userdata, setUserdata] = useState([]);
     const [sno, setSno] = useState(0);
+    const [QRdata, setQRdata] = useState([]);
+    const [QRmodal, setQRmodal] = useState(false);
 
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
@@ -27,12 +31,12 @@ const EmployeeTrainingTopViewList = () => {
 
     useEffect(() => {
         dispatch(ScheduleTopicListOfEmp(em_id))
-        dispatch(DepartmentalTrainingDetails())
         Setcount(0);
     }, [dispatch, em_id, count])
 
     //login employee topics
     const EmpTopics = useSelector((state) => state?.gettrainingData?.scheduleTopicOnEmp?.scheduleTopicOnEmpList, _.isEqual)
+
     useEffect(() => {
         const displayData = EmpTopics?.map((val) => {
             const object = {
@@ -50,25 +54,52 @@ const EmployeeTrainingTopViewList = () => {
                 schedule_date: val.schedule_date,
                 posttest_permission: val.posttest_permission,
                 date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                training_status: val.training_status
             }
+
             return object;
         })
-        const filterToday = displayData?.filter((val) => val.date === moment(new Date()).format("YYYY-MM-DD") && val.posttest_permission === 0)
-        setTabledata(filterToday)
+        setTabledata(displayData)
     }, [EmpTopics, setTabledata])
 
-    const handleClickOpen = useCallback((params) => {
-        const data = params.api.getSelectedRows()
-        setOpen(true);
-        const { slno } = data[0]
-        setSno(slno);
-        setUserdata(data);
-    }, [setOpen, setUserdata]);
+    // const handleClickOpen = useCallback((params) => {
+    //     const data = params.api.getSelectedRows()
+    //     setOpen(true);
+    //     const { slno } = data[0]
+    //     setSno(slno);
+    //     setUserdata(data);
+    // }, [setOpen, setUserdata]);
 
+    //QR Code
+
+    const ClickToScanQR = useCallback((params) => {
+        const data = params.api.getSelectedRows()
+        setQRdata(data);
+        setQRmodal(true)
+    }, [setQRdata, setQRmodal])
 
     const [columnDef] = useState([
         { headerName: 'SlNo', field: 'sl', filter: true, width: 100 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 200 },
+
+        // {
+        //     headerName: 'Action',
+        //     cellRenderer: params => {
+        //         if (params.data.pretest_status === 1) {
+        //             return <OpenIcon
+        //                 sx={{ paddingY: 0.5, cursor: 'none' }}  >
+        //                 <Tooltip title="Test completed">
+        //                     <DoneIcon />
+        //                 </Tooltip>
+        //             </OpenIcon>
+        //         } else {
+        //             return <OpenIcon onClick={(e) => handleClickOpen(params)}
+        //                 sx={{ paddingY: 0.5 }} >
+        //                 <LaunchIcon color='primary' />
+        //             </OpenIcon>
+        //         }
+        //     }
+        // },
 
         {
             headerName: 'Action',
@@ -81,13 +112,27 @@ const EmployeeTrainingTopViewList = () => {
                         </Tooltip>
                     </OpenIcon>
                 } else {
-                    return <OpenIcon onClick={(e) => handleClickOpen(params)}
+                    return <OpenIcon onClick={(e) => ClickToScanQR(params)}
                         sx={{ paddingY: 0.5 }} >
-                        <LaunchIcon color='primary' />
+                        <Tooltip title="Scan QR Code">
+                            <QrCodeScannerIcon color='primary' />
+                        </Tooltip>
                     </OpenIcon>
                 }
             }
-        }
+        },
+        // {
+        //     headerName: 'Scan Code',
+        //     cellRenderer: params => {
+        //         return <OpenIcon onClick={(e) => ClickToScanQR(params)}
+        //             sx={{ paddingY: 0.5 }} >
+        //             <Tooltip title="Scan QR Code">
+        //                 <QrCodeScannerIcon color='primary' />
+        //             </Tooltip>
+        //         </OpenIcon>
+
+        //     }
+        // }
     ])
 
     return (
@@ -109,6 +154,7 @@ const EmployeeTrainingTopViewList = () => {
                             />
                         </Paper>
                 }
+                {QRmodal === true ? <QRCodeModalPage count={count} Setcount={Setcount} QRdata={QRdata} QRmodal={QRmodal} setQRmodal={setQRmodal} /> : null}
             </Box>
         </CustomLayout >
     )

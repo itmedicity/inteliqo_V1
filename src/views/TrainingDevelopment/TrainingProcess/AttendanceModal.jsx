@@ -12,70 +12,65 @@ import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
 
-const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) => {
-    const [tableData, setTableData] = useState([]);
-    const [setData, setsetData] = useState([]);
-    const [question_count, setQuestion_count] = useState('');
+const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
 
-    useEffect(() => {
-        const filterdata = Details?.filter((val) => {
-            return getData?.find((item) => item.topic_slno === val.topic_slno && moment(val.schedule_date).format("YYYY-MM-DD") === moment(new Date()).format('YYYY-MM-DD'));
-        })
-        setsetData(filterdata);
-    }, [getData, Details, setsetData])
+    const [tableData, setTableData] = useState([]);
+    const [question_count, setQuestion_count] = useState(0);
+    const [dataArray, setDataArray] = useState([])
 
     const Handleclose = useCallback((e) => {
         Setopen(false)
     }, [Setopen])
 
     useEffect(() => {
-        const displayData = setData?.map((val) => {
+        const displayData = attendance?.map((val) => {
             const object = {
-                dept_id: val.dept_id,
-                dept_name: val.dept_name,
                 em_id: val.em_id,
                 em_name: val.em_name,
-                emp_dept: val.emp_dept,
-                emp_dept_sectn: val.emp_dept_sectn,
-                emp_name: val.emp_name,
-                schedule_date: val.schedule_date,
-                sect_id: val.sect_id,
-                sect_name: val.sect_name,
+                posttest_permission: val.posttest_permission,
+                posttest_status: val.posttest_status,
+                pretest_status: val.pretest_status,
+                question_count: val.question_count,
                 slno: val.slno,
+                topic: val.topic,
+                schedule_date: val.schedule_date,
+                date: moment(val.schedule_date).format('YYYY-MM-DD'),
                 topic_slno: val.topic_slno,
+                training_status: val.training_status,
                 training_topic_name: val.training_topic_name,
-                training_status: val.training_status
+                attandance_status: 0
             }
             return object;
         })
         setTableData(displayData)
-    }, [setData, setTableData])
+    }, [attendance, setTableData])
 
-    //mark attendance
-    const markAttendance = useCallback(async (params) => {
-        const data = params.api.getSelectedRows()
-        const { slno } = data[0]
-        const patchdata = {
-            slno: slno
+
+    const markAttendance = useCallback((params) => {
+        const data = params.data
+        setDataArray(data)
+    }, [setDataArray])
+
+
+    useEffect(() => {
+        if (Object.keys(dataArray).length > 0) {
+            const { em_id } = dataArray;
+            const obj = {
+                em_id: em_id,
+                attandance_status: 1
+            }
+            const result = tableData?.map((item) => item.em_id === obj.em_id ? { ...item, ...obj } : item);
+            setTableData(result);
         }
-        const result = await axioslogin.patch('/TrainingProcess/attendance', patchdata)
-        const { success, message } = result.data;
-        if (success === 2) {
-            Setcount(count + 1)
-        }
-        else {
-            warningNofity(message)
-        }
-    }, [Setcount, count])
+    }, [dataArray])
+
 
     const [columnDef] = useState([
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
-        { headerName: 'Department', field: 'dept_name', filter: true, width: 150 },
-        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 150 },
         {
             headerName: 'Mark Attendance',
             cellRenderer: params => {
-                if (params.data.training_status === 1) {
+                if (params.data.attandance_status === 1 || params.data.training_status === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <Tooltip title="Attendance Marked">
@@ -94,28 +89,37 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
         }
     ])
 
-
     const handleSubmit = useCallback(async () => {
-        const { slno, date } = getData[0]
-        const patchdata = {
-            slno: slno,
-            schedule_date: moment(date).format("YYYY-MM-DD HH:MM:SS"),
-            question_count: question_count
-        }
-
-        const result = await axioslogin.patch('/TrainingProcess/questionCount', patchdata)
-        const { success, message } = result.data;
-        if (success === 1) {
-            succesNofity(message)
-            Setcount(count + 1)
-            setQuestion_count('');
-            Setopen(false)
+        if (question_count !== 0) {
+            const arr = tableData?.filter((val) => val.attandance_status === 1);
+            const mapArry = arr?.map((item) => {
+                const obj = {
+                    training_status: 1,
+                    question_count: question_count
+                }
+                return {
+                    ...item,
+                    ...obj
+                }
+            })
+            const result = await axioslogin.patch('/TrainingProcess/questionCount', mapArry)
+            const { success, message } = result.data;
+            if (success === 1) {
+                Setcount(count + 1)
+                setQuestion_count(0);
+                Setopen(false)
+                succesNofity(message)
+            }
+            else {
+                warningNofity(message)
+                setQuestion_count(0)
+            }
         }
         else {
-            warningNofity(message)
-            setQuestion_count('')
+            alert("The Question Count Field is empty")
         }
-    }, [Setcount, count, getData, question_count, Setopen, setQuestion_count])
+
+    }, [Setcount, tableData, count, question_count, Setopen, setQuestion_count])
 
     return (
         <Modal
@@ -144,7 +148,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
                     }
                     sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                 >
-                    Training Attendance
+                    Training Attendance Marking
                 </Typography>
                 <Box sx={{ overflow: 'auto', mt: 1 }}>
                     <CommonAgGrid
@@ -176,6 +180,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, Details, getData }) =
                                 onClick={handleSubmit}
                                 size="sm"
                                 sx={{ py: 0, color: '#81c784' }}
+
                             >
                                 <SaveIcon sx={{ fontSize: 25 }} />
                             </Button>

@@ -18,6 +18,24 @@ const {
     FETCH_ALL_QUESTIONS,
     FETCH_ONLINE_TRAINING_DETAILS,
     FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW,
+    FETCH_TRAINING_COMPLETED_LIST,
+    FETCH_TODAYS_TRAINING__LIST,
+    FETCH_TRAINING_ATTENDANCE_DETAILS,
+    FETCH_TRAINING_EMP_DETAILS_ALL,
+    FETCH_TRAINING_EMP_LIST,
+    FETCH_TRAINING_POST_TEST_ALLOTED_TO_EMP,
+    FETCH_TRAINING_PRETEST_EMP_LIST_ALL,
+    FETCH_TRAINING_PRETEST_QR_EMP_DETAILS,
+    FETCH_TRAINING_POSTEST_EMP_LIST_ALL,
+    FETCH_TRAINING_POSTTEST_QR_EMP_DETAILS,
+    FETCH_BELOW_AVERAGE_EMP_LIST,
+    FETCH_RETEST_EMP_TOPICS_BY_EMID,
+    FETCH_RETEST_QUESTIONS,
+    // FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH,
+    FETCH_ALL_DEPARTMENT_NAMES,
+    FETCH_ALL_DEPARTMENT_SECTION_NAMES,
+    FETCH_ALL_TOPICS_UNDER_DEPT,
+    FETCH_TRAINING_TOPIC_BY_DEPT
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -150,10 +168,11 @@ export const ScheduleTopicListOfEmp = (em_id) => async (dispatch) => {
         dispatch({ type: FETCH_SCHEDULE_TOPIC_BASED_ON_EMP, payload: [], status: false })
     }
 }
-export const QuestionList = (questCount) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingProcess/selectQuest/list/${questCount}`)
+
+export const QuestionList = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingProcess/selectQuest/list`, obj)
     const { data, success } = result.data
-    if (success === 1) {
+    if (success === 2) {
         dispatch({ type: FETCH_ALL_QUESTIONS, payload: data, status: true })
     }
     else {
@@ -171,10 +190,8 @@ export const OnlineTrainingTopicListOfEmp = (em_id) => async (dispatch) => {
     }
 }
 export const DepartmentalScheduledTopicsDpDw = (dept) => async (dispatch) => {
-    console.log("action", dept);
     const result = await axioslogin.get(`/TrainingAfterJoining/deptTrainingtopic/${dept}`)
     const { data, success } = result.data
-    console.log(data);
     if (success === 1) {
         dispatch({ type: FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW, payload: data, status: true })
     }
@@ -182,8 +199,200 @@ export const DepartmentalScheduledTopicsDpDw = (dept) => async (dispatch) => {
         dispatch({ type: FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW, payload: [], status: false })
     }
 }
+export const TrainingCompletedList = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/trainingcompleted`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_COMPLETED_LIST, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_COMPLETED_LIST, payload: [], status: false })
+    }
+}
+export const TodaysTraining = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/todaystrainings`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TODAYS_TRAINING__LIST, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TODAYS_TRAINING__LIST, payload: [], status: false })
+    }
+}
+export const TrainingAttendance = (topic) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/attendancedetails/${topic}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_ATTENDANCE_DETAILS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_ATTENDANCE_DETAILS, payload: [], status: false })
+    }
+}
+export const TrainingEmpDetailsAll = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/showEmpDetails`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_EMP_DETAILS_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_EMP_DETAILS_ALL, payload: [], status: false })
+    }
+}
+export const TrainingEmpDatas = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/trainingEmployees`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_EMP_LIST, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_EMP_LIST, payload: [], status: false })
+    }
+}
+export const AllotedToPostTest = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/allotPostTest`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_POST_TEST_ALLOTED_TO_EMP, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_POST_TEST_ALLOTED_TO_EMP, payload: [], status: false })
+    }
+}
 
+//PreTest All Emp List-valid
+export const PreTestEmpListAll = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/preTestEmpAll`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_PRETEST_EMP_LIST_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_PRETEST_EMP_LIST_ALL, payload: [], status: false })
+    }
+}
 
+export const PreTestEmpDetails = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingOnline/preTestEmpDetails/${id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_PRETEST_QR_EMP_DETAILS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_PRETEST_QR_EMP_DETAILS, payload: [], status: false })
+    }
+}
 
+export const PostTestEmpListAll = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingProcess/postTestEmpAll`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_POSTEST_EMP_LIST_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_POSTEST_EMP_LIST_ALL, payload: [], status: false })
+    }
+}
 
+//post test emp details based on slno
+export const PostTestEmpDetails = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingOnline/postTestEmpDetails/${id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_POSTTEST_QR_EMP_DETAILS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_POSTTEST_QR_EMP_DETAILS, payload: [], status: false })
+    }
+}
+
+//Below Average Employee Names List
+export const BelowAverageEmployeeList = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingEmployee_Dashboard/belowAvgEmp`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_BELOW_AVERAGE_EMP_LIST, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_BELOW_AVERAGE_EMP_LIST, payload: [], status: false })
+    }
+}
+
+//Get retest employee topics by em_id
+export const RestestEmployeeTopicsByemId = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingEmployee_Dashboard/retestEmptopics/${id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_RETEST_EMP_TOPICS_BY_EMID, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_RETEST_EMP_TOPICS_BY_EMID, payload: [], status: false })
+    }
+}
+//Get Retest Questions by topic and count base
+export const ResetQuestionsByTopic = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingEmployee_Dashboard/resetQuestions`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_RETEST_QUESTIONS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_RETEST_QUESTIONS, payload: [], status: false })
+    }
+}
+//Get Training Monthly details
+// export const MonthlyReport = (obj) => async (dispatch) => {
+//     const result = await axioslogin.post(`/TrainingMonthlyReport/getmonthlyreport`, obj)
+//     const { data, success } = result.data
+//     if (success === 2) {
+//         dispatch({ type: FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH, payload: data, status: true })
+//     }
+//     else {
+//         dispatch({ type: FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH, payload: [], status: false })
+//     }
+// }
+
+export const DepartmentNamesAll = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingMonthlyReport/getDept`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_ALL_DEPARTMENT_NAMES, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_ALL_DEPARTMENT_NAMES, payload: [], status: false })
+    }
+}
+
+export const DepartmentSecNamesAll = () => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingMonthlyReport/getDeptSec/ById`)
+    const { data, success } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_ALL_DEPARTMENT_SECTION_NAMES, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_ALL_DEPARTMENT_SECTION_NAMES, payload: [], status: false })
+    }
+}
+
+export const DepartmentalTopicsAll = () => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingMonthlyReport/getDeptTopics/ById`)
+    const { data, success } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_ALL_TOPICS_UNDER_DEPT, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_ALL_TOPICS_UNDER_DEPT, payload: [], status: false })
+    }
+}
+
+export const TrainingTopicsByDept = (dept) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingTopic/select/${dept}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_TOPIC_BY_DEPT, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_TOPIC_BY_DEPT, payload: [], status: false })
+    }
+}
 

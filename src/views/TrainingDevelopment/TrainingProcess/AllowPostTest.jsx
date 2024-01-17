@@ -6,41 +6,35 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
 import EmpVerification from './EmpVerification';
 
-const AllowPostTest = ({ setShow, Details, datastore, count, Setcount }) => {
+const AllowPostTest = ({ setShow, allot, count, Setcount }) => {
 
     const [data, SetData] = useState([])
     const [open, Setopen] = useState(false);
     const [getData, SetgetData] = useState([]);
 
-
     useEffect(() => {
-        const displayData = datastore?.map((val) => {
+        const displayData = allot?.map((val) => {
             const object = {
-                training_status: val.training_status,
-                dept_id: val.dept_id,
-                dept_name: val.dept_name,
                 em_id: val.em_id,
                 em_name: val.em_name,
-                emp_dept: val.emp_dept,
-                emp_dept_sectn: val.emp_dept_sectn,
-                emp_name: val.emp_name,
+                posttest_permission: val.posttest_permission,
                 posttest_status: val.posttest_status,
                 pretest_status: val.pretest_status,
-                datefmt: val.datefmt,
+                question_count: val.question_count,
+                schedule_date: val.schedule_date,
                 sn: val.sn,
-                sect_id: val.sect_id,
-                sect_name: val.sect_name,
                 slno: val.slno,
                 topic: val.topic,
                 topic_slno: val.topic_slno,
+                training_status: val.training_status,
                 training_topic_name: val.training_topic_name,
-                posttest_permission: val.posttest_permission
+                video_time: val.video_time,
+                pdf_time: val.pdf_time
             }
             return object;
         })
         SetData(displayData)
-    }, [datastore, SetData])
-
+    }, [allot, SetData])
 
     const AllowtoPostTest = useCallback((params) => {
         const data = params.api.getSelectedRows()
@@ -50,7 +44,6 @@ const AllowPostTest = ({ setShow, Details, datastore, count, Setcount }) => {
 
     const [columnDef] = useState([
         { headerName: 'Employee Names', field: "training_topic_name", filter: true, width: 250 },
-        { headerName: 'Department', field: "datefmt", filter: true, width: 150 },
         {
             headerName: 'Action', cellRenderer: params =>
                 <OpenIcon sx={{ paddingY: 0.5 }}
@@ -62,9 +55,9 @@ const AllowPostTest = ({ setShow, Details, datastore, count, Setcount }) => {
     ])
     return (
         <CustomDashboardPage title="Verification" displayClose={true} setClose={setShow} >
-            {open === true ? <EmpVerification unt={count} Setcount={Setcount} open={open} Setopen={Setopen} getData={getData} Details={Details} />
+            {open === true ? <EmpVerification count={count} Setcount={Setcount} open={open} Setopen={Setopen} getData={getData} allot={allot} />
                 :
-                <Box sx={{ width: "100%", height: 700, overflow: 'auto' }}>
+                <Box sx={{ width: "100%", height: 800, overflow: 'auto' }}>
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={data}

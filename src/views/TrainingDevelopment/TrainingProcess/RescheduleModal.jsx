@@ -18,24 +18,38 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         em_name: '',
         datefmt: '',
         training_topic_name: '',
-        slno: 0
+        slno: 0,
+        topic_slno: 0,
+        schedule_date: '',
+        schedule_remark: '',
+        schedule_trainers: [],
+        emp_dept: 0,
+        emp_dept_sectn: 0,
+        schedule_year: ''
     })
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    const { em_name, datefmt, training_topic_name, slno } = data
+    const { em_name, datefmt, training_topic_name, slno, topic_slno, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year } = data
 
     useEffect(() => {
         if (getData.length !== 0) {
-            const viewData = getData?.find((val) => val.training_status === 0)
-            const { em_name, datefmt, training_topic_name, slno } = viewData;
+            const viewData = getData?.find((val) => val.pretest_status === 0)
+            const { em_name, datefmt, training_topic_name, slno, topic_slno, schedule_date, schedule_remark, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year } = viewData;
             const obj = {
                 em_name: em_name,
                 datefmt: datefmt,
                 training_topic_name: training_topic_name,
-                slno: slno
+                slno: slno,
+                topic_slno: topic_slno,
+                schedule_date: schedule_date,
+                schedule_remark: schedule_remark,
+                schedule_trainers: schedule_trainers,
+                emp_dept: emp_dept,
+                emp_dept_sectn: emp_dept_sectn,
+                schedule_year: schedule_year
             }
             SetData(obj);
         }
@@ -61,9 +75,17 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         return {
             slno: slno,
             schedule_date: moment(Reschedule).format("YYYY-MM-DD HH:mm:ss"),
-            edit_user: em_id
+            topic_slno: topic_slno,
+            schedule_remark: 'Rescheduled',
+            schedule_trainers: schedule_trainers,
+            emp_dept: emp_dept,
+            emp_dept_sectn: emp_dept_sectn,
+            schedule_year: moment(schedule_year).format("YYYY-MM-DD"),
+            edit_user: em_id,
+            create_user: em_id
         }
-    }, [slno, Reschedule, em_id])
+    }, [slno, Reschedule, topic_slno, schedule_year, schedule_trainers, emp_dept, emp_dept_sectn, em_id])
+
 
     const handleSubmit = useCallback(async () => {
         const result = await axioslogin.patch('/TrainingProcess/resheduledate', patchdata)

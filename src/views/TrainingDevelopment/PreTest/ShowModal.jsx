@@ -12,11 +12,6 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
         setopen(false);
     }, [setopen]);
 
-    // const BtnClose = useCallback(() => {
-    //     setopen(false);
-    //     setOpen(false);
-    // }, [setopen, setOpen]);
-
     const [datas, setDatas] = useState({
         online_status: false,
         offline_status: false,
@@ -37,22 +32,14 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
     }, [data, setDatas])
 
     const OnlineSection = useCallback((e) => {
-        if (e.target.checked === true) {
-            history.push('/Home/OnlineTraining')
-            setopen(false);
-            setOpen(false);
-        }
-    }, [setopen, history, setOpen])
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setDatas({ ...datas, [e.target.name]: value })
+    }, [datas])
 
     const OfflineSection = useCallback((e) => {
-        if (e.target.checked === true) {
-            setopen(false);
-            setOpen(false);
-        }
-        else {
-
-        }
-    }, [setopen, setOpen])
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setDatas({ ...datas, [e.target.name]: value })
+    }, [datas])
 
     const BtnClose = useCallback(() => {
         if (online_status === true) {
@@ -64,9 +51,7 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
             setopen(false);
             setOpen(false);
         }
-        else {
 
-        }
     }, [online_status, history, offline_status, setopen, setOpen]);
 
 
@@ -108,7 +93,7 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
                                         checked={online_status}
                                         name="online_status"
                                         sx={{}}
-                                        onchange={(e) => OnlineSection(e.target.checked)}
+                                        onchange={(e) => OnlineSection(e)}
                                     />
 
                                 </Box>
@@ -117,14 +102,12 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
                                         label='Offline'
                                         checked={offline_status}
                                         name="offline_status"
-                                        onchange={(e) => OfflineSection(e.target.checked)}
+                                        onchange={(e) => OfflineSection(e)}
                                     />
 
                                 </Box>
                             </Box>
                             : null}
-
-
                         <Box sx={{ mt: 1 }}>
                             <Button onClick={BtnClose}>
                                 OK

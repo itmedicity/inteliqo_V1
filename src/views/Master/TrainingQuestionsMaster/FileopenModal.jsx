@@ -3,7 +3,7 @@ import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 
 const FileopenModal = ({ setopen, open, uploads, Reset }) => {
-
+    console.log("questionmodal", uploads);
     const handleClose = useCallback(() => {
         setopen(false);
         Reset();

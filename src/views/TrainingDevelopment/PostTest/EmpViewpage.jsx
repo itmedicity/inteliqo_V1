@@ -21,16 +21,14 @@ const EmpViewpage = () => {
     const [Userdata, setUserdata] = useState([]);
     const [sno, setSno] = useState(0);
 
-    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id } = employeeProfileDetl;
 
     useEffect(() => {
-        dispatch(ScheduleTopicListOfEmp(em_id))
-    }, [dispatch, em_id, count])
+        dispatch(ScheduleTopicListOfEmp())
+    }, [dispatch, count])
 
     //login employee topics
     const EmpTopics = useSelector((state) => state?.gettrainingData?.scheduleTopicOnEmp?.scheduleTopicOnEmpList, _.isEqual)
+    console.log(EmpTopics);
 
     useEffect(() => {
         const displayData = EmpTopics?.map((val) => {

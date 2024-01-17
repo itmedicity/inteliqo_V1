@@ -1,5 +1,5 @@
 import { Button, CssVarsProvider, Input } from '@mui/joy'
-import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton, Typography } from '@mui/material'
+import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton, Typography, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
@@ -7,7 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react'
 import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,6 +15,11 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
+import CloseIcon from '@mui/icons-material/Close'
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import ShowFile from './ShowFile';
 
 const TrainingTopic = () => {
     const [dept_status, set_dept_status] = useState(false);
@@ -37,6 +42,12 @@ const TrainingTopic = () => {
     const [trainingname, setTrainingname] = useState(0);
     const [hours, setHours] = useState('');
     const [videos, SetVideos] = useState('');
+    //file
+    const [selectFile, setSelectFile] = useState([]);
+    const [uploads, setUploads] = useState([]);
+    const [open, setopen] = useState(false);
+    const [editflag, SetEditFlag] = useState(0)
+    const [video_time, SetVideo_time] = useState(0)
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -60,6 +71,9 @@ const TrainingTopic = () => {
         setOffline_status(false)
         setBoth_status(false)
         SetVideos('');
+        setSelectFile([])
+        setUploads([])
+        SetVideo_time(0);
     }, [])
     //check dept
     const checkDepartment = useCallback((e) => {
@@ -92,9 +106,10 @@ const TrainingTopic = () => {
             both_status: both_status === true ? 1 : 0,
             create_user: em_id,
             hours: hours,
-            video_link: videos
+            video_link: videos,
+            video_time: video_time
         }
-    }, [depttype, videos, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
+    }, [depttype, videos, video_time, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
@@ -115,9 +130,10 @@ const TrainingTopic = () => {
             edit_user: em_id,
             topic_slno: topic_slno,
             hours: hours,
-            video_link: videos
+            video_link: videos,
+            video_time: video_time
         }
-    }, [dept_status, videos, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
+    }, [dept_status, videos, video_time, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
@@ -155,7 +171,8 @@ const TrainingTopic = () => {
                         offline: val.offline_status === 0 ? "NO" : "YES",
                         both_status: val.both_status,
                         both: val.both_status === 0 ? "NO" : "YES",
-                        video_link: val.video_link === null ? "NILL" : val.video_link
+                        video_link: val.video_link === '' ? "PDF" : val.video_link,
+                        video_time: val.video_time,
                     }
                     return obj;
                 })
@@ -169,10 +186,10 @@ const TrainingTopic = () => {
     }, [count])
 
     //ClickEdit
-    const getDataTable = useCallback((params) => {
+    const getDataTable = useCallback(async (params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, video_link, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
+        const { topic_slno, video_link, video_time, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
         setFlag(1);
         setdepttype(dept_id)
         set_dept_status(dept_status === 0 ? false : true)
@@ -191,78 +208,37 @@ const TrainingTopic = () => {
         setOffline_status(offline_status === 1 ? true : false)
         setBoth_status(both_status === 1 ? true : false)
         SetVideos(video_link);
-    }, [])
+        SetVideo_time(video_time);
+        setUploads([])
 
-    //submit
-    const submitTrainingTopic = useCallback(() => {
-        //insert
-        const InsertData = async (postdata) => {
-            const result = await axioslogin.post('/TrainingTopic/insert', postdata)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setCount(count + 1)
-                reset();
-            }
-            else if (success === 0) {
-                warningNofity(message)
-                reset();
-            }
-            else {
-                warningNofity(message)
-                reset();
-            }
+        //View uploads 
+        const postData = {
+            topic_slno: topic_slno
         }
+        const response = await axioslogin.post('/Training_topic_uploads/selectuploads', postData)
+        const { success } = response.data
+        if (success === 1) {
+            const data = response.data;
+            const fileNames = data.data
+            const fileUrls = fileNames?.map((filename) => {
+                const url = `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                setUploads(url);
+            });
+            return fileUrls
+        } else {
+            infoNofity("No File uploads")
+        }
+    }, [setUploads])
 
-        const EditData = async (patchdata) => {
-            const result = await axioslogin.patch('/TrainingTopic/update', patchdata)
-            const { message, success } = result.data
-            if (success === 1) {
-                reset();
-                setCount(count + 1);
-                setTopic_slno(0);
-                succesNofity(message)
-                setFlag(0)
-            }
-            else {
-                warningNofity(message)
-                reset();
-            }
-        }
-        //flag checking
-        if (flag === 0) {
-            InsertData(postdata)
+
+    useEffect(() => {
+        if (uploads !== null) {
+            SetEditFlag(1)
         }
         else {
-            EditData(patchdata)
+            SetEditFlag(0)
         }
-    }, [count, flag, reset, postdata, patchdata])
-
-    const [columnDef] = useState([
-        { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
-        { headerName: 'Department', field: 'deptstatus', filter: true, minWidth: 150 },
-        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 250 },
-        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
-        { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
-        { headerName: 'Tutorial ', field: 'tutorial', filter: true, minWidth: 150 },
-        { headerName: 'Medical', field: 'medical', filter: true, minWidth: 150 },
-        { headerName: 'Non-Med', field: 'non_medical', filter: true, minWidth: 150 },
-        { headerName: 'Pre-Test ', field: 'pretest', filter: true, minWidth: 150 },
-        { headerName: 'Post-Test ', field: 'post_test', filter: true, minWidth: 150 },
-        { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
-        { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
-        { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
-        { headerName: 'Link ', field: 'video_link', filter: true, minWidth: 300 },
-        { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
-        {
-            headerName: 'Edit', minWidth: 150, cellRenderer: params =>
-                < Fragment >
-                    <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)}>
-                        <EditIcon color='primary' />
-                    </IconButton>
-                </Fragment >
-        }
-    ])
+    }, [SetEditFlag, uploads])
 
     const HandleOnline = useCallback((e) => {
         if (e.target.checked === true) {
@@ -304,7 +280,134 @@ const TrainingTopic = () => {
         }
     }, [set_Online_status, setOffline_status, setBoth_status])
 
-    console.log(videos);
+    const uploadFile = useCallback(async (e) => {
+        const newFiles = [...selectFile]
+        newFiles.push(e.target.files[0])
+        setSelectFile(newFiles)
+    }, [selectFile, setSelectFile])
+
+    const handleRemoveFile = (index) => {
+        setSelectFile((prevFiles) => {
+            const updatedFiles = [...prevFiles];
+            updatedFiles.splice(index, 1); // Remove the file at the specified index
+            return updatedFiles;
+        });
+    };
+
+    ////upload submit//////
+    const submitTrainingTopic = useCallback(() => {
+        const InsertData = async (postdata) => {
+            try {
+                const result = await axioslogin.post('/TrainingTopic/insert', postdata)
+                return result.data;
+            } catch (error) {
+                console.error("Error while inserting data:", error);
+                return { success: 0, message: "An error occurred while inserting data." };
+            }
+        };
+        //edit
+        const EditData = async (patchdata) => {
+            const result = await axioslogin.patch('/TrainingTopic/update', patchdata)
+            const { message, success } = result.data
+            if (success === 1) {
+                reset();
+                setCount(count + 1);
+                setTopic_slno(0);
+                succesNofity(message)
+                setFlag(0)
+            }
+            else {
+                warningNofity(message)
+                reset();
+            }
+        }
+        //image upload
+        const handleUpload = async (insetId) => {
+            try {
+                const formData = new FormData();
+                formData.append('insertID', insetId);
+
+                const compressedFilesPromises = selectFile?.map((file) => {
+                    formData.append('files', file, file.name);
+                });
+                await Promise.all(compressedFilesPromises);
+                const uploadResult = await axioslogin.post('/Training_topic_uploads/uploadtrainingfiles', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                const { success, message } = uploadResult.data;
+                if (success === 1) {
+                    succesNofity(message);
+                    setCount(count + 1);
+                    reset();
+                } else {
+                    warningNofity(message);
+                }
+            } catch (error) {
+                warningNofity('An error occurre.');
+                console.error('Error during file upload:', error);
+            }
+        };
+
+        if (flag === 1) {
+            EditData(patchdata);
+            reset();
+        } else {
+            InsertData(postdata)
+                .then((val) => {
+                    const { insetId, message, success } = val;
+                    if (success === 1) {
+                        if (selectFile.length !== 0) {
+                            handleUpload(insetId);
+                        } else {
+                            succesNofity("Question inserted successfully");
+                            reset();
+                            setCount(count + 1);
+                        }
+                    }
+                    else {
+                        warningNofity(message)
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error in InsertData:", error);
+                    warningNofity('An error occurred while inserting data.');
+                });
+        }
+    }, [postdata, patchdata, reset, flag, selectFile, setCount, count]);
+
+
+    const ShowFlies = useCallback(() => {
+        setopen(true);
+    }, [])
+
+    const [columnDef] = useState([
+        { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
+        { headerName: 'Department', field: 'deptstatus', filter: true, minWidth: 150 },
+        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 250 },
+        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
+        { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
+        { headerName: 'Tutorial ', field: 'tutorial', filter: true, minWidth: 150 },
+        { headerName: 'Medical', field: 'medical', filter: true, minWidth: 150 },
+        { headerName: 'Non-Med', field: 'non_medical', filter: true, minWidth: 150 },
+        { headerName: 'Pre-Test ', field: 'pretest', filter: true, minWidth: 150 },
+        { headerName: 'Post-Test ', field: 'post_test', filter: true, minWidth: 150 },
+        { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
+        { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
+        { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
+        { headerName: 'Link/Pdf ', field: 'video_link', filter: true, minWidth: 300 },
+        { headerName: 'Video Time(m) ', field: 'video_time', filter: true, minWidth: 200 },
+        { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
+        {
+            headerName: 'Edit', minWidth: 150, cellRenderer: params =>
+                < Fragment >
+                    <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)}>
+                        <EditIcon color='primary' />
+                    </IconButton>
+                </Fragment >
+        }
+    ])
 
     return (
         <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
@@ -485,7 +588,6 @@ const TrainingTopic = () => {
                                                         value={online_status}
                                                         checked={online_status}
                                                         className="ml-1"
-                                                        //onChange={(e) => set_Online_status(e.target.checked)}
                                                         onChange={(e) => HandleOnline(e)}
                                                     />
                                                 }
@@ -530,17 +632,71 @@ const TrainingTopic = () => {
                                 </Grid>
                                 {
                                     both_status === true || online_status === true ?
-                                        <JoyInput
-                                            type='text'
-                                            name='video link'
-                                            id='videos'
-                                            placeholder="Enter Video Link"
-                                            value={videos}
-                                            onchange={(e) => SetVideos(e)}
-                                        />
+                                        <Box>
+                                            <JoyInput
+                                                type='text'
+                                                name='video link'
+                                                id='videos'
+                                                placeholder="Enter Video Link"
+                                                value={videos}
+                                                onchange={(e) => SetVideos(e)}
+                                            />
+                                            <Box sx={{ mt: 0.5, display: "flex", flexDirection: "row", gap: 2 }}>
+                                                <Typography sx={{ mt: 1 }}>Video Time :</Typography>
+                                                <Input
+                                                    type="number"
+                                                    value={video_time}
+                                                    onChange={(e) => SetVideo_time(e.target.value)}
+                                                />
+                                                <Typography sx={{ mt: 1 }}>Minutes</Typography>
+                                            </Box>
+                                        </Box>
+                                        : null
+                                }
+                                {
+                                    both_status === true || online_status === true && flag === 0 ?
+                                        <Box>
+                                            <Tooltip title="Upload file">
+                                                <IconButton variant="outlined" component="label">
+                                                    <UploadFileIcon style={{ color: "#4682A9", fontSize: 35, border: 1, borderRadius: 10 }} />
+                                                    <Input
+                                                        id="file-input"
+                                                        type="file"
+                                                        accept=".jpg, .jpeg, .png, .pdf"
+                                                        style={{ display: 'none' }}
+                                                        onChange={uploadFile}
+                                                    />
+                                                </IconButton>
+                                            </Tooltip>
+                                            {
+                                                selectFile && selectFile.map((val, index) => {
+                                                    return <Box sx={{ display: "flex", flexDirection: "row", ml: 2, pt: 2 }}
+                                                        key={index} >
+                                                        <Box >{val.name}</Box>
+                                                        <Box sx={{ ml: .3 }}><CloseIcon sx={{ height: '18px', width: '20px', cursor: 'pointer' }}
+                                                            onClick={() => handleRemoveFile(index)}
+                                                        /></Box>
+
+                                                    </Box>
+                                                }
+                                                )}
+                                        </Box>
+
                                         : null
                                 }
 
+                                {
+                                    flag === 1 && editflag === 1 ?
+                                        <Box sx={{ mt: 1 }}>
+                                            <Tooltip title="View file">
+                                                <IconButton onClick={(e) => ShowFlies(e)}>
+                                                    <TouchAppSharpIcon
+                                                        sx={{ color: "#3876BF" }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+                                        : null
+                                }
                                 <Box sx={{ px: 0.5, mt: 0.9 }}>
                                     <CssVarsProvider>
                                         <Button
@@ -556,6 +712,7 @@ const TrainingTopic = () => {
                                 </Box>
                             </Paper>
                         </Grid>
+                        <ShowFile setopen={setopen} open={open} uploads={uploads} reset={reset} />
                         <Grid item xs={9} lg={9} xl={9} md={9}>
                             <CommonAgGrid
                                 columnDefs={columnDef}

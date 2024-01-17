@@ -32,15 +32,35 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [open, setopen] = useState(false);
 
+    const [datas, setDatas] = useState({
+        em_id: 0,
+        em_name: '',
+        slno: 0,
+        topic_slno: 0,
+        training_topic_name: '',
+        question_count: 0,
+        dept_id: 0,
+        desg_slno: 0,
+        sect_id: 0
+    });
+
+    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
+
+
     const dispatch = useDispatch()
 
     useEffect(() => {
         if (questCount !== 0) {
-            dispatch(QuestionList(questCount))
+            const obj = {
+                questCount: questCount,
+                topic_slno: topic_slno
+            }
+            dispatch(QuestionList(obj))
         }
-    }, [dispatch, count, questCount])
+    }, [dispatch, count, questCount, topic_slno])
 
     const Questions = useSelector((state) => state?.gettrainingData?.QuestionDetails?.QuestionDetailsList, _.isEqual)
+
 
     useEffect(() => {
         const displayData = Questions?.map((val, index) => {
@@ -70,19 +90,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
         setData(displayData)
     }, [Questions, setDatalen, setData])
 
-    const [datas, setDatas] = useState({
-        em_id: 0,
-        em_name: '',
-        slno: 0,
-        topic_slno: 0,
-        training_topic_name: '',
-        question_count: 0,
-        dept_id: 0,
-        desg_slno: 0,
-        sect_id: 0
-    });
 
-    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
     useEffect(() => {
         if (Object.keys(Userdata).length !== 0) {
             const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Userdata[0];
@@ -134,9 +142,11 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
             emp_topic: topic_slno,
             pretest_status: 1,
             mark: correct,
-            create_user: em_id
+            create_user: em_id,
+            posttest_permission: 1
         }
     }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, sno])
+
 
     useEffect(() => {
         if (checkInsert === 1) {
@@ -146,6 +156,9 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                 if (success === 1) {
                     setopen(true)
                     Setcount(Math.random())
+                }
+                else if (success === 2) {
+                    warningNofity(message)
                 }
                 else {
                     warningNofity(message)
@@ -189,7 +202,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
 
                             <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount}</Box>
-                            <Box sx={{ textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>  <CountDownTimer sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
+                            <Box sx={{ textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>  <CountDownTimer setOrder={setOrder} order={order} sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
 
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                 <Box sx={{ backgroundColor: "#A2C579", display: "flex", height: 25, flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
