@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, memo, useMemo } from 'react'
+import React, { Fragment, useCallback, memo, useMemo, useEffect } from 'react'
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -13,9 +13,14 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import { employeeNumber } from 'src/views/Constant/Constant';
 const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [reqDetl, setReqDetl] = useState([]);
+    const [planSlno, setPlanslno] = useState(0)
+    const [hrStatus, sethrStatus] = useState(0)
+    const [leaveDate, setleaveDate] = useState('')
 
     const { slno, emno, name, section, status, reqDate } = data;
 
@@ -24,13 +29,35 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
         setOpenBkDrop(false)
     }
 
+    //GET THE DETAILED TABLE DATA USING API
+    const getLeaveReqDetl = async (slno) => {
+        const resultdel = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`);
+        const { success, data } = resultdel?.data;
+        if (success === 1) {
+            const { planslno, hf_hr_apprv_status, leavedate } = data[0]
+            setPlanslno(planslno)
+            setReqDetl(data)
+            sethrStatus(hf_hr_apprv_status)
+            setleaveDate(leavedate)
+        }
+    }
+
+    useEffect(() => {
+        if (slno !== null && slno !== undefined) {
+            getLeaveReqDetl(slno)
+        }
+    }, [slno])
+
     const Canceldata = useMemo(() => {
         return {
-            status: 1,
-            comment: reason,
-            apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
-            us_code: emno,
-            slno: slno
+            lv_cancel_cmnt: reason,
+            lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
+            lv_cancel_us_code: employeeNumber(),
+            half_slno: slno,
+            hrm_cl_slno: planSlno,
+            hrstatus: hrStatus,
+            duty_day: leaveDate,
+            em_no: emno,
         }
     }, [emno, reason, slno])
 
