@@ -150,3 +150,6 @@ export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8",
     "#1BEDE6", "#8798A4", "#D7790F", "#B2C24F", "#DE73C2", "#D70A9C", "#25B67",
     "#88E9B8", "#C2B0E2", "#86E98F", "#AE90E2", "#1A806B", "#436A9E", "#0EC0FF",
     "#F812B3", "#B17FC9", "#8D6C2F", "#D3277A", "#2CA1AE", "#9685EB", "#8A96C6"]
+
+
+export const screenInnerHeight = window.innerHeight

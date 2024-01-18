@@ -307,9 +307,23 @@ const EmployeeRecord = () => {
                   const result = await axioslogin.post('/Vaccination/vaccinentry', submitemployee)
                   const { success, message } = result.data
                   if (success === 1) {
-                    clearForm()
-                    history.push(`/Home/Prfle/${empno}/${em_id}`)
-                    succesNofity(message)
+                    const TrainingEntry = {
+                      em_id: em_id,
+                      em_no: empno,
+                      joining_date: dateofjoining,
+                      assign_status: 0,
+                      create_user: employeeNumber()
+                    }
+                    const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
+                    const { success, message } = result2.data
+                    if (success === 1) {
+                      clearForm()
+                      history.push(`/Home/Prfle/${empno}/${em_id}`)
+                      succesNofity(message)
+                    }
+                    else {
+                      infoNofity(message)
+                    }
                   } else {
                     infoNofity(message)
                   }
@@ -368,9 +382,23 @@ const EmployeeRecord = () => {
                 const result = await axioslogin.post('/Vaccination/vaccinentry', submitemployee)
                 const { success, message } = result.data
                 if (success === 1) {
-                  clearForm()
-                  history.push(`/Home/Prfle/${empno}/${em_id}`)
-                  succesNofity(message)
+                  const TrainingEntry = {
+                    em_id: em_id,
+                    em_no: empno,
+                    joining_date: dateofjoining,
+                    assign_status: 0,
+                    create_user: employeeNumber()
+                  }
+                  const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
+                  const { success, message } = result2.data
+                  if (success === 1) {
+                    clearForm()
+                    history.push(`/Home/Prfle/${empno}/${em_id}`)
+                    succesNofity(message)
+                  }
+                  else {
+                    infoNofity(message)
+                  }
                 } else {
                   errorNofity(message)
                 }
