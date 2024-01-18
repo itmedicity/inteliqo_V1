@@ -66,18 +66,13 @@ const EmployeeFileAgGrid = () => {
     // Employee Record List
     const getEmployeeList = useCallback(async (e) => {
         e.preventDefault()
-        if (deptName !== 0 && deptSecName !== 0 && activestatus === true) {
-            const result = await axioslogin.post('/empmast/getEmpDet', postData)
-            const { success, data, message } = result.data
-            if (success === 1) {
-                setTableData(data)
-                dispatch(setEmployeeList(data))
-            }
-            else {
-                warningNofity(message)
-            }
-        }
-        else if (deptName !== 0 && deptSecName === 0 && activestatus === true) {
+
+        console.log(deptName);
+        console.log(deptSecName);
+        console.log(activestatus);
+        console.log(postDataDept);
+        if (deptName !== 0 && deptSecName === undefined && activestatus === true) {
+
             const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
             const { success, data, message } = result.data
             if (success === 1) {
@@ -87,8 +82,17 @@ const EmployeeFileAgGrid = () => {
             else {
                 warningNofity(message)
             }
-        }
-        else if (deptName !== 0 && deptSecName !== 0 && activestatus === false) {
+        } else if (deptName !== 0 && deptSecName !== 0 && activestatus === true) {
+            const result = await axioslogin.post('/empmast/getEmpDet', postData)
+            const { success, data, message } = result.data
+            if (success === 1) {
+                setTableData(data)
+                dispatch(setEmployeeList(data))
+            }
+            else {
+                warningNofity(message)
+            }
+        } else if (deptName !== 0 && deptSecName !== 0 && activestatus === false) {
             const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
             const { success, data, message } = result.data
             if (success === 1) {
@@ -98,7 +102,8 @@ const EmployeeFileAgGrid = () => {
             else {
                 warningNofity(message)
             }
-        } else if (deptName === 0 && deptSecName === 0 && activestatus === true && Empno !== 0) {
+        }
+        else if (deptName === 0 && deptSecName === 0 && activestatus === true && Empno !== 0) {
             const result = await axioslogin.get(`/empearndeduction/getAll/${Empno}`)
             const { data, success } = result.data;
             if (success === 1) {
