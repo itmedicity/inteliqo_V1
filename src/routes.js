@@ -215,6 +215,19 @@ const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceVie
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
 const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
+const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
+const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
+const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
+const TrainerName = React.lazy(() => import('./views/Master/TrainerNameMaster/TrainerName'))
+const TrainingTopic = React.lazy(() => import('./views/Master/TrainingTopicMaster/TrainingTopic'))
+const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuestionsMaster/TrainingQuestions'))
+const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
+const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingScheduleMaster/TrainingSchedule'))
+// const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
+const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/TrainingProcess'))
+const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
+const AfterJoiningTraining = React.lazy(() => import('./views/TrainingDevelopment/TrainingSchedule/TrainingAfterJoining'))
+const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 const CommonReqst = React.lazy(() => import('./views/LeaveManagement/CommonRequest/CommonReqstMainPage'))
 const CommonRequstMaster = React.lazy(() => import('./views/Master/CommonRequstMaster/CommonRequestMast'))
 const CommonReqstInchargeApprvl = React.lazy(() => import('./views/LeaveManagement/CommonRequest/Approvals/InchargeApproval'))
@@ -232,8 +245,27 @@ const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/Are
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
+const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 
 
+//QR CODE
+const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
+const OnlinePreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/OnlinePreWithQRcode'))
+const OnlinePostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/OnlinePostWithQR'))
+const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/PostTestEmpListWithQR'))
+const OnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTraining'))
+const QROnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTrainingQR'))
+
+
+//Retest
+const EmployeeDashboard = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/EmpDashboardPage'))
+const OnlineRetest = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestQuestionPage'))
+
+//Departmental Training Report
+const DepartmentalTrainingReport = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
+const DepartmentalCalender = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalCalender'))
+// const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/DepartmentalTrainingReports/DepartmentalTrainingReport'))
+const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -440,6 +472,20 @@ const routes = [
   { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
   { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
   { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
+  //training
+  { path: '/Home/TrainingType', exact: true, name: 'Training Type Master', component: TrainingType },
+  { path: '/Home/TrainingCategory', exact: true, name: 'Training Category Master', component: TrainingCategory },
+  { path: '/Home/TrainingName', exact: true, name: 'Training Name Master', component: TrainingName },
+  { path: '/Home/TrainerName', exact: true, name: 'Trainer Name Master', component: TrainerName },
+  { path: '/Home/TrainingTopic', exact: true, name: 'Training Topic Master', component: TrainingTopic },
+  { path: '/Home/TrainingQuestions', exact: true, name: 'Training Questions Master', component: TrainingQuestions },
+  { path: '/Home/SchedulingTime', exact: true, name: 'Scheduling Time Master', component: SchedulingTime },
+  { path: '/Home/TrainingSchedule', exact: true, name: 'Training Schedule Master', component: TrainingSchedule },
+  { path: '/Home/DepartmentalTrainingSchedule', exact: true, name: 'Departmental Training Schedule', component: DepartmentalTrainingSchedule },
+  { path: '/Home/TrainingProcess', exact: true, name: 'Training Process', component: TrainingProcess },
+  { path: '/Home/TrainingEmployeeSchedule', exact: true, name: 'Training Employee Schedule', component: TrainingEmployeeSchedule },
+  { path: '/Home/AfterJoiningTraining', exact: true, name: 'After Joining Training', component: AfterJoiningTraining },
+  { path: '/Home/DepartmentalCalenders', exact: true, name: 'Departmental Calender', component: DepartmentalCalenders },
   { path: '/Home/CommonReqst', exact: true, name: 'Common Request', component: CommonReqst },
   { path: '/Home/CommonRequstMaster', exact: true, name: 'Common Request Master', component: CommonRequstMaster },
   { path: '/Home/CommonReqstInchargeApprvl', exact: true, name: 'Common Request Incharge Approval', component: CommonReqstInchargeApprvl },
@@ -457,6 +503,24 @@ const routes = [
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
+
+
+  //QR CODE
+  { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
+  { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
+  { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
+  { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
+  { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
+  { path: '/Home/OnlineTraining', exact: true, name: 'Online Training', component: OnlineTraining },
+
+  //Retest
+  { path: '/Home/EmpDashboardPage', exact: true, name: 'Employee Dashboard', component: EmployeeDashboard },
+  { path: '/OnlineReTest/:slno/:emId/:tslno/:qcount', exact: true, name: 'Online Retest', component: OnlineRetest },
+
+  //Departmental Training Report
+  { path: '/Home/DepartmentalTrainingReport', exact: true, name: 'Departmental Training Report', component: DepartmentalTrainingReport },
+  { path: '/Home/DepartmentalCalender', exact: true, name: 'Monthly Report', component: DepartmentalCalender },
+  { path: '/Home/DepartmentalTrainingReportDetails', exact: true, name: 'Departmental Training Report Details', component: DepartmentalTrainingReportDetails },
 
 ]
 

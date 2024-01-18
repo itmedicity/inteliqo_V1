@@ -1,17 +1,30 @@
 import { CNavItem } from "@coreui/react";
 
 const TrainingAndDevelopment = [
+
     {
         men_slno: 55,
         component: CNavItem,
         name: 'Department Wise Training',
-        to: '/homes',
+        to: '/Home/DepartmentalCalenders',
     },
+    {
+        men_slno: 251,
+        component: CNavItem,
+        name: 'Training Process',
+        to: '/Home/TrainingProcess',
+    },
+    // {
+    //     men_slno: 252,
+    //     component: CNavItem,
+    //     name: 'Employee Training Schedule',
+    //     to: '/Home/TrainingEmployeeSchedule',
+    // },
     {
         men_slno: 56,
         component: CNavItem,
         name: 'Training Schedule',
-        to: '/homes',
+        to: '/Home/AfterJoiningTraining',
     },
     {
         men_slno: 57,
@@ -28,15 +41,29 @@ const TrainingAndDevelopment = [
     {
         men_slno: 59,
         component: CNavItem,
-        name: 'Employee Training Examination',
-        to: '/homes',
+        name: 'Pre-Test',
+        to: '/Home/PreTest',
     },
     {
         men_slno: 60,
         component: CNavItem,
-        name: 'Test Evaluation',
-        to: '/homes',
+        name: 'Post-Test',
+        to: '/Home/PostTest',
     },
+    {
+        men_slno: 261,
+        component: CNavItem,
+        name: 'Online Training',
+        to: '/Home/OnlineTraining',
+    },
+
+    {
+        men_slno: 263,
+        component: CNavItem,
+        name: 'Employee Dashboard',
+        to: '/Home/EmpDashboardPage',
+    },
+
 
 ]
 

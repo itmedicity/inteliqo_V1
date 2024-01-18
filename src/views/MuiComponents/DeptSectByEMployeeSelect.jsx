@@ -1,6 +1,7 @@
 import { Box, FormControl, MenuItem, Select } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios'
+import { memo } from 'react'
 
 const DeptSectByEMployeeSelect = ({ value, setValue, style, deptSect }) => {
     const [nameList, setnameList] = useState([])
@@ -43,4 +44,4 @@ const DeptSectByEMployeeSelect = ({ value, setValue, style, deptSect }) => {
     )
 }
 
-export default DeptSectByEMployeeSelect
+export default memo(DeptSectByEMployeeSelect)
