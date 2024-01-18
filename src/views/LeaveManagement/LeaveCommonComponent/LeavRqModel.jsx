@@ -45,17 +45,18 @@ const LeavRqModel = ({ open, handleClose, authority, em_id, setcount, count, sln
                 lve_uniq_no: lve_uniq_no
             }
             setformData(formdata)
-        }
-        const getLeaveDetails = async () => {
-            //to get leave request details
-            const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${slno}`)
-            if (resultdel.data.success === 1) {
-                setDetails(resultdel.data.data)
-            } else {
-                setDetails([])
+
+            const getLeaveDetails = async (lve_uniq_no) => {
+                //to get leave request details
+                const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${lve_uniq_no}`)
+                if (resultdel.data.success === 1) {
+                    setDetails(resultdel.data.data)
+                } else {
+                    setDetails([])
+                }
             }
+            getLeaveDetails(lve_uniq_no)
         }
-        getLeaveDetails()
     }, [leaveRqData, slno])
 
 
