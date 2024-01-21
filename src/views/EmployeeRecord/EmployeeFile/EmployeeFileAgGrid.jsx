@@ -66,11 +66,6 @@ const EmployeeFileAgGrid = () => {
     // Employee Record List
     const getEmployeeList = useCallback(async (e) => {
         e.preventDefault()
-
-        console.log(deptName);
-        console.log(deptSecName);
-        console.log(activestatus);
-        console.log(postDataDept);
         if (deptName !== 0 && deptSecName === undefined && activestatus === true) {
 
             const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)

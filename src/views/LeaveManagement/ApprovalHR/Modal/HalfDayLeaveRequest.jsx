@@ -53,7 +53,8 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             hf_hr_uscode: employeeNumber(),
             half_slno: slno,
             duty_day: leaveDate,
-            em_no: emno
+            em_no: emno,
+            planSlno: planSlno
         }
 
         //UPDATE LEAVE MASTER TABLE
@@ -68,7 +69,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         else {
             succesNofity(message)
         }
-    }, [setCount, setOpen, reason, slno, leaveDate, emno])
+    }, [setCount, setOpen, reason, slno, leaveDate, emno, planSlno])
 
     const LeaveRejectdata = {
         hf_hr_apprv_status: 2,

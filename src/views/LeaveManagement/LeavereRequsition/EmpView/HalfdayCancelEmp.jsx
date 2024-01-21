@@ -17,7 +17,7 @@ import { employeeNumber } from 'src/views/Constant/Constant';
 const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    const [reqDetl, setReqDetl] = useState([]);
+    //const [reqDetl, setReqDetl] = useState([]);
     const [planSlno, setPlanslno] = useState(0)
     const [hrStatus, sethrStatus] = useState(0)
     const [leaveDate, setleaveDate] = useState('')
@@ -36,7 +36,7 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
         if (success === 1) {
             const { planslno, hf_hr_apprv_status, leavedate } = data[0]
             setPlanslno(planslno)
-            setReqDetl(data)
+            //setReqDetl(data)
             sethrStatus(hf_hr_apprv_status)
             setleaveDate(leavedate)
         }
@@ -59,7 +59,7 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
             duty_day: leaveDate,
             em_no: emno,
         }
-    }, [emno, reason, slno])
+    }, [emno, reason, slno, hrStatus, leaveDate, planSlno])
 
     const Cancelrequest = useCallback(async () => {
         if (reason === '') {

@@ -13,7 +13,8 @@ const {
     FETCH_CREDITED_HOLIDAYS_LEAVE,
     FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
     FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
-    FETCH_DUTY_PLANNED_SHIFT_HALF_DAY
+    FETCH_DUTY_PLANNED_SHIFT_HALF_DAY,
+    FETCH_EMP_COFF_DATA
 } = Actiontypes;
 
 export const getlevedata = (id) => async (dispatch) => {
@@ -169,5 +170,16 @@ export const getDutyPlannedShiftForHalfDayRequest = (postData) => async (dispatc
         dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: data })
     } else {
         dispatch({ type: FETCH_DUTY_PLANNED_SHIFT_HALF_DAY, payload: [] })
+    }
+}
+
+
+export const getEmpCoffData = (postData) => async (dispatch) => {
+    const result = await axioslogin.post('/common/empCoffdata/', postData);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_EMP_COFF_DATA, payload: data })
+    } else {
+        dispatch({ type: FETCH_EMP_COFF_DATA, payload: [] })
     }
 }

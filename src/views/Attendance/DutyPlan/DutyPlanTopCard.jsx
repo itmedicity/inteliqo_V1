@@ -19,7 +19,7 @@ import {
 } from './DutyPlanFun/DutyPlanFun'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch } from 'react-redux'
-import { getdeptShift, getSectionShift } from 'src/redux/actions/dutyplan.action'
+import { getSectionShift } from 'src/redux/actions/dutyplan.action'
 import { useEffect } from 'react'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { useSelector } from 'react-redux'
@@ -33,9 +33,11 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
 import DepartmentSection from 'src/views/LeaveManagement/LeavereRequsition/Func/DepartmentSection'
+import MasterPage from './MasterPage'
 
 const DutyPlanTopCard = () => {
     const [open, setOpen] = useState(false)
+    const [rights, setRights] = useState(0)
 
     const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS } = Actiontypes;
 
@@ -68,6 +70,7 @@ const DutyPlanTopCard = () => {
     const { hod, incharge, em_id, em_department } = employeeProfileDetl;
 
 
+
     useEffect(() => {
         if (hod === 1 || incharge === 1) {
             reduxDispatch(getHodBasedDeptSectionName(em_id));
@@ -95,6 +98,7 @@ const DutyPlanTopCard = () => {
     const commonSettings = useMemo(() => commonState, [commonState]);
     const holidayList = useMemo(() => holiday, [holiday]);
     const deptShift = useMemo(() => departmentShiftt, [departmentShiftt])
+    const { group_slno } = commonSettings;
 
     //updated shift array for updating into database
     const getUpdatedShiftId = useSelector((state) => state.getUpdatedShiftId, _.isEqual);
@@ -111,6 +115,32 @@ const DutyPlanTopCard = () => {
             errorNofity(message)
         }
     }, [shiftId])
+
+    useEffect(() => {
+        const getEmployeeRight = async () => {
+            const result = await axioslogin.post("/attendCal/rights/", postData);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { user_grp_slno } = data[0];
+                if (group_slno !== undefined) {
+                    if (group_slno.includes(user_grp_slno) === true) {
+                        setRights(1)
+                    } else {
+                        setRights(0)
+                    }
+                }
+
+            } else {
+                setRights(0)
+            }
+        }
+
+        const postData = {
+            emid: em_id
+        }
+        getEmployeeRight(postData)
+
+    }, [em_id, group_slno])
 
 
     /****
@@ -169,77 +199,81 @@ const DutyPlanTopCard = () => {
         calanderMaxDate, commonSettings, deptShift, holidayList, planState, reduxDispatch, toDate])
 
     return (
-        <Paper
-            square
-            variant="outlined"
-            sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
-        >
-            <CustomBackDrop open={open} text="Please Wait" />
-            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}  >
-                <Box sx={{ flex: 1, mt: 1, px: 0.3, }}  >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            // maxDate={moment(calanderMaxDate)}
-                            inputFormat="DD-MM-YYYY"
-                            value={fromDate}
-                            onChange={(date) =>
-                                dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
-                            }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box>
-                <Box sx={{ flex: 1, mt: 1, px: 0.3, }}>
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            minDate={moment(fromDate)}
-                            maxDate={moment(calanderMaxDate)}
-                            inputFormat="DD-MM-YYYY"
-                            value={toDate}
-                            onChange={(date) =>
-                                dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
-                            }
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box>
-                {/* <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                    <DeptSelectByRedux setValue={setDepartment} value={deptName} />
-                </Box> */}
-                <Box sx={{ flex: 1, px: 0.3, }} >
-                    <DepartmentSection setSection={setDepartSecName} sectionVal={deptSecName} />
-                    {/* <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} /> */}
-                </Box>
-            </Box>
-            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
-                <CssVarsProvider>
-                    <Box sx={{ p: 0.2 }} >
-                        <Tooltip title="Process" followCursor placement='top' arrow >
-                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
-                                color: '#90caf9'
-                            }} >
-                                <PublishedWithChangesIcon />
-                            </Button>
-                        </Tooltip>
+        <>
+            {
+                rights === 1 ? <MasterPage /> : <Paper
+                    square
+                    variant="outlined"
+                    sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
+                >
+                    <CustomBackDrop open={open} text="Please Wait" />
+                    <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}  >
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }}  >
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                    views={['day']}
+                                    // maxDate={moment(calanderMaxDate)}
+                                    inputFormat="DD-MM-YYYY"
+                                    value={fromDate}
+                                    onChange={(date) =>
+                                        dispatch({ type: FROM_DATE, from: moment(date).format('YYYY-MM-DD') })
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }}>
+                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                    views={['day']}
+                                    minDate={moment(fromDate)}
+                                    maxDate={moment(calanderMaxDate)}
+                                    inputFormat="DD-MM-YYYY"
+                                    value={toDate}
+                                    onChange={(date) =>
+                                        dispatch({ type: TO_DATE, to: moment(date).format('YYYY-MM-DD') })
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        {/* <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+            <DeptSelectByRedux setValue={setDepartment} value={deptName} />
+        </Box> */}
+                        <Box sx={{ flex: 1, px: 0.3, }} >
+                            <DepartmentSection setSection={setDepartSecName} sectionVal={deptSecName} />
+                            {/* <DeptSecSelectByRedux dept={deptName} setValue={setDepartSecName} value={deptSecName} /> */}
+                        </Box>
                     </Box>
-                    <Box sx={{ p: 0.2 }}>
-                        <Tooltip title="Save" followCursor placement='top' arrow >
-                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickSaveShiftUpdation} sx={{
-                                color: '#81c784'
-                            }}>
-                                <SaveIcon />
-                            </Button>
-                        </Tooltip>
+                    <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
+                        <CssVarsProvider>
+                            <Box sx={{ p: 0.2 }} >
+                                <Tooltip title="Process" followCursor placement='top' arrow >
+                                    <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickDutyPlanButton} sx={{
+                                        color: '#90caf9'
+                                    }} >
+                                        <PublishedWithChangesIcon />
+                                    </Button>
+                                </Tooltip>
+                            </Box>
+                            <Box sx={{ p: 0.2 }}>
+                                <Tooltip title="Save" followCursor placement='top' arrow >
+                                    <Button aria-label="Like" variant="outlined" color="neutral" onClick={onClickSaveShiftUpdation} sx={{
+                                        color: '#81c784'
+                                    }}>
+                                        <SaveIcon />
+                                    </Button>
+                                </Tooltip>
+                            </Box>
+                        </CssVarsProvider>
                     </Box>
-                </CssVarsProvider>
-            </Box>
-        </Paper>
+                </Paper>
+            }
+        </>
     )
 }
 
