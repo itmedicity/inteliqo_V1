@@ -17,7 +17,7 @@ import { ToastContainer } from 'react-toastify'
 import CloseIcon from '@mui/icons-material/Close';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
-import GroupSelection from '../GroupRights/GroupSelection'
+import GroupMultiSelect from './GroupMultiSelect'
 
 const CommonSettingNew = () => {
 
@@ -29,7 +29,8 @@ const CommonSettingNew = () => {
     const [notappshift, setnoappshift] = useState(0)
     const [workoff, setworkoff] = useState(0)
     const [noff, setNoff] = useState(0)
-    const [group_slno, setGroup_Slno] = useState(0)
+    const [group_slno, setGroup_Slno] = useState([])
+    const [eoff, setEoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -57,7 +58,8 @@ const CommonSettingNew = () => {
         onHourRq_no: 0,
         max_late_day_count: 0,
         leave_count: 0,
-        noff_selct_day_count: 0
+        noff_selct_day_count: 0,
+        comp_day_count: 0
     })
 
     const {
@@ -65,7 +67,7 @@ const CommonSettingNew = () => {
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
-        noff_selct_day_count
+        noff_selct_day_count, comp_day_count
     } = FormData
 
     const [levaetype, setLeaveType] = useState([])
@@ -101,7 +103,7 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno } = data[0]
+                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, eoff, comp_day_count } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -131,6 +133,7 @@ const CommonSettingNew = () => {
                     max_late_day_count: max_late_day_count,
                     leave_count: leave_count,
                     noff_selct_day_count: noff_selct_day_count,
+                    comp_day_count: comp_day_count
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -141,8 +144,10 @@ const CommonSettingNew = () => {
                 setValue(1)
                 setCount(0)
                 setAreartype(areartype === null ? 0 : areartype)
-                setGroup_Slno(group_slno)
+                const arr = JSON.parse(group_slno)
+                setGroup_Slno(obj === null ? [] : arr)
                 setNoff(noff)
+                setEoff(eoff)
             }
             else if (success === 0) {
                 setValue(0)
@@ -189,7 +194,9 @@ const CommonSettingNew = () => {
         leave_count: leave_count,
         noff_selct_day_count: noff_selct_day_count,
         noff: noff,
-        group_slno: group_slno
+        group_slno: group_slno,
+        eoff: eoff,
+        comp_day_count: comp_day_count
     }
 
 
@@ -229,7 +236,9 @@ const CommonSettingNew = () => {
         leave_count: leave_count,
         noff_selct_day_count: noff_selct_day_count,
         noff: noff,
-        group_slno: group_slno
+        group_slno: group_slno,
+        eoff: eoff,
+        comp_day_count: comp_day_count
     }
 
     //save
@@ -251,6 +260,7 @@ const CommonSettingNew = () => {
             }
         }
         else {
+
             const result = await axioslogin.patch('/commonsettings', postDataEdit)
             const { success, message } = result.data
             if (success === 2) {
@@ -829,6 +839,16 @@ const CommonSettingNew = () => {
                                         <ShiftSelectByRedux value={noff} setValue={setNoff} />
                                     </Box>
                                 </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Extra OFF</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <ShiftSelectByRedux value={eoff} setValue={setEoff} />
+                                    </Box>
+                                </Box>
                             </Paper>
                         </Box>
 
@@ -956,10 +976,43 @@ const CommonSettingNew = () => {
                                     </Box>
 
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <GroupSelection value={group_slno} setValue={setGroup_Slno} />
+                                        <GroupMultiSelect value={group_slno} setValue={setGroup_Slno} />
                                     </Box>
                                 </Box>
                             </Paper>
+                        </Box>
+                    </Box>
+                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ width: '50%', }}>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5 }}>
+                                    <CssVarsProvider>
+                                        <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Compensatory Off Day Limit</Typography>
+                                    </CssVarsProvider>
+                                </Paper>
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Day Count</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="comp_day_count"
+                                            value={comp_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+                        <Box sx={{ width: '50%' }}>
+
                         </Box>
                     </Box>
                 </Paper >

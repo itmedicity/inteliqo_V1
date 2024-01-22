@@ -1,5 +1,5 @@
 import { Button, CssVarsProvider, Input } from '@mui/joy'
-import { Box, Paper, Grid, TextField, FormControlLabel, Checkbox, IconButton, Typography, Tooltip } from '@mui/material'
+import { Box, Paper, TextField, FormControlLabel, Checkbox, IconButton, Typography, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
@@ -171,8 +171,9 @@ const TrainingTopic = () => {
                         offline: val.offline_status === 0 ? "NO" : "YES",
                         both_status: val.both_status,
                         both: val.both_status === 0 ? "NO" : "YES",
-                        video_link: val.video_link === '' ? "PDF" : val.video_link,
+                        video_link: val.video_link === '' ? "Nill" : val.video_link,
                         video_time: val.video_time,
+                        upload_status: val.upload_status === 1 ? "YES" : "NO",
                     }
                     return obj;
                 })
@@ -396,9 +397,10 @@ const TrainingTopic = () => {
         { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
         { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
         { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
-        { headerName: 'Link/Pdf ', field: 'video_link', filter: true, minWidth: 300 },
+        { headerName: 'Video  ', field: 'video_link', filter: true, minWidth: 300 },
         { headerName: 'Video Time(m) ', field: 'video_time', filter: true, minWidth: 200 },
-        { headerName: 'Hours ', field: 'hours', filter: true, minWidth: 150 },
+        { headerName: 'Pdf  ', field: 'upload_status', filter: true, minWidth: 200 },
+        { headerName: 'Taraining Hours ', field: 'hours', filter: true, minWidth: 150 },
         {
             headerName: 'Edit', minWidth: 150, cellRenderer: params =>
                 < Fragment >
@@ -412,324 +414,317 @@ const TrainingTopic = () => {
     return (
         <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
             <ToastContainer />
-            <Box sx={{ width: "100%" }}>
-                <Paper>
-                    <Grid container spacing={1}>
-                        <Grid item xl={3} lg={2}>
-                            <Paper sx={{ p: 1 }}>
-                                <Box>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="dept_status"
-                                                color="primary"
-                                                value={dept_status}
-                                                checked={dept_status}
-                                                className="ml-1"
-                                                onChange={(e) => checkDepartment(e)}
-                                            />
-                                        }
-                                        label="Departmental"
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+                <Paper sx={{ display: "flex", flexDirection: "column" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1 }}>
+                        <Box >
+
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="dept_status"
+                                        color="primary"
+                                        value={dept_status}
+                                        checked={dept_status}
+                                        className="ml-1"
+                                        onChange={(e) => checkDepartment(e)}
                                     />
-                                </Box>
-                                {
-                                    dept_flag === 1 ?
-                                        <Box>
-                                            <DeptSelectByRedux value={depttype} setValue={setdepttype} />
-                                        </Box>
-                                        : null
                                 }
-                                <Box sx={{ mt: 1 }}>
-                                    <SelectTrainingName value={trainingname} setValue={setTrainingname} />
-                                </Box>
-                                <Box sx={{ mt: 1 }}>
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Training Subject Name'
-                                        id='training_topic_name'
-                                        size="small"
-                                        value={training_topic_name}
-                                        name="training_topic_name"
-                                        onChange={(e) => setTraining_topic_name(e.target.value)}
-                                    />
-                                </Box>
-
-                                <Box sx={{ mt: 0.5, display: "flex", flexDirection: "row", gap: 3 }}>
-                                    <Typography sx={{ mt: 1 }}>Training Hours :</Typography>
-                                    <Input
-                                        type="number"
-                                        value={hours}
-                                        onChange={(e) => setHours(e.target.value)}
-                                        slotProps={{
-                                            input: {
-                                                min: 1,
-                                                max: 5
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                                <Grid container spacing={1}>
-                                    <Grid item xl={4} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={training_status}
-                                                        checked={training_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => setTraining_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Training"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xl={3} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={tutorial_status}
-                                                        checked={tutorial_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => setTutorial_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Tutorial"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={1}>
-                                    <Grid item xl={4} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={medical_status}
-                                                        checked={medical_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => setMedical_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Medical"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xl={5} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={non_medical_status}
-                                                        checked={non_medical_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => set_Non_medical_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Non medical"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={1}>
-                                    <Grid item xl={4} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={pretest_status}
-                                                        checked={pretest_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => setPretest_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Pre Test"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xl={5} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={post_test_status}
-                                                        checked={post_test_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => setPost_test_status(e.target.checked)}
-                                                    />
-                                                }
-                                                label="Post Test"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                                {/* Section status */}
-                                <Grid container spacing={1}>
-                                    <Grid item xl={4} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={online_status}
-                                                        checked={online_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => HandleOnline(e)}
-                                                    />
-                                                }
-                                                label="Online"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xl={3} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={offline_status}
-                                                        checked={offline_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => HandleOffline(e)}
-                                                    />
-                                                }
-                                                label="Offline"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xl={3} lg={2}>
-                                        <Box>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        name="status"
-                                                        color="primary"
-                                                        value={both_status}
-                                                        checked={both_status}
-                                                        className="ml-1"
-                                                        onChange={(e) => HandleBoth(e)}
-                                                    />
-                                                }
-                                                label="Both"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                                {
-                                    both_status === true || online_status === true ?
-                                        <Box>
-                                            <JoyInput
-                                                type='text'
-                                                name='video link'
-                                                id='videos'
-                                                placeholder="Enter Video Link"
-                                                value={videos}
-                                                onchange={(e) => SetVideos(e)}
-                                            />
-                                            <Box sx={{ mt: 0.5, display: "flex", flexDirection: "row", gap: 2 }}>
-                                                <Typography sx={{ mt: 1 }}>Video Time :</Typography>
-                                                <Input
-                                                    type="number"
-                                                    value={video_time}
-                                                    onChange={(e) => SetVideo_time(e.target.value)}
-                                                />
-                                                <Typography sx={{ mt: 1 }}>Minutes</Typography>
-                                            </Box>
-                                        </Box>
-                                        : null
-                                }
-                                {
-                                    both_status === true || online_status === true && flag === 0 ?
-                                        <Box>
-                                            <Tooltip title="Upload file">
-                                                <IconButton variant="outlined" component="label">
-                                                    <UploadFileIcon style={{ color: "#4682A9", fontSize: 35, border: 1, borderRadius: 10 }} />
-                                                    <Input
-                                                        id="file-input"
-                                                        type="file"
-                                                        accept=".jpg, .jpeg, .png, .pdf"
-                                                        style={{ display: 'none' }}
-                                                        onChange={uploadFile}
-                                                    />
-                                                </IconButton>
-                                            </Tooltip>
-                                            {
-                                                selectFile && selectFile.map((val, index) => {
-                                                    return <Box sx={{ display: "flex", flexDirection: "row", ml: 2, pt: 2 }}
-                                                        key={index} >
-                                                        <Box >{val.name}</Box>
-                                                        <Box sx={{ ml: .3 }}><CloseIcon sx={{ height: '18px', width: '20px', cursor: 'pointer' }}
-                                                            onClick={() => handleRemoveFile(index)}
-                                                        /></Box>
-
-                                                    </Box>
-                                                }
-                                                )}
-                                        </Box>
-
-                                        : null
-                                }
-
-                                {
-                                    flag === 1 && editflag === 1 ?
-                                        <Box sx={{ mt: 1 }}>
-                                            <Tooltip title="View file">
-                                                <IconButton onClick={(e) => ShowFlies(e)}>
-                                                    <TouchAppSharpIcon
-                                                        sx={{ color: "#3876BF" }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Box>
-                                        : null
-                                }
-                                <Box sx={{ px: 0.5, mt: 0.9 }}>
-                                    <CssVarsProvider>
-                                        <Button
-                                            variant="outlined"
-                                            component="label"
-                                            size="md"
-                                            color="primary"
-                                            onClick={submitTrainingTopic}
-                                        >
-                                            <SaveIcon />
-                                        </Button>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Paper>
-                        </Grid>
-                        <ShowFile setopen={setopen} open={open} uploads={uploads} reset={reset} />
-                        <Grid item xs={9} lg={9} xl={9} md={9}>
-                            <CommonAgGrid
-                                columnDefs={columnDef}
-                                tableData={tableData}
-                                sx={{
-                                    height: 500,
-                                    width: "100%"
-                                }}
-                                rowHeight={30}
-                                headerHeight={30}
+                                label="Departmental"
                             />
-                        </Grid>
-                    </Grid>
+
+                        </Box>
+                        {
+                            dept_flag === 1 ?
+                                <Box sx={{ flex: 1 }}>
+                                    <DeptSelectByRedux value={depttype} setValue={setdepttype} />
+                                </Box>
+                                : null
+                        }
+                        <Box sx={{ flex: 1 }}>
+                            <SelectTrainingName value={trainingname} setValue={setTrainingname} />
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                            <TextField
+                                fullWidth
+                                placeholder='Training Subject Name'
+                                id='training_topic_name'
+                                size="small"
+                                value={training_topic_name}
+                                name="training_topic_name"
+                                onChange={(e) => setTraining_topic_name(e.target.value)}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
+                                <Typography sx={{ mt: 1 }}>Training Hours :</Typography>
+                                <Input
+                                    type="number"
+                                    value={hours}
+                                    onChange={(e) => setHours(e.target.value)}
+                                    slotProps={{
+                                        input: {
+                                            min: 1,
+                                            max: 5
+                                        },
+                                    }}
+                                />
+                            </Box>
+
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1 }}>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={training_status}
+                                        checked={training_status}
+                                        className="ml-1"
+                                        onChange={(e) => setTraining_status(e.target.checked)}
+                                    />
+                                }
+                                label="Training"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={tutorial_status}
+                                        checked={tutorial_status}
+                                        className="ml-1"
+                                        onChange={(e) => setTutorial_status(e.target.checked)}
+                                    />
+                                }
+                                label="Tutorial"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={medical_status}
+                                        checked={medical_status}
+                                        className="ml-1"
+                                        onChange={(e) => setMedical_status(e.target.checked)}
+                                    />
+                                }
+                                label="Medical"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={non_medical_status}
+                                        checked={non_medical_status}
+                                        className="ml-1"
+                                        onChange={(e) => set_Non_medical_status(e.target.checked)}
+                                    />
+                                }
+                                label="Non medical"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={pretest_status}
+                                        checked={pretest_status}
+                                        className="ml-1"
+                                        onChange={(e) => setPretest_status(e.target.checked)}
+                                    />
+                                }
+                                label="Pree-Test"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={post_test_status}
+                                        checked={post_test_status}
+                                        className="ml-1"
+                                        onChange={(e) => setPost_test_status(e.target.checked)}
+                                    />
+                                }
+                                label="Post-Test"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={online_status}
+                                        checked={online_status}
+                                        className="ml-1"
+                                        onChange={(e) => HandleOnline(e)}
+                                    />
+                                }
+                                label="Online"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={offline_status}
+                                        checked={offline_status}
+                                        className="ml-1"
+                                        onChange={(e) => HandleOffline(e)}
+                                    />
+                                }
+                                label="Offline"
+                            />
+                        </Box>
+                        <Box>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        name="status"
+                                        color="primary"
+                                        value={both_status}
+                                        checked={both_status}
+                                        className="ml-1"
+                                        onChange={(e) => HandleBoth(e)}
+                                    />
+                                }
+                                label="Both"
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                        {
+                            both_status === true || online_status === true ?
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                    <Box sx={{ p: 1, mt: -1 }}>
+                                        <JoyInput
+                                            type='text'
+                                            name='video link'
+                                            id='videos'
+                                            placeholder="Enter Video Link"
+                                            value={videos}
+                                            onchange={(e) => SetVideos(e)}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                        <Box>
+                                            <Typography sx={{ mt: 1 }}>Video Time :</Typography>
+                                        </Box>
+                                        <Box>
+                                            <Input
+                                                type="number"
+                                                value={video_time}
+                                                onChange={(e) => SetVideo_time(e.target.value)}
+                                            />
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ mt: 1 }}>Minutes</Typography>
+                                        </Box>
+                                    </Box>
+                                    <Box>
+                                        {
+                                            both_status === true || online_status === true && flag === 0 ?
+                                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                                    <Box>
+                                                        <Tooltip title="Upload file">
+                                                            <IconButton variant="outlined" component="label">
+                                                                <UploadFileIcon style={{ color: "#4682A9", fontSize: 30, border: 1, borderRadius: 10 }} />
+                                                                <Input
+                                                                    id="file-input"
+                                                                    type="file"
+                                                                    accept=".jpg, .jpeg, .png, .pdf"
+                                                                    style={{ display: 'none' }}
+                                                                    onChange={uploadFile}
+                                                                />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Box>
+                                                    <Box>
+
+                                                        {
+                                                            selectFile && selectFile.map((val, index) => {
+                                                                return <Box sx={{ display: "flex", flexDirection: "row", ml: 1, pt: 1 }}
+                                                                    key={index} >
+                                                                    <Box >{val.name}</Box>
+                                                                    <Box sx={{ ml: .3 }}><CloseIcon sx={{ height: '18px', width: '20px', cursor: 'pointer' }}
+                                                                        onClick={() => handleRemoveFile(index)}
+                                                                    /></Box>
+
+                                                                </Box>
+                                                            }
+                                                            )}
+                                                    </Box>
+                                                </Box>
+                                                : null
+                                        }
+                                    </Box>
+                                </Box>
+                                : null
+                        }
+
+                        {
+                            flag === 1 && editflag === 1 ?
+                                <Box sx={{ mt: 1 }}>
+                                    <Tooltip title="View file">
+                                        <IconButton onClick={(e) => ShowFlies(e)}>
+                                            <TouchAppSharpIcon
+                                                sx={{ color: "#3876BF" }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                                : null
+                        }
+                        <Box sx={{ p: 1 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitTrainingTopic}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
                 </Paper>
-            </Box>
+                <ShowFile setopen={setopen} open={open} uploads={uploads} reset={reset} />
+                <Paper sx={{ width: "100%" }}>
+                    <CommonAgGrid
+                        columnDefs={columnDef}
+                        tableData={tableData}
+                        sx={{
+                            height: 500,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    />
+                </Paper>
+            </Box >
         </CustomSettingsLayout >
     )
 }
 
 export default memo(TrainingTopic)
+

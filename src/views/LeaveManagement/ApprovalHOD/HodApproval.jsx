@@ -68,7 +68,10 @@ const HodApproval = () => {
                 })
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -80,7 +83,10 @@ const HodApproval = () => {
                 })
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -93,7 +99,10 @@ const HodApproval = () => {
                 })
                 Halfdaymapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -105,7 +114,10 @@ const HodApproval = () => {
                 })
                 Halfdaymapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -118,7 +130,10 @@ const HodApproval = () => {
                 })
                 nopunchmapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -130,7 +145,10 @@ const HodApproval = () => {
                 })
                 nopunchmapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -143,7 +161,10 @@ const HodApproval = () => {
                 })
                 compensatoryMapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -155,7 +176,10 @@ const HodApproval = () => {
                 })
                 compensatoryMapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
-                        setTableData(val)
+                        const arr = val && val.filter((k) => {
+                            return (k.hr_apprv !== 1)
+                        })
+                        setTableData(arr)
                     } else {
                         infoNofity("No Leave request pending for this department!!")
                         setTableData([])
@@ -172,8 +196,8 @@ const HodApproval = () => {
         { headerName: 'Slno', field: 'row_slno', filter: true, minWidth: 100 },
         { headerName: 'ID#', field: 'Emp_no', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'Employee_name', filter: true, minWidth: 200 },
-        { headerName: 'Department Section', field: 'Department_section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'inStatus', minWidth: 200 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 200 },
+        { headerName: 'Status ', field: 'inStatus', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {

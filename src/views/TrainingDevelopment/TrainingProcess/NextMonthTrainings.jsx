@@ -3,12 +3,12 @@ import moment from 'moment'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import SelectTopics from 'src/views/MuiComponents/SelectTopics'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import SearchIcon from '@mui/icons-material/Search';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
+import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
 
 const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
     const [tabledata, setTableData] = useState([])
@@ -40,7 +40,7 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
         setTableData(displayData)
         if (flag === 1) {
             const ScheduleDate = displayData?.filter((val) => {
-                return val.date === pickdate
+                return val.date === pickdate && val.topic_slno === topic
 
             })
             if (ScheduleDate?.length !== 0) {
@@ -50,7 +50,7 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
                 infoNofity("No training Scheduled")
             }
         }
-    }, [NextmonthData, flag, pickdate])
+    }, [NextmonthData, flag, topic, pickdate])
 
     const [columnDef] = useState([
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
@@ -62,11 +62,7 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
         const getdate = moment(selectdate).format("DD-MM-YYYY")
         setPickdate(getdate);
         setFlag(1);
-        const scheduleTopic = tabledata?.filter((val) => {
-            return val.topic_slno === topic
-        })
-        setTableData(scheduleTopic);
-    }, [filterdate, topic, tabledata])
+    }, [filterdate])
 
     const toClose = useCallback(() => {
         setShow(0)
@@ -95,9 +91,8 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
                             />
                         </LocalizationProvider>
                     </Box>
-
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                        <SelectTopics setTopic={setTopic} />
+                        <JoySelectTopic setTopic={setTopic} topic={topic} />
 
                     </Box>
                     <Box sx={{ p: 1 }}>
@@ -115,7 +110,7 @@ const NextMonthTrainings = ({ setShow, NextmonthData, }) => {
                         columnDefs={columnDef}
                         tableData={tabledata}
                         sx={{
-                            height: 700,
+                            height: 400,
                             width: "100%"
                         }}
                         rowHeight={30}

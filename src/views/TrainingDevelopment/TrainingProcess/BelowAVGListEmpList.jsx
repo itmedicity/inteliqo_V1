@@ -39,7 +39,6 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
         SetTabledata(ShowData)
     }, [BelowAvgList, SetTabledata])
 
-
     const handleReschedule = useCallback((params) => {
         const data = params.api.getSelectedRows()
         SetgetData(data)
@@ -51,20 +50,9 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 200 },
         { headerName: 'Schedule Date', field: 'datefmt', filter: true, width: 150 },
-        // {
-        //     headerName: 'Action', cellRenderer: params =>
-        //         <OpenIcon sx={{ paddingY: 0.5 }}
-        //             onClick={(e) => handleReschedule(params)}
-        //         >
-        //             <Tooltip title="Test Reschedule">
-        //                 <DateRangeIcon color='primary' />
-        //             </Tooltip>
-        //         </OpenIcon>
-        // }
-
 
         {
-            headerName: 'Reschedule ',
+            headerName: 'Reschedule',
             cellRenderer: params => {
                 if (params.data.retest_status === 1) {
                     return <OpenIcon
@@ -73,7 +61,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
                             <DoneIcon />
                         </Tooltip>
                     </OpenIcon>
-                } else if (params.data.retest_status === 0) {
+                } else {
                     return <OpenIcon onClick={() => handleReschedule(params)}
                         sx={{ paddingY: 0.5 }} >
                         <Tooltip title="click to retest">
@@ -89,12 +77,12 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
         <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
             {open === true ? <RetestScheduleModal Setopen={Setopen} open={open} getData={getData} tabledata={tabledata} count={count} Setcount={Setcount} />
                 :
-                <Box sx={{ width: "100%", height: 800, overflow: 'auto' }}>
+                <Box sx={{ width: "100%", height: 500, overflow: 'auto' }}>
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tabledata}
                         sx={{
-                            height: 700,
+                            height: 400,
                             width: "100%",
                             mt: 1
                         }}

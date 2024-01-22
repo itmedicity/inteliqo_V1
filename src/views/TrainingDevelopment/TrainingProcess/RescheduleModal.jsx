@@ -131,19 +131,19 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
                 </Typography>
 
                 <Box sx={{ px: 4 }}>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, gap: 15, textTransform: "capitalize" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, gap: 15, textTransform: "capitalize" }}>
                         <Box>Name</Box>
                         <Box>{em_name.toLowerCase()}</Box>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, gap: 7.5, textTransform: "capitalize" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, gap: 7.5, textTransform: "capitalize" }}>
                         <Box>Training Topic</Box>
                         <Box>{training_topic_name.toLowerCase()}</Box>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, gap: 7 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, gap: 7 }}>
                         <Box>Schedule Date</Box>
                         <Box>{datefmt}</Box>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, gap: 5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1.4, gap: 5 }}>
                         <Box>Reschedule Date</Box>
                         <Box>
                             <Input
@@ -170,7 +170,7 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
                             size="sm"
                             sx={{ px: 3, color: '#81c784' }}
                         >
-                            <SaveIcon sx={{ fontSize: 25 }} />
+                            <SaveIcon sx={{ fontSize: 20 }} />
                         </Button>
                     </CssVarsProvider>
                 </Box>

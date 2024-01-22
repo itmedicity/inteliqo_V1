@@ -266,7 +266,12 @@ const DepartmentalTrainingReport = React.lazy(() => import('./views/HrReports/Tr
 const DepartmentalCalender = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalCalender'))
 // const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/DepartmentalTrainingReports/DepartmentalTrainingReport'))
 const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
+
 const LeaveReports = React.lazy(() => import('./views/HrReports/LeaveReports/LeaveReports'))
+const TrainingAllotedEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingAllotedEmpReport'))
+const TrainingCompletionEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingCompletionEmpReports'))
+const TrainingPendingReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingPendingEmpList'))
+const TrainingRetestEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingRetestEmpReport'))
 
 const routes = [
 
@@ -524,6 +529,11 @@ const routes = [
   { path: '/Home/DepartmentalCalender', exact: true, name: 'Monthly Report', component: DepartmentalCalender },
   { path: '/Home/DepartmentalTrainingReportDetails', exact: true, name: 'Departmental Training Report Details', component: DepartmentalTrainingReportDetails },
   { path: '/Home/LeaveReports', exact: true, name: 'Leave Reports', component: LeaveReports },
+  { path: '/Home/TrainingAllotedEmpReport', exact: true, name: 'Departmental Training Alloted Emp Reports', component: TrainingAllotedEmpReport },
+  { path: '/Home/TrainingCompletionEmpReport', exact: true, name: 'Departmental Training Completion Employee Reports', component: TrainingCompletionEmpReport },
+  { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
+  { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
+
 ]
 
 export default routes

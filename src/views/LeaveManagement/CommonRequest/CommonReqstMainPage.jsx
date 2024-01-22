@@ -45,10 +45,10 @@ const CommonReqstMainPage = () => {
     }, [em_id, dispatch, selectedEmp, hod, incharge])
 
     const reqstArray = [
-        { reqNo: 1, name: 'Enable Miss Punch for OT' },
+        //{ reqNo: 1, name: 'Enable Miss Punch for OT' },
         { reqNo: 2, name: 'On Duty Request' },
         { reqNo: 3, name: 'One Hour Request' },
-        { reqNo: 4, name: 'General Request' },
+        //{ reqNo: 4, name: 'General Request' },
     ]
 
     useEffect(() => {

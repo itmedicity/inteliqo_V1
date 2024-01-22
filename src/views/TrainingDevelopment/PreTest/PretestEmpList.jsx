@@ -87,14 +87,14 @@ const PretestEmpList = () => {
         }
     ])
     return (
-        <CustomLayout title="Employee training Topic View List" displayClose={true} >
+        <CustomLayout title="Pre-Test Employee List" displayClose={true} >
             <Box sx={{ width: "100%", p: 1, height: screenInnerHeight - 120 }}>
                 <Paper variant='outlined' sx={{ mt: 1, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tabledata}
                         sx={{
-                            height: 800,
+                            height: 600,
                             width: "100%"
                         }}
                         rowHeight={30}

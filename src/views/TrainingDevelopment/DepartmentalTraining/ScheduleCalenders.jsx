@@ -5,11 +5,9 @@ import { Box } from '@mui/joy';
 import { endOfMonth, getYear, startOfMonth } from 'date-fns';
 import DeptTrainingRow from './DeptTrainingRow';
 import TrainingonMonthModal from './TrainingonMonthModal';
-// import VisibilityIcon from '@mui/icons-material/Visibility';
-// import SummarizeIcon from '@mui/icons-material/Summarize';
 
 const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, setdept, deptSec,
-    setTable, setdeptSec, EmpDetails, setOpenReport, SetMonth }) => {
+    setTable, setdeptSec, EmpDetails }) => {
 
     const [insertModal, setinsetmodal] = useState(0);
     const [open, setOpen] = useState(false);
@@ -33,11 +31,6 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
     const start = startOfMonth(new Date(date))
     const end = endOfMonth(new Date(date))
 
-    // const ViewTrainingList = useCallback((e, month) => {
-    //     setOpenReport(1);
-    //     const monthId = month.id
-    //     SetMonth(monthId)
-    // }, [setOpenReport, SetMonth])
     return (
         < Fragment >
             <Box sx={{ mt: 2, height: 600, width: "100%" }}>
@@ -78,18 +71,6 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
 
                                                 </Typography>
                                             </Tooltip>
-
-                                            {/* <Typography
-                                                onClick={(e) => ViewTrainingList(e, month)}
-                                                sx={{
-                                                    cursor: "pointer",
-                                                    color: "#3468C0"
-                                                }}>
-                                                <Tooltip title="View Monthly Trainings">
-                                                    <SummarizeIcon />
-                                                </Tooltip>
-                                            
-                                            </Typography> */}
                                         </Box>
                                         <Box sx={{ width: "80%" }}>
                                             <DeptTrainingRow

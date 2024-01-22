@@ -85,7 +85,6 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
             retest_quest_count: question_count,
             create_user: em_id,
             edit_user: em_id,
-
         }
     }, [candid_id, slno, emp_dept, emp_dept_sectn, topic_slno, Reschedule, training_status, question_count, em_id])
 

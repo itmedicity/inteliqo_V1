@@ -7,7 +7,7 @@ export const hr_report_one = [
     { to: '/Home/ExperienceReport', name: 'Employee Experience Report', slno: 166 },
     { to: '/Home/InstitutionTypeReport', name: 'Employee Institution Type Report', slno: 169 },
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
-    // { to: '/Home/DepartmentalTrainingReport', name: 'Departmental Training Report', slno: 264 },
+    { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
     { to: '/Home/LeaveReports', name: 'Leave Reports', slno: 270 },
 
@@ -21,7 +21,8 @@ export const hr_report_two = [
     { to: '/Home/ContractReport', name: 'Employee Contract Details Report', slno: 175 },
     { to: '/Home/PermanentEmployeeReport', name: ' Employee Permenent Details Report', slno: 176 },
     { to: '/Home/ExperienceSummary', name: 'Employee Experience Summary Report', slno: 256 },
-    { to: '/Home/DeptPunchReport', name: 'Department wise Punch Report', slno: 257 },
+    { to: '/Home/TrainingAllotedEmpReport', name: 'Departmentat Wise Training Alloted Employee Report', slno: 267 },
+    { to: '/Home/TrainingRetestEmpReport', name: 'Departmentat Wise Training Retest Employee Report', slno: 269 },
 ]
 export const hr_report_third = [
 
@@ -34,6 +35,6 @@ export const hr_report_third = [
     { to: '/Home/DeptSubSectionReport', name: 'Employee Department Type Report', slno: 171 },
     { to: '/Home/TraningProbaReport', name: 'Training and probation report', slno: 179 },
     { to: '/Home/DeptPunchReport', name: 'Department wise Punch Report', slno: 257 },
-    { to: '/Home/DepartmentalCalender', name: 'Department training Calender', slno: 265 },
-
+    { to: '/Home/TrainingCompletionEmpReport', name: 'Department wise Training Completion Report', slno: 268 },
+    { to: '/Home/TrainingPendingReport', name: 'Department Training Pending Report', slno: 266 },
 ]

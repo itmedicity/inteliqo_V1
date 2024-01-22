@@ -13,14 +13,14 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
     const [coff, setCoff] = useState([]);
     // const [status, setStatus] = useState(false);
 
-    const copansatoryOff = useSelector((state) => state.getCreitedCompansatoryOffLeave, _.isEqual);
+    const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
     const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
 
     useEffect(() => {
         const {
-            compansatory } = compOff;
+            coffData } = compOff;
         //apiStats && setStatus(true)
-        setCoff(compansatory);
+        setCoff(coffData);
     }, [compOff])
 
     // useEffect(() => {
@@ -55,7 +55,7 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
                         key={index}
                         value={val.hrm_calc_holiday}
                     >
-                        {`C off -${val.calculated_date}`}
+                        {`C off -${val.calculated_date} ${val.specail_remark} `}
                     </option>
                 })
             }

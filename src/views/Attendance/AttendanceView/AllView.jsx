@@ -4,22 +4,36 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
 import moment from 'moment';
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import DeptSectionSelect from 'src/views/LeaveManagement/NightOff/DeptSectionSelect';
 import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { DeptWiseAttendanceViewFun } from './Functions';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
+import CustomInnerHeigtComponent from 'src/views/Component/MuiCustomComponent/CustomInnerHeigtComponent';
+import { useHistory } from 'react-router-dom';
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+import { setDepartment } from 'src/redux/actions/Department.action';
 
-const InchargeHodCompnt = ({ em_id }) => {
+const AllView = ({ em_id }) => {
 
-    const empid = useMemo(() => em_id, [em_id])
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    // dispatch the department data
+    useEffect(() => {
+        dispatch(setDepartment());
+    }, [dispatch])
+
+    const toRedirectToHome = () => {
+        history.push(`/Home`)
+    }
     const [value, setValue] = useState(moment(new Date()));
+    const [dept, setDept] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
     const [dateArray, setDateArray] = useState([])
     const [empArray, setEmpArray] = useState([])
@@ -34,10 +48,11 @@ const InchargeHodCompnt = ({ em_id }) => {
             warningNofity("Please Select Any Department Section")
         } else {
             const getEmpData = {
-                em_dept_section: deptSection,
+                dept_id: dept,
+                sect_id: deptSection,
             }
-            const result1 = await axioslogin.post("/attendCal/emplist/show", getEmpData);
-            const { success, data } = result1.data
+            const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
+            const { success, data, } = result.data
             if (success === 1) {
                 const arr = data && data.map((val, index) => {
                     return val.em_no
@@ -73,8 +88,8 @@ const InchargeHodCompnt = ({ em_id }) => {
         }
     }
     return (
-        <CustomLayout title="Attendance View" displayClose={true} >
-            <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+        <CustomInnerHeigtComponent title="Attendance View" toClose={toRedirectToHome}>
+            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column', width: '100%' }}>
                 <Paper
                     square
                     variant="outlined"
@@ -106,7 +121,10 @@ const InchargeHodCompnt = ({ em_id }) => {
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row' }} >
-                        <DeptSectionSelect em_id={empid} value={deptSection} setValue={setDeptSection} />
+                        <DepartmentDropRedx getDept={setDept} />
+                    </Box>
+                    <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, px: 0.5 }, flexDirection: 'row' }} >
+                        <DepartmentSectionRedx getSection={setDeptSection} />
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
                         <CssVarsProvider>
@@ -121,7 +139,6 @@ const InchargeHodCompnt = ({ em_id }) => {
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} >
                     </Box>
-                    <Box sx={{ flex: 1, px: 0.5 }} ></Box>
                 </Paper>
                 <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -261,11 +278,12 @@ const InchargeHodCompnt = ({ em_id }) => {
                             md={'auto'}
                             lg={'auto'}
                             xl={'auto'}
+
                             sx={{
                                 display: 'flex',
                                 maxHeight: 500
                             }}>
-                            <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" stickyHeader aria-label="sticky table" >
+                            <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell size='medium' padding='none' align="center" sx={{ fontWeight: 550, width: 200, border: 0.1 }} >
@@ -285,9 +303,6 @@ const InchargeHodCompnt = ({ em_id }) => {
                                             </TableCell>
                                         ))}
                                     </TableRow>
-
-                                </TableHead>
-                                <TableBody>
                                     <TableRow>
                                         <TableCell size='medium' padding='none' align="center" sx={{ fontWeight: 550, border: 0.1 }} >
                                             <Box> Days </Box>
@@ -313,10 +328,12 @@ const InchargeHodCompnt = ({ em_id }) => {
                                             </TableCell>
                                         ))}
                                     </TableRow>
+                                </TableHead>
+                                <TableBody>
                                     {empArray && empArray.map((row, index) => (
                                         <TableRow hover key={index} >
                                             <TableCell size='medium' padding='none' align="center" sx={{ width: 200, border: 0.1 }}>
-                                                <Box> {row.em_name}</Box>
+                                                <Box> {row.emp_name}</Box>
                                             </TableCell>
                                             <TableCell size='medium' padding='none' align="center" sx={{ width: 100, border: 0.1 }}>
                                                 <Box> {row.em_no}</Box>
@@ -337,8 +354,8 @@ const InchargeHodCompnt = ({ em_id }) => {
                     </Box>
                 </Box>
             </Box>
-        </CustomLayout >
+        </CustomInnerHeigtComponent>
     )
 }
 
-export default memo(InchargeHodCompnt) 
+export default memo(AllView)
