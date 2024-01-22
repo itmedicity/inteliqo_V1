@@ -7,6 +7,7 @@ export const MappingData = async (filtered) => {
             SlNo: val.leave_slno,
             Emp_no: val.em_no,
             Employee_name: val.em_name,
+            sect_name: val.sect_name,
             dept_section: val.dept_section,
             Department_section: val.dept_name,
             Status: val.hr_apprv_status === 0 ? 'HR Approval Pending' : 'HR Approved',
@@ -24,7 +25,7 @@ export const MappingData = async (filtered) => {
                     (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 2) ? 'Incharge Reajected' :
                         (val.ceo_req_status === 1 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 1) ? 'CEO Approval Pending' :
                             (val.ceo_req_status === 1 || val.ceo_req_status === 0 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.ceo_apprv_status === 1) ? 'HR Approval Pending' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.hod_apprv_status === 1 || val.ceo_apprv_status === 1) ? 'HR Approval Pending' :
                                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
         }
         return data4
@@ -41,6 +42,7 @@ export const Halfdaymapping = async (filtered) => {
             Emp_no: val.em_no,
             Employee_name: val.em_name,
             Department_section: val.dept_name,
+            sect_name: val.sect_name,
             dept_section: val.dept_section,
             Status: val.hf_hr_apprv_status === 0 ? 'HR Approval Pending' : 'HR Approved',
             ceo_apprv: val.hf_ceo_apprv_status,
@@ -56,7 +58,7 @@ export const Halfdaymapping = async (filtered) => {
                     (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
                         (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0 && val.hf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
                             (val.hf_ceo_req_status === 1 || val.hf_ceo_req_status === 0 && val.hf_ceo_apprv_status === 0 && val.hf_hod_apprv_status === 2) ? 'Hod Rejected' :
-                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0 && val.hf_ceo_apprv_status === 1) ? 'HR Approval Pending' :
+                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0 && val.hf_hod_apprv_status === 1 || val.hf_ceo_apprv_status === 1) ? 'HR Approval Pending' :
                                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0 && val.hf_ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
         }
         return data4
@@ -73,6 +75,7 @@ export const nopunchmapping = async (filtered) => {
             Emp_no: val.em_no,
             Employee_name: val.em_name,
             Department_section: val.dept_name,
+            sect_name: val.sect_name,
             dept_section: val.em_dept_section,
             Status: val.np_hr_apprv_status === 0 ? 'HR Approval Pending' : 'HR Approved',
             ceo_apprv: val.np_ceo_apprv_status,
@@ -104,6 +107,7 @@ export const compensatoryMapping = async (filtered) => {
             Emp_no: val.em_no,
             Employee_name: val.em_name,
             Department_section: val.dept_name,
+            sect_name: val.sect_name,
             dept_section: val.em_dept_section,
             Status: val.cf_hr_apprv_status === 0 ? 'HR Approval Pending' : 'HR Approved',
             ceo_apprv: val.cf_ceo_apprv_status,

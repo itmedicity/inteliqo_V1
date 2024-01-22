@@ -23,7 +23,7 @@ import { fetchleaveInformationFun } from './Func/LeaveFunction';
 import {
     getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave, getEmpCoffData,
 } from 'src/redux/actions/LeaveReqst.action';
 // lazy import 
 // const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
@@ -53,11 +53,13 @@ const MultiLeaveRequestForm = () => {
     const getEmployeeInformations = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
+    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformations, [getEmployeeInformations])
 
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
+    const commonSetting = useMemo(() => commonState, [commonState])
 
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
@@ -67,7 +69,6 @@ const MultiLeaveRequestForm = () => {
         hod: empHodStat,
         //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
-
 
     useEffect(() => {
         if (hod === 0 && incharge === 0) {
@@ -80,7 +81,12 @@ const MultiLeaveRequestForm = () => {
             dispatch(getannualleave(em_id))
             dispatch(getEmployeeInformation(em_id))
         }
-    }, [incharge, hod, dispatch, em_id])
+        const postData = {
+            count: commonSetting?.comp_day_count,
+            em_id: em_id
+        }
+        dispatch(getEmpCoffData(postData))
+    }, [incharge, hod, dispatch, em_id, commonSetting])
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))

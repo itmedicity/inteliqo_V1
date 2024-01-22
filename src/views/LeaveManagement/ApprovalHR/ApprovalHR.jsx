@@ -81,7 +81,10 @@ const ApprovalHR = () => {
                     }
                 })
 
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             } else {
 
                 setTableData([])
@@ -110,7 +113,10 @@ const ApprovalHR = () => {
                     }
                 })
 
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             } else {
                 setTableData([])
                 infoNofity('No Halfday Request Found')
@@ -137,7 +143,10 @@ const ApprovalHR = () => {
                     }
                 })
 
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             } else {
 
                 setTableData([])
@@ -166,7 +175,10 @@ const ApprovalHR = () => {
                     }
                 })
 
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             } else {
 
                 setTableData([])
@@ -198,7 +210,10 @@ const ApprovalHR = () => {
                         toDate: val.leavetodate
                     }
                 })
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             }
             else {
                 setTableData([])
@@ -224,7 +239,10 @@ const ApprovalHR = () => {
 
                     }
                 })
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             }
             else {
                 setTableData([])
@@ -249,7 +267,10 @@ const ApprovalHR = () => {
                         toDate: val.leavetodate
                     }
                 })
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             }
             else {
                 setTableData([])
@@ -275,7 +296,10 @@ const ApprovalHR = () => {
                     }
                 })
 
-                setTableData(leaveRequestList)
+                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr)
             }
             else {
                 setTableData([])

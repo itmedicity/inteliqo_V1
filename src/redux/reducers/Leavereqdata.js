@@ -281,3 +281,18 @@ export const leaveRequestSelectedEmployee = (state = leaveRequestSelectedEmpId, 
             return state
     }
 }
+
+
+const empCompensatoryData = {
+    coffData: [],
+    coffStatus: false
+}
+
+export const getEmpCoffData = (state = empCompensatoryData, { type, payload }) => {
+    switch (type) {
+        case FETCH_CREDITED_COMPENSATORY_OFF_LEAVE:
+            return { ...state, coffData: payload, coffStatus: true }
+        default:
+            return state
+    }
+}
