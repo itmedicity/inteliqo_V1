@@ -19,6 +19,7 @@ const ReportLayout = ({ children, title, displayClose, data }) => {
     }
 
     const download = useCallback(() => {
+        console.log(data);
         if (data.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
         }

@@ -9,6 +9,8 @@ export const hr_report_one = [
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
     { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
+    { to: '/Home/LeaveReports', name: 'Leave Reports', slno: 270 },
+
 ]
 export const hr_report_two = [
     { to: '/Home/CategoryReport', name: 'Employee Category Report', slno: 159 },
