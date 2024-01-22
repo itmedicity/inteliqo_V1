@@ -19,7 +19,8 @@ import {
     getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
     getDutyPlannedShift,
-    leaveRequestSelectedEmployee
+    leaveRequestSelectedEmployee,
+    getEmpCoffData
 } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
@@ -199,7 +200,8 @@ const reducer = combineReducers({
     gettrainingData,
     selectedEarnData,
     setVaccinationemp,
-    setEmployeeType
+    setEmployeeType,
+    getEmpCoffData
 })
 
 export default reducer;

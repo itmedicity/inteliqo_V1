@@ -170,7 +170,7 @@ const ApprovalCEO = () => {
         { headerName: 'ID#', field: 'Emp_no', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'Employee_name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'Department_section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'inStatus', minWidth: 200 },
+        { headerName: 'Status ', field: 'inStatus', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {

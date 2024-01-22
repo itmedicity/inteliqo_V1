@@ -20,6 +20,7 @@ import LeaveTableContainer from './LeaveTableContainer'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
 import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
 
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
@@ -46,6 +47,7 @@ const LeaveRequestMainCard = () => {
             dispatch(getEmployeeInformation(em_id))
         }
         dispatch(getEmployeeApprovalLevel(em_id))
+        dispatch(setCommonSetting());
 
     }, [hod, incharge, em_id, dispatch])
 
