@@ -11,7 +11,6 @@ import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/C
 import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
 
 const DueTrainings = ({ setShow, trainingcompleted }) => {
-    const [tabledata, setTableData] = useState([])
     const [filterdate, setFilterDate] = useState(moment());
     const [pickdate, setPickdate] = useState();
     const [flag, setFlag] = useState(0);
@@ -40,7 +39,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
         SetCompletedData(CompletedData)
         if (flag === 1) {
             const ScheduleDate = CompletedData?.filter((val) => {
-                return val.date === pickdate
+                return val.date === pickdate && val.topic_slno === topic
 
             })
             if (ScheduleDate?.length !== 0) {
@@ -50,7 +49,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                 infoNofity("No training Scheduled")
             }
         }
-    }, [trainingcompleted, flag, pickdate])
+    }, [trainingcompleted, flag, topic, pickdate])
 
 
     const [columnDef] = useState([
@@ -64,16 +63,11 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
     const handleDateChange = useCallback(() => {
         setPickdate(moment(filterdate).format("YYYY-MM-DD"));
         setFlag(1);
-        const scheduleTopic = tabledata?.filter((val) => {
-            return val.topic_slno === topic
-        })
-        setTableData(scheduleTopic);
-    }, [filterdate, topic, tabledata])
+    }, [filterdate])
 
     const toClose = useCallback(() => {
         setShow(0)
     }, [setShow])
-
 
     return (
         <CustomInnerHeightDashBoard title="Training Completed Employee List" toClose={toClose} >
@@ -101,7 +95,6 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                     </Box>
 
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                        {/* <SelectTopics setTopic={setTopic} /> */}
                         <JoySelectTopic setTopic={setTopic} topic={topic} />
 
                     </Box>
@@ -120,7 +113,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                         columnDefs={columnDef}
                         tableData={completedData}
                         sx={{
-                            height: 700,
+                            height: 400,
                             width: "100%"
                         }}
                         rowHeight={30}

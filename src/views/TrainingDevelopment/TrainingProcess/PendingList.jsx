@@ -70,7 +70,7 @@ const PendingList = ({ setShow, empdata, count, Setcount }) => {
                         columnDefs={columnDef}
                         tableData={tabledata}
                         sx={{
-                            height: 700,
+                            height: 400,
                             width: "100%",
                             mt: 1
                         }}

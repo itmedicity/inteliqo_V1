@@ -154,7 +154,6 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                                                 dept_all === true ?
                                                     <Box sx={{ minWidth: "66%", pl: 9.5 }}>
                                                         <SelectTopics setTopic={setTopic} />
-                                                        {/* <JoySelectTopic setTopic={setTopic} topic={topic} /> */}
                                                     </Box>
                                                     : <Box sx={{ minWidth: "66%", pl: 9.5 }}><DepartmentalTrainingTopics setTopic={setTopic} dept={dept} /></Box>
                                             }
