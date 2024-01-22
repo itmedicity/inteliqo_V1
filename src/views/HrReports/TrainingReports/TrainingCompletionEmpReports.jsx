@@ -12,14 +12,15 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
-import { useDispatch } from 'react-redux'
-import { setDepartment } from 'src/redux/actions/Department.action'
+import { setDepartment } from 'src/redux/actions/Department.action';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
-import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection';
+import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection';
+import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
+import { useDispatch } from 'react-redux';
 
-const DepartmentalCalender = () => {
+const TrainingCompletionEmpReports = () => {
 
     const dispatch = useDispatch()
 
@@ -28,6 +29,7 @@ const DepartmentalCalender = () => {
     const [fromdate, Setfromdate] = useState('')
     const [todate, Settodate] = useState('')
     const [datas, setDatas] = useState([]);
+    const [topic, setTopic] = useState(0)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -37,27 +39,50 @@ const DepartmentalCalender = () => {
         }
     }, [dispatch, dept])
 
+
     const getData = useCallback(() => {
         const postdata = {
             dept: dept,
             deptSect: deptSect,
+            topic: topic,
             fromdate: (moment(fromdate).format("YYYY-MM-DD HH:SS:DD")),
             todate: (moment(todate).format("YYYY-MM-DD HH:SS:DD"))
         }
-        if (dept !== 0 && deptSect !== 0 && fromdate !== '' && todate !== '') {
+        if (dept !== 0 && deptSect !== 0 && topic !== 0) {
             const SelectDatas = async (postdata) => {
-                const result = await axioslogin.post(`/TrainingMonthlyReport/trainingList`, postdata)
+                const result = await axioslogin.post(`/TrainingMonthlyReport/getCompletionList`, postdata)
                 const { data, success } = result.data
                 if (success === 2) {
                     const viewData = data?.map((val) => {
                         const object = {
-                            slno: val.slno,
-                            schedule_topics: val.schedule_topics,
+                            calender_slno: val.calender_slno,
                             em_name: val.em_name,
+                            emp_dept: val.emp_dept,
+                            emp_dept_sectn: val.emp_dept_sectn,
+                            emp_desig: val.emp_desig,
+                            offline_status: val.offline_status,
+                            posttest_mark: val.posttest_mark,
+                            posttest_status: val.posttest_status,
+                            pretest_status: val.pretest_status,
+                            retest_mark: val.retest_mark !== null ? val.retest_mark : "No Retest",
+                            schedule_date: val.schedule_date,
+                            date: moment(val.schedule_date).format("YYYY-MM-DD"),
+                            slno: val.slno,
                             topic_slno: val.topic_slno,
                             training_topic_name: val.training_topic_name,
-                            schedule_trainers: val.schedule_trainers,
-                            schedule_date: moment(val.schedule_date).format("YYYY-MM-DD")
+                            em_id: val.em_id,
+                            online_status: val.online_status,
+                            retest_status: val.retest_status,
+                            retest: val.retest_status === 1 ? "Yes" : "No",
+                            Pretest_mark: val.Pretest_mark,
+                            online_mode: val.online_mode === 1 ? "Yes" : "No",
+                            offline_mode: val.offline_mode === 1 ? "Yes" : "No",
+                            dept_id: val.dept_id,
+                            dept_name: val.dept_name,
+                            sect_id: val.sect_id,
+                            sect_name: val.sect_name,
+                            eligible: val.retest_mark >= 2 || val.posttest_mark >= 2 ? "Eligible" : "Not Eligible",
+                            trainingmode: val.online_mode ? "Online" : "Offline"
                         }
                         return object;
                     })
@@ -71,20 +96,23 @@ const DepartmentalCalender = () => {
         } else {
             warningNofity("Please Enter all the fields")
         }
-    }, [dept, deptSect, fromdate, todate])
+    }, [dept, deptSect, fromdate, todate, topic])
 
 
     const [columnDef] = useState([
-        { headerName: 'Sl.No', field: 'slno', filter: true, width: 300 },
-        { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 410 },
-        { headerName: 'Trainers', field: 'em_name', filter: true, width: 450 },
-        { headerName: 'Schedule Date ', field: 'schedule_date', filter: true, width: 450 },
+        { headerName: 'Sl.No', field: 'calender_slno', filter: true, width: 100 },
+        { headerName: 'Employee ID', field: 'em_id', filter: true, width: 200 },
+        { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 300 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 300 },
+        { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 200 },
+        { headerName: 'Schedule Date', field: 'date', filter: true, width: 200 }
     ])
 
     return (
         <Fragment>
             <ToastContainer />
-            <ReportLayout title="Departmental Training Scheduled Report" data={datas} displayClose={true} >
+            <ReportLayout title=" Departmental Training Completion Report" data={datas} displayClose={true} >
                 <Paper sx={{ width: '100%' }}>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                         <Box sx={{ flex: 1, mt: 1, px: 0.3, }} >
@@ -117,12 +145,15 @@ const DepartmentalCalender = () => {
                                 />
                             </LocalizationProvider>
                         </Box>
+                        <Box sx={{ flex: 1, mt: 1, px: 0.3, }} >
+                            <JoySelectTopic dept={dept} topic={topic} setTopic={setTopic} />
+                        </Box>
                         <Box sx={{
                             display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, mt: 0.5,
                             justifyContent: 'flex-start'
                         }} >
                             <CssVarsProvider>
-                                <Box sx={{ p: 0.2, mt: 1 }} >
+                                <Box sx={{ p: 0.2 }} >
                                     <Button aria-label="Like" variant="outlined" color="neutral"
                                         onClick={getData}
                                         sx={{
@@ -154,5 +185,8 @@ const DepartmentalCalender = () => {
     )
 }
 
-export default memo(DepartmentalCalender)
+export default memo(TrainingCompletionEmpReports)
+
+
+
 

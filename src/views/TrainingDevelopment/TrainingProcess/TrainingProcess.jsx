@@ -60,7 +60,7 @@ const TrainingProcess = () => {
     //new
     const completed_list = trainingcompleted?.length;
     const today = todays?.length;
-    const allotlen = allot?.length;
+    //const allotlen = allot?.length;
     const emplen = empdata?.length;
     const belowEmp = BelowAvgList?.length;
 
@@ -70,7 +70,7 @@ const TrainingProcess = () => {
         { id: 3, icons: <UpcomingIcon sx={{ color: "#81c784" }} />, itemname: "Upcoming Training List", count: Upcominglen },
         { id: 4, icons: <NextPlanIcon sx={{ color: "#81c784" }} />, itemname: "Next Month Training List", count: Nextmonthlen },
         { id: 5, icons: <PendingIcon sx={{ color: "#81c784" }} />, itemname: "Pending Training List", count: emplen },
-        { id: 6, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Marking Employee for Post-Test", count: allotlen },
+        // { id: 6, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Marking Employee for Post-Test", count: allotlen },
         { id: 7, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Below Average Employee List", count: belowEmp },
     ]
 

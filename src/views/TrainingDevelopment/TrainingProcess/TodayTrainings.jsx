@@ -67,12 +67,12 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
             <CustomDashboardPage title="Today Training List" displayClose={true} setClose={setShow} >
                 {open === true ? <AttendanceModal count={count} Setcount={Setcount} open={open} Setopen={Setopen} attendance={attendance} />
 
-                    : <Box sx={{ width: "100%", height: 800, overflow: 'auto' }}>
+                    : <Box sx={{ width: "100%", height: 500, overflow: 'auto' }}>
                         <CommonAgGrid
                             columnDefs={columnDef}
                             tableData={todayData}
                             sx={{
-                                height: 700,
+                                height: 400,
                                 width: "100%",
                                 mt: 1
                             }}
