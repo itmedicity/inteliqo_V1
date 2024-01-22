@@ -9,6 +9,7 @@ export const hr_report_one = [
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
     // { to: '/Home/DepartmentalTrainingReport', name: 'Departmental Training Report', slno: 264 },
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
+    { to: '/Home/LeaveReports', name: 'Leave Reports', slno: 270 },
 
 ]
 export const hr_report_two = [

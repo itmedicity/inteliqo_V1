@@ -266,6 +266,8 @@ const DepartmentalTrainingReport = React.lazy(() => import('./views/HrReports/Tr
 const DepartmentalCalender = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalCalender'))
 // const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/DepartmentalTrainingReports/DepartmentalTrainingReport'))
 const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
+const LeaveReports = React.lazy(() => import('./views/HrReports/LeaveReports/LeaveReports'))
+
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -521,7 +523,7 @@ const routes = [
   { path: '/Home/DepartmentalTrainingReport', exact: true, name: 'Departmental Training Report', component: DepartmentalTrainingReport },
   { path: '/Home/DepartmentalCalender', exact: true, name: 'Monthly Report', component: DepartmentalCalender },
   { path: '/Home/DepartmentalTrainingReportDetails', exact: true, name: 'Departmental Training Report Details', component: DepartmentalTrainingReportDetails },
-
+  { path: '/Home/LeaveReports', exact: true, name: 'Leave Reports', component: LeaveReports },
 ]
 
 export default routes
