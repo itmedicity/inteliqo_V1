@@ -186,7 +186,7 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Leave Date
+                                Duty Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
                                 {moment(leave_date).format('DD-MM-YYYY')}

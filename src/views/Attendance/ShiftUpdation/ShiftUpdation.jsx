@@ -28,28 +28,24 @@ import { Actiontypes } from 'src/redux/constants/action.type';
 import { useMemo } from 'react';
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
+import { getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action';
+import HodWiseDeptSection from 'src/views/MuiComponents/JoyComponent/HodWiseDeptSection';
+import HodWiseEmpList from 'src/views/MuiComponents/JoyComponent/HodWiseEmpList';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 // const ShiftTableDataRow = lazy(() => import('./ShiftUpdationTblRow'))
 const TableRows = lazy(() => import('./TableRows'))
 
 const ShiftUpdation = () => {
-
-    //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge, em_name, sect_name, dept_name, em_department, em_dept_section } = employeeProfileDetl;
 
     const dispatch = useDispatch();
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
     // dispatch the department data
     useEffect(() => {
-        dispatch(setDepartment());
+        // dispatch(setDepartment());
+        dispatch(setCommonSetting())
     }, [dispatch])
-
-    //DATA SELECTETOR
-    const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
-    const punchMasterDataUpdateData = useSelector((state) => state.fetchupdatedPunchInOutData.puMaData);
-    const updatedDataPunchInOut = useMemo(() => punchMasterDataUpdateData, [punchMasterDataUpdateData])
 
     //FORM DATA 
     const [value, setValue] = useState(moment(new Date()));
@@ -59,14 +55,92 @@ const ShiftUpdation = () => {
     const [tableArray, setTableArray] = useState([]);
     const [disable, setDisable] = useState(false)
     const { em_no } = emply
+    const [rights, setRights] = useState(0)
+    const [department, setDepart] = useState(0)
+    const [self, setSelf] = useState(false)
+
+
+    //get the employee details for taking the HOd and Incharge Details
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { hod, incharge, em_id, em_name, sect_name, dept_name, em_department, em_dept_section } = employeeProfileDetl;
+
+    //DATA SELECTETOR
+    const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
+    const punchMasterDataUpdateData = useSelector((state) => state.fetchupdatedPunchInOutData.puMaData);
+    const updatedDataPunchInOut = useMemo(() => punchMasterDataUpdateData, [punchMasterDataUpdateData])
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const commonSetting = useMemo(() => state, [state])
+
+    const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+        week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+
+
 
     useEffect(() => {
-        if (hod === 0 && incharge === 0) {
+        if ((hod === 1 || incharge === 1) && self === false) {
+            dispatch(getHodBasedDeptSectionName(em_id));
+            dispatch(getEmpNameHodSectionBased(em_id));
+            changeDept(department)
+        } else if ((hod === 1 || incharge === 1) && self === true) {
             changeDept(em_department)
             changeSection(em_dept_section)
             getEmployee(employeeProfileDetl)
         }
-    }, [hod, incharge, em_department, em_dept_section, employeeProfileDetl])
+        else {
+            changeDept(em_department)
+            changeSection(em_dept_section)
+            getEmployee(employeeProfileDetl)
+        }
+    }, [hod, incharge, em_department, em_dept_section, employeeProfileDetl, department, self])
+
+    useEffect(() => {
+        const getEmployeeRight = async () => {
+            const result = await axioslogin.post("/attendCal/rights/", postData);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { user_grp_slno } = data[0];
+                if (group_slno !== undefined) {
+                    if (group_slno.includes(user_grp_slno) === true) {
+                        setRights(1)
+                        dispatch(setDepartment());
+                    } else {
+                        setRights(0)
+                    }
+                }
+            } else {
+                setRights(0)
+            }
+        }
+
+        const postData = {
+            emid: em_id
+        }
+        getEmployeeRight(postData)
+
+    }, [em_id, dispatch, group_slno])
+
+
+    useEffect(() => {
+
+        const getDept = async (section) => {
+            const result = await axioslogin.get(`/section/${section}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { dept_id } = data[0]
+                setDepart(dept_id)
+            } else {
+                setDepart(0)
+            }
+        }
+        if (section !== 0) {
+            getDept(section)
+        }
+
+    }, [section])
+
+
+
 
     //HANDLE FETCH PUNCH DETAILS AGINST EMPLOYEE SELECTION
     const handleOnClickFuntion = useCallback(async () => {
@@ -113,10 +187,10 @@ const ShiftUpdation = () => {
                     const { dataa } = resultdel.data
                     const { gross_salary } = dataa[0]
 
-                    const gracePeriod = await axioslogin.get('/commonsettings')
-                    const { data } = gracePeriod.data
-                    const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
-                        week_off_day, notapplicable_shift, default_shift, noff } = data[0]
+                    // const gracePeriod = await axioslogin.get('/commonsettings')
+                    // const { data } = gracePeriod.data
+                    // const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+                    //     week_off_day, notapplicable_shift, default_shift, noff } = data[0]
 
                     const SelectMonth = getMonth(new Date(selectedDate))
                     const SelectYear = getYear(new Date(selectedDate))
@@ -205,7 +279,9 @@ const ShiftUpdation = () => {
             setOpenBkDrop(false)
 
         }
-    }, [value, dept, section, emply, empInform, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, em_no])
+    }, [value, dept, section, emply, empInform, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, em_no,
+        cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+        week_off_day, notapplicable_shift, default_shift, noff])
 
     //ATTENDANCE TABLE UPDATION FUNCTION
     useEffect(() => {
@@ -226,48 +302,38 @@ const ShiftUpdation = () => {
         }
     }, [updatedDataPunchInOut, UPDATE_PUNCHMASTER_TABLE, dispatch, tableArray])
 
+
     return (
         <Fragment>
+
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <CustomLayout title="Punch In/Out Marking" displayClose={true} >
                 <Box sx={{ width: '100%', }}>
-                    <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                        <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    views={['year', 'month']}
-                                    minDate={subMonths(new Date(), 1)}
-                                    maxDate={addMonths(new Date(), 1)}
-                                    value={value}
-                                    size="small"
-                                    onChange={(newValue) => {
-                                        setValue(newValue);
-                                    }}
-                                    renderInput={({ inputRef, inputProps, InputProps }) => (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                            <CssVarsProvider>
-                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                            </CssVarsProvider>
-                                            {InputProps?.endAdornment}
-                                        </Box>
-                                    )}
-                                />
-                            </LocalizationProvider>
-                        </Box>
-                        {hod === 1 || incharge === 1 ?
 
-                            <Box sx={{ display: 'flex', width: '60%', }}>
-
-                                <Box sx={{ flex: 1, px: 0.5 }}>
-                                    <DepartmentDropRedx getDept={changeDept} />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}>
-                                    <DepartmentSectionRedx getSection={changeSection} />
-                                </Box>
-                                <Box sx={{ flex: 1, px: 0.5 }}>
-                                    <SectionBsdEmployee getEmploy={getEmployee} />
-                                </Box>
-                            </Box> :
+                    {
+                        self === true ? <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                            <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['year', 'month']}
+                                        minDate={subMonths(new Date(), 1)}
+                                        maxDate={addMonths(new Date(), 1)}
+                                        value={value}
+                                        size="small"
+                                        onChange={(newValue) => {
+                                            setValue(newValue);
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
                             <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
 
                                 <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
@@ -301,33 +367,157 @@ const ShiftUpdation = () => {
                                     />
                                 </Box>
                             </Box>
-                        }
-                        <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
-                            <CssVarsProvider>
-                                <Button
-                                    aria-label="Like"
-                                    variant="outlined"
-                                    color="neutral"
-                                    onClick={handleOnClickFuntion}
-                                    fullWidth
-                                    startDecorator={<HourglassEmptyOutlinedIcon />}
-                                    sx={{ mx: 0.5 }}
-                                >
-                                    Process
-                                </Button>
-                                <Button
-                                    aria-label="Like"
-                                    variant="outlined"
-                                    color="neutral"
-                                    fullWidth
-                                    startDecorator={<CleaningServicesOutlinedIcon />}
-                                    sx={{ mx: 0.5 }}
-                                >
-                                    Clear
-                                </Button>
-                            </CssVarsProvider>
+                            <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                                <CssVarsProvider>
+                                    <Button
+                                        aria-label="Like"
+                                        variant="outlined"
+                                        color="neutral"
+                                        onClick={handleOnClickFuntion}
+                                        fullWidth
+                                        startDecorator={<HourglassEmptyOutlinedIcon />}
+                                        sx={{ mx: 0.5 }}
+                                    >
+                                        Process
+                                    </Button>
+                                    <Button
+                                        aria-label="Like"
+                                        variant="outlined"
+                                        color="neutral"
+                                        fullWidth
+                                        startDecorator={<CleaningServicesOutlinedIcon />}
+                                        sx={{ mx: 0.5 }}
+                                    >
+                                        Clear
+                                    </Button>
+                                </CssVarsProvider>
+                            </Box>
+                        </Box> : <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                            {
+                                hod === 1 || incharge === 1 ? <Box sx={{ flex: 1, px: 0.5, mt: 1 }} >
+                                    <JoyCheckbox
+                                        label='Self'
+                                        name="self"
+                                        checked={self}
+                                        onchange={(e) => setSelf(e.target.checked)}
+                                    />
+                                </Box> : null
+                            }
+
+
+                            <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['year', 'month']}
+                                        minDate={subMonths(new Date(), 1)}
+                                        maxDate={addMonths(new Date(), 1)}
+                                        value={value}
+                                        size="small"
+                                        onChange={(newValue) => {
+                                            setValue(newValue);
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
+                            {
+                                rights === 1 ? <Box sx={{ display: 'flex', width: '60%', }}>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }}>
+                                        <DepartmentDropRedx getDept={changeDept} />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}>
+                                        <DepartmentSectionRedx getSection={changeSection} />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }}>
+                                        <SectionBsdEmployee getEmploy={getEmployee} />
+                                    </Box>
+                                </Box> :
+
+                                    hod === 1 || incharge === 1 ?
+
+                                        <Box sx={{ display: 'flex', width: '60%', }}>
+
+                                            {/* <Box sx={{ flex: 1, px: 0.5 }}>
+                                            <DepartmentDropRedx getDept={changeDept} />
+                                        </Box> */}
+                                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                                <HodWiseDeptSection detSection={section} setSectionValue={changeSection} />
+                                            </Box>
+                                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                                <HodWiseEmpList setEmployee={getEmployee} />
+                                            </Box>
+                                        </Box> :
+
+                                        <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
+
+                                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    size="small"
+                                                    value={dept_name}
+                                                    sx={{ display: 'flex', mt: 0.5 }}
+                                                    disabled
+                                                />
+                                            </Box>
+                                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    size="small"
+                                                    value={sect_name}
+                                                    sx={{ display: 'flex', mt: 0.5 }}
+                                                    disabled
+                                                />
+                                            </Box>
+                                            <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
+                                                <TextField
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    size="small"
+                                                    value={em_name}
+                                                    sx={{ display: 'flex', mt: 0.5 }}
+                                                    disabled
+                                                />
+                                            </Box>
+                                        </Box>
+                            }
+                            <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                                <CssVarsProvider>
+                                    <Button
+                                        aria-label="Like"
+                                        variant="outlined"
+                                        color="neutral"
+                                        onClick={handleOnClickFuntion}
+                                        fullWidth
+                                        startDecorator={<HourglassEmptyOutlinedIcon />}
+                                        sx={{ mx: 0.5 }}
+                                    >
+                                        Process
+                                    </Button>
+                                    <Button
+                                        aria-label="Like"
+                                        variant="outlined"
+                                        color="neutral"
+                                        fullWidth
+                                        startDecorator={<CleaningServicesOutlinedIcon />}
+                                        sx={{ mx: 0.5 }}
+                                    >
+                                        Clear
+                                    </Button>
+                                </CssVarsProvider>
+                            </Box>
                         </Box>
-                    </Box>
+                    }
+
                     <Box sx={{ flex: 1, pt: 0.5 }} >
                         <TableContainer component={Paper}>
                             <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
