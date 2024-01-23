@@ -1,7 +1,8 @@
 import { Button, Checkbox, CssVarsProvider, Sheet, Tooltip } from '@mui/joy'
 import { Box, FormControl, MenuItem, Select, TextField } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -22,7 +23,7 @@ const OneHourRequest = () => {
 
     // const state = useSelector((state) => state.getCommonSettings, _.isEqual)
 
-    const [fromDate, setFromDate] = useState(moment(new Date()))
+    const [fromDate, setFromDate] = useState(moment())
     const [deptShift, setDeptShift] = useState([])
     const [selectedShift, setSelectedShift] = useState(0)
 
@@ -119,8 +120,8 @@ const OneHourRequest = () => {
                 setPunchOutTime(chekOut)
 
                 const postDataForpunchMaster = {
-                    date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                    date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                    date2: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
+                    date1: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
                     em_no: em_no
                 }
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
@@ -214,12 +215,27 @@ const OneHourRequest = () => {
         }
     }
 
+
+    console.log(fromDate);
+
     return (
         <Fragment>
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                 <Box sx={{ width: '15%', p: 0.5, mt: 0.2 }} >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                            views={['day']}
+                            // maxDate={moment(calanderMaxDate)}
+                            inputFormat="DD-MM-YYYY"
+                            value={fromDate}
+                            onChange={(date) => setFromDate(date)}
+                            renderInput={(params) => (
+                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            )}
+                        />
+                    </LocalizationProvider>
+                    {/* <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
                             inputFormat="DD-MM-YYYY"
@@ -229,7 +245,7 @@ const OneHourRequest = () => {
                                 <TextField {...params} helperText={null} size="small" sx={{ display: 'flex', pt: 0.5 }} />
                             )}
                         />
-                    </LocalizationProvider>
+                    </LocalizationProvider> */}
                 </Box>
                 <Box sx={{ pl: 0., width: '20%', mt: 0.2 }} >
                     <FormControl
@@ -261,16 +277,18 @@ const OneHourRequest = () => {
                 </Box>
                 <Box sx={{ width: '5%', p: 0.5, mt: 0.5 }} >
                     <CssVarsProvider>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => {
-                                getShiftdetail()
-                            }}
-                        >
-                            <AddCircleOutlineIcon />
-                        </Button>
+                        <Tooltip title="Select Punch Data" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => {
+                                    getShiftdetail()
+                                }}
+                            >
+                                <AddCircleOutlineIcon />
+                            </Button>
+                        </Tooltip>
                     </CssVarsProvider>
                 </Box>
                 <Box sx={{ width: '60%', }}>
