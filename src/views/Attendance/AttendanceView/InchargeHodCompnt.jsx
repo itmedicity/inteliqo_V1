@@ -60,9 +60,10 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                         setDateArray(values);
                         const newFun = (val) => {
                             const arr = punchData?.filter(item => val.em_no === item.em_no)
+                            const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
                             return {
                                 ...val,
-                                "arr": arr
+                                "arr": array
                             }
                         }
                         const newEmp = empData?.map(newFun)
