@@ -229,6 +229,7 @@ const EmployeeReport = () => {
         { headerName: 'Address1 ', field: 'addressPresent1' },
         { headerName: 'Address2 ', field: 'addressPresent2' },
         { headerName: 'Pin', field: 'hrm_pin2' },
+        { headerName: 'Gross Salary', field: 'gross_salary' },
 
     ])
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */

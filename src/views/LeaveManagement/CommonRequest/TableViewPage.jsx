@@ -10,9 +10,9 @@ import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const TableViewPage = ({ show }) => {
+const TableViewPage = ({ show, count, setCount }) => {
     const dispatch = useDispatch();
-    const [count, setCount] = useState(0)
+    //const [count, setCount] = useState(0)
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
@@ -20,6 +20,7 @@ const TableViewPage = ({ show }) => {
         dispatch(getOnDutyReqst())
         dispatch(getOneHourReqst())
         dispatch(getEnableMisspunch())
+        setCount(0)
     }, [dispatch, count])
 
 
@@ -140,6 +141,7 @@ const TableViewPage = ({ show }) => {
                     return value.dept_sect_id === val.dept_section;
                 })
             })
+            console.log(array1);
             const newOnduty = array1.map((val) => {
                 return {
                     typeslno: 2,
@@ -149,7 +151,7 @@ const TableViewPage = ({ show }) => {
                     empname: val.em_name,
                     sectname: val.sect_name,
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
-                    dutyDate: moment(val.miss_punch_day).format('DD-MM-YYYY'),
+                    dutyDate: moment(val.on_duty_date).format('DD-MM-YYYY'),
                     reason: val.onduty_reason,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :

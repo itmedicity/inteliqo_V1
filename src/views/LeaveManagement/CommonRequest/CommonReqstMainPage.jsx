@@ -25,6 +25,7 @@ const CommonReqstMainPage = () => {
     const [employee, setEmployee] = useState(0)//select employee
     const [deptSection, setDeptSection] = useState(0);//select dept section
     const [selectedEmp, setSelectedEmp] = useState(0)
+    const [count, setCount] = useState(0)
 
     const [show, setShow] = useState(0)
 
@@ -192,11 +193,11 @@ const CommonReqstMainPage = () => {
                         {
                             show === 1 ? <MissPunchrequest /> :
                                 show === 2 ? <OnDutyRequest /> :
-                                    show === 3 ? <OneHourRequest /> :
+                                    show === 3 ? <OneHourRequest count={count} setCount={setCount} /> :
                                         show === 4 ? <Generalrequest /> : null
                         }
                     </Suspense>
-                    <TableViewPage show={show} />
+                    <TableViewPage show={show} count={count} setCount={setCount} />
 
                 </Box>
             </CustomLayout>

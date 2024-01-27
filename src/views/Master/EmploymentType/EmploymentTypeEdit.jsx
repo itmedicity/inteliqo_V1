@@ -483,7 +483,7 @@ const EmploymentTypeEdit = () => {
                             </Box>
                         </Grid>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                            <Tooltip title="Amount" followCursor placement='top' arrow>
+                            <Tooltip title="Save" followCursor placement='top' arrow>
                                 <Box sx={{ px: 0.5, mt: 0.9 }}>
                                     <CssVarsProvider>
                                         <Button

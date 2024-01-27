@@ -404,8 +404,6 @@ const InchargeApproval = () => {
                         }}
                         rowHeight={30}
                         headerHeight={30}
-                    // rowStyle={rowStyle}
-                    // getRowStyle={getRowStyle}
                     />
                 </Paper>
             </Box>
