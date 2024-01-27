@@ -5,16 +5,24 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
-import { addHours, format, subHours } from 'date-fns'
+import { addHours, addMinutes, format, isAfter, isBefore, subHours } from 'date-fns'
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
 // import { CalculationFun } from './CommonRqstFun'
 
-const OneHourRequest = () => {
+const OneHourRequest = ({ count, setCount }) => {
+
+    const reduxDispatch = useDispatch()
+
+    useEffect(() => {
+        reduxDispatch(setCommonSetting())
+    }, [reduxDispatch])
+
 
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
@@ -39,10 +47,14 @@ const OneHourRequest = () => {
     const [punchInTime, setPunchInTime] = useState(0);
     const [punchOutTime, setPunchOutTime] = useState(0);
     const [reason, setReason] = useState('')
+    const [punchCheck, setPunchcheck] = useState(0)
+    const [punchData, setPunchData] = useState([])
 
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const { cmmn_grace_period } = state;
 
 
     useEffect(() => {
@@ -126,10 +138,11 @@ const OneHourRequest = () => {
                 }
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
                 const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                const { success } = result.data;
+                const { success, data } = result.data;
                 if (success === 1) {
-                    // setPunchDetl(data)
+                    setPunchData(data)
                     succesNofity('Done , Select The Punching Info')
+                    setPunchcheck(1)
                 } else {
                     //no record
                     warningNofity('Punching Data Not Found')
@@ -188,35 +201,89 @@ const OneHourRequest = () => {
         }
         else if (reason === '') {
             warningNofity("Reason Is Mandatory")
+        } else if (punchCheck === 0) {
+            warningNofity("Please Select Punch Data Button!!")
         }
         else {
-            // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
-            const result = await axioslogin.post('/CommonReqst', postData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setSelectedShift(0)
-                setFromDate(moment(new Date()))
-                setReason('')
-                setPunchInTime(0)
-                setPunchOutTime(0)
-                setCheckInCheck(false)
-                setCheckOutCheck(false)
+            if (checkinBox === true) {
+                const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm:ss')
+                const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
+                const result = punchData.find((val) => val)
+                const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+                if (dd === 0) {
+                    warningNofity("Can't Apply For One Hour Request!!");
+                    setSelectedShift(0)
+                    setFromDate(moment(new Date()))
+                    setReason('')
+                    setPunchInTime(0)
+                    setPunchOutTime(0)
+                    setCheckInCheck(false)
+                    setCheckOutCheck(false)
+                } else {
+                    // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
+                    const result = await axioslogin.post('/CommonReqst', postData)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        setCount(count + 1)
+                        setSelectedShift(0)
+                        setFromDate(moment(new Date()))
+                        setReason('')
+                        setPunchInTime(0)
+                        setPunchOutTime(0)
+                        setCheckInCheck(false)
+                        setCheckOutCheck(false)
+                    } else {
+                        warningNofity(message)
+                        setSelectedShift(0)
+                        setFromDate(moment(new Date()))
+                        setReason('')
+                        setPunchInTime(0)
+                        setPunchOutTime(0)
+                        setCheckInCheck(false)
+                        setCheckOutCheck(false)
+                    }
+                }
             } else {
-                warningNofity(message)
-                setSelectedShift(0)
-                setFromDate(moment(new Date()))
-                setReason('')
-                setPunchInTime(0)
-                setPunchOutTime(0)
-                setCheckInCheck(false)
-                setCheckOutCheck(false)
+                const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm:ss')
+                const result = punchData.findLast((val) => val)
+                const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) ? 1 : 0
+                if (dd === 0) {
+                    warningNofity("Can't Apply For One Hour Request!!");
+                    setSelectedShift(0)
+                    setFromDate(moment(new Date()))
+                    setReason('')
+                    setPunchInTime(0)
+                    setPunchOutTime(0)
+                    setCheckInCheck(false)
+                    setCheckOutCheck(false)
+                } else {
+                    const result = await axioslogin.post('/CommonReqst', postData)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        setCount(count + 1)
+                        setSelectedShift(0)
+                        setFromDate(moment(new Date()))
+                        setReason('')
+                        setPunchInTime(0)
+                        setPunchOutTime(0)
+                        setCheckInCheck(false)
+                        setCheckOutCheck(false)
+                    } else {
+                        warningNofity(message)
+                        setSelectedShift(0)
+                        setFromDate(moment(new Date()))
+                        setReason('')
+                        setPunchInTime(0)
+                        setPunchOutTime(0)
+                        setCheckInCheck(false)
+                        setCheckOutCheck(false)
+                    }
+                }
             }
         }
     }
-
-
-    console.log(fromDate);
 
     return (
         <Fragment>
@@ -235,17 +302,6 @@ const OneHourRequest = () => {
                             )}
                         />
                     </LocalizationProvider>
-                    {/* <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            inputFormat="DD-MM-YYYY"
-                            value={fromDate}
-                            onChange={setFromDate}
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex', pt: 0.5 }} />
-                            )}
-                        />
-                    </LocalizationProvider> */}
                 </Box>
                 <Box sx={{ pl: 0., width: '20%', mt: 0.2 }} >
                     <FormControl

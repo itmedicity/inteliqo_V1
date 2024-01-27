@@ -69,7 +69,7 @@ const HodApproval = () => {
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -84,7 +84,7 @@ const HodApproval = () => {
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -100,7 +100,7 @@ const HodApproval = () => {
                 Halfdaymapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -115,7 +115,7 @@ const HodApproval = () => {
                 Halfdaymapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -131,7 +131,7 @@ const HodApproval = () => {
                 nopunchmapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -146,7 +146,7 @@ const HodApproval = () => {
                 nopunchmapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -162,7 +162,7 @@ const HodApproval = () => {
                 compensatoryMapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
@@ -177,7 +177,7 @@ const HodApproval = () => {
                 compensatoryMapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
                         const arr = val && val.filter((k) => {
-                            return (k.hr_apprv !== 1)
+                            return (k.hr_apprv !== 1 && k.incaprv !== 2)
                         })
                         setTableData(arr)
                     } else {
