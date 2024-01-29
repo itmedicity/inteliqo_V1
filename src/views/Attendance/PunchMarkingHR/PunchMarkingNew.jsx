@@ -2,11 +2,11 @@ import React, { Fragment, useEffect, useState, memo, useMemo, useCallback } from
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Button, CssVarsProvider } from '@mui/joy';
+import { Button, CssVarsProvider, IconButton, Typography } from '@mui/joy';
 import Input from '@mui/joy/Input';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
@@ -22,16 +22,21 @@ import PunchSavedHrView from './PunchSavedHrView';
 import { useHistory } from 'react-router-dom'
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import CustomInnerHeigtComponent from 'src/views/Component/MuiCustomComponent/CustomInnerHeigtComponent';
+import { setDept } from 'src/redux/actions/Dept.Action';
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
+import DeptSectionComponent from './DeptSectionComponent';
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
-
-const PunchMarkingHR = () => {
+const PunchMarkingNew = () => {
     const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA } = Actiontypes;
     const dispatch = useDispatch();
     const history = useHistory()
     const [openBkDrop, setOpenBkDrop] = useState(false)
     //FORM DATA 
     const [value, setValue] = useState(moment(new Date()));
-    const [dept, changeDept] = useState(0);
+    const [depart, changeDept] = useState(0);
     const [section, changeSection] = useState(0);
     const [flag, setFlag] = useState(0)
     //get the employee details for taking the HOd and Incharge Details
@@ -44,18 +49,46 @@ const PunchMarkingHR = () => {
         dispatch(setDepartment());
     }, [dispatch])
 
+
+    /** To get stored branch values from redux */
     useEffect(() => {
-        if (dept !== 0) {
+        dispatch(setDept())
+        dispatch(setDeptWiseSection());
+    }, [dispatch])
+
+    const deptSection = useSelector((state) => state?.getDeptSectList?.deptSectionList, _.isEqual)
+    const dept = useSelector((state) => state?.getdept?.departmentlist, _.isEqual)
+
+    /** useSelector for getting depatment, department section, branch wise list from redux */
+    // const state = useSelector((state) => {
+    //     return {
+    //         deptSection: state?.getDeptSectList?.deptSectionList || 0,
+    //         dept: state?.getdept?.departmentlist || 0,
+    //     }
+    // })
+
+    /** Destructuring state into values... */
+    // const { dept, deptSection } = state
+
+
+
+
+
+
+
+
+    useEffect(() => {
+        if (depart !== 0) {
             setFlag(0)
         }
 
-    }, [dept])
+    }, [depart])
     //EMPLOYEE INFOR BASED ON SELECTED DEPT & SECTION
     const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
     const [msg, setmsg] = useState(0)
 
     const handleOnClickFuntion = useCallback(async () => {
-        if (dept !== 0 && section !== 0 && empInform.length !== 0) {
+        if (depart !== 0 && section !== 0 && empInform.length !== 0) {
             setOpenBkDrop(true)
             const selectedDate = moment(value).format('YYYY-MM-DD');
 
@@ -80,7 +113,7 @@ const PunchMarkingHR = () => {
                             preFromDate: format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd 00:00:00'),
                             toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
                             preToDate: format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59'),
-                            dept: dept,
+                            dept: depart,
                             section: section,
                             empId: emply
                         }
@@ -156,7 +189,7 @@ const PunchMarkingHR = () => {
         } else {
             warningNofity("Please Select Depatment And Department section")
         }
-    }, [empInform, dept, section, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, value])
+    }, [empInform, depart, section, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, value])
 
     const [nextstage, setNextStage] = useState(0)
     useEffect(() => {
@@ -175,7 +208,7 @@ const PunchMarkingHR = () => {
         if (success === 1) {
             succesNofity("Punch Updated Successfully")
             setOpenBkDrop(false)
-            setFlag(1)
+            //setFlag(1)
         } else {
             warningNofity("Error While Updating Punch")
         }
@@ -185,7 +218,7 @@ const PunchMarkingHR = () => {
         if (nextstage === 1) {
             const saveDta = {
                 marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                dept_slno: dept,
+                dept_slno: depart,
                 deptsec_slno: section,
                 create_user: em_no,
                 edit_user: em_no,
@@ -193,15 +226,92 @@ const PunchMarkingHR = () => {
             }
             punchMarkSave(saveDta)
         }
-    }, [nextstage, value, dept, section, em_no])
+    }, [nextstage, value, depart, section, em_no])
 
     const handleView = useCallback(() => {
         history.push('/Home/PunchDoneList');
     }, [history])
+
+    const toRedirectToHome = useCallback(() => {
+        history.push(`/Home`)
+    }, [])
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
-            <CustomLayout title="Punch In/Out Marking HR" displayClose={true} >
+            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column' }}>
+
+                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                    <Box sx={{ flex: 1 }} >
+                        <CssVarsProvider>
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                Punch In/Out Marking HR
+                            </Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='xs' color="danger" onClick={toRedirectToHome}>
+                                <CloseIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box>
+                </Paper>
+                <Paper variant='outlined' sx={{ display: "flex", alignItems: "center", }}  >
+                    <Box sx={{ flex: 1, px: 0.5, }} >
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['year', 'month']}
+                                minDate={subMonths(new Date(), 1)}
+                                maxDate={addMonths(new Date(), 1)}
+                                value={value}
+                                size="small"
+                                onChange={(newValue) => {
+                                    setValue(newValue);
+                                }}
+                                renderInput={({ inputRef, inputProps, InputProps }) => (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                        <CssVarsProvider>
+                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                        </CssVarsProvider>
+                                        {InputProps?.endAdornment}
+                                    </Box>
+                                )}
+                            />
+                        </LocalizationProvider>
+                    </Box>
+                    <Box sx={{ flex: 1, px: 0.5, }} ></Box>
+                    <Box sx={{ flex: 1, px: 0.5, }} ></Box>
+                    <Box sx={{ flex: 1, px: 0.5, }} ></Box>
+                </Paper>
+
+                <Box sx={{
+                    display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
+                    overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                }}>
+                    {
+                        dept?.map((val, index) => (
+                            <Box key={index} sx={{ display: "flex", flexDirection: "row" }}>
+                                <Box sx={{
+                                    width: "20%", borderBottom: 1, borderLeft: 1, textAlign: "center",
+                                    borderColor: "#D8D9DA", display: "flex", flexDirection: "row", justifyContent: "center", gap: 4
+                                }}>
+                                    <Typography >
+                                        {val.dept_name}
+
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ width: "80%" }}>
+                                    <DeptSectionComponent deptid={val.dept_id} deptSection={deptSection} value={value} />
+                                </Box>
+                            </Box>
+                        ))
+                    }
+                </Box>
+            </Paper>
+
+
+
+            {/* <CustomLayout title="Punch In/Out Marking HR" displayClose={true} >
                 <Box sx={{ width: '100%', }}>
                     <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
                         <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
@@ -229,7 +339,7 @@ const PunchMarkingHR = () => {
                         <Box sx={{ display: 'flex', width: '50%', }}>
 
                             <Box sx={{ flex: 1, px: 0.5 }}>
-                                <DepartmentDropRedx getDept={changeDept} deptslno={dept} />
+                                <DepartmentDropRedx getDept={changeDept} deptslno={depart} />
                             </Box>
                             <Box sx={{ flex: 1, px: 0.5 }}>
                                 <DepartmentSectionRedx getSection={changeSection} />
@@ -263,12 +373,12 @@ const PunchMarkingHR = () => {
                             </CssVarsProvider>
                         </Box>
                     </Box>
-                    {flag === 1 ? <PunchSavedHrView value={value} dept={dept} section={section}
+                    {flag === 1 ? <PunchSavedHrView value={value} dept={depart} section={section}
                     /> : null}
                 </Box>
-            </CustomLayout>
-        </Fragment>
+            </CustomLayout> */}
+        </Fragment >
     )
 }
 
-export default memo(PunchMarkingHR)
+export default PunchMarkingNew
