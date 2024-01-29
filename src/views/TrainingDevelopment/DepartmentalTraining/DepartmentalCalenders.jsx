@@ -18,7 +18,6 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import ScheduleCalenders from './ScheduleCalenders';
 import _ from 'underscore';
-//import TrainingMonthlyReport from './TrainingMonthlyReport';
 
 const DepartmentalCalenders = () => {
 
@@ -30,8 +29,6 @@ const DepartmentalCalenders = () => {
     const [checkdata, setCheckdata] = useState([]);
     const [count, Setcount] = useState(0);
     const [year, setYear] = useState(moment(new Date()).format("YYYY-MM-DD"));
-    // const [openReport, setOpenReport] = useState(0);
-    // const [Month, SetMonth] = useState(0)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -101,8 +98,6 @@ const DepartmentalCalenders = () => {
     return (
         <Fragment>
             <ToastContainer />
-            {/* {openReport === 1 ? <TrainingMonthlyReport Month={Month} count={count} Setcount={Setcount} />
-                : */}
             <CustomSettingsLayout title="Department Wise Training" displayClose={true}>
                 <Box sx={{ width: "100%", p: 1, height: 600 }}>
                     <Paper variant='outlined' sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
@@ -139,10 +134,6 @@ const DepartmentalCalenders = () => {
                         </Tooltip>
                         <Box sx={{ flex: 1 }}></Box>
                     </Paper>
-                    {/* {
-                        table === 1 ? <ScheduleCalenders setOpenReport={setOpenReport} SetMonth={SetMonth} EmpDetails={EmpDetails} checkdata={checkdata} dept={dept} setdept={setdept} deptSec={deptSec} setdeptSec={setdeptSec} year={year}
-                            setYear={setYear} count={count} Setcount={Setcount} setTable={setTable} /> : null
-                    } */}
                     {
                         table === 1 ? <ScheduleCalenders EmpDetails={EmpDetails} checkdata={checkdata} dept={dept} setdept={setdept} deptSec={deptSec} setdeptSec={setdeptSec} year={year}
                             setYear={setYear} count={count} Setcount={Setcount} setTable={setTable} /> : null

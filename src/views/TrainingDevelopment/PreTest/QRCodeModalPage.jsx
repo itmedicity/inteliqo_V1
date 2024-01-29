@@ -2,6 +2,7 @@ import React, { Fragment, memo, useCallback } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
+import { QR_URL } from '../../Constant/Static'
 
 const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
 
@@ -12,9 +13,7 @@ const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
         setQRmodal(false);
     }, [setQRmodal]);
 
-    const Questlink = `http://192.168.22.3:3000/OnlinePreTest/${slno}/${em_id}/${topic_slno}/${question_count}`
-
-
+    const Questlink = `${QR_URL}/OnlinePreTest/${slno}/${em_id}/${topic_slno}/${question_count}`
     return (
         <Fragment>
             <Modal

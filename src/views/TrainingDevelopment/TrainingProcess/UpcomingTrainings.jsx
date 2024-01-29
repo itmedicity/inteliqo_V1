@@ -4,11 +4,11 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import moment from 'moment'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import SelectTopics from 'src/views/MuiComponents/SelectTopics'
 import SearchIcon from '@mui/icons-material/Search';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
+import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
 
 const UpcomingTrainings = ({ setShow, upcomingData }) => {
     const [tabledata, setTableData] = useState([])
@@ -40,7 +40,7 @@ const UpcomingTrainings = ({ setShow, upcomingData }) => {
         setTableData(displayData)
         if (flag === 1) {
             const ScheduleDate = displayData?.filter((val) => {
-                return val.date === pickdate
+                return val.date === pickdate && val.topic_slno === topic
 
             })
             if (ScheduleDate?.length !== 0) {
@@ -50,7 +50,7 @@ const UpcomingTrainings = ({ setShow, upcomingData }) => {
                 infoNofity("No training Scheduled")
             }
         }
-    }, [upcomingData, pickdate, flag])
+    }, [upcomingData, pickdate, topic, flag])
 
     const [columnDef] = useState([
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
@@ -61,11 +61,7 @@ const UpcomingTrainings = ({ setShow, upcomingData }) => {
         const getdate = moment(selectdate).format("DD-MM-YYYY")
         setPickdate(getdate);
         setFlag(1);
-        const scheduleTopic = tabledata?.filter((val) => {
-            return val.topic_slno === topic
-        })
-        setTableData(scheduleTopic);
-    }, [filterdate, topic, tabledata])
+    }, [filterdate])
 
     const toClose = useCallback(() => {
         setShow(0)
@@ -94,9 +90,8 @@ const UpcomingTrainings = ({ setShow, upcomingData }) => {
                             />
                         </LocalizationProvider>
                     </Box>
-
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                        <SelectTopics setTopic={setTopic} />
+                        <JoySelectTopic setTopic={setTopic} topic={topic} />
 
                     </Box>
                     <Box sx={{ p: 1 }}>

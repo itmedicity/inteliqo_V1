@@ -1,6 +1,6 @@
 import { Button, CssVarsProvider, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
 import { Box } from '@mui/material'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import { Tooltip } from '@mui/material'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
@@ -22,8 +22,10 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
         Setopen(false)
     }, [Setopen])
 
+    const maparr = useMemo(() => attendance, [attendance])
+
     useEffect(() => {
-        const displayData = attendance?.map((val) => {
+        const displayData = maparr?.map((val) => {
             const object = {
                 em_id: val.em_id,
                 em_name: val.em_name,
@@ -43,13 +45,13 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
             return object;
         })
         setTableData(displayData)
-    }, [attendance, setTableData])
+    }, [maparr])
 
 
     const markAttendance = useCallback((params) => {
         const data = params.data
         setDataArray(data)
-    }, [setDataArray])
+    }, [])
 
 
     useEffect(() => {
