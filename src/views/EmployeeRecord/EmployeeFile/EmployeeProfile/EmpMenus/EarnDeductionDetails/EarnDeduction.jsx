@@ -194,12 +194,19 @@ const EarnDeduction = () => {
                 const result = await axioslogin.post('/empearndeduction/create/newentry', postData)
                 const { message, success } = result.data;
                 if (success === 1) {
-                    setcount(count + 1)
-                    succesNofity(message);
-                    setWageType(resetForm);
-                    setWage(0)
-                    setflag(0)
-                    setlastWage(0)
+                    updateEmpmaster(no).then((values) => {
+                        const { status, message } = values
+                        if (status === 1) {
+                            succesNofity(message);
+                            setcount(count + 1)
+                            setWageType(resetForm);
+                            setWage(0)
+                            setflag(0)
+                            setlastWage(0)
+                        } else {
+                            infoNofity(message)
+                        }
+                    })
                 } else {
                     infoNofity(message)
                     setWageType(resetForm);

@@ -21,7 +21,7 @@ const TableViewPage = ({ show, count, setCount }) => {
         dispatch(getOneHourReqst())
         dispatch(getEnableMisspunch())
         setCount(0)
-    }, [dispatch, count])
+    }, [dispatch, setCount, count])
 
 
     //get the employee details for taking the HOd and Incharge Details
@@ -281,7 +281,7 @@ const TableViewPage = ({ show, count, setCount }) => {
                 }
             }
         }
-    }, [count])
+    }, [count, setCount])
 
     const deleteGene = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
@@ -301,7 +301,7 @@ const TableViewPage = ({ show, count, setCount }) => {
                 warningNofity(message)
             }
         }
-    }, [count])
+    }, [count, setCount])
 
     useEffect(() => {
         if (show === 4) {

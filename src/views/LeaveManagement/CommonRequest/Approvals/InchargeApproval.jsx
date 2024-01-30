@@ -57,7 +57,7 @@ const InchargeApproval = () => {
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
         { headerName: 'Request Date', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {
@@ -80,12 +80,16 @@ const InchargeApproval = () => {
 
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
+        console.log(onDutyData);
 
         if (selectValue === 2 && deptSection === 0) {
+
             const filtered = onDutyData.filter(val => arraydepsect.includes(val.dept_sect_id))
+            console.log(filtered);
             const filteronDuty = filtered && filtered.filter((val) => {
                 return (val.incharge_req_status === 1)
             })
+            console.log(filteronDuty);
             if (Object.keys(filteronDuty).length > 0) {
                 const arr = filteronDuty?.map((val) => {
                     return {
