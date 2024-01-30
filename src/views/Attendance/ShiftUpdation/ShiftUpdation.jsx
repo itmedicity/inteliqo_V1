@@ -92,7 +92,7 @@ const ShiftUpdation = () => {
             changeSection(em_dept_section)
             getEmployee(employeeProfileDetl)
         }
-    }, [hod, incharge, em_department, em_dept_section, employeeProfileDetl, department, self])
+    }, [hod, dispatch, em_id, incharge, em_department, em_dept_section, employeeProfileDetl, department, self])
 
     useEffect(() => {
         const getEmployeeRight = async () => {

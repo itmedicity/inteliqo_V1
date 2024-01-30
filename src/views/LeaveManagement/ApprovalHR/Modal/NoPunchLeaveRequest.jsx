@@ -12,7 +12,7 @@ import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
@@ -84,18 +84,25 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
             slno: slno
         }
 
-        //UPDATE LEAVE MASTER TABLE
-        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/HrNopunch`, formData);
-        const { success, message } = await resultdel.data;
-        if (success === 1) {
+        if (reason === '') {
+            warningNofity("Plaese Add Remark")
             setOpenBkDrop(false)
-            setCount(count + 1)
-            succesNofity('Leave Request Approved')
-            setOpen(false)
+        } else {
+            //UPDATE LEAVE MASTER TABLE
+            const resultdel = await axioslogin.patch(`/LeaveRequestApproval/HrNopunch`, formData);
+            const { success, message } = await resultdel.data;
+            if (success === 1) {
+                setOpenBkDrop(false)
+                setCount(count + 1)
+                succesNofity('Leave Request Approved')
+                setOpen(false)
+            }
+            else {
+                succesNofity(message)
+            }
         }
-        else {
-            succesNofity(message)
-        }
+
+
     }, [reason, checkintime, checkouttime, count, checkinflag, setCount, setOpen, checkoutflag, punchslno, slno])
     const NoPunchRejectdata = {
         np_hr_apprv_status: 2,
