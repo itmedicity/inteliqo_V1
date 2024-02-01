@@ -12,7 +12,7 @@ import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
@@ -68,18 +68,22 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
             lvetype_slno: 11
 
         }
-
-        //UPDATE LEAVE MASTER TABLE
-        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/HrCoff`, formData);
-        const { success, message } = await resultdel.data;
-        if (success === 1) {
+        if (reason === '') {
+            warningNofity("Plaese Add Remark")
             setOpenBkDrop(false)
-            setCount(Math.random())
-            succesNofity('Leave Request Approved')
-            setOpen(false)
-        }
-        else {
-            succesNofity(message)
+        } else {
+            //UPDATE LEAVE MASTER TABLE
+            const resultdel = await axioslogin.patch(`/LeaveRequestApproval/HrCoff`, formData);
+            const { success, message } = await resultdel.data;
+            if (success === 1) {
+                setOpenBkDrop(false)
+                setCount(Math.random())
+                succesNofity('Leave Request Approved')
+                setOpen(false)
+            }
+            else {
+                succesNofity(message)
+            }
         }
     }, [reason, slno, leave_date, setCount, setOpen, em_id])
     const CoffRejectdata = {
@@ -186,7 +190,7 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Leave Date
+                                Duty Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
                                 {moment(leave_date).format('DD-MM-YYYY')}

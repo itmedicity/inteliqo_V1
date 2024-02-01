@@ -57,7 +57,7 @@ const InchargeApproval = () => {
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
         { headerName: 'Request Date', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {
@@ -80,12 +80,16 @@ const InchargeApproval = () => {
 
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
+        console.log(onDutyData);
 
         if (selectValue === 2 && deptSection === 0) {
+
             const filtered = onDutyData.filter(val => arraydepsect.includes(val.dept_sect_id))
+            console.log(filtered);
             const filteronDuty = filtered && filtered.filter((val) => {
-                return (val.hod_req_status === 1)
+                return (val.incharge_req_status === 1)
             })
+            console.log(filteronDuty);
             if (Object.keys(filteronDuty).length > 0) {
                 const arr = filteronDuty?.map((val) => {
                     return {
@@ -125,7 +129,7 @@ const InchargeApproval = () => {
             }
         } else if (selectValue === 2 && deptSection === 0) {
             const filteronDuty = onDutyData && onDutyData.filter((val) => {
-                return (val.dept_sect_id === deptSection && val.hod_req_status === 1)
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
             })
             if (Object.keys(filteronDuty).length > 0) {
                 const arr = filteronDuty?.map((val) => {
@@ -168,7 +172,7 @@ const InchargeApproval = () => {
         else if (selectValue === 3 && deptSection === 0) {
             const filtered = oneHourData.filter(val => arraydepsect.includes(val.dept_sect_id))
             const filteronehour = filtered && filtered.filter((val) => {
-                return (val.hod_req_status === 1)
+                return (val.incharge_req_status === 1)
             })
             if (Object.keys(filteronehour).length > 0) {
                 const arr = filteronehour?.map((val) => {
@@ -211,7 +215,7 @@ const InchargeApproval = () => {
 
         } else if (selectValue === 3 && deptSection !== 0) {
             const filteronehour = oneHourData && oneHourData.filter((val) => {
-                return (val.dept_sect_id === deptSection && val.hod_req_status === 1)
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
             })
             if (Object.keys(filteronehour).length > 0) {
                 const arr = filteronehour?.map((val) => {
@@ -255,7 +259,7 @@ const InchargeApproval = () => {
         } else if (selectValue === 1 && deptSection === 0) {
             const filtered = enableData.filter(val => arraydepsect.includes(val.dept_sect_id))
             const filterenable = filtered && filtered.filter((val) => {
-                return (val.hod_req_status === 1)
+                return (val.incharge_req_status === 1)
             })
             if (Object.keys(filterenable).length > 0) {
                 const arr = filterenable?.map((val) => {
@@ -299,7 +303,7 @@ const InchargeApproval = () => {
             }
         } else if (selectValue === 1 && deptSection !== 0) {
             const filterenable = enableData && enableData.filter((val) => {
-                return (val.dept_sect_id === deptSection && val.hod_req_status === 1)
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
             })
             if (Object.keys(filterenable).length > 0) {
                 const arr = filterenable?.map((val) => {
@@ -404,8 +408,6 @@ const InchargeApproval = () => {
                         }}
                         rowHeight={30}
                         headerHeight={30}
-                    // rowStyle={rowStyle}
-                    // getRowStyle={getRowStyle}
                     />
                 </Paper>
             </Box>
