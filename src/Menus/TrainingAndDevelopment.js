@@ -38,18 +38,18 @@ const TrainingAndDevelopment = [
         name: 'Faculty Evaluation',
         to: '/homes',
     },
-    {
-        men_slno: 59,
-        component: CNavItem,
-        name: 'Pre-Test',
-        to: '/Home/PreTest',
-    },
-    {
-        men_slno: 60,
-        component: CNavItem,
-        name: 'Post-Test',
-        to: '/Home/PostTest',
-    },
+    // {
+    //     men_slno: 59,
+    //     component: CNavItem,
+    //     name: 'Pre-Test',
+    //     to: '/Home/PreTest',
+    // },
+    // {
+    //     men_slno: 60,
+    //     component: CNavItem,
+    //     name: 'Post-Test',
+    //     to: '/Home/PostTest',
+    // },
     {
         men_slno: 261,
         component: CNavItem,
@@ -64,7 +64,19 @@ const TrainingAndDevelopment = [
         to: '/Home/EmpDashboardPage',
     },
 
-
+    {
+        men_slno: 59,
+        component: CNavItem,
+        name: 'Online-Test',
+        to: '/Home/CommonPreTestPage',
+    },
+    // {
+    //     men_slno: 60,
+    //     component: CNavItem,
+    //     name: 'Post-Test',
+    //     to: '/Home/CommonPostTestPage',
+    // },
 ]
 
 export default TrainingAndDevelopment;
+

@@ -33,6 +33,8 @@ const OnlinePostWithQR = () => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [open, setopen] = useState(false);
     const [count, Setcount] = useState(0);
+    const [incmentCount, setincmentCount] = useState(0)
+
 
     const [datas, setDatas] = useState({
         em_id: 0,
@@ -126,11 +128,12 @@ const OnlinePostWithQR = () => {
             SetclrFlagC(0)
             SetclrFlagD(0)
             setTimeLeft(60)
+            setincmentCount(0)
         }
         else {
             warningNofity("Please Select one option")
         }
-    }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
+    }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setincmentCount, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
 
     const PostData = useMemo(() => {
         return {
@@ -182,6 +185,7 @@ const OnlinePostWithQR = () => {
             SetclrFlagD(0)
             setTimeLeft(0)
             setTimeLeft(0)
+            setincmentCount(0)
         }
         else {
             warningNofity("Please Select one option")
@@ -219,7 +223,7 @@ const OnlinePostWithQR = () => {
                             </Box>
                         </Box>
                         <Box>
-                            <QRQuestionHeading data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} />
+                            <QRQuestionHeading data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} incmentCount={incmentCount} setincmentCount={setincmentCount} />
                         </Box>
                     </Box>
                 </Box>
@@ -242,7 +246,7 @@ const OnlinePostWithQR = () => {
                         </Box>
                 }
             </Box>
-            {open === true ? <QRShowModal id={id} open={open} setopen={setopen} /> : null}
+            {open === true ? <QRShowModal id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
         </Fragment >
     )
 }

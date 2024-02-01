@@ -31,11 +31,12 @@ const {
     FETCH_BELOW_AVERAGE_EMP_LIST,
     FETCH_RETEST_EMP_TOPICS_BY_EMID,
     FETCH_RETEST_QUESTIONS,
-    // FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH,
     FETCH_ALL_DEPARTMENT_NAMES,
     FETCH_ALL_DEPARTMENT_SECTION_NAMES,
     FETCH_ALL_TOPICS_UNDER_DEPT,
-    FETCH_TRAINING_TOPIC_BY_DEPT
+    FETCH_TRAINING_TOPIC_BY_DEPT,
+    FETCH_COMMON_PRETEST_TOPICS,
+    FETCH_COMMON_POSTTEST_TOPICS
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -340,17 +341,6 @@ export const ResetQuestionsByTopic = (obj) => async (dispatch) => {
         dispatch({ type: FETCH_RETEST_QUESTIONS, payload: [], status: false })
     }
 }
-//Get Training Monthly details
-// export const MonthlyReport = (obj) => async (dispatch) => {
-//     const result = await axioslogin.post(`/TrainingMonthlyReport/getmonthlyreport`, obj)
-//     const { data, success } = result.data
-//     if (success === 2) {
-//         dispatch({ type: FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH, payload: data, status: true })
-//     }
-//     else {
-//         dispatch({ type: FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH, payload: [], status: false })
-//     }
-// }
 
 export const DepartmentNamesAll = () => async (dispatch) => {
     const result = await axioslogin.get(`/TrainingMonthlyReport/getDept`)
@@ -393,6 +383,27 @@ export const TrainingTopicsByDept = (dept) => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_TRAINING_TOPIC_BY_DEPT, payload: [], status: false })
+    }
+}
+export const CommonTrainingPreTopics = () => async (dispatch) => {
+    const result = await axioslogin.get(`/CommonPreTestPage/ListPreTestTopics`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_COMMON_PRETEST_TOPICS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_COMMON_PRETEST_TOPICS, payload: [], status: false })
+    }
+}
+
+export const CommonTrainingPostTopics = () => async (dispatch) => {
+    const result = await axioslogin.get(`/CommonPreTestPage/ListPostTesttTopics`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_COMMON_POSTTEST_TOPICS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_COMMON_POSTTEST_TOPICS, payload: [], status: false })
     }
 }
 

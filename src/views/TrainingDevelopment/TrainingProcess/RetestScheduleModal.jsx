@@ -39,9 +39,8 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
     useEffect(() => {
         if (getData.length !== 0) {
             const viewData = getData?.find((val) => val.candid_id !== 0)
-            const { candid_id, datefmt, em_name, training_topic_name, retest_status, slno, topic_slno, schedule_date, emp_dept, emp_dept_sectn, question_count, training_status } = viewData;
+            const { candid_id, datefmt, em_name, training_topic_name, slno, topic_slno, schedule_date, emp_dept, emp_dept_sectn, question_count, training_status } = viewData;
             const obj = {
-                retest_status: retest_status,
                 candid_id: candid_id,
                 datefmt: datefmt,
                 em_name: em_name,
@@ -52,7 +51,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
                 emp_dept: emp_dept,
                 emp_dept_sectn: emp_dept_sectn,
                 question_count: question_count,
-                training_status: training_status
+                training_status: training_status,
             }
             SetData(obj);
         }
@@ -84,7 +83,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
             attendance_status: training_status,
             retest_quest_count: question_count,
             create_user: em_id,
-            edit_user: em_id,
+            edit_user: em_id
         }
     }, [candid_id, slno, emp_dept, emp_dept_sectn, topic_slno, Reschedule, training_status, question_count, em_id])
 
@@ -98,6 +97,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         }
         else {
             warningNofity(message)
+            Setcount(0)
         }
     }, [postData, count, reset, Setcount])
 

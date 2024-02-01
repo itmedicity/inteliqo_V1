@@ -7,7 +7,7 @@ import { useHistory } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const QRPretestSubmitModal = ({ data, id, emId, open, setopen }) => {
+const QRPretestSubmitModal = ({ data, id, emId, open, tslno, setopen }) => {
 
     const history = useHistory()
 
@@ -17,7 +17,7 @@ const QRPretestSubmitModal = ({ data, id, emId, open, setopen }) => {
         offline_status: false,
         both_status: false,
     });
-
+    const topic_slno = tslno;
     const { online_status, offline_status, both_status } = datas;
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
@@ -40,14 +40,6 @@ const QRPretestSubmitModal = ({ data, id, emId, open, setopen }) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setDatas({ ...datas, [e.target.name]: value })
     }, [datas])
-
-    // const BtnClose = useCallback(() => {
-    //     if (online_status === true) {
-    //         history.push(`/OnlineTraining/${id}/${emId}`)
-    //         setopen(false);
-    //     }
-    // }, [online_status, history, id, emId, setopen]);
-
 
     const BtnClose = useCallback(async () => {
         const patchData = {
@@ -80,7 +72,12 @@ const QRPretestSubmitModal = ({ data, id, emId, open, setopen }) => {
         }
     }, [online_status, Setoffline, offline_status, history, id, emId, setopen]);
 
+    useEffect(() => {
+        if (offline_status === true && offline === 1) {
+            history.push(`/PreLogInpage/${topic_slno}`)
+        }
 
+    }, [history, offline_status, offline, topic_slno])
     return (
         <Fragment>
             <Modal
@@ -127,31 +124,16 @@ const QRPretestSubmitModal = ({ data, id, emId, open, setopen }) => {
                         {
                             offline === 1 ?
                                 <Box sx={{ mt: 1 }}>
-                                    <a href='https://travancoremedicity.com/home/'>
-                                        <button style={{ backgroundColor: "blue", color: "white", p: 1 }}>OK</button>
-                                    </a>
+                                    <button style={{ backgroundColor: "blue", color: "white", p: 1 }} >OK</button>
                                 </Box>
 
-                                : <Box sx={{ mt: 1 }}>
-                                    <Button onClick={BtnClose}>
+                                :
+                                <Box sx={{ mt: 1 }}>
+                                    <Button sx={{ backgroundColor: "blue", color: "white", p: 1 }} onClick={BtnClose}>
                                         OK
                                     </Button>
                                 </Box>
                         }
-                        {/* {
-                            offline_status === true ?
-                                <Box sx={{ mt: 1 }}>
-                                    <a href='https://travancoremedicity.com/home/'>
-                                        <button style={{ backgroundColor: "blue", color: "white", p: 1 }}>OK</button>
-                                    </a>
-                                </Box>
-
-                                : <Box sx={{ mt: 1 }}>
-                                    <Button onClick={BtnClose}>
-                                        OK
-                                    </Button>
-                                </Box>
-                        } */}
                     </Paper>
                 </ModalDialog>
             </Modal>
