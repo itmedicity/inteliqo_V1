@@ -169,7 +169,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionA}
                     >
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>a.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
@@ -182,7 +182,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                     :
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionA}>
 
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>a.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
@@ -198,7 +198,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionB}
                     >
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>b.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
@@ -208,7 +208,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionB}>
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>b.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
@@ -223,7 +223,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF", flexWrap: "wrap" }}
                         onClick={HandleOptionC}
                     >
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>c.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
@@ -233,7 +233,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionC}>
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>c.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
@@ -248,7 +248,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionD}
                     >
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>d.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}
@@ -258,7 +258,7 @@ const QRFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, c
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionD}>
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>d.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}

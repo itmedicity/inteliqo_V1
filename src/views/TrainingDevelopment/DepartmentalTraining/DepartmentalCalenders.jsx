@@ -15,9 +15,9 @@ import { DeptEmployeeNameDesList, TrainerNames, TrainingTopics } from 'src/redux
 import { getMonth, getYear, subYears } from 'date-fns';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import ScheduleCalenders from './ScheduleCalenders';
 import _ from 'underscore';
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 
 const DepartmentalCalenders = () => {
 
@@ -98,8 +98,8 @@ const DepartmentalCalenders = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <CustomSettingsLayout title="Department Wise Training" displayClose={true}>
-                <Box sx={{ width: "100%", p: 1, height: 600 }}>
+            <CustomLayout title="Department Wise Training" displayClose={true}>
+                <Box sx={{ width: "100%", p: 1, height: 800 }}>
                     <Paper variant='outlined' sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
                         <Tooltip title="Select Department">
                             <Box sx={{ flex: 1, }}>
@@ -139,8 +139,7 @@ const DepartmentalCalenders = () => {
                             setYear={setYear} count={count} Setcount={Setcount} setTable={setTable} /> : null
                     }
                 </Box>
-            </CustomSettingsLayout >
-            {/* } */}
+            </CustomLayout >
         </Fragment >
     )
 }

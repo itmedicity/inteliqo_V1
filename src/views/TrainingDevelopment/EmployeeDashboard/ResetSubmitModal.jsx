@@ -1,8 +1,18 @@
 import { Modal, ModalDialog } from '@mui/joy';
-import { Box, Paper, Typography } from '@mui/material';
-import React, { Fragment, memo } from 'react'
+import { Box, Button, Paper, Typography } from '@mui/material';
+import React, { Fragment, memo, useCallback } from 'react'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const ResetSubmitModal = ({ open }) => {
+const ResetSubmitModal = ({ open, tslno }) => {
+
+    const topic_slno = tslno;
+
+    const history = useHistory()
+
+    const GotoLogin = useCallback(() => {
+        history.push(`/PreLogInpage/${topic_slno}`)
+    }, [history, topic_slno])
+
     return (
         <Fragment>
             <Modal
@@ -17,9 +27,9 @@ const ResetSubmitModal = ({ open }) => {
                         <Typography sx={{ color: "steelblue", mt: 1 }}>Training Successfully completed</Typography>
 
                         <Box sx={{ mt: 1 }}>
-                            <a href='https://travancoremedicity.com/home/'>
-                                <button style={{ backgroundColor: "blue", color: "white", p: 1 }}>OK</button>
-                            </a>
+                            <Button sx={{ backgroundColor: "blue", color: "white", p: 1 }} onClick={GotoLogin} >
+                                OK
+                            </Button>
                         </Box>
 
                     </Paper>

@@ -1,4 +1,4 @@
-import { Box, Tooltip } from '@mui/material';
+import { Box, Paper, Tooltip } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
@@ -32,12 +32,11 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
                 sn: val.sn,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                retest_status: val.retest_status
             }
             return object
         })
         SetTabledata(ShowData)
-    }, [BelowAvgList, SetTabledata])
+    }, [BelowAvgList, count, SetTabledata])
 
     const handleReschedule = useCallback((params) => {
         const data = params.api.getSelectedRows()
@@ -54,7 +53,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
         {
             headerName: 'Reschedule',
             cellRenderer: params => {
-                if (params.data.retest_status === 1) {
+                if (params.data.status === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <Tooltip title="Done">
@@ -74,24 +73,30 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
     ])
 
     return (
-        <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
-            {open === true ? <RetestScheduleModal Setopen={Setopen} open={open} getData={getData} tabledata={tabledata} count={count} Setcount={Setcount} />
-                :
-                <Box sx={{ width: "100%", height: 500, overflow: 'auto' }}>
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={tabledata}
-                        sx={{
-                            height: 400,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    />
-                </Box>
-            }
-        </CustomDashboardPage>
+        <Paper>
+            <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
+                {open === true ? <RetestScheduleModal Setopen={Setopen} open={open} getData={getData} tabledata={tabledata} count={count} Setcount={Setcount} />
+                    :
+                    <Box sx={{ width: "100%", overflow: 'auto' }}>
+                        <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
+                            <CommonAgGrid
+                                columnDefs={columnDef}
+                                tableData={tabledata}
+                                sx={{
+                                    height: 700,
+                                    width: "100%",
+                                    mt: 1
+                                }}
+                                rowHeight={30}
+                                headerHeight={30}
+                            />
+                        </Paper>
+
+                    </Box>
+                }
+            </CustomDashboardPage>
+        </Paper>
+
     )
 }
 

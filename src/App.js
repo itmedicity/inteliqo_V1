@@ -8,6 +8,8 @@ const QuestionPreTest = React.lazy(() => import('./views/TrainingDevelopment/Pre
 const OnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTrainingQR'))
 const QuestionPostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/OnlinePostWithQR'))
 const RetestQuestions = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestQuestionPage'))
+const PreLogInpage = React.lazy(() => import('./views/TrainingDevelopment/CommonPreTest/PreLogInpage'))
+const RetestEmpDetail = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestEmpDetails'))
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -30,6 +32,10 @@ function App() {
           <Route path="/OnlinePostTest/:id/:emId/:tslno/:qcount" render={(props) => <QuestionPostTest />}  >
           </Route>
           <Route path="/OnlineReTest/:slno/:emId/:tslno/:qcount" render={(props) => <RetestQuestions />}  >
+          </Route>
+          <Route path="/PreLogInpage/:topic_slno" render={(props) => <PreLogInpage />}  >
+          </Route>
+          <Route path="/RetestEmpDetails/:emId/:tslno" render={(props) => <RetestEmpDetail />}  >
           </Route>
         </Switch>
       </React.Suspense>

@@ -157,7 +157,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
                         columnDefs={columnDef}
                         tableData={tableData}
                         sx={{
-                            height: 400,
+                            height: 500,
                             width: "100%", mt: 1
                         }}
                         rowHeight={30}

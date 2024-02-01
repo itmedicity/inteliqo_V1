@@ -264,7 +264,6 @@ const OnlineRetest = React.lazy(() => import('./views/TrainingDevelopment/Employ
 //Departmental Training Report
 const DepartmentalTrainingReport = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
 const DepartmentalCalender = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalCalender'))
-// const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/DepartmentalTrainingReports/DepartmentalTrainingReport'))
 const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
 
 const LeaveReports = React.lazy(() => import('./views/HrReports/LeaveReports/LeaveReports'))
@@ -272,7 +271,10 @@ const TrainingAllotedEmpReport = React.lazy(() => import('./views/HrReports/Trai
 const TrainingCompletionEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingCompletionEmpReports'))
 const TrainingPendingReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingPendingEmpList'))
 const TrainingRetestEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingRetestEmpReport'))
-
+const CommonPreTestPage = React.lazy(() => import('./views/TrainingDevelopment/CommonPreTest/TopicAndQRScanList'))
+const PreLogInpage = React.lazy(() => import('./views/TrainingDevelopment/CommonPreTest/PreLogInpage'))
+const CommonPostTestPage = React.lazy(() => import('./views/TrainingDevelopment/CommonPostTest/TopicScanList'))
+const RetestEmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestEmpDetails'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -534,6 +536,11 @@ const routes = [
   { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
   { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
 
+  //CommonPreTest
+  { path: '/Home/CommonPreTestPage', exact: true, name: 'Common PreTest', component: CommonPreTestPage },
+  { path: '/PreLogInpage/:topic_slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
+  { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
+  { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
 ]
 
 export default routes

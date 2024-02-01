@@ -4,17 +4,17 @@ import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import { QR_URL } from '../../Constant/Static'
 
-const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
+const PreQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { question_count, topic_slno, slno, em_id
+    const { topic_slno
     } = QRdata[0]
 
     const handleClose = useCallback(() => {
         setQRmodal(false);
     }, [setQRmodal]);
 
-    const Questlink = `${QR_URL}/OnlinePreTest/${slno}/${em_id}/${topic_slno}/${question_count}`
-    console.log(Questlink);
+    const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}`
+    console.log(loginpage);
     return (
         <Fragment>
             <Modal
@@ -37,7 +37,7 @@ const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
                     />
                     <Paper sx={{ px: 1, p: 2 }}>
                         <QRCodeSVG
-                            value={Questlink}
+                            value={loginpage}
                             size={200}
                             level='Q'
                             style={{ marginLeft: 7 }}
@@ -49,4 +49,4 @@ const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
     )
 }
 
-export default memo(QRCodeModalPage)
+export default memo(PreQRmodal)
