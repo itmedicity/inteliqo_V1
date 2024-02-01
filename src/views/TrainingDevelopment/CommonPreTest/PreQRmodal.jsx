@@ -14,7 +14,6 @@ const PreQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
     }, [setQRmodal]);
 
     const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}`
-    console.log(loginpage);
     return (
         <Fragment>
             <Modal

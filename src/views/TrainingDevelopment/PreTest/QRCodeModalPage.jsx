@@ -14,7 +14,6 @@ const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
     }, [setQRmodal]);
 
     const Questlink = `${QR_URL}/OnlinePreTest/${slno}/${em_id}/${topic_slno}/${question_count}`
-    console.log(Questlink);
     return (
         <Fragment>
             <Modal
