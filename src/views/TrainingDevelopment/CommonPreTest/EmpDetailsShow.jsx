@@ -207,7 +207,7 @@ const EmpDetailsShow = ({ data }) => {
                                 </thead>
                             </Table>
                         </Sheet>
-                        <Typography sx={{ mt: 1, fontFamily: "serif", fontSize: "sm" }}>Click START button to attend the Pre-Test</Typography>
+                        <Typography sx={{ mt: 1, fontFamily: "serif", fontSize: "sm" }}>Click START button to attend the Post-Test</Typography>
                         <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
                             <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={ClickToTest}>
                                 Start

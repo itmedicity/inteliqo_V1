@@ -32,6 +32,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
                 sn: val.sn,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
+                retest: val.retest
             }
             return object
         })
@@ -53,7 +54,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
         {
             headerName: 'Reschedule',
             cellRenderer: params => {
-                if (params.data.status === 1) {
+                if (params.data.retest === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <Tooltip title="Done">
@@ -74,7 +75,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
 
     return (
         <Paper>
-            <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
+            <CustomDashboardPage title="Below Average Employees" displayClose={true} setClose={setShow} >
                 {open === true ? <RetestScheduleModal Setopen={Setopen} open={open} getData={getData} tabledata={tabledata} count={count} Setcount={Setcount} />
                     :
                     <Box sx={{ width: "100%", overflow: 'auto' }}>

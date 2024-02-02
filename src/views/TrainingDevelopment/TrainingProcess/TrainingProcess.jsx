@@ -21,6 +21,8 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TodayIcon from '@mui/icons-material/Today';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import BelowAVGListEmpList from './BelowAVGListEmpList';
+import TopicWiseAttendance from './NewJoineesTrainig/TopicWiseAttendance';
+//import GroupWorkIcon from '@mui/icons-material/GroupWork';
 
 const TrainingProcess = () => {
     const [show, setShow] = useState(0);
@@ -72,6 +74,8 @@ const TrainingProcess = () => {
         { id: 5, icons: <PendingIcon sx={{ color: "#81c784" }} />, itemname: "Pending Training List", count: emplen },
         // { id: 6, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Marking Employee for Post-Test", count: allotlen },
         { id: 7, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Below Average Employee List", count: belowEmp },
+        //{ id: 8, icons: <GroupWorkIcon sx={{ color: "#81c784" }} />, itemname: "New Joinees Training", count: 0 },
+
     ]
 
     useEffect(() => {
@@ -150,6 +154,9 @@ const TrainingProcess = () => {
         else if (val.id === 7) {
             setShow(7)
         }
+        else if (val.id === 8) {
+            setShow(8)
+        }
     }, [setShow])
     return (
         <Box sx={{ width: "100%", p: 1 }}>
@@ -161,98 +168,100 @@ const TrainingProcess = () => {
                                 show === 5 ? <PendingList setShow={setShow} empdata={empdata} count={count} Setcount={Setcount} /> :
                                     show === 6 ? <AllowPostTest setShow={setShow} allot={allot} count={count} Setcount={Setcount} /> :
                                         show === 7 ? <BelowAVGListEmpList BelowAvgList={BelowAvgList} setShow={setShow} count={count} Setcount={Setcount} /> :
-                                            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
-                                            >
-                                                <Grid sx={{ p: 1 }} container spacing={2}>
-                                                    {itemsList?.map((item, index) => (
-                                                        <Grid item xs={12} sm={6} md={4} key={index}>
-                                                            <Paper
-                                                                key={index}
-                                                                variant="outlined"
-                                                                sx={{
-                                                                    display: 'flex',
-                                                                    flexDirection: 'column',
-                                                                    p: 1,
-                                                                    width: '100%',
-                                                                }}
-                                                            >
-                                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                                    <Box
-                                                                        sx={{
-                                                                            width: 40,
-                                                                            height: 40,
-                                                                            backgroundColor: '#E2F6CA',
-                                                                            borderRadius: '50%',
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            opacity: 0.7,
-                                                                        }}
-                                                                    >
-                                                                        {item.icons}
-                                                                    </Box>
-                                                                    <Box
-                                                                        sx={{
-                                                                            display: 'flex',
-                                                                            flexDirection: 'row',
-                                                                            alignItems: 'center',
-                                                                            flex: 1,
-                                                                        }}
-                                                                    >
-                                                                        <Box
-                                                                            sx={{
-                                                                                padding: '4px',
-                                                                                borderRadius: '8px',
-                                                                                marginRight: 'auto',
-                                                                            }}
-                                                                        >
-                                                                            <Typography sx={{ fontSize: 18 }}>{item.itemname}</Typography>
-                                                                        </Box>
-                                                                    </Box>
-                                                                    <Box
-                                                                        sx={{
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            border: '2px solid #E2F6CA',
-                                                                            padding: '4px',
-                                                                            borderRadius: '8px',
-                                                                            width: '15%',
-                                                                        }}
-                                                                    >
-                                                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                                                                            {item.count}
-                                                                        </Typography>
-                                                                    </Box>
-                                                                </Box>
+                                            show === 8 ? <TopicWiseAttendance /> :
 
-                                                                <Box
+                                                <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
+                                                >
+                                                    <Grid sx={{ p: 1 }} container spacing={2}>
+                                                        {itemsList?.map((item, index) => (
+                                                            <Grid item xs={12} sm={6} md={4} key={index}>
+                                                                <Paper
+                                                                    key={index}
+                                                                    variant="outlined"
                                                                     sx={{
                                                                         display: 'flex',
-                                                                        borderTop: 2,
-                                                                        borderColor: '#D6E6F2',
-                                                                        marginTop: 3,
-                                                                        alignItems: 'center',
-                                                                        cursor: 'pointer',
-                                                                    }}
-                                                                    onClick={(e) => {
-                                                                        ViewList(e, item)
+                                                                        flexDirection: 'column',
+                                                                        p: 1,
+                                                                        width: '100%',
                                                                     }}
                                                                 >
-                                                                    <Box sx={{ p: 1, mt: 1 }}>
-                                                                        <Typography>View</Typography>
+                                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: 40,
+                                                                                height: 40,
+                                                                                backgroundColor: '#E2F6CA',
+                                                                                borderRadius: '50%',
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                                opacity: 0.7,
+                                                                            }}
+                                                                        >
+                                                                            {item.icons}
+                                                                        </Box>
+                                                                        <Box
+                                                                            sx={{
+                                                                                display: 'flex',
+                                                                                flexDirection: 'row',
+                                                                                alignItems: 'center',
+                                                                                flex: 1,
+                                                                            }}
+                                                                        >
+                                                                            <Box
+                                                                                sx={{
+                                                                                    padding: '4px',
+                                                                                    borderRadius: '8px',
+                                                                                    marginRight: 'auto',
+                                                                                }}
+                                                                            >
+                                                                                <Typography sx={{ fontSize: 18 }}>{item.itemname}</Typography>
+                                                                            </Box>
+                                                                        </Box>
+                                                                        <Box
+                                                                            sx={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                                border: '2px solid #E2F6CA',
+                                                                                padding: '4px',
+                                                                                borderRadius: '8px',
+                                                                                width: '15%',
+                                                                            }}
+                                                                        >
+                                                                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
+                                                                                {item.count}
+                                                                            </Typography>
+                                                                        </Box>
                                                                     </Box>
-                                                                    <Box sx={{ ml: 1, mt: 1 }}>
-                                                                        <IconButton size="small" color="success">
-                                                                            <ArrowRightAltIcon />
-                                                                        </IconButton>
+
+                                                                    <Box
+                                                                        sx={{
+                                                                            display: 'flex',
+                                                                            borderTop: 2,
+                                                                            borderColor: '#D6E6F2',
+                                                                            marginTop: 3,
+                                                                            alignItems: 'center',
+                                                                            cursor: 'pointer',
+                                                                        }}
+                                                                        onClick={(e) => {
+                                                                            ViewList(e, item)
+                                                                        }}
+                                                                    >
+                                                                        <Box sx={{ p: 1, mt: 1 }}>
+                                                                            <Typography>View</Typography>
+                                                                        </Box>
+                                                                        <Box sx={{ ml: 1, mt: 1 }}>
+                                                                            <IconButton size="small" color="success">
+                                                                                <ArrowRightAltIcon />
+                                                                            </IconButton>
+                                                                        </Box>
                                                                     </Box>
-                                                                </Box>
-                                                            </Paper>
-                                                        </Grid>
-                                                    ))}
-                                                </Grid>
-                                            </Box>
+                                                                </Paper>
+                                                            </Grid>
+                                                        ))}
+                                                    </Grid>
+                                                </Box>
             }
         </Box>
 

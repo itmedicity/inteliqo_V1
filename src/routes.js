@@ -249,10 +249,8 @@ const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopme
 
 
 //QR CODE
-const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
 const OnlinePreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/OnlinePreWithQRcode'))
 const OnlinePostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/OnlinePostWithQR'))
-const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/PostTestEmpListWithQR'))
 const OnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTraining'))
 const QROnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTrainingQR'))
 
@@ -515,11 +513,9 @@ const routes = [
 
 
   //QR CODE
-  { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
   { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
   { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
-  { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
   { path: '/Home/OnlineTraining', exact: true, name: 'Online Training', component: OnlineTraining },
 
   //Retest
