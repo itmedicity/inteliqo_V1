@@ -198,6 +198,48 @@ const EmployeeCompnt = ({ em_no }) => {
                             </CssVarsProvider>
                         </Box>
                     </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                HDL
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Halfday Leave
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                LV
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Leave
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                HP
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                            <CssVarsProvider>
+                                <Typography sx={{ display: 'flex', }} >
+                                    Holiday Present
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
                 </Paper>
                 <Box sx={{ width: "100%" }} >
                     <Paper square elevation={0} sx={{
