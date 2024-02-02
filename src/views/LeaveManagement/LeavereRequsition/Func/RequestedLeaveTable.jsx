@@ -69,10 +69,13 @@ const RequestedLeaveTable = () => {
                     section: val.dept_name,
                     hrstatus: val.hr_apprv_status,
                     status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 1) ? 'HOD Approval Pending' :
+                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                                (val.ceo_req_status === 1 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 1) ? 'CEO Approval Pending' :
+                                    (val.ceo_req_status === 1 || val.ceo_req_status === 0 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.hod_apprv_status === 1 || val.ceo_apprv_status === 1) ? 'HR Approval Pending' :
+                                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.ceo_apprv_status === 2) ? 'CEO Rejected' :
+                                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.ceo_apprv_status === 0) ? 'Approved' : 'Approved',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -135,9 +138,9 @@ const RequestedLeaveTable = () => {
                     section: val.dept_name,
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 1) ? 'HOD Approval Pending' :
+                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_ceo_req_status === 1) ? 'Approved' :
                                     (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,
@@ -163,10 +166,13 @@ const RequestedLeaveTable = () => {
                     section: val.dept_name,
                     hrstatus: val.hr_apprv_status,
                     status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 1) ? 'HOD Approval Pending' :
+                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                                (val.ceo_req_status === 1 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'CEO Approval Pending' :
+                                    ((val.ceo_req_status === 1 || val.ceo_req_status === 0) && val.ceo_apprv_status === 0 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.hod_apprv_status === 1 || val.ceo_apprv_status === 1) ? 'HR Approval Pending' :
+                                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.ceo_apprv_status === 2) ? 'CEO Rejected' :
+                                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.ceo_apprv_status === 0) ? 'Approved' : 'Approved',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: val.leave_date,
@@ -240,9 +246,9 @@ const RequestedLeaveTable = () => {
                     section: val.dept_name,
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 1) ? 'HOD Approval Pending' :
+                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0) ? 'CEO Approval Pending' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_ceo_req_status === 1) ? 'Approved' :
                                     (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,

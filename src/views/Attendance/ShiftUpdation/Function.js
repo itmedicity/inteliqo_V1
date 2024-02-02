@@ -222,7 +222,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         const PunchOutOnlyMM = format(new Date(val.punch_out), 'yyyy-MM-dd H:mm')
 
         const early = isEqual(new Date(earlyGo), new Date(PunchOutOnlyMM)) ||
-            isAfter(new Date(val.punch_out), new Date(earlyGo)) ? 1 : 0
+            isAfter(new Date(val.punch_out), new Date(earlyGo)) ? 1 : isBefore(new Date(val.punch_out), new Date(earlyGo)) ? 2 : 0
         const HoliDay = holidaydata.find((holi) => holi.hld_date === val.duty_day)
 
         // CALCULATE THE LATE AND EARLY GO TIME 
@@ -255,11 +255,12 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                 CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? "P" :
                     CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? "P" :
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "EG" :
-                            early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
-                                early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
-                                    HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
-                                        val.shift_id === noff ? "NOFF" :
-                                            "A",
+                            CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "HFD" :
+                                early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? "LC" :
+                                    early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
+                                        HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
+                                            val.shift_id === noff ? "NOFF" :
+                                                "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
         }

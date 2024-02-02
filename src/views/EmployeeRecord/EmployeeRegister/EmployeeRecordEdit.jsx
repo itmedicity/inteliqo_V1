@@ -284,6 +284,7 @@ const EmployeeRecordEdit = () => {
             hrm_religion: religion,
             contractflag: contractflag,
             probation_status: prob_status,
+            gross_salary: Salary,
             recomend_salary: Salary,
             clinicaltype: clinictype,
             doctor_status: doctor === true ? 1 : 0,

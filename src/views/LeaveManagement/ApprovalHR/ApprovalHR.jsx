@@ -96,7 +96,6 @@ const ApprovalHR = () => {
                 const arr = halfdayRqList && halfdayRqList.filter((k) => {
                     return (k.hf_hr_apprv_status !== 1 && (k.hf_incapprv_status !== 2 || k.hf_hod_apprv_status !== 2))
                 })
-                console.log(arr);
                 const leaveRequestList = await arr?.map((val) => {
                     return {
                         slno: val.half_slno,
@@ -243,7 +242,6 @@ const ApprovalHR = () => {
                 const arr = leaveRequestList && leaveRequestList.filter((k) => {
                     return (k.hrstatus !== 1)
                 })
-                console.log(arr);
                 setTableData(arr)
             }
             else {
