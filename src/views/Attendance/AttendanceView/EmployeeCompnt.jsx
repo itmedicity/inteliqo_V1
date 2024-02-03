@@ -131,7 +131,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                             <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                EG
+                                EHFD
                             </Typography>
                         </Box>
                         <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
