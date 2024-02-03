@@ -1,5 +1,5 @@
 import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
@@ -18,7 +18,6 @@ import _ from 'underscore';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { useCallback } from 'react';
 import Table from '@mui/joy/Table';
-import { IconButton as OpenIcon } from '@mui/material';
 
 const InchargeHodCompnt = ({ em_id, em_no }) => {
 
@@ -185,7 +184,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EG
+                                        EHFD
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
@@ -584,7 +583,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EG
+                                        EHFD
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>

@@ -67,7 +67,7 @@ const AttendanceView = () => {
     return (
         <Fragment>
             {
-                empFlag === 1 ? <EmployeeCmpnt em_no={em_no} /> :
+                empFlag === 1 && rights === 0 ? <EmployeeCmpnt em_no={em_no} /> :
                     rights === 1 ? <AllView em_id={em_id} /> :
                         <InchargeHodCompnt em_id={em_id} em_department={em_department} em_no={em_no} />
             }
