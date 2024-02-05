@@ -87,11 +87,10 @@ const EmpPunchReport = () => {
                         }
                     })
 
-
                     const updatedSecondApiData = setData.map(data => {
                         const correspondingFirstData = firstApiData.filter(firstApiData => {
                             return (
-                                firstApiData.emp_code === data.em_no &&
+                                parseInt(firstApiData.emp_code) === data.em_no &&
                                 new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
                             );
                         });
@@ -141,7 +140,7 @@ const EmpPunchReport = () => {
                     const updatedSecondApiData = setData.map(data => {
                         const correspondingFirstData = firstApiData.filter(firstApiData => {
                             return (
-                                firstApiData.emp_code === data.em_no &&
+                                parseInt(firstApiData.emp_code) === data.em_no &&
                                 new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
                             );
                         });
