@@ -45,14 +45,14 @@ const ShiftMasterEdit = () => {
         setCheckIn(val)
         const result = subHours(new Date(val), 8)
         setcheckInStart(result)
-        const result2 = addHours(new Date(val), 8)
+        const result2 = addHours(new Date(val), 4)
         setcheckInEnd(result2)
     }, [])
     //use State For Check Out
     const [checkOut, setCheckOut] = useState(new Date());
     const SetcheckOutTime = useCallback((val) => {
         setCheckOut(val)
-        const result = subHours(new Date(val), 8)
+        const result = subHours(new Date(val), 2)
         setcheckOutStart(result)
         const result2 = addHours(new Date(val), 8)
         setcheckOutEnd(result2)
