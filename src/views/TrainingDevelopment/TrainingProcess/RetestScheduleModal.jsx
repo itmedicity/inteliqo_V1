@@ -26,8 +26,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         emp_dept_sectn: 0,
         question_count: 0,
         training_status: 0,
-        datefmt: '',
-        retest_status: 0
+        datefmt: ''
     })
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
@@ -83,7 +82,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
             attendance_status: training_status,
             retest_quest_count: question_count,
             create_user: em_id,
-            edit_user: em_id
+            edit_user: em_id,
         }
     }, [candid_id, slno, emp_dept, emp_dept_sectn, topic_slno, Reschedule, training_status, question_count, em_id])
 
