@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tooltip } from '@mui/joy'
+import { Box, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import IconButton from '@mui/joy/IconButton';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -15,25 +15,20 @@ import moment from 'moment';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqstAll } from 'src/redux/actions/LeaveApprovalAction';
 import _ from 'underscore';
+import { format } from 'date-fns'
 
 
 const LeaveReports = () => {
     const [deptName, setDepartmentName] = useState(0)
     const [deptSecName, setDepartSecName] = useState(0)
     const [Empno, setEmpNo] = useState(0)
-    // const [tableData, setTableData] = useState([])
-    // console.log(tableData);
     const [Data, setData] = useState([])
-    const dispatch = useDispatch()
-    // const employeeRecordList = useSelector((state) => {
-    //     return state.getEmployeeRecordList.empRecordData;
-    // })
-    // console.log(employeeRecordList);
-    useEffect(() => {
+    const [fromdate, Setfromdate] = useState(moment().format('yyyy-MM'))
 
-        // if (Object.keys(employeeRecordList).length > 0) {
-        //     setTableData(employeeRecordList)
-        // }
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
         dispatch(setDepartment());
     }, [dispatch])
 
@@ -56,8 +51,10 @@ const LeaveReports = () => {
     const getEmployeeList = useCallback(async (e) => {
         e.preventDefault()
         if (Empno !== 0) {
-            const leaveRequestList = leaveRqList?.filter(val => val.em_no === parseInt(Empno))
+            const leaveRequestList = leaveRqList?.filter(val => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
+
             const newList = leaveRequestList?.map((val) => {
+
                 return {
                     rslno: val.rslno,
                     dept_id: val.dept_id,
@@ -84,7 +81,8 @@ const LeaveReports = () => {
                     toDate: val.leavetodate
                 }
             })
-            const haldayRq = halfdayRqList?.filter((val) => val.em_no === parseInt(Empno))
+
+            const haldayRq = halfdayRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leavedate), "yyyy-MM") === fromdate)
 
             const newHalfday = haldayRq?.map((val) => {
                 return {
@@ -111,7 +109,7 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno))
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
             const newNopunch = NopunchRq?.map((val) => {
                 return {
                     type: "No Punch Request",
@@ -133,7 +131,7 @@ const LeaveReports = () => {
                     toDate: val.leavetodate
                 }
             })
-            const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno))
+            const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
             const newCompRq = CompReq?.map((val) => {
                 return {
                     type: "Compensatory Off Request",
@@ -157,10 +155,11 @@ const LeaveReports = () => {
                     toDate: val.leavetodate
                 }
             })
+            setEmpNo(0)
             setData([...newList, ...newHalfday, ...newCompRq, ...newNopunch])
         } else if (deptName !== 0 && deptSecName !== 0) {
 
-            const leaveRequestList = leaveRqList?.filter(val => val.dept_id === parseInt(deptName) && val.dept_section === parseInt(deptSecName))
+            const leaveRequestList = leaveRqList?.filter(val => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
 
             const newList = leaveRequestList?.map((val) => {
                 return {
@@ -189,7 +188,7 @@ const LeaveReports = () => {
                     toDate: val.leavetodate
                 }
             })
-            const haldayRq = halfdayRqList?.filter((val) => val.dept_id === parseInt(deptName) && val.dept_section === parseInt(deptSecName))
+            const haldayRq = halfdayRqList?.filter((val) => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavedate), "yyyy-MM") === fromdate)
 
             const newHalfday = haldayRq?.map((val) => {
                 return {
@@ -218,7 +217,7 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === parseInt(deptName) && val.em_dept_section === parseInt(deptSecName))
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
 
             const newNopunch = NopunchRq?.map((val) => {
                 return {
@@ -243,7 +242,7 @@ const LeaveReports = () => {
                     toDate: val.leavetodate
                 }
             })
-            const CompReq = compOffRqList?.filter((val) => val.em_department === parseInt(deptName) && val.em_dept_section === parseInt(deptSecName))
+            const CompReq = compOffRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
 
             const newCompRq = CompReq?.map((val) => {
                 return {
@@ -275,10 +274,11 @@ const LeaveReports = () => {
             warningNofity("No Employee to Show")
         }
 
-    }, [Empno, leaveRqList, compOffRqList, nopunchRqList, halfdayRqList, deptName, deptSecName])
+    }, [Empno, leaveRqList, compOffRqList, nopunchRqList, halfdayRqList, deptName, deptSecName, fromdate])
 
     useEffect(() => {
         if (Data?.length === 0) {
+            setEmpNo(0)
             warningNofity("No Details To Show")
         }
     }, [Data])
@@ -320,7 +320,18 @@ const LeaveReports = () => {
                                 />
                             </Box>
                         </Tooltip>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: "flex", flexDirection: "row", }} >
+                            <Typography sx={{ p: 1 }}>From:</Typography>
+                            <InputComponent
+                                type="Month"
+                                size="sm"
+                                placeholder="From Date"
+                                name="Fromdate"
+                                value={fromdate}
+                                onchange={(e) => Setfromdate(e.target.value)}
+                            />
 
+                        </Box>
                         <Box sx={{ ml: 1 }}>
 
                             <IconButton variant="outlined" size='lg' color="primary" onClick={getEmployeeList}>
