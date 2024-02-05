@@ -10,6 +10,8 @@ export const hr_report_one = [
     { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
     { to: '/Home/LeaveReports', name: 'Leave Reports', slno: 270 },
+    { to: '/Home/SalaryReport', name: 'Salary Report', slno: 271 },
+
 
 ]
 export const hr_report_two = [

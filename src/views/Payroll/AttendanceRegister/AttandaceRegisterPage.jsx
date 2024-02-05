@@ -54,7 +54,7 @@ const AttandaceRegisterPage = () => {
                 const arr = data && data.map((val) => val.em_no);
                 const postdata = {
                     em_no: arr,
-                    attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-01')
+                    attendance_marking_month: moment(startOfMonth(value)).format('YYYY-MM-DD')
                 }
                 const result = await axioslogin.post("/payrollprocess/all/detail", postdata);
                 const { succes, datas } = await result.data
