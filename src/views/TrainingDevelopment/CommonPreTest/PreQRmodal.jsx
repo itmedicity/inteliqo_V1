@@ -1,27 +1,25 @@
-
 import React, { Fragment, memo, useCallback } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import { QR_URL } from '../../Constant/Static'
 
-const RetestQRscanPage = ({ Selecteddata, opeQRCodeModal, setopeQRCodeModal }) => {
+const PreQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { retest_topic, candidate_em_no
-    } = Selecteddata[0]
+    const { topic_slno
+    } = QRdata[0]
 
     const handleClose = useCallback(() => {
-        setopeQRCodeModal(false);
-    }, [setopeQRCodeModal]);
+        setQRmodal(false);
+    }, [setQRmodal]);
 
-    const Questlink = `${QR_URL}/RetestEmpDetails/${candidate_em_no}/${retest_topic}`
-
+    const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}`
     return (
         <Fragment>
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
-                open={opeQRCodeModal}
+                open={QRmodal}
                 onClose={handleClose}
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
@@ -38,9 +36,10 @@ const RetestQRscanPage = ({ Selecteddata, opeQRCodeModal, setopeQRCodeModal }) =
                     />
                     <Paper sx={{ px: 1, p: 2 }}>
                         <QRCodeSVG
-                            value={Questlink}
-                            size={300}
+                            value={loginpage}
+                            size={200}
                             level='Q'
+                            style={{ marginLeft: 7 }}
                         />
                     </Paper>
                 </ModalDialog>
@@ -49,4 +48,4 @@ const RetestQRscanPage = ({ Selecteddata, opeQRCodeModal, setopeQRCodeModal }) =
     )
 }
 
-export default memo(RetestQRscanPage)
+export default memo(PreQRmodal)

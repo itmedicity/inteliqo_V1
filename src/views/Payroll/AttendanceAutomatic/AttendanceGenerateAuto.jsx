@@ -63,17 +63,22 @@ const AttendanceGenerateAuto = () => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
                         const total = empwise.length
-                        const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HP' || val.duty_desc === 'HFD' || val.duty_desc === 'EG' || val.duty_desc === 'LC')).length
-                        const calculated = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HP')).length
-                        const offdays = (empwise.filter(val => val.duty_desc === 'OFF')).length
-                        const leaves = (empwise.filter(val => val.leave_status === 1)).length
+                        const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const calculated = (empwise.filter(val => val.duty_desc === 'P')).length
+                        const offdays = (empwise.filter(val => val.duty_desc === 'OFF' || val.duty_desc === 'NOFF')).length
+                        const leaves = (empwise.filter(val => val.duty_desc === 'LV' || val.duty_desc === 'HDL')).length
                         const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
-                        const lossofpay = (empwise.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
+                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
-                        const calculatedlop = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
-                        const lwp = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 1)).length
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves - lwp - lossofpay :
-                            calculated + offdays + holiday + leaves - lwp - lossofpay
+                        const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
+                        const lwp = (empwise.filter(val => val.duty_desc === 'LWP')).length
+                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
+
+                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp - lossofpay :
+                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp - lossofpay
+
+                        const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
 
                         const obj = {
                             em_id: val.em_id,
@@ -89,7 +94,8 @@ const AttendanceGenerateAuto = () => {
                             offdays: offdays,
                             calculated: calculated,
                             calculatedlop: calculatedlop,
-                            paydays: total_pay_day
+                            paydays: totalday,
+                            nofhfd: nofhfd
                         }
                         return obj
                     })
@@ -251,12 +257,12 @@ const AttendanceGenerateAuto = () => {
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                Calculated Worked
+                                                Calculated Worked (P)
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                OFF Days
+                                                OFF Days (WOFF/NOFF)
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
@@ -287,6 +293,11 @@ const AttendanceGenerateAuto = () => {
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Holiday Worked
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
+                                                No of Half day
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
@@ -381,6 +392,13 @@ const AttendanceGenerateAuto = () => {
                                                 <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.holidayworked}
+                                                    </Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                                    <Typography variant="body2" gutterBottom noWrap={true}>
+                                                        {val.nofhfd}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>

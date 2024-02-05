@@ -30,11 +30,12 @@ const {
     FETCH_BELOW_AVERAGE_EMP_LIST,
     FETCH_RETEST_EMP_TOPICS_BY_EMID,
     FETCH_RETEST_QUESTIONS,
-    // FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH,
     FETCH_ALL_DEPARTMENT_NAMES,
     FETCH_ALL_DEPARTMENT_SECTION_NAMES,
     FETCH_ALL_TOPICS_UNDER_DEPT,
-    FETCH_TRAINING_TOPIC_BY_DEPT
+    FETCH_TRAINING_TOPIC_BY_DEPT,
+    FETCH_COMMON_PRETEST_TOPICS,
+    FETCH_COMMON_POSTTEST_TOPICS
 
 } = Actiontypes;
 
@@ -155,10 +156,6 @@ const TrainingData = {
         RetestQuestionsList: [],
         RetestQuestionsStatus: false
     },
-    // MonthlyDetails: {
-    //     MonthlyDetailsList: [],
-    //     MonthlyDetailsStatus: false
-    // },
     DepartmentNames: {
         DepartmentNamesList: [],
         DepartmentNamesStatus: false
@@ -176,7 +173,16 @@ const TrainingData = {
         TrainingTopicByDeptList: [],
         TrainingTopicByDeptStatus: false
     },
+    CommonPreTopics: {
+        CommonPreTopicsList: [],
+        CommonPreTopicsStatus: false
+    },
+    CommonPostTopics: {
+        CommonPostTopicsList: [],
+        CommonPostTopicsStatus: false
+    },
 }
+
 
 export const gettrainingData = (state = TrainingData, { type, payload }) => {
     switch (type) {
@@ -441,15 +447,6 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     RetestQuestionsStatus: true
                 }
             }
-        // case FETCH_MONTHLY_TRAINING_REPORT_BY_MONTH:
-        //     return {
-        //         ...state,
-        //         MonthlyDetails: {
-        //             ...state.MonthlyDetails,
-        //             MonthlyDetailsList: payload,
-        //             MonthlyDetailsStatus: true
-        //         }
-        //     }
         case FETCH_ALL_DEPARTMENT_NAMES:
             return {
                 ...state,
@@ -484,6 +481,24 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.TrainingTopicByDept,
                     TrainingTopicByDeptList: payload,
                     TrainingTopicByDeptStatus: true
+                }
+            }
+        case FETCH_COMMON_PRETEST_TOPICS:
+            return {
+                ...state,
+                CommonPreTopics: {
+                    ...state.CommonPreTopics,
+                    CommonPreTopicsList: payload,
+                    CommonPreTopicsStatus: true
+                }
+            }
+        case FETCH_COMMON_POSTTEST_TOPICS:
+            return {
+                ...state,
+                CommonPostTopics: {
+                    ...state.CommonPostTopics,
+                    CommonPostTopicsList: payload,
+                    CommonPostTopicsStatus: true
                 }
             }
         default:

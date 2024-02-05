@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
@@ -62,24 +62,31 @@ const PendingList = ({ setShow, empdata, count, Setcount }) => {
     ])
 
     return (
-        <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
-            {open === true ? <RescheduleModal count={count} Setcount={Setcount} open={open} Setopen={Setopen}
-                getData={getData} tabledata={tabledata} />
-                : <Box sx={{ width: "100%", height: 800, overflow: 'auto' }}>
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={tabledata}
-                        sx={{
-                            height: 400,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    />
-                </Box>
-            }
-        </CustomDashboardPage>
+        <Paper>
+            <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
+                {open === true ? <RescheduleModal count={count} Setcount={Setcount} open={open} Setopen={Setopen}
+                    getData={getData} tabledata={tabledata} />
+
+                    : <Box sx={{ width: "100%", overflow: 'auto' }}>
+                        <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
+                            <CommonAgGrid
+                                columnDefs={columnDef}
+                                tableData={tabledata}
+                                sx={{
+                                    height: 700,
+                                    width: "100%",
+                                    mt: 1
+                                }}
+                                rowHeight={30}
+                                headerHeight={30}
+                            />
+                        </Paper>
+
+                    </Box>
+                }
+            </CustomDashboardPage >
+        </Paper>
+
     )
 }
 

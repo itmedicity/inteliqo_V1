@@ -30,12 +30,20 @@ const DeptSectionComponent = ({ deptid, deptSection, value }) => {
 
     useEffect(() => {
         const mapdata = deptSection?.filter((val) => val.dept_id === deptid)
-        setData(mapdata)
+        const array = mapdata.map((val) => {
+            const obj = {
+                status: 0
+            }
+            return {
+                ...val,
+                ...obj
+            }
+        })
+        setData(array)
     }, [deptSection])
 
 
     const PunchSave = useCallback(async (val) => {
-        console.log(val);
         setOpenBkDrop(true)
         const selectedDate = moment(value).format('YYYY-MM-DD');
         const { sect_id, dept_id } = val;
@@ -76,7 +84,7 @@ const DeptSectionComponent = ({ deptid, deptSection, value }) => {
 
                         const gracePeriod = await axioslogin.get('/commonsettings')
                         const { data } = gracePeriod.data
-                        const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+                        const { cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
                             week_off_day, notapplicable_shift, default_shift, noff } = data[0]
 
                         const SelectMonth = getMonth(new Date(selectedDate))
@@ -184,6 +192,8 @@ const DeptSectionComponent = ({ deptid, deptSection, value }) => {
             punchMarkSave(saveDta)
         }
     }, [nextstage, value, depart, section, em_no])
+
+    console.log(data);
 
     return (
         <Fragment>

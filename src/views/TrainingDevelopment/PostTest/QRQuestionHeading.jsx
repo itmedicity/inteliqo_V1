@@ -2,9 +2,8 @@ import { Box, Paper, Typography } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import QRFileOptions from './QRFileOptions';
 
-const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clrFlagC, SetclrFlagC, clrFlagD, SetclrFlagD, setRightAns, setDisright }) => {
+const QRQuestionHeading = ({ incmentCount, setincmentCount, data, order, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clrFlagC, SetclrFlagC, clrFlagD, SetclrFlagD, setRightAns, setDisright }) => {
 
-    const [incmentCount, setincmentCount] = useState(0)
     // const [writtenAnswer, setWrittenAnswer] = useState('')
     const [filestatus, setFilestatus] = useState(0);
     const [disQuestn, setDisQuestn] = useState({
@@ -166,7 +165,7 @@ const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, Setcl
     return (
         <Fragment>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
-                <Typography sx={{ fontSize: "large", fontWeight: "bold" }}>Q. {Questn}</Typography>
+                <Typography sx={{ fontSize: "large", fontWeight: "bold", textTransform: "capitalize" }}>Q. {Questn.toLowerCase()}</Typography>
             </Box>
             {/* Written Answer */}
             {/* {
@@ -197,13 +196,13 @@ const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, Setcl
                                 <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionA}
                                 >
-                                    <Box sx={{ fontWeight: "bold" }}>1.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionA}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>a.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionA.toLowerCase()}</Box>
                                 </Paper>
                                 :
                                 <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionA}>
-                                    <Box sx={{ fontWeight: "bold" }}>1.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionA}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>a.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionA.toLowerCase()}</Box>
                                 </Paper>
                         }
                         {
@@ -211,12 +210,12 @@ const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, Setcl
                                 <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionB}
                                 >
-                                    <Box sx={{ fontWeight: "bold" }}>2.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionB}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>b.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionB.toLowerCase()}</Box>
                                 </Paper>
                                 : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionB}>
-                                    <Box sx={{ fontWeight: "bold" }}>2.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionB}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>b.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionB.toLowerCase()}</Box>
                                 </Paper>
                         }
                         {
@@ -224,12 +223,12 @@ const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, Setcl
                                 <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionC}
                                 >
-                                    <Box sx={{ fontWeight: "bold" }}>3.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionC}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>c.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionC.toLowerCase()}</Box>
                                 </Paper>
                                 : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionC}>
-                                    <Box sx={{ fontWeight: "bold" }}>3.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionC}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>c.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionC.toLowerCase()}</Box>
                                 </Paper>
                         }
                         {
@@ -237,12 +236,12 @@ const QRQuestionHeading = ({ data, order, clrFlagA, SetclrFlagA, clrFlagB, Setcl
                                 <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                                     onClick={HandleOptionD}
                                 >
-                                    <Box sx={{ fontWeight: "bold" }}>4.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionD}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>d.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionD.toLowerCase()}</Box>
                                 </Paper>
                                 : <Paper sx={{ mt: 1, p: 3, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionD}>
-                                    <Box sx={{ fontWeight: "bold" }}>4.</Box>
-                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>{optionD}</Box>
+                                    <Box sx={{ fontWeight: "bold" }}>d.</Box>
+                                    <Box sx={{ width: "80%", display: "flex", flexDirection: "row", flexWrap: "wrap", textTransform: "capitalize" }}>{optionD.toLowerCase()}</Box>
                                 </Paper>
                         }
                     </Box>

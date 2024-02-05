@@ -4,7 +4,7 @@ import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHea
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { addMonths, startOfMonth } from 'date-fns'
 import moment from 'moment'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { memo, Suspense, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
@@ -228,4 +228,4 @@ const SalaryStatementPage = () => {
     )
 }
 
-export default SalaryStatementPage
+export default memo(SalaryStatementPage) 

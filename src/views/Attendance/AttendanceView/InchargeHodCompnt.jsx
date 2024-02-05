@@ -1,5 +1,5 @@
-import { Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy';
-import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import { Box, Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { useCallback } from 'react';
+import Table from '@mui/joy/Table';
 
 const InchargeHodCompnt = ({ em_id, em_no }) => {
 
@@ -183,7 +184,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EG
+                                        EHFD
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
@@ -250,15 +251,140 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                     </CssVarsProvider>
                                 </Box>
                             </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        HDL
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Halfday Leave
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        LV
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Leave
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        HP
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Holiday Present
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
                         </Paper>
                         <Box sx={{ width: "100%" }} >
-                            <Paper square elevation={0} sx={{
-                                display: "flex",
-                                p: 1,
-                                alignItems: "center",
-                            }}  >
-                            </Paper>
-                            <Box component={Grid}
+                            <Box sx={{
+                                display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
+                                height: 500,
+                                overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                            }}>
+                                <Sheet
+                                    variant="outlined"
+                                    sx={{
+                                        '--TableCell-height': '40px',
+                                        // the number is the amount of the header rows.
+                                        '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
+                                        '--Table-firstColumnWidth': '100px',
+                                        '--Table-lastColumnWidth': '144px',
+                                        // background needs to have transparency to show the scrolling shadows
+                                        '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                                        '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                                        overflow: 'auto',
+                                        background: (
+                                            theme,
+                                        ) => `linear-gradient(to right, ${theme.vars.palette.background.surface} 30%, rgba(255, 255, 255, 0)),
+                                        linear-gradient(to right, rgba(255, 255, 255, 0), ${theme.vars.palette.background.surface} 70%) 0 100%,
+                                        radial-gradient(
+                                          farthest-side at 0 50%,
+                                          rgba(0, 0, 0, 0.12),
+                                          rgba(0, 0, 0, 0)
+                                        ),
+                                        radial-gradient(
+                                            farthest-side at 100% 50%,
+                                            rgba(0, 0, 0, 0.12),
+                                            rgba(0, 0, 0, 0)
+                                          )
+                                          0 100%`,
+                                        backgroundSize:
+                                            '40px calc(100% - var(--TableCell-height)), 40px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height))',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundAttachment: 'local, local, scroll, scroll',
+                                        backgroundPosition:
+                                            'var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height), var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height)',
+                                        backgroundColor: 'background.surface',
+                                    }}
+                                >
+                                    <Table
+                                        borderAxis="bothBetween"
+                                        stripe="odd"
+                                        hoverRow
+                                        stickyHeader
+                                        sx={{
+                                            '& tr > *:first-child': {
+                                                position: 'sticky',
+                                                left: 0,
+                                                boxShadow: '1px 0 var(--TableCell-borderColor)',
+                                                bgcolor: 'background.surface',
+                                            },
+                                        }}
+                                    >
+                                        <Box >
+                                            <thead>
+                                                <tr>
+                                                    {mainArray && mainArray.map((val, index) => (
+                                                        <th key={index}  >
+                                                            {val.date}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                                <tr>
+                                                    {mainArray && mainArray.map((val, index) => (
+                                                        <th key={index}   >
+
+                                                            {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
+
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  >
+                                                    {mainArray && mainArray.map((row, index) => (
+
+                                                        <td key={index}>
+                                                            {row.duty_desc}
+                                                        </td>
+
+                                                    ))}
+                                                </tr>
+                                            </tbody>
+                                        </Box>
+                                    </Table>
+                                </Sheet>
+                            </Box>
+                            {/* <Box component={Grid}
                                 container
                                 item
                                 xs={12}
@@ -368,7 +494,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </Box>
+                            </Box> */}
                         </Box></> : <>
                         <Paper
                             square
@@ -457,7 +583,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EG
+                                        EHFD
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
@@ -524,8 +650,154 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                     </CssVarsProvider>
                                 </Box>
                             </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        HDL
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Halfday Leave
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        LV
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Leave
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                        HP
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                    <CssVarsProvider>
+                                        <Typography sx={{ display: 'flex', }} >
+                                            Holiday Present
+                                        </Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
                         </Paper>
-                        <Box sx={{ width: "100%" }} >
+                        <Box sx={{
+                            display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
+                            height: 500,
+                            overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                        }}>
+                            <Sheet
+                                variant="outlined"
+                                sx={{
+                                    '--TableCell-height': '40px',
+                                    // the number is the amount of the header rows.
+                                    '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
+                                    '--Table-firstColumnWidth': '100px',
+                                    '--Table-lastColumnWidth': '144px',
+                                    // background needs to have transparency to show the scrolling shadows
+                                    '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                                    '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                                    overflow: 'auto',
+                                    background: (
+                                        theme,
+                                    ) => `linear-gradient(to right, ${theme.vars.palette.background.surface} 30%, rgba(255, 255, 255, 0)),
+                                    linear-gradient(to right, rgba(255, 255, 255, 0), ${theme.vars.palette.background.surface} 70%) 0 100%,
+                                    radial-gradient(
+                                      farthest-side at 0 50%,
+                                      rgba(0, 0, 0, 0.12),
+                                      rgba(0, 0, 0, 0)
+                                    ),
+                                    radial-gradient(
+                                        farthest-side at 100% 50%,
+                                        rgba(0, 0, 0, 0.12),
+                                        rgba(0, 0, 0, 0)
+                                      )
+                                      0 100%`,
+                                    backgroundSize:
+                                        '40px calc(100% - var(--TableCell-height)), 40px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height))',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundAttachment: 'local, local, scroll, scroll',
+                                    backgroundPosition:
+                                        'var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height), var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height)',
+                                    backgroundColor: 'background.surface',
+                                }}
+                            >
+                                <Table
+                                    borderAxis="bothBetween"
+                                    stripe="odd"
+                                    hoverRow
+                                    stickyHeader
+                                    sx={{
+                                        '& tr > *:first-child': {
+                                            position: 'sticky',
+                                            left: 0,
+                                            boxShadow: '1px 0 var(--TableCell-borderColor)',
+                                            bgcolor: 'background.surface',
+                                        },
+                                    }}
+                                >
+                                    <Box >
+                                        <thead>
+                                            <tr>
+                                                <th style={{ width: 400 }}>Name</th>
+                                                <th >ID#</th>
+                                                {dateArray && dateArray.map((val, index) => (
+                                                    <th key={index} >
+                                                        {val.date}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                            <tr>
+                                                <th style={{ textAlign: "center" }}> Days </th>
+                                                <th style={{ textAlign: "center" }}>  </th>
+                                                {dateArray && dateArray.map((val, index) => (
+                                                    <th key={index}>
+                                                        {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
+
+                                                    </th>
+                                                ))}
+                                                <th aria-label="last"
+                                                    style={{ width: 'var(--Table-lastColumnWidth)' }}>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {empArray && empArray.map((row, index) => (
+                                                <tr key={index} >
+                                                    <td>
+                                                        <Box> {row.em_name}</Box>
+                                                    </td>
+                                                    <td >
+                                                        <Box> {row.em_no}</Box>
+                                                    </td>
+                                                    {row.arr.map((val, index) => (
+                                                        <td key={index}>
+                                                            <Box >
+                                                                {val.duty_desc}
+                                                            </Box>
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Box>
+                                </Table>
+                            </Sheet>
+                        </Box>
+
+                        {/* <Box sx={{ width: "100%" }} >
                             <Paper square elevation={0} sx={{
                                 display: "flex",
                                 p: 1,
@@ -637,7 +909,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                     </Table>
                                 </TableContainer>
                             </Box>
-                        </Box>
+                        </Box> */}
                     </>
                 }
 
