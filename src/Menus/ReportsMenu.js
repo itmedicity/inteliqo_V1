@@ -23,6 +23,7 @@ export const hr_report_two = [
     { to: '/Home/ExperienceSummary', name: 'Employee Experience Summary Report', slno: 256 },
     { to: '/Home/TrainingAllotedEmpReport', name: 'Departmentat Wise Training Alloted Employee Report', slno: 267 },
     { to: '/Home/TrainingRetestEmpReport', name: 'Departmentat Wise Training Retest Employee Report', slno: 269 },
+    { to: '/Home/EmpPunchReport', name: 'Employee Wise Punch Report', slno: 271 },
 ]
 export const hr_report_third = [
 

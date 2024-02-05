@@ -272,6 +272,8 @@ const TrainingAllotedEmpReport = React.lazy(() => import('./views/HrReports/Trai
 const TrainingCompletionEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingCompletionEmpReports'))
 const TrainingPendingReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingPendingEmpList'))
 const TrainingRetestEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingRetestEmpReport'))
+const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch Report/EmpPunchReport'))
+
 
 const routes = [
 
@@ -533,6 +535,7 @@ const routes = [
   { path: '/Home/TrainingCompletionEmpReport', exact: true, name: 'Departmental Training Completion Employee Reports', component: TrainingCompletionEmpReport },
   { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
   { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
+  { path: '/Home/EmpPunchReport', exact: true, name: 'Employee Wise Punch Report', component: EmpPunchReport },
 
 ]
 
