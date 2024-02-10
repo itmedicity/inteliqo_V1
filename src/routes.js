@@ -273,6 +273,7 @@ const CommonPreTestPage = React.lazy(() => import('./views/TrainingDevelopment/C
 const PreLogInpage = React.lazy(() => import('./views/TrainingDevelopment/CommonPreTest/PreLogInpage'))
 const CommonPostTestPage = React.lazy(() => import('./views/TrainingDevelopment/CommonPostTest/TopicScanList'))
 const RetestEmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestEmpDetails'))
+const InductionTraining = React.lazy(() => import('./views/TrainingDevelopment/InductionTraining/InductionTrainingMainPage'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -537,6 +538,8 @@ const routes = [
   { path: '/PreLogInpage/:topic_slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
   { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
   { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
+  { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },
+
 ]
 
 export default routes

@@ -35,7 +35,10 @@ const {
     FETCH_ALL_TOPICS_UNDER_DEPT,
     FETCH_TRAINING_TOPIC_BY_DEPT,
     FETCH_COMMON_PRETEST_TOPICS,
-    FETCH_COMMON_POSTTEST_TOPICS
+    FETCH_COMMON_POSTTEST_TOPICS,
+    FETCH_NEWJOINEES_LIST,
+    FETCH_TRAINING_TYPE_WISE_TOPICS
+
 
 } = Actiontypes;
 
@@ -180,6 +183,14 @@ const TrainingData = {
     CommonPostTopics: {
         CommonPostTopicsList: [],
         CommonPostTopicsStatus: false
+    },
+    NewJoinees: {
+        NewJoineesList: [],
+        NewJoineesStatus: false
+    },
+    TrainingTypeTopic: {
+        TrainingTypeTopicList: [],
+        TrainingTypeTopicStatus: false
     },
 }
 
@@ -499,6 +510,24 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.CommonPostTopics,
                     CommonPostTopicsList: payload,
                     CommonPostTopicsStatus: true
+                }
+            }
+        case FETCH_NEWJOINEES_LIST:
+            return {
+                ...state,
+                NewJoinees: {
+                    ...state.NewJoinees,
+                    NewJoineesList: payload,
+                    NewJoineesStatus: true
+                }
+            }
+        case FETCH_TRAINING_TYPE_WISE_TOPICS:
+            return {
+                ...state,
+                TrainingTypeTopic: {
+                    ...state.TrainingTypeTopic,
+                    TrainingTypeTopicList: payload,
+                    TrainingTypeTopicStatus: true
                 }
             }
         default:

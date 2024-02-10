@@ -14,6 +14,10 @@ import { endOfMonth } from 'date-fns';
 import ModalClose from '@mui/joy/ModalClose';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import CheckIcon from '@mui/icons-material/Check';
+import { Tooltip } from '@mui/material';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
 
 const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata, EmpDetails }) => {
 
@@ -26,6 +30,8 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
     const [viewTable, setViewtable] = useState(0)
     const [datas, setdatas] = useState([])
     const [newdata, setNewdata] = useState([])
+    const [editTrainer, seteditTrainer] = useState(0)
+    const [trainer, setTrainer] = useState([])
 
     const [data, setdata] = useState({
         slno: 0,
@@ -97,6 +103,20 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         setNewdata(filterarray);
     }, [datas])
 
+    const postdata = newdata?.map((val) => {
+        const obj = {
+            slno: slno,
+            emp_name: val.em_id,
+            emp_desig: val.desg_slno,
+            emp_dept: data.dept_id,
+            emp_dept_sectn: data.sect_id,
+            schedule_date: data.schedule_date,
+            topic: data.topic_slno,
+            create_user: em_id
+        }
+        return obj
+    }, [newdata, scheduleDate, slno, em_id, data])
+
     const patchdata = useMemo(() => {
         return {
             schedule_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
@@ -105,39 +125,18 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         }
     }, [scheduleDate, slno, em_id])
 
-    const postdata = newdata?.map((val) => {
-        const obj = {
-            slno: slno,
-            emp_name: val.em_id,
-            emp_desig: val.desg_slno,
-            emp_dept: data.dept_id,
-            emp_dept_sectn: data.sect_id,
-            schedule_date: moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss"),
-            topic: data.topic_slno,
-            create_user: em_id
-        }
-        return obj
-    }, [newdata, scheduleDate, slno, em_id, data])
-
     const SubmitSchedule = useCallback(async () => {
-        const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
-        const { success, message } = result.data
+        const results = await axioslogin.post('/TrainingAfterJoining/insertEmployees', postdata)
+        const { success, message } = results.data
         if (success === 1) {
-            const results = await axioslogin.post('/TrainingAfterJoining/insertEmployees', postdata)
-            const { success, message } = results.data
-            if (success === 1) {
-                succesNofity(message);
-                Setcount(count + 1);
-                reset();
-            }
-            else {
-                warningNofity(message)
-            }
+            succesNofity(message);
+            Setcount(count + 1);
+            reset();
         }
         else {
             warningNofity(message)
         }
-    }, [patchdata, reset, postdata, count, Setcount])
+    }, [reset, postdata, count, Setcount])
 
     const end = endOfMonth(new Date(scheduleDate))
 
@@ -154,6 +153,49 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         setOpen(false)
         setViewtable(0);
     }, [setOpen, setViewtable])
+
+
+    const editDate = useCallback(async () => {
+        const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
+        const { success, message } = result.data
+        if (success === 1) {
+            succesNofity(message)
+            Setcount(count + 1);
+        }
+        else {
+            warningNofity("Date Not Changed")
+        }
+
+    }, [patchdata, Setcount, count])
+
+    const EditTrainers = useCallback(() => {
+        seteditTrainer(1)
+    }, [seteditTrainer])
+
+    const updateTrainers = useMemo(() => {
+        return {
+            slno: slno,
+            trainer: trainer,
+            edit_user: em_id
+        }
+    }, [trainer, slno, em_id])
+
+    const submitTrainers = useCallback(async () => {
+        if (editTrainer === 1) {
+            const result = await axioslogin.patch('/TrainingAfterJoining/UpdateTrainers', updateTrainers)
+            const { success, message } = result.data
+            if (success === 1) {
+                succesNofity(message)
+                Setcount(count + 1);
+                setTrainer([])
+                seteditTrainer(0)
+            }
+            else {
+                warningNofity("Not Changed")
+            }
+        }
+    }, [editTrainer, seteditTrainer, setTrainer, Setcount, count, updateTrainers])
+
     return (
         <Fragment>
             <Modal
@@ -185,44 +227,93 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                         Training Reschedule & Add Employee
                     </Typography>
 
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, pl: 0.5 }}>
-                        <Box sx={{}}>Schedule Date</Box>
-                        <Box sx={{ px: 10 }}>{data?.schedule_date}</Box>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, pl: 0.5 }}>
-                        <Box sx={{}}>Training Topic</Box>
-                        <Box sx={{ px: 10.5, textTransform: "capitalize" }}>{data?.training_topic_name.toUpperCase()}</Box>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 1, pl: 0.5 }}>
-                        <Box sx={{}}>Trainer Names</Box>
-                        <Box sx={{ px: 10 }}>{data?.traineer_name}</Box>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, pl: 0.5 }}>
-                        <Box sx={{ mt: 1 }}>Reschedule Date</Box>
-                        <Box sx={{ px: 8 }}>
-                            <Box sx={{ flex: 1 }}>
-                                <Input
-                                    type="date"
-                                    fullWidth
-                                    slotProps={{
-                                        input: {
-                                            max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                        },
-                                    }}
-                                    value={scheduleDate}
-                                    name="scheduleDate"
-                                    onChange={(e) => UpdateDate(e)}
-                                />
+                    <Box sx={{ display: 'flex', flexDirection: "row", p: 1, gap: 5 }}>
+                        <Box >
+                            <Box sx={{ mt: 2 }}>Schedule Date</Box>
+                            <Box sx={{ mt: 2 }}>Training Topic</Box>
+                            <Box sx={{ mt: 2 }}>Trainer Names</Box>
+                            <Box sx={{ mt: 4 }}>Reschedule Date</Box>
+                        </Box>
+                        <Box >
+                            <Box sx={{ mt: 2 }}>{data?.schedule_date}</Box>
+                            <Box sx={{ mt: 2, textTransform: "capitalize" }}>{data?.training_topic_name.toLowerCase()}</Box>
+                            <Box sx={{ mt: 2 }}>
+                                {
+                                    editTrainer === 1 ?
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                            <Box sx={{ width: "100%" }}>
+                                                <JoyTrainerMultipleSelect value={trainer} setValue={setTrainer} />
+                                            </Box>
+                                            <Tooltip title="Change Trainer">
+                                                <Box>
+                                                    <IconButton onClick={(e) => { submitTrainers(e) }}>
+                                                        <CheckIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            </Tooltip>
+                                        </Box>
+                                        : <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                            <Box sx={{ textTransform: "capitalize" }}>{data?.traineer_name.toLowerCase()}</Box>
+                                            <Tooltip title="Change Trainer">
+                                                <Box>
+                                                    <IconButton onClick={(e) => { EditTrainers(e) }}>
+                                                        <ChangeCircleIcon />
+                                                    </IconButton>
+                                                </Box>
+                                            </Tooltip>
+                                        </Box>
+                                }
+                            </Box>
+                            <Box sx={{ mt: 2, display: "flex", flexDirection: "row" }}>
+                                <Box sx={{ flex: 1 }}>
+                                    <Input
+                                        type="date"
+                                        fullWidth
+                                        slotProps={{
+                                            input: {
+                                                max: moment(new Date(end)).format('YYYY-MM-DD'),
+                                            },
+                                        }}
+                                        value={scheduleDate}
+                                        name="scheduleDate"
+                                        onChange={(e) => UpdateDate(e)}
+                                    />
+                                </Box>
+                                <Tooltip title="Save New Date">
+                                    <Box>
+                                        <IconButton onClick={(e) => { editDate(e) }}>
+                                            <CheckIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Tooltip>
                             </Box>
                         </Box>
-
-                        <Box sx={{ pl: 5, display: "flex", flexDirection: "row", gap: 1 }}>
-                            <IconButton style={{ py: 0.5 }} onClick={(e) => { HandleEmpSelect(e) }}>
+                    </Box>
+                    <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                        <Box sx={{ display: "flex", flexDirection: "row", }}>
+                            <IconButton onClick={(e) => { HandleEmpSelect(e) }}>
                                 <AddCircleOutlineIcon />
                             </IconButton>
                             <Box sx={{ mt: 1 }}>Add Employees</Box>
                         </Box>
+                        <Tooltip title="Save employees">
+                            <Box sx={{ display: "flex", justifyContent: "flex-end", }}>
+                                <CssVarsProvider>
+                                    <Button
+                                        variant="outlined"
+                                        color="success"
+                                        onClick={SubmitSchedule}
+                                        size="sm"
+                                        sx={{ color: '#81c784' }}
+                                    >
+                                        <SaveIcon sx={{ fontSize: 25 }} />
+                                    </Button>
+                                </CssVarsProvider>
+                            </Box>
+                        </Tooltip>
+
                     </Box>
+
                     {
                         viewTable === 1 ?
                             <Sheet sx={{
@@ -244,7 +335,11 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                         </thead>
                                         <tbody>
                                             {datas?.map((row, index) => (
-                                                <tr key={index}>
+                                                <tr key={index} style={{
+                                                    border: "2px solid black",
+                                                    overflow: "hidden",
+                                                    overflowY: "scroll"
+                                                }}>
                                                     <th style={{ textAlign: "center" }}>
                                                         <Checkbox
                                                             checked={row?.inValue || false}
@@ -260,19 +355,6 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                         </tbody>
                                     </Table>
                                 </CssVarsProvider>
-                                <Box sx={{ display: "flex", justifyContent: "flex-end", px: 5, mt: 2 }}>
-                                    <CssVarsProvider>
-                                        <Button
-                                            variant="outlined"
-                                            color="success"
-                                            onClick={SubmitSchedule}
-                                            size="sm"
-                                            sx={{ color: '#81c784' }}
-                                        >
-                                            <SaveIcon sx={{ fontSize: 25 }} />
-                                        </Button>
-                                    </CssVarsProvider>
-                                </Box>
                             </Sheet>
 
                             : null
