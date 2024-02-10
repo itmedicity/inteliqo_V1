@@ -68,7 +68,7 @@ const CompansatoryOffMast = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { salary_above } = state;
+    const { salary_above, week_off_day } = state;
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
@@ -125,10 +125,11 @@ const CompansatoryOffMast = () => {
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
             if (success === 1) {
+                console.log(data);
                 const { ot_request_flag, punch_slno, holiday_slno } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
+                const { shft_chkin_time, shft_chkout_time, shft_cross_day, shift_id } = selectedShiftTiming[0]
 
                 const inTime = moment(shft_chkin_time).format('HH:mm:ss');
                 const outTime = moment(shft_chkout_time).format('HH:mm:ss');
@@ -149,6 +150,9 @@ const CompansatoryOffMast = () => {
                 else if (holiday_slno !== 0 && gross_salary < salary_above) {
                     warningNofity('Cannot Apply for Compensatory Off Request!')
                 }
+                // else if (shift_id !== week_off_day) {
+                //     warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
+                // }
                 else {
 
                     //TO FETCH PUNCH DATA FROM TABLE
@@ -180,7 +184,8 @@ const CompansatoryOffMast = () => {
         } else {
             warningNofity('Select The Off Type and Shift Feild')
         }
-    }, [fromDate, offType, selectedShift, em_id, em_no, shiftTiming, gross_salary, salary_above])
+    }, [fromDate, offType, selectedShift, em_id, em_no, shiftTiming, gross_salary, salary_above,
+        week_off_day])
 
 
     const handleChangeCheckInCheck = useCallback((e) => {

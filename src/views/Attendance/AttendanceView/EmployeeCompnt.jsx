@@ -36,7 +36,8 @@ const EmployeeCompnt = ({ em_no }) => {
         if (success === 1) {
             let punchData = data;
             AttendanceViewFun(value, punchData, holidayList).then((values) => {
-                setMainArray(values)
+                const array = values.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                setMainArray(array)
             })
         } else {
             setMainArray([])
@@ -48,7 +49,6 @@ const EmployeeCompnt = ({ em_no }) => {
 
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
-
                 <Paper
                     square
                     variant="outlined"
@@ -131,7 +131,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                             <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                EG
+                                EHFD
                             </Typography>
                         </Box>
                         <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
