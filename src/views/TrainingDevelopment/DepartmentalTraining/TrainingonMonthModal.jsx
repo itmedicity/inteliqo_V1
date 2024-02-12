@@ -67,7 +67,8 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
             schedule_topics: topic,
             schedule_trainers: trainer,
             schedule_remark: remark,
-            create_user: em_id
+            create_user: em_id,
+            edit_user: em_id
         }
     }, [dept, deptSec, year, selectdate, topic, trainer, remark, em_id])
 

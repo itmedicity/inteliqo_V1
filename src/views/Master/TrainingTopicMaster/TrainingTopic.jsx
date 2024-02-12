@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
@@ -20,8 +20,15 @@ import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import ShowFile from './ShowFile';
+import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
+import { TrainerNames } from 'src/redux/actions/Training.Action';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+
 
 const TrainingTopic = () => {
+
+    const dispatch = useDispatch()
+
     const [dept_status, set_dept_status] = useState(false);
     const [depttype, setdepttype] = useState(0);
     const [training_topic_name, setTraining_topic_name] = useState('');
@@ -48,10 +55,17 @@ const TrainingTopic = () => {
     const [open, setopen] = useState(false);
     const [editflag, SetEditFlag] = useState(0)
     const [video_time, SetVideo_time] = useState(0)
+    const [trainers, setTrainers] = useState([])
+    const [edit_trainers, setEdit_trainers] = useState(0);
+    const [trainer_names, SetTrainerNames] = useState([]);
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
+
+    useEffect(() => {
+        dispatch(TrainerNames())
+    }, [dispatch])
 
     //reset
     const reset = useCallback(() => {
@@ -74,6 +88,8 @@ const TrainingTopic = () => {
         setSelectFile([])
         setUploads([])
         SetVideo_time(0);
+        setTrainers([])
+        SetTrainerNames([])
     }, [])
     //check dept
     const checkDepartment = useCallback((e) => {
@@ -107,9 +123,10 @@ const TrainingTopic = () => {
             create_user: em_id,
             hours: hours,
             video_link: videos,
-            video_time: video_time
+            video_time: video_time,
+            trainers: trainers
         }
-    }, [depttype, videos, video_time, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
+    }, [depttype, videos, trainers, video_time, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
@@ -131,15 +148,17 @@ const TrainingTopic = () => {
             topic_slno: topic_slno,
             hours: hours,
             video_link: videos,
-            video_time: video_time
+            video_time: video_time,
+            trainers: trainers
         }
-    }, [dept_status, videos, video_time, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
+    }, [dept_status, videos, trainers, video_time, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
         const getData = async () => {
             const result = await axioslogin.get('TrainingTopic/select')
             const { success, data } = result.data;
+            console.log(data);
             if (success === 2) {
                 const viewData = data?.map((val) => {
                     const obj = {
@@ -174,6 +193,8 @@ const TrainingTopic = () => {
                         video_link: val.video_link === '' ? "Nill" : val.video_link,
                         video_time: val.video_time,
                         upload_status: val.upload_status === 1 ? "YES" : "NO",
+                        trainers: val.trainers,
+                        trainers_name: val.trainers_name
                     }
                     return obj;
                 })
@@ -190,7 +211,7 @@ const TrainingTopic = () => {
     const getDataTable = useCallback(async (params) => {
         setFlag(1);
         const data = params.api.getSelectedRows()
-        const { topic_slno, video_link, video_time, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
+        const { topic_slno, video_link, trainers_name, video_time, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
         setFlag(1);
         setdepttype(dept_id)
         set_dept_status(dept_status === 0 ? false : true)
@@ -211,6 +232,7 @@ const TrainingTopic = () => {
         SetVideos(video_link);
         SetVideo_time(video_time);
         setUploads([])
+        SetTrainerNames([trainers_name])
 
         //View uploads 
         const postData = {
@@ -401,6 +423,7 @@ const TrainingTopic = () => {
         { headerName: 'Video Time(m) ', field: 'video_time', filter: true, minWidth: 200 },
         { headerName: 'Pdf  ', field: 'upload_status', filter: true, minWidth: 200 },
         { headerName: 'Taraining Hours ', field: 'hours', filter: true, minWidth: 150 },
+        { headerName: 'Trainers ', field: 'trainers_name', filter: true, minWidth: 150 },
         {
             headerName: 'Edit', minWidth: 150, cellRenderer: params =>
                 < Fragment >
@@ -410,6 +433,11 @@ const TrainingTopic = () => {
                 </Fragment >
         }
     ])
+
+
+    const EditTrainers = useCallback(() => {
+        setEdit_trainers(1)
+    }, [setEdit_trainers])
 
     return (
         <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
@@ -455,7 +483,38 @@ const TrainingTopic = () => {
                                 onChange={(e) => setTraining_topic_name(e.target.value)}
                             />
                         </Box>
-                        <Box sx={{ flex: 1 }}>
+                        {edit_trainers === 1 ?
+                            <Tooltip title="Add Trainers">
+                                <Box sx={{ px: 0.3, flex: 1 }} >
+                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                </Box>
+                            </Tooltip>
+                            : null}
+
+                        {flag === 1 && edit_trainers === 0 ?
+                            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                <JoyInput
+                                    type="text"
+                                    value={trainer_names}
+                                    disabled />
+                                <Tooltip title="Add new trainers">
+                                    <Button>
+                                        <PublishedWithChangesIcon onClick={EditTrainers} />
+                                    </Button>
+                                </Tooltip>
+
+                            </Box>
+                            :
+                            null
+                        }
+                        {flag === 0 && edit_trainers === 0 ?
+                            <Tooltip title="Add Trainers">
+                                <Box sx={{ px: 0.3, flex: 1 }} >
+                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                </Box>
+                            </Tooltip>
+                            : null}
+                        <Box>
                             <Box sx={{ display: "flex", flexDirection: "row" }}>
                                 <Typography sx={{ mt: 1 }}>Training Hours :</Typography>
                                 <Input
@@ -470,7 +529,6 @@ const TrainingTopic = () => {
                                     }}
                                 />
                             </Box>
-
                         </Box>
                     </Box>
 

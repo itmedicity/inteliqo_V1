@@ -20,12 +20,12 @@ const TrainingAndDevelopment = [
     //     name: 'Employee Training Schedule',
     //     to: '/Home/TrainingEmployeeSchedule',
     // },
-    {
-        men_slno: 56,
-        component: CNavItem,
-        name: 'Training Schedule',
-        to: '/Home/AfterJoiningTraining',
-    },
+    // {
+    //     men_slno: 56,
+    //     component: CNavItem,
+    //     name: 'Training Schedule',
+    //     to: '/Home/AfterJoiningTraining',
+    // },
     {
         men_slno: 57,
         component: CNavItem,
@@ -75,6 +75,12 @@ const TrainingAndDevelopment = [
     //     component: CNavItem,
     //     name: 'Post-Test',
     //     to: '/Home/CommonPostTestPage',
+    // },
+    // {
+    //     men_slno: 272,
+    //     component: CNavItem,
+    //     name: 'Induction Training Allocation',
+    //     to: '/Home/InductionTraining',
     // },
 ]
 
