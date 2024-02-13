@@ -85,8 +85,8 @@ const SalaryReport = () => {
                         const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp - lossofpay :
-                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp - lossofpay
+                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
 
                         const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
 
@@ -158,8 +158,8 @@ const SalaryReport = () => {
                         const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp - lossofpay :
-                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp - lossofpay
+                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
 
                         const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
 
@@ -207,6 +207,7 @@ const SalaryReport = () => {
         { headerName: 'LWP ', field: 'lwp' },
         { headerName: 'No of Leaves', field: 'leaves' },
         { headerName: 'Calculated LOP', field: 'calculatedlop' },
+        { headerName: 'No Of Half Days', field: 'nofhfd' },
         { headerName: 'Total Day', field: 'paydays' },
         { headerName: 'Gross Salary', field: 'gross_salary' },
         { headerName: 'Account Number', field: 'em_account_no' },

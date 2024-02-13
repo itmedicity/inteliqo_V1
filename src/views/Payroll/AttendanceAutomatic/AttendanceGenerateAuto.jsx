@@ -62,9 +62,13 @@ const AttendanceGenerateAuto = () => {
                         const empwise = data.filter((value) => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
+                        console.log(empwise);
+
                         const total = empwise.length
                         const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
-                        const calculated = (empwise.filter(val => val.duty_desc === 'P')).length
+                        const calculated = (empwise?.filter(val => val.duty_desc === 'P')).length
+                        console.log(val.em_name);
+                        console.log(calculated);
                         const offdays = (empwise.filter(val => val.duty_desc === 'OFF' || val.duty_desc === 'NOFF')).length
                         const leaves = (empwise.filter(val => val.duty_desc === 'LV' || val.duty_desc === 'HDL')).length
                         const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
@@ -75,8 +79,8 @@ const AttendanceGenerateAuto = () => {
                         const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp - lossofpay :
-                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp - lossofpay
+                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
 
                         const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
 

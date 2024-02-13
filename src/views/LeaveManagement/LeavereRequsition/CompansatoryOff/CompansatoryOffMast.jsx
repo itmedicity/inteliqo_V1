@@ -125,7 +125,6 @@ const CompansatoryOffMast = () => {
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
             if (success === 1) {
-                console.log(data);
                 const { ot_request_flag, punch_slno, holiday_slno } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)

@@ -230,14 +230,14 @@ const ContractRenewList = () => {
             </Fragment>
         },
         // { headerName: 'Slno', field: 'slno', width: 100 },
-        { headerName: 'Emp No ', field: 'em_no', minWidth: 100, filter: true },
+        { headerName: 'Emp No ', field: 'em_no', minWidth: 150, filter: true },
         { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
-        { headerName: 'Department', field: 'dept_name', wrapText: true },
-        { headerName: 'Department Section', field: 'sect_name', wrapText: true },
-        { headerName: 'Designation', field: 'desg_name' },
-        { headerName: 'DOJ', field: 'em_doj' },
-        { headerName: 'Contract Start', field: 'em_cont_start' },
-        { headerName: 'Contract End', field: 'em_cont_end' },
+        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 150 },
+        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 200 },
+        { headerName: 'Designation', field: 'desg_name', minWidth: 150 },
+        { headerName: 'DOJ', field: 'em_doj' , minWidth: 150},
+        { headerName: 'Contract Start', field: 'em_cont_start' , minWidth: 150},
+        { headerName: 'Contract End', field: 'em_cont_end' , minWidth: 150},
     ])
 
     //get contract end employee details
