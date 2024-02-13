@@ -59,7 +59,8 @@ const CommonSettingNew = () => {
         max_late_day_count: 0,
         leave_count: 0,
         noff_selct_day_count: 0,
-        comp_day_count: 0
+        comp_day_count: 0,
+        comp_hour_count:0
     })
 
     const {
@@ -67,7 +68,7 @@ const CommonSettingNew = () => {
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
-        noff_selct_day_count, comp_day_count
+        noff_selct_day_count, comp_day_count,comp_hour_count
     } = FormData
 
     const [levaetype, setLeaveType] = useState([])
@@ -103,7 +104,8 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, eoff, comp_day_count } = data[0]
+                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, eoff, comp_day_count,
+                    comp_hour_count } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -133,7 +135,8 @@ const CommonSettingNew = () => {
                     max_late_day_count: max_late_day_count,
                     leave_count: leave_count,
                     noff_selct_day_count: noff_selct_day_count,
-                    comp_day_count: comp_day_count
+                    comp_day_count: comp_day_count,
+                    comp_hour_count:comp_hour_count
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -196,7 +199,8 @@ const CommonSettingNew = () => {
         noff: noff,
         group_slno: group_slno,
         eoff: eoff,
-        comp_day_count: comp_day_count
+        comp_day_count: comp_day_count,
+        comp_hour_count:comp_hour_count
     }
 
 
@@ -238,7 +242,8 @@ const CommonSettingNew = () => {
         noff: noff,
         group_slno: group_slno,
         eoff: eoff,
-        comp_day_count: comp_day_count
+        comp_day_count: comp_day_count,
+        comp_hour_count:comp_hour_count
     }
 
     //save
@@ -1005,6 +1010,24 @@ const CommonSettingNew = () => {
                                             size="sm"
                                             name="comp_day_count"
                                             value={comp_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Select Hour Count Limit</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="comp_hour_count"
+                                            value={comp_hour_count}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>

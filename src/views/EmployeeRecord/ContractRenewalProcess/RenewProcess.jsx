@@ -9,8 +9,10 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import TextInput from 'src/views/Component/TextInput';
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
+import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySelect';
+import DesignationSelect from '../../MuiComponents/DesignationSelect';
 
 const RenewProcess = ({
     em_cont_end, grace_period, newContract,
@@ -21,6 +23,8 @@ const RenewProcess = ({
     const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
     const [permanentcate, setpermanentcate] = useState(0)//setting permanent category
     const [renewCate, setRenewCate] = useState(0)
+    const [contractDesg,SetContractDesg]=useState(0)
+    const [permanentDesg,setPermanentDesg]=useState(0)
 
     const retirementDate = useMemo(() => emp_retireDate, [emp_retireDate])
 
@@ -50,13 +54,19 @@ const RenewProcess = ({
             dispatch({
                 type: Actiontypes.FETCH_NEW_CAT, payload: permanentcate
             })
+            dispatch({
+                type: Actiontypes.FETCH_NEW_DESIGNATION, payload: permanentDesg
+            })
         }
         else if (renewCate > 0) {
             dispatch({
                 type: Actiontypes.FETCH_NEW_CAT, payload: renewCate
             })
+            dispatch({
+                type: Actiontypes.FETCH_NEW_DESIGNATION, payload: contractDesg
+            })
         }
-    }, [permanentcate, renewCate, dispatch])
+    }, [permanentcate, renewCate, dispatch,permanentDesg,contractDesg])
 
     //checkbox for contract renewal process
     const getContract = useCallback((e) => {
@@ -180,6 +190,20 @@ const RenewProcess = ({
                                 setValue={setRenewCate} />
                         </Box>
                     </Box>
+                    <Box sx={{ display: "flex", width: "100%", }} >
+                        <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center", height: 30 }} variant="outlined" >
+                            <CssVarsProvider>
+                                <Typography level="body1">New Designation</Typography>
+                            </CssVarsProvider>
+                        </Paper>
+                        <Box sx={{ flex: 2, pt: 0.5 }} >
+                            <DesignationSelect
+                                style={SELECT_CMP_STYLE}
+                                disable={contractrenew === true ? false : true}
+                                value={contractDesg}
+                                setValue={SetContractDesg} />
+                        </Box>
+                    </Box>
 
                 </Box>
 
@@ -273,7 +297,20 @@ const RenewProcess = ({
                             />
                         </Box>
                     </Box>
-
+                    <Box sx={{ display: "flex", width: "100%", }} >
+                        <Paper square sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center", height: 30 }} variant="outlined" >
+                            <CssVarsProvider>
+                                <Typography level="body1">New Designation</Typography>
+                            </CssVarsProvider>
+                        </Paper>
+                        <Box sx={{ flex: 2, pt: 0.5 }} >
+                            <DesignationSelect
+                                style={SELECT_CMP_STYLE}
+                                disable={contractTpPermanent === true ? false : true}
+                                value={permanentDesg}
+                                setValue={setPermanentDesg} />
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
         </Fragment>

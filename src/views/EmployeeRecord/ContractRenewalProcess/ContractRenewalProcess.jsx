@@ -32,6 +32,7 @@ const ContractRenewalProcess = () => {
   const [retirementdate, setRetirementdate] = useState('')
   const [attendanceDays, setattendanceDays] = useState(0)
   const [newCatgeory, setnewCategory] = useState(0)
+  const [newDesign,setNewDesignation]=useState(0)
   // const [oldCategory, setOldctaegory] = useState(0)
   const [probsataus, setProbstatus] = useState(0)// for setting probation status
   const [contstatus, setContrstatus] = useState(0)//for setting contract status
@@ -68,13 +69,15 @@ const ContractRenewalProcess = () => {
 
   //getting data to save
   const datatoSave = useSelector((state) => state?.getContractClosedata, _.isEqual)
-  const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData, newCategory
+  const { contractclose, attendancedetls, arreardetails, olDataTocopy, oldPersonalData, newCategory,
+    newDesignation
   } = datatoSave
 
   //useEffect for setting new employee category
   useEffect(() => {
     setnewCategory(newCategory.newEmpcat)
-  }, [newCategory.newEmpcat])
+    setNewDesignation(newDesignation.newEmpDesg)
+  }, [newCategory.newEmpcat,newDesignation])
 
   //new contract details
   const [newContract, updateNewContract] = useState({
@@ -85,6 +88,10 @@ const ContractRenewalProcess = () => {
     newdateofjoin: format(new Date(), 'yyyy-MM-dd'),
   })
   const { newempId, newcontractstart, newcontractend, permanentEmpNo, newdateofjoin } = newContract
+
+
+  console.log(newDesign);
+  console.log(newCatgeory);
 
   // //login employee number
   // const em_no = useSelector((state) => state.getProfileData.ProfileData[0].em_no, _.isEqual)
@@ -140,7 +147,8 @@ const ContractRenewalProcess = () => {
     probation_status: probsataus === 1 ? 1 : 0,
     contract_status: contstatus === 1 && contractrenew === true ? 1 : 0,
     em_doj: contstatus === 0 && contractrenew === false ? newdateofjoin : doj,
-    actual_doj: doj
+    actual_doj: doj,
+    em_designation:newDesign,
   }
 
   const checkemid = {

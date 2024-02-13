@@ -57,7 +57,6 @@ const RequestedLeaveTable = () => {
     useEffect(() => {
         if (hod === 0 && incharge === 0) {
             const leaveRequestList = leaveRqList?.filter((val) => val.em_no === em_no)
-
             const newList = leaveRequestList?.map((val) => {
                 return {
                     leaveid: val.leave_slno,
@@ -146,7 +145,7 @@ const RequestedLeaveTable = () => {
                         (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 1) ? 'HOD Approval Pending' :
                             (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
                                 (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                                    (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'Approved' :
+                                    (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approval Pending' :
                                         (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 0 && val.cf_hod_apprv_status === 2) ? 'HOD Reject' :
                                             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 2) ? 'CEO Rejected' :
                                                 (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 0) ? 'Approved' : 'Approved',
@@ -262,7 +261,7 @@ const RequestedLeaveTable = () => {
                         (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 1) ? 'HOD Approval Pending' :
                             (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
                                 (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                                    (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'Approved' :
+                                    (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approval Pending' :
                                         (val.cf_hr_aprrv_requ === 1 || val.cf_ceo_apprv_status === 0 && val.cf_hr_apprv_status === 0 && val.cf_hod_apprv_status === 2) ? 'HOD Reject' :
                                             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 2) ? 'CEO Rejected' :
                                                 (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_ceo_apprv_status === 0) ? 'Approved' : 'Approved',

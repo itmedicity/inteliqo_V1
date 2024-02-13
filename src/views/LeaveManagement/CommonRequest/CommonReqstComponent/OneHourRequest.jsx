@@ -11,7 +11,7 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
-import { addHours, addMinutes, format, isAfter, isBefore, subHours } from 'date-fns'
+import { addHours, addMinutes, format, isAfter, isBefore, subHours,isEqual } from 'date-fns'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 // import { CalculationFun } from './CommonRqstFun'
 
@@ -54,7 +54,7 @@ const OneHourRequest = ({ count, setCount }) => {
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { cmmn_grace_period } = state;
+    const { cmmn_grace_period,comp_hour_count } = state;
 
 
     useEffect(() => {
@@ -132,8 +132,8 @@ const OneHourRequest = ({ count, setCount }) => {
                 setPunchOutTime(chekOut)
 
                 const postDataForpunchMaster = {
-                    date2: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                    date1: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                    date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                    date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
                     em_no: em_no
                 }
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
@@ -206,8 +206,8 @@ const OneHourRequest = ({ count, setCount }) => {
         }
         else {
             if (checkinBox === true) {
-                const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm:ss')
-                const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
+                const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm')
+                const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm')
                 const result = punchData.find((val) => val)
                 const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
                 if (dd === 0) {
@@ -245,9 +245,10 @@ const OneHourRequest = ({ count, setCount }) => {
                     }
                 }
             } else {
-                const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm:ss')
+                const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
                 const result = punchData.findLast((val) => val)
-                const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) ? 1 : 0
+                const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) ||isEqual(new Date(result.punch_time), new Date(outtime))  ? 1 
+                : 0
                 if (dd === 0) {
                     warningNofity("Can't Apply For One Hour Request!!");
                     setSelectedShift(0)

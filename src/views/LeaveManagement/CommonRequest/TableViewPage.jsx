@@ -141,7 +141,6 @@ const TableViewPage = ({ show, count, setCount }) => {
                     return value.dept_sect_id === val.dept_section;
                 })
             })
-            console.log(array1);
             const newOnduty = array1.map((val) => {
                 return {
                     typeslno: 2,
