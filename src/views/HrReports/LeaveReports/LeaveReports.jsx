@@ -109,7 +109,7 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate)
             const newNopunch = NopunchRq?.map((val) => {
                 return {
                     type: "No Punch Request",
@@ -128,7 +128,9 @@ const LeaveReports = () => {
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+                    leavetype_name: "Miss punch",
+                    leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                 }
             })
             const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
@@ -152,7 +154,8 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+
                 }
             })
             setEmpNo(0)
@@ -217,7 +220,7 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate)
 
             const newNopunch = NopunchRq?.map((val) => {
                 return {
@@ -239,7 +242,9 @@ const LeaveReports = () => {
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+                    leavetype_name: "Miss punch",
+                    leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                 }
             })
             const CompReq = compOffRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)

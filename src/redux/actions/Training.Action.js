@@ -36,7 +36,9 @@ const {
     FETCH_ALL_TOPICS_UNDER_DEPT,
     FETCH_TRAINING_TOPIC_BY_DEPT,
     FETCH_COMMON_PRETEST_TOPICS,
-    FETCH_COMMON_POSTTEST_TOPICS
+    FETCH_COMMON_POSTTEST_TOPICS,
+    FETCH_NEWJOINEES_LIST,
+    FETCH_TRAINING_TYPE_WISE_TOPICS
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -404,6 +406,27 @@ export const CommonTrainingPostTopics = () => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_COMMON_POSTTEST_TOPICS, payload: [], status: false })
+    }
+}
+
+export const InductionNewJoinees = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/InductionTraining/getEmps`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_NEWJOINEES_LIST, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_NEWJOINEES_LIST, payload: [], status: false })
+    }
+}
+export const TrainingTypeWiseTopics = (type) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingTopic/selectbyType/${type}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_TYPE_WISE_TOPICS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_TYPE_WISE_TOPICS, payload: [], status: false })
     }
 }
 
