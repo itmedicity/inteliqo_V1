@@ -265,6 +265,7 @@ const CommonPostTestPage = React.lazy(() => import('./views/TrainingDevelopment/
 const RetestEmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestEmpDetails'))
 const InductionTraining = React.lazy(() => import('./views/TrainingDevelopment/InductionTraining/InductionTrainingMainPage'))
 const SalaryReport = React.lazy(() => import('./views/HrReports/Salaryreports/SalaryReport'))
+const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch Report/EmpPunchReport'))
 
 
 const routes = [
@@ -515,6 +516,7 @@ const routes = [
   { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
   { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },
   { path: '/Home/SalaryReport', exact: true, name: 'Retest Emp Detailst', component: SalaryReport },
+  { path: '/Home/EmpPunchReport', exact: true, name: 'Employee Wise Punch Report', component: EmpPunchReport },
 
 ]
 

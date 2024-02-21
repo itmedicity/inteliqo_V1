@@ -68,7 +68,7 @@ const CompansatoryOffMast = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { salary_above, week_off_day } = state;
+    const { salary_above, week_off_day ,comp_hour_count} = state;
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
@@ -156,8 +156,8 @@ const CompansatoryOffMast = () => {
 
                     //TO FETCH PUNCH DATA FROM TABLE
                     const postDataForpunchMaster = {
-                        date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), 6), 'yyyy-MM-dd H:mm:ss'),
-                        date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), 6), 'yyyy-MM-dd H:mm:ss'),
+                        date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                        date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
                         em_no: em_no
                     }
 
@@ -184,7 +184,7 @@ const CompansatoryOffMast = () => {
             warningNofity('Select The Off Type and Shift Feild')
         }
     }, [fromDate, offType, selectedShift, em_id, em_no, shiftTiming, gross_salary, salary_above,
-        week_off_day])
+        week_off_day,comp_hour_count])
 
 
     const handleChangeCheckInCheck = useCallback((e) => {

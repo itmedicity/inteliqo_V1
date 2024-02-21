@@ -5,7 +5,7 @@ import { Paper } from '@mui/material';
 
 const CustmTypog = ({ title }) => {
     return (
-        <Paper square sx={{ backgroundColor: 'blue' }} >
+        <Paper square  >
             <CssVarsProvider>
                 <Typography
                     startDecorator={<ArrowRightIcon />}

@@ -62,17 +62,34 @@ const ApprovalHR = () => {
         if (radioBtnVal === '1') {
             //LEAVE REQUEST 
             if (Object.keys(leaveRqList).length > 0) {
-                const leaveRequestList = await leaveRqList?.map((val) => {
+
+                const arrinch = leaveRqList?.filter((k) => {
+                    return (k.incapprv_status !== 2 )
+                })
+                const arrhod = arrinch?.filter((k) => {
+                    return ( k.hod_apprv_status !== 2 )
+                })
+                const arrList = arrhod?.filter((k) => {
+                    return ( k.hr_apprv_status !== 2)
+                })
+                const leaveRequestList = await arrList?.map((val) => {
                     return {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
-                        status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        status:   (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.hr_aprrv_requ === 1  && val.hr_apprv_status === 2 && val.hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_apprv_status,
                         code: 1,
                         reqDate: val.request_date,
@@ -93,8 +110,14 @@ const ApprovalHR = () => {
         } else if (radioBtnVal === '2') {
             //HALF DAY LEAVE REQUEST
             if (Object.keys(halfdayRqList).length > 0) {
-                const arr = halfdayRqList && halfdayRqList.filter((k) => {
-                    return (k.hf_hr_apprv_status !== 1 && (k.hf_incapprv_status !== 2 || k.hf_hod_apprv_status !== 2))
+                const arrinch =  halfdayRqList?.filter((k) => {
+                    return (k.hf_incapprv_status !== 2)
+                })
+                const arrhod =  arrinch?.filter((k) => {
+                    return ( k.hf_hod_apprv_status !== 2 )
+                })
+                const arr =  arrhod?.filter((k) => {
+                    return (k.hf_hr_apprv_status !== 2)
                 })
                 const leaveRequestList = await arr?.map((val) => {
                     return {
@@ -102,12 +125,19 @@ const ApprovalHR = () => {
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
-                        status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        status:(val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.hf_hr_aprrv_requ === 1  && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        //  (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                        //                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.hf_hr_apprv_status,
                         code: 2,
                         reqDate: val.requestdate,
@@ -115,7 +145,10 @@ const ApprovalHR = () => {
 
                     }
                 })
-                setTableData(leaveRequestList)
+                const arr2 = leaveRequestList && leaveRequestList.filter((k) => {
+                    return (k.hrstatus !== 1)
+                })
+                setTableData(arr2)
             } else {
                 setTableData([])
                 infoNofity('No Halfday Request Found')
@@ -123,17 +156,33 @@ const ApprovalHR = () => {
         } else if (radioBtnVal === '3') {
             //NO PUNCH
             if (Object.keys(nopunchRqList).length > 0) {
-                const leaveRequestList = await nopunchRqList?.map((val) => {
+                const arrinch = nopunchRqList?.filter((k) => {
+                    return (k.np_incapprv_status !== 2  )
+                })
+                const arrhod = arrinch?.filter((k) => {
+                    return ( k.np_hod_apprv_status !== 2  )
+                })
+                const arrList = arrhod?.filter((k) => {
+                    return ( k.np_hr_apprv_status !== 2 )
+                })
+                const leaveRequestList = await arrList?.map((val) => {
                     return {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
                         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.np_hr_aprrv_requ === 1  && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.np_hr_apprv_status,
                         code: 3,
                         reqDate: val.request_date,
@@ -155,17 +204,33 @@ const ApprovalHR = () => {
         } else if (radioBtnVal === '4') {
             //COMPANSATORY OFF
             if (Object.keys(compOffRqList).length > 0) {
-                const leaveRequestList = await compOffRqList?.map((val) => {
+                const arrinch = compOffRqList?.filter((k) => {
+                    return (k.cf_incapprv_status !== 2  )
+                })
+                const arrhod= arrinch?.filter((k) => {
+                    return ( k.cf_hod_apprv_status !== 2  )
+                })
+                const arrList = arrhod?.filter((k) => {
+                    return ( k.cf_hr_apprv_status !== 2 )
+                })
+                const leaveRequestList = await arrList?.map((val) => {
                     return {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
-                        status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        status:  (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.cf_hr_aprrv_requ === 1  && val.cf_hr_apprv_status === 2 && val.cf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.cf_hr_apprv_status,
                         code: 4,
                         reqDate: val.request_date,
@@ -175,7 +240,7 @@ const ApprovalHR = () => {
                 })
 
                 const arr = leaveRequestList && leaveRequestList.filter((k) => {
-                    return (k.hrstatus !== 1)
+                    return (k.hrstatus !== 1 )
                 })
                 setTableData(arr)
             } else {
@@ -191,18 +256,34 @@ const ApprovalHR = () => {
 
     useEffect(() => {
         if (value === 1) {
-            if (Object.keys(leaveRqList).length > 0) {
-                const leaveRequestList = leaveRqList?.map((val) => {
+            const arrinch = leaveRqList?.filter((k) => {
+                return (k.incapprv_status !== 2 )
+            })
+            const arrhod = arrinch?.filter((k) => {
+                return ( k.hod_apprv_status !== 2 )
+            })
+            const arrList = arrhod?.filter((k) => {
+                return ( k.hr_apprv_status !== 2)
+            })
+            if (Object.keys(arrList).length > 0) {
+                const leaveRequestList = arrList?.map((val) => {
                     return {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
-                        status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        status:   (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.hr_aprrv_requ === 1  && val.hr_apprv_status === 2 && val.hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_apprv_status,
                         code: 1,
                         reqDate: val.request_date,
@@ -211,7 +292,7 @@ const ApprovalHR = () => {
                     }
                 })
                 const arr = leaveRequestList && leaveRequestList.filter((k) => {
-                    return (k.hrstatus !== 1)
+                    return (k.hrstatus !== 1 && k.hrstatus !== 2)
                 })
                 setTableData(arr)
             }
@@ -220,18 +301,34 @@ const ApprovalHR = () => {
             }
         } else if (value === 2) {
             if (Object.keys(halfdayRqList).length > 0) {
-                const leaveRequestList = halfdayRqList?.map((val) => {
+                const arrinch =  halfdayRqList?.filter((k) => {
+                    return (k.hf_incapprv_status !== 2)
+                })
+                const arrhod =  arrinch?.filter((k) => {
+                    return ( k.hf_hod_apprv_status !== 2 )
+                })
+                const arr =  arrhod?.filter((k) => {
+                    return (k.hf_hr_apprv_status !== 2)
+                })
+                const leaveRequestList = arr?.map((val) => {
                     return {
                         slno: val.half_slno,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
                         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.hf_hr_aprrv_requ === 1  && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
+                        //                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.hf_hr_apprv_status,
                         code: 2,
                         reqDate: val.requestdate,
@@ -239,27 +336,43 @@ const ApprovalHR = () => {
 
                     }
                 })
-                const arr = leaveRequestList && leaveRequestList.filter((k) => {
+                const arr2 = leaveRequestList && leaveRequestList.filter((k) => {
                     return (k.hrstatus !== 1)
                 })
-                setTableData(arr)
+                setTableData(arr2)
             }
             else {
                 setTableData([])
             }
         } else if (value === 3) {
             if (Object.keys(nopunchRqList).length > 0) {
-                const leaveRequestList = nopunchRqList?.map((val) => {
+                const arrinch = nopunchRqList?.filter((k) => {
+                    return (k.np_incapprv_status !== 2  )
+                })
+                const arrhod = arrinch?.filter((k) => {
+                    return ( k.np_hod_apprv_status !== 2  )
+                })
+                const arrList = arrhod?.filter((k) => {
+                    return ( k.np_hr_apprv_status !== 2 )
+                })
+                const leaveRequestList = arrList?.map((val) => {
                     return {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
                         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.np_hr_aprrv_requ === 1  && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.np_hr_apprv_status,
                         code: 3,
                         reqDate: val.request_date,
@@ -277,17 +390,33 @@ const ApprovalHR = () => {
             }
         } else if (value === 4) {
             if (Object.keys(compOffRqList).length > 0) {
-                const leaveRequestList = compOffRqList?.map((val) => {
+                const arrinch = compOffRqList?.filter((k) => {
+                    return (k.cf_incapprv_status !== 2  )
+                })
+                const arrhod= arrinch?.filter((k) => {
+                    return ( k.cf_hod_apprv_status !== 2  )
+                })
+                const arrList = arrhod?.filter((k) => {
+                    return ( k.cf_hr_apprv_status !== 2 )
+                })
+                const leaveRequestList = arrList?.map((val) => {
                     return {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
                         name: val.em_name,
                         section: val.sect_name,
-                        status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                        status:  (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HR Pending' :
+                            (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approved' :
+                                (val.cf_hr_aprrv_requ === 1  && val.cf_hr_apprv_status === 2 && val.cf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                        // (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        //     (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                        //         (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                        //             (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                        //                 (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                         hrstatus: val.cf_hr_apprv_status,
                         code: 4,
                         reqDate: val.request_date,
@@ -297,7 +426,7 @@ const ApprovalHR = () => {
                 })
 
                 const arr = leaveRequestList && leaveRequestList.filter((k) => {
-                    return (k.hrstatus !== 1)
+                    return (k.hrstatus !== 1 )
                 })
                 setTableData(arr)
             }

@@ -1,6 +1,5 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
-import React, { Fragment, useEffect, useState,useMemo } from 'react'
-import { axioslogin } from '../Axios/Axios'
+import React, { Fragment, useEffect,useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setDesignation } from 'src/redux/actions/Designation.Action';
 import _ from 'underscore';

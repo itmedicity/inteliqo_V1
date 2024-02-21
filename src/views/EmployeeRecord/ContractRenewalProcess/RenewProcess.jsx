@@ -9,7 +9,6 @@ import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import TextInput from 'src/views/Component/TextInput';
 import ContractRenewSelection from 'src/views/MuiComponents/ContractRenewSelection';
-import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import PermannetCategorySelect from 'src/views/MuiComponents/PermannetCategorySelect';
 import DesignationSelect from '../../MuiComponents/DesignationSelect';

@@ -16,6 +16,7 @@ import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
+import ReportWithoutDownload from '../ReportComponent/ReportWithoutDownload'
 
 
 const PunchTable = lazy(() => import('./PunchTable'))
@@ -177,7 +178,7 @@ const EmpPunchReport = () => {
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
             <ToastContainer />
-            <DasboardCustomLayout title="Employee Wise Punching Reports" displayClose={true} >
+            <ReportWithoutDownload title="Employee Wise Punching Reports" displayClose={true} >
                 <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
 
                     <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
@@ -243,7 +244,7 @@ const EmpPunchReport = () => {
                     </Paper>
 
                 </Paper>
-            </DasboardCustomLayout>
+            </ReportWithoutDownload>
         </Box >
     )
 }

@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import ReportLayout from '../ReportComponent/ReportLayout'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, endOfMonth, startOfMonth } from 'date-fns'
+import { addMonths, endOfMonth, startOfMonth,getDaysInMonth  } from 'date-fns'
 import moment from 'moment'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
@@ -74,42 +74,58 @@ const SalaryReport = () => {
                         })
                         const total = empwise.length
                         const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
-                        const calculated = (empwise.filter(val => val.duty_desc === 'P')).length
+                        const present_days = (empwise.filter(val => val.duty_desc === 'P' )).length
                         const offdays = (empwise.filter(val => val.duty_desc === 'OFF' || val.duty_desc === 'NOFF')).length
-                        const leaves = (empwise.filter(val => val.duty_desc === 'LV' || val.duty_desc === 'HDL')).length
-                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
-                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
+                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const leaves = (empwise.filter(val => val.duty_desc === 'LV')).length
+                        const halday_leaves=(empwise.filter(val => val.duty_desc === 'HDL')).length
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
                         const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
+
+                        const calculated_workdays=present_days+(nofhfd*0.5)+leaves+halday_leaves+calculatedlop+holiday+offdays
+                       
+                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
+                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
                         const lwp = (empwise.filter(val => val.duty_desc === 'LWP')).length
-                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
-                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
+                        const total_lop=LCcount > commonSettings?.max_late_day_count ? lossofpay+lwp+(nofhfd*0.5) + ((LCcount - commonSettings?.max_late_day_count) / 2) : lossofpay+lwp+(nofhfd*0.5) 
 
-                        const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
+                        // const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                        //     calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
 
-                        const obj = {
+                        // const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
+                        const totalday=total-total_lop
+                       // const totalpay = LCcount > commonSettings?.max_late_day_count ? totalday + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : totalday + LCcount
+                       
+                       const onedaySalary=val.gross_salary/getDaysInMonth(new Date(value))
+
+                       const holidaysalary=val.gross_salary < commonSettings.salary_above ?onedaySalary*holidayworked:0
+                       const paydaySalay=totalday*onedaySalary
+                       const totalSalaey=paydaySalay+holidaysalary
+                       
+                       const obj = {
                             em_id: val.em_id,
                             em_no: val.em_no,
                             em_name: val.em_name,
                             total: total,
-                            actual: actual,
+                            actual: present_days,
                             lossofpay: lossofpay,
                             lwp: lwp,
-                            leaves: leaves,
+                            leaves: leaves+halday_leaves,
                             holidayworked: holidayworked,
                             holiday: holiday,
                             offdays: offdays,
-                            calculated: calculated,
+                            calculated: calculated_workdays,
                             calculatedlop: calculatedlop,
                             paydays: totalday,
                             nofhfd: nofhfd,
-                            gross_salary: val.gross_salary,
+                            gross_salary:Math.round(paydaySalay / 10) * 10,
                             dept_name: val.dept_name,
                             sect_name: val.sect_name,
-                            em_account_no: val.em_account_no
+                            holidaySalary:Math.round(holidaysalary / 10) * 10,
+                            em_account_no: val.em_account_no,
+                            totalSalary:Math.round(totalSalaey / 10) * 10
                         }
                         return obj
                     })
@@ -147,42 +163,60 @@ const SalaryReport = () => {
                         })
                         const total = empwise.length
                         const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
-                        const calculated = (empwise.filter(val => val.duty_desc === 'P')).length
+                        const present_days = (empwise.filter(val => val.duty_desc === 'P' )).length
                         const offdays = (empwise.filter(val => val.duty_desc === 'OFF' || val.duty_desc === 'NOFF')).length
-                        const leaves = (empwise.filter(val => val.duty_desc === 'LV' || val.duty_desc === 'HDL')).length
-                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
-                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
+                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const leaves = (empwise.filter(val => val.duty_desc === 'LV')).length
+                        const halday_leaves=(empwise.filter(val => val.duty_desc === 'HDL')).length
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
                         const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
+
+                        const calculated_workdays=present_days+(nofhfd*0.5)+leaves+halday_leaves+calculatedlop+holiday+offdays
+                       
+                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
+                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
                         const lwp = (empwise.filter(val => val.duty_desc === 'LWP')).length
-                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
-                            calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
+                        const total_lop=LCcount > commonSettings?.max_late_day_count ? lossofpay+lwp+(nofhfd*0.5) + ((LCcount - commonSettings?.max_late_day_count) / 2) : lossofpay+lwp+(nofhfd*0.5) 
 
-                        const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
+                        // const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                        //     calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
+
+                        // const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
+                        const totalday=total-total_lop
+                       // const totalpay = LCcount > commonSettings?.max_late_day_count ? totalday + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : totalday + LCcount
+                       
+                       const onedaySalary=val.gross_salary/getDaysInMonth(new Date(value))
+
+                       const holidaysalary=val.gross_salary < commonSettings.salary_above ?onedaySalary*holidayworked:0
+
+const paydaySalay=totalday*onedaySalary
+const totalSalaey=paydaySalay+holidaysalary
+
 
                         const obj = {
                             em_id: val.em_id,
                             em_no: val.em_no,
                             em_name: val.em_name,
                             total: total,
-                            actual: actual,
+                            actual: present_days,
                             lossofpay: lossofpay,
                             lwp: lwp,
-                            leaves: leaves,
+                            leaves:  leaves+halday_leaves,
                             holidayworked: holidayworked,
                             holiday: holiday,
                             offdays: offdays,
-                            calculated: calculated,
+                            calculated: calculated_workdays,
                             calculatedlop: calculatedlop,
                             paydays: totalday,
                             nofhfd: nofhfd,
-                            gross_salary: val.gross_salary,
+                            gross_salary: Math.round(paydaySalay / 10) * 10,
                             dept_name: val.dept_name,
                             sect_name: val.sect_name,
-                            em_account_no: val.em_account_no
+                            em_account_no: val.em_account_no,
+                            holidaySalary:Math.round(holidaysalary / 10) * 10,
+                            totalSalary:Math.round(totalSalaey / 10) * 10
                         }
                         return obj
                     })
@@ -210,6 +244,8 @@ const SalaryReport = () => {
         { headerName: 'No Of Half Days', field: 'nofhfd' },
         { headerName: 'Total Day', field: 'paydays' },
         { headerName: 'Gross Salary', field: 'gross_salary' },
+        { headerName: 'Holiday Salary', field: 'holidaySalary' },
+        { headerName: 'Total Salary', field: 'totalSalary' },
         { headerName: 'Account Number', field: 'em_account_no' },
     ])
 

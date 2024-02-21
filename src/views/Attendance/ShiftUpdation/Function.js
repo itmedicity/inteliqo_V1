@@ -138,6 +138,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0 :
                             CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? 0 :
                                 CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? 0 :
+                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5:
                                     CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
                                         early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
                                             early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
@@ -156,6 +157,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "A" :
                             CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? "A" :
                                 CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? "A" :
+                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
                                     CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
                                         CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
                                             early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
@@ -231,6 +233,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             : isValid(new Date(punchOut)) && isBefore(new Date(punchOut), new Date(earlyGo)) ? 2 : 0
         const HoliDay = holidaydata.find((holi) => holi.hld_date === val.duty_day)
 
+
         // CALCULATE THE LATE AND EARLY GO TIME 
         const CaluculateLateInOut = (isValid(new Date(shiftIn)) && isValid(new Date(shiftOut))) && (isValid(new Date(punchIn)) && isValid(new Date(punchOut))) ?
             { lateIn: differenceInMinutes(new Date(punchIn), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(punchOut)) }
@@ -250,6 +253,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                             CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0 :
                                 CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? 0 :
                                     CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? 0 :
+                                    CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5 :
                                         CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
                                             early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
                                                 early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
@@ -263,6 +267,7 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "A" :
                             CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? "A" :
                                 CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? "A" :
+                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
                                     CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
                                         CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
                                             early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
