@@ -14,7 +14,9 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
     // const [status, setStatus] = useState(false);
 
     const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
+ 
     const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
+  
 
     useEffect(() => {
         const {

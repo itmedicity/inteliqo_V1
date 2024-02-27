@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears } from 'date-fns'
+import { addDays, addYears,endOfMonth  } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
@@ -186,10 +186,10 @@ const EmployeeRecord = () => {
       em_designation: designation,
       em_doc_type: doctortype === true ? doct : null,
       em_category: category,
-      em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
+      em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
       em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
       em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
-      em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
+      em_contract_end_date: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
       em_status: empstatus === true ? 1 : 0,
       create_user: employeeNumber(),
       addressPermnt1: addressPermnt1,
@@ -424,7 +424,7 @@ const EmployeeRecord = () => {
       }
 
       if (contractflag === 1) {
-        contractEmployee(submitdata)
+       contractEmployee(submitdata)
       } else {
         permanentEmployee(submitdata)
       }
