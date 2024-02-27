@@ -11,6 +11,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ActiveModal from './ActiveModal'
 
 const EmployeeActiveHR = () => {
 
@@ -20,6 +21,8 @@ const EmployeeActiveHR = () => {
     const [deptSect, setDeptSect] = useState(0)
     const [state, setState] = useState(0)
     const [empData, setempData] = useState([])
+    const [flag, setFlag] = useState(false)
+    const [details, setDetails] = useState({})
 
     const getemployeedetails = useCallback(async () => {
         if (dept === 0 && deptSect === 0) {
@@ -76,18 +79,20 @@ const EmployeeActiveHR = () => {
 
     const InactiveEmp = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
-        const { em_id } = data[0]
-        const postData = {
-            em_id: em_id
-        }
-        const result = await axioslogin.patch('/empmast/empmsater/active', postData)
-        const { success, message } = result.data
-        if (success === 2) {
-            succesNofity("Employee Inactivated")
-            setCount(count + 1)
-        } else {
-            warningNofity(message)
-        }
+        setDetails(data)
+        setFlag(true)
+        // const { em_id } = data[0]
+        // const postData = {
+        //     em_id: em_id
+        // }
+        // const result = await axioslogin.patch('/empmast/empmsater/active', postData)
+        // const { success, message } = result.data
+        // if (success === 2) {
+        //     succesNofity("Employee Inactivated")
+        //     setCount(count + 1)
+        // } else {
+        //     warningNofity(message)
+        // }
     }, [count])
 
     return (
@@ -131,6 +136,7 @@ const EmployeeActiveHR = () => {
                         headerHeight={30}
                     />
                 </Paper>
+                <ActiveModal open={flag} setOpen={setFlag} data={details} setCount={setCount}/>
             </Box>
         </CustomLayout>
     )

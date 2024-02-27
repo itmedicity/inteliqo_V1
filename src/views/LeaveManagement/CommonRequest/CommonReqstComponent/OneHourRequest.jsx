@@ -56,6 +56,7 @@ const OneHourRequest = ({ count, setCount }) => {
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
     const { cmmn_grace_period,comp_hour_count } = state;
 
+    console.log(empApprovalLevel);
 
     useEffect(() => {
         const getdepartmentShift = async () => {
@@ -135,11 +136,17 @@ const OneHourRequest = ({ count, setCount }) => {
                 setPunchInTime(chekIn)
                 setPunchOutTime(chekOut)
 
+                // const postDataForpunchMaster = {
+                //     date2:  shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                //     date1: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                //     em_no: em_no
+                // }
                 const postDataForpunchMaster = {
-                    date2:  shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                    date1: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                    date2:   format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') ,
+                    date1:  format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') ,
                     em_no: em_no
                 }
+              
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
                 const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
                 const { success, data } = result.data;
@@ -249,11 +256,12 @@ const OneHourRequest = ({ count, setCount }) => {
                     }
                 }
             } else {
+               
                 const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
                 const result = punchData.findLast((val) => val)
                 const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) ||isEqual(new Date(result.punch_time), new Date(outtime))  ? 1 
                 : 0
-            
+
                 if (dd === 0) {
                     warningNofity("Can't Apply For One Hour Request!!");
                     setSelectedShift(0)
