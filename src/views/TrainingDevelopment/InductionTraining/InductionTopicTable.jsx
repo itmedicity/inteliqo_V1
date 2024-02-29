@@ -9,7 +9,7 @@ const InductionTopicTable = ({ value, ScheduleDate, handleChange }) => {
 
     const [newDate, setNewDate] = useState(moment(new Date(ScheduleDate)).format('YYYY-MM-DD'))
     const [start_date, setstart_date] = useState('')
-    const { topic, trainers_name, topic_slno, status } = value;
+    const { topic, trainers_name, trainers, topic_slno, status } = value;
 
 
     const getAlloDate = (e) => {
@@ -18,10 +18,11 @@ const InductionTopicTable = ({ value, ScheduleDate, handleChange }) => {
     }
 
     const newObj = {
+        trainers: trainers,
         topic_slno: topic_slno,
         topic: topic,
         trainers_name: trainers_name,
-        newDate: newDate,
+        newDate: (moment(new Date(newDate)).format('YYYY-MM-DD HH:mm:ss')),
     }
 
     return (

@@ -1,15 +1,15 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Box, IconButton as OpenIcon, Paper, Tooltip } from '@mui/material';
-import { CommonTrainingPreTopics } from 'src/redux/actions/Training.Action';
+import { InductionPrePostTopics } from 'src/redux/actions/Training.Action';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import PreQRmodal from './PreQRmodal';
+import InductionQRModal from './InductionQRModal';
 
-const TopicAndQRScanList = () => {
+const InductionTestMain = () => {
     const dispatch = useDispatch()
 
     const [count, Setcount] = useState(0);
@@ -17,31 +17,27 @@ const TopicAndQRScanList = () => {
     const [QRdata, setQRdata] = useState([]);
     const [QRmodal, setQRmodal] = useState(false);
 
-    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_department } = employeeProfileDetl;
-
     useEffect(() => {
-        dispatch(CommonTrainingPreTopics(em_department))
+        dispatch(InductionPrePostTopics())
         Setcount(0);
-    }, [dispatch, em_department, count])
+    }, [dispatch, count])
 
     //login employee topics
-    const PreTopics = useSelector((state) => state?.gettrainingData?.CommonPreTopics?.CommonPreTopicsList, _.isEqual)
-
+    const PrePostTopics = useSelector((state) => state?.gettrainingData?.InductionPrePostTopics?.InductionPrePostTopicsList, _.isEqual)
     useEffect(() => {
-        const displayData = PreTopics?.map((val) => {
+        const displayData = PrePostTopics?.map((val) => {
             const object = {
                 sno: val.sno,
-                slno: val.slno,
-                topic: val.topic,
+                slno: val.schedule_slno,
+                schedule_type: val.schedule_type,
+                topic: val.schedule_topic,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
             }
             return object;
         })
         SetTestTopics(displayData)
-    }, [PreTopics, SetTestTopics])
+    }, [PrePostTopics, SetTestTopics])
 
 
     const ClickToScanQR = useCallback((params) => {
@@ -80,10 +76,10 @@ const TopicAndQRScanList = () => {
                         headerHeight={30}
                     />
                 </Paper>
-                {QRmodal === true ? <PreQRmodal count={count} Setcount={Setcount} QRdata={QRdata} QRmodal={QRmodal} setQRmodal={setQRmodal} /> : null}
+                {QRmodal === true ? <InductionQRModal count={count} Setcount={Setcount} QRdata={QRdata} QRmodal={QRmodal} setQRmodal={setQRmodal} /> : null}
             </Box>
         </CustomLayout >
     )
 }
 
-export default memo(TopicAndQRScanList)
+export default memo(InductionTestMain)

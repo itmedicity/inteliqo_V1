@@ -1,19 +1,21 @@
+
 import { Box } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Button } from 'react-bootstrap';
-import CountDownTimer from './CountDownTimer';
-import { QuestionList } from 'src/redux/actions/Training.Action';
+import { InductResetQuestionsByTopic } from 'src/redux/actions/Training.Action';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
-import QuestionHeading from './QuestionHeading';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import ShowModal from './ShowModal';
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import RetestCountdownTimer from '../../RetestCountdownTimer';
+import InductQuestionsHeadings from './InductQuestionsHeadings';
+import TestSubmit from './TestSubmit';
 
-const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
+const TestMainPage = () => {
 
     const [questCount, setQuestcount] = useState(0);
     const [data, setData] = useState([]);
@@ -31,39 +33,41 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
     const [sec, setSec] = useState(0);
     const [timeLeft, setTimeLeft] = useState(60);
     const [open, setopen] = useState(false);
+    const [count, Setcount] = useState(0);
+    const [incmentCount, setincmentCount] = useState(0)
 
     const [datas, setDatas] = useState({
         em_id: 0,
         em_name: '',
-        slno: 0,
-        topic_slno: 0,
-        training_topic_name: '',
-        question_count: 0,
-        dept_id: 0,
-        desg_slno: 0,
-        sect_id: 0
+        retest_slno: 0,
+        re_topic: 0,
+        re_questn_count: 0,
+        re_emp_dept: 0,
+        re_dept_sec: 0,
+        retest_em_no: 0
     });
 
-    const { em_id, dept_id, sect_id, desg_slno, topic_slno } = datas;
-
+    const { em_name, re_emp_dept, re_dept_sec } = datas;
 
     const dispatch = useDispatch()
 
+    const { slno, emId, tslno, qcount } = useParams()
+
     useEffect(() => {
-        if (questCount !== 0) {
+        if (qcount !== 0) {
             const obj = {
-                questCount: questCount,
-                topic_slno: topic_slno
+                questCount: parseInt(qcount),
+                topic_slno: parseInt(tslno),
+                Em_id: parseInt(emId)
             }
-            dispatch(QuestionList(obj))
+            dispatch(InductResetQuestionsByTopic(obj))
         }
-    }, [dispatch, count, questCount, topic_slno])
+    }, [dispatch, emId, count, qcount, tslno])
 
-    const Questions = useSelector((state) => state?.gettrainingData?.QuestionDetails?.QuestionDetailsList, _.isEqual)
-
+    const ResetQuestions = useSelector((state) => state?.gettrainingData?.InductionQuestn?.InductionQuestnList, _.isEqual)
 
     useEffect(() => {
-        const displayData = Questions?.map((val, index) => {
+        const displayData = ResetQuestions?.map((val, index) => {
             const object = {
                 oder: index + 1,
                 q_slno: val.q_slno,
@@ -81,34 +85,45 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                 writtenStatus: val.writtenStatus,
                 online_status: val.online_status,
                 offline_status: val.offline_status,
-                both_status: val.both_status
+                both_status: val.both_status,
+                retest_em_no: val.retest_em_no,
+                re_questn_count: val.re_questn_count,
+                re_emp_dept: val.re_emp_dept,
+                re_dept_sec: val.re_dept_sec,
+                em_id: val.em_id,
+                em_name: val.em_name,
+                retest_status: val.retest_status,
+                retest_mark: val.retest_mark,
+                retest_slno: val.retest_slno,
+                re_topic: val.re_topic
+
             }
             return object;
         })
         const len = displayData.length
         setDatalen(len)
         setData(displayData)
-    }, [Questions, setDatalen, setData])
-
+    }, [ResetQuestions, setDatalen, setData])
 
     useEffect(() => {
-        if (Object.keys(Userdata).length !== 0) {
-            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Userdata[0];
+        if (Object.keys(data).length !== 0) {
+            const { em_id, em_name, retest_status, retest_mark, retest_slno, re_topic, re_questn_count, re_emp_dept, re_dept_sec } = data[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
-                slno: slno,
-                topic_slno: topic_slno,
-                training_topic_name: training_topic_name,
-                question_count: question_count,
-                dept_id: dept_id,
-                desg_slno: desg_slno,
-                sect_id: sect_id
+                retest_slno: retest_slno,
+                re_topic: re_topic,
+                re_questn_count: re_questn_count,
+                re_emp_dept: re_emp_dept,
+                re_dept_sec: re_dept_sec,
+                retest_status: retest_status,
+                retest_mark: retest_mark
             }
-            setQuestcount(question_count)
+            setQuestcount(re_questn_count)
             setDatas(obj);
         }
-    }, [Userdata, setDatas, setQuestcount])
+    }, [data, setDatas, setQuestcount])
+
 
     //Next questn
     const HandleNextQuestion = useCallback((e) => {
@@ -125,43 +140,42 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
             SetclrFlagC(0)
             SetclrFlagD(0)
             setTimeLeft(60)
+            setincmentCount(0)
         }
         else {
             warningNofity("Please Select one option")
         }
     }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
 
-
     const PostData = useMemo(() => {
         return {
-            slno: sno,
-            emp_id: em_id,
-            emp_dept: dept_id,
-            emp_dept_sec: sect_id,
-            emp_desg: desg_slno,
-            emp_topic: topic_slno,
-            pretest_status: 1,
+            retest_slno: slno,
+            candidate_em_no: parseInt(emId),
+            re_emp_dept: re_emp_dept,
+            re_dept_sec: re_dept_sec,
+            retest_topic: parseInt(tslno),
+            retest_status: 1,
             mark: correct,
-            create_user: em_id,
-            posttest_permission: 1
+            create_user: parseInt(emId),
+            edit_user: parseInt(emId)
         }
-    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, sno])
-
+    }, [slno, emId, re_emp_dept, re_dept_sec, correct, tslno])
 
     useEffect(() => {
         if (checkInsert === 1) {
             const InsertData = async (PostData) => {
-                const result = await axioslogin.post('/TrainingProcess/pretest', PostData)
+                const result = await axioslogin.post('/TrainingEmployee_Dashboard/inductinsertRetest', PostData)
                 const { success, message } = result.data
                 if (success === 1) {
                     setopen(true)
                     Setcount(Math.random())
+                    succesNofity(message)
                 }
                 else if (success === 2) {
                     warningNofity(message)
                 }
                 else {
-                    warningNofity(message)
+                    warningNofity("Sorry! Already attend the Test")
                 }
             }
             InsertData(PostData)
@@ -184,6 +198,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
             SetclrFlagD(0)
             setTimeLeft(0)
             setTimeLeft(0)
+            setincmentCount(0)
         }
         else {
             warningNofity("Please Select one option")
@@ -201,8 +216,15 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
 
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
 
-                            <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount}</Box>
-                            <Box sx={{ textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>  <CountDownTimer setOrder={setOrder} order={order} sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
+                            <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount}
+                                <Box sx={{ display: "flex", height: 20, flexDirection: "row", fontWeight: "bold" }}>
+                                    <Box>{em_name}</Box>
+                                </Box>
+                            </Box>
+
+                            <Box sx={{ pr: 4, textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>
+                                <RetestCountdownTimer setOrder={setOrder} order={order} sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
+                            </Box>
 
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                 <Box sx={{ backgroundColor: "#A2C579", display: "flex", height: 25, flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
@@ -216,7 +238,7 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                             </Box>
                         </Box>
                         <Box>
-                            <QuestionHeading data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} />
+                            <InductQuestionsHeadings incmentCount={incmentCount} setincmentCount={setincmentCount} data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} />
                         </Box>
                     </Box>
                 </Box>
@@ -239,8 +261,11 @@ const QuestionPaper = ({ Setcount, count, Userdata, setOpen, sno }) => {
                         </Box>
                 }
             </Box>
-            {open === true ? <ShowModal data={data} open={open} setopen={setopen} setOpen={setOpen} /> : null}
+            {open === true ? <TestSubmit slno={slno} open={open} setopen={setopen} tslno={tslno} /> : null}
         </Fragment >
     )
 }
-export default memo(QuestionPaper)
+export default memo(TestMainPage)
+
+
+

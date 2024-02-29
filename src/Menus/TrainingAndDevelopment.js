@@ -20,12 +20,12 @@ const TrainingAndDevelopment = [
     //     name: 'Employee Training Schedule',
     //     to: '/Home/TrainingEmployeeSchedule',
     // },
-    // {
-    //     men_slno: 56,
-    //     component: CNavItem,
-    //     name: 'Training Schedule',
-    //     to: '/Home/AfterJoiningTraining',
-    // },
+    {
+        men_slno: 56,
+        component: CNavItem,
+        name: 'Training Schedule',
+        to: '/Home/AfterJoiningTraining',
+    },
     {
         men_slno: 57,
         component: CNavItem,
@@ -39,22 +39,16 @@ const TrainingAndDevelopment = [
         to: '/homes',
     },
     // {
-    //     men_slno: 59,
+    //     men_slno: 261,
     //     component: CNavItem,
-    //     name: 'Pre-Test',
-    //     to: '/Home/PreTest',
-    // },
-    // {
-    //     men_slno: 60,
-    //     component: CNavItem,
-    //     name: 'Post-Test',
-    //     to: '/Home/PostTest',
+    //     name: 'Online Training',
+    //     to: '/Home/OnlineTraining',
     // },
     {
         men_slno: 261,
         component: CNavItem,
         name: 'Online Training',
-        to: '/Home/OnlineTraining',
+        to: '/Home/OnlineTrainings',
     },
 
     {
@@ -70,18 +64,31 @@ const TrainingAndDevelopment = [
         name: 'Online-Test',
         to: '/Home/CommonPreTestPage',
     },
-    // {
-    //     men_slno: 60,
-    //     component: CNavItem,
-    //     name: 'Post-Test',
-    //     to: '/Home/CommonPostTestPage',
-    // },
-    // {
-    //     men_slno: 272,
-    //     component: CNavItem,
-    //     name: 'Induction Training Allocation',
-    //     to: '/Home/InductionTraining',
-    // },
+    {
+        men_slno: 276,
+        component: CNavItem,
+        name: 'Induction Training Allocation',
+        to: '/Home/InductionTraining',
+    },
+    {
+        men_slno: 273,
+        component: CNavItem,
+        name: 'Induction Training Calender',
+        to: '/Home/InductionCalender',
+    },
+    {
+        men_slno: 274,
+        component: CNavItem,
+        name: 'Induction Test',
+        to: '/Home/InductionTest',
+    },
+    {
+        men_slno: 275,
+        component: CNavItem,
+        name: 'Induction Process',
+        to: '/Home/InductionProcess',
+    },
+
 ]
 
 export default TrainingAndDevelopment;

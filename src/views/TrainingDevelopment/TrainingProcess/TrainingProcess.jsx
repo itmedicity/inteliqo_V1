@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, Paper, Typography } from '@mui/material'
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useCallback } from 'react';
 import { useState } from 'react';
@@ -30,6 +30,10 @@ const TrainingProcess = () => {
     const [tabledata, setTableData] = useState([]);
     const [empdata, Setempdata] = useState([]);
 
+    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { em_department } = employeeProfileDetl;
+
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -38,13 +42,13 @@ const TrainingProcess = () => {
     }, [dispatch, count])
 
     useEffect(() => {
-        dispatch(TrainingCompletedList())
-        dispatch(TodaysTraining())
-        dispatch(TrainingEmpDetailsAll())
-        dispatch(TrainingEmpDatas())
-        dispatch(AllotedToPostTest())
-        dispatch(BelowAverageEmployeeList())
-    }, [dispatch, count])
+        dispatch(TrainingCompletedList(em_department))
+        dispatch(TodaysTraining(em_department))
+        dispatch(TrainingEmpDetailsAll(em_department))
+        dispatch(TrainingEmpDatas(em_department))
+        dispatch(AllotedToPostTest(em_department))
+        dispatch(BelowAverageEmployeeList(em_department))
+    }, [dispatch, em_department, count])
 
     //new
     const trainingcompleted = useSelector((state) => state?.gettrainingData?.TrainingCompleted?.TrainingCompletedList, _.isEqual);
@@ -69,10 +73,7 @@ const TrainingProcess = () => {
         { id: 3, icons: <UpcomingIcon sx={{ color: "#81c784" }} />, itemname: "Upcoming Training List", count: Upcominglen },
         { id: 4, icons: <NextPlanIcon sx={{ color: "#81c784" }} />, itemname: "Next Month Training List", count: Nextmonthlen },
         { id: 5, icons: <PendingIcon sx={{ color: "#81c784" }} />, itemname: "Pending Training List", count: emplen },
-        // { id: 6, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Marking Employee for Post-Test", count: allotlen },
         { id: 7, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Below Average Employee List", count: belowEmp },
-
-
     ]
 
     useEffect(() => {

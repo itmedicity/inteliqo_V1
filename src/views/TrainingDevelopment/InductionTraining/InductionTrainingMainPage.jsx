@@ -12,13 +12,15 @@ import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import { useDispatch, useSelector } from 'react-redux'
-import { InductionNewJoinees, TrainerNames, } from 'src/redux/actions/Training.Action'
+import { InductionNewJoinees } from 'src/redux/actions/Training.Action'
 import _ from 'underscore'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddInductionTopics from './AddInductionTopics'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import ViewNEditPage from './ViewNEditPage'
 
 const InductionTrainingMainPage = () => {
 
@@ -30,13 +32,11 @@ const InductionTrainingMainPage = () => {
     const [tabledata, setTableData] = useState([])
     const [empselect, SetEmpSelect] = useState([])
     const [type, setType] = useState(0)
-    const [topic, setTopic] = useState(0)
-    const [trainers, setTrainers] = useState([])
-
     const [checkAll, SetCheckAll] = useState(false)
     const [datas, setdatas] = useState([])
     const [open, setOpen] = useState(false)
     const [count, setcount] = useState(0)
+    const [viewModal, setviewModal] = useState(false)
 
 
     const reset = useCallback(() => {
@@ -45,12 +45,10 @@ const InductionTrainingMainPage = () => {
         Settodate('')
         SetEmpSelect([])
         setType(0)
-        setTopic(0)
-        setTrainers([])
         setdatas([])
         SetCheckAll(false)
         setTableData([])
-    }, [setDept, Setfromdate, Settodate, SetEmpSelect, setType, setTopic, setTrainers, setdatas, SetCheckAll, setTableData])
+    }, [setDept, Setfromdate, Settodate, SetEmpSelect, setType, setdatas, SetCheckAll, setTableData])
 
     useEffect(() => {
         if (fromdate !== '' && todate !== '') {
@@ -60,9 +58,7 @@ const InductionTrainingMainPage = () => {
             }
             dispatch(InductionNewJoinees(obj))
         }
-        // dispatch(TrainingTypeWiseTopics(type))
         dispatch(setDepartment());
-        dispatch(TrainerNames())
     }, [dispatch, todate, fromdate])
 
     const newjoinees = useSelector((state) => state?.gettrainingData?.NewJoinees?.NewJoineesList, _.isEqual);
@@ -144,132 +140,152 @@ const InductionTrainingMainPage = () => {
         }
     }, [setOpen, fromdate, todate])
 
+    //open view and edit page
+    const ViewAndEdit = useCallback(() => {
+        setviewModal(true)
+    }, [setviewModal])
+
     return (
         <Fragment>
-            {open === true ? <AddInductionTopics newjoinees={newjoinees} open={open} empselect={empselect} setOpen={setOpen}
-                type={type} setType={setType} topic={topic} setTopic={setTopic} trainers={trainers} setTrainers={setTrainers}
-                reset={reset} count={count} setcount={setcount}
-            /> :
-                <CustomLayout title="Induction Training" displayClose={true}>
-                    <Paper varient="outlined" sx={{ p: 1, width: "100%", height: screenInnerHeight - 120 }}>
-                        <Paper varient="outlined" sx={{ backgroundColor: "#EEEEEE", p: 2 }}>
-                            <Box sx={{ display: "flex", flexDirection: "row", gap: 1, p: 0.3 }}>
-                                <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
-                                    <Typography sx={{ mt: 1 }}>From:</Typography>
-                                    <InputComponent
-                                        type="date"
-                                        size="sm"
-                                        placeholder="From Date"
-                                        name="Fromdate"
-                                        value={fromdate}
-                                        onchange={(e) => Setfromdate(e.target.value)}
-                                    />
-                                </Box>
-                                <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
-                                    <Typography sx={{ mt: 1 }}>To:</Typography>
-                                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <InputComponent
-                                            type="date"
-                                            size="xs"
-                                            placeholder="ToDate"
-                                            name="Todate"
-                                            value={todate}
-                                            onchange={(e) => Settodate(e.target.value)}
+            {viewModal === true ? <ViewNEditPage setviewModal={setviewModal} viewModal={viewModal} count={count} setcount={setcount} />
+                : <Box>
+                    {open === true ? <AddInductionTopics newjoinees={newjoinees} open={open} empselect={empselect} setOpen={setOpen}
+                        type={type} setType={setType} reset={reset} count={count} setcount={setcount}
+                    /> :
+                        <CustomLayout title="Induction Training" displayClose={true}>
+                            <Box varient="outlined" sx={{ p: 1, width: "100%", height: screenInnerHeight - 120 }}>
+                                <Paper varient="outlined" sx={{ backgroundColor: "#EEEEEE", p: 2 }}>
+                                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1, p: 0.3 }}>
+                                        <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
+                                            <Typography sx={{ mt: 1 }}>From:</Typography>
+                                            <InputComponent
+                                                type="date"
+                                                size="sm"
+                                                placeholder="From Date"
+                                                name="Fromdate"
+                                                value={fromdate}
+                                                onchange={(e) => Setfromdate(e.target.value)}
+                                            />
+                                        </Box>
+                                        <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
+                                            <Typography sx={{ mt: 1 }}>To:</Typography>
+                                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                                                <InputComponent
+                                                    type="date"
+                                                    size="xs"
+                                                    placeholder="ToDate"
+                                                    name="Todate"
+                                                    value={todate}
+                                                    onchange={(e) => Settodate(e.target.value)}
+                                                />
+                                            </LocalizationProvider>
+                                        </Box>
+                                        <Box sx={{ flex: 1, mt: 1, }} >
+                                            <JoyDepartment sx={{ p: 1 }} deptValue={dept} getDept={setDept} />
+                                        </Box>
+                                        <Tooltip title="Search">
+                                            <Box sx={{
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                                mt: 1
+                                            }} >
+                                                <CssVarsProvider>
+                                                    <Box>
+                                                        <Button aria-label="search" variant='outlined'
+                                                            onClick={SearchBtn}
+                                                        >
+                                                            <SearchIcon />
+                                                        </Button>
+                                                    </Box>
+                                                </CssVarsProvider>
+                                            </Box>
+                                        </Tooltip>
+                                        <Tooltip title="Add More">
+                                            <Box sx={{
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                            }} >
+                                                <CssVarsProvider>
+                                                    <Box sx={{ mt: 1 }} >
+                                                        <Button aria-label="next"
+                                                            onClick={NextModal}
+                                                        >
+                                                            <AddCircleOutlineIcon />
+                                                        </Button>
+                                                    </Box>
+                                                </CssVarsProvider>
+                                            </Box>
+                                        </Tooltip>
+                                    </Box>
+                                </Paper>
+                                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <Box sx={{ p: 1, mt: 1 }}>
+                                        <JoyCheckbox
+                                            label="Select All"
+                                            checked={checkAll}
+                                            onchange={(e) => SetCheckAll(e.target.checked)}
+                                            name="check_all"
                                         />
-                                    </LocalizationProvider>
-                                </Box>
-                                <Box sx={{ flex: 1, mt: 1, }} >
-                                    <JoyDepartment sx={{ p: 1 }} deptValue={dept} getDept={setDept} />
-                                </Box>
-                                <Tooltip title="Search">
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                        mt: 1
-                                    }} >
-                                        <CssVarsProvider>
-                                            <Box sx={{}} >
-                                                <Button aria-label="search" variant='outlined'
-                                                    onClick={SearchBtn}
-                                                >
-                                                    <SearchIcon />
-                                                </Button>
-                                            </Box>
-                                        </CssVarsProvider>
                                     </Box>
-                                </Tooltip>
-                                <Tooltip title="Add More">
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start',
-                                    }} >
-                                        <CssVarsProvider>
+                                    <Tooltip title="View & Edit">
+                                        <Box sx={{ p: 1, mt: 1 }}>
                                             <Box sx={{ mt: 1 }} >
-                                                <Button aria-label="next"
-                                                    onClick={NextModal}
+                                                <Button aria-label="View & Edit" variant='outlined'
+                                                    onClick={ViewAndEdit}
                                                 >
-                                                    <AddCircleOutlineIcon sx={{}} />
+                                                    <EditIcon />
                                                 </Button>
                                             </Box>
+                                        </Box>
+                                    </Tooltip>
+                                </Box>
+                                <Paper variant="outlined">
+                                    <Sheet sx={{
+                                        mt: 3,
+                                        overflow: 'auto',
+                                        '::-webkit-scrollbar': { display: "none" }, height: 450,
+                                        width: "100%"
+                                    }}>
+                                        <CssVarsProvider>
+                                            <Table borderAxis="both" stickyHeader >
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ width: "8%", textAlign: "center" }}>
+                                                            check
+                                                        </th>
+                                                        <th>Joining Date</th>
+                                                        <th>Name</th>
+                                                        <th>Department Section</th>
+                                                        <th>Designation</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {datas?.map((row, index) => (
+                                                        <tr key={index}>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                <Checkbox
+                                                                    name="Emp Select"
+                                                                    checked={row?.inValue || false}
+                                                                    onChange={(e) => {
+                                                                        HandleCheckbox(e.target.checked, row)
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                            <td>{row?.datefmt}</td>
+                                                            <td>{row?.em_name}</td>
+                                                            <td>{row?.sect_name}</td>
+                                                            <td>{row?.desg_name}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </Table>
                                         </CssVarsProvider>
-                                    </Box>
-                                </Tooltip>
+                                    </Sheet>
+                                </Paper>
                             </Box>
-                        </Paper>
-                        <Box sx={{ p: 1, mt: 1 }}>
-                            <JoyCheckbox
-                                label="Select All"
-                                checked={checkAll}
-                                onchange={(e) => SetCheckAll(e.target.checked)}
-                                name="check_all"
-                            />
-                        </Box>
-                        <Paper>
-                            <Sheet sx={{
-                                mt: 3,
-                                overflow: 'auto',
-                                '::-webkit-scrollbar': { display: "none" }, height: 600,
-                                width: "100%"
-                            }}>
-                                <CssVarsProvider>
-                                    <Table borderAxis="both" stickyHeader >
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "8%", textAlign: "center" }}>
-                                                    check
-                                                </th>
-                                                <th>Joining Date</th>
-                                                <th>Name</th>
-                                                <th>Department Section</th>
-                                                <th>Designation</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {datas?.map((row, index) => (
-                                                <tr key={index}>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        <Checkbox
-                                                            name="Emp Select"
-                                                            checked={row?.inValue || false}
-                                                            onChange={(e) => {
-                                                                HandleCheckbox(e.target.checked, row)
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>{row?.datefmt}</td>
-                                                    <td>{row?.em_name}</td>
-                                                    <td>{row?.sect_name}</td>
-                                                    <td>{row?.desg_name}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                </CssVarsProvider>
-                            </Sheet>
-                        </Paper>
-                    </Paper>
-                </CustomLayout>
-            }
+                        </CustomLayout>
+                    }
+                </Box>}
         </Fragment >
     )
 }

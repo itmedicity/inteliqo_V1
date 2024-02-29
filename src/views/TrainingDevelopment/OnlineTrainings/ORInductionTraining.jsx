@@ -1,20 +1,35 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton as OpenIcon, Paper } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
-import VideoPlayerPage from './VideoPlayerPage';
-import PdfViewer from './PdfViewer';
+import { useDispatch, useSelector } from 'react-redux';
+import _ from 'underscore';
+import { OnlineInductionTrainingTopicListOfEmp } from 'src/redux/actions/Training.Action';
 import { addHours, addMinutes, format } from 'date-fns';
-import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import PdfViewerQR from '../OnlineTraining/PdfViewerQR';
+import VideoPlayerPageQR from '../OnlineTraining/VideoPlayerPageQR';
 
-const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
+const ORInductionTraining = () => {
+    const dispatch = useDispatch()
     const [tabledata, setTabledata] = useState([]);
+    const [count, Setcount] = useState(0);
     const [open, setOpen] = useState(false);
     const [Userdata, setUserdata] = useState([]);
     const [Pdfopen, setPdfopen] = useState(false);
 
+    const { emId, id } = useParams();
+
     useEffect(() => {
-        const displayData = DeptEmpOnlineTopics?.map((val) => {
+        dispatch(OnlineInductionTrainingTopicListOfEmp(emId))
+        Setcount(0);
+    }, [dispatch, emId, count])
+
+    //login employee topics
+    const InductEmpOnlineTopics = useSelector((state) => state?.gettrainingData?.InductionOnlineTraining?.InductionOnlineTrainingList, _.isEqual)
+
+    useEffect(() => {
+        const displayData = InductEmpOnlineTopics?.map((val) => {
             const check_date = addMinutes(new Date(val.exact_date), val.video_time)
             const vdotimeformat = format(new Date(addMinutes(new Date(check_date), 5)), "yyyy-MM-dd hh:mm:ss")
             const getpdf = addHours(new Date(val.exact_date), val.pdf_time)
@@ -22,9 +37,9 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
 
             const object = {
                 sno: val.sno,
-                slno: val.slno,
-                emp_name: val.emp_name,
-                topic: val.topic,
+                induction_slno: val.induction_slno,
+                indct_emp_no: val.indct_emp_no,
+                schedule_topic: val.schedule_topic,
                 training_status: val.training_status,
                 pretest_status: val.pretest_status,
                 posttest_status: val.posttest_status,
@@ -42,12 +57,14 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
                 checkPDF: val.upload_status === 1 ? pdftimeformat : null,
                 current_tym: format(new Date(), "yyyy-MM-dd hh:mm:ss"),
                 em_id: val.em_id,
-                em_name: val.em_name
+                em_name: val.em_name,
+                question_count: val.question_count
             }
             return object;
+
         })
         setTabledata(displayData)
-    }, [DeptEmpOnlineTopics, setTabledata])
+    }, [InductEmpOnlineTopics, setTabledata])
 
     const handleClickOpen = useCallback((params) => {
         const { upload_status } = params.data
@@ -81,14 +98,10 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
         },
     ])
 
-    const toClose = useCallback(() => {
-        setShow(0)
-    }, [setShow])
-
     return (
-        <CustomInnerHeightDashBoard title="Departmental Online Training" toClose={toClose} >
+        <Fragment>
             {open === true ?
-                <VideoPlayerPage count={count} Setcount={Setcount} open={open} setOpen={setOpen} Userdata={Userdata} reset={reset} />
+                <VideoPlayerPageQR count={count} id={id} Setcount={Setcount} open={open} setOpen={setOpen} Userdata={Userdata} reset={reset} />
                 :
                 <Box sx={{ width: "100%", p: 1 }}>
                     <Paper variant='outlined' square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
@@ -105,9 +118,10 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
                     </Paper>
                 </Box>
             }
-            {Pdfopen === true ? <PdfViewer Userdata={Userdata} setOpen={setOpen} open={open} reset={reset} /> : null}
-        </CustomInnerHeightDashBoard >
+            {Pdfopen === true ? <PdfViewerQR id={id} Userdata={Userdata} setOpen={setOpen} open={open} reset={reset} /> : null}
+        </Fragment>
     )
 }
 
-export default memo(OnlineTraining)
+export default memo(ORInductionTraining)
+

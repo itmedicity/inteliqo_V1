@@ -265,7 +265,18 @@ const CommonPostTestPage = React.lazy(() => import('./views/TrainingDevelopment/
 const RetestEmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestEmpDetails'))
 const InductionTraining = React.lazy(() => import('./views/TrainingDevelopment/InductionTraining/InductionTrainingMainPage'))
 const SalaryReport = React.lazy(() => import('./views/HrReports/Salaryreports/SalaryReport'))
-
+//Induction Trainings
+const InductionCalender = React.lazy(() => import('./views/TrainingDevelopment/InductionTrainingCalender/InductionCalender'))
+const InductionTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/InductionTestMain'))
+const InductionProcess = React.lazy(() => import('./views/TrainingDevelopment/InductionProcess/InductionProcessMain'))
+//InductionTest
+const InductLogInpage = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/Induction_test_login'))
+const InductionPreTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/PreTest/QuestFirstPage'))
+const InductionPostTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/PostTest/HeadingPage'))
+const OnlineInductReTest = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/InductionRetest/SystemInductionRetest/TestMainPage'))
+const InductQREmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/InductionRetest/QRInductionRetest/InductQREmpDetails'))
+const OnlineTrainings = React.lazy(() => import('./views/TrainingDevelopment/OnlineTrainings/OnlineTrainingMainPage'))
+const ORInductionTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTrainings/ORInductionTraining'))
 
 const routes = [
 
@@ -513,7 +524,19 @@ const routes = [
   { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
   { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
   { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },
-  { path: '/Home/SalaryReport', exact: true, name: 'Retest Emp Detailst', component: SalaryReport },
+  { path: '/Home/SalaryReport', exact: true, name: 'Salery Report', component: SalaryReport },
+  //Induction Training
+  { path: '/Home/InductionCalender', exact: true, name: 'Induction Calender', component: InductionCalender },
+  { path: '/Home/InductionTest', exact: true, name: 'Induction Test', component: InductionTest },
+  //Induction Process
+  { path: '/Home/InductionProcess', exact: true, name: 'Induction Process', component: InductionProcess },
+  { path: '/InductLogInpage/:topic_slno/:slno', exact: true, name: 'Induction LogIn', component: InductLogInpage },
+  { path: '/InductionPreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'induction PreTest', component: InductionPreTest },
+  { path: '/InductionPostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Induction Post Test', component: InductionPostTest },
+  { path: '/OnlineInductReTest/:slno/:emId/:tslno/:qcount', exact: true, name: 'Online Induction Retest', component: OnlineInductReTest },
+  { path: '/InductQREmpDetails/:emId/:tslno', exact: true, name: 'InductQREmpDetails', component: InductQREmpDetails },
+  { path: '/Home/OnlineTrainings', exact: true, name: 'Online Training', component: OnlineTrainings },
+  { path: '/InductOnlineTraining/:id/:emId', exact: true, name: 'ORInduction Training', component: ORInductionTraining },
 
 ]
 

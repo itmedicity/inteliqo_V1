@@ -158,7 +158,6 @@ const TrainingTopic = () => {
         const getData = async () => {
             const result = await axioslogin.get('TrainingTopic/select')
             const { success, data } = result.data;
-            console.log(data);
             if (success === 2) {
                 const viewData = data?.map((val) => {
                     const obj = {

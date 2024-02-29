@@ -2,19 +2,19 @@ import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton as OpenIcon, Paper } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
-import VideoPlayerPage from './VideoPlayerPage';
-import PdfViewer from './PdfViewer';
 import { addHours, addMinutes, format } from 'date-fns';
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard';
+import PdfViewer from '../OnlineTraining/PdfViewer';
+import VideoPlayerPage from '../OnlineTraining/VideoPlayerPage';
 
-const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
+const InductionTraining = ({ InductEmpOnlineTopics, count, Setcount, setShow }) => {
     const [tabledata, setTabledata] = useState([]);
     const [open, setOpen] = useState(false);
     const [Userdata, setUserdata] = useState([]);
     const [Pdfopen, setPdfopen] = useState(false);
 
     useEffect(() => {
-        const displayData = DeptEmpOnlineTopics?.map((val) => {
+        const displayData = InductEmpOnlineTopics?.map((val) => {
             const check_date = addMinutes(new Date(val.exact_date), val.video_time)
             const vdotimeformat = format(new Date(addMinutes(new Date(check_date), 5)), "yyyy-MM-dd hh:mm:ss")
             const getpdf = addHours(new Date(val.exact_date), val.pdf_time)
@@ -22,9 +22,9 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
 
             const object = {
                 sno: val.sno,
-                slno: val.slno,
-                emp_name: val.emp_name,
-                topic: val.topic,
+                induction_slno: val.induction_slno,
+                indct_emp_no: val.indct_emp_no,
+                schedule_topic: val.schedule_topic,
                 training_status: val.training_status,
                 pretest_status: val.pretest_status,
                 posttest_status: val.posttest_status,
@@ -36,7 +36,6 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
                 upload_status: val.upload_status,
                 video_time: val.video_time,
                 pdf_time: val.pdf_time,
-                posttest_permission: val.posttest_permission,
                 exact_date: val.exact_date,
                 checkVdo: val.upload_status === 0 ? vdotimeformat : null,
                 checkPDF: val.upload_status === 1 ? pdftimeformat : null,
@@ -47,7 +46,7 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
             return object;
         })
         setTabledata(displayData)
-    }, [DeptEmpOnlineTopics, setTabledata])
+    }, [InductEmpOnlineTopics, setTabledata])
 
     const handleClickOpen = useCallback((params) => {
         const { upload_status } = params.data
@@ -86,7 +85,7 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
     }, [setShow])
 
     return (
-        <CustomInnerHeightDashBoard title="Departmental Online Training" toClose={toClose} >
+        <CustomInnerHeightDashBoard title="Induction Online Training" toClose={toClose} >
             {open === true ?
                 <VideoPlayerPage count={count} Setcount={Setcount} open={open} setOpen={setOpen} Userdata={Userdata} reset={reset} />
                 :
@@ -110,4 +109,5 @@ const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
     )
 }
 
-export default memo(OnlineTraining)
+export default memo(InductionTraining)
+

@@ -6,11 +6,11 @@ import { useState } from 'react';
 import _ from 'underscore';
 import { useDispatch, useSelector } from 'react-redux';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import RetestTopicList from './RetestTopicList';
-import { InductionRestestEmployeeTopicsByemId, RestestEmployeeTopicsByemId } from 'src/redux/actions/Training.Action';
-import InductionTopicList from './InductionRetest/InductionTopicList';
+import { OnlineInductionTrainingTopicListOfEmp, OnlineTrainingTopicListOfEmp } from 'src/redux/actions/Training.Action';
+import InductionTraining from './InductionTraining';
+import OnlineTraining from '../OnlineTraining/OnlineTraining';
 
-const EmpDashboardPage = () => {
+const OnlineMainPage = () => {
     const [show, setShow] = useState(0);
     const [count, Setcount] = useState(0);
 
@@ -19,21 +19,22 @@ const EmpDashboardPage = () => {
     const { em_id } = employeeProfileDetl;
 
     const dispatch = useDispatch()
-
     useEffect(() => {
-        dispatch(RestestEmployeeTopicsByemId(em_id))
-        dispatch(InductionRestestEmployeeTopicsByemId(em_id))
+        dispatch(OnlineTrainingTopicListOfEmp(em_id))
+        dispatch(OnlineInductionTrainingTopicListOfEmp(em_id))
+        Setcount(0);
     }, [dispatch, em_id, count])
 
-    const ResetTopics = useSelector((state) => state?.gettrainingData?.RetestEmpTopics?.RetestEmpTopicsList, _.isEqual);
-    const InductionResetTopics = useSelector((state) => state?.gettrainingData?.InductionEmpRetest?.InductionEmpRetestList, _.isEqual);
+    //login employee topics
+    const DeptEmpOnlineTopics = useSelector((state) => state?.gettrainingData?.OnlineTraining?.OnlineTrainingList, _.isEqual)
+    const InductEmpOnlineTopics = useSelector((state) => state?.gettrainingData?.InductionOnlineTraining?.InductionOnlineTrainingList, _.isEqual)
 
-    const RetestCount = ResetTopics?.length;
-    const InductionRetestCount = InductionResetTopics?.length;
+    const DeptTrainings = DeptEmpOnlineTopics?.length;
+    const InductOnlinetopic = InductEmpOnlineTopics?.length;
 
     const itemsList = [
-        { id: 1, icons: <AssignmentTurnedInIcon sx={{ color: "#81c784" }} />, itemname: "Departmental Training Retest", count: RetestCount },
-        { id: 2, icons: <AssignmentTurnedInIcon sx={{ color: "#81c784" }} />, itemname: "Induction Training Retest", count: InductionRetestCount },
+        { id: 1, icons: <AssignmentTurnedInIcon sx={{ color: "#81c784" }} />, itemname: "Departmental Trainings", count: DeptTrainings },
+        { id: 2, icons: <AssignmentTurnedInIcon sx={{ color: "#81c784" }} />, itemname: "Induction Trainings", count: InductOnlinetopic },
     ]
 
     const ViewList = useCallback((e, val) => {
@@ -48,8 +49,8 @@ const EmpDashboardPage = () => {
     return (
         <Box sx={{ width: "100%", p: 1 }}>
             {
-                show === 1 ? <RetestTopicList count={count} Setcount={Setcount} ResetTopics={ResetTopics} setShow={setShow} /> :
-                    show === 2 ? <InductionTopicList count={count} Setcount={Setcount} InductionResetTopics={InductionResetTopics} setShow={setShow} /> :
+                show === 1 ? <OnlineTraining count={count} Setcount={Setcount} DeptEmpOnlineTopics={DeptEmpOnlineTopics} setShow={setShow} /> :
+                    show === 2 ? <InductionTraining count={count} Setcount={Setcount} InductEmpOnlineTopics={InductEmpOnlineTopics} setShow={setShow} /> :
                         <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
                         >
                             <Grid sx={{ p: 1 }} container spacing={2}>
@@ -148,4 +149,4 @@ const EmpDashboardPage = () => {
     )
 }
 
-export default memo(EmpDashboardPage)
+export default memo(OnlineMainPage)

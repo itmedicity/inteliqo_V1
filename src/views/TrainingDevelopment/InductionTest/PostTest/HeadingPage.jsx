@@ -4,17 +4,17 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Button } from 'react-bootstrap';
-import { ResetQuestionsByTopic } from 'src/redux/actions/Training.Action';
+import { InductPostTestEmpDetails, QuestionList } from 'src/redux/actions/Training.Action';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
-import RetestCountdownTimer from './RetestCountdownTimer';
-import RetestQuestionsHeadings from './RetestQuestionsHeadings';
-import ResetSubmitModal from './ResetSubmitModal';
+import CountDownTimer from '../../PostTest/CountDownTimer';
+import QuestionPage from './QuestionPage';
+import SubmitModal from './SubmitModal';
 
-const RetestQuestionPage = () => {
+const HeadingPage = () => {
 
     const [questCount, setQuestcount] = useState(0);
     const [data, setData] = useState([]);
@@ -35,38 +35,41 @@ const RetestQuestionPage = () => {
     const [count, Setcount] = useState(0);
     const [incmentCount, setincmentCount] = useState(0)
 
+
     const [datas, setDatas] = useState({
         em_id: 0,
         em_name: '',
-        retest_sl_no: 0,
-        retest_topic: 0,
-        retest_quest_count: 0,
-        candidate_dept: 0,
-        candidate_dept_sec: 0,
-        candidate_em_no: 0
+        slno: 0,
+        topic_slno: 0,
+        training_topic_name: '',
+        question_count: 0,
+        dept_id: 0,
+        desg_slno: 0,
+        sect_id: 0
     });
 
-    const { em_name, candidate_dept, candidate_dept_sec } = datas;
+    const { em_id, dept_id, sect_id, topic_slno, slno, em_name } = datas;
 
     const dispatch = useDispatch()
 
-    const { slno, emId, tslno, qcount } = useParams()
+    const { id, tslno, qcount } = useParams()
 
     useEffect(() => {
         if (qcount !== 0) {
             const obj = {
                 questCount: parseInt(qcount),
-                topic_slno: parseInt(tslno),
-                Em_id: parseInt(emId)
+                topic_slno: parseInt(tslno)
             }
-            dispatch(ResetQuestionsByTopic(obj))
+            dispatch(QuestionList(obj))
+            dispatch(InductPostTestEmpDetails(id))
         }
-    }, [dispatch, emId, count, qcount, tslno])
+    }, [dispatch, id, count, qcount, tslno])
 
-    const ResetQuestions = useSelector((state) => state?.gettrainingData?.RetestQuestions?.RetestQuestionsList, _.isEqual)
+    const Questions = useSelector((state) => state?.gettrainingData?.QuestionDetails?.QuestionDetailsList, _.isEqual)
+    const Emp_Details = useSelector((state) => state?.gettrainingData?.InductionPostTestEmp?.InductionPostTestEmpList, _.isEqual)
 
     useEffect(() => {
-        const displayData = ResetQuestions?.map((val, index) => {
+        const displayData = Questions?.map((val, index) => {
             const object = {
                 oder: index + 1,
                 q_slno: val.q_slno,
@@ -81,45 +84,34 @@ const RetestQuestionPage = () => {
                 questions: val.questions,
                 right_answer: val.right_answer,
                 upload_status: val.upload_status,
-                writtenStatus: val.writtenStatus,
-                online_status: val.online_status,
-                offline_status: val.offline_status,
-                both_status: val.both_status,
-                candidate_em_no: val.candidate_em_no,
-                retest_quest_count: val.retest_quest_count,
-                candidate_dept: val.candidate_dept,
-                candidate_dept_sec: val.candidate_dept_sec,
-                em_id: val.em_id,
-                em_name: val.em_name,
-                retest_status: val.retest_status,
-                retest_mark: val.retest_mark
+                writtenStatus: val.writtenStatus
             }
             return object;
         })
         const len = displayData.length
         setDatalen(len)
         setData(displayData)
-    }, [ResetQuestions, setDatalen, setData])
+    }, [Questions, setDatalen, setData])
+
 
     useEffect(() => {
-        if (Object.keys(data).length !== 0) {
-            const { em_id, em_name, retest_status, retest_mark, retest_sl_no, retest_topic, retest_quest_count, candidate_dept, candidate_dept_sec } = data[0];
+        if (Object.keys(Emp_Details).length !== 0) {
+            const { em_id, em_name, induction_slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Emp_Details[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
-                retest_sl_no: retest_sl_no,
-                retest_topic: retest_topic,
-                retest_quest_count: retest_quest_count,
-                candidate_dept: candidate_dept,
-                candidate_dept_sec: candidate_dept_sec,
-                retest_status: retest_status,
-                retest_mark: retest_mark
+                slno: induction_slno,
+                topic_slno: topic_slno,
+                training_topic_name: training_topic_name,
+                question_count: question_count,
+                dept_id: dept_id,
+                desg_slno: desg_slno,
+                sect_id: sect_id
             }
-            setQuestcount(retest_quest_count)
+            setQuestcount(question_count)
             setDatas(obj);
         }
-    }, [data, setDatas, setQuestcount])
-
+    }, [Emp_Details, setDatas, setQuestcount])
 
     //Next questn
     const HandleNextQuestion = useCallback((e) => {
@@ -141,31 +133,30 @@ const RetestQuestionPage = () => {
         else {
             warningNofity("Please Select one option")
         }
-    }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
+    }, [clrFlagA, clrFlagB, clrFlagC, clrFlagD, setincmentCount, setTimeLeft, setOrder, order, SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, disright, rightAns, wrong, correct, SetCorrect, SetWrong])
 
     const PostData = useMemo(() => {
         return {
-            retest_sl_no: slno,
-            candidate_em_no: parseInt(emId),
-            candidate_dept: candidate_dept,
-            candidate_dept_sec: candidate_dept_sec,
-            retest_topic: parseInt(tslno),
-            retest_status: 1,
+            slno: slno,
+            emp_id: em_id,
+            emp_dept: dept_id,
+            emp_dept_sec: sect_id,
+            //emp_desg: desg_slno,
+            emp_topic: parseInt(topic_slno),
+            posttest_status: 1,
             mark: correct,
-            create_user: parseInt(emId),
-            edit_user: parseInt(emId)
+            create_user: em_id
         }
-    }, [slno, emId, candidate_dept, candidate_dept_sec, correct, tslno])
+    }, [em_id, dept_id, sect_id, correct, topic_slno, slno])
 
     useEffect(() => {
         if (checkInsert === 1) {
             const InsertData = async (PostData) => {
-                const result = await axioslogin.post('/TrainingEmployee_Dashboard/insertRetest', PostData)
+                const result = await axioslogin.post('/InductionTest/postTest', PostData)
                 const { success, message } = result.data
                 if (success === 1) {
                     setopen(true)
                     Setcount(Math.random())
-                    succesNofity(message)
                 }
                 else if (success === 2) {
                     warningNofity(message)
@@ -218,9 +209,7 @@ const RetestQuestionPage = () => {
                                 </Box>
                             </Box>
 
-                            <Box sx={{ pr: 4, textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>
-                                <RetestCountdownTimer setOrder={setOrder} order={order} sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} />
-                            </Box>
+                            <Box sx={{ pr: 4, textAlign: "center", display: "flex", flexDirection: "row", flexWrap: "wrap", color: "#B31312" }}>  <CountDownTimer setOrder={setOrder} order={order} sec={sec} setSec={setSec} timeLeft={timeLeft} setTimeLeft={setTimeLeft} /></Box>
 
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                 <Box sx={{ backgroundColor: "#A2C579", display: "flex", height: 25, flexDirection: "row", p: 0.2, gap: 1, color: "white", borderRadius: 3 }}>
@@ -234,7 +223,7 @@ const RetestQuestionPage = () => {
                             </Box>
                         </Box>
                         <Box>
-                            <RetestQuestionsHeadings incmentCount={incmentCount} setincmentCount={setincmentCount} data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} />
+                            <QuestionPage data={data} order={order} clrFlagA={clrFlagA} SetclrFlagA={SetclrFlagA} clrFlagB={clrFlagB} SetclrFlagB={SetclrFlagB} clrFlagC={clrFlagC} SetclrFlagC={SetclrFlagC} clrFlagD={clrFlagD} SetclrFlagD={SetclrFlagD} setDisright={setDisright} setRightAns={setRightAns} incmentCount={incmentCount} setincmentCount={setincmentCount} />
                         </Box>
                     </Box>
                 </Box>
@@ -257,10 +246,9 @@ const RetestQuestionPage = () => {
                         </Box>
                 }
             </Box>
-            {open === true ? <ResetSubmitModal slno={slno} open={open} setopen={setopen} tslno={tslno} /> : null}
+            {open === true ? <SubmitModal id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
         </Fragment >
     )
 }
-export default memo(RetestQuestionPage)
-
+export default memo(HeadingPage)
 
