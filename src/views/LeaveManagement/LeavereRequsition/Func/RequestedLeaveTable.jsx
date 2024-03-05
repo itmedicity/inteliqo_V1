@@ -70,6 +70,7 @@ const RequestedLeaveTable = () => {
                     status: 
                     (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.inc_apprv_req === 0 &&val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -90,10 +91,6 @@ const RequestedLeaveTable = () => {
                 }
             })
 
-
-
-
-            
             const haldayRq = halfdayRqList?.filter((val) => val.em_no === em_no)
 
             const newHalfday = haldayRq?.map((val) => {
@@ -106,6 +103,7 @@ const RequestedLeaveTable = () => {
                     section: val.dept_name,
                     status:  (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.hf_inc_apprv_req === 0 &&val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -170,6 +168,7 @@ const RequestedLeaveTable = () => {
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.cf_inc_apprv_req === 0 &&val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                             (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                             (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                             (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -200,6 +199,7 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.hr_apprv_status,
                     status:  (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.inc_apprv_req === 0 &&val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -227,6 +227,7 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.hf_hr_apprv_status,
                     status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.hf_inc_apprv_req === 0 &&val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -255,6 +256,7 @@ const RequestedLeaveTable = () => {
                     hrstatus: val.np_hr_apprv_status,
                     status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
@@ -282,6 +284,7 @@ const RequestedLeaveTable = () => {
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                     (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                    (val.cf_inc_apprv_req === 0 &&val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
                         (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                         (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :

@@ -74,10 +74,12 @@ const AttendanceGenerateAuto = () => {
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
                         const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
 
-                        const calculated_workdays=present_days+(nofhfd*0.5)+leaves+halday_leaves+calculatedlop+holiday+offdays
-                       
+                        const workdays=present_days+(nofhfd*0.5)+leaves+halday_leaves+calculatedlop+holiday
+
+                        const calculated_workdays=workdays===0?0:workdays+offdays
+
                         const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
-                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A')).length
+                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A'||val.duty_desc === 'ESI')).length
                         const lwp = (empwise.filter(val => val.duty_desc === 'LWP')).length
                         const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
 
@@ -87,7 +89,7 @@ const AttendanceGenerateAuto = () => {
                         //     calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
 
                         // const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
-                        const totalday=total-total_lop
+                        const totalday=calculated_workdays===0?0:total-total_lop
                        // const totalpay = LCcount > commonSettings?.max_late_day_count ? totalday + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : totalday + LCcount
                        
 

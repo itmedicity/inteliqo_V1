@@ -66,9 +66,6 @@ const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecor
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
 // const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
 const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
-// const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
-// const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
-//const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
@@ -234,8 +231,6 @@ const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceR
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
-
-
 //QR CODE
 const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
 const OnlinePreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/OnlinePreWithQRcode'))
@@ -243,17 +238,13 @@ const OnlinePostTest = React.lazy(() => import('./views/TrainingDevelopment/Post
 //const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/PostTestEmpListWithQR'))
 const OnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTraining'))
 const QROnlineTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTraining/OnlineTrainingQR'))
-
-
 //Retest
 const EmployeeDashboard = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/EmpDashboardPage'))
 const OnlineRetest = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/RetestQuestionPage'))
-
 //Departmental Training Report
 const DepartmentalTrainingReport = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
 const DepartmentalCalender = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalCalender'))
 const DepartmentalTrainingReportDetails = React.lazy(() => import('./views/HrReports/TrainingReports/DepartmentalTrainingCalender'))
-
 const LeaveReports = React.lazy(() => import('./views/HrReports/LeaveReports/LeaveReports'))
 const TrainingAllotedEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingAllotedEmpReport'))
 const TrainingCompletionEmpReport = React.lazy(() => import('./views/HrReports/TrainingReports/TrainingCompletionEmpReports'))
@@ -266,7 +257,7 @@ const RetestEmpDetails = React.lazy(() => import('./views/TrainingDevelopment/Em
 const InductionTraining = React.lazy(() => import('./views/TrainingDevelopment/InductionTraining/InductionTrainingMainPage'))
 const SalaryReport = React.lazy(() => import('./views/HrReports/Salaryreports/SalaryReport'))
 const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch Report/EmpPunchReport'))
-
+const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/PreviousMonthReport/EmployeePunchReport'))
 
 const routes = [
 
@@ -517,7 +508,7 @@ const routes = [
   { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },
   { path: '/Home/SalaryReport', exact: true, name: 'Retest Emp Detailst', component: SalaryReport },
   { path: '/Home/EmpPunchReport', exact: true, name: 'Employee Wise Punch Report', component: EmpPunchReport },
-
+  { path: '/Home/EmpPreviouspunchreport', exact: true, name: 'Previous Month Punch Data', component: EmpPreviouspunchreport },
 ]
 
 export default routes
