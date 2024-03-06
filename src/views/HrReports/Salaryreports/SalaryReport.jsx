@@ -69,6 +69,7 @@ const SalaryReport = () => {
                 const { success, data } = result.data
                 if (success === 1) {
                     const finalDataArry = dataa?.map((val) => {
+                        console.log(val)
                         const empwise = data.filter((value) => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
@@ -101,8 +102,14 @@ const SalaryReport = () => {
                        const onedaySalary=val.gross_salary/getDaysInMonth(new Date(value))
 
                        const holidaysalary=val.gross_salary < commonSettings.salary_above ?onedaySalary*holidayworked:0
+                      
+                       const npsamount=val.nps===1?val.npsamount:0
+                       const lwfamount=val.lwf_status===1?val.lwfamount:0
                        const paydaySalay=totalday*onedaySalary
-                       const totalSalaey=paydaySalay+holidaysalary
+
+                       const totalSalaey=paydaySalay+holidaysalary-npsamount-lwfamount
+
+                       
                        
                        const obj = {
                             em_id: val.em_id,
@@ -125,7 +132,9 @@ const SalaryReport = () => {
                             sect_name: val.sect_name,
                             holidaySalary:Math.round(holidaysalary / 10) * 10,
                             em_account_no: val.em_account_no,
-                            totalSalary:Math.round(totalSalaey / 10) * 10
+                            totalSalary:Math.round(totalSalaey / 10) * 10,
+                            npsamount:npsamount,
+                            lwfamount:lwfamount
                         }
                         return obj
                     })
@@ -158,6 +167,7 @@ const SalaryReport = () => {
                 const { success, data } = result.data
                 if (success === 1) {
                     const finalDataArry = dataa?.map((val) => {
+                       
                         const empwise = data.filter((value) => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
@@ -191,8 +201,12 @@ const SalaryReport = () => {
 
                        const holidaysalary=val.gross_salary < commonSettings.salary_above ?onedaySalary*holidayworked:0
 
-const paydaySalay=totalday*onedaySalary
-const totalSalaey=paydaySalay+holidaysalary
+                       
+                       const npsamount=val.nps===1?val.npsamount:0
+                       const lwfamount=val.lwf_status===1?val.lwfamount:0
+                        const paydaySalay=totalday*onedaySalary
+                        const totalSalaey=paydaySalay+holidaysalary-npsamount-lwfamount
+
 
 
                         const obj = {
@@ -216,7 +230,9 @@ const totalSalaey=paydaySalay+holidaysalary
                             sect_name: val.sect_name,
                             em_account_no: val.em_account_no,
                             holidaySalary:Math.round(holidaysalary / 10) * 10,
-                            totalSalary:Math.round(totalSalaey / 10) * 10
+                            totalSalary:Math.round(totalSalaey / 10) * 10,
+                            npsamount:npsamount,
+                            lwfamount:lwfamount
                         }
                         return obj
                     })
@@ -245,6 +261,8 @@ const totalSalaey=paydaySalay+holidaysalary
         { headerName: 'Total Day', field: 'paydays' },
         { headerName: 'Gross Salary', field: 'gross_salary' },
         { headerName: 'Holiday Salary', field: 'holidaySalary' },
+        { headerName: 'NPS Amount', field: 'npsamount' },
+        { headerName: 'LWF Amount', field: 'lwfamount' },
         { headerName: 'Total Salary', field: 'totalSalary' },
         { headerName: 'Account Number', field: 'em_account_no' },
     ])
