@@ -96,6 +96,7 @@ import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
 import { gettrainingData } from './Training.Reducer'
 import { setVaccinationemp } from './VaccinationReducers'
+import { getLeaveReport } from './LeaveReportReducers'
 
 const reducer = combineReducers({
     changeState,
@@ -201,7 +202,8 @@ const reducer = combineReducers({
     selectedEarnData,
     setVaccinationemp,
     setEmployeeType,
-    getEmpCoffData
+    getEmpCoffData,
+    getLeaveReport
 })
 
 export default reducer;
