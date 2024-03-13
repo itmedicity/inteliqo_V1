@@ -125,10 +125,10 @@ const CompansatoryOffMast = () => {
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
             if (success === 1) {
-                const { ot_request_flag, punch_slno, holiday_slno } = data[0];
+                const { ot_request_flag, punch_slno, holiday_slno,shift_id } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time, shft_cross_day, shift_id } = selectedShiftTiming[0]
+                const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
 
                 const inTime = moment(shft_chkin_time).format('HH:mm:ss');
                 const outTime = moment(shft_chkout_time).format('HH:mm:ss');
@@ -148,12 +148,13 @@ const CompansatoryOffMast = () => {
                 }
                 else if (holiday_slno !== 0 && gross_salary < salary_above) {
                     warningNofity('Cannot Apply for Compensatory Off Request!')
+                    setDisableCheck(false)
                 }
-                // else if (shift_id !== week_off_day) {
-                //     warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
-                // }
+                else if (shift_id !== week_off_day && holiday_slno===0) {
+                    warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
+                    setDisableCheck(false)
+                }
                 else {
-
                     //TO FETCH PUNCH DATA FROM TABLE
                     const postDataForpunchMaster = {
                         date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),

@@ -56,6 +56,7 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
                     return <option
                         key={index}
                         value={val.hrm_calc_holiday}
+                        disabled={val.hl_lv_tkn_status === 1 ? true : false}
                     >
                         {`C off -${val.calculated_date} ${val.specail_remark} `}
                     </option>
