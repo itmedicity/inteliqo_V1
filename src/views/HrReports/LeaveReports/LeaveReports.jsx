@@ -13,7 +13,7 @@ import ReportLayout from '../ReportComponent/ReportLayout';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import moment from 'moment';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
-import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqstAll } from 'src/redux/actions/LeaveApprovalAction';
+import { getCompOffRprtAll, getHalfdayRprtAll, getLeaveReportAll, getNopunchRprttAll } from 'src/redux/actions/LeaveReport.Action';
 import _ from 'underscore';
 import { format } from 'date-fns'
 
@@ -35,24 +35,25 @@ const LeaveReports = () => {
 
 
     useEffect(() => {
-        dispatch(getLeaveRequestAll())
-        dispatch(getHalfdayRqstAll())
-        dispatch(getNopunchRqstAll())
-        dispatch(getCompOffRqstAll())
+        dispatch(getLeaveReportAll())
+        dispatch(getHalfdayRprtAll())
+        dispatch(getNopunchRprttAll())
+        dispatch(getCompOffRprtAll())
     }, [dispatch])
 
-    //API DATA 
-    const halfdayRqList = useSelector(state => state.setAllLeaveApproval.halfdayRqData.halfdayRqList, _.isEqual);
-    const leaveRqList = useSelector(state => state.setAllLeaveApproval.leaveRqData.leaveRqList, _.isEqual);
-    const nopunchRqList = useSelector(state => state.setAllLeaveApproval.nopunchRqData.nopunchRqList, _.isEqual);
-    const compOffRqList = useSelector(state => state.setAllLeaveApproval.compOffrqData.compOffRqList, _.isEqual);
+    //API DATA
+    const halfdayRqList = useSelector(state => state.getLeaveReport.halfdayRqData.halfdayRqList, _.isEqual);
+    const leaveRqList = useSelector(state => state.getLeaveReport.leaveRqData.leaveRqList, _.isEqual);
+    const nopunchRqList = useSelector(state => state.getLeaveReport.nopunchRqData.nopunchRqList, _.isEqual);
+    const compOffRqList = useSelector(state => state.getLeaveReport.compOffrqData.compOffRqList, _.isEqual);
+
+
 
     // Employee Record List
     const getEmployeeList = useCallback(async (e) => {
         e.preventDefault()
         if (Empno !== 0) {
             const leaveRequestList = leaveRqList?.filter(val => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
-
             const newList = leaveRequestList?.map((val) => {
 
                 return {
@@ -72,13 +73,18 @@ const LeaveReports = () => {
                     hrstatus: val.hr_apprv_status,
                     status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+                    // InchargeApprvStatus: val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.incapprv_status === 1 ? 'Approved' : 'Rejected',
+                    InchargeApprvStatus: val?.inc_apprv_req === 1 && val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.inc_apprv_req === 1 && val?.incapprv_status === 1 ? 'Approved' : val?.inc_apprv_req === 0 && val?.incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.incapprv_status === 2 ? val?.inc_apprv_cmnt : val?.hod_apprv_status === 2 ? val?.hod_apprv_cmnt : val?.hr_apprv_status === 2 ? val?.hr_apprv_cmnt : 'No Remark'
                 }
             })
 
@@ -97,19 +103,24 @@ const LeaveReports = () => {
                     leavetype_name: "Halfday Request",
                     status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            // (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
                                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     hrstatus: val.hf_hr_apprv_status,
                     code: 2,
                     reqDate: val.requestdate,
                     leaveDate: val.leavedate,
                     fromDate: moment(val?.leavedate).format("DD-MM-YYYY"),
+                    InchargeApprvStatus: val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 1 ? 'Approved' : val?.hf_inc_apprv_req === 0 && val?.hf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.hf_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.hf_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.hf_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.hf_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.hf_incapprv_status === 2 ? val?.hf_inc_apprv_cmnt : val?.hf_hod_apprv_status === 2 ? val?.hf_hod_apprv_cmnt : val?.hf_hr_apprv_status === 2 ? val?.hf_hr_apprv_cmnt : 'No Remark'
 
                 }
             })
             const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate)
+
             const newNopunch = NopunchRq?.map((val) => {
                 return {
                     type: "No Punch Request",
@@ -122,18 +133,25 @@ const LeaveReports = () => {
                     hrstatus: val.np_hr_apprv_status,
                     status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                     toDate: val.leavetodate,
                     leavetype_name: "Miss punch",
                     leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
+                    // InchargeApprvStatus: val?.np_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.np_incapprv_status === 1 ? 'Approved' : 'Rejected',
+                    InchargeApprvStatus: val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 1 ? 'Approved' : val?.np_inc_apprv_req === 0 && val?.np_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.np_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.np_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.np_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.np_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.np_incapprv_status === 2 ? val?.np_inc_apprv_cmnt : val?.np_hod_apprv_status === 2 ? val?.np_hod_apprv_cmnt : val?.np_hr_apprv_status === 2 ? val?.np_hr_apprv_cmnt : 'No Remark'
+
                 }
             })
             const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
+
             const newCompRq = CompReq?.map((val) => {
                 return {
                     type: "Compensatory Off Request",
@@ -148,13 +166,19 @@ const LeaveReports = () => {
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
                     toDate: val.leavetodate,
+                    // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
+                    InchargeApprvStatus: val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 1 ? 'Approved' : val?.cf_inc_apprv_req === 0 && val?.cf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+
+                    HodApprvStatus: val?.cf_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.cf_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.cf_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.cf_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.cf_incapprv_status === 2 ? val?.cf_inc_apprv_cmnt : val?.cf_hod_apprv_status === 2 ? val?.cf_hod_apprv_cmnt : val?.cf_hr_apprv_status === 2 ? val?.cf_hr_apprv_cmnt : 'No Remark'
 
                 }
             })
@@ -182,13 +206,20 @@ const LeaveReports = () => {
                     hrstatus: val.hr_apprv_status,
                     status: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.ceo_req_status === 1 && val.ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'Approved' :
+                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+                    // InchargeApprvStatus: val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.incapprv_status === 1 ? 'Approved' : 'Rejected',
+                    InchargeApprvStatus: val?.inc_apprv_req === 1 && val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.inc_apprv_req === 1 && val?.incapprv_status === 1 ? 'Approved' : val?.inc_apprv_req === 0 && val?.incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+
+                    HodApprvStatus: val?.hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.incapprv_status === 2 ? val?.inc_apprv_cmnt : val?.hod_apprv_status === 2 ? val?.hod_apprv_cmnt : val?.hr_apprv_status === 2 ? val?.hr_apprv_cmnt : 'No Remark'
+
                 }
             })
             const haldayRq = halfdayRqList?.filter((val) => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavedate), "yyyy-MM") === fromdate)
@@ -208,15 +239,19 @@ const LeaveReports = () => {
                     leavetype_name: "Halfday Request",
                     status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            // (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
                                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'Approved' :
-                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     hrstatus: val.hf_hr_apprv_status,
                     code: 2,
                     reqDate: val.requestdate,
                     leaveDate: val.leavedate,
                     fromDate: moment(val?.leavedate).format("DD-MM-YYYY"),
+                    InchargeApprvStatus: val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 1 ? 'Approved' : val?.hf_inc_apprv_req === 0 && val?.hf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.hf_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.hf_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.hf_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.hf_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.hf_incapprv_status === 2 ? val?.hf_inc_apprv_cmnt : val?.hf_hod_apprv_status === 2 ? val?.hf_hod_apprv_cmnt : val?.hf_hr_apprv_status === 2 ? val?.hf_hr_apprv_cmnt : 'No Remark'
 
                 }
             })
@@ -236,15 +271,20 @@ const LeaveReports = () => {
                     hrstatus: val.np_hr_apprv_status,
                     status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'Approved' :
+                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                     toDate: val.leavetodate,
                     leavetype_name: "Miss punch",
                     leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
+                    InchargeApprvStatus: val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 1 ? 'Approved' : val?.np_inc_apprv_req === 0 && val?.np_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.np_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.np_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.np_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.np_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.np_incapprv_status === 2 ? val?.np_inc_apprv_cmnt : val?.np_hod_apprv_status === 2 ? val?.np_hod_apprv_cmnt : val?.np_hr_apprv_status === 2 ? val?.np_hr_apprv_cmnt : 'No Remark'
+
                 }
             })
             const CompReq = compOffRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
@@ -265,13 +305,18 @@ const LeaveReports = () => {
                     cancelstatus: val.lv_cancel_status,
                     status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
                         (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            // (val.cf_ceo_req_status === 1 && val.cf_ceo_apprv_status === 0) ? 'CEO Approval Pending' :
+                            (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'Approved' :
+                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'Reject' : 'HR Approval Pending',
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate
+                    toDate: val.leavetodate,
+                    InchargeApprvStatus: val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 1 ? 'Approved' : val?.cf_inc_apprv_req === 0 && val?.cf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
+                    HodApprvStatus: val?.cf_hod_apprv_status === 0 ? 'Hod Approval Pending' : val?.cf_hod_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    HrApprvStatus: val?.cf_hr_apprv_status === 0 ? 'Hr Approval Pending' : val?.cf_hr_apprv_status === 1 ? 'Approved' : 'Rejected',
+                    Remark: val?.cf_incapprv_status === 2 ? val?.cf_inc_apprv_cmnt : val?.cf_hod_apprv_status === 2 ? val?.cf_hod_apprv_cmnt : val?.cf_hr_apprv_status === 2 ? val?.cf_hr_apprv_cmnt : 'No Remark'
+
                 }
             })
             setData([...newList, ...newHalfday, ...newCompRq, ...newNopunch])
@@ -294,10 +339,14 @@ const LeaveReports = () => {
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 150 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 150 },
         { headerName: 'Leave date', field: 'fromDate', wrapText: true, minWidth: 150 },
-        { headerName: 'Status', field: 'status', minWidth: 90 },
+        // { headerName: 'Status', field: 'status', minWidth: 90 },
         { headerName: 'Leave Category', field: 'type', minWidth: 150 },
         { headerName: 'Leave Type', field: 'leavetype_name', minWidth: 90 },
         { headerName: 'Leave Month', field: 'leave_name', minWidth: 90 },
+        { headerName: 'Incharge Approve Status', field: 'InchargeApprvStatus', minWidth: 90 },
+        { headerName: 'Hod Approve Status', field: 'HodApprvStatus', minWidth: 90 },
+        { headerName: 'HR Approve Status', field: 'HrApprvStatus', minWidth: 90 },
+        { headerName: 'Remark(for Reject)', field: 'Remark', minWidth: 90 },
     ])
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
@@ -339,7 +388,9 @@ const LeaveReports = () => {
                         </Box>
                         <Box sx={{ ml: 1 }}>
 
-                            <IconButton variant="outlined" size='lg' color="primary" onClick={getEmployeeList}>
+                            <IconButton variant="outlined" size='lg' color="primary"
+                                onClick={getEmployeeList}
+                            >
                                 <PublishedWithChangesIcon />
                             </IconButton>
 
