@@ -246,7 +246,7 @@ const ApprovalIncharge = () => {
         }
     }
     const handleClose = () => {
-        setOpenleave(false);
+        // setOpenleave(false);
         setOpennopunch(false);
         setOpencompen(false);
         setOpenhalf(false);
@@ -254,10 +254,10 @@ const ApprovalIncharge = () => {
     return (
         <Fragment>
             {
-                reqtype === 1 ? <LeavRqModel open={openleave} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                    : reqtype === 2 ? <HaldayRqModel open={openhalf} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
-                            : reqtype === 4 ? <CompOffRqModel open={opencompen} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} /> : null
+                reqtype === 1 ? <LeavRqModel open={openleave} setOpen={setOpenleave} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
+                    : reqtype === 2 ? <HaldayRqModel open={openhalf} setOpen={setOpenhalf} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
+                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} setOpen={setOpennopunch} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} />
+                            : reqtype === 4 ? <CompOffRqModel open={opencompen} setOpen={setOpencompen} handleClose={handleClose} slno={slno} authority={1} em_id={em_id} count={count} setcount={setcount} /> : null
             }
             <PageLayoutCloseOnly
                 heading="Leave Approval Incharge"

@@ -2,7 +2,7 @@ import { Box, Button, CssVarsProvider, } from '@mui/joy'
 import { IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import {  warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
@@ -81,19 +81,7 @@ const EmployeeActiveHR = () => {
         const data = params.api.getSelectedRows()
         setDetails(data)
         setFlag(true)
-        // const { em_id } = data[0]
-        // const postData = {
-        //     em_id: em_id
-        // }
-        // const result = await axioslogin.patch('/empmast/empmsater/active', postData)
-        // const { success, message } = result.data
-        // if (success === 2) {
-        //     succesNofity("Employee Inactivated")
-        //     setCount(count + 1)
-        // } else {
-        //     warningNofity(message)
-        // }
-    }, [count])
+    }, [])
 
     return (
         <CustomLayout title="Employee Active" displayClose={true} >

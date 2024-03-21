@@ -80,16 +80,12 @@ const InchargeApproval = () => {
 
     useEffect(() => {
         const arraydepsect = DeptSect.map((val) => { return val.dept_section })
-        console.log(onDutyData);
-
         if (selectValue === 2 && deptSection === 0) {
 
             const filtered = onDutyData.filter(val => arraydepsect.includes(val.dept_sect_id))
-            console.log(filtered);
             const filteronDuty = filtered && filtered.filter((val) => {
                 return (val.incharge_req_status === 1)
             })
-            console.log(filteronDuty);
             if (Object.keys(filteronDuty).length > 0) {
                 const arr = filteronDuty?.map((val) => {
                     return {
@@ -109,8 +105,8 @@ const InchargeApproval = () => {
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                                 (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         onDutydate: val.on_duty_date,
@@ -149,9 +145,9 @@ const InchargeApproval = () => {
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                //  (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         onDutydate: val.on_duty_date,
@@ -192,9 +188,9 @@ const InchargeApproval = () => {
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                // (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         dutyDate: val.one_hour_duty_day,
@@ -235,9 +231,9 @@ const InchargeApproval = () => {
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                // (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         dutyDate: val.one_hour_duty_day,
@@ -279,9 +275,9 @@ const InchargeApproval = () => {
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                // (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         punchDate: val.miss_punch_day,
@@ -323,9 +319,9 @@ const InchargeApproval = () => {
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                // (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         punchDate: val.miss_punch_day,
