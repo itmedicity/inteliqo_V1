@@ -63,8 +63,8 @@ const HodApproval = () => {
         if (arraydepsect.length !== 0) {
             if (levtpevalue === 1 && deptSect === 0) {
                 const filtered = leaveRqData.filter(val => arraydepsect.includes(val.dept_section))
-                  const filterleavereq = filtered && filtered.filter((val) => {
-                    return (val.hod_apprv_req === 1 && val.hod_apprv_status===0)
+                const filterleavereq = filtered && filtered.filter((val) => {
+                    return (val.hod_apprv_req === 1 && val.hod_apprv_status === 0)
                 })
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -82,7 +82,7 @@ const HodApproval = () => {
                 })
             } else if (levtpevalue === 1 && deptSect !== 0) {
                 const filterleavereq = leaveRqData && leaveRqData.filter((val) => {
-                    return (val.dept_section === deptSect && val.hod_apprv_req === 1  && val.hod_apprv_status===0)
+                    return (val.dept_section === deptSect && val.hod_apprv_req === 1 && val.hod_apprv_status === 0)
                 })
                 MappingData(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -101,7 +101,7 @@ const HodApproval = () => {
             } else if (levtpevalue === 2 && deptSect === 0) {
                 const filtered = halfdayRqData?.filter(val => arraydepsect.includes(val.dept_section))
                 const filterleavereq = filtered && filtered.filter((val) => {
-                    return (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status===0)
+                    return (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0)
                 })
                 Halfdaymapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -119,7 +119,7 @@ const HodApproval = () => {
                 })
             } else if (levtpevalue === 2 && deptSect !== 0) {
                 const filterdata = halfdayRqData && halfdayRqData.filter((val) => {
-                    return (val.dept_section === deptSect && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status===0)
+                    return (val.dept_section === deptSect && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0)
                 })
                 Halfdaymapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -138,7 +138,7 @@ const HodApproval = () => {
             } else if (levtpevalue === 3 && deptSect === 0) {
                 const filtered = nopunchRqData.filter(val => arraydepsect.includes(val.em_dept_section))
                 const filterleavereq = filtered && filtered.filter((val) => {
-                    return (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status===0)
+                    return (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0)
                 })
                 nopunchmapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -156,7 +156,7 @@ const HodApproval = () => {
                 })
             } else if (levtpevalue === 3 && deptSect !== 0) {
                 const filterdata = nopunchRqData && nopunchRqData.filter((val) => {
-                    return (val.em_dept_section === deptSect && val.np_hod_apprv_req === 1&& val.np_hod_apprv_status===0)
+                    return (val.em_dept_section === deptSect && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0)
                 })
                 nopunchmapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -175,7 +175,7 @@ const HodApproval = () => {
             } else if (levtpevalue === 4 && deptSect === 0) {
                 const filtered = compOffrqData.filter(val => arraydepsect.includes(val.em_dept_section))
                 const filterleavereq = filtered && filtered.filter((val) => {
-                    return (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status===0)
+                    return (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0)
                 })
                 compensatoryMapping(filterleavereq).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -193,7 +193,7 @@ const HodApproval = () => {
                 })
             } else if (levtpevalue === 4 && deptSect !== 0) {
                 const filterdata = compOffrqData && compOffrqData.filter((val) => {
-                    return (val.em_dept_section === deptSect && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status===0)
+                    return (val.em_dept_section === deptSect && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0)
                 })
                 compensatoryMapping(filterdata).then((val) => {
                     if (Object.keys(val).length > 0) {
@@ -225,7 +225,7 @@ const HodApproval = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hodaprv === 1 || params.data.hodaprv === 2 || params.data.incaprv === 2||params.data.hr_apprv===1) {
+                if (params.data.hodaprv === 1 || params.data.hodaprv === 2 || params.data.incaprv === 2 || params.data.hr_apprv === 1) {
                     return <IconButton
                         sx={{ paddingY: 0.5 }}  >
                         <CheckCircleOutlineIcon />
@@ -266,7 +266,7 @@ const HodApproval = () => {
     }
 
     const handleClose = () => {
-        setOpenleave(false);
+        // setOpenleave(false);
         setOpennopunch(false);
         setOpencompen(false);
         setOpenhalf(false);
@@ -275,10 +275,10 @@ const HodApproval = () => {
     return (
         <Fragment>
             {
-                reqtype === 1 ? <LeavRqModel open={openleave} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
-                    : reqtype === 2 ? <HaldayRqModel open={openhalf} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
-                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
-                            : reqtype === 4 ? <CompOffRqModel open={opencompen} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                reqtype === 1 ? <LeavRqModel open={openleave} setOpen={setOpenleave} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                    : reqtype === 2 ? <HaldayRqModel open={openhalf} setOpen={setOpenhalf} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                        : reqtype === 3 ? <NopunchRqModel open={opennopunch} setOpen={setOpennopunch} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
+                            : reqtype === 4 ? <CompOffRqModel open={opencompen} setOpen={setOpencompen} handleClose={handleClose} slno={slno} authority={2} em_id={em_id} count={count} setcount={setcount} />
                                 : null
             }
             <PageLayoutCloseOnly

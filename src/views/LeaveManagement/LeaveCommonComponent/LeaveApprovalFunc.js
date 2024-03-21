@@ -27,7 +27,7 @@ export const MappingData = async (filtered) => {
                 (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HOD Approved' :
                 (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.hod_apprv_status === 1) ? 'HR Approved' :
-                    (val.hr_aprrv_requ === 1  && val.hr_apprv_status === 2 && val.hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                    (val.hr_aprrv_requ === 1  && val.hr_apprv_status === 2 && val.hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -61,7 +61,7 @@ export const Halfdaymapping = async (filtered) => {
                 (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                 (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
-                    (val.hf_hr_aprrv_requ === 1  && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                    (val.hf_hr_aprrv_requ === 1  && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -95,7 +95,7 @@ export const nopunchmapping = async (filtered) => {
                 (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0  ) ? 'HOD Approved' :
                 (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
                     (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
-                    (val.np_hr_aprrv_requ === 1  && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                    (val.np_hr_aprrv_requ === 1  && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -128,7 +128,7 @@ export const compensatoryMapping = async (filtered) => {
                 (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HOD Approved' :
                 (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
                     (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approved' :
-                    (val.cf_hr_aprrv_requ === 1  && val.cf_hr_apprv_status === 2 && val.cf_hod_apprv_status === 1)? 'HR Rejected' :'HR Pending',
+                    (val.cf_hr_aprrv_requ === 1  && val.cf_hr_apprv_status === 2 && val.cf_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })

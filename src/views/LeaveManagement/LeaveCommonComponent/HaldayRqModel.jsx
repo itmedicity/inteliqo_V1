@@ -1,19 +1,23 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel, Paper, Slide, TextField } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
-import { ToastContainer } from 'react-toastify'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment'
 import { CssVarsProvider, Typography } from '@mui/joy';
 import _ from 'underscore';
 import { useSelector } from 'react-redux';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import Button from '@mui/joy/Button';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import { ModalDialog, Textarea } from '@mui/joy';
+import { Box } from '@mui/material';
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />;
-});
-const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, slno }) => {
+const HaldayRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount, count, slno }) => {
 
+    const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [reason, setreason] = useState('')
     //redux data all halfday request
     const halfdayRqData = useSelector((state) => state?.setAllLeaveApproval?.halfdayRqData?.halfdayRqList, _.isEqual)
     const [formdata, setformData] = useState({
@@ -22,15 +26,20 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
         halfdayareason: '',
         leavedate: '',
         requestdate: '',
-        month: ''
+        month: '',
+        sect_name: '',
+        planslno: 0
     })
-    const { emp_name, emp_id, halfdayareason, leavedate, requestdate, month } = formdata;
+    const { emp_name, emp_id, halfdayareason, leavedate, requestdate, month, sect_name,
+        planslno } = formdata;
 
     useEffect(() => {
         if (Object.keys(halfdayRqData).length > 0) {
             //filtering selected row from all halfday request
             const array = halfdayRqData && halfdayRqData.filter((val) => val.half_slno === slno)
-            const { em_name, em_no, hf_reason, month, requestdate, leavedate } = array[0]
+
+            const { em_name, em_no, hf_reason, month, requestdate, leavedate, sect_name,
+                planslno } = array[0]
             const formdata = {
                 emp_id: em_no,
                 emp_name: em_name,
@@ -38,29 +47,17 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                 requestdate: moment(new Date(requestdate)).format('DD-MM-YYYY'),
                 month: month,
                 leavedate: moment(new Date(leavedate)).format('DD-MM-YYYY'),
+                sect_name: sect_name,
+                planslno: planslno
+
             }
             setformData(formdata)
         }
     }, [halfdayRqData, slno])
 
-    const [reason, setreason] = useState('')
-    const [status, setstatus] = useState({
-        apprv: false,
-        reject: false
-    })
-    const { apprv, reject } = status
-    const updateHalfdatereq = async (e) => {
-        const ob1 = {
-            apprv: false,
-            reject: false
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setstatus({ ...ob1, [e.target.name]: value })
-    }
-
-    const submithaday = async () => {
+    const handleApproverequest = useCallback(async () => {
         const submhalfday = {
-            status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
+            status: 1,
             comment: reason,
             slno: slno,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
@@ -68,28 +65,21 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
         }
         //incharge approval
         if (authority === 1) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
-            const { success, message } = result.data
-            if (success === 1) {
-                succesNofity(message)
-                const ob1 = {
-                    apprv: false,
-                    reject: false
-
+            if (reason === '') {
+                infoNofity("Please Add remark!")
+            } else {
+                const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    setreason('')
+                    setcount(count + 1)
+                    handleClose()
+                } else {
+                    errorNofity(message)
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                handleClose()
             }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
-        }
-        //hod approval
+        }//hod approval
         else if (authority === 2) {
             const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
             const { success, data } = result.data;
@@ -102,12 +92,6 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                         const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
                         const { success, message } = result.data
                         if (success === 1) {
-                            const ob1 = {
-                                apprv: false,
-                                reject: false
-
-                            }
-                            setstatus(ob1)
                             setreason('')
                             setcount(count + 1)
                             succesNofity(message)
@@ -124,12 +108,6 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                     const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
                     const { success, message } = result.data
                     if (success === 1) {
-                        const ob1 = {
-                            apprv: false,
-                            reject: false
-
-                        }
-                        setstatus(ob1)
                         setreason('')
                         setcount(count + 1)
                         succesNofity(message)
@@ -144,50 +122,205 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                 }
             }
         }
-        //ceo approval
-        else if (authority === 3) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
-            const { success, message } = result.data
-            if (success === 1) {
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+    }, [reason, slno, em_id])
 
+    const handleRegectRequest = useCallback(async () => {
+        const submhalfday = {
+            status: 2,
+            comment: reason,
+            slno: slno,
+            apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+            us_code: em_id,
+            hrm_cl_slno: planslno
+        }
+        //incharge approval
+        if (authority === 1) {
+            if (reason === '') {
+                infoNofity("Please Add remark!")
+            } else {
+                const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    setreason('')
+                    setcount(count + 1)
+                    handleClose()
+                } else {
+                    errorNofity(message)
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                succesNofity(message)
-                handleClose()
-            }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
             }
         }
-        // else if (authority === 5) {
-        //     const result = await axioslogin.patch('./LeaveRequestApproval/halfdaycancelReq', submhalfday)
-        //     const { success, message } = result.data
-        //     if (success === 1) {
-        //         succesNofity(message)
-        //         Hrhalfdayrequest(arraydepsect).then((val) => {
-        //             setleavereq(val)
-        //         })
-        //         handleClose()
-        //     }
-        //     else if (success === 2) {
-        //         warningNofity(message)
-        //     }
-        //     else {
-        //         errorNofity(message)
-        //     }
-        // }
-    }
+        //hod approval
+        else if (authority === 2) {
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
+                if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                    const { success } = result.data
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/LeaveRequestApproval/HodRejectHalfday', submhalfday)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            setreason('')
+                            setcount(count + 1)
+                            succesNofity(message)
+                            handleClose()
+                        }
+                        else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/HodRejectHalfday', submhalfday)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        setreason('')
+                        setcount(count + 1)
+                        succesNofity(message)
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
+                }
+            }
+        }
+    }, [reason, slno, planslno, em_id])
+
     return (
         <Fragment>
-            <ToastContainer />
+            <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={open}
+                onClose={() => setOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog size="lg"  >
+                    <ModalClose
+                        variant="outlined"
+                        sx={{
+                            top: 'calc(-1/4 * var(--IconButton-size))',
+                            right: 'calc(-1/4 * var(--IconButton-size))',
+                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                            borderRadius: '50%',
+                            bgcolor: 'background.body',
+                        }}
+                    />
+                    <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                        <Typography
+                            fontSize="xl2"
+                            lineHeight={1}
+                            startDecorator={
+                                <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
+                            }
+                            sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                        >
+                            {emp_name}
+                        </Typography>
+                        <Typography
+                            lineHeight={1}
+                            component="h3"
+                            id="modal-title"
+                            level="h5"
+                            textColor="inherit"
+                            fontWeight="md"
+                            // mb={1}
+                            endDecorator={<Typography
+                                level="h6"
+                                justifyContent="center"
+                                alignItems="center"
+                                alignContent='center'
+                                lineHeight={1}
+                            >
+                                {emp_id}
+                            </Typography>}
+                            sx={{ color: 'neutral.400', display: 'flex', }}
+                        >
+                            {`employee #`}
+                        </Typography>
+                        <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Request Date</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {requestdate}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Type</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: Casual leave</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Date</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {leavedate}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">Month of Leave</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {month}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Reason</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {halfdayareason}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ pt: 0.5 }} >
+                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…"
+                            variant="outlined" onChange={(e) => setreason(e.target.value)} />
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+                            <Button variant="solid" color="success" onClick={handleApproverequest}>
+                                Leave Request Approve
+                            </Button>
+                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
+                                Leave Request Reject
+                            </Button>
+                        </Box>
+                    </Box>
+                </ModalDialog>
+            </Modal>
+            {/* <ToastContainer />
             <Dialog
                 open={open}
                 TransitionComponent={Transition}
@@ -344,7 +477,7 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                         </DialogActions>
                     </Paper>
                 </DialogContent >
-            </Dialog >
+            </Dialog > */}
         </Fragment >
     )
 }
