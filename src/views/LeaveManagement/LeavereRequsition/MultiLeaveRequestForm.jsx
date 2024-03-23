@@ -134,7 +134,6 @@ const MultiLeaveRequestForm = () => {
     //leave request selection
 
     const handleChangeLeaveRequest = useCallback(async (leveTypeData, leaveDetl) => {
-
         //filter the leaves for duplication and get the post data
         const duplicateLeaveSelection = newData?.map((val) => val.selectedLveSlno).includes(leaveDetl?.selectedLveSlno);
         const duplicateLeaveSelections = newData?.map((val) => val.lveTypeName).includes(leaveDetl?.lveTypeName);
@@ -158,13 +157,18 @@ const MultiLeaveRequestForm = () => {
                 } else if (val?.index === leaveDetl?.index) {
                     return {
                         ...val,
-                        "selectedLveSlno": leaveDetl?.selectedLveSlno,
+                        "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "selectedLveSlno": parseInt(leaveDetl?.selectedLveSlno),
                         "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": leaveDetl?.lveDate,
                         "selectedLeaveName": leaveDetl?.leave,
                     }
                 } else {
-                    return val
+                    return {
+                        ...val,
+
+                    }
+
                 }
             })
             setnewData(newSelectedLeaveData)
@@ -370,6 +374,62 @@ const MultiLeaveRequestForm = () => {
         em_department, em_dept_section, numberOfDays, authorization_hod, authorization_incharge, dispatch,
         empHodStat, hod, incharge, CommonLeaveType])
 
+    const [select, setSelect] = useState(0)
+    const [casualLeve, setCasualLeave] = useState([]);
+    const casulLeves = useSelector((state) => state.getCreditedCasualLeave, _.isEqual);
+    const casualLve = useMemo(() => casulLeves, [casulLeves])
+
+    useEffect(() => {
+        const { casualLeave } = casualLve;
+        const nohalfcasual = casualLeave.filter(val => val.cl_bal_leave !== 0.5)
+        const array = nohalfcasual.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCasualLeave(array);
+    }, [casualLve])
+
+    const [earnLeave, setEarnLeave] = useState([]);
+    //const [status, setStatus] = useState(false);
+
+    const earnLeaves = useSelector((state) => state.getCreditedEarnLeave, _.isEqual);
+    const earnLve = useMemo(() => earnLeaves, [earnLeaves]);
+
+    useEffect(() => {
+        const { earnLeave } = earnLve;
+        const array = earnLeave.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        // setCasualLeave(array);
+        setEarnLeave(array);
+    }, [earnLve])
+
+    const [coff, setCoff] = useState([]);
+    // const [status, setStatus] = useState(false);
+
+    const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
+
+    const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
+
+
+    useEffect(() => {
+        const { coffData } = compOff;
+        const array = coffData.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCoff(array);
+    }, [compOff])
+
+
+
     return (
         <Paper
             // component={Grid}
@@ -413,6 +473,14 @@ const MultiLeaveRequestForm = () => {
                     data={val}
                     index={index}
                     handleChange={handleChangeLeaveRequest}
+                    select={select}
+                    setSelect={setSelect}
+                    casualLeve={casualLeve}
+                    setCasualLeave={setCasualLeave}
+                    earnLeave={earnLeave}
+                    setEarnLeave={setEarnLeave}
+                    coff={coff}
+                    setCoff={setCoff}
                 />)}
             </Box>
             <Paper

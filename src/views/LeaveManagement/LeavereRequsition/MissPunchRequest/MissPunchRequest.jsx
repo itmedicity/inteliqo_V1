@@ -16,7 +16,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { differenceInDays } from 'date-fns'
 
 const MissPunchRequest = () => {
 
@@ -128,11 +127,6 @@ const MissPunchRequest = () => {
     }, [])
 
     const handleChangeMissPunchRequest = useCallback(async () => {
-
-        // if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-        //     warningNofity("Can't Apply for Miss punch Request, limitted days exceeded!!")
-        // }
-        //else 
         if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
             warningNofity("Duty Not Planned For the Selected Date")
         } else if (checkInCheck === false && checkOutCheck === false) {

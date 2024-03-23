@@ -19,7 +19,7 @@ import HalfDayCasualLeaveOption from '../Func/HalfDayCasualLeaveOption'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { addDays, differenceInDays, format } from 'date-fns'
+import { addDays, format } from 'date-fns'
 
 const HaldayRequetsMainForm = () => {
 
@@ -165,9 +165,6 @@ const HaldayRequetsMainForm = () => {
             fromDate: moment(fromDate).format('YYYY-MM-DD'),
             toDate: moment(fromDate).format('YYYY-MM-DD')
         }
-        // if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-        //     warningNofity("Can't Apply for Halfday Request, limitted days exceeded!!")
-        // } else {
 
         //Checking attendance marking is saved in  current month || start of month b/w current date 
         const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)

@@ -122,7 +122,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount,
                 }
             }
         }
-    }, [reason, slno, em_id])
+    }, [reason, slno, em_id, count, handleClose, setcount, authority])
 
     const handleRegectRequest = useCallback(async () => {
         const submhalfday = {
@@ -193,7 +193,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount,
                 }
             }
         }
-    }, [reason, slno, planslno, em_id])
+    }, [reason, slno, planslno, authority, count, handleClose, setcount, em_id])
 
     return (
         <Fragment>
