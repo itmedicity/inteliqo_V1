@@ -12,7 +12,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { addDays, addHours, differenceInMinutes, format, subHours } from 'date-fns'
+import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours } from 'date-fns'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -68,7 +68,7 @@ const CompansatoryOffMast = () => {
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { salary_above, week_off_day ,comp_hour_count} = state;
+    const { salary_above, week_off_day, comp_hour_count } = state;
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
 
@@ -125,7 +125,7 @@ const CompansatoryOffMast = () => {
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
             if (success === 1) {
-                const { ot_request_flag, punch_slno, holiday_slno,shift_id } = data[0];
+                const { ot_request_flag, punch_slno, holiday_slno, shift_id } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
                 const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
@@ -150,7 +150,7 @@ const CompansatoryOffMast = () => {
                     warningNofity('Cannot Apply for Compensatory Off Request!')
                     setDisableCheck(false)
                 }
-                else if (shift_id !== week_off_day && holiday_slno===0) {
+                else if (shift_id !== week_off_day && holiday_slno === 0) {
                     warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
                     setDisableCheck(false)
                 }
@@ -185,7 +185,7 @@ const CompansatoryOffMast = () => {
             warningNofity('Select The Off Type and Shift Feild')
         }
     }, [fromDate, offType, selectedShift, em_id, em_no, shiftTiming, gross_salary, salary_above,
-        week_off_day,comp_hour_count])
+        week_off_day, comp_hour_count])
 
 
     const handleChangeCheckInCheck = useCallback((e) => {
@@ -202,10 +202,12 @@ const CompansatoryOffMast = () => {
 
 
     //submit coff request 
-
     const handleChangeSubmitCoffRequest = useCallback(async () => {
         const { inCheck, outCheck } = selectedShiftTiming;
-        if (punchInTime === 0 || punchOutTime === 0) {
+        if (differenceInHours(new Date(punchOutTime), new Date(punchInTime)) < 6) {
+            warningNofity("Can't Apply for COFF request, minimum 6 hours work needed")
+        }
+        else if (punchInTime === 0 || punchOutTime === 0) {
             warningNofity('Please Select In and Out Punch')
         } else if (reason === '') {
             warningNofity('Request Reason Is Mandatory')
@@ -217,8 +219,8 @@ const CompansatoryOffMast = () => {
                     punchoutdata: punchOutTime,
                     req_type: offType,
                     reqtype_name: offType === 1 ? "C Off" : "Duty Off",
-                    durationpunch: differenceInMinutes(new Date(outCheck), new Date(inCheck)),
-                    shiftduration: differenceInMinutes(new Date(punchOutTime), new Date(punchInTime)),
+                    shiftduration: differenceInMinutes(new Date(outCheck), new Date(inCheck)),
+                    durationpunch: differenceInMinutes(new Date(punchOutTime), new Date(punchInTime)),
                     extratime: differenceInMinutes(new Date(outCheck), new Date(inCheck)),
                     em_id: em_id,
                     em_no: em_no,

@@ -3,7 +3,6 @@ import { Grid, Box } from '@mui/material'
 import { Suspense } from 'react';
 import TextInputBootStrap from 'src/views/Attendance/Component/TextInputBootStrap';
 // import CasualLeaveSelected from './Func/CasualLeaveSelected';
-import { useState } from 'react';
 import moment from 'moment';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 
@@ -14,9 +13,10 @@ const EarnLeaveSelected = lazy(() => import('./Func/EarnLeaveSelected'));
 const HolidayLeaveSelected = lazy(() => import('./Func/HolidayLeaveSelected'));
 const FestivalHolidaySelected = lazy(() => import('./Func/FestivalHolidaySelected'));
 
-const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
+const MuliLeaveMapCmp = ({ index, data, handleChange, select, setSelect, casualLeve, setCasualLeave,
+    earnLeave, setEarnLeave, coff, setCoff }) => {
 
-    const [select, setSelect] = useState(0)
+    // const [select, setSelect] = useState(0)
 
     return (
         <Box
@@ -61,15 +61,18 @@ const MuliLeaveMapCmp = ({ index, data, handleChange }) => {
                      */}
                     {
                         select === '1' ?
-                            <CasualLeaveSelected handleChange={handleChange} index={index} date={data.date} /> :
+                            <CasualLeaveSelected handleChange={handleChange} index={index} date={data.date}
+                                casualLeve={casualLeve} setCasualLeave={setCasualLeave} /> :
                             select === '4' ?    //  festival holiday
                                 <FestivalHolidaySelected handleChange={handleChange} index={index} date={data.date} /> :
                                 select === '3' ?    //  national holiday
                                     <HolidayLeaveSelected handleChange={handleChange} index={index} date={data.date} /> :
                                     select === '11' ?
-                                        <CompansatorLeaveSelected handleChange={handleChange} index={index} date={data.date} /> :
+                                        <CompansatorLeaveSelected handleChange={handleChange} index={index} date={data.date}
+                                            coff={coff} setCoff={setCoff} /> :
                                         select === '8' ?
-                                            <EarnLeaveSelected handleChange={handleChange} index={index} date={data.date} /> : null
+                                            <EarnLeaveSelected handleChange={handleChange} index={index} date={data.date} earnLeave={earnLeave}
+                                                setEarnLeave={setEarnLeave} /> : null
                     }
                 </Suspense>
             </Box>

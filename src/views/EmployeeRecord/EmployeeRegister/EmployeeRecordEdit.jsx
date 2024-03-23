@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears,endOfMonth } from 'date-fns'
+import { addDays, addYears, endOfMonth } from 'date-fns'
 import CloseIcon from '@mui/icons-material/Close';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection'
@@ -352,10 +352,10 @@ const EmployeeRecordEdit = () => {
                         em_id: no,
                         em_no: id,
                         em_cont_start: dateofjoining,
-                        em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
-                        em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
+                        em_cont_end: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
+                        em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
                         em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
-                        status: contractflag === 0 ? 0 : 1
+                        status: contractflag === 1 ? 0 : 1
                     }
                     const result = await axioslogin.post('/empmast/createContract', postContractDetl)
                     const { success, message } = result.data
@@ -406,6 +406,7 @@ const EmployeeRecordEdit = () => {
             }
         }
         if (contractflag === 1) {
+            // updateContractEmp(submitdata)
             if (cont_date < today || oldCategory !== category) {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {

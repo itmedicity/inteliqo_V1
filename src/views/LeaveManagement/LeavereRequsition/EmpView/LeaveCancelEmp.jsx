@@ -45,10 +45,9 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
             comment: reason,
             apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
             us_code: emno,
-            slno: leaveid
+            slno: slno
         }
-    }, [emno, reason, leaveid])
-
+    }, [emno, reason, slno])
 
     const Cancelrequest = useCallback(async () => {
         //CASUAL LEAVE 
