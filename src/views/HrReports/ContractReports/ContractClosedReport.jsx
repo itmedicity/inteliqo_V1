@@ -1,240 +1,71 @@
-import React, { Fragment, useState, useEffect, useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { Fragment, useState, useEffect, useCallback, useMemo, memo } from 'react'
+import { useDispatch } from 'react-redux';
 import { axioslogin } from 'src/views/Axios/Axios';
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
-import { Actiontypes } from 'src/redux/constants/action.type'
 import { ToastContainer } from 'react-toastify'
-import { setBranch } from 'src/redux/actions/Branch.Action'
-import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
-import CustomReportMain from 'src/views/Component/CustomReportMain';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { setDept } from 'src/redux/actions/Dept.Action';
-import _ from 'underscore';
+import { Box, IconButton } from '@mui/joy';
+import ReportLayout from '../ReportComponent/ReportLayout';
+import { Paper } from '@mui/material';
+import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import JoyBranchSelect from 'src/views/MuiComponents/JoyComponent/JoyBranchSelect';
 
 const ContractClosedReport = () => {
 
     /** Initiliazing values */
     const [TableData, setTableData] = useState([]);
-    const [value, setValue] = useState(0);
-    const [slno, setslno] = useState([]);
-    const [secondvalue, setsecondValue] = useState(0)
-    const [secondMenu, setsecondmenu] = useState(0)
-    const [thirdmenu, setThirdmenu] = useState([])
-    const [thirdvalue, setThirdValue] = useState(0);
-    const [deptslno, setdeptslno] = useState([]);
-    const [sectslno, setsectslno] = useState([]);
     const dispatch = useDispatch();
+    const [deptName, setDepartmentName] = useState(0)
+    const [deptSecName, setDepartSecName] = useState(0)
+    const [branch, setBranch] = useState(0)
 
-    /** To get stored branch values from redux */
     useEffect(() => {
-        dispatch(setBranch());
-        dispatch(setDept());
-        dispatch(setDeptWiseSection());
+        dispatch(setDepartment());
     }, [dispatch])
-
-    /** useSelector for getting depatment, department section, branch wise list from redux */
-    const state = useSelector((state) => {
-        return {
-            empBranch: state.getBranchList.branchList || 0,
-            deptSection: state.getDeptSectList.deptSectionList || 0,
-            dept: state.getdept.departmentlist || 0,
-        }
-    }, _.isEqual)
-
-    /** Destructuring state into values... */
-    const { empBranch, deptSection, dept } = state
-
-    /** Selction checkbox for branch name  */
-    const [columnDefs] = useState([
-        {
-            headerName: 'Branch',
-            field: 'branch_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-
-    /** to get checked branch slno from selection checkbox  */
-    const onSelectionChanged = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setValue([])
-        }
-        else {
-            setValue(event.api.getSelectedRows())
-        }
-        setsecondmenu(0)
-        setThirdmenu(0)
-    }
-
-    /** Intializing slno for getting checked branch slno */
-    useEffect(() => {
-        const arr = value && value.map((val, index) => {
-            return val.branch_slno
-        })
-        setslno(arr)
-    }, [value])
-
-    /** To activate department  search icon */
-    const ShowSecondMenu = useCallback((e) => {
-        setsecondmenu(1)
-    }, [])
-
-    /** code for second menu selection, department list */
-    useEffect(() => {
-        if (secondMenu === 1) {
-            if (slno !== 0) {
-                return dept
-            } else {
-                warningNofity("Please Select Any Branch!")
-            }
-        }
-    }, [secondMenu, slno, dept])
-
-    /** Selection check box for department */
-    const [columnDefDept] = useState([
-        {
-            headerName: 'Department',
-            field: 'dept_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-
-    /** to get checked department slno  from selection slno */
-    const onSelectionChanged2 = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setsecondValue([])
-            setThirdmenu(0)
-        }
-        else {
-            setsecondValue(event.api.getSelectedRows())
-        }
-        setThirdmenu(0)
-    }
-
-    /** to get department slno by mapping second value */
-    useEffect(() => {
-        const arr2 = secondvalue && secondvalue.map((val, index) => {
-            return val.dept_id
-        })
-        setdeptslno(arr2)
-    }, [secondvalue])
-
-    /** to activate department sectionicon */
-    const ShowthirdMenu = useCallback((e) => {
-        setThirdmenu(1)
-    }, [])
-
-    const [data, setdata] = useState(deptslno)
-
-    /** to get deaprtment wise department section from redux */
-    useEffect(() => {
-        if (thirdmenu === 1) {
-            if (deptslno !== 0) {
-                const filtered = deptSection.filter(val => deptslno.includes(val.dept_id))
-                setdata(filtered)
-            }
-            else {
-                warningNofity("please select any Department")
-            }
-        }
-    }, [thirdmenu, deptslno, deptSection])
-
-    /** Selection check box for department */
-    const [columnDefDeptSect] = useState([
-        {
-            headerName: 'Department Section',
-            field: 'sect_name',
-            checkboxSelection: true,
-            headerCheckboxSelectionFilteredOnly: true,
-            headerCheckboxSelection: true,
-            resizable: true,
-        },
-    ])
-
-    /** to get checked department section wise employee  from selection slno */
-    const onSelectionChanged3 = (event) => {
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-        if (event.api.getSelectedRows() === 0) {
-            setThirdValue([])
-        }
-        else {
-            setThirdValue(event.api.getSelectedRows())
-        }
-    }
-
-    /** to get department section slno by mapping thirdvalue */
-    useEffect(() => {
-        const arr3 = thirdvalue && thirdvalue.map((val, index) => {
-            return val.sect_id
-        })
-        setsectslno(arr3)
-    }, [thirdvalue])
-
-    /** stored department slno, branch slno as postData for API Call */
-    const postData = useMemo(() => {
-        return {
-            branch_slno: slno,
-            dept_id: deptslno
-        }
-    }, [deptslno, slno])
-
     /** stored department slno, department section slno, ebranch slno as postDataemp for API Call */
     const postDataemp = useMemo(() => {
         return {
-            branch_slno: slno,
-            dept_id: deptslno,
-            sect_id: sectslno
+            branch_slno: branch,
+            dept_id: deptName,
+            sect_id: deptSecName
         }
-    }, [deptslno, slno, sectslno])
+    }, [branch, deptName, deptSecName])
 
     /** report ag grid table heading */
-    const [columnDefMain] = useState([
-        {
-            headerName: '#',
-            filterParams: {
-                buttons: ['reset', 'apply'],
-                debounceMs: 200,
-            },
-            width: 30,
-        },
-        { headerName: 'Emp No', field: 'em_no' },
+    const [columnDef] = useState([
+        { headerName: 'New Emp No', field: 'new_emno' },
+        { headerName: 'New Doj ', field: 'NewDoj' },
+        { headerName: 'Old Emp No', field: 'oldemo' },
+        { headerName: 'Old Doj ', field: 'oldDoj' },
         { headerName: 'Name ', field: 'em_name' },
-        { headerName: 'Date Of Birth ', field: 'em_dob' },
-        { headerName: 'Gender ', field: 'em_gender' },
-        { headerName: 'Date Of Joining ', field: 'em_doj' },
-        { headerName: 'Mobile No ', field: 'em_mobile' },
-        { headerName: 'Mail ID', field: 'em_email' },
         { headerName: 'Branch ', field: 'branch_name' },
         { headerName: 'Dept Name ', field: 'dept_name' },
         { headerName: 'Dept Section ', field: 'sect_name' },
-        { headerName: 'Institution Type ', field: 'inst_emp_type' },
         { headerName: 'Designation ', field: 'desg_name' },
         { headerName: 'Category ', field: 'ecat_name' },
-        { headerName: 'Date of Joining ', field: 'em_doj' },
-        { headerName: 'Contract End Date ', field: 'contract_end_date' },
         { headerName: 'Retirement Date ', field: 'em_retirement_date' },
-        { headerName: 'Address1 ', field: 'addressPresent1' },
-        { headerName: 'Address2 ', field: 'addressPresent2' },
-        { headerName: 'Pin', field: 'hrm_pin2' },
-        { headerName: 'Status', field: 'status' }
+        { headerName: 'Status ', field: 'Status' },
     ])
+    const BranchData = useMemo(() => {
+        return {
+            branch_slno: branch,
+        }
+    }, [branch])
 
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */
     const getContractClosed = useCallback((e) => {
         e.preventDefault();
-        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         /** branch wise contract closed report  */
-        const getBranchContractClosed = async (slno) => {
-            const result = await axioslogin.post('/ContractReport/branchcontractclosed', slno)
+        const getBranchContractClosed = async () => {
+
+            const result = await axioslogin.post('/ContractReport/branchcontractclosed', BranchData)
             const { success, data } = result.data;
+
             if (success === 1) {
                 setTableData(data)
             }
@@ -242,17 +73,7 @@ const ContractClosedReport = () => {
                 setTableData([])
             }
         }
-        /** Department  wise contract closed report  */
-        const getDeptContractClosed = async (postData) => {
-            const result = await axioslogin.post('/ContractReport/deptcontractclosed', postData)
-            const { success, data } = result.data;
-            if (success === 1) {
-                setTableData(data)
-            }
-            else {
-                setTableData([])
-            }
-        }
+
         /** Selected branch, department, dept section contract closed report  */
         const getContractClosedReport = async (postDataemp) => {
             const result = await axioslogin.post('/ContractReport/contractclosed', postDataemp)
@@ -264,53 +85,60 @@ const ContractClosedReport = () => {
                 setTableData([])
             }
         }
-        if (slno !== 0 && deptslno === 0 && sectslno === 0) {
-            getBranchContractClosed(slno)
+        if (branch !== 0 && deptName === 0 && deptSecName === 0) {
+            getBranchContractClosed(BranchData)
         }
-        else if (slno !== 0 && deptslno !== 0 && sectslno === 0) {
-            getDeptContractClosed(postData)
-        }
-        else if (slno !== 0 && deptslno !== 0 && sectslno !== 0) {
+
+        else if (branch !== 0 && deptName !== 0 && deptSecName !== 0) {
             getContractClosedReport(postDataemp)
         }
         else {
-            warningNofity("Please Select Any Checkbox!")
+            warningNofity("Please Select Any Of The Item")
         }
-    }, [slno, dispatch, deptslno, sectslno, postData, postDataemp])
+    }, [branch, deptName, deptSecName, postDataemp, BranchData])
 
     return (
         <Fragment>
             <ToastContainer />
-            <CustomReportMain
-                /** Department checkbox */
-                columnDefs={columnDefs}
-                tableData={empBranch}
-                onSelectionChanged={onSelectionChanged}
-                //menu1={"Department"}
-                secondMenu={secondMenu}
+            <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
+                <ToastContainer />
+                <ReportLayout title="Employee Contract Closed Report" displayClose={true} data={TableData} >
+                    <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
 
-                /** contract closed report List */
-                columnDefMain={columnDefMain}
-                onClick={getContractClosed}
-                tableDataMain={TableData}
-                onSelectionChanged2={onSelectionChanged2}
-                menu2={"Department"}
-                menu3={"Department Section"}
-                ShowSecondMenu={ShowSecondMenu}
+                        <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                            <Box sx={{ flex: 1, px: 0.5 }} >
+                                <JoyBranchSelect value={branch} setValue={setBranch} />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <DepartmentDropRedx getDept={setDepartmentName} />
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <DepartmentSectionRedx getSection={setDepartSecName} />
+                            </Box>
 
-                /** Department checkbox list */
-                columnDefMenu2={columnDefDept}
-                tableDataMenu2={dept}
-                thirdmenu={thirdmenu}
-                onSelectionChanged3={onSelectionChanged3}
+                            <Box sx={{ p: 0.2 }}>
 
-                /** Department sectioncheckbox list */
-                columnDefMenu3={columnDefDeptSect}
-                tableDataMenu3={data}
-                ShowthirdMenu={ShowthirdMenu}
-            />
+                                <IconButton variant="outlined" size='md' color="primary"
+                                    onClick={getContractClosed}
+                                >
+                                    <PublishedWithChangesIcon />
+                                </IconButton>
+
+                            </Box>
+                        </Box>
+                        <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", width: "100%" }} >
+                            <CustomAgGridRptFormatOne
+                                tableDataMain={TableData}
+                                columnDefMain={columnDef}
+                            />
+                        </Paper>
+
+                    </Paper>
+                </ReportLayout>
+            </Box >
+
         </Fragment>
     )
 }
 
-export default ContractClosedReport
+export default memo(ContractClosedReport)
