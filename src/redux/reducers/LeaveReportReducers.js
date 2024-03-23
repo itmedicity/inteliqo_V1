@@ -4,7 +4,9 @@ const {
     FETCH_LEAVEREPORT_REQUEST,
     FETCH_HALFDAY_REQUEST,
     FETCH_NOPUNCH_REQUEST,
-    FETCH_COMPOFF_REQUEST
+    FETCH_COMPOFF_REQUEST,
+    FETCH_ONEHR_REQUEST,
+    FETCH_ONDUTY_REQUEST,
 } = Actiontypes;
 
 const LeaveReportData = {
@@ -23,6 +25,14 @@ const LeaveReportData = {
     compOffrqData: {
         compOffRqList: [],
         compOffRqStatus: false
+    },
+    onehourData: {
+        onehourList: [],
+        onehourStatus: false
+    },
+    onDutyData: {
+        onDutyList: [],
+        onDutyStatus: false
     }
 }
 
@@ -64,6 +74,24 @@ export const getLeaveReport = (state = LeaveReportData, { type, payload }) => {
                     ...state.compOffrqData,
                     compOffRqList: payload,
                     compOffRqStatus: true
+                }
+            }
+        case FETCH_ONEHR_REQUEST:
+            return {
+                ...state,
+                onehourData: {
+                    ...state.onehourData,
+                    onehourList: payload,
+                    onehourStatus: true
+                }
+            }
+        case FETCH_ONDUTY_REQUEST:
+            return {
+                ...state,
+                onDutyData: {
+                    ...state.onDutyData,
+                    onDutyList: payload,
+                    onDutyStatus: true
                 }
             }
         default:

@@ -258,6 +258,7 @@ const InductionTraining = React.lazy(() => import('./views/TrainingDevelopment/I
 const SalaryReport = React.lazy(() => import('./views/HrReports/Salaryreports/SalaryReport'))
 const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch Report/EmpPunchReport'))
 const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/PreviousMonthReport/EmployeePunchReport'))
+const EmpSaleryReport = React.lazy(() => import('./views/HrReports/EmpSaleryReport/EmpSaleryReport'))
 
 const routes = [
 
@@ -509,6 +510,8 @@ const routes = [
   { path: '/Home/SalaryReport', exact: true, name: 'Retest Emp Detailst', component: SalaryReport },
   { path: '/Home/EmpPunchReport', exact: true, name: 'Employee Wise Punch Report', component: EmpPunchReport },
   { path: '/Home/EmpPreviouspunchreport', exact: true, name: 'Previous Month Punch Data', component: EmpPreviouspunchreport },
+  { path: '/Home/EmpSaleryReport', exact: true, name: 'EmpSaleryReport', component: EmpSaleryReport },
+
 ]
 
 export default routes
