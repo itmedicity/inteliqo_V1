@@ -9,7 +9,6 @@ import { Paper, Typography } from '@mui/material'
 import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmployee';
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartment } from 'src/redux/actions/Department.action'
-import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import SaveIcon from '@mui/icons-material/Save';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -45,12 +44,11 @@ const DepartmentSecChange = () => {
             dispatch(setPersonalData(emply.em_id));
         }
 
-    }, [emply])
+    }, [emply, dispatch])
 
     const employeeState = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual);
     const { desg_name, em_department, em_dept_section, em_designation, em_no,
         em_branch } = employeeState;
-    console.log(employeeState);
 
     //update Data
     const patchData = useMemo(() => {
@@ -74,10 +72,7 @@ const DepartmentSecChange = () => {
             deptsect_new: newDeptSect
         }
     }, [newDept, newDeptSect, weekoff, em_department, em_dept_section, desgChangeDtae, deptChangeDate,
-        emply, em_branch, designation, em_designation])
-
-    console.log(desgChangeDtae);
-    console.log(deptChangeDate);
+        emply, em_branch, designation, em_designation, em_no])
 
     //Update Function
     const submitChange = async (e) => {

@@ -54,11 +54,11 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
                 duty_day: moment(leave_date).format('YYYY-MM-DD')
             }
             const result = await axioslogin.post('common/getShiftdetails/', postData);
-            const { success,  message } = result.data;
+            const { success } = result.data;
             if (success === 1) {
-                const {  punch_slno } = result.data.data[0];
+                const { punch_slno } = result.data.data[0];
                 setPunchSlno(punch_slno)
-            }else{
+            } else {
                 setPunchSlno(0)
             }
         }
@@ -85,7 +85,7 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
             slno: slno,
             punchSlno: punchSlno
         }
-    }, [emno, reason, slno,punchSlno])
+    }, [emno, reason, slno, punchSlno])
 
     const CancelRequest = useCallback(async () => {
         if (reason === '') {

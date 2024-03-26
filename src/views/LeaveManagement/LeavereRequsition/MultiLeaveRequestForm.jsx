@@ -120,10 +120,6 @@ const MultiLeaveRequestForm = () => {
         setnewData(leaveSelectedData)
     }, [fromDate, toDate]);
 
-    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { leave_count } = state;
-
-
     //allowed leave type 
 
     // const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData);
@@ -147,17 +143,17 @@ const MultiLeaveRequestForm = () => {
                     return {
                         ...val,
                         "leaveTypeSlno": leveTypeData?.leaveType,
-                        "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
                         "singleLeave": leveTypeData?.singleLeave,
                         "selectedLveSlno": 0,
-                        "selectedLeaveTypeName": '',
+                        "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": '',
                         "selectedLeaveName": '',
                     }
                 } else if (val?.index === leaveDetl?.index) {
                     return {
                         ...val,
-                        "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
                         "selectedLveSlno": parseInt(leaveDetl?.selectedLveSlno),
                         "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": leaveDetl?.lveDate,
@@ -174,6 +170,7 @@ const MultiLeaveRequestForm = () => {
             setnewData(newSelectedLeaveData)
         }
     }, [newData])
+
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
@@ -245,18 +242,6 @@ const MultiLeaveRequestForm = () => {
             warningNofity("Leave Request Reason is Blank")
             setDropOpen(false)
         }
-        // else if (CheckIfCasualLeave.length > 3) {
-        //     warningNofity("Casual Leave Max 3 Days Not Possible!!")
-        //     setDropOpen(false)
-        // }
-        // else if (CheckIfEarnLeave.length > 3) {
-        //     warningNofity("Earn Leave Max 3 Days Not Possible!!")
-        //     setDropOpen(false)
-        // }
-        // else if (sickLeave === true) {
-        //     warningNofity("Sick Leave Can't be Clubbed with any other leaves!!")
-        //     setDropOpen(false)
-        // }
         else {
             const findSingleTypeLeave = newData?.filter((val) => val.singleLeave === 1);
 
@@ -346,7 +331,7 @@ const MultiLeaveRequestForm = () => {
                     }
                 })
 
-                // insert the single leave request 
+                //insert the single leave request
                 const result = await axioslogin.post('/LeaveRequest', postData);
                 const { success, message } = await result.data;
                 if (success === 1) {

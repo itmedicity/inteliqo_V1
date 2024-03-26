@@ -28,10 +28,12 @@ const CompOffRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount
         leavedate: '',
         leavetype: '',
         durationpunch: '',
-        sect_name: ''
+        sect_name: '',
+        punchindata: '',
+        punchoutdata: ''
     })
     const { coffreason, emp_name, emp_id, requestdate, leavedate, durationpunch,
-        sect_name } = formdata;
+        sect_name, punchindata, punchoutdata } = formdata;
 
     //redux data of all compensatory leave request
     const compOffrqData = useSelector((state) => state?.setAllLeaveApproval?.compOffrqData?.compOffRqList, _.isEqual)
@@ -40,9 +42,8 @@ const CompOffRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount
         if (Object.keys(compOffrqData).length > 0) {
             //filtering selected row from all compensatory off request
             const array = compOffrqData && compOffrqData.filter((val) => val.cmp_off_reqid === slno)
-
             const { em_name, reqtype_name, em_no, reqestdate, cf_reason, leave_date, durationpunch,
-                sect_name } = array[0]
+                sect_name, punchindata, punchoutdata } = array[0]
             const formdata = {
                 emp_id: em_no,
                 emp_name: em_name,
@@ -51,7 +52,9 @@ const CompOffRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount
                 coffreason: cf_reason,
                 leavedate: moment(new Date(leave_date)).format('DD-MM-YYYY'),
                 durationpunch: durationpunch,
-                sect_name: sect_name
+                sect_name: sect_name,
+                punchindata: punchindata,
+                punchoutdata: punchoutdata
             }
             setformData(formdata)
         }
@@ -285,6 +288,30 @@ const CompOffRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
                             <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Punch In Time</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {moment(new Date(punchindata)).format('DD-MM-YYYY  hh:mm:ss')}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Punch Out Time</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {moment(new Date(punchoutdata)).format('DD-MM-YYYY  hh:mm:ss')}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
                                 <Typography level="body1" fontSize="md"> Duty Hour</Typography>
                             </CssVarsProvider>
                         </Box>
@@ -311,173 +338,15 @@ const CompOffRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount
                             variant="outlined" onChange={(e) => setreason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
-                                Leave Request Approve
+                                COFF Request Approve
                             </Button>
                             <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                                Leave Request Reject
+                                COFF Request Reject
                             </Button>
                         </Box>
                     </Box>
                 </ModalDialog>
             </Modal>
-            {/* <Dialog
-                open={open}
-                TransitionComponent={Transition}
-                fullWidth
-                maxWidth='sm'
-            >
-                <DialogContent sx={{ width: '100%', height: 'auto' }}>
-                    <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
-                        <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                <CssVarsProvider>
-                                    <Typography fontSize="xl" level="body1">Compensatory Off Approval </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Emp. ID</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {emp_id}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Name</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", textTransform: "capitalize" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {emp_name}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Request Date</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {requestdate}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Type</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">: {leavetype}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Date</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">: {leavedate}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Duty Hour</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {`${Math.floor(durationpunch / 60)}:${durationpunch % 60}`}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Reason</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {coffreason}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                            </Paper>
-                            <Box sx={{ width: "100%", display: 'flex', flexDirection: 'row', pt: 0.5, justifyContent: 'space-between' }}>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="apprv"
-                                                color="primary"
-                                                value={apprv}
-                                                checked={apprv}
-                                                onChange={(e) =>
-                                                    updatecompensatory(e)
-                                                }
-                                            />
-                                        }
-                                        label="Compensatory Off Approve"
-                                    />
-                                </Box>
-
-                                <Box sx={{ width: '100%', }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="reject"
-                                                color="primary"
-                                                value={reject}
-                                                checked={reject}
-
-                                                className="ml-2 "
-                                                onChange={(e) =>
-                                                    updatecompensatory(e)
-                                                }
-                                            />
-                                        }
-                                        label="Compensatory Off Reject"
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{ width: "100%", pt: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1"> Remark</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
-                                    <TextField
-                                        id="fullWidth"
-                                        size="small"
-                                        type="text"
-                                        fullWidth
-                                        value={reason}
-                                        name="reasonautho"
-                                        onChange={(e) => setreason(e.target.value)}
-                                    />
-                                </Box>
-                            </Box>
-                        </Box>
-                        <DialogActions>
-                            <Button color="primary" onClick={submitcompensatry} >Save</Button>
-                            <Button onClick={handleClose} color="primary" >Close</Button>
-                        </DialogActions>
-                    </Paper>
-                </DialogContent >
-
-            </Dialog > */}
         </Fragment >
     )
 }
