@@ -1,35 +1,51 @@
-import { IconButton, TableCell, TableRow } from '@mui/material'
-import React, { lazy } from 'react'
-import { memo } from 'react'
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import { Suspense } from 'react';
-import { useState } from 'react';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import React from 'react'
+import { memo } from 'react';
 import moment from 'moment';
 
 const TableRows = ({ data }) => {
-    console.log(data);
-  return (
-    <>
-            <TableRow hover >
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    {moment(data.duty_day).format('DD-MM-YYYY')}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    {data.em_no}
-                </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data.shift_in}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data.shift_out}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >
-                    {data.punch_in}
-                </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >
-                    {data.punch_out}
-                </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.hrs_worked}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.late_in !== null ? data.late_in : 0}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.early_out !== null ? data.early_out : 0}</TableCell>
-            </TableRow>
-        </>
-  )
+    return (
+        <TableContainer>
+            <Table stickyHeader >
+                <TableHead>
+                    <TableRow>
+                        {/* Define your table headers based on your data structure */}
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Emp No</TableCell>
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Date</TableCell>
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Shift</TableCell>
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Shift In</TableCell>
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Shift Out</TableCell>
+                        <TableCell align="center" sx={{ color: 'black', fontSize: 16, fontWeight: 550 }} size='small' >Punch Time</TableCell>
+                        {/* Add more headers as needed */}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.map((row, index) => (
+                        <TableRow key={index}>
+                            <TableCell align="center">{row?.em_no}</TableCell>
+                            <TableCell align="center">{moment(new Date(row?.duty_day)).format('DD-MM-YYYY')}</TableCell>
+                            <TableCell align="center">{row?.shft_desc}</TableCell>
+                            <TableCell align="center">{moment(new Date(row?.shift_in)).format('DD-MM-YYYY HH:mm')}</TableCell>
+                            <TableCell align="center">{moment(new Date(row?.shift_out)).format('DD-MM-YYYY HH:mm')}</TableCell>
+                            <TableCell align="center">
+                                {row.new_field && row.new_field.length > 0 ? (
+                                    row?.new_field.map((punch, i) => (
+                                        <Box key={i}>
+                                            <Box> {punch}</Box>
+                                        </Box>
+                                    ))
+
+                                ) : (
+                                    'No Punch'
+                                )}
+
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    )
 }
 
 export default memo(TableRows)

@@ -201,59 +201,6 @@ const DueClearenceMaster = () => {
                 </Grid>
             </Box>
         </MasterLayout>
-        // <Fragment>
-        //     <PageLayoutSave
-        //         heading="Due Clearence Master"
-        //         submit={submitFormData}
-        //         redirect={toSettings}
-        //     >
-        //         <div className="row">
-        //             <div className="col-md-4">
-        //                 <div className="row g-1">
-        //                     <div className="col-md-12">
-        //                         <TextInput
-        //                             type="text"
-        //                             classname="form-control form-control-sm"
-        //                             Placeholder="Clearence Desc"
-        //                             changeTextValue={(e) => updateDueClearenceMaster(e)}
-        //                             name="clrnce_desc"
-        //                             value={clrnce_desc}
-
-        //                         />
-        //                     </div>
-        //                     <div className="col-md-12">
-        //                         <TextInput
-        //                             type="text"
-        //                             classname="form-control form-control-sm"
-        //                             Placeholder="Short Name"
-        //                             changeTextValue={(e) => updateDueClearenceMaster(e)}
-        //                             name="clrnce_shortname"
-        //                             value={clrnce_shortname}
-        //                         />
-        //                     </div>
-        //                     <div className="col-md-12 pt-0">
-        //                         <FormControlLabel
-        //                             control={
-        //                                 <Checkbox
-        //                                     name="clerence_status"
-        //                                     color="primary"
-        //                                     value={clerence_status}
-        //                                     checked={clerence_status}
-        //                                     className="ml-2 "
-        //                                     onChange={(e) => updateDueClearenceMaster(e)}
-        //                                 />
-        //                             }
-        //                             label="Status"
-        //                         />
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //             <div className="col-md-8">
-        //                 <DueClearenceMastTable update={count} />
-        //             </div>
-        //         </div>
-        //     </PageLayoutSave>
-        // </Fragment>
     )
 };
 

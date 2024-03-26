@@ -245,30 +245,43 @@ const HaldayRequetsMainForm = () => {
                         resonforleave: reason,
                         dutyPlanSlno: plan_slno // duty plan table slno 
                     }
-                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                    const { success, message } = result.data;
+
+                    const holidayData = {
+                        em_id: em_id,
+                        date: moment(fromDate).format('YYYY-MM-DD')
+                    }
+                    const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                    const { success, data } = result.data;
                     if (success === 1) {
-                        succesNofity(message)
-                        changeForm()
-                        setDropOpen(false)
-                        dispatch(getCreditedCasualLeave(em_id))
-                    } else if (success === 2) {
-                        warningNofity(message)
-                        changeForm()
-                        setDropOpen(false)
+                        const { holiday_status } = data[0]
+                        if (holiday_status === 1) {
+                            warningNofity("Cannot Apply for Halfday Request on Holiday")
+                            setDropOpen(false)
+                        } else {
+                            const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                            const { success, message } = result.data;
+                            if (success === 1) {
+                                succesNofity(message)
+                                changeForm()
+                                setDropOpen(false)
+                                dispatch(getCreditedCasualLeave(em_id))
+                            } else if (success === 2) {
+                                warningNofity(message)
+                                changeForm()
+                                setDropOpen(false)
+                            } else {
+                                warningNofity(`Contact EDP ${JSON.stringify(message)}`)
+                                changeForm()
+                                setDropOpen(false)
+                            }
+                        }
                     } else {
-                        warningNofity(`Contact EDP ${JSON.stringify(message)}`)
-                        changeForm()
+                        warningNofity("Duty plan data not found, Contact HRD")
                         setDropOpen(false)
                     }
                 }
             }
-
-
-
         }
-        //}
-
     }, [name, reason, authorization_hod, authorization_incharge, dispatch, changeForm, em_department,
         em_dept_section, em_id, em_no, empHodStat, empIdInform, first_half_in, first_half_out, fromDate,
         hod, incharge, leaveName, leveTypeState, plan_slno, second_half_in, second_half_out, shiftTime,

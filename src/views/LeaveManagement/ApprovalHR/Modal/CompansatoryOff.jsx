@@ -4,10 +4,9 @@ import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import { useState } from 'react';
-import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
+import { Chip, CssVarsProvider, Divider, ModalDialog, Textarea } from '@mui/joy';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { Box, Paper } from '@mui/material';
-import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -27,22 +26,28 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
         reqestdate: '',
         leave_date: '',
         cf_reason: '',
-        em_id: 0
+        em_id: 0,
+        punchindata: '',
+        punchoutdata: '',
+        durationpunch: ''
     })
 
-    const { reqestdate, leave_date, cf_reason, em_id } = coff
+    const { reqestdate, leave_date, cf_reason, em_id, punchindata, punchoutdata, durationpunch } = coff
 
     //GET THE DETAILED TABLE DATA USING API
     const getLeaveReqDetl = async (slno) => {
         const resultdel = await axioslogin.get(`/LeaveRequestApproval/leave/com/compensatory/compensatoryoffdata/${slno}`);
         const { success, data } = resultdel?.data;
         if (success === 1) {
-            const { leave_date, reqestdate, cf_reason, em_id } = data[0]
+            const { leave_date, reqestdate, cf_reason, em_id, punchoutdata, punchindata, durationpunch } = data[0]
             const formdata = {
                 reqestdate: reqestdate,
                 leave_date: leave_date,
                 cf_reason: cf_reason,
-                em_id: em_id
+                em_id: em_id,
+                punchindata: punchindata,
+                punchoutdata: punchoutdata,
+                durationpunch: durationpunch
             }
             setCoff(formdata)
         }
@@ -171,30 +176,64 @@ const CompansatoryOff = ({ open, setOpen, data, setCount }) => {
                             {status}
                         </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                Request Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(reqestdate).format('DD-MM-YYYY')}
-                            </Typography>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Request Date</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {reqestdate}</Typography>
+                            </CssVarsProvider>
                         </Box>
                     </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                Duty Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(leave_date).format('DD-MM-YYYY')}
-                            </Typography>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Duty Date</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {leave_date}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Punch In Time</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {moment(new Date(punchindata)).format('DD-MM-YYYY  hh:mm:ss')}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Punch Out Time</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {moment(new Date(punchoutdata)).format('DD-MM-YYYY  hh:mm:ss')}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Duty Hour</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {`${Math.floor(durationpunch / 60)}:${durationpunch % 60}`}</Typography>
+                            </CssVarsProvider>
                         </Box>
                     </Box>
                     <Box sx={{ flex: 1, py: 1 }}>

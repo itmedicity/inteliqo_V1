@@ -452,7 +452,7 @@ const ShiftUpdation = () => {
                                                 <HodWiseDeptSection detSection={section} setSectionValue={changeSection} />
                                             </Box>
                                             <Box sx={{ flex: 1, px: 0.5 }}>
-                                                <HodWiseEmpList setEmployee={getEmployee} />
+                                                <HodWiseEmpList section={section} setEmployee={getEmployee} />
                                             </Box>
                                         </Box> :
 
