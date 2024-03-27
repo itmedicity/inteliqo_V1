@@ -120,10 +120,6 @@ const MultiLeaveRequestForm = () => {
         setnewData(leaveSelectedData)
     }, [fromDate, toDate]);
 
-    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { leave_count } = state;
-
-
     //allowed leave type 
 
     // const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData);
@@ -134,7 +130,6 @@ const MultiLeaveRequestForm = () => {
     //leave request selection
 
     const handleChangeLeaveRequest = useCallback(async (leveTypeData, leaveDetl) => {
-
         //filter the leaves for duplication and get the post data
         const duplicateLeaveSelection = newData?.map((val) => val.selectedLveSlno).includes(leaveDetl?.selectedLveSlno);
         const duplicateLeaveSelections = newData?.map((val) => val.lveTypeName).includes(leaveDetl?.lveTypeName);
@@ -148,28 +143,34 @@ const MultiLeaveRequestForm = () => {
                     return {
                         ...val,
                         "leaveTypeSlno": leveTypeData?.leaveType,
-                        "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
                         "singleLeave": leveTypeData?.singleLeave,
                         "selectedLveSlno": 0,
-                        "selectedLeaveTypeName": '',
+                        "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": '',
                         "selectedLeaveName": '',
                     }
                 } else if (val?.index === leaveDetl?.index) {
                     return {
                         ...val,
-                        "selectedLveSlno": leaveDetl?.selectedLveSlno,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
+                        "selectedLveSlno": parseInt(leaveDetl?.selectedLveSlno),
                         "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": leaveDetl?.lveDate,
                         "selectedLeaveName": leaveDetl?.leave,
                     }
                 } else {
-                    return val
+                    return {
+                        ...val,
+
+                    }
+
                 }
             })
             setnewData(newSelectedLeaveData)
         }
     }, [newData])
+
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
@@ -241,18 +242,6 @@ const MultiLeaveRequestForm = () => {
             warningNofity("Leave Request Reason is Blank")
             setDropOpen(false)
         }
-        // else if (CheckIfCasualLeave.length > 3) {
-        //     warningNofity("Casual Leave Max 3 Days Not Possible!!")
-        //     setDropOpen(false)
-        // }
-        // else if (CheckIfEarnLeave.length > 3) {
-        //     warningNofity("Earn Leave Max 3 Days Not Possible!!")
-        //     setDropOpen(false)
-        // }
-        // else if (sickLeave === true) {
-        //     warningNofity("Sick Leave Can't be Clubbed with any other leaves!!")
-        //     setDropOpen(false)
-        // }
         else {
             const findSingleTypeLeave = newData?.filter((val) => val.singleLeave === 1);
 
@@ -342,7 +331,7 @@ const MultiLeaveRequestForm = () => {
                     }
                 })
 
-                // insert the single leave request 
+                //insert the single leave request
                 const result = await axioslogin.post('/LeaveRequest', postData);
                 const { success, message } = await result.data;
                 if (success === 1) {
@@ -369,6 +358,62 @@ const MultiLeaveRequestForm = () => {
     }, [newData, multiLeaveTypeData, reason, em_id, em_no, levRequestNo, changeForm,
         em_department, em_dept_section, numberOfDays, authorization_hod, authorization_incharge, dispatch,
         empHodStat, hod, incharge, CommonLeaveType])
+
+    const [select, setSelect] = useState(0)
+    const [casualLeve, setCasualLeave] = useState([]);
+    const casulLeves = useSelector((state) => state.getCreditedCasualLeave, _.isEqual);
+    const casualLve = useMemo(() => casulLeves, [casulLeves])
+
+    useEffect(() => {
+        const { casualLeave } = casualLve;
+        const nohalfcasual = casualLeave.filter(val => val.cl_bal_leave !== 0.5)
+        const array = nohalfcasual.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCasualLeave(array);
+    }, [casualLve])
+
+    const [earnLeave, setEarnLeave] = useState([]);
+    //const [status, setStatus] = useState(false);
+
+    const earnLeaves = useSelector((state) => state.getCreditedEarnLeave, _.isEqual);
+    const earnLve = useMemo(() => earnLeaves, [earnLeaves]);
+
+    useEffect(() => {
+        const { earnLeave } = earnLve;
+        const array = earnLeave.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        // setCasualLeave(array);
+        setEarnLeave(array);
+    }, [earnLve])
+
+    const [coff, setCoff] = useState([]);
+    // const [status, setStatus] = useState(false);
+
+    const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
+
+    const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
+
+
+    useEffect(() => {
+        const { coffData } = compOff;
+        const array = coffData.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCoff(array);
+    }, [compOff])
+
+
 
     return (
         <Paper
@@ -413,6 +458,14 @@ const MultiLeaveRequestForm = () => {
                     data={val}
                     index={index}
                     handleChange={handleChangeLeaveRequest}
+                    select={select}
+                    setSelect={setSelect}
+                    casualLeve={casualLeve}
+                    setCasualLeave={setCasualLeave}
+                    earnLeave={earnLeave}
+                    setEarnLeave={setEarnLeave}
+                    coff={coff}
+                    setCoff={setCoff}
                 />)}
             </Box>
             <Paper

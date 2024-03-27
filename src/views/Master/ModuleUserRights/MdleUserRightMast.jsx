@@ -53,6 +53,7 @@ const MdleUserRightMast = () => {
     const submitUserModuleGroup = useCallback(async (e) => {
         e.preventDefault();
         if (flag === 1) {
+            console.log(postEditedData)
             const result = await axioslogin.patch('/moduleRights', postEditedData)
             const { success, message } = result.data;
             if (success === 2) {

@@ -1,6 +1,6 @@
 import { IconButton, Paper, Tooltip } from '@mui/material'
 import moment from 'moment'
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import _ from 'underscore'
@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 
 const TableViewPage = ({ show, count, setCount }) => {
     const dispatch = useDispatch();
@@ -42,7 +43,6 @@ const TableViewPage = ({ show, count, setCount }) => {
     const OneData = useMemo(() => oneHourData, [oneHourData])
 
     useEffect(() => {
-
         if (hod === 0 && incharge === 0) {
             const filterArray = punchEnable && punchEnable.filter((val) => {
                 return (val.em_id === em_id)
@@ -62,8 +62,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
 
@@ -79,13 +79,13 @@ const TableViewPage = ({ show, count, setCount }) => {
                     empname: val.em_name,
                     sectname: val.sect_name,
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
-                    dutyDate: moment(val.miss_punch_day).format('DD-MM-YYYY'),
+                    dutyDate: moment(val.on_duty_date).format('DD-MM-YYYY'),
                     reason: val.onduty_reason,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
             const array2 = OneData && OneData.filter((val) => {
@@ -106,8 +106,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
             setTableData([...newEnable, ...newOnduty, ...newOne])
@@ -132,16 +132,16 @@ const TableViewPage = ({ show, count, setCount }) => {
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
-            let array1 = onduty.filter((value) => {
+            let array1 = onduty?.filter((value) => {
                 return authorizationBasedDeptSection.find((val) => {
                     return value.dept_sect_id === val.dept_section;
                 })
             })
-            console.log(array1);
+
             const newOnduty = array1.map((val) => {
                 return {
                     typeslno: 2,
@@ -153,11 +153,12 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.on_duty_date).format('DD-MM-YYYY'),
                     reason: val.onduty_reason,
+                    hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
             let array2 = OneData.filter((value) => {
@@ -181,8 +182,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                                (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                    (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                 }
             })
 
@@ -197,16 +198,22 @@ const TableViewPage = ({ show, count, setCount }) => {
         { headerName: 'Status', field: 'status', filter: true },
         {
             headerName: 'Action',
-            cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Delete" followCursor placement='top' arrow >
+            cellRenderer: params => {
+                if (params.data.hrstatus === 1) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }} >
+                        <BeenhereIcon />
+                    </IconButton>
+                } else {
+                    return <Tooltip title="Delete" followCursor placement='top' arrow >
                         <IconButton sx={{ paddingY: 0.5 }}
                             onClick={() => deleteGene(params)}
                         >
                             <DeleteIcon color='primary' />
                         </IconButton>
                     </Tooltip>
-                </Fragment>
+                }
+            }
         },
     ])
 
@@ -221,16 +228,22 @@ const TableViewPage = ({ show, count, setCount }) => {
         { headerName: 'Status', field: 'status', filter: true },
         {
             headerName: 'Action',
-            cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Delete" followCursor placement='top' arrow >
+            cellRenderer: params => {
+                if (params.data.hrstatus === 1) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }} >
+                        <BeenhereIcon />
+                    </IconButton>
+                } else {
+                    return <Tooltip title="Delete" followCursor placement='top' arrow >
                         <IconButton sx={{ paddingY: 0.5 }}
                             onClick={() => deleteRequest(params)}
                         >
                             <DeleteIcon color='primary' />
                         </IconButton>
                     </Tooltip>
-                </Fragment>
+                }
+            }
         },
     ])
 

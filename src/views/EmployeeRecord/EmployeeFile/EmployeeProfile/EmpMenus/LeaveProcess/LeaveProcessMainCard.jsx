@@ -232,7 +232,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
     if (contractStatus.status === true) {
-      console.log(processedLveDetl);
+     
       //   // 4->
       if (processedLveDetl.newProcess === true) {
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';

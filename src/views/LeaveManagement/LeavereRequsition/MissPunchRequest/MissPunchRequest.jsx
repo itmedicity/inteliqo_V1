@@ -16,7 +16,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { differenceInDays } from 'date-fns'
 
 const MissPunchRequest = () => {
 
@@ -128,11 +127,6 @@ const MissPunchRequest = () => {
     }, [])
 
     const handleChangeMissPunchRequest = useCallback(async () => {
-
-        // if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-        //     warningNofity("Can't Apply for Miss punch Request, limitted days exceeded!!")
-        // }
-        //else 
         if (shiftInformation?.length === 0 || shiftInformation?.[0]?.shift_id === 1) {
             warningNofity("Duty Not Planned For the Selected Date")
         } else if (checkInCheck === false && checkOutCheck === false) {
@@ -194,28 +188,46 @@ const MissPunchRequest = () => {
                 toDate: moment(fromDate).format('YYYY-MM-DD')
             }
 
+            const holidayData = {
+                em_id: em_id,
+                date: moment(fromDate).format('YYYY-MM-DD')
+            }
+
             //Checking attendance marking is saved in  current month || start of month b/w current date 
             const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
             const { success } = result.data;
             if (success === 1) {
                 warningNofity("Attendance Marking Processed ! Contact HRD")
             } else {
-
-                const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
-                const { success, message } = result.data;
+                const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                const { success, data } = result.data;
                 if (success === 1) {
-                    succesNofity(message)
-                    changeForm()
-                    setDropOpen(false)
-                } else if (success === 2) {
-                    warningNofity(message)
-                    changeForm()
-                    setDropOpen(false)
+                    const { holiday_status } = data[0]
+                    if (holiday_status === 1) {
+                        warningNofity("Cannot Apply for No punch request on Holiday")
+                        setDropOpen(false)
+                    } else {
+                        const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            succesNofity(message)
+                            changeForm()
+                            setDropOpen(false)
+                        } else if (success === 2) {
+                            warningNofity(message)
+                            changeForm()
+                            setDropOpen(false)
+                        } else {
+                            errorNofity(` Contact IT ${JSON.stringify(message)}`)
+                            changeForm()
+                            setDropOpen(false)
+                        }
+                    }
                 } else {
-                    errorNofity(` Contact IT ${JSON.stringify(message)}`)
-                    changeForm()
+                    warningNofity("Duty plan data not found, Contact HRD")
                     setDropOpen(false)
                 }
+
             }
         }
     }, [shiftInformation, reason, checkInCheck, checkOutCheck, authorization_hod, shft_chkin_time,

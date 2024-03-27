@@ -17,7 +17,8 @@ const {
     FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
     FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
     FETCH_DUTY_PLANNED_SHIFT_HALF_DAY,
-    GET_SELECTED_EMPLOYEE_LEAVE_REQUEST
+    GET_SELECTED_EMPLOYEE_LEAVE_REQUEST,
+    FETCH_EMP_COFF_DATA
 } = Actiontypes;
 
 const Leavestate = [];
@@ -290,7 +291,7 @@ const empCompensatoryData = {
 
 export const getEmpCoffData = (state = empCompensatoryData, { type, payload }) => {
     switch (type) {
-        case FETCH_CREDITED_COMPENSATORY_OFF_LEAVE:
+        case FETCH_EMP_COFF_DATA:
             return { ...state, coffData: payload, coffStatus: true }
         default:
             return state
