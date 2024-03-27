@@ -6,7 +6,6 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
-import { endOfMonth } from 'date-fns';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 
@@ -28,19 +27,20 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
         datefmt: '',
         induction_slno: 0,
         trainers: [],
-        schedule_type: 0
+        schedule_type: 0,
+        employeeId: 0
     })
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    const { indct_emp_no, datefmt, em_name, trainers, schedule_type, induction_slno, training_topic_name, schedule_no, topic_slno, induct_emp_dept, induct_emp_sec, question_count, training_status } = data
+    const { indct_emp_no, employeeId, datefmt, em_name, trainers, schedule_type, induction_slno, training_topic_name, schedule_no, topic_slno, induct_emp_dept, induct_emp_sec, question_count, training_status } = data
 
     useEffect(() => {
         if (getData.length !== 0) {
             const viewData = getData?.find((val) => val.indct_emp_no !== 0)
-            const { indct_emp_no, trainers, schedule_type, datefmt, em_name, induction_slno, training_topic_name, schedule_no, topic_slno, induction_date, induct_emp_dept, induct_emp_sec, question_count, training_status } = viewData;
+            const { indct_emp_no, trainers, em_id, schedule_type, datefmt, em_name, induction_slno, training_topic_name, schedule_no, topic_slno, induction_date, induct_emp_dept, induct_emp_sec, question_count, training_status } = viewData;
             const obj = {
                 indct_emp_no: indct_emp_no,
                 datefmt: datefmt,
@@ -55,7 +55,8 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
                 training_status: training_status,
                 induction_slno: induction_slno,
                 trainers: trainers,
-                schedule_type: schedule_type
+                schedule_type: schedule_type,
+                employeeId: em_id
             }
             SetData(obj);
         }
@@ -68,8 +69,6 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
     const reset = useCallback(() => {
         Setopen(false)
     }, [Setopen])
-
-    const end = endOfMonth(new Date(Reschedule))
 
     const UpdateDate = useCallback((e) => {
         const d = moment(new Date(e.target.value)).format("YYYY-MM-DD")
@@ -90,9 +89,11 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
             edit_user: em_id,
             induction_slno: induction_slno,
             trainers: trainers,
-            schedule_type: schedule_type
+            schedule_type: schedule_type,
+            employeeId: employeeId,
+            status: 1
         }
-    }, [schedule_type, trainers, schedule_no, indct_emp_no, induction_slno, induct_emp_dept, induct_emp_sec, topic_slno, Reschedule, training_status, question_count, em_id])
+    }, [schedule_type, trainers, employeeId, schedule_no, indct_emp_no, induction_slno, induct_emp_dept, induct_emp_sec, topic_slno, Reschedule, training_status, question_count, em_id])
 
     const handleSubmit = useCallback(async () => {
         const result = await axioslogin.patch('/InductionProcess/EmpReschedule', postData)
@@ -145,7 +146,7 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", mt: 1, gap: 7.5, textTransform: "capitalize" }}>
                         <Box>Training Topic</Box>
-                        <Box>{training_topic_name.toLowerCase()}</Box>
+                        <Box>{training_topic_name !== null ? training_topic_name.toLowerCase() : ''}</Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", mt: 1, gap: 7 }}>
                         <Box>Schedule Date</Box>
@@ -157,11 +158,7 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
                             <Input
                                 type="date"
                                 fullWidth
-                                slotProps={{
-                                    input: {
-                                        max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                    },
-                                }}
+
                                 value={Reschedule}
                                 name="scheduleDate"
                                 onChange={(e) => UpdateDate(e)}

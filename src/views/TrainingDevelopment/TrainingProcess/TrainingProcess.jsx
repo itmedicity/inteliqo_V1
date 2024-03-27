@@ -74,6 +74,7 @@ const TrainingProcess = () => {
         { id: 4, icons: <NextPlanIcon sx={{ color: "#81c784" }} />, itemname: "Next Month Training List", count: Nextmonthlen },
         { id: 5, icons: <PendingIcon sx={{ color: "#81c784" }} />, itemname: "Pending Training List", count: emplen },
         { id: 7, icons: <VerifiedUserIcon sx={{ color: "#81c784" }} />, itemname: "Below Average Employee List", count: belowEmp },
+
     ]
 
     useEffect(() => {
@@ -113,7 +114,8 @@ const TrainingProcess = () => {
                 schedule_trainers: val.schedule_trainers,
                 emp_dept: val.emp_dept,
                 emp_dept_sectn: val.emp_dept_sectn,
-                schedule_year: val.schedule_year
+                schedule_year: val.schedule_year,
+                em_no: val.em_no
             }
             return object;
         })

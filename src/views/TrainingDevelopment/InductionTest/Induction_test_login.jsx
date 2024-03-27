@@ -35,10 +35,9 @@ const Induction_test_login = () => {
             slno: parseInt(slno)
         }
     }, [EmpId, Mob, topic_slno, slno])
-
     //api call
     const LogInData = useCallback(async () => {
-        if (EmpId !== '' && Mob !== '' && topic_slno !== 0 && slno !== 0) {
+        if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
             const GetData = async () => {
                 const result = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
                 const { data } = result.data
@@ -58,7 +57,8 @@ const Induction_test_login = () => {
             warningNofity("Please Enter Valid Employee ID and Registered Mobile Number")
             reset();
         }
-    }, [postdata, setData, SetView, reset, Setcount, slno, count, EmpId, Mob, topic_slno])
+    }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno])
+
 
     return (
         <Fragment>

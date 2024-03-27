@@ -25,19 +25,19 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         schedule_trainers: [],
         emp_dept: 0,
         emp_dept_sectn: 0,
-        schedule_year: ''
+        schedule_year: '',
+        employeeno: 0
     })
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    const { em_name, datefmt, training_topic_name, slno, topic_slno, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year } = data
-
+    const { em_name, datefmt, training_topic_name, slno, topic_slno, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year, employeeno } = data
     useEffect(() => {
         if (getData.length !== 0) {
             const viewData = getData?.find((val) => val.pretest_status === 0)
-            const { em_name, datefmt, training_topic_name, slno, topic_slno, schedule_date, schedule_remark, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year } = viewData;
+            const { em_name, datefmt, em_id, training_topic_name, slno, topic_slno, schedule_date, schedule_remark, schedule_trainers, emp_dept, emp_dept_sectn, schedule_year } = viewData;
             const obj = {
                 em_name: em_name,
                 datefmt: datefmt,
@@ -49,12 +49,12 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
                 schedule_trainers: schedule_trainers,
                 emp_dept: emp_dept,
                 emp_dept_sectn: emp_dept_sectn,
-                schedule_year: schedule_year
+                schedule_year: schedule_year,
+                employeeno: em_id
             }
             SetData(obj);
         }
     }, [getData, SetData])
-
     const Handleclose = useCallback((e) => {
         Setopen(false)
     }, [Setopen])
@@ -82,9 +82,11 @@ const RescheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
             emp_dept_sectn: emp_dept_sectn,
             schedule_year: moment(schedule_year).format("YYYY-MM-DD"),
             edit_user: em_id,
-            create_user: em_id
+            create_user: em_id,
+            employeeno: employeeno,
+            status: 1
         }
-    }, [slno, Reschedule, topic_slno, schedule_year, schedule_trainers, emp_dept, emp_dept_sectn, em_id])
+    }, [slno, Reschedule, topic_slno, employeeno, schedule_year, schedule_trainers, emp_dept, emp_dept_sectn, em_id])
 
 
     const handleSubmit = useCallback(async () => {

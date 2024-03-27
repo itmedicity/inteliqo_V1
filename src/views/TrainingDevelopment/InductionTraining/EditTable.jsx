@@ -181,7 +181,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
             onClose={Handleclose}
             sx={{ display: 'flex' }}
         >
-            <ModalDialog size="lg" sx={{ width: "30%", height: 300 }}>
+            <ModalDialog size="lg" sx={{ width: "30%", height: 350 }}>
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -229,7 +229,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
                                         </Tooltip>
                                     </Box>
                                     : <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                        <Box sx={{ textTransform: "capitalize" }}>{state?.trainer_name}</Box>
+                                        <Box sx={{ textTransform: "capitalize" }}>{state?.trainer_name.toLowerCase()}</Box>
                                         <Tooltip title="Change Trainer">
                                             <Box>
                                                 <IconButton onClick={(e) => { EditTrainers(e) }}>
@@ -271,7 +271,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
                         justifyContent: "flex-end",
                     }} >
                         <CssVarsProvider>
-                            <Box sx={{ mt: 1 }} >
+                            <Box  >
                                 <Button aria-label="submit" variant="outlined"
                                 >
                                     <SaveIcon sx={{ width: 100 }} />

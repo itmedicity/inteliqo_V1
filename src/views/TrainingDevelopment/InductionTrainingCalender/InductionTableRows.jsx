@@ -35,7 +35,7 @@ const InductionTableRows = ({ datas, id, yr }) => {
                             size="lg"  >
                             <tbody>
                                 <tr>
-                                    <td
+                                    <td style={{ textTransform: "capitalize" }}
                                     >
                                         {typearr.type_name.toLowerCase()}
                                     </td>

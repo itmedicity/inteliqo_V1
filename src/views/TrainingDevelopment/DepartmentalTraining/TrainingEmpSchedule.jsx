@@ -71,11 +71,11 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
             setSlno(slno);
         }
     }, [rowdata])
-
     useEffect(() => {
         if (EmpDetails.length !== 0) {
             const mapArry = EmpDetails?.map((item) => {
                 const obj = {
+                    em_no: item.em_no,
                     em_name: item.em_name,
                     desg_name: item.desg_name,
                     "inValue": false
@@ -92,7 +92,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
     }, [EmpDetails])
 
     const HandleCheckbox = useCallback((e, row) => {
-        let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_name": item.em_name, "desg_name": item.desg_name, inValue: e } : item)
+        let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_no": item.em_no, "em_name": item.em_name, "desg_name": item.desg_name, inValue: e } : item)
         setdatas([...arr]);
     }, [datas])
 
@@ -195,7 +195,6 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
             }
         }
     }, [editTrainer, seteditTrainer, setTrainer, Setcount, count, updateTrainers])
-
     return (
         <Fragment>
             <Modal
@@ -311,7 +310,6 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                 </CssVarsProvider>
                             </Box>
                         </Tooltip>
-
                     </Box>
 
                     {
@@ -329,6 +327,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                                 <th style={{ width: "8%", textAlign: "center" }}>
                                                     check
                                                 </th>
+                                                <th style={{ width: "15%" }}>Emp ID</th>
                                                 <th>Name</th>
                                                 <th>Designation</th>
                                             </tr>
@@ -348,6 +347,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                                             }}
                                                         />
                                                     </th>
+                                                    <td>{row?.em_no}</td>
                                                     <td>{row?.em_name}</td>
                                                     <td>{row?.desg_name}</td>
                                                 </tr>

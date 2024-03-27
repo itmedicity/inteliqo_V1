@@ -4,7 +4,7 @@ import { Checkbox, FormControlLabel, Paper } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { CssVarsProvider, Typography, Button, Input } from '@mui/joy';
+import { CssVarsProvider, Typography, Button, Input, IconButton, Textarea } from '@mui/joy';
 import { useCallback } from 'react';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -13,10 +13,11 @@ import { useMemo } from 'react';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import SelectTopics from 'src/views/MuiComponents/SelectTopics';
-import SelectTrainer from 'src/views/MuiComponents/SelectTrainer';
 import SaveIcon from '@mui/icons-material/Save';
 import ClearIcon from '@mui/icons-material/Clear';
 import DepartmentalTrainingTopics from 'src/views/MuiComponents/DepartmentalTrainingTopics';
+import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 
 
 const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setcount, start, end }) => {
@@ -26,7 +27,9 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
     const [remark, setRemark] = useState('');
     const [topic, setTopic] = useState(0);
     const [trainer, setTrainer] = useState([]);
+    const [trainerName, setTrainerName] = useState([]);
     const [dept_all, setDept_all] = useState(false);
+    const [showTrainers, setshowTrainers] = useState(0);
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -45,6 +48,7 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         setDept_all(false)
         setTopic(0);
         setTrainer([]);
+        setshowTrainers(0)
     }, [])
 
     const handleText = useCallback((event) => {
@@ -56,6 +60,8 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         setSelectdate(d)
         setViewTable(1);
     }, [setSelectdate, setViewTable])
+
+
 
     //postData
     const postData = useMemo(() => {
@@ -107,6 +113,32 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         }
     }, [setDept_all])
 
+
+    const GetTrainers = useCallback(() => {
+        setshowTrainers(1)
+        if (topic !== 0) {
+            const GetTrainerNames = async (topic) => {
+                const result = await axioslogin.get(`TrainingAfterJoining/getTrainerByTopic/${topic}`)
+                const { data, success } = result.data;
+                if (success === 1) {
+                    const { trainers, trainer_name } = data[0];
+                    setTrainer(trainers)
+                    setTrainerName(trainer_name)
+                }
+                else {
+                    setTrainer([])
+                    setTrainerName([])
+                }
+            }
+            GetTrainerNames(topic)
+        }
+        else {
+            setTrainer([])
+            setTrainerName([])
+        }
+
+    }, [topic])
+
     return (
         <Fragment>
             <Dialog
@@ -121,7 +153,7 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <DialogContent sx={{ px: 5, display: 'flex', width: 600, height: 300, flexDirection: 'column' }} >
+                    <DialogContent sx={{ px: 5, display: 'flex', width: 600, flexDirection: 'column' }} >
                         <Box sx={{ display: "flex", flexDirection: "row" }}>
                             <Box sx={{ px: 2 }}>
                                 <CssVarsProvider>
@@ -130,7 +162,7 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                                     </Typography>
                                 </CssVarsProvider>
                             </Box>
-                            <Box sx={{ pl: 7.8, width: "88%" }}>
+                            <Box sx={{ pl: 7.8, width: "87%" }}>
                                 <Input
                                     type="date"
                                     fullWidth
@@ -158,7 +190,7 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                                                     </Box>
                                                     : <Box sx={{ minWidth: "66%", pl: 9.5 }}><DepartmentalTrainingTopics setTopic={setTopic} dept={dept} /></Box>
                                             }
-                                            <Box sx={{ pl: 1.5 }}>
+                                            <Box sx={{ pl: 4 }}>
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
@@ -170,51 +202,63 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                                                             onChange={(e) => ShowallDept(e)}
                                                         />
                                                     }
-                                                    label="All Topics"
+                                                    label="All "
                                                 />
                                             </Box>
-                                        </Box>
-                                        <Box sx={{ display: "flex", flexDirection: "row", mt: 1, width: "100%" }}>
-                                            <Box><Typography>Trainers</Typography></Box>
-                                            <Box sx={{ minWidth: "92%", pl: 7.3 }}>
-                                                <SelectTrainer setTrainer={setTrainer} />
+                                            <Box sx={{ mt: 0.5, pl: 2 }}>
+                                                <IconButton variant="outlined" size='sm' color="primary" onClick={GetTrainers}>
+                                                    <PublishedWithChangesIcon />
+                                                </IconButton>
                                             </Box>
                                         </Box>
+                                        {showTrainers === 1 ?
+                                            <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, width: "100%" }}>
+                                                <Box><Typography>Trainers</Typography></Box>
+                                                <Box sx={{ minWidth: "92%", pl: 7.3 }}>
+                                                    <JoyInput
+                                                        size="sm"
+                                                        value={trainerName}
+                                                        name="trainers"
+                                                        placeholder="Trainers"
+                                                        disabled={true}
+                                                    />
+
+                                                </Box>
+                                            </Box> : null}
                                     </Box>
-                                    <textarea
-                                        rows={2}
-                                        value={remark}
-                                        onChange={handleText}
-                                        placeholder="Drop Remarks here.."
-                                        style={{ width: '100%', marginTop: 5, height: 100 }}
-                                    />
+                                    {showTrainers === 1 ?
+                                        <Textarea name="Solid" placeholder="Drop Remarks here.."
+                                            rows={2} value={remark} onChange={handleText} style={{ width: '100%', marginTop: 5, height: 100 }} /> : null}
                                 </Box>
 
                                 : null
                         }
                     </DialogContent>
-                    <DialogActions sx={{ px: 5 }}>
-                        <CssVarsProvider>
-                            <Button
-                                variant="outlined"
-                                color="success"
-                                onClick={HandleSubmit}
-                                size="sm"
-                                sx={{ py: 0, color: '#81c784' }}
-                            >
-                                <SaveIcon sx={{ fontSize: 25 }} />
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                color="danger"
-                                onClick={handleClose}
-                                size="sm"
-                                sx={{ py: 0, color: '#d50000' }}
-                            >
-                                <ClearIcon sx={{ fontSize: 25 }} />
-                            </Button>
-                        </CssVarsProvider>
-                    </DialogActions>
+                    {showTrainers === 1 ?
+                        <DialogActions sx={{ px: 5 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    color="success"
+                                    onClick={HandleSubmit}
+                                    size="sm"
+                                    sx={{ py: 0, color: '#81c784' }}
+                                >
+                                    <SaveIcon sx={{ fontSize: 25 }} />
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    color="danger"
+                                    onClick={handleClose}
+                                    size="sm"
+                                    sx={{ py: 0, color: '#d50000' }}
+                                >
+                                    <ClearIcon sx={{ fontSize: 25 }} />
+                                </Button>
+                            </CssVarsProvider>
+                        </DialogActions>
+                        : null
+                    }
                 </Paper>
             </Dialog >
         </Fragment >

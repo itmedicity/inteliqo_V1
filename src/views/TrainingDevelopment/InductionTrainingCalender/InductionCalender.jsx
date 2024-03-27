@@ -41,7 +41,7 @@ const InductionCalender = () => {
                 date: moment(val.induction_date).format("DD/MM/YYYY"),
                 trainingtype_slno: val.trainingtype_slno,
                 type_name: val.type_name,
-                trainer_name: val.trainer_name,
+                trainer_name: val.trainer_name
             }
             return object;
         })

@@ -50,7 +50,13 @@ const {
     FETCH_BELOWAVG_EMP_LIST,
     FETCH_INDUCTION_RETEST_EMP_TOPICS_BY_EMID,
     FETCH_INDUCT_RETEST_QUESTIONS,
-    FETCH_INDUCTION_ONLINE_TRAINING_DETAILS
+    FETCH_INDUCTION_ONLINE_TRAINING_DETAILS,
+    FETCH_INDUCTION_TRAINING_CALENDER_DETAILS_ALL,
+    FETCH_TRAINING_TOPIC_BY_TYPE,
+    FETCH_DEPARTMENTAL_TRAININGS,
+    FETCH_INDUCTION_TRAININGS,
+    FETCH_TRAINER_APPRVL_DATA,
+    FETCH_TRAINER_APPRVL_INDUCT_DATA
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -565,5 +571,66 @@ export const OnlineInductionTrainingTopicListOfEmp = (em_id) => async (dispatch)
     }
     else {
         dispatch({ type: FETCH_INDUCTION_ONLINE_TRAINING_DETAILS, payload: [], status: false })
+    }
+}
+
+export const TrainingCalenderDetailsAll = () => async (dispatch) => {
+    const result = await axioslogin.get(`/InductionProcess/InductTrainingCalenderdetails`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_INDUCTION_TRAINING_CALENDER_DETAILS_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_INDUCTION_TRAINING_CALENDER_DETAILS_ALL, payload: [], status: false })
+    }
+}
+export const TrainingTopicByType = (type) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingTopic/SelectTopicByType/${type}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINING_TOPIC_BY_TYPE, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINING_TOPIC_BY_TYPE, payload: [], status: false })
+    }
+}
+export const DepartmentalTrainings = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingDetails/getDepartmentalDetails`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_DEPARTMENTAL_TRAININGS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_DEPARTMENTAL_TRAININGS, payload: [], status: false })
+    }
+}
+export const InductionTrainings = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingDetails/getInductionDetails`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_INDUCTION_TRAININGS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_INDUCTION_TRAININGS, payload: [], status: false })
+    }
+}
+export const TrainerApprovals = (em_id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingDetails/TrainerApprvl/${em_id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINER_APPRVL_DATA, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINER_APPRVL_DATA, payload: [], status: false })
+    }
+}
+export const TrainerApprovalsInduct = (em_id) => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingDetails/TrainerApprvlInduct/${em_id}`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINER_APPRVL_INDUCT_DATA, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINER_APPRVL_INDUCT_DATA, payload: [], status: false })
     }
 }

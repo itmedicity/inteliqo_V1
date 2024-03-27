@@ -49,8 +49,13 @@ const {
     FETCH_BELOWAVG_EMP_LIST,
     FETCH_INDUCTION_RETEST_EMP_TOPICS_BY_EMID,
     FETCH_INDUCT_RETEST_QUESTIONS,
-    FETCH_INDUCTION_ONLINE_TRAINING_DETAILS
-
+    FETCH_INDUCTION_ONLINE_TRAINING_DETAILS,
+    FETCH_INDUCTION_TRAINING_CALENDER_DETAILS_ALL,
+    FETCH_TRAINING_TOPIC_BY_TYPE,
+    FETCH_DEPARTMENTAL_TRAININGS,
+    FETCH_INDUCTION_TRAININGS,
+    FETCH_TRAINER_APPRVL_DATA,
+    FETCH_TRAINER_APPRVL_INDUCT_DATA
 } = Actiontypes;
 
 const TrainingData = {
@@ -250,6 +255,30 @@ const TrainingData = {
     InductionOnlineTraining: {
         InductionOnlineTrainingList: [],
         InductionOnlineTrainingStatus: false
+    },
+    InductionTrainingCalender: {
+        InductionTrainingCalenderList: [],
+        InductionTrainingCalenderStatus: false
+    },
+    TopicByType: {
+        TopicByTypeList: [],
+        TopicByTypeStatus: false
+    },
+    GetDepartmentalTrainings: {
+        GetDepartmentalTrainingsList: [],
+        GetDepartmentalTrainingsStatus: false
+    },
+    GetInductionTrainings: {
+        GetInductionTrainingsList: [],
+        GetInductionTrainingsStatus: false
+    },
+    GetTrainerApprvls: {
+        GetTrainerApprvlsList: [],
+        GetTrainerApprvlsStatus: false
+    },
+    GetTrainerInductApprvls: {
+        GetTrainerInductApprvlsList: [],
+        GetTrainerInductApprvlsStatus: false
     },
 }
 
@@ -695,6 +724,60 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.InductionOnlineTraining,
                     InductionOnlineTrainingList: payload,
                     InductionOnlineTrainingStatus: true
+                }
+            }
+        case FETCH_INDUCTION_TRAINING_CALENDER_DETAILS_ALL:
+            return {
+                ...state,
+                InductionTrainingCalender: {
+                    ...state.InductionTrainingCalender,
+                    InductionTrainingCalenderList: payload,
+                    InductionTrainingCalenderStatus: true
+                }
+            }
+        case FETCH_TRAINING_TOPIC_BY_TYPE:
+            return {
+                ...state,
+                TopicByType: {
+                    ...state.TopicByType,
+                    TopicByTypeList: payload,
+                    TopicByTypeStatus: true
+                }
+            }
+        case FETCH_DEPARTMENTAL_TRAININGS:
+            return {
+                ...state,
+                GetDepartmentalTrainings: {
+                    ...state.GetDepartmentalTrainings,
+                    GetDepartmentalTrainingsList: payload,
+                    GetDepartmentalTrainingsStatus: true
+                }
+            }
+        case FETCH_INDUCTION_TRAININGS:
+            return {
+                ...state,
+                GetInductionTrainings: {
+                    ...state.GetInductionTrainings,
+                    GetInductionTrainingsList: payload,
+                    GetInductionTrainingsStatus: true
+                }
+            }
+        case FETCH_TRAINER_APPRVL_DATA:
+            return {
+                ...state,
+                GetTrainerApprvls: {
+                    ...state.GetTrainerApprvls,
+                    GetTrainerApprvlsList: payload,
+                    GetTrainerApprvlsStatus: true
+                }
+            }
+        case FETCH_TRAINER_APPRVL_INDUCT_DATA:
+            return {
+                ...state,
+                GetTrainerInductApprvls: {
+                    ...state.GetTrainerInductApprvls,
+                    GetTrainerInductApprvlsList: payload,
+                    GetTrainerInductApprvlsStatus: true
                 }
             }
         default:

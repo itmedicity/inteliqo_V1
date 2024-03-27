@@ -7,7 +7,7 @@ import _ from 'underscore';
 import UpcomingIcon from '@mui/icons-material/Upcoming';
 import NextPlanIcon from '@mui/icons-material/NextPlan';
 import { useDispatch, useSelector } from 'react-redux';
-import { BlwAvgEmpList, InductionCompleted, InductionToday, inductPendingEmpDetails } from 'src/redux/actions/Training.Action';
+import { BlwAvgEmpList, InductionCompleted, InductionToday, TrainingCalenderDetailsAll, inductPendingEmpDetails } from 'src/redux/actions/Training.Action';
 import moment from 'moment';
 import { addDays, endOfMonth } from 'date-fns';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -34,9 +34,10 @@ const InductionProcessMain = () => {
         dispatch(InductionCompleted())
         dispatch(inductPendingEmpDetails())
         dispatch(BlwAvgEmpList())
+        dispatch(TrainingCalenderDetailsAll())
     }, [dispatch, count])
 
-    const TrainingEmpData = useSelector((state) => state?.gettrainingData?.trainingEmpDetails?.trainingEmpDetailsList, _.isEqual);
+    const TrainingCalender = useSelector((state) => state?.gettrainingData?.InductionTrainingCalender?.InductionTrainingCalenderList, _.isEqual);
     const todays = useSelector((state) => state?.gettrainingData?.InductionToday?.InductionTodayList, _.isEqual);
     const trainingcompleted = useSelector((state) => state?.gettrainingData?.InductionCompleted?.InductionCompletedList, _.isEqual);
     const pendingEmp = useSelector((state) => state?.gettrainingData?.InductionPpendingEmp?.InductionPpendingEmpList, _.isEqual);
@@ -60,18 +61,18 @@ const InductionProcessMain = () => {
     ]
 
     useEffect(() => {
-        const displayData = TrainingEmpData?.map((val) => {
+        const displayData = TrainingCalender?.map((val) => {
             const object = {
-                schedule_topics: val.schedule_topics,
-                schedule_date: val.schedule_date,
+                schedule_topic: val.schedule_topic,
+                induction_date: val.induction_date,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: moment(val.induction_date).format('YYYY-MM-DD'),
             }
             return object;
         })
         setTableData(displayData)
-    }, [TrainingEmpData])
+    }, [TrainingCalender])
 
     useEffect(() => {
         const upcomingfilter = tabledata?.filter((val) => moment(new Date(val.date)).format('MM') === moment(new Date()).format('MM')

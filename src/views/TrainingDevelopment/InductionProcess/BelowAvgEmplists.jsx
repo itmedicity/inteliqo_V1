@@ -33,6 +33,7 @@ const BelowAvgEmplists = ({ BelowAvgList, setShow, count, Setcount }) => {
                 retest: val.retest,
                 em_id: val.em_id,
                 em_name: val.em_name,
+                em_no: val.em_no,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
                 postmark: val.postmark
@@ -50,6 +51,7 @@ const BelowAvgEmplists = ({ BelowAvgList, setShow, count, Setcount }) => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'sn', filter: true, width: 100 },
+        { headerName: 'Employee Id', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 200 },
         { headerName: 'Due Date', field: 'datefmt', filter: true, width: 150 },

@@ -231,7 +231,7 @@ const TrainingTopic = () => {
         SetVideos(video_link);
         SetVideo_time(video_time);
         setUploads([])
-        SetTrainerNames([trainers_name])
+        SetTrainerNames(trainers_name)
 
         //View uploads 
         const postData = {
@@ -604,7 +604,7 @@ const TrainingTopic = () => {
                                         onChange={(e) => setPretest_status(e.target.checked)}
                                     />
                                 }
-                                label="Pree-Test"
+                                label="Pre-Test"
                             />
                         </Box>
                         <Box>

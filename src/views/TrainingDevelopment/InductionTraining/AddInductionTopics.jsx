@@ -17,8 +17,7 @@ import { TrainingTypeWiseTopics } from 'src/redux/actions/Training.Action';
 import InductionTopicTable from './InductionTopicTable';
 import moment from 'moment';
 
-
-const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, count, setcount }) => {
+const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, count, setcount, msg, setmsg }) => {
 
     const dispatch = useDispatch()
 
@@ -31,20 +30,6 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    useEffect(() => {
-        if (type !== 0) {
-            dispatch(TrainingTypeWiseTopics(type))
-        }
-    }, [dispatch, type])
-
-    const topicData = useSelector((state) => state?.gettrainingData?.TrainingTypeTopic?.TrainingTypeTopicList, _.isEqual)
-
-    const Handleclose = useCallback((e) => {
-        setOpen(false)
-        setType(0)
-        SetScheduleDate('')
-    }, [setOpen, setType, SetScheduleDate])
-
     const ToshowTopics = useCallback(() => {
         if (type !== 0) {
             dispatch(TrainingTypeWiseTopics(type))
@@ -55,13 +40,20 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
         }
     }, [setShowtable, dispatch, type])
 
+    const topicData = useSelector((state) => state?.gettrainingData?.TrainingTypeTopic?.TrainingTypeTopicList, _.isEqual)
+
+    const Handleclose = useCallback((e) => {
+        setOpen(false)
+        setType(0)
+        SetScheduleDate('')
+    }, [setOpen, setType, SetScheduleDate])
 
     useEffect(() => {
         if (empselect.length !== 0 && topicData.length !== 0) {
             const mapArry = topicData?.map((item) => {
                 const obj = {
                     "topic": item.training_topic_name,
-                    "trainers_name": item.trainers_name,
+                    trainers_name: item.trainers_name,
                     "date": moment(new Date()).format('YYYY-MM-DD HH:ss:mm'),
                     trainers: item.trainers,
                     topic_slno: item.topic_slno,
@@ -94,14 +86,15 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     }, [setMaparr, selected])
 
     const DataSubmit = useCallback(async () => {
-        maparr && maparr.map(async (val) => {
-            const result = await axioslogin.post('/InductionTraining/ScheduleInduction', val)
+        maparr && maparr.map(async (item) => {
+            const result = await axioslogin.post('/InductionTraining/ScheduleInduction', item)
             const { success, insertId } = result.data
             if (success === 1 && type !== 0) {
                 const arr = empselect?.map((val) => {
                     const obj = {
                         insertId: insertId,
                         emp_id: val.em_id,
+                        date: item.date,
                         dept_id: val.dept_id,
                         sect_id: val.sect_id,
                         create_user: em_id
@@ -109,12 +102,13 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                     return obj
                 })
                 const result = await axioslogin.post('/InductionTraining/addInductnEmps', arr)
-                const { succes, message } = result.data
+                const { succes } = result.data
                 if (succes === 1) {
-                    succesNofity(message)
+                    setmsg(1)
                     setcount(count + 1)
                     reset();
                     setOpen(false)
+
                 }
                 else {
                     warningNofity("Can't schedule Training")
@@ -124,7 +118,13 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                 alert("Please Enter all the fields")
             }
         })
-    }, [maparr, empselect, em_id, setcount, type, count, reset, setOpen])
+    }, [maparr, empselect, em_id, setcount, type, count, reset, setOpen, setmsg])
+
+    useEffect(() => {
+        if (msg === 1) {
+            succesNofity("Training Scheduled Successfully")
+        }
+    }, [msg])
 
     return (
         <Fragment>

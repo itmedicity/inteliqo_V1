@@ -37,6 +37,7 @@ const InductionTrainingMainPage = () => {
     const [open, setOpen] = useState(false)
     const [count, setcount] = useState(0)
     const [viewModal, setviewModal] = useState(false)
+    const [msg, setmsg] = useState(0)
 
 
     const reset = useCallback(() => {
@@ -48,7 +49,8 @@ const InductionTrainingMainPage = () => {
         setdatas([])
         SetCheckAll(false)
         setTableData([])
-    }, [setDept, Setfromdate, Settodate, SetEmpSelect, setType, setdatas, SetCheckAll, setTableData])
+        setmsg(0)
+    }, [setDept, Setfromdate, Settodate, SetEmpSelect, setType, setdatas, SetCheckAll, setTableData, setmsg])
 
     useEffect(() => {
         if (fromdate !== '' && todate !== '') {
@@ -150,7 +152,7 @@ const InductionTrainingMainPage = () => {
             {viewModal === true ? <ViewNEditPage setviewModal={setviewModal} viewModal={viewModal} count={count} setcount={setcount} />
                 : <Box>
                     {open === true ? <AddInductionTopics newjoinees={newjoinees} open={open} empselect={empselect} setOpen={setOpen}
-                        type={type} setType={setType} reset={reset} count={count} setcount={setcount}
+                        type={type} setType={setType} reset={reset} count={count} setcount={setcount} msg={msg} setmsg={setmsg}
                     /> :
                         <CustomLayout title="Induction Training" displayClose={true}>
                             <Box varient="outlined" sx={{ p: 1, width: "100%", height: screenInnerHeight - 120 }}>

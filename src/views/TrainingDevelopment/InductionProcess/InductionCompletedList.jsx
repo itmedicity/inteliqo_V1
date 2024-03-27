@@ -41,6 +41,7 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
                 sn: val.sn,
                 em_id: val.em_id,
                 em_name: val.em_name,
+                em_no: val.em_no,
                 postdate: moment(val.postdate).format('YYYY-MM-DD'),
             }
             return object;
@@ -63,11 +64,11 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
 
     const [columnDef] = useState([
         { headerName: 'SlNo', field: 'sn', filter: true, width: 100 },
+        { headerName: 'Emp ID', field: 'em_no', filter: true, width: 100 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
         { headerName: 'Department_sec', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'Schedule Date ', field: 'date', filter: true, width: 100 },
-        { headerName: 'Completed ', field: 'postdate', filter: true, width: 100 },
     ])
 
     const handleDateChange = useCallback(() => {

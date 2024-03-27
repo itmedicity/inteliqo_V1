@@ -12,7 +12,6 @@ export const hr_report_one = [
     { to: '/Home/LeaveReports', name: 'Leave Reports', slno: 270 },
     { to: '/Home/SalaryReport', name: 'Salary Report', slno: 271 },
 
-
 ]
 export const hr_report_two = [
     { to: '/Home/CategoryReport', name: 'Employee Category Report', slno: 159 },
@@ -26,6 +25,8 @@ export const hr_report_two = [
     { to: '/Home/TrainingAllotedEmpReport', name: 'Departmentat Wise Training Alloted Employee Report', slno: 267 },
     { to: '/Home/TrainingRetestEmpReport', name: 'Departmentat Wise Training Retest Employee Report', slno: 269 },
     { to: '/Home/EmpPunchReport', name: 'Employee Wise Punch Report', slno: 271 },
+    { to: '/Home/InductionCalenderReport', name: 'Induction Calender Report', slno: 277 },
+
 ]
 export const hr_report_third = [
 

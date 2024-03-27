@@ -40,7 +40,7 @@ const InductionTestBySystem = ({ Selecteddata }) => {
     useEffect(() => {
         if (Object.keys(Selecteddata).length !== 0) {
             const { sn, retest_slno, retest_em_no, re_emp_dept, re_dept_sec, em_name, date, re_topic, re_attendance, re_questn_count, em_id,
-                sect_id, sect_name, topic_slno, training_topic_name, dept_id, dept_name, em_no, desg_name, desg_slno, premark, postmark, pretest_status, posttest_status, online_mode, training_status, retest_status, retest, retest_mark } = Selecteddata[0];
+                sect_id, sect_name, topic_slno, training_topic_name, dept_id, dept_name, em_no, desg_name, desg_slno, premark, postmark, pretest_status, posttest_status, online_mode, training_status, retest_status, retest_mark } = Selecteddata[0];
             const obj = {
                 sn: sn,
                 retest_slno: retest_slno,
@@ -72,7 +72,6 @@ const InductionTestBySystem = ({ Selecteddata }) => {
                 posttest: posttest_status === 1 ? "Yes" : " Not Attend",
                 online: online_mode === 1 ? "Online" : "Offline",
                 retest: retest_status === 1 ? "Yes" : " Not Attend",
-                retest: retest,
                 retest_mark: retest_mark,
                 retest_status: retest_status
             }

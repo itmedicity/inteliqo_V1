@@ -34,7 +34,8 @@ const PendingList = ({ setShow, empdata, count, Setcount }) => {
                 schedule_trainers: val.schedule_trainers,
                 emp_dept: val.emp_dept,
                 emp_dept_sectn: val.emp_dept_sectn,
-                schedule_year: val.schedule_year
+                schedule_year: val.schedule_year,
+                em_no: val.em_no
             }
             return object;
         })
@@ -49,6 +50,7 @@ const PendingList = ({ setShow, empdata, count, Setcount }) => {
     }, [Setopen, SetgetData])
 
     const [columnDef] = useState([
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'schedule Date', field: 'datefmt', filter: true, width: 150 },
         {

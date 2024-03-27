@@ -17,6 +17,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
     const [tableData, setTableData] = useState([]);
     const [question_count, setQuestion_count] = useState(0);
     const [dataArray, setDataArray] = useState([])
+    const [topicArray, setTopicArray] = useState([])
 
     const Handleclose = useCallback((e) => {
         Setopen(false)
@@ -36,14 +37,39 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                 induction_date: val.induction_date,
                 em_id: val.em_id,
                 em_name: val.em_name,
+                em_no: val.em_no,
                 date: moment(val.induction_date).format('YYYY-MM-DD'),
                 attandance_status: 0,
-                training_status: val.training_status
+                training_status: val.training_status,
+                topic_training: val.topic_training,
+                topic_pretest: val.topic_pretest,
+                topic_posttest: val.topic_posttest,
+                topic_online: val.topic_online,
+                topic_offline: val.topic_offline,
+                topic_bothmode: val.topic_bothmode
             }
             return object;
         })
         setTableData(displayData)
     }, [maparr])
+
+
+    const { topic_training, topic_pretest, topic_posttest, topic_online, topic_offline, topic_bothmode } = topicArray;
+
+    useEffect(() => {
+        if (Object.keys(tableData).length > 0) {
+            const { topic_training, topic_pretest, topic_posttest, topic_online, topic_offline, topic_bothmode } = tableData[0];
+            const obj = {
+                topic_training: topic_training,
+                topic_pretest: topic_pretest,
+                topic_posttest: topic_posttest,
+                topic_online: topic_online,
+                topic_offline: topic_offline,
+                topic_bothmode: topic_bothmode
+            }
+            setTopicArray(obj)
+        }
+    }, [tableData, setTopicArray])
 
 
     const markAttendance = useCallback((params) => {
@@ -65,7 +91,9 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
     }, [dataArray])
 
 
+
     const [columnDef] = useState([
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         {
             headerName: 'Mark Attendance',
@@ -90,7 +118,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
     ])
 
     const handleSubmit = useCallback(async () => {
-        if (question_count !== 0) {
+        if (topic_training === 0 || topic_pretest !== 0 || topic_posttest !== 0 || topic_online !== 0 || topic_offline !== 0 || topic_bothmode !== 0 && question_count !== 0) {
             const arr = tableData?.filter((val) => val.attandance_status === 1);
             const mapArry = arr?.map((item) => {
                 const obj = {
@@ -116,10 +144,29 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
             }
         }
         else {
-            alert("The Question Count Field is empty")
+            const trainingOnly = tableData?.filter((val) => val.attandance_status === 1);
+            const trainingArr = trainingOnly?.map((item) => {
+                const obj = {
+                    training_status: 1
+                }
+                return {
+                    ...item,
+                    ...obj
+                }
+            })
+            const result = await axioslogin.patch('/InductionProcess/trainingOnly', trainingArr)
+            const { success, message } = result.data;
+            if (success === 1) {
+                Setcount(count + 1)
+                Setopen(false)
+                succesNofity(message)
+            }
+            else {
+                warningNofity(message)
+            }
         }
 
-    }, [Setcount, tableData, count, question_count, Setopen, setQuestion_count])
+    }, [Setcount, tableData, count, question_count, Setopen, setQuestion_count, topic_training, topic_pretest, topic_posttest, topic_online, topic_offline, topic_bothmode])
 
     return (
         <Modal
@@ -163,14 +210,20 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                     />
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "row", mt: 2, width: "100%", justifyContent: "flex-end", gap: 3 }} >
-                    <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
-                    <Box >
-                        <input
-                            type='number'
-                            name='question count'
-                            value={question_count}
-                            onChange={(e) => { setQuestion_count(e.target.value) }}
-                        />
+                    <Box>
+                        {topic_training === 0 || topic_pretest !== 0 || topic_posttest !== 0 || topic_online !== 0 || topic_offline !== 0 || topic_bothmode !== 0 ?
+                            <Box sx={{ display: "flex", flexDirection: "row", }}>
+                                <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
+                                <Box >
+                                    <input
+                                        type='number'
+                                        name='question count'
+                                        value={question_count}
+                                        onChange={(e) => { setQuestion_count(e.target.value) }}
+                                    />
+                                </Box>
+                            </Box>
+                            : null}
                     </Box>
                     <Box>
                         <CssVarsProvider>

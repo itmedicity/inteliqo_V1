@@ -15,7 +15,6 @@ const TodaysInduction = ({ setShow, count, Setcount, todays }) => {
     const [todayData, SetTodayData] = useState([])
     const [open, Setopen] = useState(false);
     const [topic, setTopic] = useState(0);
-
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -36,7 +35,13 @@ const TodaysInduction = ({ setShow, count, Setcount, todays }) => {
                 schedule_type: val.schedule_type,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                trainers: val.trainers
+                trainers: val.trainers,
+                training: val.training,
+                pretest_status: val.pretest_status,
+                post_test_status: val.post_test_status,
+                online_status: val.online_status,
+                offline_status: val.offline_status,
+                both_status: val.both_status
             }
             return object;
         })

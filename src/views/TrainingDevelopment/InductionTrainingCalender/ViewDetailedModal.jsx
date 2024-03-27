@@ -13,6 +13,9 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
 
     const [displayData, setdisplayData] = useState([])
     const [showdata, setShowData] = useState([])
+    const [getTrainers, setgetTrainers] = useState([])
+    const [showtrainers, setshowtrainers] = useState([])
+
     const [data, setdata] = useState({
         topic_slno: 0,
         induction_date: '',
@@ -20,18 +23,16 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
         training_topic_name: '',
         trainer_name: ''
     })
-    const { topic_slno, induction_date, trainingtype_slno, training_topic_name, trainer_name } = data;
+    const { topic_slno, induction_date, trainingtype_slno, training_topic_name } = data;
 
     useEffect(() => {
         if (Object.keys(rowdata).length !== 0) {
-            const { topic_slno, induction_date, trainingtype_slno, training_topic_name, trainer_name } = rowdata;
+            const { topic_slno, induction_date, trainingtype_slno, training_topic_name } = rowdata;
             const obj = {
                 topic_slno: topic_slno,
                 induction_date: induction_date,
                 trainingtype_slno: trainingtype_slno,
                 training_topic_name: training_topic_name,
-                trainer_name: trainer_name,
-
             }
             setdata(obj);
         }
@@ -42,14 +43,16 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
             const object = {
                 employee_name: val.employee_name,
                 training_topic_name: val.training_topic_name,
-                trainer_name: val.trainer_name,
-                sect_name: val.sect_name
+                sect_name: val.sect_name,
+                indct_emp_no: val.indct_emp_no,
+                emno: val.emno
             }
             return object;
         })
         setShowData(Data)
 
     }, [setShowData, displayData])
+
 
     useEffect(() => {
         if (trainingtype_slno !== 0 && topic_slno !== 0 && induction_date !== '') {
@@ -72,6 +75,42 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
         }
         else {
             setdisplayData([])
+        }
+    }, [trainingtype_slno, topic_slno, induction_date])
+
+    useEffect(() => {
+        const Data = getTrainers?.map((val) => {
+            const object = {
+                trainer_name: val.trainer_name,
+            }
+            return object;
+        })
+        setshowtrainers(Data)
+
+    }, [setshowtrainers, getTrainers])
+
+    //for get trainers
+    useEffect(() => {
+        if (trainingtype_slno !== 0 && topic_slno !== 0 && induction_date !== '') {
+            const obj = {
+                trainingtype_slno: trainingtype_slno,
+                topic_slno: topic_slno,
+                induction_date: moment(induction_date).format("YYYY-MM-DD HH:mm:ss")
+            }
+            const getData = (async () => {
+                const results = await axioslogin.post('/InductionTraining/getcalTrainers', obj)
+                const { success, data } = results.data
+                if (success === 2) {
+                    setgetTrainers(data)
+                }
+                else {
+                    setgetTrainers([])
+                }
+            })
+            getData()
+        }
+        else {
+            setgetTrainers([])
         }
     }, [trainingtype_slno, topic_slno, induction_date])
 
@@ -121,13 +160,16 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
                                         <Typography>Topic :</Typography>
                                         <Typography>Trainers :</Typography>
                                     </Box>
-                                    <Box sx={{}}>
-                                        <Typography>{training_topic_name}</Typography>
-                                        <Typography> {trainer_name} </Typography>
+                                    <Box sx={{ textTransform: "capitalize" }}>
+                                        <Typography>{training_topic_name.toLowerCase()}</Typography>
+                                        <Typography> {showtrainers?.trainer_name} </Typography>
+                                        {showtrainers?.map((val, index) => (
+                                            <Typography key={index}> {val?.trainer_name.toLowerCase()} </Typography>
+                                        ))}
                                     </Box>
                                 </Box>
                             </Box>
-                            <Box sx={{ display: 'flex', flexDirection: "row", p: 1, gap: 5 }}>
+                            <Box sx={{ display: 'flex', flexDirection: "row", p: 1, gap: 5, height: 500 }}>
                                 <Sheet sx={{
                                     overflow: 'auto',
                                     '::-webkit-scrollbar': { display: "none" },
@@ -137,6 +179,7 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
                                         <Table borderAxis="both" stickyHeader >
                                             <thead>
                                                 <tr>
+                                                    <th style={{ width: "15%" }}>Employee ID</th>
                                                     <th>Name</th>
                                                     <th>Department Section</th>
                                                 </tr>
@@ -147,6 +190,7 @@ const ViewDetailedModal = ({ open, setOpen, rowdata }) => {
                                                         overflow: "hidden",
                                                         overflowY: "scroll"
                                                     }}>
+                                                        <td>{val?.emno}</td>
                                                         <td>{val?.employee_name}</td>
                                                         <td>{val?.sect_name}</td>
                                                     </tr>

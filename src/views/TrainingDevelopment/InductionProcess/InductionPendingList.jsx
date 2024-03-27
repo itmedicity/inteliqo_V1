@@ -30,9 +30,10 @@ const InductionPendingList = ({ setShow, pendingEmp, count, Setcount }) => {
                 retest: val.retest,
                 em_id: val.em_id,
                 em_name: val.em_name,
+                em_no: val.em_no,
                 schedule_topic: val.schedule_topic,
-                induction_date: val.induction_date,
-                datefmt: moment(val.induction_date).format("YYYY-MM-DD"),
+                induct_detail_date: val.induct_detail_date,
+                datefmt: moment(val.induct_detail_date).format("YYYY-MM-DD"),
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
                 trainers: val.trainers,
@@ -52,10 +53,10 @@ const InductionPendingList = ({ setShow, pendingEmp, count, Setcount }) => {
 
     const [columnDef] = useState([
         { headerName: 'Slno', field: 'sn', filter: true, width: 100 },
-        { headerName: 'Employee Id', field: 'em_id', filter: true, width: 100 },
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 100 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Topics', field: 'training_topic_name', filter: true, width: 250 },
-        //{ headerName: 'schedule Date', field: 'datefmt', filter: true, width: 150 },
+        { headerName: 'schedule Date', field: 'datefmt', filter: true, width: 150 },
         {
             headerName: 'Action', cellRenderer: params =>
                 <OpenIcon sx={{ paddingY: 0.5 }}

@@ -20,11 +20,10 @@ const InductionUpcoming = ({ setShow, upcomingData }) => {
     useEffect(() => {
         const displayData = upcomingData?.map((val) => {
             const object = {
-                schedule_topics: val.schedule_topics,
-                schedule_date: val.schedule_date,
+                schedule_topic: val.schedule_topic,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: val.date,
             }
             return object;
         })

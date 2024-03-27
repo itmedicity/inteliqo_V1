@@ -206,7 +206,8 @@ const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR
 const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
 const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
 const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
-const TrainerName = React.lazy(() => import('./views/Master/TrainerNameMaster/TrainerName'))
+const TrainerName = React.lazy(() => import('./views/Master/TrainerNameMaster/TrainerDetails'))
+
 const TrainingTopic = React.lazy(() => import('./views/Master/TrainingTopicMaster/TrainingTopic'))
 const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuestionsMaster/TrainingQuestions'))
 const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
@@ -277,7 +278,11 @@ const OnlineInductReTest = React.lazy(() => import('./views/TrainingDevelopment/
 const InductQREmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/InductionRetest/QRInductionRetest/InductQREmpDetails'))
 const OnlineTrainings = React.lazy(() => import('./views/TrainingDevelopment/OnlineTrainings/OnlineTrainingMainPage'))
 const ORInductionTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTrainings/ORInductionTraining'))
-
+const InductionCalenderReport = React.lazy(() => import('./views/HrReports/InductionTrainingReport/InductionCalenderReport'))
+//TrainingDetails
+const TrainingDetails = React.lazy(() => import('./views/TrainingDevelopment/TrainingDetails/TrainingDetailsHomepage/DetailsHomepage'))
+const TrainerApprovals = React.lazy(() => import('./views/TrainingDevelopment/TrainingDetails/TrainerApprovalMain'))
+const HODApprovals = React.lazy(() => import('./views/TrainingDevelopment/TrainingDetails/HODApprovalsMain'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -537,6 +542,11 @@ const routes = [
   { path: '/InductQREmpDetails/:emId/:tslno', exact: true, name: 'InductQREmpDetails', component: InductQREmpDetails },
   { path: '/Home/OnlineTrainings', exact: true, name: 'Online Training', component: OnlineTrainings },
   { path: '/InductOnlineTraining/:id/:emId', exact: true, name: 'ORInduction Training', component: ORInductionTraining },
+  { path: '/Home/InductionCalenderReport', exact: true, name: 'Induction Calender Report', component: InductionCalenderReport },
+  //TrainingDetails
+  { path: '/Home/TrainingDetails', exact: true, name: 'Induction Calender Report', component: TrainingDetails },
+  { path: '/Home/TrainerApprovals', exact: true, name: 'TrainerApprovals', component: TrainerApprovals },
+  { path: '/Home/HODApprovals', exact: true, name: 'HOD Approvals', component: HODApprovals },
 
 ]
 

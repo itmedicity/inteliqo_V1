@@ -32,7 +32,8 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
                 sn: val.sn,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                retest: val.retest
+                retest: val.retest,
+                em_no: val.em_no
             }
             return object
         })
@@ -47,6 +48,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'sn', filter: true, width: 100 },
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 200 },
         { headerName: 'Schedule Date', field: 'datefmt', filter: true, width: 150 },

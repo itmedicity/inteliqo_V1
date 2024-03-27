@@ -148,7 +148,6 @@ const QuestFirstPage = () => {
             emp_id: em_id,
             emp_dept: dept_id,
             emp_dept_sec: sect_id,
-            //emp_desg: desg_slno,
             emp_topic: parseInt(topic_slno),
             pretest_status: 1,
             mark: correct,

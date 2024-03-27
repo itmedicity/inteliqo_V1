@@ -8,7 +8,6 @@ const JoyTrainerMultipleSelect = ({ value, setValue }) => {
     const data = useSelector((state) => state?.gettrainingData?.trainerNames?.trainerNamesList, _.isEqual)
 
     const Trainers = useMemo(() => data, [data])
-
     return (
 
         <Select

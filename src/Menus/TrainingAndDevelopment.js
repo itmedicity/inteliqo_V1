@@ -38,12 +38,7 @@ const TrainingAndDevelopment = [
         name: 'Faculty Evaluation',
         to: '/homes',
     },
-    // {
-    //     men_slno: 261,
-    //     component: CNavItem,
-    //     name: 'Online Training',
-    //     to: '/Home/OnlineTraining',
-    // },
+
     {
         men_slno: 261,
         component: CNavItem,
@@ -87,6 +82,24 @@ const TrainingAndDevelopment = [
         component: CNavItem,
         name: 'Induction Process',
         to: '/Home/InductionProcess',
+    },
+    {
+        men_slno: 278,
+        component: CNavItem,
+        name: 'Training Details',
+        to: '/Home/TrainingDetails',
+    },
+    {
+        men_slno: 279,
+        component: CNavItem,
+        name: 'Trainer Approvals',
+        to: '/Home/TrainerApprovals',
+    },
+    {
+        men_slno: 280,
+        component: CNavItem,
+        name: 'HOD Approvals',
+        to: '/Home/HODApprovals',
     },
 
 ]
