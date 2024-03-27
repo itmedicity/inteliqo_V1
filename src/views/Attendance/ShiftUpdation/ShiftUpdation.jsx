@@ -75,8 +75,6 @@ const ShiftUpdation = () => {
     const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
         week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
 
-
-
     useEffect(() => {
         if ((hod === 1 || incharge === 1) && self === false) {
             dispatch(getHodBasedDeptSectionName(em_id));
@@ -311,211 +309,216 @@ const ShiftUpdation = () => {
                 <Box sx={{ width: '100%', }}>
 
                     {
-                        self === true ? <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                            <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        views={['year', 'month']}
-                                        minDate={subMonths(new Date(), 1)}
-                                        maxDate={addMonths(new Date(), 1)}
-                                        value={value}
-                                        size="small"
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                        }}
-                                        renderInput={({ inputRef, inputProps, InputProps }) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                                <CssVarsProvider>
-                                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                                </CssVarsProvider>
-                                                {InputProps?.endAdornment}
-                                            </Box>
-                                        )}
-                                    />
-                                </LocalizationProvider>
-                            </Box>
-                            <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
+                        self === true ?
 
-                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        size="small"
-                                        value={dept_name}
-                                        sx={{ display: 'flex', mt: 0.5 }}
-                                        disabled
-                                    />
+                            <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                                <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            views={['year', 'month']}
+                                            minDate={subMonths(new Date(), 1)}
+                                            maxDate={addMonths(new Date(), 1)}
+                                            value={value}
+                                            size="small"
+                                            onChange={(newValue) => {
+                                                setValue(newValue);
+                                            }}
+                                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                    <CssVarsProvider>
+                                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                    </CssVarsProvider>
+                                                    {InputProps?.endAdornment}
+                                                </Box>
+                                            )}
+                                        />
+                                    </LocalizationProvider>
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        size="small"
-                                        value={sect_name}
-                                        sx={{ display: 'flex', mt: 0.5 }}
-                                        disabled
-                                    />
+                                <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
+                                    <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                        <TextField
+                                            variant="outlined"
+                                            fullWidth
+                                            size="small"
+                                            value={dept_name}
+                                            sx={{ display: 'flex', mt: 0.5 }}
+                                            disabled
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                        <TextField
+                                            variant="outlined"
+                                            fullWidth
+                                            size="small"
+                                            value={sect_name}
+                                            sx={{ display: 'flex', mt: 0.5 }}
+                                            disabled
+                                        />
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
+                                        <TextField
+                                            variant="outlined"
+                                            fullWidth
+                                            size="small"
+                                            value={em_name}
+                                            sx={{ display: 'flex', mt: 0.5 }}
+                                            disabled
+                                        />
+                                    </Box>
                                 </Box>
-                                <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        size="small"
-                                        value={em_name}
-                                        sx={{ display: 'flex', mt: 0.5 }}
-                                        disabled
-                                    />
+                                <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                                    <CssVarsProvider>
+                                        <Button
+                                            aria-label="Like"
+                                            variant="outlined"
+                                            color="neutral"
+                                            size='sm'
+                                            onClick={handleOnClickFuntion}
+                                            fullWidth
+                                            startDecorator={<HourglassEmptyOutlinedIcon />}
+                                            sx={{ mx: 0.5 }}
+                                        >
+                                            Process
+                                        </Button>
+                                        <Button
+                                            aria-label="Like"
+                                            variant="outlined"
+                                            color="neutral"
+                                            size='sm'
+                                            fullWidth
+                                            startDecorator={<CleaningServicesOutlinedIcon />}
+                                            sx={{ mx: 0.5 }}
+                                        >
+                                            Clear
+                                        </Button>
+                                    </CssVarsProvider>
                                 </Box>
                             </Box>
-                            <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
-                                <CssVarsProvider>
-                                    <Button
-                                        aria-label="Like"
-                                        variant="outlined"
-                                        color="neutral"
-                                        onClick={handleOnClickFuntion}
-                                        fullWidth
-                                        startDecorator={<HourglassEmptyOutlinedIcon />}
-                                        sx={{ mx: 0.5 }}
-                                    >
-                                        Process
-                                    </Button>
-                                    <Button
-                                        aria-label="Like"
-                                        variant="outlined"
-                                        color="neutral"
-                                        fullWidth
-                                        startDecorator={<CleaningServicesOutlinedIcon />}
-                                        sx={{ mx: 0.5 }}
-                                    >
-                                        Clear
-                                    </Button>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box> : <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                            {
-                                hod === 1 || incharge === 1 ? <Box sx={{ flex: 1, px: 0.5, mt: 1 }} >
-                                    <JoyCheckbox
-                                        label='Self'
-                                        name="self"
-                                        checked={self}
-                                        onchange={(e) => setSelf(e.target.checked)}
-                                    />
-                                </Box> : null
-                            }
+                            : //else conditions
+                            <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
+                                {
+                                    hod === 1 || incharge === 1 ? <Box sx={{ flex: 1, px: 0.5, mt: 1 }} >
+                                        <JoyCheckbox
+                                            label='Self'
+                                            name="self"
+                                            checked={self}
+                                            onchange={(e) => setSelf(e.target.checked)}
+                                        />
+                                    </Box> : null
+                                }
 
 
-                            <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        views={['year', 'month']}
-                                        minDate={subMonths(new Date(), 1)}
-                                        maxDate={addMonths(new Date(), 1)}
-                                        value={value}
-                                        size="small"
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                        }}
-                                        renderInput={({ inputRef, inputProps, InputProps }) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                                <CssVarsProvider>
-                                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                                </CssVarsProvider>
-                                                {InputProps?.endAdornment}
-                                            </Box>
-                                        )}
-                                    />
-                                </LocalizationProvider>
-                            </Box>
-                            {
-                                rights === 1 ? <Box sx={{ display: 'flex', width: '60%', }}>
+                                <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            views={['year', 'month']}
+                                            minDate={subMonths(new Date(), 1)}
+                                            maxDate={addMonths(new Date(), 1)}
+                                            value={value}
+                                            size="small"
+                                            onChange={(newValue) => {
+                                                setValue(newValue);
+                                            }}
+                                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                    <CssVarsProvider>
+                                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                    </CssVarsProvider>
+                                                    {InputProps?.endAdornment}
+                                                </Box>
+                                            )}
+                                        />
+                                    </LocalizationProvider>
+                                </Box>
+                                {
+                                    rights === 1 ? <Box sx={{ display: 'flex', width: '60%', }}>
 
-                                    <Box sx={{ flex: 1, px: 0.5 }}>
-                                        <DepartmentDropRedx getDept={changeDept} />
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}>
-                                        <DepartmentSectionRedx getSection={changeSection} />
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}>
-                                        <SectionBsdEmployee getEmploy={getEmployee} />
-                                    </Box>
-                                </Box> :
+                                        <Box sx={{ flex: 1, px: 0.5 }}>
+                                            <DepartmentDropRedx getDept={changeDept} />
+                                        </Box>
+                                        <Box sx={{ flex: 1, px: 0.5 }}>
+                                            <DepartmentSectionRedx getSection={changeSection} />
+                                        </Box>
+                                        <Box sx={{ flex: 1, px: 0.5 }}>
+                                            <SectionBsdEmployee getEmploy={getEmployee} />
+                                        </Box>
+                                    </Box> :
 
-                                    hod === 1 || incharge === 1 ?
+                                        hod === 1 || incharge === 1 ?
 
-                                        <Box sx={{ display: 'flex', width: '60%', }}>
+                                            <Box sx={{ display: 'flex', width: '60%', }}>
 
-                                            {/* <Box sx={{ flex: 1, px: 0.5 }}>
+                                                {/* <Box sx={{ flex: 1, px: 0.5 }}>
                                             <DepartmentDropRedx getDept={changeDept} />
                                         </Box> */}
-                                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                                <HodWiseDeptSection detSection={section} setSectionValue={changeSection} />
-                                            </Box>
-                                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                                <HodWiseEmpList setEmployee={getEmployee} />
-                                            </Box>
-                                        </Box> :
+                                                <Box sx={{ flex: 1, px: 0.5 }}>
+                                                    <HodWiseDeptSection detSection={section} setSectionValue={changeSection} />
+                                                </Box>
+                                                <Box sx={{ flex: 1, px: 0.5 }}>
+                                                    <HodWiseEmpList setEmployee={getEmployee} />
+                                                </Box>
+                                            </Box> :
 
-                                        <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
+                                            <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
 
-                                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    size="small"
-                                                    value={dept_name}
-                                                    sx={{ display: 'flex', mt: 0.5 }}
-                                                    disabled
-                                                />
+                                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        size="small"
+                                                        value={dept_name}
+                                                        sx={{ display: 'flex', mt: 0.5 }}
+                                                        disabled
+                                                    />
+                                                </Box>
+                                                <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        size="small"
+                                                        value={sect_name}
+                                                        sx={{ display: 'flex', mt: 0.5 }}
+                                                        disabled
+                                                    />
+                                                </Box>
+                                                <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        size="small"
+                                                        value={em_name}
+                                                        sx={{ display: 'flex', mt: 0.5 }}
+                                                        disabled
+                                                    />
+                                                </Box>
                                             </Box>
-                                            <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    size="small"
-                                                    value={sect_name}
-                                                    sx={{ display: 'flex', mt: 0.5 }}
-                                                    disabled
-                                                />
-                                            </Box>
-                                            <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    size="small"
-                                                    value={em_name}
-                                                    sx={{ display: 'flex', mt: 0.5 }}
-                                                    disabled
-                                                />
-                                            </Box>
-                                        </Box>
-                            }
-                            <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
-                                <CssVarsProvider>
-                                    <Button
-                                        aria-label="Like"
-                                        variant="outlined"
-                                        color="neutral"
-                                        onClick={handleOnClickFuntion}
-                                        fullWidth
-                                        startDecorator={<HourglassEmptyOutlinedIcon />}
-                                        sx={{ mx: 0.5 }}
-                                    >
-                                        Process
-                                    </Button>
-                                    <Button
-                                        aria-label="Like"
-                                        variant="outlined"
-                                        color="neutral"
-                                        fullWidth
-                                        startDecorator={<CleaningServicesOutlinedIcon />}
-                                        sx={{ mx: 0.5 }}
-                                    >
-                                        Clear
-                                    </Button>
-                                </CssVarsProvider>
+                                }
+                                <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                                    <CssVarsProvider>
+                                        <Button
+                                            aria-label="Like"
+                                            variant="outlined"
+                                            color="neutral"
+                                            onClick={handleOnClickFuntion}
+                                            fullWidth
+                                            startDecorator={<HourglassEmptyOutlinedIcon />}
+                                            sx={{ mx: 0.5 }}
+                                        >
+                                            Process
+                                        </Button>
+                                        <Button
+                                            aria-label="Like"
+                                            variant="outlined"
+                                            color="neutral"
+                                            fullWidth
+                                            startDecorator={<CleaningServicesOutlinedIcon />}
+                                            sx={{ mx: 0.5 }}
+                                        >
+                                            Clear
+                                        </Button>
+                                    </CssVarsProvider>
+                                </Box>
                             </Box>
-                        </Box>
                     }
 
                     <Box sx={{ flex: 1, pt: 0.5 }} >
