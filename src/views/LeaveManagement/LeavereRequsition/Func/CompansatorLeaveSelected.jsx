@@ -1,29 +1,24 @@
 import { format } from 'date-fns';
 import React, { memo } from 'react'
-import { useState } from 'react';
-import { useMemo } from 'react';
 import { useCallback } from 'react';
-import { useEffect } from 'react';
 import { Form } from 'react-bootstrap'
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
 
-const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
+const CompansatorLeaveSelected = ({ handleChange, index, date, coff, setCoff }) => {
 
-    const [coff, setCoff] = useState([]);
-    // const [status, setStatus] = useState(false);
+    // const [coff, setCoff] = useState([]);
+    // // const [status, setStatus] = useState(false);
 
-    const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
- 
-    const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
-  
+    // const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
 
-    useEffect(() => {
-        const {
-            coffData } = compOff;
-        //apiStats && setStatus(true)
-        setCoff(coffData);
-    }, [compOff])
+    // const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
+
+
+    // useEffect(() => {
+    //     const {
+    //         coffData } = compOff;
+    //     //apiStats && setStatus(true)
+    //     setCoff(coffData);
+    // }, [compOff])
 
     // useEffect(() => {
     //     return () => {
@@ -43,7 +38,30 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
             index: index
         }
         handleChange(null, copansatoryLeave)
-    }, [handleChange, index, date])
+
+        const coffArray = coff.map((val) => {
+            if (parseInt(val.hrm_calc_holiday) === parseInt(selectedValue)) {
+                const obj = {
+                    taken: val.taken,
+                    calculated_date: val.calculated_date,
+                    em_id: val.em_id,
+                    em_no: val.em_no,
+                    hl_lv_tkn_status: val.hl_lv_tkn_status,
+                    hrm_calc_holiday: val.hrm_calc_holiday,
+                    specail_remark: val.specail_remark,
+                    checkValue: 1
+                }
+                return obj
+            } else {
+                const obj = {
+                    ...val
+                }
+                return obj
+            }
+
+        })
+        setCoff(coffArray)
+    }, [handleChange, index, date, coff, setCoff])
 
     return (
         <Form.Select
@@ -56,6 +74,7 @@ const CompansatorLeaveSelected = ({ handleChange, index, date }) => {
                     return <option
                         key={index}
                         value={val.hrm_calc_holiday}
+                        disabled={val.hl_lv_tkn_status === 1 || val.checkValue === 1 ? true : false}
                     >
                         {`C off -${val.calculated_date} ${val.specail_remark} `}
                     </option>

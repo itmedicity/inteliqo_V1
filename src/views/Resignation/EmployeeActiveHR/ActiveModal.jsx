@@ -17,7 +17,7 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             sect_id: 0
         }
     )
-    const { emno, name, section, dept_id, sect_id, emid } = details;
+    const { emno, name, section,  emid } = details;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
@@ -78,7 +78,7 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             warningNofity("Error while Activating an Employee")
         }
     }
-    },[emid,emno,reason])
+    },[emid,emno,reason,setCount,setOpen])
 
   return (
     <Modal

@@ -3,13 +3,21 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 
-const HodWiseEmpList = ({ employee, setEmployee }) => {
+const HodWiseEmpList = ({ section, setEmployee }) => {
 
     const [value, setValue] = useState(0)
     const [emno, setEmno] = useState(0)
+    const [emplList, setEmplList] = useState([]);
 
     const state = useSelector((state) => state.hodBasedSectionNameList.sectionEmployeeName, _.isEqual);
     const filterEmployeeList = useMemo(() => state, [state]);
+
+    useEffect(() => {
+        if (Object.keys(filterEmployeeList).length > 0) {
+            const filterdEmpList = filterEmployeeList.filter((val) => val.em_dept_section === section)
+            setEmplList(filterdEmpList)
+        }
+    }, [filterEmployeeList, section])
 
     useEffect(() => {
         if (value !== 0) {
@@ -22,7 +30,7 @@ const HodWiseEmpList = ({ employee, setEmployee }) => {
             setEmployee({})
         }
 
-    }, [value, emno])
+    }, [value, emno, setEmployee])
 
 
     const getEmployeeId = useCallback((emno) => {
@@ -40,7 +48,7 @@ const HodWiseEmpList = ({ employee, setEmployee }) => {
         >
             <Option disabled value={0}>Select Employee Name </Option>
             {
-                filterEmployeeList?.map((val, index) => {
+                emplList?.map((val, index) => {
                     return <Option key={index} value={val.em_id} onClick={() => getEmployeeId(val.em_no)}>{val.em_name}</Option>
                 })
             }

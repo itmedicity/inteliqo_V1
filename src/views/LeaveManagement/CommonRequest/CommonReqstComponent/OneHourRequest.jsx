@@ -11,7 +11,7 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
-import { addHours, addMinutes, format, isAfter, isBefore, subHours,isEqual,addDays } from 'date-fns'
+import { addHours, addMinutes, format, isAfter, isBefore, subHours, isEqual, addDays } from 'date-fns'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 // import { CalculationFun } from './CommonRqstFun'
 
@@ -54,9 +54,7 @@ const OneHourRequest = ({ count, setCount }) => {
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { cmmn_grace_period,comp_hour_count } = state;
-
-    console.log(empApprovalLevel);
+    const { cmmn_grace_period, comp_hour_count } = state;
 
     useEffect(() => {
         const getdepartmentShift = async () => {
@@ -119,10 +117,10 @@ const OneHourRequest = ({ count, setCount }) => {
 
                 // GET SHIFT DATA
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time , shft_cross_day} = selectedShiftTiming[0]
+                const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
 
                 const inTime = moment(shft_chkin_time).format('HH:mm');
-                const outTime = moment(shft_chkout_time).format('HH:mm');
+                // const outTime = moment(shft_chkout_time).format('HH:mm');
 
                 setCheckin(moment(shft_chkin_time).format('hh:mm'))
                 setCheckout(moment(shft_chkout_time).format('hh:mm'))
@@ -130,8 +128,8 @@ const OneHourRequest = ({ count, setCount }) => {
                 const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
                 // const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
 
-                const chekOut =  shft_cross_day === 0 ? `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
-                `${format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
+                const chekOut = shft_cross_day === 0 ? `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
+                    `${format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
 
                 setPunchInTime(chekIn)
                 setPunchOutTime(chekOut)
@@ -142,11 +140,11 @@ const OneHourRequest = ({ count, setCount }) => {
                 //     em_no: em_no
                 // }
                 const postDataForpunchMaster = {
-                    date2:   format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') ,
-                    date1:  format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') ,
+                    date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                    date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
                     em_no: em_no
                 }
-              
+
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
                 const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
                 const { success, data } = result.data;
@@ -256,11 +254,11 @@ const OneHourRequest = ({ count, setCount }) => {
                     }
                 }
             } else {
-               
+
                 const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
                 const result = punchData.findLast((val) => val)
-                const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) ||isEqual(new Date(result.punch_time), new Date(outtime))  ? 1 
-                : 0
+                const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
+                    : 0
 
                 if (dd === 0) {
                     warningNofity("Can't Apply For One Hour Request!!");

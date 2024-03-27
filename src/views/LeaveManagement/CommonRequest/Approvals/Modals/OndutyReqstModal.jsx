@@ -9,7 +9,7 @@ import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 
@@ -171,61 +171,77 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
 
     const handleRejectRequest = async () => {
         if (authority === 1) {
-            const result = await axioslogin.patch('/CommonReqst/incharge/onduty', rejectData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/incharge/onduty', rejectData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 2) {
-            const result = await axioslogin.patch('/CommonReqst/hod/onduty', hodReject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/hod/onduty', hodReject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 3) {
-            const result = await axioslogin.patch('/CommonReqst/ceo/onduty', ceoreject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setCount(count + 1)
-                setOpen(false)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/ceo/onduty', ceoreject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setCount(count + 1)
+                    setOpen(false)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         }
         else if (authority === 4) {
-            const result = await axioslogin.patch('/CommonReqst/hr/onduty', hrReject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/hr/onduty', hrReject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         }
     }
@@ -233,64 +249,80 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
     const handleApproverequest = async () => {
         setOpenBkDrop(true)
         if (authority === 1) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/incharge/onduty', approveData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/incharge/onduty', approveData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 2) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/hod/onduty', hodApprove)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setCount(count + 1)
-                setOpen(false)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/hod/onduty', hodApprove)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setCount(count + 1)
+                    setOpen(false)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 3) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/ceo/onduty', ceoApprove)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/ceo/onduty', ceoApprove)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 4) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         }
     }

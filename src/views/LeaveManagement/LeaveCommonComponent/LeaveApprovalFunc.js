@@ -20,13 +20,14 @@ export const MappingData = async (filtered) => {
             increq: val.inc_apprv_req,
             incaprv: val.incapprv_status,
             longleave_spclleave: val.longleave_spclleave,
-            inStatus: (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-                (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 1) ? 'HOD Approval Pending' :
-                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.incapprv_status === 2) ? 'Incharge Reajected' :
-                        (val.ceo_req_status === 1 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                            (val.ceo_req_status === 1 || val.ceo_req_status === 0 && val.ceo_apprv_status === 0 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
-                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.hod_apprv_status === 1 || val.ceo_apprv_status === 1) ? 'HR Approval Pending' :
-                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 0 && val.ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
+            inStatus:  (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+            (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+            (val.inc_apprv_req === 0 &&val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0  ) ? 'HOD Approved' :
+                (val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1 && val.hod_apprv_status === 1) ? 'HR Approved' :
+                    (val.hr_aprrv_requ === 1  && val.hr_apprv_status === 2 && val.hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -54,12 +55,13 @@ export const Halfdaymapping = async (filtered) => {
             increq: val.hf_inc_apprv_req,
             incaprv: val.hf_incapprv_status,
             inStatus: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_incapprv_status === 1) ? 'HOD Approval Pending' :
-                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
-                        (val.hf_ceo_req_status === 1 && val.hf_ceo_apprv_status === 0 && val.hf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                            (val.hf_ceo_req_status === 1 || val.hf_ceo_req_status === 0 && val.hf_ceo_apprv_status === 0 && val.hf_hod_apprv_status === 2) ? 'Hod Rejected' :
-                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0 && val.hf_hod_apprv_status === 1 || val.hf_ceo_apprv_status === 1) ? 'HR Approval Pending' :
-                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 0 && val.hf_ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
+            (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+            (val.hf_inc_apprv_req === 0 &&val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0  ) ? 'HOD Approved' :
+                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                    (val.hf_hr_aprrv_requ === 1  && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -86,13 +88,14 @@ export const nopunchmapping = async (filtered) => {
             hrreq: val.np_hr_aprrv_requ,
             increq: val.np_inc_apprv_req,
             incaprv: val.np_incapprv_status,
-            inStatus: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_incapprv_status === 1) ? 'HOD Approval Pending' :
-                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
-                        (val.np_ceo_req_status === 1 && val.np_ceo_apprv_status === 0 && val.np_hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                            (val.np_ceo_req_status === 1 || val.np_ceo_req_status === 0 && val.np_ceo_apprv_status === 0 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0 && val.np_ceo_apprv_status === 1) ? 'HR Approval Pending' :
-                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 0 && val.np_ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
+            inStatus:   (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+            (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+            (val.np_inc_apprv_req === 0 &&val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0  ) ? 'HOD Approved' :
+                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                    (val.np_hr_aprrv_requ === 1  && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })
@@ -118,13 +121,14 @@ export const compensatoryMapping = async (filtered) => {
             hrreq: val.cf_hr_aprrv_requ,
             increq: val.cf_inc_apprv_req,
             incaprv: val.cf_incapprv_status,
-            inStatus: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 1) ? 'HOD Approval Pending' :
-                    (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
-                        (val.cf_hod_apprv_req === 1 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 1) ? 'CEO Approval Pending' :
-                            (val.cf_ceo_req_status === 1 || val.cf_ceo_req_status === 0 && val.cf_ceo_apprv_status === 0 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0 && val.cf_ceo_apprv_status === 1) ? 'HR Approval Pending' :
-                                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 0 && val.cf_ceo_apprv_status === 2) ? 'CEO Rejected' : 'Approved'
+            inStatus:(val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+            (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+            (val.cf_inc_apprv_req === 0 &&val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0 ) ? 'HOD Approval Pending' :
+                (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_apprv_status === 0  ) ? 'HOD Approved' :
+                (val.cf_incapprv_status === 1 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2 ) ? 'HOD Rejected ' :
+                    (val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1 && val.cf_hod_apprv_status === 1) ? 'HR Approved' :
+                    (val.cf_hr_aprrv_requ === 1  && val.cf_hr_apprv_status === 2 && val.cf_hod_apprv_status === 2)? 'HR Rejected' :'HR Pending',
         }
         return data4
     })

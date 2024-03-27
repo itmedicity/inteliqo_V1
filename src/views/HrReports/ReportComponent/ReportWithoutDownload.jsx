@@ -1,18 +1,13 @@
-import { Box, CssVarsProvider, IconButton, Tooltip, Typography } from '@mui/joy'
+import { Box, CssVarsProvider, IconButton, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
-import React, { memo, useCallback } from 'react'
+import React, { memo } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { useDispatch } from 'react-redux';
-import { Actiontypes } from 'src/redux/constants/action.type'
 
 const ReportWithoutDownload = ({ children, title, displayClose }) => {
 
     const history = useHistory();
-    const dispatch = useDispatch()
 
     const toRedirectToHome = () => {
         history.push(`/Home/Reports`)
