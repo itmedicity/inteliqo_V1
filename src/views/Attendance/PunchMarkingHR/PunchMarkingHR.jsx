@@ -1,3 +1,4 @@
+// MAIN PAGE PUNCH MARKING HR 
 import React, { Fragment, useEffect, useState, memo, useMemo, useCallback } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import moment from 'moment';
@@ -6,12 +7,12 @@ import { Box } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Button, CssVarsProvider } from '@mui/joy';
+import { Button, Chip, CssVarsProvider, Sheet, Typography } from '@mui/joy';
 import Input from '@mui/joy/Input';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
-import { addDays, addMonths, format, getMonth, getYear, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
+import { addDays, addMonths, endOfMonth, format, getMonth, getYear, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import { getAndUpdatePunchingData } from '../ShiftUpdation/Function';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
@@ -22,203 +23,324 @@ import PunchSavedHrView from './PunchSavedHrView';
 import { useHistory } from 'react-router-dom'
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
-
+import Table from '@mui/joy/Table';
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
+import { setShiftDetails } from 'src/redux/actions/Shift.Action';
+import { getEmployeeName, processPunchMarkingHrFunc } from './punchMarkingHrFunc';
+import Sun from '@mui/icons-material/LightMode';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const PunchMarkingHR = () => {
-    const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA } = Actiontypes;
+
     const dispatch = useDispatch();
     const history = useHistory()
-    const [openBkDrop, setOpenBkDrop] = useState(false)
-    //FORM DATA 
+
+    //DEFINE STATES
+    const [deptList, setDeptList] = useState([]);
+    const [openBkDrop, setOpenBkDrop] = useState(false);
     const [value, setValue] = useState(moment(new Date()));
-    const [dept, changeDept] = useState(0);
-    const [section, changeSection] = useState(0);
-    const [flag, setFlag] = useState(0)
-    //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const [holidayList, setHolidayList] = useState([]);
+    const [empSalary, setEmpSalary] = useState([]);
+    const [empList, setEmpList] = useState([]);
 
-    const { em_no } = employeeProfileDetl
-    // dispatch the department data
-    useEffect(() => {
-        dispatch(setDepartment());
-    }, [dispatch])
+    //GET REDUX stored information using useSelector
+    const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
+    // get login empid 
+    const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
+    const { em_id, em_no } = empData
 
-    useEffect(() => {
-        if (dept !== 0) {
-            setFlag(0)
+    const monthStart = format(startOfMonth(new Date(value)), 'yyyy-MM-dd');
+    const actSelectDate = format(new Date(value), 'yyyy-MM-dd');
+    //FUNCTION HANDLE
+
+    const onProcessClick = async () => {
+        setOpenBkDrop(true)
+
+        //GET HOLIDAY LIST START
+        const SelectMonth = getMonth(new Date(value))
+        const SelectYear = getYear(new Date(value))
+
+        const getHolidayPostData = {
+            month: SelectMonth + 1,
+            year: SelectYear
+        }
+        const holiday_data = await axioslogin.post("/attendCal/getHolidayListDateWise/", getHolidayPostData);
+        const { suc, holidaydata } = holiday_data.data;
+        if (suc === 1) setHolidayList(holidaydata)
+        //GET HOLIDAY LIST END
+
+        /***
+         * 1 -> get all department and sewction info
+         * 2 -> get punchmarking hr table data with selected month
+         * 3 -> if data ? get the data : insert the data with current month 
+         * 4 -> filter the data with deptSection with punchmarking table
+         */
+        const startOfMonths = startOfMonth(new Date(value));
+
+        const getPunchMarkTablePostData = {
+            month: moment(startOfMonths).format('YYYY-MM-DD')
         }
 
-    }, [dept])
-    //EMPLOYEE INFOR BASED ON SELECTED DEPT & SECTION
-    const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
-    const [msg, setmsg] = useState(0)
+        //GET ALL DEPARTMENT SECTION LIST AND SHOW
+        const result = await axioslogin.post('/experienceReport/deptsectById/');
+        const { success, data } = result.data;
 
-    const handleOnClickFuntion = useCallback(async () => {
-        if (dept !== 0 && section !== 0 && empInform.length !== 0) {
-            setOpenBkDrop(true)
-            const selectedDate = moment(value).format('YYYY-MM-DD');
+        const deptSectionData = data;
 
-            empInform && empInform.map((val) => {
-                const postdata = {
-                    em_no: val.em_no,
-                    attendance_marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
-                }
-                const attendMarkCheck = async (postdata) => {
-                    //To Check attendance Proess Done
-                    const dataExist = await axioslogin.post("/attendCal/checkAttendanceProcess/", postdata);
-                    const { success } = dataExist.data
-                    if (success === 1) {
-                        setmsg(3)
-                        setOpenBkDrop(false)
-                    }
-                    //If Not done 
-                    else {
-                        const emply = { em_no: val.em_no }
-                        const postData = {
-                            fromDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            preFromDate: format(subDays(startOfMonth(new Date(value)), 1), 'yyyy-MM-dd 00:00:00'),
-                            toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            preToDate: format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59'),
-                            dept: dept,
-                            section: section,
-                            empId: emply
-                        }
-
-                        //Get Emp salary and common late in and early out
-                        const resultdel = await axioslogin.get(`/common/getgrossSalary/${val.em_id}`);
-                        const { dataa } = resultdel.data
-                        const { gross_salary } = dataa[0]
-
-                        const gracePeriod = await axioslogin.get('/commonsettings')
-                        const { data } = gracePeriod.data
-                        const { cmmn_early_out, cmmn_grace_period, cmmn_late_in } = data[0]
-
-                        const SelectMonth = getMonth(new Date(selectedDate))
-                        const SelectYear = getYear(new Date(selectedDate))
-
-                        const getHolidayPost = {
-                            month: SelectMonth + 1,
-                            year: SelectYear
-                        }
-                        //Get Holiday lIst
-                        const holiday_data = await axioslogin.post("/attendCal/getHolidayDate/", getHolidayPost);
-                        const { holidaydata } = holiday_data.data;
-
-                        //Function for punch master updation. Based on duty plan and punch details in punch data 
-
-                        const result = await getAndUpdatePunchingData(postData, holidaydata, cmmn_early_out,
-                            cmmn_grace_period, cmmn_late_in,
-                            gross_salary, empInform, dispatch)
-
-                        if (result !== undefined) {
-
-                            const { status, message, shift, punch_data } = result;
-                            if (status === 1) {
-                                dispatch({ type: FETCH_PUNCH_DATA, payload: punch_data })
-                                dispatch({ type: FETCH_SHIFT_DATA, payload: shift })
-                                const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterData/", postData);
-                                const { success } = punch_master_data.data;
-
-                                if (success === 1) {
-                                    const dutyLock = empInform && empInform.map((val, index) => {
-                                        const obje = {
-                                            em_no: val.em_no,
-                                            from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                                            to: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
-                                        }
-                                        return obje
-                                    })
-                                    // After HR Punch in/Out marked then employee or incharge/Hod 
-                                    // canot do punch in out mark
-                                    const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
-
-                                    const { success } = result1.data
-                                    if (success === 1) {
-                                        setmsg(2)
-                                        return { status: 2 }
-                                    }
-                                }
-                            } else {
-                                errorNofity(message)
-                                setOpenBkDrop(false)
-                            }
-                        }
-                        else {
-                            setOpenBkDrop(false)
-                            setmsg(1)
-                        }
-                    }
-                }
-                attendMarkCheck(postdata)
-                return 0
-            })
-        } else {
-            warningNofity("Please Select Depatment And Department section")
-        }
-    }, [empInform, dept, section, FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, dispatch, value])
-
-    const [nextstage, setNextStage] = useState(0)
-    useEffect(() => {
-        if (msg === 1) {
-            errorNofity("Duty Doesnot Planed, Please do Duty Plan")
-        } else if (msg === 2) {
-            setNextStage(1)
-        } else if (msg === 3) {
-            warningNofity("Attendance procees Already Done")
-        }
-    }, [msg, setFlag])
-
-    const punchMarkSave = async (saveDta) => {
-        const result = await axioslogin.post('/payrollprocess/Insert/PunchInOutHr', saveDta)
-        const { success } = result.data
         if (success === 1) {
-            succesNofity("Punch Updated Successfully")
-            setOpenBkDrop(false)
-            setFlag(1)
+            //GET PUNCHMARKING DATA FROM table 
+            const getPunchMarkingHr_table = await axioslogin.post('/payrollprocess/getPunchMarkingHrFull/', getPunchMarkTablePostData);
+            const { succ, data } = getPunchMarkingHr_table.data;
+            if (succ === 1) {
+                // IF DATA
+                const punchMarkingTableData = data;
+                const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
+                    return {
+                        "dept_id": dept,
+                        "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
+                        "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
+                            return { ...v, "updated": punchMarkingTableData?.find((e) => v.sect_id === e.deptsec_slno)?.last_update_date ?? moment(startOfMonths).format('YYYY-MM-DD') }
+                        }),
+                    }
+                })
+                setDeptList(findDept)
+                setOpenBkDrop(false)
+            } else if (succ === 2) {
+                // IF NO DATA -> INSERT IN TO punchmarking_hr table
+                const postData_PunchMarkHR = deptSectionData?.map((e) => {
+                    return [
+                        format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                        e.dept_id,
+                        e.sect_id,
+                        1,
+                        null,
+                        null,
+                        em_no,
+                        em_no,
+                        format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
+                    ]
+                })
+
+                const insertPunchMarkTable = await axioslogin.post('/payrollprocess/Insert/PunchInOutHr', postData_PunchMarkHR)
+                const { success } = insertPunchMarkTable.data
+                if (success === 1) {
+                    const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
+                        return {
+                            "dept_id": dept,
+                            "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
+                            "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
+                                return { ...v, "updated": moment(startOfMonths).format('YYYY-MM-DD') }
+                            }),
+                        }
+                    })
+                    setDeptList(findDept)
+                    setOpenBkDrop(false)
+                } else {
+                    warningNofity("Error Updating the Punchmarking HR Data ! contact IT")
+                    setOpenBkDrop(false)
+                }
+            } else {
+                // IF ERROR
+                warningNofity('----error getting punchmarking table data ! contact IT Department')
+                setOpenBkDrop(false)
+            }
         } else {
-            warningNofity("Error While Updating Punch")
+            warningNofity("Error Getting the Department Details")
+            setOpenBkDrop(false)
         }
+        //GET COMMON SETTINGS
+        dispatch(setCommonSetting())
+        //GET ALL SHIFT INFORMATION 
+        dispatch(setShiftDetails())
     }
 
-    useEffect(() => {
-        if (nextstage === 1) {
-            const saveDta = {
-                marking_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                dept_slno: dept,
-                deptsec_slno: section,
-                create_user: em_no,
-                edit_user: em_no,
-                status: 1
+
+    /***** 
+     * // ON MAIN PROCESS BUTTON
+     * get shift master data
+     * get common master data
+     * get Marking Month from - punchingmarking_hr - department wise and section wise
+     * 
+     * // EACH update attendance button 
+     * get section wise employee list 
+     * get duty plan date wise depend on last update date
+     * get punch master data depend on last update date
+     * 
+     * update punchmaster data
+     * insert or update punchmasrking_hr table
+     * update hrm_duty_plan table
+     * 
+     * ****/
+
+    //UPDATE ATTENDANDE PROCESS START HERE
+    const updateAttendanceProcesss = async (deptID, sectID, lastUpdateDate) => {
+        setOpenBkDrop(true)
+        const today = subDays(new Date(format(new Date(), 'yyyy-MM-dd')), 1);
+        const startOfMonths = startOfMonth(new Date(value));
+
+        //GET GROSS SALARY START
+        const getGrossSalaryEmpWise = await axioslogin.get(`/common/getgrossSalaryByEmployeeNo/${sectID}`);
+        const { su, dataa } = getGrossSalaryEmpWise.data;
+        if (su === 1) setEmpSalary(dataa)
+        //GET GROSS SALARY END
+
+        if (today < new Date(format(new Date(value), 'yyyy-MM-dd'))) {
+            setOpenBkDrop(false)
+            warningNofity("Select To date less than today !!!")
+        } else {
+            // CHECK ATTENADANCE PROCESS DONE OR NOT SECTION WIS
+
+            //GET EMPLOYEE LIST START
+            const empData = await axioslogin.get(`/common/getEmpName/${sectID}`)
+            const { data, success } = empData.data;
+            if (success === 1) {
+                const selectedDateSameStatus = new Date(lastUpdateDate) === startOfMonths ? 1 : 0;
+                const postData_getPunchData = {
+                    preFromDate: selectedDateSameStatus === 1 ?
+                        format(subDays(startOfMonth(new Date(value)), 2), 'yyyy-MM-dd 00:00:00') :
+                        format(subDays(new Date(lastUpdateDate), 2), 'yyyy-MM-dd 00:00:00'),
+                    preToDate: format(addDays(new Date(value), 1), 'yyyy-MM-dd 23:59:59'),
+                    fromDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    fromDate_dutyPlan: selectedDateSameStatus === 1 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(lastUpdateDate), 'yyyy-MM-dd'),
+                    toDate_dutyPlan: format(new Date(value), 'yyyy-MM-dd'),
+                    fromDate_punchMaster: selectedDateSameStatus === 1 ? format(subDays(startOfMonth(new Date(value)), 0), 'yyyy-MM-dd') : format(subDays(new Date(lastUpdateDate), 0), 'yyyy-MM-dd'),
+                    toDate_punchMaster: format(new Date(value), 'yyyy-MM-dd'),
+                    section: sectID,
+                    empList: data?.map((e) => e.em_no),
+                    loggedEmp: em_no
+                }
+                // GET PUNCH DATA FROM TABLE START
+                const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+                const { su, result_data } = punch_data.data;
+                if (su === 1) {
+                    const punchaData = result_data;
+                    const empList = data?.map((e) => e.em_no)
+                    // PUNCH MARKING HR PROCESS START
+                    const result = await processPunchMarkingHrFunc(
+                        postData_getPunchData,
+                        punchaData,
+                        empList,
+                        shiftInformation,
+                        commonSettings,
+                        holidayList,
+                        empSalary
+                    )
+                    const { status, message, errorMessage } = result;
+                    if (status === 1) {
+                        setOpenBkDrop(false)
+                        succesNofity('Punch Master Updated Successfully')
+                        onProcessClick()
+                    } else {
+                        setOpenBkDrop(false)
+                        warningNofity(message, errorMessage)
+                    }
+                    // PUNCH MARKING HR PROCESS END
+                } else {
+                    warningNofity("Error getting punch Data From DB")
+                    setOpenBkDrop(false)
+                }
+                // GET PUNCH DATA FROM TABLE END
+            } else {
+                warningNofity("Error Getting Employee List")
+                setOpenBkDrop(false)
             }
-            punchMarkSave(saveDta)
+            //GET EMPLOYEE LIST START
         }
-    }, [nextstage, value, dept, section, em_no])
+    }
+    //FORM DATA 
+
+    //DELETE ATTENDANCE MARKING 
+
+    const deleteAttendanceMarkingProcess = async (dept, section, date) => {
+        setOpenBkDrop(true)
+        const monthStart = format(startOfMonth(new Date(value)), 'yyyy-MM-dd');
+        const monthEnd = format(endOfMonth(new Date(value)), 'yyyy-MM-dd');
+        // console.log(dept, section, date, monthStart, monthEnd)
+
+        const postDataUpdatePunchMarkHR = {
+            loggedEmp: em_no,
+            toDate_punchMaster: monthStart,
+            fromDate: monthStart,
+            section: section
+        }
+        // GET EMPLOYEE LIST
+        const empData = await axioslogin.get(`/common/getEmpName/${section}`)
+        const { data, success } = empData.data;
+        if (success === 1 && data?.length > 0) {
+            // GET DUTY PLAN DATA -> SLNO
+            const empList = data?.map((e) => e.em_no)
+            const postData = {
+                fromDate_dutyPlan: monthStart,
+                toDate_dutyPlan: monthEnd,
+                empList: empList
+            }
+            const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData); //GET DUTY PLAN DAAT
+            const { succes, shiftdetail } = getDutyPlan.data;
+            if (succes === 1 && shiftdetail?.length > 0) {
+                // UPDATE DUTY PLAN SLNO
+                const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
+                const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
+                const { susc, message } = updateDutyPlanTable.data;
+                if (susc === 1) {
+                    // UPDATE PUNCH_MARKING_HR TABLE
+                    const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postDataUpdatePunchMarkHR);
+                    const { sus } = updatePunchMarkingHR.data;
+                    if (sus === 1) {
+                        setDeptList([])
+                        setOpenBkDrop(false)
+                        succesNofity("Attendance Process Deleted")
+                    } else {
+                        setOpenBkDrop(false)
+                        warningNofity('Error !! Deleting Attendance Process')
+                    }
+                } else {
+                    setOpenBkDrop(false)
+                    warningNofity('Error Updating Delete Status in Duty Plan')
+                }
+                // console.log(dutyPlanSlno)
+            } else {
+                setOpenBkDrop(false)
+                warningNofity('Duty Not planned for selected dates')
+            }
+            // console.log(succes, shiftdetail)
+        } else {
+            setOpenBkDrop(false)
+            warningNofity('No Employees Found in Selected Department Section')
+        }
+    }
 
     const handleView = useCallback(() => {
         history.push('/Home/PunchDoneList');
     }, [history])
+
+
     return (
         <Fragment>
-            <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
-            <CustomLayout title="Punch In/Out Marking HR" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Processing.... " />
+            <CustomLayout title="Monthly Attendance Process" displayClose={true} >
                 <Box sx={{ width: '100%', }}>
                     <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>
-                        <Box sx={{ flex: 1, px: 0.5, width: '20%', }} >
+                        {/* Selected Month */}
+                        <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
+                            <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >Select Month</Typography>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['year', 'month']}
-                                    minDate={subMonths(new Date(), 1)}
+                                    minDate={subMonths(new Date(), 2)}
                                     maxDate={addMonths(new Date(), 1)}
                                     value={value}
                                     size="small"
                                     onChange={(newValue) => {
                                         setValue(newValue);
+                                        setDeptList([])
                                     }}
                                     renderInput={({ inputRef, inputProps, InputProps }) => (
                                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                             <CssVarsProvider>
-                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} color='primary' />
                                             </CssVarsProvider>
                                             {InputProps?.endAdornment}
                                         </Box>
@@ -226,45 +348,129 @@ const PunchMarkingHR = () => {
                                 />
                             </LocalizationProvider>
                         </Box>
-                        <Box sx={{ display: 'flex', width: '50%', }}>
-
-                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                <DepartmentDropRedx getDept={changeDept} deptslno={dept} />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }}>
-                                <DepartmentSectionRedx getSection={changeSection} />
-                            </Box>
+                        {/* To date */}
+                        <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
+                            <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >To Date</Typography>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['day']}
+                                    minDate={startOfMonth(new Date(value))}
+                                    maxDate={new Date()}
+                                    value={value}
+                                    size="small"
+                                    inputFormat='dd/MM/yyyy'
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
+                                        setDeptList([])
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} color='primary' />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </Box>
-
-                        <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
+                        <Box sx={{ display: 'flex', px: 0.5, width: '15%' }}>
                             <CssVarsProvider>
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"
-                                    color="neutral"
-                                    onClick={handleOnClickFuntion}
+                                    color="danger"
+                                    onClick={onProcessClick}
                                     fullWidth
                                     startDecorator={<HourglassEmptyOutlinedIcon />}
                                     sx={{ mx: 0.5 }}
                                 >
                                     Process
                                 </Button>
-                                <Button
+                                {/* <Button
                                     aria-label="Like"
                                     variant="outlined"
-                                    color="neutral"
+                                    color="primary"
                                     fullWidth
                                     onClick={handleView}
                                     startDecorator={<RemoveRedEyeOutlinedIcon />}
                                     sx={{ mx: 0.5 }}
                                 >
                                     View
-                                </Button>
+                                </Button> */}
                             </CssVarsProvider>
                         </Box>
                     </Box>
-                    {flag === 1 ? <PunchSavedHrView value={value} dept={dept} section={section}
-                    /> : null}
+                    <Box padding={1} >
+                        <Sheet sx={{ height: window.innerHeight - 180, overflow: 'auto' }} >
+                            <Table
+                                variant='soft'
+                                size='sm'
+                                hoverRow
+                                stickyHeader
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Department Names</th>
+                                        <th>Status</th>
+                                        <th style={{ textAlign: 'center' }} >Process</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {deptList.map((row, index) => (
+                                        <Fragment key={index} >
+                                            <tr key={index} style={{ backgroundColor: '#829baf' }} >
+                                                <td colSpan={3} >{row.dept_name}</td>
+                                                <td></td>
+                                            </tr>
+                                            {
+                                                row?.section?.map((e, idx) => (
+                                                    <tr key={idx} >
+                                                        <td></td>
+                                                        <td>{e.sect_name}</td>
+                                                        {/* <td>{e.updated}</td> */}
+                                                        <td>
+                                                            {
+                                                                monthStart === e.updated ?
+                                                                    <Chip color='neutral' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
+                                                                        {e.updated}
+                                                                    </Chip> :
+                                                                    actSelectDate <= e.updated ?
+                                                                        <Chip color='success' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
+                                                                            {e.updated}
+                                                                        </Chip>
+                                                                        :
+                                                                        <Chip color="danger" size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
+                                                                            {e.updated}
+                                                                        </Chip>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }} >
+                                                                <Chip
+                                                                    color="success"
+                                                                    onClick={(c) => updateAttendanceProcesss(row.dept_id, e.sect_id, e.updated)}
+                                                                    size="sm"
+                                                                    variant="outlined"
+                                                                >Update Attendance</Chip>
+                                                                <Chip
+                                                                    color="danger"
+                                                                    onClick={() => deleteAttendanceMarkingProcess(row.dept_id, e.sect_id, e.updated)}
+                                                                    size="sm"
+                                                                    variant="outlined"
+                                                                >Delete Process</Chip>
+                                                            </Box>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </Fragment>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </Sheet>
+                    </Box>
                 </Box>
             </CustomLayout>
         </Fragment>
