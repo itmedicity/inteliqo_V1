@@ -17,11 +17,14 @@ import { Actiontypes } from 'src/redux/constants/action.type';
 import { memo } from 'react';
 
 const ShiftModal = ({ open, setOpen, data }) => {
+
     const dispatch = useDispatch()
     const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
+
     //FETCH DATA'S
     const punchData = useSelector((state) => state.getPunchData.punchDta)
-    const shiftData = useSelector((state) => state.getShiftData.shiftData)
+    // const shiftData = useSelector((state) => state.getShiftData.shiftData)
+    const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
 
     //FIND THE CROSS DAY
     const crossDay = shiftData?.find(shft => shft.shft_slno === data.shift_id);
@@ -29,9 +32,9 @@ const ShiftModal = ({ open, setOpen, data }) => {
 
     //DISPLAY DATA'S
 
-    let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_time), 'HH:mm')}`;
-    let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_time), 'HH:mm')}` :
-        `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_time), 'HH:mm')}`;
+    let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftIn), 'HH:mm')}`;
+    let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}` :
+        `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}`;
 
     let checkinStart = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_start), 'HH:mm')}`;
     let checkinEnd = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_end), 'HH:mm')}`;

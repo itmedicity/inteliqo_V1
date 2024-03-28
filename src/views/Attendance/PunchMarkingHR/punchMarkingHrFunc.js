@@ -23,7 +23,7 @@ export const processPunchMarkingHrFunc = async (
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
-    if (succes === 1) {
+    if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
         const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
@@ -170,82 +170,97 @@ const getAttendanceCalculation = async (
                 // HOLIDAY === NO
 
                 // { out time == 0 minit  ~~ intime <= 30 minits ~~  in time before half day in time === true  } 
-                return earlyOut === 0 && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
+                return earlyOut === 0 && lateIn === 0 && isBeforeHafDayInTime === true ?
                     { duty_status: 1, duty_desc: 'P', lvereq_desc: 'P', duty_remark: 'Present' } :
 
-                    // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === true  } 
-                    earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
-                        { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'LIHD', duty_remark: 'Late in half day after 30 minits' } :
+                    earlyOut === 0 && lateIn > 0 && lateIn < maximumLateInTime ?
+                        { duty_status: 1, duty_desc: 'LC', lvereq_desc: 'LC', duty_remark: 'Late Coming' } :
 
-                        // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === false  } 
-                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
-                            { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'Late in and punch in after half day limit' } :
+                        // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === true  } 
+                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'LIHD', duty_remark: 'Late in half day after 30 minits' } :
 
-                            // { out time greater than 0 minit  ~~ early out less than 30 minits ~~ intime lessthan or equal to 30  ~~ intime  and outtime should be before and after half day in time  } 
-                            (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
-                                { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day' } :
+                            // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === false  } 
+                            earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'Late in and punch in after half day limit' } :
 
-                                // { outtime greater than 0 minit  ~~ early out less than 30 minits ~~ intime greater than 30  ~~ intime  and outtime should be before and after half day in time  } 
-                                (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
-                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'IEHD', duty_remark: 'Half day latein and late out' } :
+                                // { out time greater than 0 minit  ~~ early out less than 30 minits ~~ intime lessthan or equal to 30  ~~ intime  and outtime should be before and after half day in time  } 
+                                (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
+                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day' } :
 
-                                    // { outtime greater than 0 minit  ~~ early out greater than 30 minits ~~ intime greater than or equal 30  ~~ intime  and outtime should be before and after half day in time  } 
-                                    (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
-                                        { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day latein and late out' } :
+                                    // { outtime greater than 0 minit  ~~ early out less than 30 minits ~~ intime greater than 30  ~~ intime  and outtime should be before and after half day in time  } 
+                                    (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                        { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'IEHD', duty_remark: 'Half day latein and late out' } :
 
-                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
-                                            { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'in and out less tha half day time' } :
-                                            { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
+                                        // { outtime greater than 0 minit  ~~ early out greater than 30 minits ~~ intime greater than or equal 30  ~~ intime  and outtime should be before and after half day in time  } 
+                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day latein and late out' } :
+
+                                            (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'in and out less tha half day time' } :
+                                                { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
 
             } else {
                 // HOLIDAY === YES
-                return earlyOut === 0 && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
-                    { duty_status: salaryLimit === false ? 2 : 1, duty_desc: 'HP', lvereq_desc: 'HP', duty_remark: 'holiday Present' } :
-                    earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                return earlyOut === 0 && lateIn === 0 && isBeforeHafDayInTime === true ?
+                    {
+                        duty_status: salaryLimit === false ? 2 : 1,
+                        duty_desc: 'HP',
+                        lvereq_desc: 'HP',
+                        duty_remark: 'holiday Present'
+                    } :
+                    earlyOut === 0 && lateIn > 0 && lateIn < maximumLateInTime ?
                         {
-                            duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
-                            duty_desc: 'HHD',
-                            lvereq_desc: 'HLIHD',
-                            duty_remark: 'Late in half day after 30 minits'
+                            duty_status: salaryLimit === false ? 2 : 1,
+                            duty_desc: 'HP',
+                            lvereq_desc: 'LC',
+                            duty_remark: 'Late Coming'
                         } :
-                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
                             {
-                                duty_status: salaryLimit === false ? 1 : 1,
-                                duty_desc: 'H',
-                                lvereq_desc: 'H',
-                                duty_remark: 'Late in and punch in after half day limit'
+                                duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
+                                duty_desc: 'HD',
+                                lvereq_desc: 'LIHD',
+                                duty_remark: 'Late in half day after 30 minits'
                             } :
-                            // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
-                            (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
+                            earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
                                 {
-                                    duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
-                                    duty_desc: 'HHD',
-                                    lvereq_desc: 'HEGHD',
-                                    duty_remark: 'Early going Half day'
+                                    duty_status: salaryLimit === false ? 1 : 1,
+                                    duty_desc: 'H',
+                                    lvereq_desc: 'H',
+                                    duty_remark: 'Late in and punch in after half day limit'
                                 } :
-                                (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
+                                (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
                                     {
-                                        duty_status: salaryLimit === false && workingHours === true ? 2 : 1,
+                                        duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
                                         duty_desc: 'HD',
-                                        lvereq_desc: 'IEHD',
-                                        duty_remark: 'Half day latein and late out'
+                                        lvereq_desc: 'EGHD',
+                                        duty_remark: 'Early going Half day'
                                     } :
-                                    // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
-                                    (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                    (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
                                         {
-                                            duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
-                                            duty_desc: 'HHD',
-                                            lvereq_desc: 'HEGHD',
-                                            duty_remark: 'Early going Half day latein and late out'
+                                            duty_status: salaryLimit === false && workingHours === true ? 2 : 1,
+                                            duty_desc: 'HD',
+                                            lvereq_desc: 'IEHD',
+                                            duty_remark: 'Half day latein and late out'
                                         } :
-                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                        // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
                                             {
-                                                duty_status: salaryLimit === false ? 1 : 1,
-                                                duty_desc: 'H',
-                                                lvereq_desc: 'H',
-                                                duty_remark: 'in and out less tha half day time'
+                                                duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
+                                                duty_desc: 'HD',
+                                                lvereq_desc: 'EGHD',
+                                                duty_remark: 'Early going Half day latein and late out'
                                             } :
-                                            { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
+                                            (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                {
+                                                    duty_status: salaryLimit === false ? 1 : 1,
+                                                    duty_desc: 'H',
+                                                    lvereq_desc: 'H',
+                                                    duty_remark: 'in and out less tha half day time'
+                                                } :
+                                                { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
             }
         } else {
             return holidayStatus === 1 ?
@@ -335,3 +350,133 @@ const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData)
 }
 
 
+// F
+
+export const processShiftPunchMarkingHrFunc = async (
+    postData_getPunchData,
+    punchaData, //PUNCH DATA
+    empList, // EMPLOYEE LIST SECTION WISE
+    shiftInformation, // SHIFT INFORMATION
+    commonSettings, // COMMON SETTINGS
+    holidayList, // HOLIDAY LIST
+    empSalary // EMPLOYEE_SALARY
+) => {
+    const {
+        cmmn_early_out, // Early going time interval
+        cmmn_grace_period, // common grace period for late in time
+        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
+        salary_above, //Salary limit for calculating the holiday double wages
+        week_off_day, // week off SHIFT ID
+        notapplicable_shift, //not applicable SHIFT ID
+        default_shift, //default SHIFT ID
+        noff // night off SHIFT ID
+    } = commonSettings; //COMMON SETTING
+    //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
+    const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
+    const { succes, shiftdetail } = getDutyPlan.data;
+    // console.log(succes, shiftdetail)
+    if (succes === 1 && shiftdetail?.length > 0) {
+        const dutyplanInfo = shiftdetail; //DUTY PLAN
+        const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+        const { success, planData } = punch_master_data.data;
+        // console.log(success, planData)
+        if (success === 1 && planData?.length > 0) {
+            const punchMasterData = planData; //PUNCHMSTER DATA
+            return Promise.allSettled(
+                punchMasterData?.map(async (data, index) => {
+                    // console.log(data)
+                    const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                    const shiftMergedPunchMaster = {
+                        ...data,
+                        shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                        shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                        shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                        shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                        shft_cross_day: sortedShiftData?.shft_cross_day,
+                        gross_salary: sortedSalaryData?.gross_salary,
+                        earlyGoingMaxIntervl: cmmn_early_out,
+                        gracePeriodInTime: cmmn_grace_period,
+                        maximumLateInTime: cmmn_late_in,
+                        salaryLimit: salary_above,
+                        woff: week_off_day,
+                        naShift: notapplicable_shift,
+                        defaultShift: default_shift,
+                        noff: noff,
+                        holidayStatus: sortedShiftData?.holiday_status
+                    }
+                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code == data.em_no)
+                    //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
+                    return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                })
+            ).then((data) => {
+                // console.log(data)
+                const punchMasterMappedData = data?.map((e) => e.value)
+                return Promise.allSettled(
+                    punchMasterMappedData?.map(async (val) => {
+                        const holidayStatus = val.holiday_status;
+                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+
+                        const shift_in = new Date(val.shift_in);
+                        const shift_out = new Date(val.shift_out);
+
+                        //SALARY LINMIT
+                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+
+                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                        const getAttendanceStatus = await getAttendanceCalculation(
+                            punch_In,
+                            shift_in,
+                            punch_out,
+                            shift_out,
+                            cmmn_grace_period,
+                            getLateInTime,
+                            holidayStatus,
+                            val.shift_id,
+                            val.defaultShift,
+                            val.naShift,
+                            val.noff,
+                            val.woff,
+                            salaryLimit,
+                            val.maximumLateInTime
+                        )
+                        return {
+                            punch_slno: val.punch_slno,
+                            punch_in: val.punch_in,
+                            punch_out: val.punch_out,
+                            hrs_worked: getLateInTime?.hrsWorked,
+                            late_in: getLateInTime?.lateIn,
+                            early_out: getLateInTime?.earlyOut,
+                            duty_status: getAttendanceStatus?.duty_status,
+                            holiday_status: val.holiday_status,
+                            leave_status: val.leave_status,
+                            lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                            duty_desc: getAttendanceStatus?.duty_desc,
+                            lve_tble_updation_flag: val.lve_tble_updation_flag
+                        }
+                    })
+                ).then(async (element) => {
+                    // console.log(element)
+                    // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
+                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    // PUNCH MASTER UPDATION
+                    // console.log(processedData)
+                    const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
+                    const { success, message } = updatePunchMaster.data;
+                    if (success === 1) {
+                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '' }
+                    } else {
+                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                    }
+                })
+                // return { status: 1, message: "result", data: e }
+            })
+        } else {
+            return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '' }
+        }
+    } else {
+        return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '' }
+    }
+}
