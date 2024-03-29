@@ -394,8 +394,6 @@ const ShiftUpdation = () => {
                         ///////////////////
                     }
 
-
-
                     setOpenBkDrop(false)
                 } else {
                     // console.log(lastUpdateDate)

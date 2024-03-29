@@ -121,7 +121,7 @@ export const processPunchMarkingHrFunc = async (
                             const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
                             const { susc, message } = updateDutyPlanTable.data;
                             if (susc === 1) {
-                                return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '' }
+                                return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
                             } else {
                                 return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
                             }

@@ -1,5 +1,5 @@
 // MAIN PAGE PUNCH MARKING HR 
-import React, { Fragment, useEffect, useState, memo, useMemo, useCallback } from 'react'
+import React, { Fragment, useState, memo, useCallback } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,26 +9,26 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Chip, CssVarsProvider, Sheet, Typography } from '@mui/joy';
 import Input from '@mui/joy/Input';
-import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
-import { setDepartment } from 'src/redux/actions/Department.action';
-import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
+// import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+// import { setDepartment } from 'src/redux/actions/Department.action';
+// import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { addDays, addMonths, endOfMonth, format, getMonth, getYear, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
-import { getAndUpdatePunchingData } from '../ShiftUpdation/Function';
+// import { getAndUpdatePunchingData } from '../ShiftUpdation/Function';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+// import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-import { Actiontypes } from 'src/redux/constants/action.type';
-import PunchSavedHrView from './PunchSavedHrView';
+import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+// import { Actiontypes } from 'src/redux/constants/action.type';
+// import PunchSavedHrView from './PunchSavedHrView';
 import { useHistory } from 'react-router-dom'
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import Table from '@mui/joy/Table';
-import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
+// import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
-import { getEmployeeName, processPunchMarkingHrFunc } from './punchMarkingHrFunc';
-import Sun from '@mui/icons-material/LightMode';
+import { processPunchMarkingHrFunc } from './punchMarkingHrFunc';
+// import Sun from '@mui/icons-material/LightMode';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const PunchMarkingHR = () => {
@@ -209,6 +209,7 @@ const PunchMarkingHR = () => {
                     fromDate_punchMaster: selectedDateSameStatus === 1 ? format(subDays(startOfMonth(new Date(value)), 0), 'yyyy-MM-dd') : format(subDays(new Date(lastUpdateDate), 0), 'yyyy-MM-dd'),
                     toDate_punchMaster: format(new Date(value), 'yyyy-MM-dd'),
                     section: sectID,
+                    deptID: deptID,
                     empList: data?.map((e) => e.em_no),
                     loggedEmp: em_no
                 }
@@ -228,11 +229,27 @@ const PunchMarkingHR = () => {
                         holidayList,
                         empSalary
                     )
-                    const { status, message, errorMessage } = result;
+                    const { status, message, errorMessage, dta } = result;
                     if (status === 1) {
-                        setOpenBkDrop(false)
-                        succesNofity('Punch Master Updated Successfully')
-                        onProcessClick()
+                        // console.log(dta.section)
+                        const filterDeptAndSection = deptList?.map((e) => {
+                            return {
+                                "dept_id": e.dept_id,
+                                "dept_name": e.dept_name,
+                                "section": e.section?.map((el) => {
+                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDate_punchMaster } : { ...el }
+                                }),
+                            }
+                        })
+                        if (filterDeptAndSection?.length > 0) {
+                            setDeptList(filterDeptAndSection)
+                            setOpenBkDrop(false)
+                            succesNofity('Punch Master Updated Successfully')
+                        } else {
+                            succesNofity('Error Contact IT')
+                            setOpenBkDrop(false)
+                        }
+                        // onProcessClick()
                     } else {
                         setOpenBkDrop(false)
                         warningNofity(message, errorMessage)
