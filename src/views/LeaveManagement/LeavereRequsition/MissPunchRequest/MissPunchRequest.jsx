@@ -194,7 +194,7 @@ const MissPunchRequest = () => {
             }
 
             //Checking attendance marking is saved in  current month || start of month b/w current date 
-            const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
+            const result = await axioslogin.post('/attendCal/check', postDataForGetAttendMarking)
             const { success } = result.data;
             if (success === 1) {
                 warningNofity("Attendance Marking Processed ! Contact HRD")
