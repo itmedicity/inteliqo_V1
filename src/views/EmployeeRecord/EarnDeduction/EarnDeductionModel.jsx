@@ -207,7 +207,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(empId).then((values) => {
+                            updateEmpmaster(Empno).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -270,7 +270,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(empId).then((values) => {
+                            updateEmpmaster(Empno).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -325,7 +325,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                 insertWage(arr).then((values) => {
                     const { status, message } = values
                     if (status === 1) {
-                        updateEmpmaster(empId).then((values) => {
+                        updateEmpmaster(Empno).then((values) => {
                             const { status, message } = values
                             if (status === 1) {
                                 succesNofity(message);

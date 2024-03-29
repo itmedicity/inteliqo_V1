@@ -51,8 +51,6 @@ const MasterPage = () => {
         }
     }, [FETCH_EMP_DETAILS, reduxDispatch])
 
-
-
     const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
 
     const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
@@ -120,6 +118,7 @@ const MasterPage = () => {
                     //process function
                     dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
                         // employee details based on selected dept and dept sec
+
                         const { data, status, message, dateFormat } = values;
                         if (status === 1) {
                             reduxDispatch({ type: GET_SHIFT_PLAN_DETL, payload: data, status: false })

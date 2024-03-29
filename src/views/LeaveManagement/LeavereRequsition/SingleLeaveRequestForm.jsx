@@ -14,7 +14,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LeaveRequestDocModal from './LeaveRequestDocModal'
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns'
+import { add, differenceInCalendarDays, eachDayOfInterval, format, startOfMonth } from 'date-fns'
 import { getleaverequest } from 'src/views/Constant/Constant'
 import { useCallback } from 'react'
 import { Actiontypes } from 'src/redux/constants/action.type'
@@ -148,6 +148,7 @@ const SingleLeaveRequestForm = () => {
                             em_dept_section: em_dept_section,
                             leavefrom_date: fromDate,
                             leavetodate: toDate,
+                            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
                             rejoin_date: format(add(new Date(toDate), { days: 1 }), "yyyy-MM-dd"),
                             request_status: 1,
                             inc_apprv_req:

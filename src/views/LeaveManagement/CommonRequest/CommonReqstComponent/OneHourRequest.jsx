@@ -11,7 +11,7 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
-import { addHours, addMinutes, format, isAfter, isBefore, subHours, isEqual, addDays } from 'date-fns'
+import { addHours, addMinutes, format, isAfter, isBefore, subHours, isEqual, addDays, startOfMonth } from 'date-fns'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 // import { CalculationFun } from './CommonRqstFun'
 
@@ -176,6 +176,7 @@ const OneHourRequest = ({ count, setCount }) => {
             check_out: punchOutTime,
             shift_id: selectedShift,
             reason: reason,
+            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
             incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
                 (authorization_incharge === 1 && incharge === 0) ? 1 :
                     (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
@@ -204,6 +205,13 @@ const OneHourRequest = ({ count, setCount }) => {
         selectedShift, authorization_incharge, authorization_hod, hod, incharge,
         checkinBox, checkoutBox, empHodStat])
 
+    const holidayData = useMemo(() => {
+        return {
+            em_id: em_id,
+            date: moment(fromDate).format('YYYY-MM-DD')
+        }
+    }, [fromDate, em_id])
+
     const submitRequest = async () => {
         if (checkinBox === false && checkoutBox === false) {
             warningNofity("Check In || Check Out Needs To Check")
@@ -214,11 +222,13 @@ const OneHourRequest = ({ count, setCount }) => {
             warningNofity("Please Select Punch Data Button!!")
         }
         else {
+
+            //check in time correct
             if (checkinBox === true) {
                 const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm')
                 const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm')
                 const result = punchData.find((val) => val)
-                const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+                const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
                 if (dd === 0) {
                     warningNofity("Can't Apply For One Hour Request!!");
                     setSelectedShift(0)
@@ -230,27 +240,38 @@ const OneHourRequest = ({ count, setCount }) => {
                     setCheckOutCheck(false)
                 } else {
                     // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
-                    const result = await axioslogin.post('/CommonReqst', postData)
-                    const { message, success } = result.data;
+                    const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                    const { success, data } = result.data;
                     if (success === 1) {
-                        succesNofity(message)
-                        setCount(count + 1)
-                        setSelectedShift(0)
-                        setFromDate(moment(new Date()))
-                        setReason('')
-                        setPunchInTime(0)
-                        setPunchOutTime(0)
-                        setCheckInCheck(false)
-                        setCheckOutCheck(false)
+                        const { holiday_status } = data[0]
+                        if (holiday_status === 1) {
+                            warningNofity("Cannot Apply for One request on Holiday")
+                        } else {
+                            const result = await axioslogin.post('/CommonReqst', postData)
+                            const { message, success } = result.data;
+                            if (success === 1) {
+                                succesNofity(message)
+                                setCount(count + 1)
+                                setSelectedShift(0)
+                                setFromDate(moment(new Date()))
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                            } else {
+                                warningNofity(message)
+                                setSelectedShift(0)
+                                setFromDate(moment(new Date()))
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                            }
+                        }
                     } else {
-                        warningNofity(message)
-                        setSelectedShift(0)
-                        setFromDate(moment(new Date()))
-                        setReason('')
-                        setPunchInTime(0)
-                        setPunchOutTime(0)
-                        setCheckInCheck(false)
-                        setCheckOutCheck(false)
+                        warningNofity("Duty plan data not found, Contact HRD")
                     }
                 }
             } else {
@@ -270,27 +291,38 @@ const OneHourRequest = ({ count, setCount }) => {
                     setCheckInCheck(false)
                     setCheckOutCheck(false)
                 } else {
-                    const result = await axioslogin.post('/CommonReqst', postData)
-                    const { message, success } = result.data;
+                    const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                    const { success, data } = result.data;
                     if (success === 1) {
-                        succesNofity(message)
-                        setCount(count + 1)
-                        setSelectedShift(0)
-                        setFromDate(moment(new Date()))
-                        setReason('')
-                        setPunchInTime(0)
-                        setPunchOutTime(0)
-                        setCheckInCheck(false)
-                        setCheckOutCheck(false)
+                        const { holiday_status } = data[0]
+                        if (holiday_status === 1) {
+                            warningNofity("Cannot Apply for One request on Holiday")
+                        } else {
+                            const result = await axioslogin.post('/CommonReqst', postData)
+                            const { message, success } = result.data;
+                            if (success === 1) {
+                                succesNofity(message)
+                                setCount(count + 1)
+                                setSelectedShift(0)
+                                setFromDate(moment(new Date()))
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                            } else {
+                                warningNofity(message)
+                                setSelectedShift(0)
+                                setFromDate(moment(new Date()))
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                            }
+                        }
                     } else {
-                        warningNofity(message)
-                        setSelectedShift(0)
-                        setFromDate(moment(new Date()))
-                        setReason('')
-                        setPunchInTime(0)
-                        setPunchOutTime(0)
-                        setCheckInCheck(false)
-                        setCheckOutCheck(false)
+                        warningNofity("Duty plan data not found, Contact HRD")
                     }
                 }
             }

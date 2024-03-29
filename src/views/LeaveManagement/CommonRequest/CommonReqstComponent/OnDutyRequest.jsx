@@ -2,6 +2,7 @@ import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { startOfMonth } from 'date-fns'
 import moment from 'moment'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -96,6 +97,7 @@ const OnDutyRequest = () => {
                 in_time: val.inValue === true ? 1 : 0,
                 out_time: val.outValue === true ? 1 : 0,
                 onduty_reason: remark,
+                attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
                 incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
                     (authorization_incharge === 1 && incharge === 0) ? 1 :
                         (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
@@ -123,13 +125,11 @@ const OnDutyRequest = () => {
             return obj
         })
 
-        const postData = {
-            fromdate: moment(fromDate).format('YYYY-MM-DD'),
-            todate: moment(toDate).format('YYYY-MM-DD'),
-            em_no: em_no
+        let postData = {
+            month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
+            section: em_dept_section
         }
-
-        const result = await axioslogin.post('/CommonReqst/check/attendance', postData)
+        const result = await axioslogin.post('/attendCal/updatePunchMarkingHR/', postData)
         const { data } = result.data
         if (data.length === 0) {
             const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
@@ -150,7 +150,7 @@ const OnDutyRequest = () => {
                 setSelectedShift(0)
             }
         } else {
-            warningNofity("Attendance Marking Is Done, Contact HRD!!")
+            warningNofity("Attendance Marking Is Done, Can't Apply On duty Request")
         }
     }
     return (

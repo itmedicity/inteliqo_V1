@@ -19,7 +19,7 @@ import HalfDayCasualLeaveOption from '../Func/HalfDayCasualLeaveOption'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { addDays, format } from 'date-fns'
+import { addDays, format, startOfMonth } from 'date-fns'
 
 const HaldayRequetsMainForm = () => {
 
@@ -211,6 +211,7 @@ const HaldayRequetsMainForm = () => {
                         em_no: em_no,
                         em_department: em_department,
                         em_dept_section: em_dept_section,
+                        attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
                         inc_apprv_req:
                             (authorization_incharge === 1 && incharge === 1) ? 1 :
                                 (authorization_incharge === 1 && incharge === 0) ? 1 :

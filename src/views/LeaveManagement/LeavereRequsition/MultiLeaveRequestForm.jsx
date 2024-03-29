@@ -7,7 +7,7 @@ import { Form } from 'react-bootstrap';
 import { Button, CssVarsProvider, Textarea, Tooltip, Typography as Typo } from '@mui/joy';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns';
+import { add, differenceInCalendarDays, eachDayOfInterval, format, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -187,6 +187,7 @@ const MultiLeaveRequestForm = () => {
             em_dept_section: em_dept_section,
             leavefrom_date: fromDate,
             leavetodate: toDate,
+            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
             rejoin_date: format(add(new Date(toDate), { days: 1 }), "yyyy-MM-dd"),
             request_status: 1,
             inc_apprv_req:
