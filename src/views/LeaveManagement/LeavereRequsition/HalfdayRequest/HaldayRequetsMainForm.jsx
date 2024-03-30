@@ -10,7 +10,7 @@ import moment from 'moment'
 import _ from 'underscore'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -19,7 +19,7 @@ import HalfDayCasualLeaveOption from '../Func/HalfDayCasualLeaveOption'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { addDays, format, startOfMonth } from 'date-fns'
+import { addDays, format, lastDayOfMonth, startOfMonth } from 'date-fns'
 
 const HaldayRequetsMainForm = () => {
 
@@ -259,21 +259,40 @@ const HaldayRequetsMainForm = () => {
                             warningNofity("Cannot Apply for Halfday Request on Holiday")
                             setDropOpen(false)
                         } else {
-                            const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                            const { success, message } = result.data;
-                            if (success === 1) {
-                                succesNofity(message)
-                                changeForm()
-                                setDropOpen(false)
-                                dispatch(getCreditedCasualLeave(em_id))
-                            } else if (success === 2) {
-                                warningNofity(message)
-                                changeForm()
-                                setDropOpen(false)
+                            const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                            const postData = {
+                                month: monthStartDate,
+                                section: em_dept_section
+                            }
+                            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+                            const { success, data } = checkPunchMarkingHr.data
+                            if (success === 0 || success === 1) {
+                                const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                                const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+
+                                if (lastUpdateDate === lastDay_month) {
+                                    warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                                    setDropOpen(false)
+                                } else {
+                                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                                    const { success, message } = result.data;
+                                    if (success === 1) {
+                                        succesNofity(message)
+                                        changeForm()
+                                        setDropOpen(false)
+                                        dispatch(getCreditedCasualLeave(em_id))
+                                    } else if (success === 2) {
+                                        warningNofity(message)
+                                        changeForm()
+                                        setDropOpen(false)
+                                    } else {
+                                        warningNofity(`Contact EDP ${JSON.stringify(message)}`)
+                                        changeForm()
+                                        setDropOpen(false)
+                                    }
+                                }
                             } else {
-                                warningNofity(`Contact EDP ${JSON.stringify(message)}`)
-                                changeForm()
-                                setDropOpen(false)
+                                errorNofity("Error getting PunchMarkingHR ")
                             }
                         }
                     } else {
