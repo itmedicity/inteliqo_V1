@@ -92,9 +92,9 @@ export const processPunchMarkingHrFunc = async (
                             punch_slno: val.punch_slno,
                             punch_in: val.punch_in,
                             punch_out: val.punch_out,
-                            hrs_worked: getLateInTime?.hrsWorked,
-                            late_in: getLateInTime?.lateIn,
-                            early_out: getLateInTime?.earlyOut,
+                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
                             duty_status: getAttendanceStatus?.duty_status,
                             holiday_status: val.holiday_status,
                             leave_status: val.leave_status,
@@ -415,6 +415,7 @@ export const processShiftPunchMarkingHrFunc = async (
                 const punchMasterMappedData = data?.map((e) => e.value)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
+                        // console.log(val)
                         const holidayStatus = val.holiday_status;
                         const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
                         const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
@@ -426,6 +427,7 @@ export const processShiftPunchMarkingHrFunc = async (
                         const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                        // console.log(getLateInTime)
                         const getAttendanceStatus = await getAttendanceCalculation(
                             punch_In,
                             shift_in,
@@ -446,9 +448,9 @@ export const processShiftPunchMarkingHrFunc = async (
                             punch_slno: val.punch_slno,
                             punch_in: val.punch_in,
                             punch_out: val.punch_out,
-                            hrs_worked: getLateInTime?.hrsWorked,
-                            late_in: getLateInTime?.lateIn,
-                            early_out: getLateInTime?.earlyOut,
+                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
                             duty_status: getAttendanceStatus?.duty_status,
                             holiday_status: val.holiday_status,
                             leave_status: val.leave_status,
