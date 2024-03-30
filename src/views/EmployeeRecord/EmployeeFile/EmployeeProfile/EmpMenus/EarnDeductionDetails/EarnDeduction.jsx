@@ -271,8 +271,6 @@ const EarnDeduction = () => {
         }
     }, [updateData, postData, id, no, count, flag, resetForm])
 
-    console.log(id);
-
     //Redirection
     const handleClose = () => {
         setOpen(false);
