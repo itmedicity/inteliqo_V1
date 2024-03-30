@@ -16,6 +16,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { lastDayOfMonth, startOfMonth } from 'date-fns'
 
 const MissPunchRequest = () => {
 
@@ -141,6 +142,7 @@ const MissPunchRequest = () => {
                 checkoutflag: checkOutCheck === true ? 1 : 0,
                 checkouttime: checkOutCheck === true ? `${moment(fromDate).format('YYYY-MM-DD')} ${moment(shft_chkout_time).format('HH:mm')}` : null,
                 nopunchdate: moment(fromDate).format('YYYY-MM-DD'),  // mispunch date
+                attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
                 plan_slno: plan_slno,
                 shift_id: shift_id,
                 crted_user: em_id,
@@ -182,52 +184,55 @@ const MissPunchRequest = () => {
                 resonforleave: reason,
             }
 
-            let postDataForGetAttendMarking = {
-                empNo: em_no,
-                fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                toDate: moment(fromDate).format('YYYY-MM-DD')
-            }
-
             const holidayData = {
                 em_id: em_id,
                 date: moment(fromDate).format('YYYY-MM-DD')
             }
 
-            //Checking attendance marking is saved in  current month || start of month b/w current date 
-            const result = await axioslogin.post('/attedancemarkSave/check', postDataForGetAttendMarking)
-            const { success } = result.data;
+            const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+            const { success, data } = result.data;
             if (success === 1) {
-                warningNofity("Attendance Marking Processed ! Contact HRD")
-            } else {
-                const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    const { holiday_status } = data[0]
-                    if (holiday_status === 1) {
-                        warningNofity("Cannot Apply for No punch request on Holiday")
-                        setDropOpen(false)
-                    } else {
-                        const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
-                        const { success, message } = result.data;
-                        if (success === 1) {
-                            succesNofity(message)
-                            changeForm()
-                            setDropOpen(false)
-                        } else if (success === 2) {
-                            warningNofity(message)
-                            changeForm()
-                            setDropOpen(false)
-                        } else {
-                            errorNofity(` Contact IT ${JSON.stringify(message)}`)
-                            changeForm()
-                            setDropOpen(false)
-                        }
-                    }
-                } else {
-                    warningNofity("Duty plan data not found, Contact HRD")
+                const { holiday_status } = data[0]
+                if (holiday_status === 1) {
+                    warningNofity("Cannot Apply for No punch request on Holiday")
                     setDropOpen(false)
+                } else {
+                    const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                    const postData = {
+                        month: monthStartDate,
+                        section: em_dept_section
+                    }
+                    const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+                    const { success, data } = checkPunchMarkingHr.data
+                    if (success === 0 || success === 1) {
+                        const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                        const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                        if (lastUpdateDate === lastDay_month) {
+                            warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                        } else {
+                            const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
+                            const { success, message } = result.data;
+                            if (success === 1) {
+                                succesNofity(message)
+                                changeForm()
+                                setDropOpen(false)
+                            } else if (success === 2) {
+                                warningNofity(message)
+                                changeForm()
+                                setDropOpen(false)
+                            } else {
+                                errorNofity(` Contact IT ${JSON.stringify(message)}`)
+                                changeForm()
+                                setDropOpen(false)
+                            }
+                        }
+                    } else {
+                        errorNofity("Error getting PunchMarkingHR ")
+                    }
                 }
-
+            } else {
+                warningNofity("Duty plan data not found, Contact HRD")
+                setDropOpen(false)
             }
         }
     }, [shiftInformation, reason, checkInCheck, checkOutCheck, authorization_hod, shft_chkin_time,

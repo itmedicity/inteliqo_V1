@@ -7,13 +7,13 @@ import { Form } from 'react-bootstrap';
 import { Button, CssVarsProvider, Textarea, Tooltip, Typography as Typo } from '@mui/joy';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns';
+import { add, differenceInCalendarDays, eachDayOfInterval, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { getleaverequest } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { Actiontypes } from 'src/redux/constants/action.type'
@@ -187,6 +187,7 @@ const MultiLeaveRequestForm = () => {
             em_dept_section: em_dept_section,
             leavefrom_date: fromDate,
             leavetodate: toDate,
+            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
             rejoin_date: format(add(new Date(toDate), { days: 1 }), "yyyy-MM-dd"),
             request_status: 1,
             inc_apprv_req:
@@ -287,25 +288,45 @@ const MultiLeaveRequestForm = () => {
                         })
 
                         // insert the single leave request 
-                        const result = await axioslogin.post('/LeaveRequest', postData);
-                        const { success, message } = await result.data;
-                        if (success === 1) {
-                            // insert the leave request detailed table
-                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
-                            const { success, message } = await insertDetlTable.data;
-                            if (success === 1) {
-                                succesNofity(message);
-                                changeForm()
+
+                        const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                        const dateCheck = {
+                            month: monthStartDate,
+                            section: em_dept_section
+                        }
+
+                        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+                        const { success, data } = checkPunchMarkingHr.data
+                        if (success === 0 || success === 1) {
+                            const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                            const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                            if (lastUpdateDate === lastDay_month) {
+                                warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                                 setDropOpen(false)
                             } else {
-                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                                changeForm()
-                                setDropOpen(false)
+                                const result = await axioslogin.post('/LeaveRequest', postData);
+                                const { success, message } = await result.data;
+                                if (success === 1) {
+                                    // insert the leave request detailed table
+                                    const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                                    const { success, message } = await insertDetlTable.data;
+                                    if (success === 1) {
+                                        succesNofity(message);
+                                        changeForm()
+                                        setDropOpen(false)
+                                    } else {
+                                        warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                        changeForm()
+                                        setDropOpen(false)
+                                    }
+                                } else {
+                                    warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                    changeForm()
+                                    setDropOpen(false)
+                                }
                             }
                         } else {
-                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                            changeForm()
-                            setDropOpen(false)
+                            errorNofity("Error getting PunchMarkingHR ")
                         }
                     }
 
@@ -331,27 +352,47 @@ const MultiLeaveRequestForm = () => {
                     }
                 })
 
+
                 //insert the single leave request
-                const result = await axioslogin.post('/LeaveRequest', postData);
-                const { success, message } = await result.data;
-                if (success === 1) {
-                    //insert the leave request detailed table
-                    const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
-                    const { success, message } = await insertDetlTable.data;
-                    if (success === 1) {
-                        succesNofity(message);
-                        changeForm()
+                const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                const dateCheck = {
+                    month: monthStartDate,
+                    section: em_dept_section
+                }
+
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                    const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                    if (lastUpdateDate === lastDay_month) {
+                        warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                         setDropOpen(false)
-                        fetchleaveInformationFun(dispatch, em_id)
                     } else {
-                        warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                        changeForm()
-                        setDropOpen(false)
+                        const result = await axioslogin.post('/LeaveRequest', postData);
+                        const { success, message } = await result.data;
+                        if (success === 1) {
+                            //insert the leave request detailed table
+                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                            const { success, message } = await insertDetlTable.data;
+                            if (success === 1) {
+                                succesNofity(message);
+                                changeForm()
+                                setDropOpen(false)
+                                fetchleaveInformationFun(dispatch, em_id)
+                            } else {
+                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                changeForm()
+                                setDropOpen(false)
+                            }
+                        } else {
+                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                            changeForm()
+                            setDropOpen(false)
+                        }
                     }
                 } else {
-                    warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                    changeForm()
-                    setDropOpen(false)
+                    errorNofity("Error getting PunchMarkingHR ")
                 }
             }
         }

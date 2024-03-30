@@ -12,7 +12,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { axioslogin } from 'src/views/Axios/Axios'
-import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours } from 'date-fns'
+import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours, startOfMonth, lastDayOfMonth } from 'date-fns'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -262,14 +262,31 @@ const CompansatoryOffMast = () => {
                     punchSlno: punchSlno
                 }
 
-                const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', coffPostData)
-                const { success, message } = result.data;
-                if (success === 1) {
-                    succesNofity('C-OFF Request Created SuccessFully')
-                    changeForm()
+                const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                const postData = {
+                    month: monthStartDate,
+                    section: em_dept_section
+                }
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                    const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                    if (lastUpdateDate === lastDay_month) {
+                        warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                    } else {
+                        const result = await axioslogin.post('/LeaveRequest/insertcompensatyoff', coffPostData)
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            succesNofity('C-OFF Request Created SuccessFully')
+                            changeForm()
+                        } else {
+                            errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
+                            changeForm()
+                        }
+                    }
                 } else {
-                    errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
-                    changeForm()
+                    errorNofity("Error getting PunchMarkingHR ")
                 }
             } else if (offType === 1) {
                 // request for extra time convert to c -off

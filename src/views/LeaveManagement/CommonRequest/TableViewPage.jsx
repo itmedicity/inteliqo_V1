@@ -58,6 +58,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.miss_punch_day).format('DD-MM-YYYY'),
                     reason: val.reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
                     hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -81,6 +83,9 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.on_duty_date).format('DD-MM-YYYY'),
                     reason: val.onduty_reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
+                    hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
                             (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
@@ -102,6 +107,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.one_hour_duty_day).format('DD-MM-YYYY'),
                     reason: val.reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
                     hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -128,6 +135,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.miss_punch_day).format('DD-MM-YYYY'),
                     reason: val.reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
                     hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -153,6 +162,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.on_duty_date).format('DD-MM-YYYY'),
                     reason: val.onduty_reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
                     hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -178,6 +189,8 @@ const TableViewPage = ({ show, count, setCount }) => {
                     reqDate: moment(val.request_date).format('DD-MM-YYYY'),
                     dutyDate: moment(val.one_hour_duty_day).format('DD-MM-YYYY'),
                     reason: val.reason,
+                    inchStatus: val.incharge_approval_status,
+                    hodStatus: val.hod_approval_status,
                     hrstatus: val.hr_approval_status,
                     status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                         (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -199,7 +212,7 @@ const TableViewPage = ({ show, count, setCount }) => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hrstatus === 1) {
+                if (params.data.hrstatus === 1 || params.data.inchStatus === 1 || params.data.hodStatus === 1) {
                     return <IconButton
                         sx={{ paddingY: 0.5 }} >
                         <BeenhereIcon />
@@ -229,7 +242,7 @@ const TableViewPage = ({ show, count, setCount }) => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hrstatus === 1) {
+                if (params.data.hrstatus === 1 || params.data.inchStatus === 1 || params.data.hodStatus === 1) {
                     return <IconButton
                         sx={{ paddingY: 0.5 }} >
                         <BeenhereIcon />

@@ -139,7 +139,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount,
             if (reason === '') {
                 infoNofity("Please Add remark!")
             } else {
-                const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                const result = await axioslogin.patch('/LeaveRequestApproval/inchargeRejectHalfday', submhalfday)
                 const { success, message } = result.data
                 if (success === 1) {
                     succesNofity(message)
@@ -158,7 +158,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, em_id, setcount,
             if (success === 1) {
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
                 if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
-                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeRejectHalfday', submhalfday)
                     const { success } = result.data
                     if (success === 1) {
                         const result = await axioslogin.patch('/LeaveRequestApproval/HodRejectHalfday', submhalfday)
