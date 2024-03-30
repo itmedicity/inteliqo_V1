@@ -10,14 +10,16 @@ import { format, isValid } from 'date-fns';
 
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
-const TableRows = ({ data, disable, no }) => {
+const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray }) => {
+    // console.log(data)
+    const { isNOff, isWeekOff } = data;
     const hideStatus = data?.hideStatus;
     //MODAL OPEN STATE
     const [open, setOpen] = useState(false);
     return (
         <>
             <Suspense>
-                <ShiftModal open={open} setOpen={setOpen} data={data} />
+                <ShiftModal open={open} setOpen={setOpen} data={data} punchData={punchData} punchMast={punchMaster} setTableArray={setTableArray} /> : null
             </Suspense>
             <TableRow hover sx={{ backgroundColor: (data?.late_in > 0 || data?.early_out) ? '#FCD7D7' : (data?.isWeekOff === true || data?.isNOff === true) ? '#CBE6CE' : '' }} >
                 {

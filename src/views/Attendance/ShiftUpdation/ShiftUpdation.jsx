@@ -62,6 +62,10 @@ const ShiftUpdation = () => {
     const [department, setDepart] = useState(0)
     const [self, setSelf] = useState(false)
     const [empSalary, setEmpSalary] = useState([]);
+    const [punchData, setPunchData] = useState([])
+
+    const punchDta = useMemo(() => punchData, [punchData])
+    const punchMast = useMemo(() => tableArray, [tableArray])
 
     //get the employee details for taking the HOd and Incharge Details
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -386,7 +390,7 @@ const ShiftUpdation = () => {
                                 hideStatus: 1,
                                 isWeekOff: (e.shift_id === week_off_day),
                                 isNOff: e.shift_id === noff,
-                                lvereq_desc: e.lvereq_desc
+                                lvereq_desc: e.duty_desc
 
                             }
                         })
@@ -421,6 +425,7 @@ const ShiftUpdation = () => {
                     // console.log(su, result_data)
                     if (su === 1) {
                         const punchaData = result_data;
+                        setPunchData(punchaData)
                         const empList = [emply.em_no]
                         // PUNCH MARKING HR PROCESS START
                         const result = await processShiftPunchMarkingHrFunc(
@@ -444,7 +449,7 @@ const ShiftUpdation = () => {
                             // console.log(success, planData)
                             if (success === 1) {
                                 const tb = planData?.map((e) => {
-
+                                    // console.log(e)
                                     const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
                                     const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
@@ -475,10 +480,11 @@ const ShiftUpdation = () => {
                                         early_out: e.early_out,
                                         shiftIn: e.shift_in,
                                         shiftOut: e.shift_out,
-                                        hideStatus: 1,
+                                        hideStatus: 0,
                                         isWeekOff: (e.shift_id === week_off_day),
                                         isNOff: e.shift_id === noff,
-                                        lvereq_desc: e.lvereq_desc
+                                        lvereq_desc: e.duty_desc,
+                                        holiday_status: e.holiday_status
                                     }
                                 })
                                 setTableArray(tb)
@@ -773,8 +779,7 @@ const ShiftUpdation = () => {
                                     <Suspense>
                                         {
                                             tableArray?.map((val, ind) => {
-                                                return <TableRows key={ind} no={ind} data={val}
-                                                    disable={disable} />
+                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} />
                                             })
                                         }
                                     </Suspense>

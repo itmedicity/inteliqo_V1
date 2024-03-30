@@ -92,8 +92,6 @@ const AllView = ({ em_id }) => {
     }
     return (
         <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight, flexDirection: 'column' }}>
-
-
             <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                 <Box sx={{ flex: 1 }} >
                     <CssVarsProvider>

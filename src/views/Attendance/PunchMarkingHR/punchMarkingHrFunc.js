@@ -142,7 +142,7 @@ export const processPunchMarkingHrFunc = async (
     }
 }
 
-const getAttendanceCalculation = async (
+export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
 ) => {
     const { hrsWorked, lateIn, earlyOut } = getLateInTime;
@@ -276,7 +276,7 @@ const getAttendanceCalculation = async (
 }
 
 //GET THE LATEIN 
-const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
+export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
 
     if (isValid(punch_In) === true && isValid(punch_out) === true) {
         //HOURS WORKED
