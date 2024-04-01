@@ -7,10 +7,19 @@ import { useState } from 'react';
 import moment from 'moment';
 import { Chip } from '@mui/joy';
 import { format, isValid } from 'date-fns';
+import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray }) => {
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonSetting = useMemo(() => state, [state])
+
+    const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
+        week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+
     // console.log(data)
     const { isNOff, isWeekOff } = data;
     const hideStatus = data?.hideStatus;
@@ -52,10 +61,21 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray })
                     {isValid(new Date(data.punch_out)) && data.punch_out !== null ? format(new Date(data.punch_out), 'dd/MM/yyyy HH:mm') : data.punch_out}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.hrs_worked}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: data?.late_in > 0 ? 'white' : '#003A75', fontWeight: 550, backgroundColor: data?.late_in > 0 && '#FB5C5C' }} >
+                <TableCell size='small' padding='none' align="center"
+                    sx={{
+                        color: data?.late_in > 0 ? 'white' : '#003A75',
+                        fontWeight: 550,
+                        backgroundColor: (data?.late_in === 0 || cmmn_grace_period >= data?.late_in) ? 'green' : '#FB5C5C'
+                    }}
+                >
                     {data.late_in !== null ? data.late_in : 0}
                 </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: data?.early_out > 0 ? 'white' : '#003A75', fontWeight: 550, backgroundColor: data?.early_out > 0 && '#F8698D' }} >
+                <TableCell size='small' padding='none' align="center"
+                    sx={{
+                        color: data?.early_out > 0 ? 'white' : '#003A75',
+                        fontWeight: 550, backgroundColor: data?.early_out > 0 && '#F8698D'
+                    }}
+                >
                     {data.early_out !== null ? data.early_out : 0}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >

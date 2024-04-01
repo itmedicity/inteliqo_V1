@@ -79,19 +79,22 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         ?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
         ?.map((e) => new Date(format(new Date(e), 'yyyy-MM-dd HH:mm')))
     const filterdPunchMasterData = punchMast
-        ?.map((e) => [isValid(new Date(e.punch_in)) && new Date(e.punch_in), isValid(new Date(e.punch_in)) && new Date(e.punch_out)])
+        ?.map((e) => [isValid(new Date(e.punch_in)) && new Date(e.punch_in), isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
         ?.flat()
         ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
         ?.map((e) => new Date(format(new Date(e), 'yyyy-MM-dd HH:mm')))
     //GET DUTY DAY ALREADY UPDATED PUNCH IN AND OUT FROM PUNCH MASTER TABLE
     const updatedPunchMasterDta = punchMast?.filter((e) => e.duty_day === selectedDate)
-        ?.map((e) => [isValid(new Date(e.punch_in)) && new Date(e.punch_in), isValid(new Date(e.punch_in)) && new Date(e.punch_out)])
+        ?.map((e) => [e.punch_in !== null && isValid(new Date(e.punch_in)) && new Date(e.punch_in), e.punch_out !== null && isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
+
 
     const filterData = filterdPunchData
-        ?.filter((val) => filterdPunchMasterData?.find((e) => format(new Date(e), 'yyyy-MM-dd HH:mm') === format(new Date(val), 'yyyy-MM-dd HH:mm')) === undefined)
+        // ?.filter((val) => filterdPunchMasterData?.find((e) => format(new Date(e), 'yyyy-MM-dd HH:mm') === format(new Date(val), 'yyyy-MM-dd HH:mm')) === undefined)
         ?.concat(updatedPunchMasterDta)
         ?.flat()
+        ?.filter((e) => e !== false)
 
+    // console.log(filterData)
 
     // let checkinStart = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_start), 'HH:mm')}`;
     // let checkinEnd = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_end), 'HH:mm')}`;
