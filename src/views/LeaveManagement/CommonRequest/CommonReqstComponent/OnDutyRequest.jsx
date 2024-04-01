@@ -2,7 +2,7 @@ import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { startOfMonth } from 'date-fns'
+import { lastDayOfMonth, startOfMonth } from 'date-fns'
 import moment from 'moment'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -125,32 +125,40 @@ const OnDutyRequest = () => {
             return obj
         })
 
-        let postData = {
-            month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
+        const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+        const dateCheck = {
+            month: monthStartDate,
             section: em_dept_section
         }
-        const result = await axioslogin.post('/attendCal/updatePunchMarkingHR/', postData)
-        const { data } = result.data
-        if (data.length === 0) {
-            const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setFromDate(moment(new Date()))
-                setToDate(moment(new Date()))
-                setViewTable(0)
-                setRemark('')
-                setSelectedShift(0)
+        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+        const { success, data } = checkPunchMarkingHr.data
+        if (success === 0 || success === 1) {
+            const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+            const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+
+            if (lastUpdateDate === lastDay_month) {
+                warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
             } else {
-                errorNofity(message)
-                setFromDate(moment(new Date()))
-                setToDate(moment(new Date()))
-                setViewTable(0)
-                setRemark('')
-                setSelectedShift(0)
+                const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    succesNofity(message)
+                    setFromDate(moment(new Date()))
+                    setToDate(moment(new Date()))
+                    setViewTable(0)
+                    setRemark('')
+                    setSelectedShift(0)
+                } else {
+                    errorNofity(message)
+                    setFromDate(moment(new Date()))
+                    setToDate(moment(new Date()))
+                    setViewTable(0)
+                    setRemark('')
+                    setSelectedShift(0)
+                }
             }
         } else {
-            warningNofity("Attendance Marking Is Done, Can't Apply On duty Request")
+            errorNofity("Error getting PunchMarkingHR ")
         }
     }
     return (

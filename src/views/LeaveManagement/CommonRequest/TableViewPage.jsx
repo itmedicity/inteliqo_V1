@@ -232,13 +232,13 @@ const TableViewPage = ({ show, count, setCount }) => {
 
 
     const [columndef] = useState([
-        { headerName: 'Emp Name', field: 'empname' },
-        { headerName: 'Department Section ', field: 'sectname' },
-        { headerName: 'Request Type ', field: 'type' },
+        { headerName: 'Emp Name', field: 'empname', minWidth: 200 },
+        { headerName: 'Department Section ', field: 'sectname', minWidth: 250 },
+        { headerName: 'Request Type ', field: 'type', minWidth: 200 },
         { headerName: 'Duty Date ', field: 'dutyDate', filter: true },
         { headerName: 'Request Date', field: 'reqDate', filter: true },
-        { headerName: 'Reason ', field: 'reason', },
-        { headerName: 'Status', field: 'status', filter: true },
+        { headerName: 'Reason ', field: 'reason', minWidth: 200 },
+        { headerName: 'Status', field: 'status', filter: true, minWidth: 250 },
         {
             headerName: 'Action',
             cellRenderer: params => {
