@@ -394,7 +394,8 @@ const ShiftUpdation = () => {
 
                             }
                         })
-                        setTableArray(tb)
+                        const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                        setTableArray(array)
                         ///////////////////
                     }
 
@@ -487,7 +488,8 @@ const ShiftUpdation = () => {
                                         holiday_status: e.holiday_status
                                     }
                                 })
-                                setTableArray(tb)
+                                const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                                setTableArray(array)
                                 setOpenBkDrop(false)
                                 succesNofity('Punch Master Updated Successfully')
                             } else {
