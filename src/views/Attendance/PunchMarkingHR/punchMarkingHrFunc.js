@@ -154,7 +154,7 @@ export const getAttendanceCalculation = async (
     const totalShiftInMInits = differenceInMinutes(new Date(shift_out), new Date(shift_in))
     const halfDayInMinits = totalShiftInMInits / 2;
     const halfDayStartTime = addMinutes(shift_in, halfDayInMinits - 1)
-
+    console.log(getLateInTime)
     if (checkShiftIdStatus === true) {
         // This condition not included  ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
         if (isValid(punch_In) === true && isValid(punch_out) === true) {
@@ -284,14 +284,20 @@ export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift
         if (isAfter(punch_In, shift_in) === true) {
             //GET LATE IN TIME
             const getLateInMinits = differenceInMinutes(punch_In, shift_in)
-            return { hrsWorked: hoursWorked, lateIn: getLateInMinits, earlyOut: 0 }
+            const getEarlyOutInMinits = differenceInMinutes(shift_out, punch_out)
+
+            return { hrsWorked: hoursWorked, lateIn: getLateInMinits <= 0 ? 0 : getLateInMinits, earlyOut: getEarlyOutInMinits <= 0 ? 0 : getEarlyOutInMinits }
 
         } else if (isBefore(punch_out, shift_out) === true) {
             // GET EARLY OUT TIME
             const getEarlyOutInMinits = differenceInMinutes(shift_out, punch_out)
-            return { hrsWorked: hoursWorked, lateIn: 0, earlyOut: getEarlyOutInMinits }
+            const getLateInMinits = differenceInMinutes(punch_In, shift_in)
+            return { hrsWorked: hoursWorked, lateIn: getLateInMinits <= 0 ? 0 : getLateInMinits, earlyOut: getEarlyOutInMinits <= 0 ? 0 : getEarlyOutInMinits }
         } else {
-            return { hrsWorked: hoursWorked, lateIn: 0, earlyOut: 0 };
+            const getEarlyOutInMinits = differenceInMinutes(shift_out, punch_out)
+            const getLateInMinits = differenceInMinutes(punch_In, shift_in)
+
+            return { hrsWorked: hoursWorked, lateIn: getLateInMinits <= 0 ? 0 : getLateInMinits, earlyOut: getEarlyOutInMinits <= 0 ? 0 : getEarlyOutInMinits };
         }
     } else {
         return { hrsWorked: 0, lateIn: 0, earlyOut: 0 };

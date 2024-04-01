@@ -46,7 +46,6 @@ const EmployeeCompnt = ({ em_no }) => {
     }
 
     return (
-
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                 <Paper
