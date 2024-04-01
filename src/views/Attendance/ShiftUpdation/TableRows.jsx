@@ -29,7 +29,10 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray })
                                 disable === true ?
                                     <IconButton aria-label="delete" size="small" sx={{ p: 0 }} disabled><ArticleOutlinedIcon /></IconButton>
                                     :
-                                    <IconButton aria-label="delete" size="small" sx={{ p: 0 }} onClick={() => setOpen(true)} ><ArticleOutlinedIcon /></IconButton>
+                                    (isNOff === true || isWeekOff === true) ?
+                                        <IconButton aria-label="delete" size="small" sx={{ p: 0 }} disabled  ><ArticleOutlinedIcon color='disabled' /></IconButton>
+                                        :
+                                        <IconButton aria-label="delete" size="small" sx={{ p: 0 }} onClick={() => setOpen(true)} ><ArticleOutlinedIcon color='secondary' /></IconButton>
                             }
                         </TableCell> :
                         <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{no + 1}</TableCell>
