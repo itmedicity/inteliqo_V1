@@ -1,7 +1,7 @@
 import { Box, Button, CssVarsProvider, Input } from '@mui/joy'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { addMonths } from 'date-fns'
+import { addMonths, endOfMonth, format, startOfMonth, subDays } from 'date-fns'
 import React, { memo, useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
@@ -12,6 +12,8 @@ import { setDepartment } from 'src/redux/actions/Department.action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import Table from '@mui/joy/Table';
+import { useCallback } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios'
 
 const SalaryProcessed = () => {
 
@@ -24,6 +26,55 @@ const SalaryProcessed = () => {
     useEffect(() => {
         dispatch(setDepartment());
     }, [dispatch])
+
+
+    const onClickProcess = useCallback(async () => {
+        const monthStartDate = format(subDays(startOfMonth(new Date(value)), 6), 'yyyy-MM-dd');
+        const endOfMonthDate = format(endOfMonth(new Date(value)), 'yyyy-MM-dd');
+        const postDate = {
+            fromDate: monthStartDate,
+            toDate: endOfMonthDate
+        }
+
+        // console.log(postDate)
+
+        const getPunchMasterDta = await axioslogin.post("/payrollprocess/getPunchMasterSalaryAllEmployee", postDate);
+        const { success, data } = getPunchMasterDta.data
+
+        // console.log(data, success)
+        const filterdPunchMaster = data;
+
+        const filterEmNoFromPunMast = [...new Set(filterdPunchMaster?.map((e) => e.em_no))];
+
+        const datass = filterEmNoFromPunMast?.map((emno) => {
+            return {
+                em_no: emno,
+                data: filterdPunchMaster?.filter((l) => l.em_no === emno)?.map((el) => {
+                    return {
+                        duty_day: el.duty_day,
+                        em_no: el.em_no,
+                        duty_desc: el.duty_desc
+                    }
+                })?.sort((a, b) => b.duty_day - a.duty_day)
+            }
+        })?.filter((g) => g.em_no === 13802)
+
+        // 
+
+
+        datass[0].data?.map(async (b) => {
+            // await setTimeout(async () => {
+            //     await setInterval(() => {
+            //         console.log(b)
+            //     }, 2000)
+            // }, 4000);
+        }) // Resolving with some processed value
+
+
+        console.log(datass)
+
+    }, [value])
+
 
     return (
         <CustomLayout title="Salary Process Reports" displayClose={true} >
@@ -60,12 +111,13 @@ const SalaryProcessed = () => {
                     </Box>
                     <Box sx={{ display: 'flex', flex: 5, px: 2 }} >
                         <CssVarsProvider>
-                            <Button aria-label="Like" variant="outlined" color='success' onClick={() => { }}
+                            <Button aria-label="Like" variant="outlined" color='success'
                                 sx={{
                                     // color: '#90caf9'
                                 }}
                                 startDecorator={<RotateRightIcon />}
                                 endDecorator={'Process'}
+                                onClick={onClickProcess}
                             >
 
                             </Button>

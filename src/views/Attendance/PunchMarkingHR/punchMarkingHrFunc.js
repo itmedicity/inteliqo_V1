@@ -201,6 +201,7 @@ export const getAttendanceCalculation = async (
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
 
             } else {
+                console.log(getLateInTime)
                 // HOLIDAY === YES
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                     {
@@ -447,7 +448,7 @@ export const processShiftPunchMarkingHrFunc = async (
                         const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
-                        // console.log(getLateInTime)
+                        console.log(getLateInTime)
                         const getAttendanceStatus = await getAttendanceCalculation(
                             punch_In,
                             shift_in,
