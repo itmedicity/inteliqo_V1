@@ -14,6 +14,7 @@ import RotateRightIcon from '@mui/icons-material/RotateRight';
 import Table from '@mui/joy/Table';
 import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
+import { calculateDutyDesc } from './SalaryProcessFun'
 
 const SalaryProcessed = () => {
 
@@ -46,7 +47,7 @@ const SalaryProcessed = () => {
 
         const filterEmNoFromPunMast = [...new Set(filterdPunchMaster?.map((e) => e.em_no))];
 
-        const datass = filterEmNoFromPunMast?.map((emno) => {
+        const punchMasterFilterData = filterEmNoFromPunMast?.map((emno) => {
             return {
                 em_no: emno,
                 data: filterdPunchMaster?.filter((l) => l.em_no === emno)?.map((el) => {
@@ -59,19 +60,14 @@ const SalaryProcessed = () => {
             }
         })?.filter((g) => g.em_no === 13802)
 
-        // 
+        // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
+        const funcForCalcForattendance = await Promise.allSettled(
+            punchMasterFilterData?.map(calculateDutyDesc)
+        ).then((result) => {
+            // console.log(result)
+        })
 
 
-        datass[0].data?.map(async (b) => {
-            // await setTimeout(async () => {
-            //     await setInterval(() => {
-            //         console.log(b)
-            //     }, 2000)
-            // }, 4000);
-        }) // Resolving with some processed value
-
-
-        console.log(datass)
 
     }, [value])
 
