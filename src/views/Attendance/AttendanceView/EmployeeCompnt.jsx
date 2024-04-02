@@ -130,13 +130,13 @@ const EmployeeCompnt = ({ em_no }) => {
                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                             <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                EHFD
+                                HD
                             </Typography>
                         </Box>
                         <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
                             <CssVarsProvider>
                                 <Typography sx={{ display: 'flex', }} >
-                                    Early Going
+                                    Halfday
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
@@ -155,7 +155,7 @@ const EmployeeCompnt = ({ em_no }) => {
                             </CssVarsProvider>
                         </Box>
                     </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    {/* <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                             <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
                                 HFD
@@ -168,7 +168,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                    </Box>
+                    </Box> */}
                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                             <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
