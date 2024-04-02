@@ -1,7 +1,7 @@
 import { CNavItem } from "@coreui/react";
 const PayrollMenu = [
     {
-        men_slno: 36000,
+        men_slno: 36,
         component: CNavItem,
         name: 'Salary Process',
         to: '/Home/SalaryProcess',

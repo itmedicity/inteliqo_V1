@@ -689,9 +689,62 @@ const ShiftUpdation = () => {
                                                 </Box>
                                             </Box> :
 
-                                            <Box sx={{ display: 'flex', py: 0.5, width: '60%' }}>
 
+
+
+                                            <Box sx={{ display: 'flex', py: 0, width: '60%', }}>
+
+                                                <Box sx={{ flex: 1, px: 0.5, width: '25%', }}>
+                                                    <Box sx={{
+                                                        border: 1,
+                                                        display: 'flex',
+                                                        flex: 1,
+                                                        alignItems: 'center',
+                                                        height: '100%',
+                                                        borderRadius: 1.5,
+                                                        borderColor: '#cdd7e1',
+                                                        color: '#9fa6ad',
+                                                        paddingLeft: 1
+                                                    }} >
+                                                        {dept_name}
+                                                    </Box>
+                                                </Box>
                                                 <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
+                                                    <Box sx={{
+                                                        border: 1,
+                                                        display: 'flex',
+                                                        flex: 1,
+                                                        alignItems: 'center',
+                                                        height: '100%',
+                                                        borderRadius: 1.5,
+                                                        borderColor: '#cdd7e1',
+                                                        color: '#9fa6ad',
+                                                        paddingLeft: 1
+                                                    }} >
+                                                        {sect_name}
+                                                    </Box>
+                                                </Box>
+                                                <Box sx={{ flex: 1, px: 0.5, width: '10%' }}>
+                                                    <Box sx={{
+                                                        border: 1,
+                                                        display: 'flex',
+                                                        flex: 1,
+                                                        alignItems: 'center',
+                                                        height: '100%',
+                                                        borderRadius: 1.5,
+                                                        borderColor: '#cdd7e1',
+                                                        color: '#9fa6ad',
+                                                        paddingLeft: 1
+                                                    }} >
+                                                        {em_name}
+                                                    </Box>
+                                                </Box>
+
+
+
+
+
+                                                {/* <Box sx={{ flex: 1, px: 0.5, width: '25%' }}>
                                                     <TextField
                                                         variant="outlined"
                                                         fullWidth
@@ -720,7 +773,7 @@ const ShiftUpdation = () => {
                                                         sx={{ display: 'flex', mt: 0.5 }}
                                                         disabled
                                                     />
-                                                </Box>
+                                                </Box> */}
                                             </Box>
                                 }
                                 <Box sx={{ display: 'flex', px: 0.5, width: '30%' }}>
