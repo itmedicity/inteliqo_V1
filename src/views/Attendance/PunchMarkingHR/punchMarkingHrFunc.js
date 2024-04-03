@@ -1,4 +1,4 @@
-import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subHours } from "date-fns";
+import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subDays, subHours } from "date-fns";
 import { axioslogin } from "src/views/Axios/Axios";
 
 export const processPunchMarkingHrFunc = async (
@@ -18,8 +18,12 @@ export const processPunchMarkingHrFunc = async (
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID,
+        holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
+        weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT
+        weekoff_policy_min_count
     } = commonSettings; //COMMON SETTING
+
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
@@ -130,14 +134,39 @@ export const processPunchMarkingHrFunc = async (
                     })
                     console.log(filterAndAdditionPlanData)
 
-                    //CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING 
+                    /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
 
+                    //FILTER EMPLOYEE NUMBER FROM PUNCHMASTER DATA
+                    const filteredEmNoFromPunMast = [...new Set(filterAndAdditionPlanData?.map((e) => e.em_no))];
 
+                    const punchMasterFilterData = filteredEmNoFromPunMast?.map((emno) => {
+                        return {
+                            em_no: emno,
+                            data: filterAndAdditionPlanData?.filter((l) => l.em_no === emno)?.sort((a, b) => b.duty_day - a.duty_day)
+                        }
+                    })
 
+                    console.log(punchMasterFilterData)
 
+                    // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
+                    const funcForCalcForattendance = await Promise.allSettled(
+                        punchMasterFilterData?.map(async (ele) => {
+                            // console.log(ele)
+                            const empArray = ele?.data?.filter((e) => e.em_no = 13802);
+                            return await empArray?.map(async (e, idx, array) => {
+                                const findHolidayStatus = await holidayStatus(e, array, holiday_policy_count);
+                                const findWeekOffStatus = await weekOffStatus(e, array, weekoff_policy_max_count);
+                                return {
+                                    ...e,
+                                    dutyDesc_holiday: findHolidayStatus
+                                }
+                                // console.log(findHolidayStatus)
+                            })
 
-
-
+                        })
+                    ).then((result) => {
+                        // console.log(result)
+                    })
 
 
 
@@ -539,22 +568,30 @@ export const processShiftPunchMarkingHrFunc = async (
     }
 }
 
+//FIND AND CHECK THE HOLIDAY STATUS 
+const holidayStatus = async (e, array, holiday_policy_count) => {
+    if (e.duty_desc === 'H') {
+        const holidayFIlterArray = await array.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+        //for checking absent -> A H A
+        const Absent = await holidayFIlterArray?.filter((m) => m === 'A').length
+        // for checking LWP -> LWP H LWP
+        const lwp = await holidayFIlterArray?.filter((m) => m === 'LWP').length
+        // for checking ESI -> ESI H ESI
+        const ESI = await holidayFIlterArray?.filter((m) => m === 'ESI').length
+        //both absent and lwp -> LWP H A || A H LWP
+        const absentlwp = await holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI').length
+        return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
+    } else {
+        return e.duty_desc
+    };
+}
 
-//FIND AND CHECK THE HOLIDAY STATUS
-// const holidayStatus = async (e, array) => {
-//     if (e.duty_desc === 'H') {
-//         const holidayFIlterArray = await array.filter((val) => subDays(new Date(val.duty_day), holidayPolicyCount) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holidayPolicyCount) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
-//         //for checking absent -> A H A
-//         const Absent = await holidayFIlterArray?.filter((m) => m === 'A').length
-//         // for checking LWP -> LWP H LWP
-//         const lwp = await holidayFIlterArray?.filter((m) => m === 'LWP').length
-//         // for checking ESI -> ESI H ESI
-//         const ESI = await holidayFIlterArray?.filter((m) => m === 'ESI').length
-//         //both absent and lwp -> LWP H A || A H LWP
-//         const absentlwp = await holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI').length
-//         console.log(Absent, lwp, absentlwp)
-//         return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
-//     } else {
-//         return e.duty_desc
-//     };
-// }
+
+const weekOffStatus = async (e, array, weekoff_policy_max_count) => {
+    if (e.duty_desc === 'WOFF') {
+        const FilterArray = await array.filter((val) => subDays(new Date(val.duty_day), weekoff_policy_max_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), weekoff_policy_max_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+        console.log(FilterArray)
+
+
+    }
+}

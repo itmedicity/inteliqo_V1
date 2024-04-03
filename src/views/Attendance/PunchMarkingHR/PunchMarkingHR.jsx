@@ -46,6 +46,11 @@ const PunchMarkingHR = () => {
 
     //GET REDUX stored information using useSelector
     const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const {
+        holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
+        weekoff_policy_max_count // WEEK OFF ELIGIBLE MAX DAY COUNT
+    } = commonSettings;
+
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
     // get login empid 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
@@ -177,9 +182,8 @@ const PunchMarkingHR = () => {
     //UPDATE ATTENDANDE PROCESS START HERE
     const updateAttendanceProcesss = async (deptID, sectID, lastUpdateDate) => {
         setOpenBkDrop(true)
-        const weekOffPolicyCountMax = 6;
-        const weekOffPolicyCountMin = 4;
-        const holidayPolicyCount = 1
+        const weekOffPolicyCountMax = weekoff_policy_max_count;
+        const holidayPolicyCount = holiday_policy_count;
 
         const today = subDays(new Date(format(new Date(), 'yyyy-MM-dd')), 1);
         const startOfMonths = startOfMonth(new Date(value));
