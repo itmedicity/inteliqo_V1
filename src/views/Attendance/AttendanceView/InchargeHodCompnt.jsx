@@ -184,20 +184,6 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EHFD
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Early Going
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
                                         LC
                                     </Typography>
                                 </Box>
@@ -212,7 +198,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
                                     <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        HFD
+                                        HD
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
