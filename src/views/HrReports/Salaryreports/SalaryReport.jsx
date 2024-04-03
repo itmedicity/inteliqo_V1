@@ -166,7 +166,7 @@ const SalaryReport = () => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
 
-                        const totalDays = empwise?.length
+                        const totalDays = getDaysInMonth(new Date(value))
                         const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
                         const lossofpay = (empwise.filter(val => val.duty_desc === 'A' || val.duty_desc === 'ESI' || val.duty_desc === 'LWP')).length
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
@@ -249,7 +249,7 @@ const SalaryReport = () => {
         { headerName: 'Gross Salary ', field: 'empSalary' },
         { headerName: 'Account Number', field: 'em_account_no' },
         { headerName: 'Total Days ', field: 'totalDays' },
-        { headerName: 'Calc. Work Days ', field: 'calcWorked' },
+        // { headerName: 'Calc. Work Days ', field: 'calcWorked' },
         { headerName: 'Total Pay Day', field: 'paydays' },
         { headerName: 'LOP Days ', field: 'lopDays' },
 
