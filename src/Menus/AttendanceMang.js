@@ -22,7 +22,7 @@ const AttendanceManagement = [
     {
         men_slno: 235,
         component: CNavItem,
-        name: 'Punch Marking Final',
+        name: 'Punch Marking Monthly',
         to: '/Home/PunchMarkingHR',
     },
     {
@@ -43,12 +43,7 @@ const AttendanceManagement = [
         name: 'Annual Leave Process',
         to: '/Home/AnnualLeaveProcess',
     },
-    {
-        men_slno: 152,
-        component: CNavItem,
-        name: 'Department Section Change',
-        to: '/Home/DeptSecChange',
-    },
+
     {
         men_slno: 237,
         component: CNavItem,
