@@ -26,10 +26,15 @@ export const processPunchMarkingHrFunc = async (
     if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
         const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        // console.log(postData_getPunchData)
+        const { fromDate, toDate } = postData_getPunchData;
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
+        // console.log(planData?.filter((e) => e.em_no === 4516))
         if (success === 1 && planData?.length > 0) {
-            const punchMasterData = planData; //PUNCHMSTER DATA
+            const punchMasterFilterData = await planData?.filter((e) => new Date(fromDate) <= new Date(e.duty_day) && new Date(e.duty_day) <= new Date(toDate))
+            // console.log(dataaaa?.filter((e) => e.em_no === 4516))
+            const punchMasterData = punchMasterFilterData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
                     // console.log(data)
@@ -59,8 +64,10 @@ export const processPunchMarkingHrFunc = async (
                 })
             ).then((data) => {
                 const punchMasterMappedData = data?.map((e) => e.value)
+                // console.log(punchMasterMappedData)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
+                        // console.log(val)
                         const holidayStatus = val.holiday_status;
                         const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
                         const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
@@ -89,6 +96,8 @@ export const processPunchMarkingHrFunc = async (
                             val.maximumLateInTime
                         )
                         return {
+                            em_no: val.em_no,
+                            duty_day: val.duty_day,
                             punch_slno: val.punch_slno,
                             punch_in: val.punch_in,
                             punch_out: val.punch_out,
@@ -105,32 +114,58 @@ export const processPunchMarkingHrFunc = async (
                     })
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
-                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const elementValue = element?.map((e) => e.value);
+                    const processedData = await elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
                     // PUNCH MASTER UPDATION
-                    // console.log(processedData)
-                    const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
-                    const { success, message } = updatePunchMaster.data;
-                    if (success === 1) {
-                        // PUNCH MARKING HR TABLE UPDATION
-                        // console.log(postData_getPunchData)
-                        const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
-                        const { sus } = updatePunchMarkingHR.data;
-                        if (sus === 1) {
-                            // DUTY PLAN UPDATION
-                            // console.log(dutyPlanSlno)
-                            const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
-                            const { susc, message } = updateDutyPlanTable.data;
-                            if (susc === 1) {
-                                return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
-                            } else {
-                                return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
-                            }
-                        } else {
-                            return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
+                    // console.log(processedData?.filter(e => e.em_no === 4516))
+                    // console.log(processedData?.filter(e => e.em_no === 13802))
+                    // console.log(planData?.filter(e => e.em_no === 13802))
+                    // const a = planData?.filter(e => e.em_no === 13802)
+                    const filterAndAdditionPlanData = await planData?.map((el) => {
+                        return {
+                            ...el,
+                            duty_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc, // filter and update deuty_desc
+                            lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
                         }
-                    } else {
-                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
-                    }
+                    })
+                    console.log(filterAndAdditionPlanData)
+
+                    //CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING 
+
+
+
+
+
+
+
+
+
+
+
+
+                    // const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
+                    // const { success, message } = updatePunchMaster.data;
+                    // if (success === 1) {
+                    //     // PUNCH MARKING HR TABLE UPDATION
+                    //     // console.log(postData_getPunchData)
+                    //     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
+                    //     const { sus } = updatePunchMarkingHR.data;
+                    //     if (sus === 1) {
+                    //         // DUTY PLAN UPDATION
+                    //         // console.log(dutyPlanSlno)
+                    //         const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
+                    //         const { susc, message } = updateDutyPlanTable.data;
+                    //         if (susc === 1) {
+                    //             return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                    //         } else {
+                    //             return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                    //         }
+                    //     } else {
+                    //         return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
+                    //     }
+                    // } else {
+                    //     return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                    // }
                 })
                 // return { status: 1, message: "result", data: e }
             })
@@ -201,7 +236,7 @@ export const getAttendanceCalculation = async (
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
 
             } else {
-                console.log(getLateInTime)
+                // console.log(getLateInTime)
                 // HOLIDAY === YES
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                     {
@@ -448,7 +483,7 @@ export const processShiftPunchMarkingHrFunc = async (
                         const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
-                        console.log(getLateInTime)
+                        // console.log(getLateInTime)
                         const getAttendanceStatus = await getAttendanceCalculation(
                             punch_In,
                             shift_in,
@@ -503,3 +538,23 @@ export const processShiftPunchMarkingHrFunc = async (
         return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '' }
     }
 }
+
+
+//FIND AND CHECK THE HOLIDAY STATUS
+// const holidayStatus = async (e, array) => {
+//     if (e.duty_desc === 'H') {
+//         const holidayFIlterArray = await array.filter((val) => subDays(new Date(val.duty_day), holidayPolicyCount) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holidayPolicyCount) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+//         //for checking absent -> A H A
+//         const Absent = await holidayFIlterArray?.filter((m) => m === 'A').length
+//         // for checking LWP -> LWP H LWP
+//         const lwp = await holidayFIlterArray?.filter((m) => m === 'LWP').length
+//         // for checking ESI -> ESI H ESI
+//         const ESI = await holidayFIlterArray?.filter((m) => m === 'ESI').length
+//         //both absent and lwp -> LWP H A || A H LWP
+//         const absentlwp = await holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI').length
+//         console.log(Absent, lwp, absentlwp)
+//         return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
+//     } else {
+//         return e.duty_desc
+//     };
+// }

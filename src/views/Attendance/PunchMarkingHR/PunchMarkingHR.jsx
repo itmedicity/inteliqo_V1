@@ -177,6 +177,10 @@ const PunchMarkingHR = () => {
     //UPDATE ATTENDANDE PROCESS START HERE
     const updateAttendanceProcesss = async (deptID, sectID, lastUpdateDate) => {
         setOpenBkDrop(true)
+        const weekOffPolicyCountMax = 6;
+        const weekOffPolicyCountMin = 4;
+        const holidayPolicyCount = 1
+
         const today = subDays(new Date(format(new Date(), 'yyyy-MM-dd')), 1);
         const startOfMonths = startOfMonth(new Date(value));
 
@@ -206,8 +210,10 @@ const PunchMarkingHR = () => {
                     toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     fromDate_dutyPlan: selectedDateSameStatus === 1 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(lastUpdateDate), 'yyyy-MM-dd'),
                     toDate_dutyPlan: format(new Date(value), 'yyyy-MM-dd'),
-                    fromDate_punchMaster: selectedDateSameStatus === 1 ? format(subDays(startOfMonth(new Date(value)), 0), 'yyyy-MM-dd') : format(subDays(new Date(lastUpdateDate), 0), 'yyyy-MM-dd'),
-                    toDate_punchMaster: format(new Date(value), 'yyyy-MM-dd'),
+                    fromDate_punchMaster: selectedDateSameStatus === 1
+                        ? format(subDays(startOfMonth(new Date(value)), weekOffPolicyCountMax), 'yyyy-MM-dd')
+                        : format(subDays(new Date(lastUpdateDate), weekOffPolicyCountMax), 'yyyy-MM-dd'),
+                    toDate_punchMaster: format(addDays(new Date(value), holidayPolicyCount), 'yyyy-MM-dd'),
                     section: sectID,
                     deptID: deptID,
                     empList: data?.map((e) => e.em_no),
@@ -217,8 +223,11 @@ const PunchMarkingHR = () => {
                 const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
                 const { su, result_data } = punch_data.data;
                 if (su === 1) {
+                    setOpenBkDrop(false)
                     const punchaData = result_data;
+                    // console.log(punchaData?.filter((e) => e.emp_code === '1812'))
                     const empList = data?.map((e) => e.em_no)
+                    // console.log(empList)
                     // PUNCH MARKING HR PROCESS START
                     const result = await processPunchMarkingHrFunc(
                         postData_getPunchData,
@@ -229,31 +238,31 @@ const PunchMarkingHR = () => {
                         holidayList,
                         empSalary
                     )
-                    const { status, message, errorMessage, dta } = result;
-                    if (status === 1) {
-                        // console.log(dta.section)
-                        const filterDeptAndSection = deptList?.map((e) => {
-                            return {
-                                "dept_id": e.dept_id,
-                                "dept_name": e.dept_name,
-                                "section": e.section?.map((el) => {
-                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDate_punchMaster } : { ...el }
-                                }),
-                            }
-                        })
-                        if (filterDeptAndSection?.length > 0) {
-                            setDeptList(filterDeptAndSection)
-                            setOpenBkDrop(false)
-                            succesNofity('Punch Master Updated Successfully')
-                        } else {
-                            succesNofity('Error Contact IT')
-                            setOpenBkDrop(false)
-                        }
-                        // onProcessClick()
-                    } else {
-                        setOpenBkDrop(false)
-                        warningNofity(message, errorMessage)
-                    }
+                    // const { status, message, errorMessage, dta } = result;
+                    // if (status === 1) {
+                    //     // console.log(dta.section)
+                    //     const filterDeptAndSection = deptList?.map((e) => {
+                    //         return {
+                    //             "dept_id": e.dept_id,
+                    //             "dept_name": e.dept_name,
+                    //             "section": e.section?.map((el) => {
+                    //                 return dta.section === el.sect_id ? { ...el, updated: dta?.toDate_punchMaster } : { ...el }
+                    //             }),
+                    //         }
+                    //     })
+                    //     if (filterDeptAndSection?.length > 0) {
+                    //         setDeptList(filterDeptAndSection)
+                    //         setOpenBkDrop(false)
+                    //         succesNofity('Punch Master Updated Successfully')
+                    //     } else {
+                    //         succesNofity('Error Contact IT')
+                    //         setOpenBkDrop(false)
+                    //     }
+                    //     // onProcessClick()
+                    // } else {
+                    //     setOpenBkDrop(false)
+                    //     warningNofity(message, errorMessage)
+                    // }
                     // PUNCH MARKING HR PROCESS END
                 } else {
                     warningNofity("Error getting punch Data From DB")

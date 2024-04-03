@@ -22,7 +22,7 @@ const AttendanceManagement = [
     {
         men_slno: 235,
         component: CNavItem,
-        name: 'Punch Marking Final',
+        name: 'Monthly Punch Marking',
         to: '/Home/PunchMarkingHR',
     },
     {
