@@ -89,9 +89,8 @@ const PunchMarkingHR = () => {
         }
 
         //GET ALL DEPARTMENT SECTION LIST AND SHOW
-        const result = await axioslogin.post('/experienceReport/deptsectById/');
+        const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
         const { success, data } = result.data;
-
         const deptSectionData = data;
 
         if (success === 1) {
@@ -221,13 +220,13 @@ const PunchMarkingHR = () => {
                     section: sectID,
                     deptID: deptID,
                     empList: data?.map((e) => e.em_no),
-                    loggedEmp: em_no
+                    loggedEmp: em_no,
+                    toDayeForUpdatePunchMast: format(new Date(value), 'yyyy-MM-dd')
                 }
                 // GET PUNCH DATA FROM TABLE START
                 const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
                 const { su, result_data } = punch_data.data;
                 if (su === 1) {
-                    setOpenBkDrop(false)
                     const punchaData = result_data;
                     // console.log(punchaData?.filter((e) => e.emp_code === '1812'))
                     const empList = data?.map((e) => e.em_no)
@@ -242,31 +241,31 @@ const PunchMarkingHR = () => {
                         holidayList,
                         empSalary
                     )
-                    // const { status, message, errorMessage, dta } = result;
-                    // if (status === 1) {
-                    //     // console.log(dta.section)
-                    //     const filterDeptAndSection = deptList?.map((e) => {
-                    //         return {
-                    //             "dept_id": e.dept_id,
-                    //             "dept_name": e.dept_name,
-                    //             "section": e.section?.map((el) => {
-                    //                 return dta.section === el.sect_id ? { ...el, updated: dta?.toDate_punchMaster } : { ...el }
-                    //             }),
-                    //         }
-                    //     })
-                    //     if (filterDeptAndSection?.length > 0) {
-                    //         setDeptList(filterDeptAndSection)
-                    //         setOpenBkDrop(false)
-                    //         succesNofity('Punch Master Updated Successfully')
-                    //     } else {
-                    //         succesNofity('Error Contact IT')
-                    //         setOpenBkDrop(false)
-                    //     }
-                    //     // onProcessClick()
-                    // } else {
-                    //     setOpenBkDrop(false)
-                    //     warningNofity(message, errorMessage)
-                    // }
+                    const { status, message, errorMessage, dta } = result;
+                    if (status === 1) {
+                        // console.log(dta.section)
+                        const filterDeptAndSection = deptList?.map((e) => {
+                            return {
+                                "dept_id": e.dept_id,
+                                "dept_name": e.dept_name,
+                                "section": e.section?.map((el) => {
+                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDayeForUpdatePunchMast } : { ...el }
+                                }),
+                            }
+                        })
+                        if (filterDeptAndSection?.length > 0) {
+                            setDeptList(filterDeptAndSection)
+                            setOpenBkDrop(false)
+                            succesNofity('Punch Master Updated Successfully')
+                        } else {
+                            succesNofity('Error Contact IT')
+                            setOpenBkDrop(false)
+                        }
+                        // onProcessClick()
+                    } else {
+                        setOpenBkDrop(false)
+                        warningNofity(message, errorMessage)
+                    }
                     // PUNCH MARKING HR PROCESS END
                 } else {
                     warningNofity("Error getting punch Data From DB")
@@ -349,7 +348,7 @@ const PunchMarkingHR = () => {
 
     return (
         <Fragment>
-            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Processing.... " />
+            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Monthly Attendance Processing.... Do not Refesh or Reload the Browser !!!" />
             <CustomLayout title="Monthly Attendance Process" displayClose={true} >
                 <Box sx={{ width: '100%', }}>
                     <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>

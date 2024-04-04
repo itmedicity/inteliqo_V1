@@ -119,7 +119,8 @@ export const processPunchMarkingHrFunc = async (
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
                     const elementValue = element?.map((e) => e.value);
-                    const processedData = await elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const processedData = elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const punchMaterDataBasedOnPunchSlno = processedData?.map((e) => e.punch_slno)
                     // PUNCH MASTER UPDATION
                     // console.log(processedData?.filter(e => e.em_no === 4516))
                     // console.log(processedData?.filter(e => e.em_no === 13802))
@@ -132,7 +133,7 @@ export const processPunchMarkingHrFunc = async (
                             lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
                         }
                     })
-                    console.log(filterAndAdditionPlanData)
+                    // console.log(filterAndAdditionPlanData)
 
                     /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
 
@@ -146,55 +147,54 @@ export const processPunchMarkingHrFunc = async (
                         }
                     })
 
-                    console.log(punchMasterFilterData)
-
                     // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
-                    const funcForCalcForattendance = await Promise.allSettled(
-                        punchMasterFilterData?.map(async (ele) => {
-                            // console.log(ele)
-                            const empArray = ele?.data?.filter((e) => e.em_no = 13802);
-                            return await empArray?.map(async (e, idx, array) => {
-                                const findHolidayStatus = await holidayStatus(e, array, holiday_policy_count);
-                                const findWeekOffStatus = await weekOffStatus(e, array, weekoff_policy_max_count);
+                    return Promise.allSettled(
+                        punchMasterFilterData?.flatMap((ele) => {
+                            return ele?.data?.map(async (e, idx, array) => {
+
+                                let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
+                                let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) : e.duty_desc;
+
                                 return {
                                     ...e,
-                                    dutyDesc_holiday: findHolidayStatus
+                                    lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
                                 }
-                                // console.log(findHolidayStatus)
                             })
-
                         })
-                    ).then((result) => {
-                        // console.log(result)
-                    })
 
+                    ).then(async (results) => {
 
+                        const PunchMAsterPolicyBasedFilterResult = results?.map((e) => e.value)
+                        // console.log(PunchMAsterPolicyBasedFilterResult)
+                        // console.log(punchMaterDataBasedOnPunchSlno)
+                        const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
+                        // console.log(processedPostData)
 
+                        const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
+                        const { success, message } = updatePunchMaster.data;
+                        if (success === 1) {
+                            // PUNCH MARKING HR TABLE UPDATION
+                            // console.log(postData_getPunchData)
+                            const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
+                            const { sus } = updatePunchMarkingHR.data;
+                            if (sus === 1) {
+                                // DUTY PLAN UPDATION
+                                // console.log(dutyPlanSlno)
+                                const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
+                                const { susc, message } = updateDutyPlanTable.data;
+                                if (susc === 1) {
+                                    return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                                } else {
+                                    return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                                }
+                            } else {
+                                return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
+                            }
+                        } else {
+                            return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                        }
 
-
-                    // const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
-                    // const { success, message } = updatePunchMaster.data;
-                    // if (success === 1) {
-                    //     // PUNCH MARKING HR TABLE UPDATION
-                    //     // console.log(postData_getPunchData)
-                    //     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
-                    //     const { sus } = updatePunchMarkingHR.data;
-                    //     if (sus === 1) {
-                    //         // DUTY PLAN UPDATION
-                    //         // console.log(dutyPlanSlno)
-                    //         const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
-                    //         const { susc, message } = updateDutyPlanTable.data;
-                    //         if (susc === 1) {
-                    //             return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
-                    //         } else {
-                    //             return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
-                    //         }
-                    //     } else {
-                    //         return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
-                    //     }
-                    // } else {
-                    //     return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
-                    // }
+                    });
                 })
                 // return { status: 1, message: "result", data: e }
             })
@@ -571,15 +571,15 @@ export const processShiftPunchMarkingHrFunc = async (
 //FIND AND CHECK THE HOLIDAY STATUS 
 const holidayStatus = async (e, array, holiday_policy_count) => {
     if (e.duty_desc === 'H') {
-        const holidayFIlterArray = await array.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+        const holidayFIlterArray = array.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
         //for checking absent -> A H A
-        const Absent = await holidayFIlterArray?.filter((m) => m === 'A').length
+        const Absent = holidayFIlterArray?.filter((m) => m === 'A').length
         // for checking LWP -> LWP H LWP
-        const lwp = await holidayFIlterArray?.filter((m) => m === 'LWP').length
+        const lwp = holidayFIlterArray?.filter((m) => m === 'LWP').length
         // for checking ESI -> ESI H ESI
-        const ESI = await holidayFIlterArray?.filter((m) => m === 'ESI').length
+        const ESI = holidayFIlterArray?.filter((m) => m === 'ESI').length
         //both absent and lwp -> LWP H A || A H LWP
-        const absentlwp = await holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI').length
+        const absentlwp = holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI' || m === 'LOP').length
         return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
     } else {
         return e.duty_desc
@@ -587,11 +587,15 @@ const holidayStatus = async (e, array, holiday_policy_count) => {
 }
 
 
-const weekOffStatus = async (e, array, weekoff_policy_max_count) => {
+const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) => {
     if (e.duty_desc === 'WOFF') {
-        const FilterArray = await array.filter((val) => subDays(new Date(val.duty_day), weekoff_policy_max_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), weekoff_policy_max_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
-        console.log(FilterArray)
-
-
+        const policyLimit = weekoff_policy_max_count - weekoff_policy_min_count;
+        const toIndex = idx;
+        const fromIndex = idx - weekoff_policy_max_count;
+        const FilterArray = array.filter((val, index) => fromIndex <= index && index <= toIndex)?.map((e) => e.duty_desc)
+        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP').length
+        return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
+    } else {
+        return e.duty_desc
     }
 }

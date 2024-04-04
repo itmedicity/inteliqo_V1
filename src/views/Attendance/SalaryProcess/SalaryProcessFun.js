@@ -46,5 +46,9 @@ const holidayStatus = async (e, array) => {
 
 //FIND AND CHECK THE WEEK OFF STATUS
 const weekOffStatus = async (e, array) => {
+    if (e.duty_desc === 'W') {
+
+    }
+
 
 }
