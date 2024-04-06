@@ -7,15 +7,18 @@ import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
-import _ from 'underscore'
 import DepartmentSection from './Func/DepartmentSection'
 import EmployeeAgainSection from './Func/EmployeeAgainSection'
 import LeaveRequestType from './Func/LeaveRequestType'
 import { Actiontypes } from 'src/redux/constants/action.type'
-import { Button, CssVarsProvider, Tooltip } from '@mui/joy'
+import { Button, CssVarsProvider, Input, Tooltip } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { lazy } from 'react'
+import { Suspense } from 'react'
+
+const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
 
 const LeaveRequestEmployeeSelection = () => {
     const dispatch = useDispatch();
@@ -23,8 +26,12 @@ const LeaveRequestEmployeeSelection = () => {
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
-    const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState, _.isEqual);
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData,);
+    const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState);
+
+    const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const { group_slno } = commonSettings;
+    console.log(group_slno)
 
     const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -79,36 +86,51 @@ const LeaveRequestEmployeeSelection = () => {
         dispatch({ type: LEAVE_REQ_DEFAULT })
     }
 
+
     return (
-        <Paper variant="outlined" sx={{ display: "flex", p: 0.3, mb: 0.5, alignItems: 'center', }} >
+        <Paper variant="outlined" sx={{ display: "flex", p: 0.3, mb: 0.5, alignItems: 'center' }} >
+
+            <Suspense fallback={<div>Loding....</div>} >
+                {true && <HrRoleBasedDepartmentAndSection />}
+            </Suspense>
+
+
             {
-                (hod === 1 || incharge === 1) ?
+                (hod === 1 || incharge === 1)
+                    ?
                     <Box sx={{
                         display: 'flex',
                         flex: 1,
                         alignItems: 'center',
-                        mt: 0.5, px: 0.3
+                        px: 0.3
                     }} >
                         <DepartmentSection
                             setSection={setDeptSection}
                             sectionVal={deptSection}
                             formSubmit={formSubmit}
                         />
-                    </Box> :
+                    </Box>
+                    :
                     <Box sx={{
                         display: 'flex',
                         flex: 1,
                         alignItems: 'center',
-                        mt: 0.5, px: 0.3
+                        px: 0.3
                     }} >
-                        <TextField
+                        <Input
+                            size="sm"
+                            fullWidth
+                            value={em_name}
+                            disabled
+                        />
+                        {/* <TextField
                             variant="outlined"
                             fullWidth
                             size="small"
                             value={sect_name}
                             sx={{ display: 'flex', mt: 0.5 }}
                             disabled
-                        />
+                        /> */}
                     </Box>
             }
 
@@ -118,7 +140,7 @@ const LeaveRequestEmployeeSelection = () => {
                         display: 'flex',
                         flex: 1,
                         alignItems: 'center',
-                        mt: 0.5, px: 0.3
+                        px: 0.3
                     }}>
                         <EmployeeAgainSection
                             section={deptSection}
@@ -131,38 +153,51 @@ const LeaveRequestEmployeeSelection = () => {
                         display: 'flex',
                         flex: 1,
                         alignItems: 'center',
-                        mt: 0.5, px: 0.3
+                        px: 0.3
                     }}>
-                        <TextField
+                        <Input
+                            size="sm"
+                            fullWidth
+                            value={em_name}
+                            disabled
+                        />
+                        {/* <TextField
                             variant="outlined"
                             fullWidth
                             value={em_name}
                             size="small"
                             sx={{ display: 'flex', mt: 0.5 }}
                             disabled
-                        />
+                             
+                        /> */}
                     </Box>
             }
             <Box sx={{
                 display: 'flex',
                 flex: 1,
                 alignItems: 'center',
-                mt: 0.5, px: 0.3
+                px: 0.3
             }}>
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     fullWidth
                     size="small"
                     disabled
                     value={(hod === 1 || incharge === 1) ? employeeID : em_no}
                     sx={{ display: 'flex', mt: 0.5 }}
+                /> */}
+                <Input
+                    size="sm"
+                    fullWidth
+                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
+                    disabled
                 />
             </Box>
             <Box sx={{
                 display: 'flex',
                 flex: 1,
                 alignItems: 'center',
-                mt: 0.5, px: 0.3
+                px: 0.3
             }}>
                 <LeaveRequestType
                     empstatus={employeeID}
@@ -178,9 +213,7 @@ const LeaveRequestEmployeeSelection = () => {
                             variant="outlined"
                             color="primary"
                             onClick={onSubmitLeaveRequestEntry}
-                            sx={{
-                                // color: 'green',
-                            }}
+                            size='sm'
                         >
                             <AddCircleOutlineIcon />
                         </Button>
@@ -195,9 +228,7 @@ const LeaveRequestEmployeeSelection = () => {
                             variant="outlined"
                             color="primary"
                             onClick={() => changeForm()}
-                            sx={{
-                                // color: 'green',
-                            }}
+                            size='sm'
                         >
                             <RefreshIcon />
                         </Button>

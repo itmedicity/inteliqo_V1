@@ -21,9 +21,12 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
 import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import { setDept } from 'src/redux/actions/Dept.Action'
+import { setdeptSection } from 'src/redux/actions/DeptSection.action'
 
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
+
 
 const LeaveRequestMainCard = () => {
 
@@ -31,11 +34,11 @@ const LeaveRequestMainCard = () => {
     const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { hod, incharge, em_id, } = employeeProfileDetl;
 
-    const state = useSelector((state) => state.getLeaveRequestInfom.empDetl, _.isEqual);
+    const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
     const { requestType } = state;
 
     useEffect(() => {
@@ -48,6 +51,8 @@ const LeaveRequestMainCard = () => {
         }
         dispatch(getEmployeeApprovalLevel(em_id))
         dispatch(setCommonSetting());
+        dispatch(setDept())
+        dispatch(setdeptSection())
 
     }, [hod, incharge, em_id, dispatch])
 

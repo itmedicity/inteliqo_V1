@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material'
+// import { FormControl, MenuItem, Select } from '@mui/material'
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -14,6 +14,9 @@ import {
 import { getannualleave } from 'src/redux/actions/Profile.action';
 import _ from 'underscore';
 import { Actiontypes } from 'src/redux/constants/action.type';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+
 
 const EmployeeAgainSection = ({ section, employeeId, setEmployeeId, formSubmit }) => {
 
@@ -51,33 +54,52 @@ const EmployeeAgainSection = ({ section, employeeId, setEmployeeId, formSubmit }
         dispatch(getEmployeeInformation(em_id))
     }, [dispatch])
 
+
+    const handleChange = (event, newValue) => {
+        setEmployeeId(newValue)
+    };
+
     return (
-        <FormControl
-            fullWidth={true}
-            margin="dense"
-            size='small'
-            sx={{ minHeight: 10, p: 0 }}
+        // <FormControl
+        //     fullWidth={true}
+        //     margin="dense"
+        //     size='small'
+        //     sx={{ minHeight: 10, p: 0 }}
+        // >
+        //     <Select
+        //         fullWidth
+        //         variant="outlined"
+        //         margin='dense'
+        //         size='small'
+        //         disabled={formSubmit}
+        //         value={employeeId}
+        //         onChange={(e) => setEmployeeId(e.target.value)}
+        //         sx={{ minHeight: 10, p: 0 }}
+        //     >
+        //         <MenuItem value={0} disabled>
+        //             Select Employee Name
+        //         </MenuItem>
+        //         {
+        //             emplList && emplList.map((val, index) => {
+        //                 return <MenuItem key={index} value={val.em_no} onClick={() => getEmployeeId(val.em_id)} >{val.em_name}</MenuItem>
+        //             })
+        //         }
+        //     </Select>
+        // </FormControl>
+
+        <Select
+            defaultValue={employeeId}
+            onChange={handleChange}
+            sx={{ width: '100%' }}
+            size='sm'
         >
-            <Select
-                fullWidth
-                variant="outlined"
-                margin='dense'
-                size='small'
-                disabled={formSubmit}
-                value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
-                sx={{ minHeight: 10, p: 0 }}
-            >
-                <MenuItem value={0} disabled>
-                    Select Employee Name
-                </MenuItem>
-                {
-                    emplList && emplList.map((val, index) => {
-                        return <MenuItem key={index} value={val.em_no} onClick={() => getEmployeeId(val.em_id)} >{val.em_name}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+            <Option value={0}  >Select Employee Name</Option>
+            {
+                emplList && emplList.map((val, index) => {
+                    return <Option key={index} value={val.em_no} onClick={() => getEmployeeId(val.em_id)} >{val.em_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 
