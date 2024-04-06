@@ -1,0 +1,98 @@
+{
+                (hod === 1 || incharge === 1)
+                    ?
+                    <Box sx={{
+                        display: 'flex',
+                        flex: 1,
+                        alignItems: 'center',
+                        px: 0.3
+                    }} >
+                        <DepartmentSection
+                            setSection={setDeptSection}
+                            sectionVal={deptSection}
+                            formSubmit={formSubmit}
+                        />
+                    </Box>
+                    :
+                    <Box sx={{
+                        display: 'flex',
+                        flex: 1,
+                        alignItems: 'center',
+                        px: 0.3
+                    }} >
+                        <Input
+                            size="sm"
+                            fullWidth
+                            value={em_name}
+                            disabled
+                        />
+                        {/* <TextField
+                            variant="outlined"
+                            fullWidth
+                            size="small"
+                            value={sect_name}
+                            sx={{ display: 'flex', mt: 0.5 }}
+                            disabled
+                        /> */}
+                    </Box>
+            }
+
+            {
+                (hod === 1 || incharge === 1) ?
+                    <Box sx={{
+                        display: 'flex',
+                        flex: 1,
+                        alignItems: 'center',
+                        px: 0.3
+                    }}>
+                        <EmployeeAgainSection
+                            section={deptSection}
+                            setEmployeeId={setEmployeeID}
+                            employeeId={employeeID}
+                            formSubmit={formSubmit}
+                        />
+                    </Box> :
+                    <Box sx={{
+                        display: 'flex',
+                        flex: 1,
+                        alignItems: 'center',
+                        px: 0.3
+                    }}>
+                        <Input
+                            size="sm"
+                            fullWidth
+                            value={em_name}
+                            disabled
+                        />
+                        {/* <TextField
+                            variant="outlined"
+                            fullWidth
+                            value={em_name}
+                            size="small"
+                            sx={{ display: 'flex', mt: 0.5 }}
+                            disabled
+                             
+                        /> */}
+                    </Box>
+            }
+            <Box sx={{
+                display: 'flex',
+                flex: 1,
+                alignItems: 'center',
+                px: 0.3
+            }}>
+                {/* <TextField
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    disabled
+                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
+                    sx={{ display: 'flex', mt: 0.5 }}
+                /> */}
+                <Input
+                    size="sm"
+                    fullWidth
+                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
+                    disabled
+                />
+            </Box>

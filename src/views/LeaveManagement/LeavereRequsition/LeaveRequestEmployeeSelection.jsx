@@ -1,6 +1,6 @@
 import { Paper, TextField } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useState } from 'react'
 import { useMemo } from 'react'
 import { memo } from 'react'
@@ -17,11 +17,17 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { lazy } from 'react'
 import { Suspense } from 'react'
+import { setDept } from 'src/redux/actions/Dept.Action'
+import { setdeptSection } from 'src/redux/actions/DeptSection.action'
+import { getDepartmentAll, getDepartmentSectBasedDeptID, getDepartmentSectionAll, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 
 const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
 
 const LeaveRequestEmployeeSelection = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
+
 
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
@@ -31,54 +37,52 @@ const LeaveRequestEmployeeSelection = () => {
 
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const { group_slno } = commonSettings;
-    console.log(group_slno)
+
 
     const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
 
     const { formSubmit } = singleLevFormData;
-    const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
+    // const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
 
-    const [deptSection, setDeptSection] = useState(0);
-    const [employeeID, setEmployeeID] = useState(0);
     const [levReq, setLevReq] = useState(0);
 
-    const onSubmitLeaveRequestEntry = (e) => {
+    // const onSubmitLeaveRequestEntry = (e) => {
 
-        if (hod === 1 || incharge === 1) {
-            // this employee is a hod or incharge
-            if (deptSection === 0) {
-                warningNofity("Section Not Selected")
-            } else if (employeeID === 0) {
-                warningNofity("Employee Not Selected")
-            } else if (levReq === 0) {
-                warningNofity("Request Type Not Selected")
-            } else {
-                let empDetl = {
-                    deptSection: deptSection,
-                    empNo: employeeID,
-                    requestType: levReq
-                }
-                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
-                //console.log(` emp selectio hod ${em_no} `)
-                // dispatch(getCommonLeaveData(em_no));
-            }
+    //     if (hod === 1 || incharge === 1) {
+    //         // this employee is a hod or incharge
+    //         if (deptSection === 0) {
+    //             warningNofity("Section Not Selected")
+    //         } else if (employeeID === 0) {
+    //             warningNofity("Employee Not Selected")
+    //         } else if (levReq === 0) {
+    //             warningNofity("Request Type Not Selected")
+    //         } else {
+    //             let empDetl = {
+    //                 deptSection: deptSection,
+    //                 empNo: employeeID,
+    //                 requestType: levReq
+    //             }
+    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
+    //             //console.log(` emp selectio hod ${em_no} `)
+    //             // dispatch(getCommonLeaveData(em_no));
+    //         }
 
-        } else {
-            // normal employee
-            if (levReq === 0) {
-                warningNofity("Request Type Not Selected")
-            } else {
-                let empDetl = {
-                    deptSection: em_dept_section,
-                    empNo: em_no,
-                    requestType: levReq
-                }
-                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
-                dispatch(getCommonLeaveData(em_no));
-            }
-        }
-    }
+    //     } else {
+    //         // normal employee
+    //         if (levReq === 0) {
+    //             warningNofity("Request Type Not Selected")
+    //         } else {
+    //             let empDetl = {
+    //                 deptSection: em_dept_section,
+    //                 empNo: em_no,
+    //                 requestType: levReq
+    //             }
+    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
+    //             dispatch(getCommonLeaveData(em_no));
+    //         }
+    //     }
+    // }
 
     const changeForm = () => {
         let requestType = { requestType: 0 };
@@ -88,153 +92,55 @@ const LeaveRequestEmployeeSelection = () => {
 
 
     return (
-        <Paper variant="outlined" sx={{ display: "flex", p: 0.3, mb: 0.5, alignItems: 'center' }} >
-
-            <Suspense fallback={<div>Loding....</div>} >
-                {true && <HrRoleBasedDepartmentAndSection />}
-            </Suspense>
-
-
-            {
-                (hod === 1 || incharge === 1)
-                    ?
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        px: 0.3
-                    }} >
-                        <DepartmentSection
-                            setSection={setDeptSection}
-                            sectionVal={deptSection}
-                            formSubmit={formSubmit}
-                        />
-                    </Box>
-                    :
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        px: 0.3
-                    }} >
-                        <Input
-                            size="sm"
-                            fullWidth
-                            value={em_name}
-                            disabled
-                        />
-                        {/* <TextField
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            value={sect_name}
-                            sx={{ display: 'flex', mt: 0.5 }}
-                            disabled
-                        /> */}
-                    </Box>
-            }
-
-            {
-                (hod === 1 || incharge === 1) ?
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        px: 0.3
-                    }}>
-                        <EmployeeAgainSection
-                            section={deptSection}
-                            setEmployeeId={setEmployeeID}
-                            employeeId={employeeID}
-                            formSubmit={formSubmit}
-                        />
-                    </Box> :
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        px: 0.3
-                    }}>
-                        <Input
-                            size="sm"
-                            fullWidth
-                            value={em_name}
-                            disabled
-                        />
-                        {/* <TextField
-                            variant="outlined"
-                            fullWidth
-                            value={em_name}
-                            size="small"
-                            sx={{ display: 'flex', mt: 0.5 }}
-                            disabled
-                             
-                        /> */}
-                    </Box>
-            }
-            <Box sx={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'center',
-                px: 0.3
-            }}>
-                {/* <TextField
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    disabled
-                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
-                    sx={{ display: 'flex', mt: 0.5 }}
-                /> */}
-                <Input
-                    size="sm"
-                    fullWidth
-                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
-                    disabled
-                />
+        <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center' }} >
+            <Box display={'flex'} sx={{ flex: 1 }} >
+                <Suspense fallback={<div>Loading...</div>} >
+                    <HrRoleBasedDepartmentAndSection />
+                </Suspense>
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flex: 1
+                }}>
+                    <LeaveRequestType
+                        // empstatus={employeeID}
+                        onChange={setLevReq}
+                        onChangeVal={levReq}
+                    />
+                </Box>
+                <Box sx={{ display: "flex" }} >
+                    <CssVarsProvider>
+                        <Tooltip title="Process" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                // onClick={onSubmitLeaveRequestEntry}
+                                size='sm'
+                            >
+                                <AddCircleOutlineIcon />
+                            </Button>
+                        </Tooltip>
+                    </CssVarsProvider>
+                </Box>
+                <Box sx={{ display: "flex" }} >
+                    <CssVarsProvider>
+                        <Tooltip title="Clear Data" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => changeForm()}
+                                size='sm'
+                            >
+                                <RefreshIcon />
+                            </Button>
+                        </Tooltip>
+                    </CssVarsProvider>
+                </Box>
             </Box>
-            <Box sx={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'center',
-                px: 0.3
-            }}>
-                <LeaveRequestType
-                    empstatus={employeeID}
-                    onChange={setLevReq}
-                    onChangeVal={levReq}
-                />
-            </Box>
-            <Box sx={{ display: "flex", p: 0.2 }} >
-                <CssVarsProvider>
-                    <Tooltip title="Process" followCursor placement='top' arrow >
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={onSubmitLeaveRequestEntry}
-                            size='sm'
-                        >
-                            <AddCircleOutlineIcon />
-                        </Button>
-                    </Tooltip>
-                </CssVarsProvider>
-            </Box>
-            <Box sx={{ display: "flex", p: 0.2 }} >
-                <CssVarsProvider>
-                    <Tooltip title="Clear Data" followCursor placement='top' arrow >
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => changeForm()}
-                            size='sm'
-                        >
-                            <RefreshIcon />
-                        </Button>
-                    </Tooltip>
-                </CssVarsProvider>
-            </Box>
+
+
         </Paper>
     )
 }

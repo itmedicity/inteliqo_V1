@@ -23,6 +23,7 @@ import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { setdeptSection } from 'src/redux/actions/DeptSection.action'
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
 
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
@@ -34,9 +35,13 @@ const LeaveRequestMainCard = () => {
     const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge, em_id, } = employeeProfileDetl;
+    const empInform = useSelector((state) => getEmployeeInformationLimited(state))
+    const employeeInform = useMemo(() => empInform, [empInform])
+    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section } = employeeInform;
+
+
+
+
 
     const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
     const { requestType } = state;
@@ -75,7 +80,7 @@ const LeaveRequestMainCard = () => {
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
                 <LeaveRequestEmployeeSelection />
-                <Suspense fallback={<LinearProgreeBar />} >
+                {/* <Suspense fallback={<LinearProgreeBar />} >
                     {
                         requestType === 1 ? <LeaveRequestFormPage em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
                             requestType === 2 ? <HalfDayLeaveRequest em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
@@ -83,7 +88,7 @@ const LeaveRequestMainCard = () => {
                                     requestType === 4 ? <CompansatoryOffMast em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> : null
                     }
                 </Suspense>
-                <LeaveTableContainer />
+                <LeaveTableContainer /> */}
             </Box>
         </CustomLayout>
     )
