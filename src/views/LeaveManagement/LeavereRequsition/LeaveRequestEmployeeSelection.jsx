@@ -22,30 +22,39 @@ import { setdeptSection } from 'src/redux/actions/DeptSection.action'
 import { getDepartmentAll, getDepartmentSectBasedDeptID, getDepartmentSectionAll, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
+import LinearProgress from '@mui/joy/LinearProgress';
+import NormalEmployeeLeveReqPage from './NormalEmployeeLeveReqPage'
 
 const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
 
 const LeaveRequestEmployeeSelection = () => {
     const dispatch = useDispatch()
 
-
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
-    //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData,);
-    const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState);
+    const [levReq, setLevReq] = useState(0);
 
-    const commonSettings = useSelector((state) => state?.getCommonSettings)
-    const { group_slno } = commonSettings;
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformation;
 
 
-    const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    /****************************** */
 
-    const { formSubmit } = singleLevFormData;
+
+    // //get the employee details for taking the HOd and Incharge Details
+    // const employeeState = useSelector((state) => state.getProfileData.ProfileData,);
+    // const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState);
+
+    // const commonSettings = useSelector((state) => state?.getCommonSettings)
+    // const { group_slno } = commonSettings;
+
+
+    // const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
+    // const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+
+    // const { formSubmit } = singleLevFormData;
     // const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
 
-    const [levReq, setLevReq] = useState(0);
 
     // const onSubmitLeaveRequestEntry = (e) => {
 
@@ -94,53 +103,53 @@ const LeaveRequestEmployeeSelection = () => {
     return (
         <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center' }} >
             <Box display={'flex'} sx={{ flex: 1 }} >
-                <Suspense fallback={<div>Loading...</div>} >
-                    <HrRoleBasedDepartmentAndSection />
+                <Suspense fallback={<LinearProgress variant="outlined" />} >
+                    {
+                        (hod === 1 || incharge === 1) ? <HrRoleBasedDepartmentAndSection /> : <NormalEmployeeLeveReqPage />
+                    }
                 </Suspense>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flex: 1
-                }}>
-                    <LeaveRequestType
-                        // empstatus={employeeID}
-                        onChange={setLevReq}
-                        onChangeVal={levReq}
-                    />
-                </Box>
-                <Box sx={{ display: "flex" }} >
-                    <CssVarsProvider>
-                        <Tooltip title="Process" followCursor placement='top' arrow >
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                // onClick={onSubmitLeaveRequestEntry}
-                                size='sm'
-                            >
-                                <AddCircleOutlineIcon />
-                            </Button>
-                        </Tooltip>
-                    </CssVarsProvider>
-                </Box>
-                <Box sx={{ display: "flex" }} >
-                    <CssVarsProvider>
-                        <Tooltip title="Clear Data" followCursor placement='top' arrow >
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => changeForm()}
-                                size='sm'
-                            >
-                                <RefreshIcon />
-                            </Button>
-                        </Tooltip>
-                    </CssVarsProvider>
-                </Box>
             </Box>
-
-
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '20%',
+                px: 0.3
+            }}>
+                <LeaveRequestType
+                    // empstatus={employeeID}
+                    onChange={setLevReq}
+                    onChangeVal={levReq}
+                />
+            </Box>
+            <Box sx={{ display: "flex", px: 0.3 }} >
+                <CssVarsProvider>
+                    <Tooltip title="Process" followCursor placement='top' arrow >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="danger"
+                            // onClick={onSubmitLeaveRequestEntry}
+                            size='sm'
+                        >
+                            <AddCircleOutlineIcon />
+                        </Button>
+                    </Tooltip>
+                </CssVarsProvider>
+            </Box>
+            <Box sx={{ display: "flex", px: 0.3 }} >
+                <CssVarsProvider>
+                    <Button
+                        aria-label="Like"
+                        variant="outlined"
+                        color="success"
+                        // onClick={() => changeForm()}
+                        size='sm'
+                        className='refreshButton'
+                    >
+                        <RefreshIcon className='rotating-icon' />
+                    </Button>
+                </CssVarsProvider>
+            </Box>
         </Paper>
     )
 }
