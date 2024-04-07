@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import React, { lazy } from 'react'
+import React, { lazy, useState } from 'react'
 import { Suspense } from 'react'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
@@ -15,46 +15,51 @@ import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
 import _ from 'underscore'
-import LeaveRequestEmployeeSelection from './LeaveRequestEmployeeSelection'
+// import LeaveRequestEmployeeSelection from './LeaveRequestEmployeeSelection'
 import LeaveTableContainer from './LeaveTableContainer'
 import { Actiontypes } from 'src/redux/constants/action.type'
-import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
-import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
+// import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
+// import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { setdeptSection } from 'src/redux/actions/DeptSection.action'
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
 
+const LeaveRequestEmployeeSelection = lazy(() => import('./LeaveRequestEmployeeSelection'));
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
+const MissPunchRequest = lazy(() => import('./MissPunchRequest/MissPunchRequest'))
+const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
 
 
 const LeaveRequestMainCard = () => {
 
     const dispatch = useDispatch();
-    const { LEAVE_REQ_DEFAULT } = Actiontypes;
+
+    const [requestType, setRequestType] = useState(0)
+    // const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
     const employeeInform = useMemo(() => empInform, [empInform])
     const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section } = employeeInform;
 
-
+    // console.log(empInform)
 
 
     /***************************************************************** */
-    const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
-    const { requestType } = state;
+    // const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
+    // const { requestType } = state;
 
     useEffect(() => {
-        if (hod === 1 || incharge === 1) {
-            dispatch(getHodBasedDeptSectionName(em_id));
-            dispatch(getEmpNameHodSectionBased(em_id));
-        } else {
-            dispatch(getannualleave(em_id))
-            dispatch(getEmployeeInformation(em_id))
-        }
-        dispatch(getEmployeeApprovalLevel(em_id))
+        // if (hod === 1 || incharge === 1) {
+        //     dispatch(getHodBasedDeptSectionName(em_id));
+        //     dispatch(getEmpNameHodSectionBased(em_id));
+        // } else {
+        //     dispatch(getannualleave(em_id))
+        //     dispatch(getEmployeeInformation(em_id))
+        // }
+        // dispatch(getEmployeeApprovalLevel(em_id))
         dispatch(setCommonSetting());
         dispatch(setDept())
         dispatch(setdeptSection())
@@ -62,30 +67,30 @@ const LeaveRequestMainCard = () => {
     }, [hod, incharge, em_id, dispatch])
 
     useEffect(() => {
-        return () => {
-            dispatch({ type: LEAVE_REQ_DEFAULT })
-            dispatch(getHodBasedDeptSectionName());
-            dispatch(getEmpNameHodSectionBased());
-            dispatch(getannualleave())
-            dispatch(getEmployeeInformation())
-            dispatch(getEmployeeApprovalLevel(0))
-        }
-    }, [dispatch, LEAVE_REQ_DEFAULT])
+        // return () => {
+        //     dispatch({ type: LEAVE_REQ_DEFAULT })
+        //     dispatch(getHodBasedDeptSectionName());
+        //     dispatch(getEmpNameHodSectionBased());
+        //     dispatch(getannualleave())
+        //     dispatch(getEmployeeInformation())
+        //     dispatch(getEmployeeApprovalLevel(0))
+        // }
+    }, [dispatch])
 
     //Leave Request in HOD/INcharge Selected employes Empid get Reducer function
-    const SelectEmp = useSelector((state) => state.leaveRequestSelectedEmployee.em_id, _.isEqual);
+    // const SelectEmp = useSelector((state) => state.leaveRequestSelectedEmployee.em_id, _.isEqual);
 
     return (
         <CustomLayout title="Leave Requsition" displayClose={true} >
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
-                <LeaveRequestEmployeeSelection />
                 <Suspense fallback={<LinearProgreeBar />} >
+                    <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
                     {
-                        requestType === 1 ? <LeaveRequestFormPage em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
-                            requestType === 2 ? <HalfDayLeaveRequest em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
-                                requestType === 3 ? <MissPunchRequest em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> :
-                                    requestType === 4 ? <CompansatoryOffMast em_id={hod === 0 || incharge === 0 ? em_id : SelectEmp} /> : null
+                        requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> :
+                            requestType === 2 ? <HalfDayLeaveRequest em_id={{}} /> :
+                                requestType === 3 ? <MissPunchRequest em_id={{}} /> :
+                                    requestType === 4 ? <CompansatoryOffMast em_id={{}} /> : null
                     }
                 </Suspense>
                 <LeaveTableContainer />

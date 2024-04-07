@@ -23,19 +23,35 @@ import { getDepartmentAll, getDepartmentSectBasedDeptID, getDepartmentSectionAll
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import LinearProgress from '@mui/joy/LinearProgress';
-import NormalEmployeeLeveReqPage from './NormalEmployeeLeveReqPage'
 
+const NormalEmployeeLeveReqPage = lazy(() => import('./NormalEmployeeLeveReqPage'))
 const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
 
-const LeaveRequestEmployeeSelection = () => {
+const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
     const dispatch = useDispatch()
 
-    const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
+    // const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
-    const [levReq, setLevReq] = useState(0);
+    const [levReq, setLevReq] = useState(0); //LEAVE REQUEST TYPE SELECTION STATE
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformation;
+
+    // Leave request user User States
+    const [requestUser, setRequestUser] = useState({
+        depatID: 0,
+        sectionID: 0,
+        emNo: 0,
+        emID: 0
+    })
+
+
+    // HANDLE CLICK THE LEAVE REQUST PROCESS BUTTON
+    const handleProcessLeveRequest = useCallback(async () => {
+        setRequestType(levReq)
+
+
+    }, [levReq, setRequestType])
 
 
     /****************************** */
@@ -93,11 +109,11 @@ const LeaveRequestEmployeeSelection = () => {
     //     }
     // }
 
-    const changeForm = () => {
-        let requestType = { requestType: 0 };
-        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
-        dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+    // const changeForm = () => {
+    //     let requestType = { requestType: 0 };
+    //     dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+    //     dispatch({ type: LEAVE_REQ_DEFAULT })
+    // }
 
 
     return (
@@ -105,7 +121,9 @@ const LeaveRequestEmployeeSelection = () => {
             <Box display={'flex'} sx={{ flex: 1 }} >
                 <Suspense fallback={<LinearProgress variant="outlined" />} >
                     {
-                        (hod === 1 || incharge === 1) ? <HrRoleBasedDepartmentAndSection /> : <NormalEmployeeLeveReqPage />
+                        (hod === 1 || incharge === 1)
+                            ? <HrRoleBasedDepartmentAndSection state={requestUser} setState={setRequestUser} />
+                            : <NormalEmployeeLeveReqPage />
                     }
                 </Suspense>
             </Box>
@@ -116,7 +134,6 @@ const LeaveRequestEmployeeSelection = () => {
                 px: 0.3
             }}>
                 <LeaveRequestType
-                    // empstatus={employeeID}
                     onChange={setLevReq}
                     onChangeVal={levReq}
                 />
@@ -128,7 +145,7 @@ const LeaveRequestEmployeeSelection = () => {
                             aria-label="Like"
                             variant="outlined"
                             color="danger"
-                            // onClick={onSubmitLeaveRequestEntry}
+                            onClick={handleProcessLeveRequest}
                             size='sm'
                         >
                             <AddCircleOutlineIcon />

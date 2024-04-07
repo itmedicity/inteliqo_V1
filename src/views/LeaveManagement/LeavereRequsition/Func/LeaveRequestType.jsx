@@ -11,13 +11,13 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 
-const LeaveRequestType = ({ empstatus, onChange, onChangeVal }) => {
-    const dispatch = useDispatch();
-    const { FETCH_LEAVE_REQUEST } = Actiontypes;
+const LeaveRequestType = ({ onChange, onChangeVal }) => {
+    // const dispatch = useDispatch();
+    // const { FETCH_LEAVE_REQUEST } = Actiontypes;
 
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { hod, incharge } = employeeProfileDetl;
+    // const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    // const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    // const { hod, incharge } = employeeProfileDetl;
 
     const [leaveRequestType, setleaveRequestType] = useState([]);
 
@@ -39,8 +39,8 @@ const LeaveRequestType = ({ empstatus, onChange, onChangeVal }) => {
     const onChangeLeaveReqSelectOption = (e) => {
         console.log(e)
         onChange(e)
-        let requestType = { requestType: 0 };
-        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+        // let requestType = { requestType: 0 };
+        // dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
     }
 
     return (
@@ -73,7 +73,7 @@ const LeaveRequestType = ({ empstatus, onChange, onChangeVal }) => {
             defaultValue={onChangeVal}
             onChange={(e, val) => onChangeLeaveReqSelectOption(val)}
             size='sm'
-            disabled={empstatus === 0 && (hod === 1 || incharge === 1) ? true : false}
+            // disabled={empstatus === 0 && (hod === 1 || incharge === 1) ? true : false}
             sx={{ width: '100%' }}
         >
             <Option value={0} disabled  >Leave Request Type</Option>

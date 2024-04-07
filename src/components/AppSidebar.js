@@ -35,6 +35,8 @@ import { getMenuSlno } from 'src/views/Constant/Constant'
 import VaccinationInfo from '../Menus/VaccinationMenu'
 import { Box, CssVarsProvider, Typography } from '@mui/joy'
 import _ from 'underscore'
+import { infoNofity } from 'src/views/CommonCode/Commonfunc'
+import { useHistory } from 'react-router-dom'
 
 
 const AppSidebar = () => {
@@ -129,11 +131,19 @@ const AppSidebar = () => {
   const sidebarShow = useSelector((state) => state?.changeState?.sidebarShow)
 
   const [menu, setMenu] = useState([])
+  const history = useHistory();
 
   useEffect(() => {
 
     //MENU RIGHTS FROM HERE
     getMenuSlno().then((val) => {
+
+      if (!val || val === undefined) {
+        sessionStorage.clear();
+        infoNofity('You Are Logged Out Successfully');
+        history.push('/')
+        return
+      }
 
       const resultLength = Object.keys(val[0])?.length ?? 0
 

@@ -13,7 +13,7 @@ import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from './Le
 import LeaveRequestType from './LeaveRequestType';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const DepartmentBasedSection = ({ }) => {
+const DepartmentBasedSection = ({ state, setState }) => {
 
 
     const dispatch = useDispatch();
@@ -53,11 +53,8 @@ const DepartmentBasedSection = ({ }) => {
     const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
     const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
     useEffect(() => {
-        console.log('runnlfdkgkldjfglkdjfgkl', groupStatus)
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
-
-    console.log(groupStatus)
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -122,7 +119,8 @@ const DepartmentBasedSection = ({ }) => {
         setDeptSection(0)
         setEmployeeID(0)
         setMapEmpList([]) // EMPLOYEE ARRAY SET TO BLANK
-    }, [])
+        setState({ ...state, depatID: value })
+    }, [setState, state])
 
 
     //HANDLE CHANGE DEPARTMENT SECTION
@@ -137,13 +135,17 @@ const DepartmentBasedSection = ({ }) => {
         } else {
             setEmpDisableStat(false)
         }
-        // console.log(getEmpBySection)
-    }, [emplist, hodEmpFilter])
+
+        setState({ ...state, sectionID: value })
+
+    }, [emplist, hodEmpFilter, setState, state])
+
+
     //HANDLE CHANGE EMPLOYEE NAME 
     const handleChangeEmployeeName = useCallback((e, value) => {
         setEmployeeID(value)
-    }, [])
-
+        setState({ ...state, emNo: value })
+    }, [state, setState])
 
     return (
         <Box sx={{ display: 'flex', flex: 1, p: 0.5 }} >
@@ -202,7 +204,7 @@ const DepartmentBasedSection = ({ }) => {
                     <Option value={0}  >Employee Name</Option>
                     {
                         mapEmpList && mapEmpList?.map((val, index) => {
-                            return <Option key={index} value={val.em_no} label={val.em_name} >
+                            return <Option key={index} value={val.em_no} label={val.em_name}  >
                                 <Box gap={-1}
                                     sx={{
                                         display: 'flex',
