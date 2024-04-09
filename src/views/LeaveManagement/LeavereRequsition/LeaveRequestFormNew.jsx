@@ -26,27 +26,8 @@ const LeaveRequestFormNew = () => {
     const [table, setTable] = useState([]);
     const [leaveArray, setLeaveArray] = useState([]);
 
-
-    // console.log(selectedLeave)
-    //FETCH DATA FROM REDUX 
-    // const casulLeves = useSelector((state) => state.getCreditedCasualLeave);
-    // const earnLeaves = useSelector((state) => state.getCreditedEarnLeave);
-    // const copansatoryOff = useSelector((state) => state?.getCreitedCompansatoryOffLeave);
-    // const singleLeaveTypeData = useSelector((state) => state.getCreitedCommonLeave);
-
-    // console.log(casulLeves)
-    // console.log(earnLeaves)
-    // console.log(copansatoryOff)
-    // console.log(singleLeaveTypeData)
-
     const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state))
     const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
-
-
-    // console.log(allLeavesArray)
-    // const handleChangeRadioButton = (event) => {
-    //     setSelectedValue(event.target.value);
-    // };
 
     const handleChangeLeaveProcess = useCallback(async () => {
         const dateDiffrence = eachDayOfInterval({
@@ -66,9 +47,10 @@ const LeaveRequestFormNew = () => {
         const { status, data } = filterdArray;
 
         (status === true && data?.length > 0) && setLeaveArray(data)
-        console.log([...new Set(leaveArray?.map(e => JSON.stringify({ name: e.name, type: e.leavetype })))].map(JSON.parse))
 
     }, [fromDate, toDate, filterdArray])
+
+
 
     const handleProcessLeaveRequest = async () => {
         console.log(table)
@@ -94,7 +76,7 @@ const LeaveRequestFormNew = () => {
                                 renderInput={({ inputRef, inputProps, InputProps }) => (
                                     <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                         <CssVarsProvider>
-                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} size='sm' disabled={true} color='primary' />
+                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} size='sm' disabled={true} color='primary' variant='outlined' />
                                         </CssVarsProvider>
                                         {InputProps?.endAdornment}
                                     </Box>
@@ -123,30 +105,32 @@ const LeaveRequestFormNew = () => {
                             />
                         </LocalizationProvider>
                     </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} >
+                    <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5, gap: 2 }} >
                         <CssVarsProvider>
                             <Tooltip title="Click Here to Request Other Leave Types" followCursor placement='top' arrow >
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"
-                                    color="primary"
+                                    color="success"
                                     onClick={handleChangeLeaveProcess}
                                     size='sm'
+                                    endDecorator={<Box>Add Leaves</Box>}
                                 >
                                     <ExitToAppOutlinedIcon fontSize='large' />
                                 </Button>
                             </Tooltip>
                         </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} >
+                        {/* </Box>
+                    <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} > */}
                         <CssVarsProvider>
                             <Tooltip title="Click Here to Request Other Leave Types" followCursor placement='top' arrow >
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"
-                                    color="primary"
+                                    color="danger"
                                     onClick={handleProcessLeaveRequest}
                                     size='sm'
+                                    endDecorator={<Box>Save Request</Box>}
                                 >
                                     <ExitToAppOutlinedIcon fontSize='large' />
                                 </Button>
@@ -154,7 +138,7 @@ const LeaveRequestFormNew = () => {
                         </CssVarsProvider>
                     </Box>
                 </Box>
-                <Paper variant="outlined" sx={{ height: screenInnerHeight * 40 / 100, p: 1, m: 0.3, overflow: 'auto' }} >
+                <Paper variant="outlined" sx={{ maxHeight: screenInnerHeight * 40 / 100, p: 1, m: 0.3, overflow: 'auto' }} >
                     <Table
                         aria-label="basic table"
                         // borderAxis="xBetween"

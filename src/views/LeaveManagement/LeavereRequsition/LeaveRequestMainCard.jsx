@@ -24,6 +24,7 @@ import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { setdeptSection } from 'src/redux/actions/DeptSection.action'
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
+import CircularProgress from '@mui/joy/CircularProgress';
 
 const LeaveRequestEmployeeSelection = lazy(() => import('./LeaveRequestEmployeeSelection'));
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
@@ -85,16 +86,25 @@ const LeaveRequestMainCard = () => {
         <CustomLayout title="Leave Requsition" displayClose={true} >
             <ToastContainer />
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
-                <Suspense fallback={<LinearProgreeBar />} >
+                <Suspense fallback={
+                    <Box sx={{ display: 'flex', flex: 1, zIndex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress
+                            color="danger"
+                            size="md"
+                            value={20}
+                            variant="outlined"
+                        />
+                    </Box>
+                }>
                     <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
-                    <LeaveRequestFormNew />
-                    {/* {
+                    {/* <LeaveRequestFormNew /> */}
+                    {
                         requestType === 1 ? <LeaveRequestFormNew /> :
                             // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
                             requestType === 2 ? <HalfDayLeaveRequest em_id={{}} /> :
                                 requestType === 3 ? <MissPunchRequest em_id={{}} /> :
                                     requestType === 4 ? <CompansatoryOffMast em_id={{}} /> : null
-                    } */}
+                    }
                 </Suspense>
                 <LeaveTableContainer />
             </Box>

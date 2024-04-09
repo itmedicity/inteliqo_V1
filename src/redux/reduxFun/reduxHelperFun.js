@@ -45,9 +45,10 @@ export const allLeavesConvertAnArray = (state) => {
                 slno: e.hrm_cl_slno,
                 month: e.cl_lv_mnth,
                 count: e.cl_bal_leave,
-                lveRequest: e.hl_lv_tkn_status // Leave requested status not approved status
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                cmn: 0
             }
-        })
+        })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newCasualLeavesAttay)
     }
 
@@ -61,9 +62,10 @@ export const allLeavesConvertAnArray = (state) => {
                 slno: e.hrm_ernlv_slno,
                 month: e.ernlv_mnth,
                 count: e.ernlv_taken,
-                lveRequest: e.hl_lv_tkn_status // Leave requested status not approved status
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                cmn: 0
             }
-        })
+        })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newErnLeaves)
     }
 
@@ -80,9 +82,10 @@ export const allLeavesConvertAnArray = (state) => {
                 taken: e.taken,
                 credited: e.credited_date,
                 remark: e.specail_remark,
-                lveRequest: e.hl_lv_tkn_status // Leave requested status not approved status
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status,
+                cmn: 0
             }
-        })
+        })?.filter((e) => e.lveRequest === 0)//REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newCompanSatoryLeaves)
     }
 
@@ -100,6 +103,7 @@ export const allLeavesConvertAnArray = (state) => {
                     month: `SICK LEAVE -${count}`,
                     count: 1,
                     taken: 0,
+                    cmn: 0
                 }
             });
             creditedLeavesArray.data.push(...newArray); // Push the newly created array to creditedLeavesArray
@@ -117,6 +121,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `MATERNITY LEAVE`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                cmn: 1
             }]
 
             creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
@@ -134,6 +139,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `LWP`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                cmn: 1
             }]
 
             creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
@@ -151,6 +157,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `ESI`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                cmn: 1
             }]
 
             creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
