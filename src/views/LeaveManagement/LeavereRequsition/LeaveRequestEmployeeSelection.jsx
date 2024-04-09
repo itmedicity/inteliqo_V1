@@ -23,6 +23,13 @@ import { getDepartmentAll, getDepartmentSectBasedDeptID, getDepartmentSectionAll
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import LinearProgress from '@mui/joy/LinearProgress';
+import {
+    getEmployeeInformation,
+    getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave, getEmpCoffData,
+} from 'src/redux/actions/LeaveReqst.action';
+import { getannualleave } from 'src/redux/actions/Profile.action'
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const NormalEmployeeLeveReqPage = lazy(() => import('./NormalEmployeeLeveReqPage'))
 const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
@@ -35,23 +42,64 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
     const [levReq, setLevReq] = useState(0); //LEAVE REQUEST TYPE SELECTION STATE
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
-    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformation;
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformationFromRedux;
+
+    // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE
+    const employeePostData = useMemo(() => {
+        return {
+            emNo: em_no,
+            emID: em_id,
+            deptID: em_department,
+            sectionID: em_dept_section
+        }
+    }, [em_no, em_id, em_department, em_dept_section])
 
     // Leave request user User States
     const [requestUser, setRequestUser] = useState({
-        depatID: 0,
+        deptID: 0,
         sectionID: 0,
         emNo: 0,
         emID: 0
     })
+    const userPostData = useMemo(() => requestUser, [requestUser])
 
 
     // HANDLE CLICK THE LEAVE REQUST PROCESS BUTTON
     const handleProcessLeveRequest = useCallback(async () => {
+        const isInchargeOrHOD = (hod === 1 || incharge === 1) ? true : false //IF TRUE IS (HOD OR INCHARGE ) OR NORMAL USER
         setRequestType(levReq)
+        /* levReq -> state change the request form following
+         * 1 -> Leave Request form
+         * 2 -> Half Day Leave Request Form
+         * 3 -> Miss punch Request foprm
+         * 4 -> Compansatory Leave request Form
+         */
 
+        // CHECK THE EMPLOYEE IS HOD OR INCHARGE
+        const postData = isInchargeOrHOD === true ? { ...userPostData } : { ...employeePostData }
 
-    }, [levReq, setRequestType])
+        const { deptID, sectionID, emNo, emID } = postData;
+
+        if (sectionID === 0 || emNo === 0 || emID === 0) {
+            warningNofity("Please Check for Any Selection")
+        } else {
+            console.log(postData)
+            //  GET ALL ELIGIBLE LEAVES INFORMATION FROM DATA BASE
+            dispatch(getCreditedCasualLeave(emNo)); //GET ALL CASUAL LEAVES 
+            dispatch(getCreitedCommonLeave(emNo)); //GET COMMON LEAVES
+            dispatch(getCreitedHolidayLeave(emNo)); // GET ALL HOLIDAYS LEAVES
+            dispatch(getCreitedCompansatoryOffLeave(emID)); // GET COMPANSATORY OFF LEAVES
+            dispatch(getCreditedEarnLeave(emNo)); // GET ALL EARN LEAVES
+            dispatch(getannualleave(em_id))  //GET ALL LEAVES COUNT
+            dispatch(getEmployeeInformation(em_id)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
+            // dispatch(getEmpCoffData(postData)) // 
+        }
+
+        // console.log(employeePostData)
+        // console.log(userPostData)
+
+    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData])
 
 
     /****************************** */
@@ -117,8 +165,8 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
 
 
     return (
-        <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center' }} >
-            <Box display={'flex'} sx={{ flex: 1 }} >
+        <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center', flexWrap: 'wrap' }} >
+            <Box display={'flex'} sx={{ flexGrow: 1, }} >
                 <Suspense fallback={<LinearProgress variant="outlined" />} >
                     {
                         (hod === 1 || incharge === 1)
@@ -138,7 +186,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
                     onChangeVal={levReq}
                 />
             </Box>
-            <Box sx={{ display: "flex", px: 0.3 }} >
+            <Box sx={{ display: "flex", px: 0.3, }} >
                 <CssVarsProvider>
                     <Tooltip title="Process" followCursor placement='top' arrow >
                         <Button
@@ -153,7 +201,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
                     </Tooltip>
                 </CssVarsProvider>
             </Box>
-            <Box sx={{ display: "flex", px: 0.3 }} >
+            <Box sx={{ display: "flex", px: 0.3, }} >
                 <CssVarsProvider>
                     <Button
                         aria-label="Like"

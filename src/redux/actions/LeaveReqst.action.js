@@ -116,8 +116,8 @@ export const getCreditedCasualLeave = (id) => async (dispatch) => {
 
 // GET THE CRDITED COMMON LEAVES 
 
-export const getCreitedCommonLeave = (iddata) => async (dispatch) => {
-    const result = await axioslogin.post('/yearleaveprocess/allowablcommon/allowableconleave/data/', iddata);
+export const getCreitedCommonLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/allowablcommon/allowableconleave/data/${id}`);
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_CREDITED_COMMON_LEAVE, payload: data })
@@ -142,6 +142,7 @@ export const getCreitedHolidayLeave = (id) => async (dispatch) => {
 
 export const getCreitedCompansatoryOffLeave = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/common/getcoffDetl/${id}`);
+    console.log(result)
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_CREDITED_COMPENSATORY_OFF_LEAVE, payload: data })

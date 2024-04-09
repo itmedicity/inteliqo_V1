@@ -30,6 +30,7 @@ const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
 const MissPunchRequest = lazy(() => import('./MissPunchRequest/MissPunchRequest'))
 const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
+const LeaveRequestFormNew = lazy(() => import('./LeaveRequestFormNew'))
 
 
 const LeaveRequestMainCard = () => {
@@ -86,12 +87,14 @@ const LeaveRequestMainCard = () => {
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
                 <Suspense fallback={<LinearProgreeBar />} >
                     <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
-                    {
-                        requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> :
+                    <LeaveRequestFormNew />
+                    {/* {
+                        requestType === 1 ? <LeaveRequestFormNew /> :
+                            // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
                             requestType === 2 ? <HalfDayLeaveRequest em_id={{}} /> :
                                 requestType === 3 ? <MissPunchRequest em_id={{}} /> :
                                     requestType === 4 ? <CompansatoryOffMast em_id={{}} /> : null
-                    }
+                    } */}
                 </Suspense>
                 <LeaveTableContainer />
             </Box>

@@ -119,26 +119,29 @@ const DepartmentBasedSection = ({ state, setState }) => {
         setDeptSection(0)
         setEmployeeID(0)
         setMapEmpList([]) // EMPLOYEE ARRAY SET TO BLANK
-        setState({ ...state, depatID: value })
+        setState({ ...state, deptID: value, sectionID: 0, emNo: 0, emID: 0 })
     }, [setState, state])
 
 
     //HANDLE CHANGE DEPARTMENT SECTION
     const handleChangeDepetSection = useCallback(async (e, value) => {
+        console.log('section', value)
         setMapEmpList([...emplist?.filter((e) => e.em_dept_section === value)])
         setDeptSection(value)
         setEmployeeID(0)
         // if the employee is hhod or incharge in another department but they can access thery information but this function hel to view ther datas
         if (hodEmpFilter === true && value === em_dept_section) {
+            // em_id
             setEmployeeID(em_no)
+            setState({ ...state, deptID: em_department, sectionID: value, emNo: em_no, emID: em_id })
             setEmpDisableStat(true)
         } else {
             setEmpDisableStat(false)
+            setState({ ...state, sectionID: value, emNo: 0, emID: 0 })
         }
 
-        setState({ ...state, sectionID: value })
 
-    }, [emplist, hodEmpFilter, setState, state])
+    }, [emplist, hodEmpFilter, setState, state, em_no, em_id])
 
 
     //HANDLE CHANGE EMPLOYEE NAME 
@@ -172,7 +175,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
                     }
                 </Select>
             </Box>
-            <Box sx={{ width: '20%', px: 0.3 }}>
+            <Box sx={{ flex: 1, px: 0.3 }}>
                 <Select
                     defaultValue={0}
                     value={deptSection}
@@ -186,7 +189,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
                     <Option value={0}>Select Department Section</Option>
                     {
                         deptSectionList && deptSectionList?.map((val, index) => {
-                            return <Option key={index} value={val.sect_id}>{val.sect_name}</Option>
+                            return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
                         })
                     }
                 </Select>
@@ -204,7 +207,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
                     <Option value={0}  >Employee Name</Option>
                     {
                         mapEmpList && mapEmpList?.map((val, index) => {
-                            return <Option key={index} value={val.em_no} label={val.em_name}  >
+                            return <Option key={index} value={val.em_no} label={val.em_name} onClick={() => setState({ ...state, emID: val.em_id })} >
                                 <Box gap={-1}
                                     sx={{
                                         display: 'flex',
