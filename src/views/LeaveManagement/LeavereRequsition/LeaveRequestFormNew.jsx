@@ -10,13 +10,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
-import { allLeavesConvertAnArray } from 'src/redux/reduxFun/reduxHelperFun';
+import { allLeavesConvertAnArray, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import LeaveRequestTable from './Func/LeaveRequestTable';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { axioslogin } from 'src/views/Axios/Axios';
 
 const LeaveRequestFormNew = () => {
 
@@ -30,11 +31,34 @@ const LeaveRequestFormNew = () => {
     const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state))
     const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
+    const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
+    const { em_id, em_no, hod, incharge } = selectedEmpInform;
+
     const handleChangeLeaveProcess = useCallback(async () => {
         const dateDiffrence = eachDayOfInterval({
             start: new Date(fromDate),
             end: new Date(toDate)
         })
+
+        /**
+         * 1-> CHECKING FOR PUNCH MARKING HR -> YES/NO
+         * 2-> DUTY PLANNED DONE FOR THE SELECTED DATES 
+         */
+        const postData = {
+            fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+            toDate: format(new Date(toDate), 'yyyy-MM-dd'),
+            emno: em_no
+        }
+
+        const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
+        const { success, dta } = checkDutyPlan.data;
+        // console.log(success, dta)
+        if (success === 1) {
+            console.log(dta)
+            console.log(dateDiffrence)
+        }
+
+
         const modifiedTable = dateDiffrence?.map((e) => {
             return {
                 date: e,
@@ -49,7 +73,7 @@ const LeaveRequestFormNew = () => {
         const { status, data } = filterdArray;
         (status === true && data?.length > 0) && setLeaveArray(data)
 
-    }, [fromDate, toDate, filterdArray])
+    }, [fromDate, toDate, filterdArray, em_no])
 
 
     //SAVE LEAVE REQUEST FUNCTION
@@ -77,6 +101,14 @@ const LeaveRequestFormNew = () => {
         //DUPLICATE CHECKING RESULTS
         if (checkDuplicateLeaves === undefined) {
             //NO DUPLICATE LEAVES
+            /**
+             * 1-> CHECKING FOR PUNCH MARKING HR -> YES/NO
+             * 2-> DUTY PLANNED DONE FOR THE SELECTED DATES
+             * 
+             * 
+             */
+
+
 
 
 

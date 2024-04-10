@@ -175,4 +175,7 @@ export const allLeavesConvertAnArray = (state) => {
 
 // AANUAL LEAVES INFORMATIOM COUNT FOR SHOWING IN THE TABLE
 
-export const getLeavesCountEMIDwise = (state) => state.getPrifileDateEachEmp.empLeaveData
+export const getLeavesCountEMIDwise = (state) => state?.getPrifileDateEachEmp?.empLeaveData;
+
+//GET SELECTED EMPLOYEE DATA FROM THE DATABASE 
+export const getSelectedEmpInformation = (state) => state?.getEmployeeInformationState?.empData[0];
