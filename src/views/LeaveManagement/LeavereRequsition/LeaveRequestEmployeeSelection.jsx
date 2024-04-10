@@ -84,25 +84,25 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
         if (sectionID === 0 || emNo === 0 || emID === 0) {
             warningNofity("Please Check for Any Selection")
         } else {
-            console.log(postData)
             //  GET ALL ELIGIBLE LEAVES INFORMATION FROM DATA BASE
             dispatch(getCreditedCasualLeave(emNo)); //GET ALL CASUAL LEAVES 
             dispatch(getCreitedCommonLeave(emNo)); //GET COMMON LEAVES
             dispatch(getCreitedHolidayLeave(emNo)); // GET ALL HOLIDAYS LEAVES
             dispatch(getCreitedCompansatoryOffLeave(emID)); // GET COMPANSATORY OFF LEAVES
             dispatch(getCreditedEarnLeave(emNo)); // GET ALL EARN LEAVES
-            dispatch(getannualleave(em_id))  //GET ALL LEAVES COUNT
-            dispatch(getEmployeeInformation(em_id)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
+            dispatch(getannualleave(emID))  //GET ALL LEAVES COUNT
+            dispatch(getEmployeeInformation(emID)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
             // dispatch(getEmpCoffData(postData)) // 
         }
 
         // console.log(employeePostData)
         // console.log(userPostData)
 
-    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData])
+    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData,])
 
 
     /****************************** */
+
 
 
     // //get the employee details for taking the HOd and Incharge Details
@@ -170,7 +170,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
                 <Suspense fallback={<LinearProgress variant="outlined" />} >
                     {
                         (hod === 1 || incharge === 1)
-                            ? <HrRoleBasedDepartmentAndSection state={requestUser} setState={setRequestUser} />
+                            ? <HrRoleBasedDepartmentAndSection state={requestUser} setState={setRequestUser} formChange={setRequestType} />
                             : <NormalEmployeeLeveReqPage />
                     }
                 </Suspense>
@@ -207,7 +207,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
                         aria-label="Like"
                         variant="outlined"
                         color="success"
-                        // onClick={() => changeForm()}
+                        onClick={() => setRequestType(10)}
                         size='sm'
                         className='refreshButton'
                     >

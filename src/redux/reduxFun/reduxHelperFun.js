@@ -1,3 +1,4 @@
+import { endOfYear, format, subMonths } from "date-fns";
 import { useMemo } from "react";
 
 //SELECT ALL DEPARTMENT NAMES
@@ -38,12 +39,13 @@ export const allLeavesConvertAnArray = (state) => {
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
+            let leveCount = e.cl_bal_leave === 0 ? 1 : e.cl_bal_leave;
             return {
                 type: 'CL',
                 name: 'Casual Leave',
                 leavetype: 1,
                 slno: e.hrm_cl_slno,
-                month: e.cl_lv_mnth,
+                month: e.cl_lv_mnth + '-' + leveCount,
                 count: e.cl_bal_leave,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 cmn: 0
@@ -100,7 +102,7 @@ export const allLeavesConvertAnArray = (state) => {
                     name: 'Sick Leave',
                     leavetype: 7,
                     slno: index + 1,
-                    month: `SICK LEAVE -${count}`,
+                    month: format(subMonths(endOfYear(new Date()), index + 1), 'MMMM'),
                     count: 1,
                     taken: 0,
                     cmn: 0
@@ -151,7 +153,7 @@ export const allLeavesConvertAnArray = (state) => {
         if (findSickLeave !== undefined) {
             const array = [{
                 type: 'ESI',
-                name: 'LWP',
+                name: 'ESI',
                 leavetype: 6,
                 slno: 1,
                 month: `ESI`,
@@ -169,3 +171,8 @@ export const allLeavesConvertAnArray = (state) => {
     return creditedLeavesArray;
 
 }
+
+
+// AANUAL LEAVES INFORMATIOM COUNT FOR SHOWING IN THE TABLE
+
+export const getLeavesCountEMIDwise = (state) => state.getPrifileDateEachEmp.empLeaveData

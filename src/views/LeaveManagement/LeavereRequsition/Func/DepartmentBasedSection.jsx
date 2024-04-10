@@ -13,7 +13,7 @@ import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from './Le
 import LeaveRequestType from './LeaveRequestType';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const DepartmentBasedSection = ({ state, setState }) => {
+const DepartmentBasedSection = ({ state, setState, formChange }) => {
 
 
     const dispatch = useDispatch();
@@ -115,6 +115,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
 
     //HANDELE CHANGE DEPARTMENT
     const handleChangeDepartmentID = useCallback((e, value) => {
+        formChange(10) // request leave form changeing to null
         setDeptID(value)
         setDeptSection(0)
         setEmployeeID(0)
@@ -125,6 +126,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
 
     //HANDLE CHANGE DEPARTMENT SECTION
     const handleChangeDepetSection = useCallback(async (e, value) => {
+        formChange(10) // request leave form changeing to null
         console.log('section', value)
         setMapEmpList([...emplist?.filter((e) => e.em_dept_section === value)])
         setDeptSection(value)
@@ -146,6 +148,7 @@ const DepartmentBasedSection = ({ state, setState }) => {
 
     //HANDLE CHANGE EMPLOYEE NAME 
     const handleChangeEmployeeName = useCallback((e, value) => {
+        formChange(10) // request leave form changeing to null
         setEmployeeID(value)
         setState({ ...state, emNo: value })
     }, [state, setState])

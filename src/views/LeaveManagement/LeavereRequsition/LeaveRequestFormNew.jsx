@@ -16,6 +16,7 @@ import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import LeaveRequestTable from './Func/LeaveRequestTable';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const LeaveRequestFormNew = () => {
 
@@ -39,23 +40,52 @@ const LeaveRequestFormNew = () => {
                 date: e,
                 leavetype: 0,
                 leaveTypeName: '',
-                selectedLveSlno: 0
+                selectedLveSlno: 0,
+                selectedLveName: '',
+                selectedLvType: ''
             }
         })
         setTable(modifiedTable)
-
         const { status, data } = filterdArray;
-
         (status === true && data?.length > 0) && setLeaveArray(data)
 
     }, [fromDate, toDate, filterdArray])
 
 
-
-    const handleProcessLeaveRequest = async () => {
+    //SAVE LEAVE REQUEST FUNCTION
+    const handleProcessLeaveRequest = useCallback(async () => {
         console.log(table)
+        //LEAVE TYPES
+        /***
+         * ESI -> 6
+         * LWP -> 5
+         * ML -> 2
+         * SL -> 7
+         */
 
-    }
+        const commonLeave = [6, 5, 2, 7]
+        // FILTER AND REMOVE THE COMMON LEAVES
+        const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
+        const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]
+        // FIND THE DUPLICATE LEAVES 
+        const checkDuplicateLeaves = allLeavetypes?.map((el) => {
+            return {
+                type: el,
+                status: commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno).length === [...new Set(commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno))].length
+            }
+        })?.find((e) => e.status === false)
+        //DUPLICATE CHECKING RESULTS
+        if (checkDuplicateLeaves === undefined) {
+            //NO DUPLICATE LEAVES
+
+
+
+        } else {
+            // YES DUPLICATE LEAVE FOUND ERROR THROW
+            warningNofity("Please Check Selected Leaves , Duplicate Leaves Found !!!")
+        }
+
+    }, [table])
 
 
 
@@ -107,7 +137,7 @@ const LeaveRequestFormNew = () => {
                     </Box>
                     <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5, gap: 2 }} >
                         <CssVarsProvider>
-                            <Tooltip title="Click Here to Request Other Leave Types" followCursor placement='top' arrow >
+                            <Tooltip title="Click Here to Add Leaves" followCursor placement='top' arrow variant='outlined' color='success'>
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"
@@ -123,7 +153,7 @@ const LeaveRequestFormNew = () => {
                         {/* </Box>
                     <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} > */}
                         <CssVarsProvider>
-                            <Tooltip title="Click Here to Request Other Leave Types" followCursor placement='top' arrow >
+                            <Tooltip title="Click Here Save Leave Request" followCursor placement='top' arrow variant='outlined' color='danger' >
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"

@@ -3,14 +3,17 @@ import React, { useEffect, useState } from 'react'
 import { memo } from 'react'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { getLeavesCountEMIDwise } from 'src/redux/reduxFun/reduxHelperFun'
 import _ from 'underscore'
 
 const LeaveCalanderEmp = () => {
     const [data, setData] = useState([])
     const [status, setstatus] = useState(false)
 
-    const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData, _.isEqual);
+    const state = useSelector((state) => getLeavesCountEMIDwise(state));
     const allowedLeaveData = useMemo(() => state, [state]);
+
+    console.log(allowedLeaveData)
 
     useEffect(() => {
         const { leaveData, apiStatus } = allowedLeaveData;

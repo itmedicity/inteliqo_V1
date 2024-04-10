@@ -37,7 +37,6 @@ const LeaveRequestType = ({ onChange, onChangeVal }) => {
 
     //onchage leave requst select option
     const onChangeLeaveReqSelectOption = (e) => {
-        console.log(e)
         onChange(e)
         // let requestType = { requestType: 0 };
         // dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
@@ -75,8 +74,9 @@ const LeaveRequestType = ({ onChange, onChangeVal }) => {
             size='sm'
             // disabled={empstatus === 0 && (hod === 1 || incharge === 1) ? true : false}
             sx={{ width: '100%' }}
+            variant='solid'
         >
-            <Option value={0} disabled  >Leave Request Type</Option>
+            <Option value={0} >Leave Request Type ...</Option>
             {
                 leaveRequestType && leaveRequestType.map((val, index) => {
                     return <Option key={index} value={val.lrequest_slno}>{val.lrequest_type}</Option>

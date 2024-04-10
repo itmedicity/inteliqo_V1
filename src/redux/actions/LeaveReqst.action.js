@@ -142,7 +142,6 @@ export const getCreitedHolidayLeave = (id) => async (dispatch) => {
 
 export const getCreitedCompansatoryOffLeave = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/common/getcoffDetl/${id}`);
-    console.log(result)
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_CREDITED_COMPENSATORY_OFF_LEAVE, payload: data })
