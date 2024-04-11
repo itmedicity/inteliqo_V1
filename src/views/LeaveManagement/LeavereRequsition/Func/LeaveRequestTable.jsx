@@ -37,9 +37,9 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
     }, [value])
 
     const onClickLveName = useCallback((data) => {
-        console.log(data)
         value.selectedLveName = data.month;
-        value.selectedLvType = data.type
+        value.selectedLvType = data.type;
+        value.count = data.count;
     }, [value])
 
     return (
@@ -53,7 +53,7 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
                             fontFamily="monospace"
                             sx={{ opacity: '80%' }}
                         >
-                            {format(value.date, 'dd-MMMM-yyyy')}
+                            {format(value.date, 'dd-MMMM')}
                         </Typography>
                     </Box>
                     <Box>

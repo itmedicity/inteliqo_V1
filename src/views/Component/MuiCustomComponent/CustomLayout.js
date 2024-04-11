@@ -48,7 +48,7 @@ const CustomLayout = ({ children, title, displayClose }) => {
                         </Paper>
                     </Box>
                 </Paper>
-                <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: screenInnerHeight - 110, overflow: 'auto' }} >
+                <Box sx={{ display: 'flex', flex: 1, py: 0.5, overflow: 'auto' }} >
                     {children}
                 </Box>
             </Paper>
