@@ -39,15 +39,16 @@ export const allLeavesConvertAnArray = (state) => {
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
-            let leveCount = e.cl_bal_leave === 0 ? 1 : e.cl_bal_leave;
+            let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
             return {
                 type: 'CL',
                 name: 'Casual Leave',
                 leavetype: 1,
                 slno: e.hrm_cl_slno,
                 month: e.cl_lv_mnth + '-' + leveCount,
-                count: e.cl_bal_leave,
+                count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                common_slno: 0,
                 cmn: 0
             }
         })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
@@ -56,15 +57,18 @@ export const allLeavesConvertAnArray = (state) => {
 
     // Push earned leaves to the array if available
     if (earnLeaves?.length > 0) {
+        console.log(earnLeaves)
         const newErnLeaves = earnLeaves?.map((e) => {
+            let leveCount = e.ernlv_taken === 0 ? 1 : e.ernlv_taken;
             return {
                 type: 'EL',
                 name: 'Earn Leave',
                 leavetype: 8,
                 slno: e.hrm_ernlv_slno,
-                month: e.ernlv_mnth,
-                count: e.ernlv_taken,
+                month: e.ernlv_mnth + '-' + leveCount,
+                count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                common_slno: 0,
                 cmn: 0
             }
         })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
@@ -85,6 +89,7 @@ export const allLeavesConvertAnArray = (state) => {
                 credited: e.credited_date,
                 remark: e.specail_remark,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status,
+                common_slno: 0,
                 cmn: 0
             }
         })?.filter((e) => e.lveRequest === 0)//REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
@@ -96,19 +101,27 @@ export const allLeavesConvertAnArray = (state) => {
         const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 7);
         if (findSickLeave !== undefined) {
             let count = findSickLeave.cmn_lv_balance;
-            const newArray = Array.from({ length: count }, (data, index) => {
+
+            const integerPart = Math.floor(count);
+            const fractionalPart = count - integerPart;
+            const resultArray = Array(integerPart).fill(1);
+            const sickLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
+
+            const sickLeaveArray = sickLeave?.map((e, index) => {
+
                 return {
                     type: 'SL',
                     name: 'Sick Leave',
                     leavetype: 7,
                     slno: index + 1,
-                    month: format(subMonths(endOfYear(new Date()), index + 1), 'MMMM'),
-                    count: 1,
+                    month: format(subMonths(endOfYear(new Date()), index + 1), 'MMMM') + ' ' + e,
+                    count: e,
                     taken: 0,
-                    cmn: 0
+                    common_slno: findSickLeave?.hrm_lv_cmn,
+                    cmn: 1
                 }
-            });
-            creditedLeavesArray.data.push(...newArray); // Push the newly created array to creditedLeavesArray
+            })
+            creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
         }
     }
 
@@ -123,6 +136,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `MATERNITY LEAVE`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                common_slno: findSickLeave?.hrm_lv_cmn,
                 cmn: 1
             }]
 
@@ -141,6 +155,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `LWP`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                common_slno: findSickLeave?.hrm_lv_cmn,
                 cmn: 1
             }]
 
@@ -159,6 +174,7 @@ export const allLeavesConvertAnArray = (state) => {
                 month: `ESI`,
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
+                common_slno: findSickLeave?.hrm_lv_cmn,
                 cmn: 1
             }]
 

@@ -10,7 +10,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
-import { allLeavesConvertAnArray, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { allLeavesConvertAnArray, getCommonSettings, getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
@@ -19,6 +19,8 @@ import LeaveRequestTable from './Func/LeaveRequestTable';
 import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CachedIcon from '@mui/icons-material/Cached';
+import Textarea from '@mui/joy/Textarea';
+import { useEffect } from 'react';
 
 const LeaveRequestFormNew = () => {
 
@@ -30,6 +32,21 @@ const LeaveRequestFormNew = () => {
     const [leaveArray, setLeaveArray] = useState([]);
     const [addDateDisable, setAddDateDisable] = useState(false);
 
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, em_id: loginEmid, em_department: loginDept, em_dept_section: loginSection, groupmenu } = empInformationFromRedux;
+
+    //CHEK THE AURHORISED USER GROUP
+    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
+    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
+    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
+
+    useEffect(() => {
+        setMasterGroupStatus(groupStatus)
+    }, [groupStatus])
+
+
+    const [reson, setReason] = useState('')
     const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state))
     const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
@@ -42,8 +59,10 @@ const LeaveRequestFormNew = () => {
         setAddDateDisable(false)
     }, [])
 
-    const handleChangeLeaveProcess = useCallback(async () => {
 
+    /********************************************************************************************************/
+
+    const handleChangeLeaveProcess = useCallback(async () => {
         if ((isValid(fromDate) && isValid(toDate)) && fromDate <= toDate) {
 
             const dateDiffrence = eachDayOfInterval({
@@ -65,18 +84,17 @@ const LeaveRequestFormNew = () => {
             }
 
             const checkAttendanceMarking = await axioslogin.post('/attendCal/checkPunchMarkingHR', postDataForAttendaceMark);
+
+
             const { data: attMarkCheckData, success: attMarkCheckSuccess } = checkAttendanceMarking.data;
-            // console.log(attMarkCheckData, attMarkCheckSuccess)
             const lastUpdateDate = attMarkCheckData[0]?.last_update_date;
             // console.log(lastUpdateDate)
             // console.log(isValid(new Date(lastUpdateDate)))
 
+
             if (attMarkCheckSuccess === 2) {
                 errorNofity("Error Checking Attendance Already Marked or Not ,Try Again !!")
-            } else if (
-                (attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1)
-                && (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate))
-                    && new Date(lastUpdateDate) < new Date(fromDate))) {
+            } else if ((attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) && (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) && new Date(lastUpdateDate) < new Date(fromDate))) {
 
 
                 /** CHECKING DUTY PLAN AND PUNCH MASTER START HERE **/
@@ -86,6 +104,7 @@ const LeaveRequestFormNew = () => {
                     new Date(toDate),
                     new Date(fromDate)
                 ) + 1
+
                 const postData = {
                     fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
                     toDate: format(new Date(toDate), 'yyyy-MM-dd'),
@@ -107,13 +126,18 @@ const LeaveRequestFormNew = () => {
                             selectedLveSlno: 0,
                             selectedLveName: '',
                             selectedLvType: '',
-                            count: 0
+                            count: 0,
+                            commonLeave: 0,
+                            commonLeaveSlno: 0
                         }
                     })
                     setTable(modifiedTable)
                     const { status, data } = filterdArray;
                     (status === true && data?.length > 0) && setLeaveArray(data)
                     setAddDateDisable(true)
+                } else {
+                    warningNofity('Duty Plan Not planned ')
+                    return
                 }
                 /** CHECKING DUTY PLAN AND PUNCH MASTER END HERE **/
 
@@ -126,15 +150,14 @@ const LeaveRequestFormNew = () => {
             errorNofity("Selected Dates are showing invalid Dates OR 'From Date' Greater Than 'to Date',Retrying Again ")
         }
 
-    }, [fromDate, toDate, filterdArray, em_no])
+    }, [fromDate, toDate, filterdArray, em_no, em_dept_section])
 
-
+    /************************************************************************************************************************************* */
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
         //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
-
         const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
-        if (nulCheckForEnterdLeaves !== 0) {
+        if (table?.length === 0 || nulCheckForEnterdLeaves !== 0) {
             warningNofity("Requested Leave Data Not Enterd Correctly ,Please Check")
         } else {
 
@@ -162,62 +185,103 @@ const LeaveRequestFormNew = () => {
             //DUPLICATE CHECKING RESULTS
             if (checkDuplicateLeaves === undefined) {
                 //REQUEST SEND TO DATABASE FOR SAVING
+
+
                 const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
+
                 const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
                 const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
 
-                const inChargeApproveNeeded = (hod === 1 && incharge === 1) ? { required: 1, status: 1, comment: 'DIRECT', apprvTime: format(new Date(), 'yyyy-MM-dd H:m:s') } :
-                    { required: 1, status: 1, comment: 'DIRECT', apprvTime: format(new Date(), 'yyyy-MM-dd H:m:s') }
+                const approveStatus = (masterGroupStatus === true) ?
+                    {
+                        inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                        usCode_inch: loginEmno, usCode_hod: loginEmno
+                    } :
+                    (loginHod === 1 && loginIncharge === 1) ?
+                        {
+                            inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                            usCode_inch: loginEmno, usCode_hod: loginEmno
+                        }
+                        :
+                        (loginHod === 1 && loginIncharge === 0) ?
+                            {
+                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                usCode_inch: null, usCode_hod: loginEmno
+                            }
+                            :
+                            (loginHod === 0 && loginIncharge === 1) ?
+                                {
+                                    inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
+                                    usCode_inch: loginEmno, usCode_hod: null
+                                }
+                                :
+                                {
+                                    inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
+                                    usCode_inch: null, usCode_hod: null
+                                }
 
+                // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
 
-                console.log(selectedEmpInform)
-                //NO DUPLICATE LEAVES
-                // const postData = {
-                //     leaveid: 0,
-                //     em_id: em_id,
-                //     em_no: em_no,
-                //     em_department: em_department,
-                //     em_dept_section: em_dept_section,
-                //     leavefrom_date: fromDate,
-                //     leavetodate: toDate,
-                //     attendance_marking_month: format(startOfMonth(new Date(fromDate)), "yyyy-MM-dd"),
-                //     rejoin_date: format(addDays(new Date(toDate), 1), "yyyy-MM-dd"),
-                //     request_status: 1,
-                //     inc_apprv_req:
-                //         (authorization_incharge === 1 && incharge === 1) ? 1 :
-                //             (authorization_incharge === 1 && incharge === 0) ? 1 :
-                //                 (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                //     incapprv_status:
-                //         (authorization_incharge === 1 && incharge === 1) ? 1 :
-                //             (hod === 1) ? 1 :
-                //                 (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                //     inc_apprv_cmnt:
-                //         (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                //             (hod === 1) ? "DIRECT" :
-                //                 (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
-                //     inc_apprv_time:
-                //         (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                //             (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                //                 (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                //     hod_apprv_req:
-                //         (authorization_hod === 1 && hod === 1) ? 1 :
-                //             (authorization_hod === 1 && hod === 0) ? 1 :
-                //                 (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                //     hod_apprv_status:
-                //         (authorization_hod === 1 && hod === 1) ? 1 :
-                //             (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                //     hod_apprv_cmnt:
-                //         (authorization_hod === 1 && hod === 1) ? "DIRECT" :
-                //             (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
-                //     hod_apprv_time:
-                //         (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                //             (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                //     hr_aprrv_requ: 1,
-                //     ceo_req_status: empHodStat === 1 ? 1 : 0,
-                //     resonforleave: reason,
-                //     no_of_leave: numberOfDays,
-                //     singleLeave: 1
-                // }
+                //TOTAL LEAVES REQUIRED COUNT
+                const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1
+                //POST DATA FOR MASTER TABLE
+                const postDataMasterTable = {
+                    leaveid: 0,
+                    em_id: em_id,
+                    em_no: em_no,
+                    em_department: em_department,
+                    em_dept_section: em_dept_section,
+                    leavefrom_date: requestFromDate,
+                    leavetodate: requestToDate,
+                    attendance_marking_month: format(startOfMonth(new Date(fromDate)), "yyyy-MM-dd"),
+                    rejoin_date: format(addDays(new Date(toDate), 1), "yyyy-MM-dd"),
+                    request_status: 1,
+                    inc_apprv_req: approveStatus.inc_apr,
+                    incapprv_status: approveStatus.inc_stat,
+                    inc_apprv_cmnt: approveStatus.inc_cmnt,
+                    inc_apprv_time: approveStatus.inc_apr_time,
+                    inc_usCode: approveStatus.usCode_inch,
+                    hod_apprv_req: approveStatus.hod_apr,
+                    hod_apprv_status: approveStatus.hod_stat,
+                    hod_apprv_cmnt: approveStatus.hod_cmnt,
+                    hod_apprv_time: approveStatus.hod_apr_time,
+                    hod_usCOde: approveStatus.usCode_hod,
+                    hr_aprrv_requ: 1,
+                    ceo_req_status: 0,
+                    resonforleave: reson,
+                    no_of_leave: numberOfDays
+                }
+
+                //POST DATA FOR DETAILS TABLE
+
+                const postDataForDetlTable = table?.map((e) => {
+                    return {
+                        leaveid: 0,
+                        lveDate: format(new Date(e.date), 'yyyy-MM-dd HH:mm:ss'),
+                        leave_processid: e.selectedLveSlno, //LEAVE SLNO FROM LEAVES TABLE  //leave_processid
+                        leave_typeid: e.leavetype, // LEAVE TYPE SLNO // leave_typeid
+                        status: 1,
+                        leavetype_name: e.selectedLvType, //leavetype_name
+                        leave_name: e.selectedLveName, //leave_name
+                        leaveCount: e.count, // no of days
+                        empNo: em_no,
+                        singleleave: 1
+                    }
+                })
+
+                //POST DATA TO BACKEND 
+
+                if (reson === '') {
+                    warningNofity("The explanation must consist of more than 10 characters.")
+                } else {
+
+                    const modifiedLveReq = {
+                        masterPostData: postDataMasterTable,
+                        detlPostSata: postDataForDetlTable
+                    }
+                    const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', modifiedLveReq);
+                    console.log(submitLeaveRequet)
+                }
 
             } else {
                 // YES DUPLICATE LEAVE FOUND ERROR THROW
@@ -225,12 +289,10 @@ const LeaveRequestFormNew = () => {
             }
         }
 
-
-
-    }, [table, selectedEmpInform, fromDate, toDate])
+    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus])
 
     return (
-        <Box>
+        <Box sx={{ mb: 0.5 }}>
             <Paper variant="outlined" sx={{ mt: 0.5 }} >
                 <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }} >
                     <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
@@ -293,7 +355,7 @@ const LeaveRequestFormNew = () => {
                         {/* </Box>
                     <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} > */}
                         <CssVarsProvider>
-                            <Tooltip title="Click Here Save Leave Request" followCursor placement='top' arrow variant='outlined' color='danger' >
+                            <Tooltip title="Click Here to Save Leave Request" followCursor placement='top' arrow variant='outlined' color='danger' >
                                 <Button
                                     aria-label="Like"
                                     variant="outlined"
@@ -345,6 +407,16 @@ const LeaveRequestFormNew = () => {
                         </tbody>
                     </Table>
                 </Paper>
+                <Box sx={{ p: 1 }} >
+                    <Textarea
+                        color="primary"
+                        minRows={2}
+                        placeholder="Leave Request Reason ..."
+                        size="sm"
+                        variant="outlined"
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </Box>
             </Paper>
         </Box>
     )

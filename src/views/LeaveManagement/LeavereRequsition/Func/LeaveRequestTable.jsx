@@ -37,15 +37,18 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
     }, [value])
 
     const onClickLveName = useCallback((data) => {
+        console.log(data)
         value.selectedLveName = data.month;
         value.selectedLvType = data.type;
         value.count = data.count;
+        value.commonLeave = data.cmn;
+        value.commonLeaveSlno = data.cmn === 1 ? data.common_slno : 0
     }, [value])
 
     return (
-        <tr>
+        <tr style={{ p: 0, m: 0 }} >
             <td>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 3 }} >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 3, py: 0 }} >
                     <Box>
                         <Typography
                             level="title-md"
@@ -63,7 +66,7 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
                             fontFamily="monospace"
                             sx={{ opacity: '50%' }}
                         >
-                            {format(value.date, 'EEEE')}
+                            {format(value.date, 'eee')}
                         </Typography>
                     </Box>
                 </Box>
@@ -75,6 +78,7 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
                     size="sm"
                     variant="outlined"
                     onChange={handleChangeLeaveTypeSection}
+                    sx={{ py: 0 }}
                 // disabled={disabled1}
                 >
                     {
@@ -89,6 +93,7 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
                     placeholder="Select Leaves ...."
                     size="sm"
                     variant="outlined"
+                    sx={{ py: 0 }}
                     onChange={handleChangeLeaveName}
                 // disabled={disabled}
                 >
