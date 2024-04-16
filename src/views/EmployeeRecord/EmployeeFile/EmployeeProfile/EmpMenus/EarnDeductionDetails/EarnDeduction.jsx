@@ -269,7 +269,7 @@ const EarnDeduction = () => {
         else {
             updateSubmit(updateData)
         }
-    }, [updateData, postData, id, no, count, flag, resetForm])
+    }, [updateData, postData, id, count, flag, resetForm])
 
     //Redirection
     const handleClose = () => {
@@ -389,7 +389,7 @@ const EarnDeduction = () => {
         } else {
 
         }
-    }, [count, id, no, resetForm])
+    }, [count, id, resetForm])
 
     return (
         <Fragment>

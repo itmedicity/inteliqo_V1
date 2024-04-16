@@ -30,6 +30,7 @@ const ModuleGroupMast = () => {
     module_dashboard: false,
     module_reports: false,
     module_vaccination: false,
+    module_contractRenew: false
   })
 
   // destructuring the form element vlaues
@@ -46,6 +47,7 @@ const ModuleGroupMast = () => {
     module_dashboard,
     module_reports,
     module_vaccination,
+    module_contractRenew
   } = formData
 
   // Get the value from the element to variables
@@ -71,11 +73,12 @@ const ModuleGroupMast = () => {
         module_dashboard: module_dashboard === true ? 11 : 0,
         module_reports: module_reports === true ? 12 : 0,
         module_vaccination: module_vaccination === true ? 13 : 0,
+        module_contractRenew: module_contractRenew === true ? 14 : 0
       },
     }
   }, [module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation,
-    module_dashboard, module_reports, module_vaccination])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew])
 
   const postEditData = useMemo(() => {
     return {
@@ -93,12 +96,13 @@ const ModuleGroupMast = () => {
         module_dashboard: module_dashboard === true ? 11 : 0,
         module_reports: module_reports === true ? 12 : 0,
         module_vaccination: module_vaccination === true ? 13 : 0,
+        module_contractRenew: module_contractRenew === true ? 14 : 0
       },
       mdgrp_slno: slno,
     }
   }, [module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, slno,
-    module_dashboard, module_reports, module_vaccination])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew])
 
   const resetForm = useMemo(() => {
     return {
@@ -114,6 +118,7 @@ const ModuleGroupMast = () => {
       module_dashboard: false,
       module_reports: false,
       module_vaccination: false,
+      module_contractRenew: false
     }
   }, [])
 
@@ -188,6 +193,7 @@ const ModuleGroupMast = () => {
       module_dashboard: module_status.module_dashboard === 0 ? false : true,
       module_reports: module_status.module_reports === 0 ? false : true,
       module_vaccination: module_status.module_vaccination === 0 ? false : true,
+      module_contractRenew: module_status.module_contractRenew === 0 ? false : true
     }
     setFormData(form_dis_data)
     setSlno(mdgrp_slno)
@@ -298,6 +304,14 @@ const ModuleGroupMast = () => {
                 onchange={(e) => getModuleGroupFormData(e)}
               />
             </Box>
+            <Box sx={{ pl: 1, mt: 0.5 }} >
+              <JoyCheckbox
+                label='Contract Renewal'
+                checked={module_contractRenew}
+                name="module_contractRenew"
+                onchange={(e) => getModuleGroupFormData(e)}
+              />
+            </Box>
             <Box sx={{ px: 0.5, mt: 0.9 }}>
               <CssVarsProvider>
                 <Button
@@ -327,243 +341,6 @@ const ModuleGroupMast = () => {
         </Grid>
       </Box>
     </MasterLayout>
-    // <Fragment>
-    //   <SessionCheck />
-    //   <ToastContainer />
-    //   <div className="card">
-    //     <div className="card-header bg-dark pb-0 border border-dark text-white">
-    //       <h5>Module Group Master</h5>
-    //     </div>
-    //     <div className="card-body">
-    //       <div className="row">
-    //         <div className="col-md-4">
-    //           <form className={classes.root} onSubmit={submitModuleGroupMast}>
-    //             <div className="col-md-12 row">
-    //               <div className="col-md-12">
-    //                 <TextField
-    //                   label="Module Group Name"
-    //                   fullWidth
-    //                   size="small"
-    //                   autoComplete="off"
-    //                   variant="outlined"
-    //                   required
-    //                   value={module_group_name}
-    //                   name="module_group_name"
-    //                   onChange={(e) => getModuleGroupFormData(e)}
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_recruitment"
-    //                       color="secondary"
-    //                       value={module_recruitment}
-    //                       checked={module_recruitment}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Recruitment"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_emprecord"
-    //                       color="secondary"
-    //                       value={module_emprecord}
-    //                       checked={module_emprecord}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Employee Record"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_attenmangemnt"
-    //                       color="secondary"
-    //                       value={module_attenmangemnt}
-    //                       checked={module_attenmangemnt}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Attendance Management    "
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_leavemangment"
-    //                       color="secondary"
-    //                       value={module_leavemangment}
-    //                       checked={module_leavemangment}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Leave Management"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_payroll"
-    //                       color="secondary"
-    //                       value={module_payroll}
-    //                       checked={module_payroll}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Payroll"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_performanceApp"
-    //                       color="secondary"
-    //                       value={module_performanceApp}
-    //                       checked={module_performanceApp}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Performance Apprarisal"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_trainAndDevolp"
-    //                       color="secondary"
-    //                       value={module_trainAndDevolp}
-    //                       checked={module_trainAndDevolp}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Training & Deveolopment"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_resignation"
-    //                       color="secondary"
-    //                       value={module_resignation}
-    //                       checked={module_resignation}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Resignation"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_dashboard"
-    //                       color="secondary"
-    //                       value={module_dashboard}
-    //                       checked={module_dashboard}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Dash Board"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_reports"
-    //                       color="secondary"
-    //                       value={module_reports}
-    //                       checked={module_reports}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Reports"
-    //                 />
-    //               </div>
-    //               <div className="col-md-12 pb-0 mb-0">
-    //                 <FormControlLabel
-    //                   className="pb-0 mb-0"
-    //                   control={
-    //                     <Checkbox
-    //                       name="module_vaccination"
-    //                       color="secondary"
-    //                       value={module_vaccination}
-    //                       checked={module_vaccination}
-    //                       className="ml-2"
-    //                       onChange={(e) => getModuleGroupFormData(e)}
-    //                     />
-    //                   }
-    //                   label="Vaccination Information"
-    //                 />
-    //               </div>
-    //               <div className="row col-md-12 mt-2 ">
-    //                 <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-    //                   <Button
-    //                     variant="contained"
-    //                     color="primary"
-    //                     size="small"
-    //                     fullWidth
-    //                     type="Submit"
-    //                     className="ml-2"
-    //                   >
-    //                     Save
-    //                   </Button>
-    //                 </div>
-    //                 <div className="col-md-6 col-sm-12 col-xs-12">
-    //                   <Button
-    //                     variant="contained"
-    //                     color="primary"
-    //                     size="small"
-    //                     fullWidth
-    //                     className="ml-2"
-    //                     onClick={toSettings}
-    //                   >
-    //                     Close
-    //                   </Button>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           </form>
-    //         </div>
-    //         <div className="col-md-8">
-    //           <ModuleGroupMastTable update={count} />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </Fragment>
   )
 }
 

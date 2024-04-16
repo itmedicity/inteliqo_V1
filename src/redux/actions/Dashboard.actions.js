@@ -110,7 +110,7 @@ export const getovertimeCountUser = (em_id) => async (dispatch) => {
 }
 
 export const getleavereqCountIncharge = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/LeaveReqInchargeCount')
+    const result = await axioslogin.get('/Count/LeaveReqInchargeCount/all')
     const { success, data } = result.data
     if (success === 1) {
         const { leaveinchargecount } = data[0]
@@ -143,7 +143,7 @@ export const getleavereqCountCEO = () => async (dispatch) => {
 }
 
 export const getleavereqCountHR = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/LeaveReqHrCount')
+    const result = await axioslogin.get('/Count/LeaveReqHrCount/all')
     const { success, data } = result.data
     if (success === 1) {
         const { leavehrcount } = data[0]

@@ -77,18 +77,6 @@ const Employeerecord = [
         to: '/Home/ProbationEnd'
     },
     {
-        men_slno: 129,
-        component: CNavItem,
-        name: 'Contract End List',
-        to: '/Home/Contract_end_details',
-    },
-    // {
-    //     men_slno: 129,
-    //     component: CNavItem,
-    //     name: 'Approved Contract Renew',
-    //     to: '/Home/ContractRenewApprovalList',
-    // },
-    {
         men_slno: 202,
         component: CNavItem,
         name: 'Company Information',

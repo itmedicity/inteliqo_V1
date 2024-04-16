@@ -28,7 +28,7 @@ export const employeeRecordUpdationUserChoice = async (newcontractdetl, oldPerso
 
 }
 
-export const updateoldAttndanceDetail = async (attendancedetls, punchmast) => {
+export const updateoldAttndanceDetail = async (attendancedetls, punchmast, dutyplanData) => {
     /**attendance details updation**/
 
     if (punchmast.length === 0) {
@@ -46,12 +46,18 @@ export const updateoldAttndanceDetail = async (attendancedetls, punchmast) => {
             const result = await axioslogin.patch('/empcontract/update/punchmast', punchmast)
             const { success } = result.data
             if (success === 1) {
-                return { status: 1, message: "updated successfully" }
+                const result = await axioslogin.patch('/empcontract/update/dutyplan', dutyplanData)
+                const { success } = result.data
+                if (success === 1) {
+                    return { status: 1, message: "updated successfully" }
+                } else {
+                    return { status: 0, message: "Error While Updating Dutyplan Data" }
+                }
             } else {
-                return { status: 0, message: "Error Updating Attendance" }
+                return { status: 0, message: "Error Updating Punchmaster Data" }
             }
         } else {
-            return { status: 0, message: "Error Updating Attendance" }
+            return { status: 0, message: "Error Saving Attendance Data" }
         }
     }
 }

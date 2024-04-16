@@ -1,19 +1,16 @@
-import { CssVarsProvider, Tooltip, IconButton } from '@mui/joy'
+import { CssVarsProvider, IconButton, Button } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
-import { Box, Chip, Paper } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import { differenceInDays } from 'date-fns'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
 import moment from 'moment';
 import { useHistory, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CloseIcon from '@mui/icons-material/Close';
-import { useSelector } from 'react-redux';
-import { IconButton as OpenIcon } from '@mui/material';
-import _ from 'underscore';
+import { employeeNumber } from 'src/views/Constant/Constant';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
@@ -35,18 +32,20 @@ const Direct_Contract_Close = () => {
     //destructuring
     const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period,
         desg_name, sect_name } = formData
-    const defaultState = {
-        em_cont_start: '',
-        em_cont_end: '',
-        em_no: '',
-        em_id: '',
-        em_name: '',
-        ecat_name: '',
-        grace_period: '',
-        dept_name: '',
-        desg_name: '',
-        sect_name: ''
-    }
+    const defaultState = useMemo(() => {
+        return {
+            em_cont_start: '',
+            em_cont_end: '',
+            em_no: '',
+            em_id: '',
+            em_name: '',
+            ecat_name: '',
+            grace_period: '',
+            dept_name: '',
+            desg_name: '',
+            sect_name: ''
+        }
+    }, [])
 
     //use effect for getting existing contract details
     useEffect(() => {
@@ -74,9 +73,6 @@ const Direct_Contract_Close = () => {
         getcontractInformation()
     }, [no])
 
-    //to get login employee number
-    const emp_no = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_no, _.isEqual)
-
     //useEffect for getting fine Deatails
     useEffect(() => {
         const getFinedetl = async () => {
@@ -94,57 +90,58 @@ const Direct_Contract_Close = () => {
     }, [no])
 
     //update hrm_emp_contract_detl table
-    const contractclose = {
-        em_cont_close: 'C',
-        em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
-        edit_user: emp_no,
-        status: 1,
-        em_id: no,
-        em_status: 0,
-        em_no: id
-    }
+    const contractclose = useMemo(() => {
+        return {
+            status: 1,
+            em_cont_close: 'C',
+            em_cont_compl_status: 'C',
+            em_cont_renew: 'R',
+            em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+            em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+            em_no: id,
+            edit_user: employeeNumber(),
+            em_id: no,
+            em_status: 0
+        }
+    }, [id, no])
+
+    const redirect = useCallback(() => {
+        history.push('/Home/Contract_end_details')
+    }, [history])
+
     //FUNCTION FOR CLOSING CONTRACT
-    const ContractClose = async () => {
-        const result = await axioslogin.patch('/empcontract/contractclose', contractclose)
+    const ContractClose = useCallback(async () => {
+        const result = await axioslogin.patch('/empcontract/contractrenew', contractclose)
         const { success, message } = result.data
-        if (success === 1) {
+        if (success === 2) {
             setFine(0)
             setFormData(defaultState)
             history.push('/Home/Contract_end_details')
             succesNofity(message)
+        } else {
+            errorNofity(`Contact IT - ${JSON.stringify(message)}`)
         }
-        else {
-            errorNofity(message)
-        }
-    }
+    }, [contractclose, defaultState, history])
 
-    const redirect = async () => {
-        history.push('/Home/Contract_end_details')
-    }
+
     return (
         <Fragment>
             <ToastContainer />
             <Paper sx={{ width: "100%" }}>
-                <Paper square elevation={1} sx={{ display: "flex" }}  >
-                    <Box sx={{ flex: 1 }}>
+                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                    <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
-                            <Typography textColor="neutral.400" startDecorator={<DragIndicatorOutlinedIcon />} level="h6" >
+                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                                 Direct Contract Close
                             </Typography>
                         </CssVarsProvider>
                     </Box>
-                    <Box sx={{ pl: 0.3 }} >
-                        <Chip
-                            icon={
-                                <OpenIcon disabled
-                                    className="p-1" >
-                                    <WrongLocationRoundedIcon className="text-info" size={22} />
-                                </OpenIcon>
-                            }
-                            label="Contract Close"
-                            onClick={ContractClose}
-                            clickable={true}
-                        />
+                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='xs' color="danger" onClick={redirect}>
+                                <CloseIcon />
+                            </IconButton>
+                        </CssVarsProvider>
                     </Box>
                 </Paper>
                 <Paper variant='outlined' sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '100%', justifyContent: "space-evenly", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'row', xs: "row" } }}  >
@@ -241,7 +238,7 @@ const Direct_Contract_Close = () => {
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                                 <CssVarsProvider>
-                                    <Typography level="body1">{em_cont_start}</Typography>
+                                    <Typography level="body1">{moment(new Date(em_cont_start)).format('DD-MM-YYYY')}</Typography>
                                 </CssVarsProvider>
                             </Box>
                         </Box>
@@ -253,7 +250,7 @@ const Direct_Contract_Close = () => {
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
                                 <CssVarsProvider>
-                                    <Typography level="body1">{em_cont_end}</Typography>
+                                    <Typography level="body1">{moment(new Date(em_cont_end)).format('DD-MM-YYYY')}</Typography>
                                 </CssVarsProvider>
                             </Box>
                         </Box>
@@ -295,14 +292,20 @@ const Direct_Contract_Close = () => {
                         </Box>
                     </Paper>
                 </Paper>
-                <Paper square elevation={0} sx={{ display: "flex", }}  >
-                    <Box sx={{ flex: 0 }}>
+                <Paper square elevation={0} sx={{ display: "flex", flexDirection: 'row-reverse' }}  >
+                    <Box sx={{}}>
                         <CssVarsProvider>
-                            <Tooltip title="Close" followCursor placement='top' arrow>
-                                <IconButton variant="outlined" size='xs' color="danger" onClick={redirect}  >
-                                    <CloseIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={ContractClose}
+                                fullWidth
+                                startDecorator={<CloseIcon />}
+                                sx={{ mx: 0.5 }}
+                            >
+                                Contract Close
+                            </Button>
                         </CssVarsProvider>
                     </Box>
                 </Paper>
