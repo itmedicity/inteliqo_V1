@@ -258,7 +258,7 @@ const LeaveRequestFormNew = () => {
                     return {
                         leaveid: 0,
                         lveDate: format(new Date(e.date), 'yyyy-MM-dd HH:mm:ss'),
-                        leave_processid: e.selectedLveSlno, //LEAVE SLNO FROM LEAVES TABLE  //leave_processid
+                        leave_processid: e.commonLeave === 0 ? e.selectedLveSlno : e.commonLeaveSlno, //LEAVE SLNO FROM LEAVES TABLE  //leave_processid
                         leave_typeid: e.leavetype, // LEAVE TYPE SLNO // leave_typeid
                         status: 1,
                         leavetype_name: e.selectedLvType, //leavetype_name

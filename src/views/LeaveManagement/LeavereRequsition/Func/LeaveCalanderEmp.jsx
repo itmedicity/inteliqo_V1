@@ -13,8 +13,6 @@ const LeaveCalanderEmp = () => {
     const state = useSelector((state) => getLeavesCountEMIDwise(state));
     const allowedLeaveData = useMemo(() => state, [state]);
 
-    console.log(allowedLeaveData)
-
     useEffect(() => {
         const { leaveData, apiStatus } = allowedLeaveData;
         setData(leaveData)
