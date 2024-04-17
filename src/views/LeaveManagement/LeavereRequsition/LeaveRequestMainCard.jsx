@@ -27,11 +27,13 @@ import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun
 import CircularProgress from '@mui/joy/CircularProgress';
 
 const LeaveRequestEmployeeSelection = lazy(() => import('./LeaveRequestEmployeeSelection'));
+const LeaveRequestFormNew = lazy(() => import('./LeaveRequestFormNew'))
+const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HalfDayLeaveRequest'))
+
+
 const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
-const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HaldayRequetsMainForm'))
 const MissPunchRequest = lazy(() => import('./MissPunchRequest/MissPunchRequest'))
 const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
-const LeaveRequestFormNew = lazy(() => import('./LeaveRequestFormNew'))
 
 
 const LeaveRequestMainCard = () => {
@@ -99,9 +101,9 @@ const LeaveRequestMainCard = () => {
                     <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
                     {/* <LeaveRequestFormNew /> */}
                     {
-                        requestType === 1 ? <LeaveRequestFormNew /> :
+                        requestType === 1 ? <LeaveRequestFormNew setRequestType={setRequestType} /> :
                             // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
-                            requestType === 2 ? <HalfDayLeaveRequest em_id={{}} /> :
+                            requestType === 2 ? <HalfDayLeaveRequest /> :
                                 requestType === 3 ? <MissPunchRequest em_id={{}} /> :
                                     requestType === 4 ? <CompansatoryOffMast em_id={{}} /> : null
                     }
