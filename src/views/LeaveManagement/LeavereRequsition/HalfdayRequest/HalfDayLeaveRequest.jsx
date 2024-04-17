@@ -28,11 +28,16 @@ const HalfDayLeaveRequest = () => {
     const [halfDayStat, setHalfDayStat] = useState(0)
     const [creditedLve, setCreditedLve] = useState(0)
 
-    // const [reson, setReason] = useState('')
+    const [selectedCL, setSelectedCL] = useState(0)
     const [reson, setReason] = useState('')
+
+    const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
+    const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
 
     const getCasualLeaves = useSelector((state) => getCaualLeaveDetl(state));
     const casualLeave = useMemo(() => getCasualLeaves, [getCasualLeaves]);
+
+    console.log(halfDayStat, creditedLve)
 
     const handleGetCreditedLeaves = useCallback(async () => {
         if (halfDayStat === null || creditedLve === null) {
@@ -46,10 +51,42 @@ const HalfDayLeaveRequest = () => {
         }
     }, [casualLeave, halfDayStat, creditedLve])
 
+    //GET CASUAL LEAVES FUN
+    const getCasualeaves = useCallback((e, val) => {
+        setSelectedCL(val)
+    }, [])
+
+
     //SUBMIT HALF DAY LEAVE REQUEST
     const handleSubmitHalfDayRequest = useCallback(async () => {
+        //CHECK FOR ATTENDNCE MARKED OR NOT
+        /** PUNCH MARKING HR START **/
 
-    }, [])
+        const postDataForAttendaceMark = {
+            month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+            section: em_dept_section
+        }
+
+        const checkAttendanceMarking = await axioslogin.post('/attendCal/checkPunchMarkingHR', postDataForAttendaceMark);
+
+        const { data: attMarkCheckData, success: attMarkCheckSuccess } = checkAttendanceMarking.data;
+        const lastUpdateDate = attMarkCheckData[0]?.last_update_date;
+
+        if (attMarkCheckSuccess === 2) {
+            errorNofity("Error Checking Attendance Already Marked or Not ,Try Again !!")
+        } else if (
+            (attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) &&
+            (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) &&
+                new Date(lastUpdateDate) < new Date(fromDate))) {
+
+            //GET DEPARTMENT WISE SHIFT INFOMATION
+
+
+
+
+        }
+
+    }, [selectedCL, reson, fromDate, em_dept_section])
 
     return (
         <Box sx={{ mb: 0.5 }}>
@@ -137,12 +174,12 @@ const HalfDayLeaveRequest = () => {
                         <Box sx={{ flex: 1, px: 0.3 }} >
                             <Select
                                 defaultValue={0}
-                                // onChange={}
+                                onChange={getCasualeaves}
                                 sx={{ width: '100%' }}
                                 // value={deptID}
                                 size='sm'
                                 // disabled={disabled}
-                                placeholder="Allowed Leave Types"
+                                placeholder="Casual Leaves"
                                 slotProps={{
                                     listbox: {
                                         placement: 'bottom-start',
@@ -151,7 +188,7 @@ const HalfDayLeaveRequest = () => {
                             >
                                 <Option value={0}>Casual Leave</Option>
                                 {
-                                    casualLeave?.map((e) => <Option key={e.slno} value={e.slno}>{e.month}</Option>)
+                                    casualLve?.map((e) => <Option key={e.slno} value={e.slno}>{e.month}</Option>)
                                 }
                             </Select>
                         </Box>
