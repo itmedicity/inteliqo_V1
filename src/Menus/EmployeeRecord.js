@@ -46,11 +46,6 @@ const Employeerecord = [
         name: 'Earning/Deduction',
         to: '/Home/EmpEarnDeduction',
     },
-    // {
-    //     component: CNavItem,
-    //     name: 'Bulk Updation',
-    //     to: '/homes',
-    // },
     {
         men_slno: 130,
         component: CNavItem,
@@ -73,14 +68,28 @@ const Employeerecord = [
         men_slno: 128,
         component: CNavItem,
         name: 'Probation End List',
-        //to: '/Home/Probation_end_details',
         to: '/Home/ProbationEnd'
     },
     {
+<<<<<<< HEAD
+=======
+        men_slno: 129,
+        component: CNavItem,
+        name: 'Contract End List',
+        to: '/Home/Contract_end_details',
+    },
+    {
+>>>>>>> dbbf066fb70e3a4f8c54edc2ecdbc9bb84d0431c
         men_slno: 202,
         component: CNavItem,
         name: 'Company Information',
         to: '/Home/CompanyInfo',
+    },
+    {
+        men_slno: 152,
+        component: CNavItem,
+        name: 'Department Section Change',
+        to: '/Home/DeptSecChange',
     },
 
 ]

@@ -46,6 +46,11 @@ const PunchMarkingHR = () => {
 
     //GET REDUX stored information using useSelector
     const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const {
+        holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
+        weekoff_policy_max_count // WEEK OFF ELIGIBLE MAX DAY COUNT
+    } = commonSettings;
+
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
     // get login empid 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
@@ -84,9 +89,8 @@ const PunchMarkingHR = () => {
         }
 
         //GET ALL DEPARTMENT SECTION LIST AND SHOW
-        const result = await axioslogin.post('/experienceReport/deptsectById/');
+        const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
         const { success, data } = result.data;
-
         const deptSectionData = data;
 
         if (success === 1) {
@@ -177,6 +181,9 @@ const PunchMarkingHR = () => {
     //UPDATE ATTENDANDE PROCESS START HERE
     const updateAttendanceProcesss = async (deptID, sectID, lastUpdateDate) => {
         setOpenBkDrop(true)
+        const weekOffPolicyCountMax = weekoff_policy_max_count;
+        const holidayPolicyCount = holiday_policy_count;
+
         const today = subDays(new Date(format(new Date(), 'yyyy-MM-dd')), 1);
         const startOfMonths = startOfMonth(new Date(value));
 
@@ -206,19 +213,24 @@ const PunchMarkingHR = () => {
                     toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     fromDate_dutyPlan: selectedDateSameStatus === 1 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(lastUpdateDate), 'yyyy-MM-dd'),
                     toDate_dutyPlan: format(new Date(value), 'yyyy-MM-dd'),
-                    fromDate_punchMaster: selectedDateSameStatus === 1 ? format(subDays(startOfMonth(new Date(value)), 0), 'yyyy-MM-dd') : format(subDays(new Date(lastUpdateDate), 0), 'yyyy-MM-dd'),
-                    toDate_punchMaster: format(new Date(value), 'yyyy-MM-dd'),
+                    fromDate_punchMaster: selectedDateSameStatus === 1
+                        ? format(subDays(startOfMonth(new Date(value)), weekOffPolicyCountMax), 'yyyy-MM-dd')
+                        : format(subDays(new Date(lastUpdateDate), weekOffPolicyCountMax), 'yyyy-MM-dd'),
+                    toDate_punchMaster: format(addDays(new Date(value), holidayPolicyCount), 'yyyy-MM-dd'),
                     section: sectID,
                     deptID: deptID,
                     empList: data?.map((e) => e.em_no),
-                    loggedEmp: em_no
+                    loggedEmp: em_no,
+                    toDayeForUpdatePunchMast: format(new Date(value), 'yyyy-MM-dd')
                 }
                 // GET PUNCH DATA FROM TABLE START
                 const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
                 const { su, result_data } = punch_data.data;
                 if (su === 1) {
                     const punchaData = result_data;
+                    // console.log(punchaData?.filter((e) => e.emp_code === '1812'))
                     const empList = data?.map((e) => e.em_no)
+                    // console.log(empList)
                     // PUNCH MARKING HR PROCESS START
                     const result = await processPunchMarkingHrFunc(
                         postData_getPunchData,
@@ -237,7 +249,7 @@ const PunchMarkingHR = () => {
                                 "dept_id": e.dept_id,
                                 "dept_name": e.dept_name,
                                 "section": e.section?.map((el) => {
-                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDate_punchMaster } : { ...el }
+                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDayeForUpdatePunchMast } : { ...el }
                                 }),
                             }
                         })
@@ -336,7 +348,7 @@ const PunchMarkingHR = () => {
 
     return (
         <Fragment>
-            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Processing.... " />
+            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Monthly Attendance Processing.... Do not Refesh or Reload the Browser !!!" />
             <CustomLayout title="Monthly Attendance Process" displayClose={true} >
                 <Box sx={{ width: '100%', }}>
                     <Box sx={{ display: 'flex', py: 0.5, width: '100%', }}>

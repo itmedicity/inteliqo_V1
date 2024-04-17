@@ -8,5 +8,7 @@ export const setdeptSection = () => async (dispatch) => {
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_DEPARTSEC_LIST, payload: data })
+    } else {
+        dispatch({ type: FETCH_DEPARTSEC_LIST, payload: [] })
     }
 }

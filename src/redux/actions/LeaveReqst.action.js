@@ -116,8 +116,8 @@ export const getCreditedCasualLeave = (id) => async (dispatch) => {
 
 // GET THE CRDITED COMMON LEAVES 
 
-export const getCreitedCommonLeave = (iddata) => async (dispatch) => {
-    const result = await axioslogin.post('/yearleaveprocess/allowablcommon/allowableconleave/data/', iddata);
+export const getCreitedCommonLeave = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/yearleaveprocess/allowablcommon/allowableconleave/data/${id}`);
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_CREDITED_COMMON_LEAVE, payload: data })
@@ -175,7 +175,7 @@ export const getDutyPlannedShiftForHalfDayRequest = (postData) => async (dispatc
 
 
 export const getEmpCoffData = (postData) => async (dispatch) => {
-  
+
     const result = await axioslogin.post('/common/empCoffdata/', postData);
     const { success, data } = result.data;
     if (success === 1) {

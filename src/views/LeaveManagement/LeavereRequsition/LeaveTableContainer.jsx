@@ -7,7 +7,7 @@ const LeaveTableContainer = () => {
     return (
         <Paper variant="outlined" sx={{ display: "flex", flexDirection: 'column', flex: 1, p: 0.3, mb: 0.5 }} >
             <LeaveCalanderEmp />
-            <RequestedLeaveTable />
+            {/* <RequestedLeaveTable /> */}
         </Paper>
     )
 }

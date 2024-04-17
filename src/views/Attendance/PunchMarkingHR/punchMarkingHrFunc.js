@@ -1,4 +1,4 @@
-import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subHours } from "date-fns";
+import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subDays, subHours } from "date-fns";
 import { axioslogin } from "src/views/Axios/Axios";
 
 export const processPunchMarkingHrFunc = async (
@@ -18,18 +18,27 @@ export const processPunchMarkingHrFunc = async (
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID,
+        holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
+        weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT
+        weekoff_policy_min_count
     } = commonSettings; //COMMON SETTING
+
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
         const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        // console.log(postData_getPunchData)
+        const { fromDate, toDate } = postData_getPunchData;
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
+        // console.log(planData?.filter((e) => e.em_no === 4516))
         if (success === 1 && planData?.length > 0) {
-            const punchMasterData = planData; //PUNCHMSTER DATA
+            const punchMasterFilterData = await planData?.filter((e) => new Date(fromDate) <= new Date(e.duty_day) && new Date(e.duty_day) <= new Date(toDate))
+            // console.log(dataaaa?.filter((e) => e.em_no === 4516))
+            const punchMasterData = punchMasterFilterData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
                     // console.log(data)
@@ -59,8 +68,10 @@ export const processPunchMarkingHrFunc = async (
                 })
             ).then((data) => {
                 const punchMasterMappedData = data?.map((e) => e.value)
+                // console.log(punchMasterMappedData)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
+                        // console.log(val)
                         const holidayStatus = val.holiday_status;
                         const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
                         const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
@@ -89,6 +100,8 @@ export const processPunchMarkingHrFunc = async (
                             val.maximumLateInTime
                         )
                         return {
+                            em_no: val.em_no,
+                            duty_day: val.duty_day,
                             punch_slno: val.punch_slno,
                             punch_in: val.punch_in,
                             punch_out: val.punch_out,
@@ -105,32 +118,83 @@ export const processPunchMarkingHrFunc = async (
                     })
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
-                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const elementValue = element?.map((e) => e.value);
+                    const processedData = elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const punchMaterDataBasedOnPunchSlno = processedData?.map((e) => e.punch_slno)
                     // PUNCH MASTER UPDATION
-                    // console.log(processedData)
-                    const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
-                    const { success, message } = updatePunchMaster.data;
-                    if (success === 1) {
-                        // PUNCH MARKING HR TABLE UPDATION
-                        // console.log(postData_getPunchData)
-                        const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
-                        const { sus } = updatePunchMarkingHR.data;
-                        if (sus === 1) {
-                            // DUTY PLAN UPDATION
-                            // console.log(dutyPlanSlno)
-                            const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
-                            const { susc, message } = updateDutyPlanTable.data;
-                            if (susc === 1) {
-                                return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                    // console.log(processedData?.filter(e => e.em_no === 4516))
+                    // console.log(processedData?.filter(e => e.em_no === 13802))
+                    // console.log(planData?.filter(e => e.em_no === 13802))
+                    // const a = planData?.filter(e => e.em_no === 13802)
+                    const filterAndAdditionPlanData = await planData?.map((el) => {
+                        return {
+                            ...el,
+                            duty_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc, // filter and update deuty_desc
+                            lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
+                        }
+                    })
+                    // console.log(filterAndAdditionPlanData)
+
+                    /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
+
+                    //FILTER EMPLOYEE NUMBER FROM PUNCHMASTER DATA
+                    const filteredEmNoFromPunMast = [...new Set(filterAndAdditionPlanData?.map((e) => e.em_no))];
+
+                    const punchMasterFilterData = filteredEmNoFromPunMast?.map((emno) => {
+                        return {
+                            em_no: emno,
+                            data: filterAndAdditionPlanData?.filter((l) => l.em_no === emno)?.sort((a, b) => b.duty_day - a.duty_day)
+                        }
+                    })
+
+                    // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
+                    return Promise.allSettled(
+                        punchMasterFilterData?.flatMap((ele) => {
+                            return ele?.data?.map(async (e, idx, array) => {
+
+                                let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
+                                let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) : e.duty_desc;
+
+                                return {
+                                    ...e,
+                                    lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+                                }
+                            })
+                        })
+
+                    ).then(async (results) => {
+
+                        const PunchMAsterPolicyBasedFilterResult = results?.map((e) => e.value)
+                        // console.log(PunchMAsterPolicyBasedFilterResult)
+                        // console.log(punchMaterDataBasedOnPunchSlno)
+                        const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
+                        // console.log(processedPostData)
+
+                        const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
+                        const { success, message } = updatePunchMaster.data;
+                        if (success === 1) {
+                            // PUNCH MARKING HR TABLE UPDATION
+                            // console.log(postData_getPunchData)
+                            const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
+                            const { sus } = updatePunchMarkingHR.data;
+                            if (sus === 1) {
+                                // DUTY PLAN UPDATION
+                                // console.log(dutyPlanSlno)
+                                const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
+                                const { susc, message } = updateDutyPlanTable.data;
+                                if (susc === 1) {
+                                    return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                                } else {
+                                    return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                                }
                             } else {
-                                return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                                return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
                             }
                         } else {
-                            return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
+                            return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
                         }
-                    } else {
-                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
-                    }
+
+                    });
                 })
                 // return { status: 1, message: "result", data: e }
             })
@@ -201,6 +265,7 @@ export const getAttendanceCalculation = async (
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
 
             } else {
+                // console.log(getLateInTime)
                 // HOLIDAY === YES
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                     {
@@ -500,5 +565,37 @@ export const processShiftPunchMarkingHrFunc = async (
         }
     } else {
         return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '' }
+    }
+}
+
+//FIND AND CHECK THE HOLIDAY STATUS 
+const holidayStatus = async (e, array, holiday_policy_count) => {
+    if (e.duty_desc === 'H') {
+        const holidayFIlterArray = array.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+        //for checking absent -> A H A
+        const Absent = holidayFIlterArray?.filter((m) => m === 'A').length
+        // for checking LWP -> LWP H LWP
+        const lwp = holidayFIlterArray?.filter((m) => m === 'LWP').length
+        // for checking ESI -> ESI H ESI
+        const ESI = holidayFIlterArray?.filter((m) => m === 'ESI').length
+        //both absent and lwp -> LWP H A || A H LWP
+        const absentlwp = holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI' || m === 'LOP').length
+        return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
+    } else {
+        return e.duty_desc
+    };
+}
+
+
+const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) => {
+    if (e.duty_desc === 'WOFF') {
+        const policyLimit = weekoff_policy_max_count - weekoff_policy_min_count;
+        const toIndex = idx;
+        const fromIndex = idx - weekoff_policy_max_count;
+        const FilterArray = array.filter((val, index) => fromIndex <= index && index <= toIndex)?.map((e) => e.duty_desc)
+        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP').length
+        return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
+    } else {
+        return e.duty_desc
     }
 }
