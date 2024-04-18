@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears, endOfMonth } from 'date-fns'
+import { addDays, addYears, endOfMonth, isBefore, isEqual } from 'date-fns'
 import CloseIcon from '@mui/icons-material/Close';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection'
@@ -413,7 +413,7 @@ const EmployeeRecordEdit = () => {
                 updateContractEmp(submitdata)
             }
         } else {
-            if ((probdate < today && probdate !== '2000-01-01') || oldCategory !== category) {
+            if (isBefore(new Date(probdate), new Date()) && probdate !== '2000-01-31') {
                 infoNofity("Employee Probation date already Exceeded!!You Can Edit This Employee Through Company Information!")
             } else {
                 updateFunction(submitdata)

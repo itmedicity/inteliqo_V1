@@ -1,22 +1,15 @@
-import { CssVarsProvider } from '@mui/joy'
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import { Card, CardContent, CssVarsProvider, IconButton } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Chip, IconButton, Paper } from '@mui/material'
-import { addDays, differenceInDays } from 'date-fns'
+import { Box } from '@mui/material'
+import { differenceInDays } from 'date-fns'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import WrongLocationRoundedIcon from '@mui/icons-material/WrongLocationRounded';
-import { useDispatch } from 'react-redux';
-import { Actiontypes } from 'src/redux/constants/action.type'
-import moment from 'moment';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { useCallback } from 'react';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import AttributionIcon from '@mui/icons-material/Attribution';
 
-const EXistContractDetl = ({ id, no, fine, setFine, setattendanceDays, setgraceperiod }) => {
+const EXistContractDetl = ({ id, no, fine, setFine, setgraceperiod }) => {
 
-    const dispatch = useDispatch()
-    const [view, setView] = useState(0)
+    // const dispatch = useDispatch()
+    // const [view, setView] = useState(0)
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -57,14 +50,14 @@ const EXistContractDetl = ({ id, no, fine, setFine, setattendanceDays, setgracep
                 //  setContractStart(em_cont_start)
                 setgraceperiod(cont_grace)
                 //setOldctaegory(em_category)
-                const date = new Date(em_cont_end)
-                var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                const length = differenceInDays(new Date(em_cont_end), new Date(firstDay))
-                setattendanceDays(length)
+                // const date = new Date(em_cont_end)
+                // var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                // const length = differenceInDays(new Date(em_cont_end), new Date(firstDay))
+                // setattendanceDays(length)
             }
         }
         getcontractInformation()
-    }, [no, setattendanceDays, setgraceperiod])
+    }, [no, setgraceperiod])
 
     //useEffect for getting fine Deatails
     useEffect(() => {
@@ -82,204 +75,179 @@ const EXistContractDetl = ({ id, no, fine, setFine, setattendanceDays, setgracep
     }, [no, setFine])
 
     //function for Closing first contract
-    const ContractClose = useCallback(() => {
-        if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
-            dispatch({
-                type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
-                    status: 1,
-                    em_cont_close: 'C',
-                    em_cont_compl_status: 'C',
-                    em_cont_renew: 'R',
-                    em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
-                    em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
-                    em_no: id,
-                    edit_user: employeeNumber()
-                }
-            })
-            succesNofity("Contract Closed Successfully")
-            setView(1)
-        }
-        else {
-            warningNofity("Grace Period Not Completed")
-            setView(0)
-        }
-    }, [em_cont_end, grace_period, id, dispatch])
+    // const ContractClose = useCallback(() => {
+    //     if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
+    //         dispatch({
+    //             type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
+    //                 status: 1,
+    //                 em_cont_close: 'C',
+    //                 em_cont_compl_status: 'C',
+    //                 em_cont_renew: 'R',
+    //                 em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
+    //                 em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
+    //                 em_no: id,
+    //                 edit_user: employeeNumber()
+    //             }
+    //         })
+    //         succesNofity("Contract Closed Successfully")
+    //         setView(1)
+    //     }
+    //     else {
+    //         warningNofity("Grace Period Not Completed")
+    //         setView(0)
+    //     }
+    // }, [em_cont_end, grace_period, id, dispatch])
 
 
     return (
         <Fragment>
-            <Paper square variant='outlined' sx={{ display: "flex", flex: 1, }}  >
-                <Box sx={{ flex: 1 }}>
-                    <CssVarsProvider>
-                        <Typography textColor="neutral.400" startDecorator={<DragIndicatorOutlinedIcon />} level="h6" >
-                            Existing Contract Details
-                        </Typography>
-                    </CssVarsProvider>
+            <Card variant="outlined" sx={{ width: '100%', borderRadius: 0 }}>
+                <Box sx={{ display: "flex", width: "100%" }} >
+                    <IconButton
+                        variant="plain"
+                        color="neutral"
+                        size="sm"
+                        sx={{ position: 'initial', top: '0.875rem', right: '0.5rem' }}
+                    >
+                        <AttributionIcon />
+                    </IconButton>
+                    <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
+                        <Typography level="title-lg">Employee Record Information</Typography>
+                    </Box>
                 </Box>
-                {
-                    view === 1 ? <Box sx={{ pt: 0.5, pr: 1.5 }}>
-                        <CssVarsProvider>
-                            <Typography sx={{ color: 'green' }}>
-                                Done!
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box> : null
-                }
-                {
-                    view === 1 ? <Box  ><Chip
-                        icon={
-                            <IconButton disabled
-                                className="p-1" >
-                                <WrongLocationRoundedIcon size={22} />
-                            </IconButton>
-                        }
-                        label="Contract Close"
-                        clickable={false}
-                    /> </Box> : <Box sx={{ pl: 0.3 }} >
-                        <Chip
-                            icon={
-                                <IconButton disabled
-                                    className="p-1" >
-                                    <WrongLocationRoundedIcon className="text-info" size={22} />
-                                </IconButton>
-                            }
-                            label="Contract Close"
-                            onClick={ContractClose}
-                            clickable={true}
-                        />
-                    </Box>
-                }
-            </Paper>
-            <Paper square elevation={0}
-                sx={{
-                    display: 'flex', width: '100%', justifyContent: "space-evenly",
-                }}>
-                <Paper square elevation={0}
-                    sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }}>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Employee ID</Typography>
-                            </CssVarsProvider>
+
+                <CardContent orientation="horizontal">
+                    <Box sx={{
+                        display: 'flex', width: '100%', justifyContent: "space-evenly",
+                    }}>
+                        <Box
+                            sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }}>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Employee ID</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{em_no}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Employee Name</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{em_name}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Deaprtment Section</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{sect_name}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Designation</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{desg_name}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Employee Category</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{ecat_name}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
                         </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{em_no}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Employee Name</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{em_name}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Deaprtment Section</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{sect_name}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Designation</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{desg_name}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Employee Category</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{ecat_name}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </Paper>
-                <Paper square elevation={0} sx={{ p: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Contract Start Date</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{em_cont_start}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Contract End Date</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{em_cont_end}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Grace Period</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{grace_period}</Typography>
-                            </CssVarsProvider>
+                        <Box sx={{ p: 0.5, display: 'flex', width: '50%', alignItems: "center", justifyContent: "space-evenly", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Contract Start Date</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{em_cont_start}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Contract End Date</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{em_cont_end}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Grace Period</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{grace_period}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Remaining Days</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{differenceInDays(new Date(em_cont_end), new Date())}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
+                            <Box sx={{ display: "flex", width: "100%" }} >
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">Fine Amount</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
+                                    <CssVarsProvider>
+                                        <Typography level="body1">{fine}</Typography>
+                                    </CssVarsProvider>
+                                </Box>
+                            </Box>
                         </Box>
                     </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Remaining Days</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{differenceInDays(new Date(em_cont_end), new Date())}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Fine Amount</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{fine}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </Paper>
-            </Paper>
+                </CardContent>
+            </Card>
         </Fragment>
     )
 }

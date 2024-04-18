@@ -7,6 +7,7 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import { axioslogin } from 'src/views/Axios/Axios'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
+import NextWeekIcon from '@mui/icons-material/NextWeek';
 
 
 //NAV BAR IMPORT
@@ -34,6 +35,7 @@ import { getMenuSlno } from 'src/views/Constant/Constant'
 // import { Box } from '@mui/material'
 import VaccinationInfo from '../Menus/VaccinationMenu'
 import { Box, CssVarsProvider, Typography } from '@mui/joy'
+import ContractRenew from '../Menus/ContractRenewalMenu'
 import _ from 'underscore'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { useHistory } from 'react-router-dom'
@@ -51,6 +53,7 @@ const AppSidebar = () => {
   const [empResignation, setResignation] = useState();
   const [count, setCount] = useState(0)
   const [empVaccination, setVaccination] = useState();
+  const [empContractRenew, setContractRenew] = useState();
 
   //SIDE NAV BAR
   const navigation = [
@@ -124,6 +127,13 @@ const AppSidebar = () => {
       icon: <VaccinesIcon className="text-light nav-icon" size={20} />,
       items: empVaccination
     },
+    {
+      slno: 14,
+      component: CNavGroup,
+      name: 'Contract Renewal ',
+      icon: <NextWeekIcon className="text-light nav-icon" size={20} />,
+      items: empContractRenew
+    },
   ]
 
   const dispatch = useDispatch()
@@ -172,6 +182,9 @@ const AppSidebar = () => {
         setResignation(newResignation)
         const newVaccination = VaccinationInfo.filter(val => menuSlnoAry.includes(val.men_slno))
         setVaccination(newVaccination)
+        const newContract = ContractRenew.filter(val => menuSlnoAry.includes(val.men_slno))
+        setContractRenew(newContract)
+
         //For Rerent the Component
         setCount(1)
       }
