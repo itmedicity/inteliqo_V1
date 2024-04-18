@@ -1,5 +1,5 @@
 import { Box, Button, CssVarsProvider, IconButton, Typography } from '@mui/joy'
-import { Paper, Tooltip } from '@mui/material'
+import { Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,6 +17,8 @@ import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import SearchIcon from '@mui/icons-material/Search';
 import { ToastContainer } from 'react-toastify';
+import Tooltip from '@mui/joy/Tooltip';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ContractRenewList = () => {
 
@@ -186,18 +188,42 @@ const ContractRenewList = () => {
         {
             headerName: 'Action', minWidth: 100,
             cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
-                        <OpenIcon onClick={() => toAppraisalProcess(params)}>
-                            <LibraryAddCheckIcon color='primary' />
-                        </OpenIcon>
-                    </Tooltip>
-                    <Tooltip title="Contract Close" followCursor placement='top' arrow >
-                        <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => DirectContractClose(params)}>
-                            <CancelIcon />
-                        </OpenIcon>
-                    </Tooltip>
-                </Fragment>
+                // <Fragment>
+                //     <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                //         <OpenIcon onClick={() => toAppraisalProcess(params)}>
+                //             <LibraryAddCheckIcon color='primary' />
+                //         </OpenIcon>
+                //     </Tooltip>
+                //     <Tooltip title="Contract Close" followCursor placement='top' arrow >
+                //         <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => DirectContractClose(params)}>
+                //             <CancelIcon />
+                //         </OpenIcon>
+                //     </Tooltip>
+                // </Fragment>
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', }} >
+                    <Box sx={{ display: 'flex', }} >
+                        <Tooltip title="Appraisal Process" followCursor placement='top' arrow variant='outlined' color='danger'   >
+                            <IconButton size='sm' color='danger' onClick={() => toAppraisalProcess(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <LibraryAddCheckIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Box sx={{ display: 'flex', }}>
+                        <Tooltip title="Contract Close" followCursor placement='top' arrow variant='outlined' color='primary' >
+                            <IconButton size='sm' onClick={() => DirectContractClose(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <CancelIcon color='primary' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
         },
         { headerName: 'Emp No ', field: 'em_no', minWidth: 150, filter: true },
         { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
@@ -276,7 +302,7 @@ const ContractRenewList = () => {
         <Fragment>
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
+                <Paper square elevation={2} sx={{ px: 0.5, height: screenInnerHeight * 89 / 100 }}>
                     <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
@@ -338,11 +364,11 @@ const ContractRenewList = () => {
                             columnDefs={columnDef}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight * 73 / 100,
                                 width: "100%"
                             }}
-                            rowHeight={40}
-                            headerHeight={40}
+                            rowHeight={32}
+                            headerHeight={32}
                             rowStyle={rowStyle}
                             getRowStyle={getRowStyle}
                         />

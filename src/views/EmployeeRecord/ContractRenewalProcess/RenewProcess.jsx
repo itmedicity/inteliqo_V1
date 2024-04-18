@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CssVarsProvider, IconButton, Input, Typography } from '@mui/joy';
+import { Box, Card, CardContent, Chip, CssVarsProvider, IconButton, Input, Typography } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { addDays } from 'date-fns';
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
@@ -84,8 +84,25 @@ const RenewProcess = ({
 
     return (
         <Fragment>
-            <Card variant="outlined" sx={{ width: '100%', borderRadius: 0 }}>
+            <Card
+                variant="outlined"
+                color="neutral"
+                orientation="vertical"
+                size="sm"
+                sx={{ m: 0.5 }}
+            >
                 <Box sx={{ display: "flex", width: "100%" }} >
+                    <Chip
+                        color="danger"
+                        size="md"
+                        variant="outlined"
+                        startDecorator={<AttributionIcon fontSize='small' color='success' />}
+                    >
+                        <Typography color="neutral" level="title-md" >Employee Renewal / Confirmation Process</Typography>
+                    </Chip>
+                </Box>
+
+                {/* <Box sx={{ display: "flex", width: "100%" }} >
                     <IconButton
                         variant="plain"
                         color="neutral"
@@ -97,7 +114,7 @@ const RenewProcess = ({
                     <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
                         <Typography level="title-lg"> Employee Renewal / Confirmation Process</Typography>
                     </Box>
-                </Box>
+                </Box> */}
                 <CardContent orientation="horizontal">
                     <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
                         <Box sx={{ display: "flex", width: "50%", flexDirection: 'column' }} >

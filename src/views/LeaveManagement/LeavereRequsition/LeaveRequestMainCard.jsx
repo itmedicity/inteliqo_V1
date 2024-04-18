@@ -63,7 +63,7 @@ const LeaveRequestMainCard = () => {
         //     dispatch(getannualleave(em_id))
         //     dispatch(getEmployeeInformation(em_id))
         // }
-        // dispatch(getEmployeeApprovalLevel(em_id))
+        dispatch(getEmployeeApprovalLevel(em_id))
         dispatch(setCommonSetting());
         dispatch(setDept())
         dispatch(setdeptSection())
@@ -75,9 +75,9 @@ const LeaveRequestMainCard = () => {
         //     dispatch({ type: LEAVE_REQ_DEFAULT })
         //     dispatch(getHodBasedDeptSectionName());
         //     dispatch(getEmpNameHodSectionBased());
-        //     dispatch(getannualleave())
-        //     dispatch(getEmployeeInformation())
-        //     dispatch(getEmployeeApprovalLevel(0))
+        dispatch(getannualleave())
+        dispatch(getEmployeeInformation())
+        dispatch(getEmployeeApprovalLevel(0))
         // }
     }, [dispatch])
 
@@ -103,9 +103,9 @@ const LeaveRequestMainCard = () => {
                     {
                         requestType === 1 ? <LeaveRequestFormNew setRequestType={setRequestType} /> :
                             // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
-                            requestType === 2 ? <HalfDayLeaveRequest /> :
-                                requestType === 3 ? <MissPunchRequest em_id={{}} /> :
-                                    requestType === 4 ? <CompansatoryOffMast em_id={{}} /> : null
+                            requestType === 2 ? <HalfDayLeaveRequest setRequestType={setRequestType} /> :
+                                requestType === 3 ? <MissPunchRequest setRequestType={setRequestType} /> :
+                                    requestType === 4 ? <CompansatoryOffMast setRequestType={setRequestType} /> : null
                     }
                 </Suspense>
                 <LeaveTableContainer />

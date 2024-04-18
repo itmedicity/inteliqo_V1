@@ -18,7 +18,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 
-const CompansatoryOffMast = () => {
+const CompansatoryOffMast = ({ setRequestType }) => {
 
     const dispatch = useDispatch();
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
@@ -267,9 +267,11 @@ const CompansatoryOffMast = () => {
                 if (success === 1) {
                     succesNofity('C-OFF Request Created SuccessFully')
                     changeForm()
+                    setRequestType(0)
                 } else {
                     errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
                     changeForm()
+                    setRequestType(0)
                 }
 
             } else if (offType === 1) {

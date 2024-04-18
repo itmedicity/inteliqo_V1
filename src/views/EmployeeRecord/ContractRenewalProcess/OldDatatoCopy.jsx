@@ -8,6 +8,8 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import AttributionIcon from '@mui/icons-material/Attribution';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 
 const OldDatatoCopy = ({ id }) => {
     const dispatch = useDispatch()
@@ -66,7 +68,24 @@ const OldDatatoCopy = ({ id }) => {
     }, [dispatch, oldData, id])
     return (
         <Fragment>
-            <Card variant="outlined" sx={{ width: '100%', borderRadius: 0 }}>
+            <Card
+                variant="outlined"
+                color="neutral"
+                orientation="vertical"
+                size="sm"
+                sx={{ m: 0.5 }}
+            >
+                <Box sx={{ display: "flex", width: "100%" }} >
+                    <Chip
+                        color="danger"
+                        size="md"
+                        variant="outlined"
+                        startDecorator={<AttributionIcon fontSize='small' color='success' />}
+                    >
+                        <Typography color="neutral" level="title-md" >Employee Record Information</Typography>
+                    </Chip>
+                </Box>
+                {/* 
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <IconButton
                         variant="plain"
@@ -79,60 +98,49 @@ const OldDatatoCopy = ({ id }) => {
                     <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
                         <Typography level="title-lg">Employee Record Information</Typography>
                     </Box>
-                </Box>
-                <CardContent orientation="horizontal">
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, pt: 1, justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Employee Record Data</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, pt: 1, justifyContent: 'left' }} >
-                                <JoyCheckbox
-                                    name="empRecord"
-                                    checked={empRecord}
-                                    onchange={(e) => getOldDataToCopy(e)}
-                                />
-                            </Box>
+                </Box> */}
+                <CardContent orientation="horizontal" >
+                    <Box sx={{ display: "flex", flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }} >
+                        <Box sx={{ display: "flex", px: 0.5, justifyContent: 'left' }} >
+                            <JoyCheckbox
+                                name="empRecord"
+                                label={"Employee Record Data"}
+                                checked={empRecord}
+                                onchange={(e) => getOldDataToCopy(e)}
+                            />
                         </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, pt: 1, justifyContent: 'center' }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Salary Information</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, pt: 1, justifyContent: 'left' }} >
-                                <JoyCheckbox
-                                    name="salaryinformation"
-                                    checked={salaryinformation}
-                                    onchange={(e) => getOldDataToCopy(e)}
-                                />
-                            </Box>
+                        <Box sx={{ display: "flex", px: 0.5, justifyContent: 'left' }} >
+                            <JoyCheckbox
+                                name="salaryinformation"
+                                label={"Salary Information"}
+                                checked={salaryinformation}
+                                onchange={(e) => getOldDataToCopy(e)}
+                            />
                         </Box>
                     </Box>
+                    <Box sx={{ display: 'flex', flex: 1, }}>
+                        {
+                            oldflag === 1 ?
+                                <Chip
+                                    color="danger"
+                                    // onClick={ProcessAttendance}
+                                    size="md"
+                                    variant="outlined"
+                                    startDecorator={<LibraryAddCheckOutlinedIcon fontSize='inherit' />}
+                                >Old Data Copied
+                                </Chip>
+                                : <Chip
+                                    color="success"
+                                    onClick={GetOldattoCopy}
+                                    size="md"
+                                    variant="solid"
+                                    sx={{ px: 2 }}
+                                    startDecorator={<ContentCopyOutlinedIcon fontSize='inherit' />}
+                                >Copy Old Data
+                                </Chip>
+                        }
+                    </Box>
                 </CardContent>
-                <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                    {
-                        oldflag === 1 ?
-                            <Chip
-                                color="danger"
-                                // onClick={ProcessAttendance}
-                                size="md"
-                                variant="outlined"
-
-                            >Old Data Copied
-                            </Chip>
-                            : <Chip
-                                color="success"
-                                onClick={GetOldattoCopy}
-                                size="md"
-                                variant="outlined"
-
-                            >Copy Old Data
-                            </Chip>
-                    }
-                </Box>
             </Card>
         </Fragment >
     )

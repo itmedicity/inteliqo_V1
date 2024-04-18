@@ -18,7 +18,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import { lastDayOfMonth, startOfMonth } from 'date-fns'
 
-const MissPunchRequest = () => {
+const MissPunchRequest = ({ setRequestType }) => {
 
     const dispatch = useDispatch();
     const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
@@ -216,14 +216,17 @@ const MissPunchRequest = () => {
                                 succesNofity(message)
                                 changeForm()
                                 setDropOpen(false)
+                                setRequestType(0)
                             } else if (success === 2) {
                                 warningNofity(message)
                                 changeForm()
                                 setDropOpen(false)
+                                setRequestType(0)
                             } else {
                                 errorNofity(` Contact IT ${JSON.stringify(message)}`)
                                 changeForm()
                                 setDropOpen(false)
+                                setRequestType(0)
                             }
                         }
                     } else {

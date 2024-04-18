@@ -89,8 +89,8 @@ const AppHeader = () => {
 
   return (
     <Fragment>
-      <CHeader position="sticky" className="mb-2">
-        <CContainer fluid>
+      <CHeader position="sticky" className="mb-1" style={{ height: 20 }}>
+        <CContainer fluid >
           <CHeaderToggler
             className="ps-1"
             onClick={() => dispatch({ type: Actiontypes.APP_SIDEBAR_SHOW, sidebarShow: !sidebarShow })}

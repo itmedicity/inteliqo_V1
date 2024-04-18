@@ -70,6 +70,7 @@ const AppHeaderDropdown = () => {
           <Avatar
             alt="Remy Sharp"
             src={src}
+            sx={{ width: 32, height: 32 }}
           />
         </CDropdownToggle>
         <CDropdownMenu className="pt-0" placement="bottom-end">

@@ -24,6 +24,7 @@ import {
 } from './Function/ContractFun';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { employeeNumber } from 'src/views/Constant/Constant';
+import { getContractClosedata } from 'src/redux/reduxFun/reduxHelperFun';
 
 const EXistContractDetl = React.lazy(() => import('./EXistContractDetl'))
 const AttendanceDetails = React.lazy(() => import('./AttendanceDetails'))
@@ -61,21 +62,19 @@ const ContractRenewalProcess = () => {
   const [graceperiod, setgraceperiod] = useState(0)
 
 
-
-
-
-
   //getting data to save
-  const datatoSave = useSelector((state) => state?.getContractClosedata, _.isEqual)
+  const datatoSave = useSelector((state) => getContractClosedata(state))
+  const datatooSave = useMemo(() => datatoSave, [datatoSave])
   const { attendancedetls, olDataTocopy, oldPersonalData, newCategory,
     newDesignation
-  } = datatoSave
+  } = datatooSave
 
   //useEffect for setting new employee category
   useEffect(() => {
     setnewCategory(newCategory.newEmpcat)
     setNewDesignation(newDesignation.newEmpDesg)
   }, [newCategory, newDesignation])
+
 
   useEffect(() => {
     const getEmployeedetails = async () => {
@@ -385,7 +384,7 @@ const ContractRenewalProcess = () => {
       <ToastContainer />
       <CustomLayout title="Employee Contract Renewal Process" displayClose={true} >
         <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
             <EXistContractDetl
               id={id}
               no={no}
@@ -393,8 +392,8 @@ const ContractRenewalProcess = () => {
               setFine={setFine}
               setgraceperiod={setgraceperiod}
             />
-          </Box>
-          <Box sx={{ flex: 1 }}>
+            {/* </Box>
+          <Box sx={{ flex: 1 }}> */}
             <AttendanceDetails
               id={id}
               no={no}

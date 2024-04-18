@@ -89,8 +89,65 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
 
     return (
         <Fragment>
-            <Card variant="outlined" sx={{ width: '100%', borderRadius: 0 }}>
-                <Box sx={{ display: "flex", width: "100%" }} >
+            <Card
+                variant="outlined"
+                color="neutral"
+                orientation="vertical"
+                size="sm"
+                sx={{ m: 0.5 }}
+            >
+
+                {/* 
+                <Card
+                    variant="outlined"
+                    sx={{
+                        width: '100%',
+                        // overflow: 'auto',
+                        resize: 'horizontal',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Avatar src="" size="lg" />
+                        <Typography level="body1">{em_no}</Typography>
+                    </Box>
+                    <CardContent>
+                        <Typography level="title-lg">{em_name}</Typography>
+                        <Typography level="body-sm">
+                            We are a community of developers prepping for coding interviews,
+                            participate, chat with others and get better at interviewing.
+                        </Typography>
+                    </CardContent>
+                    <CardActions buttonFlex="0 1 120px">
+                        <IconButton variant="outlined" color="neutral" sx={{ mr: 'auto' }}>
+                            <FavoriteBorder />
+                        </IconButton>
+                        <Button variant="outlined" color="neutral">
+                            View
+                        </Button>
+                        <Button variant="solid" color="primary">
+                            Join
+                        </Button>
+                    </CardActions>
+                </Card> */}
+
+                {/* <Box sx={{ display: "flex", width: "100%" }} >
+                    <Chip
+                        color="danger"
+                        size="md"
+                        variant="outlined"
+                        startDecorator={<AttributionIcon fontSize='small' color='success' />}
+                    >
+                        <Typography color="neutral" level="title-md" >Attendance Details</Typography>
+                    </Chip>
+                </Box> */}
+
+                {/* <Box sx={{ display: "flex", width: "100%" }} >
                     <IconButton
                         // aria-label="bookmark Bahamas Islands"
                         variant="plain"
@@ -103,7 +160,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
                     <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
                         <Typography level="title-lg">Attendance Details</Typography>
                     </Box>
-                </Box>
+                </Box> */}
                 <CardContent orientation="horizontal">
 
                     <Box sx={{ display: "flex", width: "100%" }} >
