@@ -1,5 +1,5 @@
-import { Box, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import { Box, Paper } from '@mui/material'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { axioslogin } from '../Axios/Axios';
 import { CssVarsProvider, Typography } from '@mui/joy';
@@ -10,35 +10,63 @@ import IconButton from '@mui/joy/IconButton';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { succesNofity, warningNofity } from '../CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
+import { IconButton as OpenIcon } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { useDispatch } from 'react-redux';
+import { setPersonalData } from 'src/redux/actions/Profile.action';
+import { screenInnerHeight } from '../Constant/Constant';
+import Tooltip from '@mui/joy/Tooltip';
+
 
 const ContractEnd = () => {
 
     const history = useHistory()
+    const dispatch = useDispatch();
     const [tableData, setTableData] = useState([])
     const [count, setCount] = useState(0)
 
-    const RedirectToHome = () => {
+    const RedirectToHome = useCallback(() => {
         history.push(`/Home`)
-    }
+    }, [history])
+
     /** column data for contract closed employees */
     const [columnDef] = useState([
-        { headerName: 'ID', field: 'em_id' },
-        { headerName: 'Emp No ', field: 'em_no' },
-        { headerName: 'Name ', field: 'em_name' },
-        { headerName: 'Dept Name ', field: 'dept_name' },
-        { headerName: 'Designation ', field: 'desg_name' },
-        { headerName: 'Date of joining ', field: 'em_doj' },
         {
             headerName: 'Action',
+            minWidth: 120,
             cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Direct Contract Close" followCursor placement='top' arrow >
-                        <IconButton sx={{ pb: 1 }} onClick={() => addtoProcess(params)}>
-                            <PublishedWithChangesIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
-                </Fragment>
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', }} >
+                    <Box sx={{ display: 'flex', }} >
+                        <Tooltip title="Resignation" followCursor placement='top' arrow variant='outlined' color='danger'   >
+                            <IconButton size='sm' color='danger' onClick={() => resignProcess(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <CancelIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Box sx={{ display: 'flex', }}>
+                        <Tooltip title="Contract Renew Process" followCursor placement='top' arrow variant='outlined' color='primary' >
+                            <IconButton size='sm' onClick={() => contractRenewal(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <PublishedWithChangesIcon color='primary' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
         },
+        { headerName: 'Emp No ', field: 'em_no', minWidth: 120, filter: true },
+        { headerName: 'Name ', field: 'em_name', minWidth: 150, filter: true },
+        { headerName: 'Dept Name ', field: 'dept_name', minWidth: 150, filter: true },
+        { headerName: 'Designation ', field: 'desg_name', minWidth: 150, filter: true },
+        { headerName: 'Date of joining ', field: 'em_doj', minWidth: 150, filter: true },
+        { headerName: 'Contract Start', field: 'em_cont_start', minWidth: 150 },
+        { headerName: 'Contract End', field: 'em_cont_end', minWidth: 150 },
     ])
 
     /** getting contract closed data from database */
@@ -56,7 +84,7 @@ const ContractEnd = () => {
         contractEndList()
     }, [count])
 
-    const addtoProcess = async (params) => {
+    const resignProcess = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
         const { em_id, sect_id, dept_id } = data[0]
         const postDeptData = {
@@ -80,27 +108,41 @@ const ContractEnd = () => {
                 succesNofity("Employee Submitted for Due Clearence")
                 setCount(count + 1)
             } else {
-                warningNofity("Error Occured While Sub,itting!!")
+                warningNofity("Error Occured While Submitting!!")
             }
         }
-    }
+    }, [count])
+
+
+    const contractRenewal = useCallback(async (params) => {
+        const { em_no, em_id } = params.data
+        dispatch(setPersonalData(em_id))
+        history.push(`/Home/ContractRenewalProcess/${em_no}/${em_id}`)
+    }, [history, dispatch])
 
     return (
         <Fragment>
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
-                    <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center" }}  >
+                <Paper square elevation={2} sx={{ p: 0.5, height: screenInnerHeight * 89 / 100 }}>
+                    <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
-                                <Typography startDecorator={<DragIndicatorOutlinedIcon color='success' />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Employee Contract Closed List
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Contract Closed List
                                 </Typography>
                             </CssVarsProvider>
                         </Box>
-                        <Box>
+                        {/* <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                        <CssVarsProvider>
+                            <IconButton variant="outlined" size='xs' sx={{ color: 'green' }} onClick={toDownload}>
+                                <DownloadIcon />
+                            </IconButton>
+                        </CssVarsProvider>
+                    </Box> */}
+                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
                             <CssVarsProvider>
-                                <IconButton variant="outlined" size='sm' sx={{ color: 'red' }} onClick={RedirectToHome}>
+                                <IconButton variant="outlined" size='xs' color="danger" onClick={RedirectToHome}>
                                     <CloseIcon />
                                 </IconButton>
                             </CssVarsProvider>
@@ -111,11 +153,11 @@ const ContractEnd = () => {
                             columnDefs={columnDef}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight * 80 / 100,
                                 width: "100%"
                             }}
-                            rowHeight={30}
-                            headerHeight={30}
+                            rowHeight={32}
+                            headerHeight={32}
                         />
                     </Paper>
                 </Paper>
