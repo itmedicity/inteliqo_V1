@@ -146,6 +146,7 @@ export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
 ) => {
     const { hrsWorked, lateIn, earlyOut } = getLateInTime;
+
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
     // if true ==> ( its a working shift ) 
@@ -298,6 +299,7 @@ export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift
         if (isAfter(punch_In, shift_in) === true) {
             //GET LATE IN TIME
             const getLateInMinits = differenceInMinutes(punch_In, shift_in)
+
             const getEarlyOutInMinits = differenceInMinutes(shift_out, punch_out)
 
             return { hrsWorked: hoursWorked, lateIn: getLateInMinits <= 0 ? 0 : getLateInMinits, earlyOut: getEarlyOutInMinits <= 0 ? 0 : getEarlyOutInMinits }
