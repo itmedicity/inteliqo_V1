@@ -1,4 +1,4 @@
-import { Box, Paper, Tooltip } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { axioslogin } from '../Axios/Axios';
@@ -14,6 +14,9 @@ import { IconButton as OpenIcon } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useDispatch } from 'react-redux';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
+import { screenInnerHeight } from '../Constant/Constant';
+import Tooltip from '@mui/joy/Tooltip';
+
 
 const ContractEnd = () => {
 
@@ -30,21 +33,34 @@ const ContractEnd = () => {
     const [columnDef] = useState([
         {
             headerName: 'Action',
+            minWidth: 120,
             cellRenderer: params =>
-                <Fragment>
-                    <Tooltip title="Resignation" followCursor placement='top' arrow >
-                        <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => resignProcess(params)}>
-                            <CancelIcon />
-                        </OpenIcon>
-                    </Tooltip>
-                    <Tooltip title="Contract Renew Process" followCursor placement='top' arrow >
-                        <OpenIcon onClick={() => contractRenewal(params)}>
-                            <PublishedWithChangesIcon color='primary' />
-                        </OpenIcon>
-                    </Tooltip>
-                </Fragment>
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', }} >
+                    <Box sx={{ display: 'flex', }} >
+                        <Tooltip title="Resignation" followCursor placement='top' arrow variant='outlined' color='danger'   >
+                            <IconButton size='sm' color='danger' onClick={() => resignProcess(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <CancelIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Box sx={{ display: 'flex', }}>
+                        <Tooltip title="Contract Renew Process" followCursor placement='top' arrow variant='outlined' color='primary' >
+                            <IconButton size='sm' onClick={() => contractRenewal(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <PublishedWithChangesIcon color='primary' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
         },
-        { headerName: 'Emp No ', field: 'em_no', filter: true },
+        { headerName: 'Emp No ', field: 'em_no', minWidth: 120, filter: true },
         { headerName: 'Name ', field: 'em_name', minWidth: 150, filter: true },
         { headerName: 'Dept Name ', field: 'dept_name', minWidth: 150, filter: true },
         { headerName: 'Designation ', field: 'desg_name', minWidth: 150, filter: true },
@@ -104,12 +120,11 @@ const ContractEnd = () => {
         history.push(`/Home/ContractRenewalProcess/${em_no}/${em_id}`)
     }, [history, dispatch])
 
-
     return (
         <Fragment>
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
-                <Paper square elevation={2} sx={{ p: 0.5, }}>
+                <Paper square elevation={2} sx={{ p: 0.5, height: screenInnerHeight * 89 / 100 }}>
                     <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
                         <Box sx={{ flex: 1 }} >
                             <CssVarsProvider>
@@ -138,11 +153,11 @@ const ContractEnd = () => {
                             columnDefs={columnDef}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight * 80 / 100,
                                 width: "100%"
                             }}
-                            rowHeight={40}
-                            headerHeight={40}
+                            rowHeight={32}
+                            headerHeight={32}
                         />
                     </Paper>
                 </Paper>

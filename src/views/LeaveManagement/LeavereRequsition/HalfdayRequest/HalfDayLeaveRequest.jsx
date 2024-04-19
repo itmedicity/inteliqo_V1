@@ -22,14 +22,18 @@ import CachedIcon from '@mui/icons-material/Cached';
 import Textarea from '@mui/joy/Textarea';
 import { useEffect } from 'react';
 
-const HalfDayLeaveRequest = () => {
+const HalfDayLeaveRequest = ({ setRequestType }) => {
     const [fromDate, setFromDate] = useState(new Date())
     const [casualLve, setCasualLve] = useState([])
     const [halfDayStat, setHalfDayStat] = useState(0)
     const [creditedLve, setCreditedLve] = useState(0)
 
     const [selectedCL, setSelectedCL] = useState(0)
+    const [selectedClName, setselectedClName] = useState('')
     const [reson, setReason] = useState('')
+    const [empShiftInform, setempShiftInform] = useState({})
+    const [disabled, setdisabled] = useState(true)
+
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
     const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
@@ -37,7 +41,22 @@ const HalfDayLeaveRequest = () => {
     const getCasualLeaves = useSelector((state) => getCaualLeaveDetl(state));
     const casualLeave = useMemo(() => getCasualLeaves, [getCasualLeaves]);
 
-    console.log(halfDayStat, creditedLve)
+
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, em_id: loginEmid, em_department: loginDept, em_dept_section: loginSection, groupmenu } = empInformationFromRedux;
+
+
+    //CHEK THE AURHORISED USER GROUP
+    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
+    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
+    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
+
+    useEffect(() => {
+        setMasterGroupStatus(groupStatus)
+    }, [groupStatus])
+
+    // console.log(halfDayStat, creditedLve)
 
     const handleGetCreditedLeaves = useCallback(async () => {
         if (halfDayStat === null || creditedLve === null) {
@@ -49,10 +68,25 @@ const HalfDayLeaveRequest = () => {
                 warningNofity("You have no leaves available for a half-day request.")
             }
         }
-    }, [casualLeave, halfDayStat, creditedLve])
+
+        //GET  SHIFT INFOMATION
+        const postData = {
+            startDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+            em_id: em_id
+        }
+        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+        const { success, data } = result.data;
+        if (success === 1) {
+            const shiftData = data[0]
+            setempShiftInform(shiftData)
+        }
+        setdisabled(false)
+    }, [casualLeave, halfDayStat, creditedLve, em_department, em_dept_section, em_id, fromDate])
 
     //GET CASUAL LEAVES FUN
     const getCasualeaves = useCallback((e, val) => {
+        const selectedLeaveName = e?.nativeEvent?.target?.innerText;
+        setselectedClName(selectedLeaveName)
         setSelectedCL(val)
     }, [])
 
@@ -68,25 +102,101 @@ const HalfDayLeaveRequest = () => {
         }
 
         const checkAttendanceMarking = await axioslogin.post('/attendCal/checkPunchMarkingHR', postDataForAttendaceMark);
-
         const { data: attMarkCheckData, success: attMarkCheckSuccess } = checkAttendanceMarking.data;
         const lastUpdateDate = attMarkCheckData[0]?.last_update_date;
 
         if (attMarkCheckSuccess === 2) {
             errorNofity("Error Checking Attendance Already Marked or Not ,Try Again !!")
-        } else if (
-            (attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) &&
-            (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) &&
-                new Date(lastUpdateDate) < new Date(fromDate))) {
+        } else if ((attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) && (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) && new Date(lastUpdateDate) < new Date(fromDate))) {
 
-            //GET DEPARTMENT WISE SHIFT INFOMATION
+            // [1,2]
+            if (Object.keys(empShiftInform).length === 0) {
+                warningNofity("Duty Plan Not Planned")
+            } else {
+
+                if (selectedCL === 0 || reson === '') {
+                    warningNofity("Select the leave name and reason.")
+                } else {
+                    const { plan_slno, shift_id, shft_desc, first_half_in, first_half_out, second_half_in, second_half_out } = empShiftInform
+
+                    const first_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_in), 'HH:mm')}`;
+                    const first_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_out), 'HH:mm')}`;
+                    const second_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_in), 'HH:mm')}`;
+                    const second_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_out), 'HH:mm')}`;
 
 
+                    const approveStatus = (masterGroupStatus === true) ?
+                        {
+                            inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                            usCode_inch: loginEmno, usCode_hod: loginEmno
+                        } :
+                        (loginHod === 1 && loginIncharge === 1) ?
+                            {
+                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                usCode_inch: loginEmno, usCode_hod: loginEmno
+                            }
+                            :
+                            (loginHod === 1 && loginIncharge === 0) ?
+                                {
+                                    inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                    usCode_inch: null, usCode_hod: loginEmno
+                                }
+                                :
+                                (loginHod === 0 && loginIncharge === 1) ?
+                                    {
+                                        inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
+                                        usCode_inch: loginEmno, usCode_hod: null
+                                    }
+                                    :
+                                    {
+                                        inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
+                                        usCode_inch: null, usCode_hod: null
+                                    }
 
+                    const halfdaysavedata = {
+                        checkIn: halfDayStat === 1 ? first_half_inTime : second_half_inTime,
+                        checkOut: halfDayStat === 1 ? first_half_outTime : second_half_outTime,
+                        leavedate: format(new Date(fromDate), 'yyyy-MM-dd H:m:s'),
+                        planslno: selectedCL, // selected leave name slno 
+                        shiftid: shift_id,
+                        month: selectedClName, // Selected leave Name
+                        em_id: em_id,
+                        em_no: em_no,
+                        em_department: em_department,
+                        em_dept_section: em_dept_section,
+                        attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+                        inc_apprv_req: approveStatus.inc_apr,
+                        incapprv_status: approveStatus.inc_stat,
+                        inc_apprv_cmnt: approveStatus.inc_cmnt,
+                        inc_apprv_time: approveStatus.inc_apr_time,
+                        inc_usCode: approveStatus.usCode_inch,
+                        hod_apprv_req: approveStatus.hod_apr,
+                        hod_apprv_status: approveStatus.hod_stat,
+                        hod_apprv_cmnt: approveStatus.hod_cmnt,
+                        hod_apprv_time: approveStatus.hod_apr_time,
+                        hod_usCOde: approveStatus.usCode_hod,
+                        hr_aprrv_requ: 1,
+                        ceo_req_status: 0,
+                        resonforleave: reson,
+                        dutyPlanSlno: plan_slno // duty plan table slno 
+                    }
 
+                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        // console.log(success, message)
+                        succesNofity(message)
+                        setRequestType(0)
+
+                    } else {
+                        errorNofity(message)
+                        setRequestType(0)
+                    }
+                }
+            }
         }
 
-    }, [selectedCL, reson, fromDate, em_dept_section])
+    }, [selectedCL, reson, fromDate, em_dept_section, em_department, empShiftInform, loginHod, loginIncharge, loginEmno, masterGroupStatus, halfDayStat, selectedClName])
 
     return (
         <Box sx={{ mb: 0.5 }}>
@@ -204,7 +314,7 @@ const HalfDayLeaveRequest = () => {
                                         size='sm'
                                         sx={{ width: '100%' }}
                                         endDecorator={<Box>Save</Box>}
-                                    // disabled={addDateDisable}
+                                        disabled={disabled}
                                     >
                                         <ExitToAppOutlinedIcon fontSize='large' />
                                     </Button>

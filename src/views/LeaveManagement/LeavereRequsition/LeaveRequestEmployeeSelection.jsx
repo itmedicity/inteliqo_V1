@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
+import { getCommonLeaveData, getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
 import DepartmentSection from './Func/DepartmentSection'
 import EmployeeAgainSection from './Func/EmployeeAgainSection'
 import LeaveRequestType from './Func/LeaveRequestType'
@@ -92,6 +92,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
             dispatch(getCreditedEarnLeave(emNo)); // GET ALL EARN LEAVES
             dispatch(getannualleave(emID))  //GET ALL LEAVES COUNT
             dispatch(getEmployeeInformation(emID)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
+            dispatch(getEmployeeApprovalLevel(emID))
             // dispatch(getEmpCoffData(postData)) // 
         }
 

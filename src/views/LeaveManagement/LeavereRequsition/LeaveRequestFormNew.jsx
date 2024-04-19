@@ -10,7 +10,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
-import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCommonSettings, getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
@@ -47,6 +47,17 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
     const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
 
+    const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
+    const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
+    console.log(deptApprovalLevel)
+
+    /*
+ *3 -> hod and incharge
+ *2 -> hod only
+ *1 -> incharge only
+ *0 -> nothing  
+ */
+
     useEffect(() => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
@@ -57,7 +68,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-    const { em_id, em_no, hod, incharge, em_dept_section } = selectedEmpInform;
+    const { em_id, em_no, hod, incharge, em_dept_section } = selectedEmpInform ?? {};
     // console.log(selectedEmpInform)
 
     const handleRefreshButton = useCallback(() => {
@@ -162,6 +173,9 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
 
+        console.log(masterGroupStatus)
+        console.log(loginHod, loginIncharge)
+
         const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
 
         const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
@@ -213,34 +227,40 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
                         const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
 
-                        const approveStatus = (masterGroupStatus === true) ?
-                            {
-                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                usCode_inch: loginEmno, usCode_hod: loginEmno
-                            } :
-                            (loginHod === 1 && loginIncharge === 1) ?
-                                {
-                                    inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                    usCode_inch: loginEmno, usCode_hod: loginEmno
-                                }
-                                :
-                                (loginHod === 1 && loginIncharge === 0) ?
-                                    {
-                                        inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                        usCode_inch: null, usCode_hod: loginEmno
-                                    }
-                                    :
-                                    (loginHod === 0 && loginIncharge === 1) ?
-                                        {
-                                            inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
-                                            usCode_inch: loginEmno, usCode_hod: null
-                                        }
-                                        :
-                                        {
-                                            inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
-                                            usCode_inch: null, usCode_hod: null
-                                        }
+                        console.log(masterGroupStatus)
+                        console.log(loginHod, loginIncharge)
 
+                        // const approveStatus = (masterGroupStatus === true) ?
+                        //     {
+                        //         inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                        //         usCode_inch: loginEmno, usCode_hod: loginEmno
+                        //     } :
+                        //     (loginHod === 1 && loginIncharge === 1) ?
+                        //         {
+                        //             inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                        //             usCode_inch: loginEmno, usCode_hod: loginEmno
+                        //         }
+                        //         :
+                        //         (loginHod === 1 && loginIncharge === 0) ?
+                        //             {
+                        //                 inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                        //                 usCode_inch: null, usCode_hod: loginEmno
+                        //             }
+                        //             :
+                        //             (loginHod === 0 && loginIncharge === 1) ?
+                        //                 {
+                        //                     inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
+                        //                     usCode_inch: loginEmno, usCode_hod: null
+                        //                 }
+                        //                 :
+                        //                 {
+                        //                     inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
+                        //                     usCode_inch: null, usCode_hod: null
+                        //                 }
+
+                        const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
+
+                        console.log(approveStatus)
                         // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
 
                         //TOTAL LEAVES REQUIRED COUNT
@@ -350,7 +370,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
         }
 
 
-    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus, comnLeaveBalCount])
+    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus, comnLeaveBalCount, deptApprovalLevel])
 
     return (
         <Box sx={{ mb: 0.5 }}>

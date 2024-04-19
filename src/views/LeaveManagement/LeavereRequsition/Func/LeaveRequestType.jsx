@@ -74,7 +74,8 @@ const LeaveRequestType = ({ onChange, onChangeVal }) => {
             size='sm'
             // disabled={empstatus === 0 && (hod === 1 || incharge === 1) ? true : false}
             sx={{ width: '100%' }}
-            variant='solid'
+            variant='outlined'
+            color='primary'
         >
             <Option value={0} >Leave Request Type ...</Option>
             {

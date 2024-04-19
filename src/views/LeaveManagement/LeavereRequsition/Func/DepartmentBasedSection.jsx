@@ -161,6 +161,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     onChange={handleChangeDepartmentID}
                     sx={{ width: '100%' }}
                     value={deptID}
+                    variant='outlined'
+                    color='primary'
                     size='sm'
                     disabled={disabled}
                     placeholder="Select Department"
@@ -185,6 +187,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     onChange={handleChangeDepetSection}
                     sx={{ width: '100%' }}
                     size='sm'
+                    variant='outlined'
+                    color='primary'
                     placeholder="Select Department Section"
                     endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
@@ -203,6 +207,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     sx={{ width: '100%' }}
                     value={employeeID}
                     size='sm'
+                    variant='outlined'
+                    color='primary'
                     disabled={empDisableStat}
                     placeholder="Employee Name"
                     endDecorator={mapEmpList?.length === 0 && <div className='loading-spinner' ></div>}
@@ -234,6 +240,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                 <Input
                     size="sm"
                     fullWidth
+                    variant='outlined'
+                    color='primary'
                     value={employeeID}
                     disabled
                 />

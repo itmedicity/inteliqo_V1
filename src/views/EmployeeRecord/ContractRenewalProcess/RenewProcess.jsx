@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CssVarsProvider, IconButton, Input, Typography } from '@mui/joy';
+import { Box, Card, CardContent, Chip, CssVarsProvider, IconButton, Input, Typography } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { addDays } from 'date-fns';
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
@@ -13,6 +13,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import JoyDesgSelect from 'src/views/MuiComponents/JoyComponent/JoyDesgSelect';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 const RenewProcess = ({
     contractStartDate, setContractStartDate, permanetDOJ,
@@ -81,46 +83,42 @@ const RenewProcess = ({
     }, [permanentcate, renewCate, dispatch, permanentDesg, contractDesg, contractStartDate,
         setContractEndDate])
 
+    const CustomTypo = ({ labels }) => {
+        return (
+            <Box sx={{ display: "flex", flex: 1, justifyContent: "flex-end", alignItems: 'center' }}  >
+                <Typography level="body-sm" pr={2} >{labels}</Typography>
+            </Box>
+        )
+    }
+
 
     return (
         <Fragment>
-            <Card variant="outlined" sx={{ width: '100%', borderRadius: 0 }}>
+            <Card
+                variant="outlined"
+                color="neutral"
+                orientation="vertical"
+                size="sm"
+                sx={{ m: 0.5 }}
+            >
                 <Box sx={{ display: "flex", width: "100%" }} >
-                    <IconButton
-                        variant="plain"
-                        color="neutral"
-                        size="sm"
-                        sx={{ position: 'initial', top: '0.875rem', right: '0.5rem' }}
-                    >
-                        <AttributionIcon />
-                    </IconButton>
-                    <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
-                        <Typography level="title-lg"> Employee Renewal / Confirmation Process</Typography>
-                    </Box>
+                    <Typography startDecorator={<AccountBalanceWalletOutlinedIcon />} level="title-md">Employee Renewal / Confirmation Process</Typography>
                 </Box>
                 <CardContent orientation="horizontal">
                     <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
-                        <Box sx={{ display: "flex", width: "50%", flexDirection: 'column' }} >
+                        <Box sx={{ display: "flex", width: "50%", flexDirection: 'column', gap: 0.5 }} >
                             <Box sx={{ display: "flex", width: "100%" }} >
                                 <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
                                     <JoyCheckbox
                                         name="contractrenew"
+                                        label={"Contract Renewal"}
                                         checked={contractrenew}
                                         onchange={(e) => getContract(e)}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, pl: 2 }}>
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Contract Renewal</Typography>
-                                    </CssVarsProvider>
-                                </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%", pt: 1 }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >New Employee ID</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Employee ID" />
                                 <Box sx={{ flex: 2, }} >
                                     <InputComponent
                                         placeholder={'New Employee ID'}
@@ -134,11 +132,8 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Contract Start Date</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+
+                                <CustomTypo labels="Contract Start Date" />
                                 <Box sx={{ flex: 2, }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
@@ -162,11 +157,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }} >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Contract End Date</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="Contract End Date" />
                                 <Box sx={{ flex: 2, }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
@@ -190,11 +181,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%", }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">New Category</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Category" />
                                 <Box sx={{ flex: 2, }} >
                                     <ContractRenewSelection
                                         disable={contractrenew === true ? false : true}
@@ -203,11 +190,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%", }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">New Designation</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Designation" />
                                 <Box sx={{ flex: 2 }} >
                                     <JoyDesgSelect desgValue={contractDesg} getDesg={SetContractDesg} disable={contractrenew === true ? false : true} />
                                 </Box>
@@ -217,28 +200,20 @@ const RenewProcess = ({
 
                         {/* Contract to permanent Information */}
 
-                        <Box sx={{ display: "flex", width: "50%", flexDirection: 'column' }} >
+                        <Box sx={{ display: "flex", width: "50%", flexDirection: 'column', gap: 0.5 }} >
                             <Box sx={{ display: "flex", width: "100%" }} >
                                 <Box sx={{ display: 'flex', pl: 5, pt: 0.5 }}>
                                     <JoyCheckbox
+                                        label={"Contract to Permanent"}
                                         name="contractTpPermanent"
                                         checked={contractTpPermanent}
                                         onchange={(e) => getPermanent(e)}
                                     />
                                 </Box>
-                                <Box sx={{ display: 'flex', flex: 1, pl: 2 }}>
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Contract to Permanent</Typography>
-                                    </CssVarsProvider>
-                                </Box>
                             </Box>
 
                             <Box sx={{ display: "flex", width: "100%", pt: 1 }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >New Employee ID</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Employee ID" />
                                 <Box sx={{ flex: 2, }} >
                                     <InputComponent
                                         placeholder={'New Employee ID'}
@@ -252,11 +227,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Date of Join</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="Date of Join" />
                                 <Box sx={{ flex: 2, }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
@@ -279,11 +250,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%" }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1" >Retirement Date</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="Retirement Date" />
                                 <Box sx={{ flex: 2, }} >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
@@ -307,11 +274,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%", }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">New Category</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Category" />
                                 <Box sx={{ flex: 2 }} >
                                     <PermannetCategorySelect
                                         disable={contractTpPermanent === true ? false : true}
@@ -321,11 +284,7 @@ const RenewProcess = ({
                                 </Box>
                             </Box>
                             <Box sx={{ display: "flex", width: "100%", }} >
-                                <Paper square elevation={0} sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "center" }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1">New Designation</Typography>
-                                    </CssVarsProvider>
-                                </Paper>
+                                <CustomTypo labels="New Designation" />
                                 <Box sx={{ flex: 2 }} >
                                     <JoyDesgSelect desgValue={permanentDesg} getDesg={setPermanentDesg}
                                         disable={contractTpPermanent === true ? false : true}

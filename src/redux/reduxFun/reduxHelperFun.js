@@ -204,7 +204,7 @@ export const allLeavesConvertAnArray = (state) => {
 export const getLeavesCountEMIDwise = (state) => state?.getPrifileDateEachEmp?.empLeaveData;
 
 //GET SELECTED EMPLOYEE DATA FROM THE DATABASE 
-export const getSelectedEmpInformation = (state) => state?.getEmployeeInformationState?.empData[0];
+export const getSelectedEmpInformation = (state) => state?.getEmployeeInformationState?.empData[0] ?? {};
 
 export const getCaualLeaveDetl = (state) => {
     const casualLeave = state?.getCreditedCasualLeave?.casualLeave;
@@ -220,3 +220,136 @@ export const getCaualLeaveDetl = (state) => {
 }
 
 
+//GET CONTRACT CLOSE DATA 
+export const getContractClosedata = (state) => state?.getContractClosedata;
+
+//GET APPROVAL LEVEL FOR LEAVE REQUEST IS INCHARGE LEVEL APPROVAL NEEDE OR IS HOD LEVEL APPROVAL NEEDE 
+export const getLeaveReqApprovalLevel = (state) => {
+    const result = state.getEmployeeApprovalLevel.payload
+    const { authorization_hod, authorization_incharge } = result
+    return authorization_hod === 1 && authorization_incharge === 1 ? 3
+        : authorization_hod === 1 && authorization_incharge === 0 ? 2
+            : authorization_hod === 0 && authorization_incharge === 1 ? 1 : 0
+    /*
+     *3 -> hod and incharge
+     *2 -> hod only
+     *1 -> incharge only
+     *0 -> nothing  
+     */
+};
+
+
+//GET AUTHORIZATION 
+
+export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno) => {
+
+    const deptLevelApprove = (deptApprovalLevel === 3) ? // 3 -> hod and incharge
+        {
+            inc_apr: 1,
+            inc_stat: 0,
+            inc_cmnt: '',
+            inc_apr_time: null,
+            usCode_inch: null,
+            hod_apr: 1,
+            hod_stat: 0,
+            hod_cmnt: '',
+            hod_apr_time: null,
+            usCode_hod: null
+        }
+        : (deptApprovalLevel === 2) ? // 2 -> hod only
+            {
+                inc_apr: 0,
+                inc_stat: 0,
+                inc_cmnt: '',
+                inc_apr_time: null,
+                usCode_inch: null,
+                hod_apr: 1,
+                hod_stat: 0,
+                hod_cmnt: '',
+                hod_apr_time: null,
+                usCode_hod: null
+            }
+            : (deptApprovalLevel === 1) ? // 1 -> incharge only
+                {
+                    inc_apr: 1,
+                    inc_stat: 0,
+                    inc_cmnt: '',
+                    inc_apr_time: null,
+                    usCode_inch: null,
+                    hod_apr: 0,
+                    hod_stat: 0,
+                    hod_cmnt: '',
+                    hod_apr_time: null,
+                    usCode_hod: null
+                } :
+                {
+                    inc_apr: 0,
+                    inc_stat: 0,
+                    inc_cmnt: '',
+                    inc_apr_time: null,
+                    usCode_inch: null,
+                    hod_apr: 0,
+                    hod_stat: 0,
+                    hod_cmnt: '',
+                    hod_apr_time: null,
+                    usCode_hod: null
+                }
+
+
+
+    return (masterGroupStatus === true) ?
+        {
+            inc_apr: 0,
+            hod_apr: 0,
+            inc_stat: 1,
+            hod_stat: 1,
+            inc_cmnt: 'DIRECT',
+            hod_cmnt: 'DIRECT',
+            inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+            hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+            usCode_inch: loginEmno,
+            usCode_hod: loginEmno
+        } :
+        (loginHod === 1) ?
+            {
+                inc_apr: 1,
+                inc_stat: 1,
+                inc_cmnt: 'DIRECT',
+                inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                usCode_inch: loginEmno,
+                hod_apr: 1,
+                hod_stat: 1,
+                hod_cmnt: 'DIRECT',
+                hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                usCode_hod: loginEmno
+            }
+            :
+            (loginIncharge === 1) ?
+                {
+                    inc_apr: 1,
+                    inc_stat: 1,
+                    inc_cmnt: 'DIRECT',
+                    inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                    usCode_inch: loginEmno,
+                    hod_apr: deptLevelApprove.hod_apr === 1 ? 1 : 0,
+                    hod_stat: deptLevelApprove.hod_apr === 1 ? 0 : 1,
+                    hod_cmnt: deptLevelApprove.hod_apr === 1 ? '' : 'DIRECT',
+                    hod_apr_time: deptLevelApprove.hod_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
+                    usCode_hod: deptLevelApprove.hod_apr === 1 ? null : loginEmno
+                }
+                :
+                {
+                    inc_apr: deptLevelApprove.inc_apr === 1 ? 1 : 0,
+                    inc_stat: deptLevelApprove.inc_apr === 1 ? 0 : 1,
+                    inc_cmnt: deptLevelApprove.inc_apr === 1 ? '' : 'DIRECT',
+                    inc_apr_time: deptLevelApprove.inc_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
+                    usCode_inch: deptLevelApprove.inc_apr === 1 ? null : loginEmno,
+                    hod_apr: deptLevelApprove.hod_apr === 1 ? 1 : 0,
+                    hod_stat: deptLevelApprove.hod_apr === 1 ? 0 : 1,
+                    hod_cmnt: deptLevelApprove.hod_apr === 1 ? '' : 'DIRECT',
+                    hod_apr_time: deptLevelApprove.hod_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
+                    usCode_hod: deptLevelApprove.hod_apr === 1 ? null : loginEmno
+                }
+
+
+}
