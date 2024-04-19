@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
 import AttributionIcon from '@mui/icons-material/Attribution';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 
 const AttendanceDetails = ({ id, no, em_cont_end }) => {
 
@@ -22,7 +23,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
         totalLeave: 0,
         total_days_worked: 0
     })
-    const { No_of_days, total_lop, totalLeave, total_days_worked } = attendanceData;
+    const { No_of_days = 0, total_lop = 0, totalLeave = 0, total_days_worked = 0 } = attendanceData;
 
     const getdata = useMemo(() => {
         return {
@@ -116,7 +117,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
                     }}
                 >
                     {/* <Avatar src="" size="lg" /> */}
-                    <Typography level="title-lg">Attendance Process</Typography>
+                    <Typography startDecorator={<AccountTreeOutlinedIcon />} level="title-md">Attendance Process</Typography>
                 </Box>
                 <CardContent>
                     <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center' }} >

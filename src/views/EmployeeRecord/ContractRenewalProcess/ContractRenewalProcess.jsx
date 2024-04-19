@@ -1,4 +1,4 @@
-import { Chip } from '@mui/joy'
+import { Button, Chip } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useMemo } from 'react'
 import { useState } from 'react';
@@ -426,20 +426,17 @@ const ContractRenewalProcess = () => {
               newContract={newContract}
               updateNewContract={updateNewContract}
               emp_doj={doj}
-
-
-
             />
           </Box>
           <Paper square elevation={0} sx={{ display: "flex", flexDirection: "column" }}   >
             <Box sx={{ display: 'flex', flexDirection: "row-reverse", mr: 2, mt: 0.5 }} >
-              <Chip
+              <Button
                 color="success"
                 onClick={RenewOldContract}
                 size="md"
-                variant="outlined"
-              >Save All Data
-              </Chip>
+                variant="solid"
+              >Complete Contract Renewal Process
+              </Button>
             </Box>
           </Paper>
         </Box>
