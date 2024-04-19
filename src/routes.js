@@ -260,6 +260,7 @@ const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch
 const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/PreviousMonthReport/EmployeePunchReport'))
 const EmpSaleryReport = React.lazy(() => import('./views/HrReports/EmpSaleryReport/EmpSaleryReport'))
 const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryProcess/SalaryProcessed'))
+const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 
 const routes = [
 
@@ -513,6 +514,7 @@ const routes = [
   { path: '/Home/EmpPreviouspunchreport', exact: true, name: 'Previous Month Punch Data', component: EmpPreviouspunchreport },
   { path: '/Home/EmpSaleryReport', exact: true, name: 'EmpSaleryReport', component: EmpSaleryReport },
   { path: '/Home/SalaryProcess', exact: true, name: 'Salary Process', component: SalaryProcessReports },
+  { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
 
 ]
 

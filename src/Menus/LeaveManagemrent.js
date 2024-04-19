@@ -7,6 +7,12 @@ const Leavemanagement = [
         to: '/Home/LeaveRequsition',
     },
     {
+        men_slno: 285,
+        component: CNavItem,
+        name: 'Compensatory Off Request',
+        to: '/Home/CompensatoryRequest',
+    },
+    {
         men_slno: 236,
         component: CNavItem,
         name: 'Night Off Request',
