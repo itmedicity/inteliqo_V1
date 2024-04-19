@@ -10,19 +10,19 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
-import { allLeavesConvertAnArray, getCommonSettings, getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCommonSettings, getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import LeaveRequestTable from './Func/LeaveRequestTable';
-import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import CachedIcon from '@mui/icons-material/Cached';
 import Textarea from '@mui/joy/Textarea';
 import { useEffect } from 'react';
 
-const LeaveRequestFormNew = () => {
+const LeaveRequestFormNew = ({ setRequestType }) => {
 
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
@@ -31,6 +31,12 @@ const LeaveRequestFormNew = () => {
     const [table, setTable] = useState([]);
     const [leaveArray, setLeaveArray] = useState([]);
     const [addDateDisable, setAddDateDisable] = useState(false);
+
+    //FIND COMMON LEAVE BALANCE COUNT EM_NO WISE
+    const findBalanceCountCmnLeave = useSelector((state) => findBalanceCommonLeveCount(state))
+    const comnLeaveBalCount = useMemo(() => findBalanceCountCmnLeave, [findBalanceCountCmnLeave])
+
+    // console.log(comnLeaveBalCount)
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
@@ -155,141 +161,196 @@ const LeaveRequestFormNew = () => {
     /************************************************************************************************************************************* */
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
-        //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
-        const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
-        if (table?.length === 0 || nulCheckForEnterdLeaves !== 0) {
-            warningNofity("Requested Leave Data Not Enterd Correctly ,Please Check")
-        } else {
 
-            //LEAVE TYPES
-            /***
-             * ESI -> 6
-             * LWP -> 5
-             * ML -> 2
-             * SL -> 7
-             */
-            const commonLeave = [6, 5, 2, 7]
-            // FILTER AND REMOVE THE COMMON LEAVES
-            const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
-            const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]
-            // console.log(allLeavetypes)
-            // FIND THE DUPLICATE LEAVES 
-            const checkDuplicateLeaves = allLeavetypes?.map((el) => {
-                return {
-                    type: el,
-                    status: commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno).length === [...new Set(commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno))].length
-                }
-            })?.find((e) => e.status === false)
-            //?.find((e) => e.status === false)
+        const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
 
-            //DUPLICATE CHECKING RESULTS
-            if (checkDuplicateLeaves === undefined) {
-                //REQUEST SEND TO DATABASE FOR SAVING
+        const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
+        const checkToDate = format(new Date(toDate), 'yyyy-MM-dd 23:59:59');
+        const checkPostData = {
+            fromDate: checkFromDate,
+            toDate: checkToDate,
+            em_no: em_no
+        }
+        const checkDutyPlan = await axioslogin.post('/LeaveRequest/getLeaveExcistOrNot', checkPostData);
+        const { success, data } = checkDutyPlan.data;
+        if (success === 1) {
+            const count = data[0]?.count
+            if (count === 0) {
 
-
-                const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
-
-                const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
-                const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
-
-                const approveStatus = (masterGroupStatus === true) ?
-                    {
-                        inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                        usCode_inch: loginEmno, usCode_hod: loginEmno
-                    } :
-                    (loginHod === 1 && loginIncharge === 1) ?
-                        {
-                            inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                            usCode_inch: loginEmno, usCode_hod: loginEmno
-                        }
-                        :
-                        (loginHod === 1 && loginIncharge === 0) ?
-                            {
-                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                usCode_inch: null, usCode_hod: loginEmno
-                            }
-                            :
-                            (loginHod === 0 && loginIncharge === 1) ?
-                                {
-                                    inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
-                                    usCode_inch: loginEmno, usCode_hod: null
-                                }
-                                :
-                                {
-                                    inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
-                                    usCode_inch: null, usCode_hod: null
-                                }
-
-                // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
-
-                //TOTAL LEAVES REQUIRED COUNT
-                const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1
-                //POST DATA FOR MASTER TABLE
-                const postDataMasterTable = {
-                    leaveid: 0,
-                    em_id: em_id,
-                    em_no: em_no,
-                    em_department: em_department,
-                    em_dept_section: em_dept_section,
-                    leavefrom_date: requestFromDate,
-                    leavetodate: requestToDate,
-                    attendance_marking_month: format(startOfMonth(new Date(fromDate)), "yyyy-MM-dd"),
-                    rejoin_date: format(addDays(new Date(toDate), 1), "yyyy-MM-dd"),
-                    request_status: 1,
-                    inc_apprv_req: approveStatus.inc_apr,
-                    incapprv_status: approveStatus.inc_stat,
-                    inc_apprv_cmnt: approveStatus.inc_cmnt,
-                    inc_apprv_time: approveStatus.inc_apr_time,
-                    inc_usCode: approveStatus.usCode_inch,
-                    hod_apprv_req: approveStatus.hod_apr,
-                    hod_apprv_status: approveStatus.hod_stat,
-                    hod_apprv_cmnt: approveStatus.hod_cmnt,
-                    hod_apprv_time: approveStatus.hod_apr_time,
-                    hod_usCOde: approveStatus.usCode_hod,
-                    hr_aprrv_requ: 1,
-                    ceo_req_status: 0,
-                    resonforleave: reson,
-                    no_of_leave: numberOfDays
-                }
-
-                //POST DATA FOR DETAILS TABLE
-
-                const postDataForDetlTable = table?.map((e) => {
-                    return {
-                        leaveid: 0,
-                        lveDate: format(new Date(e.date), 'yyyy-MM-dd HH:mm:ss'),
-                        leave_processid: e.commonLeave === 0 ? e.selectedLveSlno : e.commonLeaveSlno, //LEAVE SLNO FROM LEAVES TABLE  //leave_processid
-                        leave_typeid: e.leavetype, // LEAVE TYPE SLNO // leave_typeid
-                        status: 1,
-                        leavetype_name: e.selectedLvType, //leavetype_name
-                        leave_name: e.selectedLveName, //leave_name
-                        leaveCount: e.count, // no of days
-                        empNo: em_no,
-                        singleleave: 1
-                    }
-                })
-
-                //POST DATA TO BACKEND 
-
-                if (reson === '') {
-                    warningNofity("The explanation must consist of more than 10 characters.")
+                //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
+                const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
+                if (table?.length === 0 || nulCheckForEnterdLeaves !== 0) {
+                    warningNofity("Requested Leave Data Not Enterd Correctly ,Please Check")
                 } else {
 
-                    const modifiedLveReq = {
-                        masterPostData: postDataMasterTable,
-                        detlPostSata: postDataForDetlTable
-                    }
-                    const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', modifiedLveReq);
-                    console.log(submitLeaveRequet)
-                }
+                    //LEAVE TYPES
+                    /***
+                     * ESI -> 6
+                     * LWP -> 5
+                     * ML -> 2
+                     * SL -> 7
+                     */
+                    const commonLeave = [6, 5, 2, 7]
+                    // FILTER AND REMOVE THE COMMON LEAVES
+                    const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
+                    const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]
+                    // console.log(allLeavetypes)
+                    // FIND THE DUPLICATE LEAVES 
+                    const checkDuplicateLeaves = allLeavetypes?.map((el) => {
+                        return {
+                            type: el,
+                            status: commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno).length === [...new Set(commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno))].length
+                        }
+                    })?.find((e) => e.status === false)
+                    //?.find((e) => e.status === false)
 
+                    //DUPLICATE CHECKING RESULTS
+                    if (checkDuplicateLeaves === undefined) {
+                        //REQUEST SEND TO DATABASE FOR SAVING
+
+                        // const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
+
+                        const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
+                        const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
+
+                        const approveStatus = (masterGroupStatus === true) ?
+                            {
+                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                usCode_inch: loginEmno, usCode_hod: loginEmno
+                            } :
+                            (loginHod === 1 && loginIncharge === 1) ?
+                                {
+                                    inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                    usCode_inch: loginEmno, usCode_hod: loginEmno
+                                }
+                                :
+                                (loginHod === 1 && loginIncharge === 0) ?
+                                    {
+                                        inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                                        usCode_inch: null, usCode_hod: loginEmno
+                                    }
+                                    :
+                                    (loginHod === 0 && loginIncharge === 1) ?
+                                        {
+                                            inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
+                                            usCode_inch: loginEmno, usCode_hod: null
+                                        }
+                                        :
+                                        {
+                                            inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
+                                            usCode_inch: null, usCode_hod: null
+                                        }
+
+                        // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
+
+                        //TOTAL LEAVES REQUIRED COUNT
+                        const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1
+                        //POST DATA FOR MASTER TABLE
+                        const postDataMasterTable = {
+                            leaveid: 0,
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            leavefrom_date: requestFromDate,
+                            leavetodate: requestToDate,
+                            attendance_marking_month: format(startOfMonth(new Date(fromDate)), "yyyy-MM-dd"),
+                            rejoin_date: format(addDays(new Date(toDate), 1), "yyyy-MM-dd"),
+                            request_status: 1,
+                            inc_apprv_req: approveStatus.inc_apr,
+                            incapprv_status: approveStatus.inc_stat,
+                            inc_apprv_cmnt: approveStatus.inc_cmnt,
+                            inc_apprv_time: approveStatus.inc_apr_time,
+                            inc_usCode: approveStatus.usCode_inch,
+                            hod_apprv_req: approveStatus.hod_apr,
+                            hod_apprv_status: approveStatus.hod_stat,
+                            hod_apprv_cmnt: approveStatus.hod_cmnt,
+                            hod_apprv_time: approveStatus.hod_apr_time,
+                            hod_usCOde: approveStatus.usCode_hod,
+                            hr_aprrv_requ: 1,
+                            ceo_req_status: 0,
+                            resonforleave: reson,
+                            no_of_leave: numberOfDays
+                        }
+
+                        //POST DATA FOR DETAILS TABLE
+
+                        const postDataForDetlTable = table?.map((e) => {
+                            return {
+                                leaveid: 0,
+                                lveDate: format(new Date(e.date), 'yyyy-MM-dd HH:mm:ss'),
+                                leave_processid: e.commonLeave === 0 ? e.selectedLveSlno : e.commonLeaveSlno, //LEAVE SLNO FROM LEAVES TABLE  //leave_processid
+                                leave_typeid: e.leavetype, // LEAVE TYPE SLNO // leave_typeid
+                                status: 1,
+                                leavetype_name: e.selectedLvType, //leavetype_name
+                                leave_name: e.selectedLveName, //leave_name
+                                leaveCount: e.count, // no of days
+                                empNo: em_no,
+                                singleleave: 1
+                            }
+                        })
+
+                        //POST DATA TO BACKEND 
+
+                        // console.log(postDataForDetlTable)
+
+                        const findNotMoreThanBalaLve = commonLeave?.map((type) => {
+                            return type === 7 ? {
+                                type: 7,
+                                leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === 7)?.map(e => e.leaveCount)?.reduce((acc, curr) => acc + curr, 0)
+                            } : {
+                                type: type,
+                                leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid == type).length
+                            }
+                        })?.filter(e => e.leaveCount !== 0)?.map((el) => comnLeaveBalCount?.find((val) => val.type === el.type)?.balance - el.leaveCount < 0)?.filter(e => e === true).length
+
+                        // console.log(findNotMoreThanBalaLve)
+                        // console.log(comnLeaveBalCount)
+
+                        if (reson === '') {
+                            warningNofity("The explanation must consist of more than 10 characters.")
+                        } else {
+
+                            if (findNotMoreThanBalaLve === 0) {
+
+                                const modifiedLveReq = {
+                                    masterPostData: postDataMasterTable,
+                                    detlPostSata: postDataForDetlTable
+                                }
+                                const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', modifiedLveReq);
+                                const { success } = submitLeaveRequet.data;
+                                if (success === 1) {
+                                    setTable([])
+                                    setReason('')
+                                    setRequestType(0)
+                                    succesNofity("Leave request submited Successfully")
+                                    // console.log(submitLeaveRequet)
+                                } else {
+                                    setTable([])
+                                    setReason('')
+                                    setRequestType(0)
+                                    errorNofity('Error Submitting Leave Request')
+                                }
+                            } else {
+                                warningNofity("One of the selected common leave counts is greater than the credited count.")
+                            }
+
+                        }
+
+                    } else {
+                        // YES DUPLICATE LEAVE FOUND ERROR THROW
+                        warningNofity("Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!")
+                    }
+                }
             } else {
-                // YES DUPLICATE LEAVE FOUND ERROR THROW
-                warningNofity("Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!")
+                warningNofity("The selected date has already been requested.")
             }
+        } else {
+            errorNofity("Error Getting leave request Data")
         }
 
-    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus])
+
+    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus, comnLeaveBalCount])
 
     return (
         <Box sx={{ mb: 0.5 }}>
@@ -411,6 +472,7 @@ const LeaveRequestFormNew = () => {
                     <Textarea
                         color="primary"
                         minRows={2}
+                        defaultValue=''
                         placeholder="Leave Request Reason ..."
                         size="sm"
                         variant="outlined"

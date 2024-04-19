@@ -1,12 +1,8 @@
-import { Box, Button, Option, Select, Typography } from '@mui/joy'
+import { Box, Option, Select, Typography } from '@mui/joy'
 import { format } from 'date-fns'
 import React, { memo } from 'react'
 import { useCallback } from 'react'
 import { useState } from 'react'
-import Sun from '@mui/icons-material/LightMode';
-import Chip from '@mui/joy/Chip';
-import IconButton from '@mui/joy/IconButton';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
     const [selectedLeave, setSelectedLeave] = useState(0)
@@ -37,7 +33,6 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
     }, [value])
 
     const onClickLveName = useCallback((data) => {
-        console.log(data)
         value.selectedLveName = data.month;
         value.selectedLvType = data.type;
         value.count = data.count;

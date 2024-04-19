@@ -1,5 +1,4 @@
 import { endOfYear, format, subMonths } from "date-fns";
-import { useMemo } from "react";
 
 //SELECT ALL DEPARTMENT NAMES
 export const getDepartmentAll = (state) => state?.getdept?.departmentlist; //dispatch(setDept())
@@ -23,6 +22,18 @@ export const getCommonSettings = (state, menuno) => {
     const result = Obj && Obj?.find((e) => e === menuno) === undefined ? false : true
     return result
 }
+
+export const findBalanceCommonLeveCount = (state) => {
+    const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
+    const findBalance = commonLeaves?.map((el) => {
+        return {
+            type: el.llvetype_slno,
+            balance: el.cmn_lv_balance
+        }
+    })
+    return findBalance
+}
+
 
 
 //GET AND FILTER ALL LEAVE AND CONVERT TO AN ARRAY
@@ -57,7 +68,6 @@ export const allLeavesConvertAnArray = (state) => {
 
     // Push earned leaves to the array if available
     if (earnLeaves?.length > 0) {
-        console.log(earnLeaves)
         const newErnLeaves = earnLeaves?.map((e) => {
             let leveCount = e.ernlv_taken === 0 ? 1 : e.ernlv_taken;
             return {
@@ -195,3 +205,18 @@ export const getLeavesCountEMIDwise = (state) => state?.getPrifileDateEachEmp?.e
 
 //GET SELECTED EMPLOYEE DATA FROM THE DATABASE 
 export const getSelectedEmpInformation = (state) => state?.getEmployeeInformationState?.empData[0];
+
+export const getCaualLeaveDetl = (state) => {
+    const casualLeave = state?.getCreditedCasualLeave?.casualLeave;
+    return casualLeave?.map((e) => {
+        let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
+        return {
+            slno: e.hrm_cl_slno,
+            month: e.cl_lv_mnth + '-' + leveCount,
+            count: leveCount,
+            status: e.hl_lv_tkn_status
+        }
+    })?.filter(e => e.status === 0)
+}
+
+
