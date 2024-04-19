@@ -407,7 +407,8 @@ const EmployeeRecordEdit = () => {
         }
         if (contractflag === 1) {
             // updateContractEmp(submitdata)
-            if (cont_date < today || oldCategory !== category) {
+
+            if (isBefore(new Date(cont_date), new Date()) && cont_date !== '2000-01-31') {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {
                 updateContractEmp(submitdata)
