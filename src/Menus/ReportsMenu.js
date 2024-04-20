@@ -11,7 +11,7 @@ export const hr_report_one = [
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
     { to: '/Home/SalaryReport', name: 'Attendance Salary Report', slno: 271 },
-
+    { to: '/Home/DayWiseAttendence', name: 'Day Wise Attendence Reports', slno: 284 },
 
 ]
 export const hr_report_two = [
@@ -42,4 +42,7 @@ export const hr_report_third = [
     { to: '/Home/DeptPunchReport', name: 'Employee Processed Punch Report', slno: 257 },
     { to: '/Home/TrainingCompletionEmpReport', name: 'Department wise Training Completion Report', slno: 268 },
     { to: '/Home/TrainingPendingReport', name: 'Department Training Pending Report', slno: 266 },
+    { to: '/Home/AttendenceReports', name: 'Attendence Reports', slno: 283 },
+
+
 ]
