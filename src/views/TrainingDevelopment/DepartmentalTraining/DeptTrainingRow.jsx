@@ -20,8 +20,6 @@ const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr, monthdata, end, E
         setdata(mapdata);
     }, [checkdata, id, yr])
 
-
-
     return (
         <Fragment>
 
@@ -45,11 +43,11 @@ const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr, monthdata, end, E
                                                     cursor: "pointer"
                                                 }}
                                             >
-                                                {val.training_topic_name.toLowerCase()}
+                                                {val?.training_topic_name?.toLowerCase()}
                                             </td>
-                                            <td style={{ textAlign: "center" }}>{val.traineer_name.toLowerCase()}</td>
+                                            <td style={{ textAlign: "center" }}>{val?.traineer_name?.toLowerCase()}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                {val.date}
+                                                {val?.date}
                                             </td>
                                         </tr>
                                     ))

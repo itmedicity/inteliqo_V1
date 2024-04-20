@@ -7,7 +7,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { ContractExcel } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
 import { useHistory } from 'react-router-dom';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
-import { IconButton as OpenIcon } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment';
@@ -282,7 +281,7 @@ const ContractRenewList = () => {
     }, [tableData])
 
     const getEmployeeList = useCallback(async () => {
-        const result = await axioslogin.get(`/empearndeduction/getAll/${Empno}`)
+        const result = await axioslogin.get(`/empcontract/contractByno/${Empno}`)
         const { data, success } = result.data;
         if (success === 1) {
             const { contract_status } = data[0]

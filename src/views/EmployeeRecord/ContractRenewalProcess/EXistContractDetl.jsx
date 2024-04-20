@@ -1,12 +1,8 @@
-import { Avatar, AvatarGroup, Button, Card, CardActions, CardContent, CssVarsProvider, IconButton } from '@mui/joy'
+import { Avatar, Card, CardContent } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box } from '@mui/material'
-import { differenceInDays } from 'date-fns'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import AttributionIcon from '@mui/icons-material/Attribution';
-import Chip from '@mui/joy/Chip';
-import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 
 const EXistContractDetl = ({ id, no, fine, setFine, setgraceperiod }) => {
     // const dispatch = useDispatch()
@@ -24,7 +20,7 @@ const EXistContractDetl = ({ id, no, fine, setFine, setgraceperiod }) => {
         desg_name: '',
         sect_name: ''
     })
-    const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period, desg_name, sect_name } = formData
+    const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, desg_name, sect_name } = formData
 
     //use effect for getting existing contract details
     useEffect(() => {
