@@ -1,4 +1,4 @@
-import { Button, Chip } from '@mui/joy'
+import { Button } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useMemo } from 'react'
 import { useState } from 'react';
@@ -6,22 +6,10 @@ import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, addYears, format, lastDayOfMonth } from 'date-fns';
+import { addYears, format, lastDayOfMonth } from 'date-fns';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import _ from 'underscore';
-import {
-  employeeNewContractEntry,
-  employeeRecordUpdationMandatory,
-  employeeRecordUpdationUserChoice,
-  employeeUpdateExpTable,
-  employeeUpdatePersonaltable,
-  employeeUpdateQualificationTable,
-  updateArrearSalary,
-  updateEmployeeMasterTable,
-  updateoldAttndanceDetail
-} from './Function/ContractFun';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { getContractClosedata } from 'src/redux/reduxFun/reduxHelperFun';
@@ -110,7 +98,7 @@ const ContractRenewalProcess = () => {
     newempId: "",
     permanentEmpNo: '',
   })
-  const { newempId, permanentEmpNo, newdateofjoin } = newContract
+  const { newempId, permanentEmpNo } = newContract
 
   //getting new probation or training end details    
   useEffect(() => {
@@ -151,7 +139,7 @@ const ContractRenewalProcess = () => {
         end_date: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
       }
       const insertDutyPlainIntDB = await axioslogin.post("/plan", getDutyplan)
-      const { success, data } = insertDutyPlainIntDB.data;
+      const { success } = insertDutyPlainIntDB.data;
       if (success === 1) {
         const planslno = insertDutyPlainIntDB.data.data?.map(val => val.plan_slno)
         setDutyplanData(planslno)
@@ -216,7 +204,7 @@ const ContractRenewalProcess = () => {
       oldDesignation: oldDesignation
     }
   }, [contstatus, contractrenew, newempId, permanentEmpNo, newCatgeory, permanetDOJ, newDesign,
-    updateSlno, no, doj, email, newdateofjoin, contractEnddate, contractStartDate, dutyplanData,
+    updateSlno, no, doj, email, contractEnddate, contractStartDate, dutyplanData,
     punchmast, id, oldCategory, contractend, oldContarctStatus, oldDesignation])
 
   //function for saving new contract
@@ -230,12 +218,6 @@ const ContractRenewalProcess = () => {
     }
     else if (Object.keys(attendancedetls.attendancedata).length === 0) {
       infoNofity("Please Process the attendance of the employee till date")
-    }
-    else if (fine > 0) {
-      warningNofity("Please Clear Fine Before Renewing the Contract")
-    }
-    else if (addDays(new Date(contractend), graceperiod) > new Date()) {
-      warningNofity("Grace Period Not Completed")
     }
     else if ((contractrenew === false) && (contractTpPermanent === false)) {
       warningNofity("Please Change Category")
@@ -267,7 +249,8 @@ const ContractRenewalProcess = () => {
 
       }
     }
-  }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast])
+  }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,
+    contractrenew, history, id, newempId, olDataTocopy, oldPersonalData, no])
 
 
 

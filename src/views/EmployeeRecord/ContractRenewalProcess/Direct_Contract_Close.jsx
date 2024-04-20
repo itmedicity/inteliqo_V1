@@ -1,4 +1,4 @@
-import { CssVarsProvider, IconButton, Button } from '@mui/joy'
+import { CssVarsProvider, IconButton, Button, Card, CardContent, Avatar, CardActions } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
@@ -10,7 +10,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CloseIcon from '@mui/icons-material/Close';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeNumber, screenInnerHeight } from 'src/views/Constant/Constant';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
@@ -125,192 +125,120 @@ const Direct_Contract_Close = () => {
 
 
     return (
-        <Fragment>
-            <ToastContainer />
-            <Paper sx={{ width: "100%" }}>
-                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
-                    <Box sx={{ flex: 1 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Direct Contract Close
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='xs' color="danger" onClick={redirect}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                </Paper>
-                <Paper variant='outlined' sx={{ p: 0.5, mt: 0.5, display: 'flex', width: '100%', justifyContent: "space-evenly", flexDirection: { xl: "row", lg: "row", md: "row", sm: 'row', xs: "row" } }}  >
-                    <Paper square elevation={0}
-                        sx={{
-                            p: 0.5,
-                            mt: 0.5,
-                            display: 'flex',
-                            width: '50%',
-                            alignItems: "center",
-                            justifyContent: "space-evenly",
-                            flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }
-                            // backgroundColor: "lightcyan"
-                        }}
-                    >
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Employee ID</Typography>
-                                </CssVarsProvider>
+
+        <Paper sx={{ width: "100%", pb: 1 }}>
+            <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                <Box sx={{ flex: 1 }} >
+                    <CssVarsProvider>
+                        <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                            Direct Contract Close
+                        </Typography>
+                    </CssVarsProvider>
+                </Box>
+                <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                    <CssVarsProvider>
+                        <IconButton variant="outlined" size='xs' color="danger" onClick={redirect}>
+                            <CloseIcon />
+                        </IconButton>
+                    </CssVarsProvider>
+                </Box>
+            </Paper>
+            <Card
+                variant="outlined"
+                sx={{
+                    // to make the card resizable
+                    // overflow: 'auto',
+                    // width: { lg: '90%', xl: '70%' },
+                    resize: 'horizontal',
+                    m: 2,
+                    mx: { lg: 2, xl: 30 }
+                }}
+            >
+                <CardContent>
+                    <Box sx={{ display: 'flex' }} >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'end',
+                                alignItems: 'center',
+                                pr: 2,
+                                "--Avatar-size": "80px",
+                                "--Avatar-ringSize": "8px"
+                            }}
+                        >
+                            <Avatar src="" size="lg" />
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} >
+                            <Box sx={{ display: 'flex', }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, }} >
+                                    <Typography level="title-lg">{em_name}</Typography>
+                                    <Typography level="title-lg">Employee No # {em_no}</Typography>
+                                </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{em_no}</Typography>
-                                </CssVarsProvider>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }} >
+                                <Typography level="body-sm" fontFamily="monospace" >Department Section</Typography>
+                                <Typography level="body-sm" color="primary" variant="plain" noWrap sx={{ mx: 0.5 }} >{sect_name}</Typography>
+                                <Typography level="body-sm" fontFamily="monospace" >Designation</Typography>
+                                <Typography level="body-sm" color="primary" variant="plain" noWrap sx={{ mx: 0.5 }} >{desg_name}</Typography>
+                                <Typography level="body-sm" fontFamily="monospace" >Contract:</Typography>
+                                <Typography level="body-sm" color="primary" variant="plain" noWrap sx={{ mx: 0.5 }} >{em_cont_start}</Typography>
+                                <Typography level="body-sm" fontFamily="monospace" >to</Typography>
+                                <Typography level="body-sm" color="primary" variant="plain" noWrap sx={{ mx: 0.5 }} >{em_cont_end}</Typography>
+                                <Typography level="body-sm" fontFamily="monospace" >Category</Typography>
+                                <Typography level="body-sm" color="primary" variant="plain" noWrap sx={{ mx: 0.5 }} >{ecat_name}</Typography>
                             </Box>
                         </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Employee Name</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{em_name}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Deaprtment Section</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{sect_name}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Designation</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{desg_name}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Employee Category</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{ecat_name}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    </Paper>
-                    <Paper square elevation={0}
-                        sx={{
-                            p: 0.5,
-                            mt: 0.5,
-                            display: 'flex',
-                            width: '50%',
-                            alignItems: "center",
-                            justifyContent: "space-evenly",
-                            flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" }
-                            // backgroundColor: "lightcyan"
-                        }}
-                    >
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Contract Start Date</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{moment(new Date(em_cont_start)).format('DD-MM-YYYY')}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Contract End Date</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{moment(new Date(em_cont_end)).format('DD-MM-YYYY')}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Grace Period</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{grace_period}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Remaining Days</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{differenceInDays(new Date(em_cont_end), new Date())}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Fine Amount</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{fine}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    </Paper>
-                </Paper>
-                <Paper square elevation={0} sx={{ display: "flex", flexDirection: 'row-reverse' }}  >
-                    <Box sx={{}}>
-                        <CssVarsProvider>
+                        <Box sx={{ display: 'flex', pl: 5 }}>
                             <Button
-                                aria-label="Like"
+                                //aria-label="Like"
                                 variant="outlined"
-                                color="primary"
+                                sx={{ borderRadius: 30 }}
+                                color="danger"
                                 onClick={ContractClose}
-                                fullWidth
-                                startDecorator={<CloseIcon />}
-                                sx={{ mx: 0.5 }}
+                            // fullWidth
+                            // startDecorator={<CloseIcon />}
+
                             >
                                 Contract Close
                             </Button>
-                        </CssVarsProvider>
+                        </Box>
                     </Box>
-                </Paper>
-            </Paper>
-        </Fragment >
+                </CardContent>
+                {/* <CardActions>
+                    <Box sx={{ px: 60, flex: 1 }}>
+                        <Button
+                            //aria-label="Like"
+                            // variant="outlined"
+                            color="primary"
+                            onClick={ContractClose}
+                            fullWidth
+                        // startDecorator={<CloseIcon />}
+
+                        >
+                            Contract Close
+                        </Button>
+                    </Box>
+                </CardActions> */}
+            </Card>
+            {/* <Paper square elevation={0} sx={{ display: "flex", flexDirection: 'row-reverse' }}  >
+                <Box sx={{}}>
+                    <CssVarsProvider>
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={ContractClose}
+                            fullWidth
+                            startDecorator={<CloseIcon />}
+                            sx={{ mx: 0.5 }}
+                        >
+                            Contract Close
+                        </Button>
+                    </CssVarsProvider>
+                </Box>
+            </Paper> */}
+        </Paper >
+
     )
 }
 

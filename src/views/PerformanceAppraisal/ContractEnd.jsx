@@ -2,21 +2,21 @@ import { Box, Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { axioslogin } from '../Axios/Axios';
-import { CssVarsProvider, Typography } from '@mui/joy';
+import { Button, CssVarsProvider, Typography } from '@mui/joy';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CommonAgGrid from '../Component/CommonAgGrid';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { succesNofity, warningNofity } from '../CommonCode/Commonfunc';
+import { infoNofity, succesNofity, warningNofity } from '../CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
-import { IconButton as OpenIcon } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useDispatch } from 'react-redux';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 import { screenInnerHeight } from '../Constant/Constant';
 import Tooltip from '@mui/joy/Tooltip';
-
+import InputComponent from '../MuiComponents/JoyComponent/InputComponent';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ContractEnd = () => {
 
@@ -24,6 +24,7 @@ const ContractEnd = () => {
     const dispatch = useDispatch();
     const [tableData, setTableData] = useState([])
     const [count, setCount] = useState(0)
+    const [Empno, setEmpNo] = useState(0)
 
     const RedirectToHome = useCallback(() => {
         history.push(`/Home`)
@@ -120,6 +121,23 @@ const ContractEnd = () => {
         history.push(`/Home/ContractRenewalProcess/${em_no}/${em_id}`)
     }, [history, dispatch])
 
+    const getEmployeeList = useCallback(async () => {
+        const result = await axioslogin.get(`/empcontract/contractByno/${Empno}`)
+        const { data, success } = result.data;
+        if (success === 1) {
+            const { contract_status } = data[0]
+            if (contract_status === 1) {
+                setTableData(data);
+            } else {
+                infoNofity("Employee is not under Contract")
+            }
+
+        } else {
+            infoNofity("No employee exist with this employee number!!")
+            setTableData([]);
+        }
+    }, [Empno])
+
     return (
         <Fragment>
             <ToastContainer />
@@ -148,6 +166,40 @@ const ContractEnd = () => {
                             </CssVarsProvider>
                         </Box>
                     </Paper>
+                    <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                            <Box sx={{ flex: 1, px: 0.3, }}>
+                                <InputComponent
+                                    type="text"
+                                    size="sm"
+                                    placeholder="Employee Number"
+                                    name="Empno"
+                                    value={Empno}
+                                    onchange={(e) => setEmpNo(e.target.value)}
+                                />
+                            </Box>
+                        </Tooltip>
+                        <Box sx={{}}>
+                            <CssVarsProvider>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    onClick={getEmployeeList}
+                                    fullWidth
+                                    startDecorator={<SearchIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    Search
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.3, }}>
+
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.3, }}>
+                        </Box>
+                    </Box>
                     <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                         <CommonAgGrid
                             columnDefs={columnDef}
