@@ -50,12 +50,12 @@ const AttendanceManagement = [
         name: 'Attendance View',
         to: '/Home/AttendanceView',
     },
-    {
-        men_slno: 237,
-        component: CNavItem,
-        name: 'Salary Process',
-        to: '/Home/SalaryProcess',
-    },
+    // {
+    //     men_slno: 237,
+    //     component: CNavItem,
+    //     name: 'Salary Process',
+    //     to: '/Home/SalaryProcess',
+    // },
     {
         men_slno: 277,
         component: CNavItem,
