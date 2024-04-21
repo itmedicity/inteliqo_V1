@@ -83,6 +83,7 @@ export const getCommonLeaveData = (no) => async (dispatch) => {
 }
 
 export const getEmployeeInformation = (id) => async (dispatch) => {
+    console.log(id);
     const result = await axioslogin.get(`/common/getEmpoyeeInfomation/${id}`);
     const { success, data } = result.data;
     if (success === 1) {
