@@ -1,4 +1,4 @@
-import { Card, CardContent, CssVarsProvider, IconButton, Chip, } from '@mui/joy'
+import { Card, CardContent, Chip, } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import { Box } from '@mui/material'
 import React, { Fragment, memo, useCallback, useState } from 'react'
@@ -7,9 +7,9 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
-import AttributionIcon from '@mui/icons-material/Attribution';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 
 const OldDatatoCopy = ({ id }) => {
     const dispatch = useDispatch()
@@ -76,14 +76,15 @@ const OldDatatoCopy = ({ id }) => {
                 sx={{ m: 0.5 }}
             >
                 <Box sx={{ display: "flex", width: "100%" }} >
-                    <Chip
+                    <Typography startDecorator={<ReceiptLongOutlinedIcon />} level="title-md">Employee Record Information</Typography>
+                    {/* <Chip
                         color="danger"
                         size="md"
                         variant="outlined"
                         startDecorator={<AttributionIcon fontSize='small' color='success' />}
                     >
                         <Typography color="neutral" level="title-md" >Employee Record Information</Typography>
-                    </Chip>
+                    </Chip> */}
                 </Box>
                 {/* 
                 <Box sx={{ display: "flex", width: "100%" }} >

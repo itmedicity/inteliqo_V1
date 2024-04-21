@@ -261,6 +261,10 @@ const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/Previ
 const EmpSaleryReport = React.lazy(() => import('./views/HrReports/EmpSaleryReport/EmpSaleryReport'))
 const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryProcess/SalaryProcessed'))
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
+const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
+const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+
+
 
 const routes = [
 
@@ -515,6 +519,9 @@ const routes = [
   { path: '/Home/EmpSaleryReport', exact: true, name: 'EmpSaleryReport', component: EmpSaleryReport },
   { path: '/Home/SalaryProcess', exact: true, name: 'Salary Process', component: SalaryProcessReports },
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
+  { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
+  { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+
 
 ]
 

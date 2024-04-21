@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, CssVarsProvider, IconButton } from '@mui/joy'
+import { Box, Button, Card, CardActions, CardContent, } from '@mui/joy'
 import { differenceInDays, endOfMonth, getDaysInMonth, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
@@ -7,8 +7,7 @@ import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import Typography from '@mui/joy/Typography';
 import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
-import AttributionIcon from '@mui/icons-material/Attribution';
-import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 
 const AttendanceDetails = ({ id, no, em_cont_end }) => {
 
@@ -22,7 +21,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
         totalLeave: 0,
         total_days_worked: 0
     })
-    const { No_of_days, total_lop, totalLeave, total_days_worked } = attendanceData;
+    const { No_of_days = 0, total_lop = 0, totalLeave = 0, total_days_worked = 0 } = attendanceData;
 
     const getdata = useMemo(() => {
         return {
@@ -90,23 +89,9 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
 
     return (
         <Fragment>
-            {/* <Card
-                variant="outlined"
-                color="neutral"
-                orientation="vertical"
-                size="sm"
-            // sx={{ m: 0.5 }}
-            > */}
-
-
             <Card
                 variant="outlined"
-                sx={{
-                    width: '100%',
-                    // overflow: 'auto',
-                    resize: 'horizontal',
-                    ml: 0.5
-                }}
+                sx={{ width: '100%', resize: 'horizontal', ml: 0.5 }}
             >
                 <Box
                     sx={{
@@ -115,8 +100,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
                         alignItems: 'center',
                     }}
                 >
-                    {/* <Avatar src="" size="lg" /> */}
-                    <Typography level="title-lg">Attendance Process</Typography>
+                    <Typography startDecorator={<AccountTreeOutlinedIcon />} level="title-md">Attendance Process</Typography>
                 </Box>
                 <CardContent>
                     <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center' }} >
@@ -133,31 +117,7 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
 
                 </CardContent>
                 <CardActions >
-                    {/* <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                        {
-                            attandFlag === 1 ?
-                                <Chip
-                                    color="danger"
-                                    // onClick={ProcessAttendance}
-                                    size="md"
-                                    variant="outlined"
 
-                                >Attendance Processed
-                                </Chip>
-                                : <Chip
-                                    color="success"
-                                    onClick={ProcessAttendance}
-                                    size="md"
-                                    variant="outlined"
-
-                                >Process Attendance
-                                </Chip>
-                        }
-                    </Box> */}
-
-                    {/* <IconButton variant="outlined" color="neutral" sx={{ mr: 'auto' }}>
-                        <FavoriteBorder />
-                    </IconButton> */}
                     {
                         attandFlag === 1 ?
                             <Button variant="outlined" color="neutral">
@@ -169,93 +129,6 @@ const AttendanceDetails = ({ id, no, em_cont_end }) => {
                     }
                 </CardActions>
             </Card>
-
-            {/* <Box sx={{ display: "flex", width: "100%" }} >
-                    <Chip
-                        color="danger"
-                        size="md"
-                        variant="outlined"
-                        startDecorator={<AttributionIcon fontSize='small' color='success' />}
-                    >
-                        <Typography color="neutral" level="title-md" >Attendance Details</Typography>
-                    </Chip>
-                </Box> */}
-
-            {/* <Box sx={{ display: "flex", width: "100%" }} >
-                    <IconButton
-                        // aria-label="bookmark Bahamas Islands"
-                        variant="plain"
-                        color="neutral"
-                        size="sm"
-                        sx={{ position: 'initial', top: '0.875rem', right: '0.5rem' }}
-                    >
-                        <AttributionIcon />
-                    </IconButton>
-                    <Box sx={{ display: "flex", width: "100%", mt: 0.5 }} >
-                        <Typography level="title-lg">Attendance Details</Typography>
-                    </Box>
-                </Box> */}
-            {/* <CardContent orientation="horizontal">
-
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Total Days</Typography>
-                            </CssVarsProvider>
-                            <CssVarsProvider>
-                                <Typography level="body1">: {No_of_days === 0 ? 0 : No_of_days}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Total Lop</Typography>
-                            </CssVarsProvider>
-                            <CssVarsProvider>
-                                <Typography level="body1">: {total_lop === 0 ? 0 : total_lop}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">Total Leave</Typography>
-                            </CssVarsProvider>
-                            <CssVarsProvider>
-                                <Typography level="body1">: {totalLeave === 0 ? 0 : totalLeave}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "space-evenly" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">No of days Worked</Typography>
-                            </CssVarsProvider>
-                            <CssVarsProvider>
-                                <Typography level="body1">:{total_days_worked === 0 ? 0 : total_days_worked}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </CardContent> */}
-            {/* <Box sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                    {
-                        attandFlag === 1 ?
-                            <Chip
-                                color="danger"
-                                // onClick={ProcessAttendance}
-                                size="md"
-                                variant="outlined"
-
-                            >Attendance Processed
-                            </Chip>
-                            : <Chip
-                                color="success"
-                                onClick={ProcessAttendance}
-                                size="md"
-                                variant="outlined"
-
-                            >Process Attendance
-                            </Chip>
-                    }
-                </Box> */}
-            {/* </Card> */}
         </Fragment>
     )
 }

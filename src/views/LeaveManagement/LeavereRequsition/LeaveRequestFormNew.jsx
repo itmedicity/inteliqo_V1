@@ -49,7 +49,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
     const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
     const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
-    console.log(deptApprovalLevel)
+    //console.log(deptApprovalLevel)
 
     /*
  *3 -> hod and incharge
@@ -173,8 +173,8 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
 
-        console.log(masterGroupStatus)
-        console.log(loginHod, loginIncharge)
+        // console.log(masterGroupStatus)
+        // console.log(loginHod, loginIncharge)
 
         const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
 
@@ -227,8 +227,8 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
                         const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
 
-                        console.log(masterGroupStatus)
-                        console.log(loginHod, loginIncharge)
+                        // console.log(masterGroupStatus)
+                        // console.log(loginHod, loginIncharge)
 
                         // const approveStatus = (masterGroupStatus === true) ?
                         //     {
@@ -260,7 +260,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
                         const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
 
-                        console.log(approveStatus)
+                        //console.log(approveStatus)
                         // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
 
                         //TOTAL LEAVES REQUIRED COUNT

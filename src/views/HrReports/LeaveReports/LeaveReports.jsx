@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tooltip, Typography } from '@mui/joy'
+import { Box, Tooltip, Typography, CssVarsProvider, Input } from '@mui/joy'
 import { Paper } from '@mui/material'
 import IconButton from '@mui/joy/IconButton';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -16,17 +16,19 @@ import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatO
 import { getCompOffRprtAll, getHalfdayRprtAll, getLeaveReportAll, getNopunchRprttAll, getOneHrAll, getOndutyAll } from 'src/redux/actions/LeaveReport.Action';
 import _ from 'underscore';
 import { format } from 'date-fns'
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 const LeaveReports = () => {
     const [deptName, setDepartmentName] = useState(0)
     const [deptSecName, setDepartSecName] = useState(0)
     const [Empno, setEmpNo] = useState(0)
     const [Data, setData] = useState([])
-    const [fromdate, Setfromdate] = useState(moment().format('yyyy-MM'))
-
+    // const [fromdate, Setfromdate] = useState(moment().format('yyyy-MM'))
+    const [fromdate, Setfromdate] = useState("");
+    const [Yeardate, SetYeardate] = useState("");
     const dispatch = useDispatch()
-
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -54,9 +56,10 @@ const LeaveReports = () => {
 
     // Employee Record List
     const getEmployeeList = useCallback(async (e) => {
-        e.preventDefault()
         if (Empno !== 0) {
-            const leaveRequestList = leaveRqList?.filter(val => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
+
+            const leaveRequestList = leaveRqList?.filter(val => val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate
+                || val.em_no === parseInt(Empno) && format(new Date(val?.leavetodate), "yyyy") === Yeardate)
             const newList = leaveRequestList?.map((val) => {
 
                 return {
@@ -82,7 +85,7 @@ const LeaveReports = () => {
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: moment(val?.leavetodate).format("DD-MM-YYYY"),
                     // InchargeApprvStatus: val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.inc_apprv_req === 1 && val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.inc_apprv_req === 1 && val?.incapprv_status === 1 ? 'Approved' : val?.inc_apprv_req === 0 && val?.incapprv_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_apprv_status === 2 ? "Rejected" : val?.hod_apprv_status === 0 && val?.incapprv_status === 1 || val?.incapprv_status === 0 ? 'Hod Approval Pending' : val?.hod_apprv_status === 1 ? 'Approved' : val?.incapprv_status === 2 ? "nil" : 'Rejected',
@@ -91,7 +94,8 @@ const LeaveReports = () => {
                 }
             })
 
-            const haldayRq = halfdayRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leavedate), "yyyy-MM") === fromdate)
+            const haldayRq = halfdayRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leavedate), "yyyy-MM") === fromdate ||
+                val.em_no === parseInt(Empno) && format(new Date(val?.leavedate), "yyyy") === Yeardate)
 
             const newHalfday = haldayRq?.map((val) => {
                 return {
@@ -114,6 +118,7 @@ const LeaveReports = () => {
                     code: 2,
                     reqDate: val.requestdate,
                     leaveDate: val.leavedate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     fromDate: moment(val?.leavedate).format("DD-MM-YYYY"),
                     InchargeApprvStatus: val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 1 ? 'Approved' : val?.hf_inc_apprv_req === 0 && val?.hf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hf_hod_apprv_status === 2 ? "Rejected" : val?.hf_hod_apprv_status === 0 && val?.hf_incapprv_status === 1 || val?.hf_incapprv_status === 0 ? 'Hod Approval Pending' : val?.hf_hod_apprv_status === 1 ? 'Approved' : val?.hf_incapprv_status === 2 ? "nil" : 'Rejected',
@@ -122,7 +127,8 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate)
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate ||
+                val.em_no === parseInt(Empno) && format(new Date(val?.nopunchdate), "yyyy") === Yeardate)
 
             const newNopunch = NopunchRq?.map((val) => {
                 return {
@@ -142,7 +148,7 @@ const LeaveReports = () => {
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     leavetype_name: "Miss punch",
                     leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                     // InchargeApprvStatus: val?.np_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.np_incapprv_status === 1 ? 'Approved' : 'Rejected',
@@ -153,7 +159,8 @@ const LeaveReports = () => {
 
                 }
             })
-            const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
+            const CompReq = compOffRqList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy-MM") === fromdate ||
+                val.em_no === parseInt(Empno) && format(new Date(val?.leave_date), "yyyy") === Yeardate)
 
             const newCompRq = CompReq?.map((val) => {
                 return {
@@ -175,7 +182,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 1 ? 'Approved' : val?.cf_inc_apprv_req === 0 && val?.cf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
 
@@ -187,7 +194,8 @@ const LeaveReports = () => {
             })
 
             // one Hour
-            const oneHR = onehourList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.one_hour_duty_day), "yyyy-MM") === fromdate)
+            const oneHR = onehourList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.one_hour_duty_day), "yyyy-MM") === fromdate ||
+                val.em_no === parseInt(Empno) && format(new Date(val?.one_hour_duty_day), "yyyy") === Yeardate)
 
             const newOneHrRq = oneHR?.map((val) => {
                 return {
@@ -209,7 +217,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.one_hour_duty_day).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.incharge_req_status === 1 && val?.incharge_approval_status === 0 ? 'Incharge Approval Pending' : val?.incharge_req_status === 1 && val?.incharge_approval_status === 1 ? 'Approved' : val?.incharge_req_status === 0 && val?.incharge_approval_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_approval_status === 2 ? "Rejected" : val?.hod_approval_status === 0 && val?.incharge_approval_status === 1 || val?.incharge_approval_status === 0 ? 'Hod Approval Pending' : val?.hod_approval_status === 1 ? 'Approved' : val?.incharge_approval_status === 2 ? "nil" : 'Rejected',
@@ -218,7 +226,8 @@ const LeaveReports = () => {
 
                 }
             })
-            const onDutyHR = ondutyList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.on_duty_date), "yyyy-MM") === fromdate)
+            const onDutyHR = ondutyList?.filter((val) => val.em_no === parseInt(Empno) && format(new Date(val?.on_duty_date), "yyyy-MM") === fromdate ||
+                val.em_no === parseInt(Empno) && format(new Date(val?.on_duty_date), "yyyy") === Yeardate)
 
             const newOndutyRq = onDutyHR?.map((val) => {
                 return {
@@ -240,7 +249,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.on_duty_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.incharge_req_status === 1 && val?.incharge_approval_status === 0 ? 'Incharge Approval Pending' : val?.incharge_req_status === 1 && val?.incharge_approval_status === 1 ? 'Approved' : val?.incharge_req_status === 0 && val?.incharge_approval_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_approval_status === 2 ? "Rejected" : val?.hod_approval_status === 0 && val?.incharge_approval_status === 1 || val?.incharge_approval_status === 0 ? 'Hod Approval Pending' : val?.hod_approval_status === 1 ? 'Approved' : val?.incharge_approval_status === 2 ? "nil" : 'Rejected',
@@ -251,9 +260,11 @@ const LeaveReports = () => {
             })
             setEmpNo(0)
             setData([...newList, ...newHalfday, ...newCompRq, ...newNopunch, ...newOneHrRq, ...newOndutyRq])
+
         } else if (deptName !== 0 && deptSecName !== 0) {
 
-            const leaveRequestList = leaveRqList?.filter(val => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate)
+            const leaveRequestList = leaveRqList?.filter(val => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy-MM") === fromdate
+                || val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavetodate), "yyyy") === Yeardate)
 
             const newList = leaveRequestList?.map((val) => {
                 return {
@@ -279,7 +290,7 @@ const LeaveReports = () => {
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: moment(val?.leavetodate).format("DD-MM-YYYY"),
                     // InchargeApprvStatus: val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.inc_apprv_req === 1 && val?.incapprv_status === 0 ? 'Incharge Approval Pending' : val?.inc_apprv_req === 1 && val?.incapprv_status === 1 ? 'Approved' : val?.inc_apprv_req === 0 && val?.incapprv_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_apprv_status === 2 ? "Rejected" : val?.hod_apprv_status === 0 && val?.incapprv_status === 1 || val?.incapprv_status === 0 ? 'Hod Approval Pending' : val?.hod_apprv_status === 1 ? 'Approved' : val?.incapprv_status === 2 ? "nil" : 'Rejected',
@@ -288,7 +299,9 @@ const LeaveReports = () => {
 
                 }
             })
-            const haldayRq = halfdayRqList?.filter((val) => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavedate), "yyyy-MM") === fromdate)
+
+            const haldayRq = halfdayRqList?.filter((val) => val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavedate), "yyyy-MM") === fromdate
+                || val.dept_id === deptName && val.dept_section === deptSecName && format(new Date(val?.leavedate), "yyyy") === Yeardate)
 
             const newHalfday = haldayRq?.map((val) => {
                 return {
@@ -313,6 +326,7 @@ const LeaveReports = () => {
                     code: 2,
                     reqDate: val.requestdate,
                     leaveDate: val.leavedate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     fromDate: moment(val?.leavedate).format("DD-MM-YYYY"),
                     InchargeApprvStatus: val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.hf_inc_apprv_req === 1 && val?.hf_incapprv_status === 1 ? 'Approved' : val?.hf_inc_apprv_req === 0 && val?.hf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hf_hod_apprv_status === 2 ? "Rejected" : val?.hf_hod_apprv_status === 0 && val?.hf_incapprv_status === 1 || val?.hf_incapprv_status === 0 ? 'Hod Approval Pending' : val?.hf_hod_apprv_status === 1 ? 'Approved' : val?.hf_incapprv_status === 2 ? "nil" : 'Rejected',
@@ -321,7 +335,8 @@ const LeaveReports = () => {
 
                 }
             })
-            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate)
+            const NopunchRq = nopunchRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.nopunchdate), "yyyy-MM") === fromdate
+                || val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.nopunchdate), "yyyy") === Yeardate)
 
             const newNopunch = NopunchRq?.map((val) => {
                 return {
@@ -343,7 +358,7 @@ const LeaveReports = () => {
                     code: 3,
                     reqDate: val.request_date,
                     fromDate: moment(val?.nopunchdate).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     leavetype_name: "Miss punch",
                     leave_name: moment(val?.nopunchdate).format("DD-MM-YYYY"),
                     InchargeApprvStatus: val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.np_inc_apprv_req === 1 && val?.np_incapprv_status === 1 ? 'Approved' : val?.np_inc_apprv_req === 0 && val?.np_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
@@ -353,7 +368,8 @@ const LeaveReports = () => {
 
                 }
             })
-            const CompReq = compOffRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy-MM") === fromdate)
+            const CompReq = compOffRqList?.filter((val) => val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy-MM") === fromdate
+                || val.em_department === deptName && val.em_dept_section === deptSecName && format(new Date(val?.leave_date), "yyyy") === Yeardate)
 
             const newCompRq = CompReq?.map((val) => {
                 return {
@@ -377,7 +393,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.leave_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     InchargeApprvStatus: val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_inc_apprv_req === 1 && val?.cf_incapprv_status === 1 ? 'Approved' : val?.cf_inc_apprv_req === 0 && val?.cf_incapprv_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.cf_hod_apprv_status === 2 ? "Rejected" : val?.cf_hod_apprv_status === 0 && val?.cf_incapprv_status === 1 || val?.cf_incapprv_status === 0 ? 'Hod Approval Pending' : val?.cf_hod_apprv_status === 1 ? 'Approved' : val?.cf_incapprv_status === 2 ? "nil" : 'Rejected',
                     HrApprvStatus: val?.cf_hr_apprv_status === 1 ? 'Approved' : val?.cf_hod_apprv_status === 2 ? "nil" : val?.cf_incapprv_status === 2 ? "nil" : val?.cf_hr_apprv_status === 0 ? "Hr Approval Pending" : 'Rejected',
@@ -385,8 +401,10 @@ const LeaveReports = () => {
 
                 }
             })
+
             // one Hour
-            const oneHR = onehourList?.filter((val) => val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.one_hour_duty_day), "yyyy-MM") === fromdate)
+            const oneHR = onehourList?.filter((val) => val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.one_hour_duty_day), "yyyy-MM") === fromdate
+                || val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.one_hour_duty_day), "yyyy") === Yeardate)
 
             const newOneHrRq = oneHR?.map((val) => {
                 return {
@@ -408,7 +426,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.one_hour_duty_day).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.incharge_req_status === 1 && val?.incharge_approval_status === 0 ? 'Incharge Approval Pending' : val?.incharge_req_status === 1 && val?.incharge_approval_status === 1 ? 'Approved' : val?.incharge_req_status === 0 && val?.incharge_approval_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_approval_status === 2 ? "Rejected" : val?.hod_approval_status === 0 && val?.incharge_approval_status === 1 || val?.incharge_approval_status === 0 ? 'Hod Approval Pending' : val?.hod_approval_status === 1 ? 'Approved' : val?.incharge_approval_status === 2 ? "nil" : 'Rejected',
@@ -417,7 +435,9 @@ const LeaveReports = () => {
 
                 }
             })
-            const onDutyHR = ondutyList?.filter((val) => val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.on_duty_date), "yyyy-MM") === fromdate)
+
+            const onDutyHR = ondutyList?.filter((val) => val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.on_duty_date), "yyyy-MM") === fromdate
+                || val.dept_id === deptName && val.dept_sect_id === deptSecName && format(new Date(val?.on_duty_date), "yyyy") === Yeardate)
 
             const newOndutyRq = onDutyHR?.map((val) => {
                 return {
@@ -439,7 +459,7 @@ const LeaveReports = () => {
                     code: 4,
                     reqDate: val.request_date,
                     fromDate: moment(val?.on_duty_date).format("DD-MM-YYYY"),
-                    toDate: val.leavetodate,
+                    toDate: val.toDate === undefined ? "nill" : val.toDate,
                     // InchargeApprvStatus: val?.cf_incapprv_status === 0 ? 'Incharge Approval Pending' : val?.cf_incapprv_status === 1 ? 'Approved' : 'Rejected',
                     InchargeApprvStatus: val?.incharge_req_status === 1 && val?.incharge_approval_status === 0 ? 'Incharge Approval Pending' : val?.incharge_req_status === 1 && val?.incharge_approval_status === 1 ? 'Approved' : val?.incharge_req_status === 0 && val?.incharge_approval_status === 0 ? 'No Incharge' : 'Rejected',
                     HodApprvStatus: val?.hod_approval_status === 2 ? "Rejected" : val?.hod_approval_status === 0 && val?.incharge_approval_status === 1 || val?.incharge_approval_status === 0 ? 'Hod Approval Pending' : val?.hod_approval_status === 1 ? 'Approved' : val?.incharge_approval_status === 2 ? "nil" : 'Rejected',
@@ -448,12 +468,15 @@ const LeaveReports = () => {
 
                 }
             })
+
             setData([...newList, ...newHalfday, ...newCompRq, ...newNopunch, ...newOneHrRq, ...newOndutyRq])
+
         } else {
             warningNofity("No Employee to Show")
+
         }
 
-    }, [Empno, leaveRqList, compOffRqList, nopunchRqList, halfdayRqList, deptName, deptSecName, fromdate, onehourList, ondutyList])
+    }, [Empno, leaveRqList, compOffRqList, nopunchRqList, halfdayRqList, deptName, deptSecName, fromdate, onehourList, ondutyList, Yeardate])
 
     useEffect(() => {
         if (Data?.length === 0) {
@@ -468,7 +491,7 @@ const LeaveReports = () => {
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 300 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 300 },
         { headerName: 'Leave date', field: 'fromDate', wrapText: true, minWidth: 200 },
-        // { headerName: 'Status', field: 'status', minWidth: 90 },
+        { headerName: 'leave to date', field: 'toDate', minWidth: 200 },
         { headerName: 'Leave Category', field: 'type', minWidth: 300 },
         { headerName: 'Leave Type', field: 'leavetype_name', minWidth: 200 },
         { headerName: 'Leave Month', field: 'leave_name', minWidth: 200 },
@@ -479,6 +502,7 @@ const LeaveReports = () => {
     ])
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
+            {/* <CustomBackDrop open={openBkDrop} text="Please wait !. " /> */}
             <ToastContainer />
             <ReportLayout title="Leave Reports" data={Data} displayClose={true} >
                 <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
@@ -503,28 +527,63 @@ const LeaveReports = () => {
                                 />
                             </Box>
                         </Tooltip>
+
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: "flex", flexDirection: "row", }} >
                             <Typography sx={{ p: 1 }}>From:</Typography>
-                            <InputComponent
-                                type="Month"
-                                size="sm"
-                                placeholder="From Date"
-                                name="Fromdate"
-                                value={fromdate}
-                                onchange={(e) => Setfromdate(e.target.value)}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                < DatePicker
+                                    // disableFuture={true}
+                                    views={['month']}
+                                    value={fromdate}
+                                    // maxDate={new Date()}
+                                    size="sm"
+                                    onChange={(e) => {
+                                        Setfromdate(moment(e).format("YYYY-MM"));
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: "flex", flexDirection: "row", }} >
+                            <Typography sx={{ p: 1 }}>Year:</Typography>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                < DatePicker
+                                    // disableFuture={true}
+                                    views={['year']}
+                                    value={Yeardate}
+                                    // maxDate={new Date()}
+                                    size="small"
+                                    onChange={(e) => {
+                                        SetYeardate(moment(e).format("YYYY"));
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
+
 
                         </Box>
-                        <Box sx={{ ml: 1 }}>
-
-                            <IconButton variant="outlined" size='lg' color="primary"
+                        <Box sx={{ flex: 1, mt: 1, ml: 1 }}>
+                            <IconButton variant="outlined" size='sm' color="primary"
                                 onClick={getEmployeeList}
                             >
                                 <PublishedWithChangesIcon />
                             </IconButton>
 
                         </Box>
-
                     </Box>
                     <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
 

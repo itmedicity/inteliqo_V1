@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears, endOfMonth, isBefore, isEqual } from 'date-fns'
+import { addDays, addYears, endOfMonth, isBefore } from 'date-fns'
 import CloseIcon from '@mui/icons-material/Close';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection'
@@ -85,7 +85,7 @@ const EmployeeRecordEdit = () => {
     const [prob_status, setProb_status] = useState(0)
 
 
-    const [oldCategory, setOldCategory] = useState(0)
+    //const [oldCategory, setOldCategory] = useState(0)
     //const [oldContract_Status, setOldContract_Status] = useState(0)
     const [oldprob_end_date, setOldprob_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [old_cont_end_date, setOld_cont_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
@@ -188,7 +188,7 @@ const EmployeeRecordEdit = () => {
                     em_dept_section, em_institution_type,
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
-                    recomend_salary, clinicaltype,
+                    recomend_salary, clinicaltype, gross_salary,
                     doctor_status } = data[0]
                 const age = {
                     yearage: em_age_year,
@@ -200,7 +200,7 @@ const EmployeeRecordEdit = () => {
                 setGender(em_gender)
                 setdateofbirth(em_dob)
                 setDateofJoining(em_doj)
-                setSalary(recomend_salary === null ? 0 : recomend_salary)
+                setSalary(gross_salary === null ? 0 : gross_salary)
                 setaddressPermnt1(addressPermnt1)
                 setaddressPermnt2(addressPermnt2)
                 setaddressPresent1(addressPresent1)
@@ -227,7 +227,7 @@ const EmployeeRecordEdit = () => {
                 setProbationEndDate(em_prob_end_date)
                 setretirementyear(em_retirement_date)
                 setcont_gracedate(em_conf_end_date)
-                setOldCategory(em_category)//setting category to old
+                //setOldCategory(em_category)//setting category to old
                 // setOldContract_Status(contract_status)//setting old contract status
                 setOldprob_end_date(em_prob_end_date)//old probation end date
                 setOld_cont_end_date(em_contract_end_date)//old contract end date
@@ -337,7 +337,6 @@ const EmployeeRecordEdit = () => {
 
     const submitemployeerecord = useCallback(() => {
 
-        const today = moment(new Date()).format('YYYY-MM-DD');
         const probdate = moment(oldprob_end_date).format('YYYY-MM-DD');
         const cont_date = moment(old_cont_end_date).format('YYYY-MM-DD');
 
@@ -407,7 +406,8 @@ const EmployeeRecordEdit = () => {
         }
         if (contractflag === 1) {
             // updateContractEmp(submitdata)
-            if (cont_date < today || oldCategory !== category) {
+
+            if (isBefore(new Date(cont_date), new Date()) && cont_date !== '2000-01-31') {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {
                 updateContractEmp(submitdata)
@@ -420,8 +420,8 @@ const EmployeeRecordEdit = () => {
             }
 
         }
-    }, [submitdata, oldprob_end_date, old_cont_end_date, id, category, clearForm,
-        oldCategory, cont_gracedate, cont_perioddate,
+    }, [submitdata, oldprob_end_date, old_cont_end_date, id, clearForm,
+        cont_gracedate, cont_perioddate,
         contractflag, dateofjoining, no, probationendDate, history])
 
     return (
