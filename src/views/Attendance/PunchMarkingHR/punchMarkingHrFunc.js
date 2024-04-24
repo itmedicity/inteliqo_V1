@@ -229,6 +229,7 @@ export const getAttendanceCalculation = async (
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
 
             const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) > 6;
+            console.log(workingHours)
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
             if (holidayStatus === 0) {
@@ -268,79 +269,96 @@ export const getAttendanceCalculation = async (
             } else {
                 // console.log(getLateInTime)
                 // HOLIDAY === YES
-                return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
+                return workingHours === true && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ? // new Entry by Ajith on  April 24th 2024, 6:31:15 pm
                     {
                         duty_status: salaryLimit === false ? 2 : 1,
                         duty_desc: 'HP',
                         lvereq_desc: 'HP',
                         duty_remark: 'holiday Present'
-                    } :
-                    earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
+                    }// new Entry by Ajith on  April 24th 2024, 6:31:15 pm
+                    : earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                         {
                             duty_status: salaryLimit === false ? 2 : 1,
                             duty_desc: 'HP',
                             lvereq_desc: 'HP',
-                            duty_remark: 'Late Coming'
+                            duty_remark: 'holiday Present'
                         } :
-                        earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === true ?
+                        earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
                             {
                                 duty_status: salaryLimit === false ? 2 : 1,
                                 duty_desc: 'HP',
                                 lvereq_desc: 'HP',
-                                duty_remark: 'working hours more than six hours so holiday present'
+                                duty_remark: 'Late Coming'
                             } :
-                            earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === false ?
+                            earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === true ?
                                 {
-                                    duty_status: salaryLimit === false ? 1 : 1,
-                                    duty_desc: 'H',
-                                    lvereq_desc: 'H',
-                                    duty_remark: 'working hours less than six hours so holiday only'
+                                    duty_status: salaryLimit === false ? 2 : 1,
+                                    duty_desc: 'HP',
+                                    lvereq_desc: 'HP',
+                                    duty_remark: 'working hours more than six hours so holiday present'
                                 } :
-                                earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                                earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === false ?
                                     {
-                                        duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
-                                        duty_desc: 'HD',
-                                        lvereq_desc: 'LIHD',
-                                        duty_remark: 'Late in half day after 30 minits'
+                                        duty_status: salaryLimit === false ? 1 : 1,
+                                        duty_desc: 'H',
+                                        lvereq_desc: 'H',
+                                        duty_remark: 'working hours less than six hours so holiday only'
                                     } :
-                                    earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                    earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && workingHours === false ?
                                         {
-                                            duty_status: salaryLimit === false ? 1 : 1,
+                                            duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
                                             duty_desc: 'H',
-                                            lvereq_desc: 'H',
-                                            duty_remark: 'Late in and punch in after half day limit'
+                                            lvereq_desc: 'LIHD',
+                                            duty_remark: 'Late in half day after 30 minits and working hours less than 6 hours'
                                         } :
-                                        // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
-                                        (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
+                                        // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM start
+                                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && workingHours === true ?
                                             {
-                                                duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
-                                                duty_desc: 'HD',
-                                                lvereq_desc: 'EGHD',
-                                                duty_remark: 'Early going Half day'
+                                                duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
+                                                duty_desc: 'HP',
+                                                lvereq_desc: 'LIHD',
+                                                duty_remark: 'Late in half day after 30 minits and working hours greater than 6 hours'
                                             } :
-                                            (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                            // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM end
+                                            earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
                                                 {
-                                                    duty_status: salaryLimit === false && workingHours === true ? 2 : 1,
-                                                    duty_desc: 'HD',
-                                                    lvereq_desc: 'IEHD',
-                                                    duty_remark: 'Half day latein and late out'
+                                                    duty_status: salaryLimit === false ? 1 : 1,
+                                                    duty_desc: 'H',
+                                                    lvereq_desc: 'H',
+                                                    duty_remark: 'Late in and punch in after half day limit'
                                                 } :
-                                                // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
-                                                (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                                // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
+                                                (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
                                                     {
                                                         duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
-                                                        duty_desc: 'HD',
+                                                        duty_desc: 'H',
                                                         lvereq_desc: 'EGHD',
-                                                        duty_remark: 'Early going Half day latein and late out'
-                                                    } :
-                                                    (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                        duty_remark: 'Early going Half day'
+                                                    }
+                                                    :
+                                                    (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
                                                         {
-                                                            duty_status: salaryLimit === false ? 1 : 1,
+                                                            duty_status: salaryLimit === false && workingHours === true ? 2 : 1,
                                                             duty_desc: 'H',
-                                                            lvereq_desc: 'H',
-                                                            duty_remark: 'in and out less tha half day time'
+                                                            lvereq_desc: 'IEHD',
+                                                            duty_remark: 'Half day latein and late out'
                                                         } :
-                                                        { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
+                                                        // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                                            {
+                                                                duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
+                                                                duty_desc: 'H',
+                                                                lvereq_desc: 'EGHD',
+                                                                duty_remark: 'Early going Half day latein and late out'
+                                                            } :
+                                                            (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                                {
+                                                                    duty_status: salaryLimit === false ? 1 : 1,
+                                                                    duty_desc: 'H',
+                                                                    lvereq_desc: 'H',
+                                                                    duty_remark: 'in and out less tha half day time'
+                                                                } :
+                                                                { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
             }
         } else {
             return holidayStatus === 1 ?
