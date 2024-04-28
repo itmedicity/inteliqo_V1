@@ -26,6 +26,7 @@ export const processPunchMarkingHrFunc = async (
 
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
+    // console.log(getDutyPlan)
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
@@ -37,7 +38,7 @@ export const processPunchMarkingHrFunc = async (
         // console.log(planData?.filter((e) => e.em_no === 4516))
         if (success === 1 && planData?.length > 0) {
             const punchMasterFilterData = await planData?.filter((e) => new Date(fromDate) <= new Date(e.duty_day) && new Date(e.duty_day) <= new Date(toDate))
-            // console.log(dataaaa?.filter((e) => e.em_no === 4516))
+            // console.log(punchMasterFilterData?.filter((e) => e.em_no === 4516))
             const punchMasterData = punchMasterFilterData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
@@ -68,10 +69,9 @@ export const processPunchMarkingHrFunc = async (
                 })
             ).then((data) => {
                 const punchMasterMappedData = data?.map((e) => e.value)
-                // console.log(punchMasterMappedData)
+                // console.log(punchMasterMappedData?.filter((e) => e.em_no === 4516))
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
-                        // console.log(val)
                         const holidayStatus = val.holiday_status;
                         const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
                         const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
@@ -118,6 +118,7 @@ export const processPunchMarkingHrFunc = async (
                     })
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
+
                     const elementValue = element?.map((e) => e.value);
                     const processedData = elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
                     const punchMaterDataBasedOnPunchSlno = processedData?.map((e) => e.punch_slno)
@@ -133,7 +134,7 @@ export const processPunchMarkingHrFunc = async (
                             lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
                         }
                     })
-                    // console.log(filterAndAdditionPlanData)
+                    // console.log(filterAndAdditionPlanData?.filter(e => e.em_no === 4516))
 
                     /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
 
@@ -168,8 +169,7 @@ export const processPunchMarkingHrFunc = async (
                         // console.log(PunchMAsterPolicyBasedFilterResult)
                         // console.log(punchMaterDataBasedOnPunchSlno)
                         const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
-                        // console.log(processedPostData)
-
+                        // console.log(processedPostData?.filter(e => e.em_no === 4516))
                         const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
                         const { success, message } = updatePunchMaster.data;
                         if (success === 1) {
@@ -179,7 +179,6 @@ export const processPunchMarkingHrFunc = async (
                             const { sus } = updatePunchMarkingHR.data;
                             if (sus === 1) {
                                 // DUTY PLAN UPDATION
-                                // console.log(dutyPlanSlno)
                                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
                                 const { susc, message } = updateDutyPlanTable.data;
                                 if (susc === 1) {
@@ -229,7 +228,6 @@ export const getAttendanceCalculation = async (
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
 
             const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) > 6;
-            console.log(workingHours)
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
             if (holidayStatus === 0) {
@@ -244,7 +242,7 @@ export const getAttendanceCalculation = async (
 
                         // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === true  } 
                         earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
-                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'LIHD', duty_remark: 'Late in half day after 30 minits' } :
+                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Late in half day after 30 minits' } :
 
                             // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === false  } 
                             earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
@@ -252,19 +250,19 @@ export const getAttendanceCalculation = async (
 
                                 // { out time greater than 0 minit  ~~ early out less than 30 minits ~~ intime lessthan or equal to 30  ~~ intime  and outtime should be before and after half day in time  } 
                                 (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
-                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day' } :
+                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Early going Half day' } :
 
                                     // { outtime greater than 0 minit  ~~ early out less than 30 minits ~~ intime greater than 30  ~~ intime  and outtime should be before and after half day in time  } 
                                     (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
-                                        { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'IEHD', duty_remark: 'Half day latein and late out' } :
+                                        { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Half day latein and late out' } :
 
                                         // { outtime greater than 0 minit  ~~ early out greater than 30 minits ~~ intime greater than or equal 30  ~~ intime  and outtime should be before and after half day in time  } 
                                         (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
-                                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day latein and late out' } :
+                                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Early going Half day latein and late out' } :
 
                                             (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'in and out less tha half day time' } :
-                                                { duty_status: 0, duty_desc: 'A', lvereq_desc: 'LOP', duty_remark: 'Lose off Pay' }
+                                                { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'Lose off Pay' }
 
             } else {
                 // console.log(getLateInTime)
@@ -308,7 +306,7 @@ export const getAttendanceCalculation = async (
                                         {
                                             duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
                                             duty_desc: 'H',
-                                            lvereq_desc: 'LIHD',
+                                            lvereq_desc: 'H',
                                             duty_remark: 'Late in half day after 30 minits and working hours less than 6 hours'
                                         } :
                                         // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM start
@@ -316,7 +314,7 @@ export const getAttendanceCalculation = async (
                                             {
                                                 duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
                                                 duty_desc: 'HP',
-                                                lvereq_desc: 'LIHD',
+                                                lvereq_desc: 'HP',
                                                 duty_remark: 'Late in half day after 30 minits and working hours greater than 6 hours'
                                             } :
                                             // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM end
@@ -332,7 +330,7 @@ export const getAttendanceCalculation = async (
                                                     {
                                                         duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
                                                         duty_desc: 'H',
-                                                        lvereq_desc: 'EGHD',
+                                                        lvereq_desc: 'H',
                                                         duty_remark: 'Early going Half day'
                                                     }
                                                     :
@@ -340,7 +338,7 @@ export const getAttendanceCalculation = async (
                                                         {
                                                             duty_status: salaryLimit === false && workingHours === true ? 2 : 1,
                                                             duty_desc: 'H',
-                                                            lvereq_desc: 'IEHD',
+                                                            lvereq_desc: 'H',
                                                             duty_remark: 'Half day latein and late out'
                                                         } :
                                                         // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
@@ -348,7 +346,7 @@ export const getAttendanceCalculation = async (
                                                             {
                                                                 duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
                                                                 duty_desc: 'H',
-                                                                lvereq_desc: 'EGHD',
+                                                                lvereq_desc: 'H',
                                                                 duty_remark: 'Early going Half day latein and late out'
                                                             } :
                                                             (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
@@ -569,7 +567,6 @@ export const processShiftPunchMarkingHrFunc = async (
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
                     const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
                     // PUNCH MASTER UPDATION
-                    // console.log(processedData)
                     const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
                     const { success, message } = updatePunchMaster.data;
                     if (success === 1) {
