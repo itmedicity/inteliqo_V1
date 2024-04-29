@@ -1,35 +1,27 @@
-import { Paper, TextField } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { useState } from 'react'
 import { useMemo } from 'react'
 import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { getCommonLeaveData, getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
-import DepartmentSection from './Func/DepartmentSection'
-import EmployeeAgainSection from './Func/EmployeeAgainSection'
+import { getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
 import LeaveRequestType from './Func/LeaveRequestType'
-import { Actiontypes } from 'src/redux/constants/action.type'
-import { Button, CssVarsProvider, Input, Tooltip } from '@mui/joy'
+import { Button, CssVarsProvider, Tooltip } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { lazy } from 'react'
 import { Suspense } from 'react'
-import { setDept } from 'src/redux/actions/Dept.Action'
-import { setdeptSection } from 'src/redux/actions/DeptSection.action'
-import { getDepartmentAll, getDepartmentSectBasedDeptID, getDepartmentSectionAll, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
 import LinearProgress from '@mui/joy/LinearProgress';
 import {
     getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    getCreitedCompansatoryOffLeave, getCreditedEarnLeave, getEmpCoffData,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
 } from 'src/redux/actions/LeaveReqst.action';
 import { getannualleave } from 'src/redux/actions/Profile.action'
-import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const NormalEmployeeLeveReqPage = lazy(() => import('./NormalEmployeeLeveReqPage'))
 const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
@@ -43,7 +35,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
-    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformationFromRedux;
+    const { hod, incharge, em_no, em_id, em_department, em_dept_section, } = empInformationFromRedux;
 
     // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE
     const employeePostData = useMemo(() => {
@@ -79,7 +71,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
         // CHECK THE EMPLOYEE IS HOD OR INCHARGE
         const postData = isInchargeOrHOD === true ? { ...userPostData } : { ...employeePostData }
 
-        const { deptID, sectionID, emNo, emID } = postData;
+        const { sectionID, emNo, emID } = postData;
 
         if (sectionID === 0 || emNo === 0 || emID === 0) {
             warningNofity("Please Check for Any Selection")
@@ -96,10 +88,7 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
             // dispatch(getEmpCoffData(postData)) // 
         }
 
-        // console.log(employeePostData)
-        // console.log(userPostData)
-
-    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData,])
+    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData, dispatch])
 
 
     /****************************** */
@@ -138,7 +127,6 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
     //                 requestType: levReq
     //             }
     //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
-    //             //console.log(` emp selectio hod ${em_no} `)
     //             // dispatch(getCommonLeaveData(em_no));
     //         }
 

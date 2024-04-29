@@ -5,7 +5,7 @@ import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun
 
 const NormalEmployeeLeveReqPage = () => {
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
-    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section, dept_name, sect_name, em_name } = empInformation;
+    const { em_no, sect_name, em_name } = empInformation;
     return (
         <Box sx={{ display: 'flex', flex: 1, p: 0.5 }}>
             <Box sx={{ flex: 1, px: 0.3, }}>

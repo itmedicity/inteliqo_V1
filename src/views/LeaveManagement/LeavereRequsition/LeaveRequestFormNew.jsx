@@ -2,19 +2,15 @@ import React, { memo, useCallback } from 'react'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Button, CssVarsProvider, Input, Radio, Table, Tooltip, Typography } from '@mui/joy'
-import { Paper, TextField } from '@mui/material'
+import { Box, Button, CssVarsProvider, Input, Table, Tooltip, Typography } from '@mui/joy'
+import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { addDays, differenceInCalendarDays, differenceInDays, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
 import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
 import LeaveRequestTable from './Func/LeaveRequestTable';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -26,8 +22,8 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
-    const [radioBtnValue, setSelectedValue] = useState('C');
-    const [openPage, setOpenPage] = useState(false)
+    //const [radioBtnValue, setSelectedValue] = useState('C');
+    // const [openPage, setOpenPage] = useState(false)
     const [table, setTable] = useState([]);
     const [leaveArray, setLeaveArray] = useState([]);
     const [addDateDisable, setAddDateDisable] = useState(false);
@@ -36,11 +32,9 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     const findBalanceCountCmnLeave = useSelector((state) => findBalanceCommonLeveCount(state))
     const comnLeaveBalCount = useMemo(() => findBalanceCountCmnLeave, [findBalanceCountCmnLeave])
 
-    // console.log(comnLeaveBalCount)
-
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
-    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, em_id: loginEmid, em_department: loginDept, em_dept_section: loginSection, groupmenu } = empInformationFromRedux;
+    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, groupmenu } = empInformationFromRedux;
 
     //CHEK THE AURHORISED USER GROUP
     const [masterGroupStatus, setMasterGroupStatus] = useState(false);
@@ -49,7 +43,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
     const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
     const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
-    //console.log(deptApprovalLevel)
+
 
     /*
  *3 -> hod and incharge
@@ -68,8 +62,8 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-    const { em_id, em_no, hod, incharge, em_dept_section } = selectedEmpInform ?? {};
-    // console.log(selectedEmpInform)
+    const { em_no, em_dept_section } = selectedEmpInform ?? {};
+
 
     const handleRefreshButton = useCallback(() => {
         setTable([])
@@ -176,7 +170,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
         // console.log(masterGroupStatus)
         // console.log(loginHod, loginIncharge)
 
-        const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
+        const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
 
         const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
         const checkToDate = format(new Date(toDate), 'yyyy-MM-dd 23:59:59');
@@ -320,7 +314,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === 7)?.map(e => e.leaveCount)?.reduce((acc, curr) => acc + curr, 0)
                             } : {
                                 type: type,
-                                leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid == type).length
+                                leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === type).length
                             }
                         })?.filter(e => e.leaveCount !== 0)?.map((el) => comnLeaveBalCount?.find((val) => val.type === el.type)?.balance - el.leaveCount < 0)?.filter(e => e === true).length
 
@@ -370,7 +364,8 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
         }
 
 
-    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno, masterGroupStatus, comnLeaveBalCount, deptApprovalLevel])
+    }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno,
+        masterGroupStatus, comnLeaveBalCount, deptApprovalLevel, setRequestType])
 
     return (
         <Box sx={{ mb: 0.5 }}>

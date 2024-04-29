@@ -1,6 +1,6 @@
 import { CssVarsProvider, IconButton, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { addDays, format, isAfter, isBefore } from 'date-fns'
+import { addDays, format, isAfter, isBefore, isEqual } from 'date-fns'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -73,7 +73,6 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
         { headerName: 'Update User ', field: 'edit_user' },
     ])
 
-
     //Get Data
     useEffect(() => {
         const getTable = async (empNo) => {
@@ -120,7 +119,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                 setCategory(0)
                 setOldCategory(0)
                 setDesignation(0)
-                setProbationPeriod(0)
+                setProbationPeriod('')
             }
         }
         getCompany(empNo)
@@ -166,7 +165,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
         }
     }, [category, oldCate])
 
-    const today = moment(new Date()).format('YYYY-MM-DD');
+    //const today = moment(new Date()).format('YYYY-MM-DD');
 
     const updateData = useMemo(() => {
         return {
@@ -177,7 +176,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             com_category: oldCate,
             com_category_new: category,
             em_category: category,
-            em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD') === today ? cateineffectdate : moment(probationperiod).format('YYYY-MM-DD'),
+            em_prob_end_date: isEqual(new Date(probationperiod), new Date()) ? moment(probationperiod).format('YYYY-MM-DD') : '2000-01-01',
             contract_status: empstatus === 1 ? 1 : 0,
             probation_status: probsataus === 1 ? 1 : 0,
             create_user: employeeNumber(),
@@ -192,7 +191,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
         }
     }, [branch, dept, institute, category, oldCate,
         probationperiod, empstatus, probsataus, empNo, empId, designation, oldDesg,
-        ineffectdate, deptSection, cateineffectdate, today])
+        ineffectdate, deptSection, cateineffectdate])
 
 
 

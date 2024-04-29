@@ -2,27 +2,23 @@ import React, { memo, useCallback } from 'react'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Button, CssVarsProvider, Input, Radio, Table, Tooltip, Typography } from '@mui/joy'
-import { Paper, TextField } from '@mui/material'
+import { Box, Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
+import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { addDays, differenceInCalendarDays, differenceInDays, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { format, isValid, startOfMonth } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import TouchAppOutlinedIcon from '@mui/icons-material/TouchAppOutlined';
 import { useSelector } from 'react-redux';
-import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCaualLeaveDetl, getCommonSettings, getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { getCaualLeaveDetl, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useMemo } from 'react';
-import { screenInnerHeight } from 'src/views/Constant/Constant';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 // import LeaveRequestTable from './Func/LeaveRequestTable';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import CachedIcon from '@mui/icons-material/Cached';
 import Textarea from '@mui/joy/Textarea';
 import { useEffect } from 'react';
 
-const HalfDayLeaveRequest = ({ setRequestType }) => {
+const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
     const [fromDate, setFromDate] = useState(new Date())
     const [casualLve, setCasualLve] = useState([])
     const [halfDayStat, setHalfDayStat] = useState(0)
@@ -36,7 +32,7 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
 
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-    const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
+    const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
 
     const getCasualLeaves = useSelector((state) => getCaualLeaveDetl(state));
     const casualLeave = useMemo(() => getCasualLeaves, [getCasualLeaves]);
@@ -44,7 +40,7 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
-    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, em_id: loginEmid, em_department: loginDept, em_dept_section: loginSection, groupmenu } = empInformationFromRedux;
+    const { hod: loginHod, incharge: loginIncharge, em_no: loginEmno, groupmenu } = empInformationFromRedux;
 
 
     //CHEK THE AURHORISED USER GROUP
@@ -56,7 +52,8 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
 
-    // console.log(halfDayStat, creditedLve)
+    const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
+    const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
 
     const handleGetCreditedLeaves = useCallback(async () => {
         if (halfDayStat === null || creditedLve === null) {
@@ -81,7 +78,7 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
             setempShiftInform(shiftData)
         }
         setdisabled(false)
-    }, [casualLeave, halfDayStat, creditedLve, em_department, em_dept_section, em_id, fromDate])
+    }, [casualLeave, halfDayStat, creditedLve, em_id, fromDate])
 
     //GET CASUAL LEAVES FUN
     const getCasualeaves = useCallback((e, val) => {
@@ -117,41 +114,14 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
                 if (selectedCL === 0 || reson === '') {
                     warningNofity("Select the leave name and reason.")
                 } else {
-                    const { plan_slno, shift_id, shft_desc, first_half_in, first_half_out, second_half_in, second_half_out } = empShiftInform
+                    const { plan_slno, shift_id, first_half_in, first_half_out, second_half_in, second_half_out } = empShiftInform
 
                     const first_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_in), 'HH:mm')}`;
                     const first_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_out), 'HH:mm')}`;
                     const second_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_in), 'HH:mm')}`;
                     const second_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_out), 'HH:mm')}`;
 
-
-                    const approveStatus = (masterGroupStatus === true) ?
-                        {
-                            inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                            usCode_inch: loginEmno, usCode_hod: loginEmno
-                        } :
-                        (loginHod === 1 && loginIncharge === 1) ?
-                            {
-                                inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                usCode_inch: loginEmno, usCode_hod: loginEmno
-                            }
-                            :
-                            (loginHod === 1 && loginIncharge === 0) ?
-                                {
-                                    inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                                    usCode_inch: null, usCode_hod: loginEmno
-                                }
-                                :
-                                (loginHod === 0 && loginIncharge === 1) ?
-                                    {
-                                        inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
-                                        usCode_inch: loginEmno, usCode_hod: null
-                                    }
-                                    :
-                                    {
-                                        inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
-                                        usCode_inch: null, usCode_hod: null
-                                    }
+                    const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
 
                     const halfdaysavedata = {
                         checkIn: halfDayStat === 1 ? first_half_inTime : second_half_inTime,
@@ -184,9 +154,9 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
                     const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
                     const { success, message } = result.data;
                     if (success === 1) {
-                        // console.log(success, message)
                         succesNofity(message)
                         setRequestType(0)
+                        setCount(Math.random())
 
                     } else {
                         errorNofity(message)
@@ -196,7 +166,9 @@ const HalfDayLeaveRequest = ({ setRequestType }) => {
             }
         }
 
-    }, [selectedCL, reson, fromDate, em_dept_section, em_department, empShiftInform, loginHod, loginIncharge, loginEmno, masterGroupStatus, halfDayStat, selectedClName])
+    }, [selectedCL, reson, fromDate, em_dept_section, em_department, empShiftInform, loginHod,
+        loginIncharge, loginEmno, masterGroupStatus, halfDayStat, selectedClName, em_id, em_no,
+        setRequestType, deptApprovalLevel, setCount])
 
     return (
         <Box sx={{ mb: 0.5 }}>

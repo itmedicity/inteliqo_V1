@@ -1,5 +1,5 @@
 import { IconButton, Paper } from '@mui/material'
-import React, { Fragment, Suspense, useCallback, useMemo, useState } from 'react'
+import React, { Fragment, memo, Suspense, useCallback, useMemo, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveCancelEmp from '../EmpView/LeaveCancelEmp';
@@ -51,10 +51,10 @@ const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
         { headerName: 'Emp. ID', field: 'emno', filter: true },
         { headerName: 'Emp. Name', field: 'name', filter: true },
         { headerName: 'Dept. Section', field: 'section', filter: true },
-        { headerName: 'Request Type', field: 'type', },
-        { headerName: 'Leave Date', field: 'fromDate', },
+        { headerName: 'Request Type', field: 'type', filter: true },
+        { headerName: 'Leave Date', field: 'fromDate', filter: true },
         { headerName: 'Leave Reason', field: 'reason', },
-        { headerName: 'Status', field: 'status', },
+        { headerName: 'Status', field: 'status', filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {
@@ -99,4 +99,4 @@ const DeptSectionBasedEmpTable = ({ leavecanceldetl, setCount }) => {
     )
 }
 
-export default DeptSectionBasedEmpTable
+export default memo(DeptSectionBasedEmpTable) 

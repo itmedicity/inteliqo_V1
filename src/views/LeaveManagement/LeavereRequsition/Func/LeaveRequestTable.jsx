@@ -23,12 +23,12 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
             const selectedLeavesBasedType = seletedLveDates?.filter((el) => el.leavetype === val)?.map((e) => e.selectedLveSlno)
             setLeveSlno([...selectedLeavesBasedType])
         }
-    }, [value])
+    }, [value, seletedLveDates])
 
 
     //HANDLE CHANGE LEAVE SELECTION
     const handleChangeLeaveName = useCallback((e, val) => {
-        const selectedLeaveName = e?.nativeEvent?.target?.innerText;
+        // const selectedLeaveName = e?.nativeEvent?.target?.innerText;
         value.selectedLveSlno = val === null ? 0 : val;
     }, [value])
 

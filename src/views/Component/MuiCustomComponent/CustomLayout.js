@@ -6,7 +6,6 @@ import { memo } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
-import { screenInnerHeight } from 'src/views/Constant/Constant';
 const CustomLayout = ({ children, title, displayClose }) => {
 
     const history = useHistory();

@@ -1,21 +1,19 @@
-import { CssVarsProvider, IconButton, Button, Card, CardContent, Avatar, CardActions } from '@mui/joy'
+import { CssVarsProvider, IconButton, Button, Card, CardContent, Avatar } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import Typography from '@mui/joy/Typography';
 import { Box, Paper } from '@mui/material'
-import { differenceInDays } from 'date-fns'
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import moment from 'moment';
 import { useHistory, useParams } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CloseIcon from '@mui/icons-material/Close';
-import { employeeNumber, screenInnerHeight } from 'src/views/Constant/Constant';
+import { employeeNumber } from 'src/views/Constant/Constant';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
     const history = useHistory()
-    const [fine, setFine] = useState(0)
+    // const [fine, setFine] = useState(0)
     //use state for displaying existing contract details
     const [formData, setFormData] = useState({
         em_cont_start: '',
@@ -30,8 +28,7 @@ const Direct_Contract_Close = () => {
         sect_name: ''
     })
     //destructuring
-    const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period,
-        desg_name, sect_name } = formData
+    const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, desg_name, sect_name } = formData
     const defaultState = useMemo(() => {
         return {
             em_cont_start: '',
@@ -74,20 +71,20 @@ const Direct_Contract_Close = () => {
     }, [no])
 
     //useEffect for getting fine Deatails
-    useEffect(() => {
-        const getFinedetl = async () => {
-            const result = await axioslogin.get(`/empfinededuction/totalfine/byemid/${no}`)
-            const { success, data } = result.data
-            if (success === 1) {
-                setFine(data[0].fine_sum)
-            }
-            else {
-                setFine(0)
-            }
-        }
-        getFinedetl()
+    // useEffect(() => {
+    //     const getFinedetl = async () => {
+    //         const result = await axioslogin.get(`/empfinededuction/totalfine/byemid/${no}`)
+    //         const { success, data } = result.data
+    //         if (success === 1) {
+    //             setFine(data[0].fine_sum)
+    //         }
+    //         else {
+    //             setFine(0)
+    //         }
+    //     }
+    //     getFinedetl()
 
-    }, [no])
+    // }, [no])
 
     //update hrm_emp_contract_detl table
     const contractclose = useMemo(() => {
@@ -114,7 +111,7 @@ const Direct_Contract_Close = () => {
         const result = await axioslogin.patch('/empcontract/contractrenew', contractclose)
         const { success, message } = result.data
         if (success === 2) {
-            setFine(0)
+            //setFine(0)
             setFormData(defaultState)
             history.push('/Home/Contract_end_details')
             succesNofity(message)

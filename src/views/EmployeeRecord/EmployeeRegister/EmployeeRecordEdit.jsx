@@ -188,7 +188,7 @@ const EmployeeRecordEdit = () => {
                     em_dept_section, em_institution_type,
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
-                    recomend_salary, clinicaltype, gross_salary,
+                    clinicaltype, gross_salary,
                     doctor_status } = data[0]
                 const age = {
                     yearage: em_age_year,

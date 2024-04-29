@@ -1,24 +1,10 @@
-import React, { memo, useEffect, useState, useMemo, useCallback } from 'react'
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import { useDispatch, useSelector } from 'react-redux';
-import { setDept } from 'src/redux/actions/Dept.Action';
-import { setdeptSection } from 'src/redux/actions/DeptSection.action';
-import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, Input, Typography } from '@mui/joy';
-import './style.css';
-import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from './LeaveFunction';
+import { Box, Input, Option, Select, Typography } from '@mui/joy'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { getCommonSettings, getDepartmentAll, getDepartmentSectionAll, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
+import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from '../LeavereRequsition/Func/LeaveFunction';
 
-const DepartmentBasedSection = ({ state, setState, formChange }) => {
-
-
-    const dispatch = useDispatch();
-
-    //dispatch for getting department and department section
-    useEffect(() => {
-        dispatch(setDept())
-        dispatch(setdeptSection())
-    }, [dispatch])
+const InchargeHodPage = ({ state, setState }) => {
 
     const [deptID, setDeptID] = useState(0);
     const [deptSection, setDeptSection] = useState(0);
@@ -27,19 +13,17 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
     const [emplist, setEmpList] = useState([]);
     const [mapEmpList, setMapEmpList] = useState([]);
     const [hodBasedSection, setHodBasedSection] = useState([]);
-
     const [deptSectionList, setDeptSectionList] = useState([]);
     const [masterGroupStatus, setMasterGroupStatus] = useState(false);
     const [hodEmpFilter, setHodEmpFilter] = useState(false);
     const [empDisableStat, setEmpDisableStat] = useState(false)
-
-    // const [levReq, setLevReq] = useState(0);
 
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
     const filterDeptSection = useSelector((state) => getDepartmentSectionAll(state))
     const departmentSectionListFilterd = useMemo(() => filterDeptSection, [filterDeptSection])
+
 
     //LOGGED EMPLOYEE INFORMATION
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
@@ -52,14 +36,15 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
 
+
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
         // IF THE LOGGED EMPLOYEE IS HOD OR INCHARGE
-        if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
+        if (hod === 1 || incharge === 1 && masterGroupStatus === true) {
             setDisables(false)
             setHodBasedSection([])
 
-        } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+        } else if (hod === 1 || incharge === 1 && masterGroupStatus === false) {
             setDisables(true)
             setDeptID(0)
             const fetchData = async (em_id) => {
@@ -108,21 +93,19 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
 
     }, [departmentSectionListFilterd, deptID, hodBasedSection])
 
-
     //HANDELE CHANGE DEPARTMENT
     const handleChangeDepartmentID = useCallback((e, value) => {
-        formChange(10) // request leave form changeing to null
+        //formChange(10) // request leave form changeing to null
         setDeptID(value)
         setDeptSection(0)
         setEmployeeID(0)
         setMapEmpList([]) // EMPLOYEE ARRAY SET TO BLANK
         setState({ ...state, deptID: value, sectionID: 0, emNo: 0, emID: 0 })
-    }, [setState, state, formChange])
-
+    }, [setState, state])
 
     //HANDLE CHANGE DEPARTMENT SECTION
     const handleChangeDepetSection = useCallback(async (e, value) => {
-        formChange(10) // request leave form changeing to null
+        //formChange(10) // request leave form changeing to null
         setMapEmpList([...emplist?.filter((e) => e.em_dept_section === value)])
         setDeptSection(value)
         setEmployeeID(0)
@@ -136,17 +119,14 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
             setEmpDisableStat(false)
             setState({ ...state, sectionID: value, emNo: 0, emID: 0 })
         }
-
-
-    }, [emplist, hodEmpFilter, setState, state, em_no, em_id, em_department, em_dept_section, formChange])
-
+    }, [emplist, hodEmpFilter, setState, state, em_no, em_id, em_department, em_dept_section])
 
     //HANDLE CHANGE EMPLOYEE NAME 
     const handleChangeEmployeeName = useCallback((e, value) => {
-        formChange(10) // request leave form changeing to null
+        // formChange(10) // request leave form changeing to null
         setEmployeeID(value)
         setState({ ...state, emNo: value })
-    }, [state, setState, formChange])
+    }, [state, setState])
 
     return (
         <Box sx={{ display: 'flex', flex: 1, p: 0.5 }} >
@@ -167,7 +147,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                         },
                     }}
                 >
-                    <Option value={0}>Select Department</Option>
+                    <Option value={0} disabled>Select Department</Option>
                     {
                         departmentNameList && departmentNameList?.map((val, index) => {
                             return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
@@ -188,7 +168,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
                 >
-                    <Option value={0}>Select Department Section</Option>
+                    <Option value={0} disabled>Select Department Section</Option>
                     {
                         deptSectionList && deptSectionList?.map((val, index) => {
                             return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
@@ -208,7 +188,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     placeholder="Employee Name"
                     endDecorator={mapEmpList?.length === 0 && <div className='loading-spinner' ></div>}
                 >
-                    <Option value={0}  >Employee Name</Option>
+                    <Option value={0} disabled >Employee Name</Option>
                     {
                         mapEmpList && mapEmpList?.map((val, index) => {
                             return <Option key={index} value={val.em_no} label={val.em_name} onClick={() => setState({ ...state, emID: val.em_id })} >
@@ -241,38 +221,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     disabled
                 />
             </Box>
-
-            {/* <Box sx={{ display: "flex", px: 0.3 }} >
-                <CssVarsProvider>
-                    <Tooltip title="Process" followCursor placement='top' arrow >
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="danger"
-                            // onClick={onSubmitLeaveRequestEntry}
-                            size='sm'
-                        >
-                            <AddCircleOutlineIcon />
-                        </Button>
-                    </Tooltip>
-                </CssVarsProvider>
-            </Box>
-            <Box sx={{ display: "flex", px: 0.3 }} >
-                <CssVarsProvider>
-                    <Button
-                        aria-label="Like"
-                        variant="outlined"
-                        color="success"
-                        // onClick={() => changeForm()}
-                        size='sm'
-                        className='refreshButton'
-                    >
-                        <RefreshIcon className='rotating-icon' />
-                    </Button>
-                </CssVarsProvider>
-            </Box> */}
         </Box>
     )
 }
 
-export default memo(DepartmentBasedSection) 
+export default memo(InchargeHodPage) 
