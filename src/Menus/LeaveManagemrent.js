@@ -9,7 +9,7 @@ const Leavemanagement = [
     {
         men_slno: 285,
         component: CNavItem,
-        name: 'Compensatory Off Request',
+        name: 'Credit COFF',
         to: '/Home/CompensatoryRequest',
     },
     {

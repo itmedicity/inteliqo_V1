@@ -49,7 +49,7 @@ const EmployeeSelection = ({ setShowForm, steEmployeeData }) => {
             setShowForm(1)
             steEmployeeData(postData)
         }
-    }, [userPostData, hod, incharge, employeePostData, setShowForm])
+    }, [userPostData, hod, incharge, employeePostData, setShowForm, steEmployeeData])
 
     return (
         <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center', flexWrap: 'wrap' }} >

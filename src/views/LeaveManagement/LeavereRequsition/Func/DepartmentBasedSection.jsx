@@ -1,17 +1,13 @@
-import React, { memo, useEffect, useState, useMemo, useCallback, Fragment } from 'react'
+import React, { memo, useEffect, useState, useMemo, useCallback } from 'react'
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDept } from 'src/redux/actions/Dept.Action';
 import { setdeptSection } from 'src/redux/actions/DeptSection.action';
-import { getDepartmentSectionAll, getDepartmentAll, getDepartmentSectBasedDeptID, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, Button, Chip, CssVarsProvider, Input, ListItem, ListItemDecorator, Tooltip, Typography } from '@mui/joy';
-import { axioslogin } from 'src/views/Axios/Axios';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
+import { Box, Input, Typography } from '@mui/joy';
 import './style.css';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from './LeaveFunction';
-import LeaveRequestType from './LeaveRequestType';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const DepartmentBasedSection = ({ state, setState, formChange }) => {
 
@@ -37,7 +33,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
     const [hodEmpFilter, setHodEmpFilter] = useState(false);
     const [empDisableStat, setEmpDisableStat] = useState(false)
 
-    const [levReq, setLevReq] = useState(0);
+    // const [levReq, setLevReq] = useState(0);
 
 
     const department = useSelector((state) => getDepartmentAll(state))
@@ -59,11 +55,11 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
         // IF THE LOGGED EMPLOYEE IS HOD OR INCHARGE
-        if (hod === 1 || incharge === 1 && masterGroupStatus === true) {
+        if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
             setDisables(false)
             setHodBasedSection([])
 
-        } else if (hod === 1 || incharge === 1 && masterGroupStatus === false) {
+        } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
             setDisables(true)
             setDeptID(0)
             const fetchData = async (em_id) => {
@@ -82,7 +78,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
         return () => {
             setHodBasedSection([])
         }
-    }, [hod, incharge, em_id, em_dept_section])
+    }, [hod, incharge, em_id, em_dept_section, masterGroupStatus])
 
     // FILTERING AND SORTING DEPARTMENT SECTION AND EMPLOYEE
     useEffect(() => {
@@ -121,13 +117,12 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
         setEmployeeID(0)
         setMapEmpList([]) // EMPLOYEE ARRAY SET TO BLANK
         setState({ ...state, deptID: value, sectionID: 0, emNo: 0, emID: 0 })
-    }, [setState, state])
+    }, [setState, state, formChange])
 
 
     //HANDLE CHANGE DEPARTMENT SECTION
     const handleChangeDepetSection = useCallback(async (e, value) => {
         formChange(10) // request leave form changeing to null
-        console.log('section', value)
         setMapEmpList([...emplist?.filter((e) => e.em_dept_section === value)])
         setDeptSection(value)
         setEmployeeID(0)
@@ -143,7 +138,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
         }
 
 
-    }, [emplist, hodEmpFilter, setState, state, em_no, em_id])
+    }, [emplist, hodEmpFilter, setState, state, em_no, em_id, em_department, em_dept_section, formChange])
 
 
     //HANDLE CHANGE EMPLOYEE NAME 
@@ -151,7 +146,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
         formChange(10) // request leave form changeing to null
         setEmployeeID(value)
         setState({ ...state, emNo: value })
-    }, [state, setState])
+    }, [state, setState, formChange])
 
     return (
         <Box sx={{ display: 'flex', flex: 1, p: 0.5 }} >

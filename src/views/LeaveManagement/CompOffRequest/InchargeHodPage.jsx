@@ -63,7 +63,7 @@ const InchargeHodPage = ({ state, setState }) => {
         return () => {
             setHodBasedSection([])
         }
-    }, [hod, incharge, em_id, em_dept_section])
+    }, [hod, incharge, em_id, em_dept_section, masterGroupStatus])
 
     // FILTERING AND SORTING DEPARTMENT SECTION AND EMPLOYEE
     useEffect(() => {
@@ -119,7 +119,7 @@ const InchargeHodPage = ({ state, setState }) => {
             setEmpDisableStat(false)
             setState({ ...state, sectionID: value, emNo: 0, emID: 0 })
         }
-    }, [emplist, hodEmpFilter, setState, state, em_no, em_id])
+    }, [emplist, hodEmpFilter, setState, state, em_no, em_id, em_department, em_dept_section])
 
     //HANDLE CHANGE EMPLOYEE NAME 
     const handleChangeEmployeeName = useCallback((e, value) => {

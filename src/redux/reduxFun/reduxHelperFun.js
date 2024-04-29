@@ -1,4 +1,7 @@
 import { endOfYear, format, subMonths } from "date-fns";
+import moment from "moment";
+import { axioslogin } from "src/views/Axios/Axios";
+import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
 //SELECT ALL DEPARTMENT NAMES
 export const getDepartmentAll = (state) => state?.getdept?.departmentlist; //dispatch(setDept())
@@ -353,3 +356,793 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
 
 
 }
+
+
+export const getAllCopensatoryRequest = (state) => state?.setAllLeaveApproval?.compOffrqData?.compOffRqList;
+
+export const getEmployeeCoffData = async (em_id) => {
+    const resultdel = await axioslogin.get(`/LeaveRequestApproval/employee/coffData/${em_id}`);
+    const { success, data } = resultdel?.data;
+    if (success === 1) {
+        const arr = data?.map((val) => {
+            return {
+                type: "Compensatory Off Request",
+                reason: val.cf_reason,
+                slno: val.cmp_off_reqid,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.cf_incapprv_status,
+                hodstatus: val.cf_hod_apprv_status,
+                hrstatus: val.cf_hr_apprv_status,
+                status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                    (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'HR Approved' :
+                                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+        return { success: 1, data: arr };
+    } else {
+        return { success: 1, data: [] }
+    }
+};
+
+export const getInchargeHodData = async (authorizationBasedDeptSection, em_id) => {
+
+
+    const sectioIDs = authorizationBasedDeptSection?.map(val => val.dept_section)
+
+    const postData = {
+        data: sectioIDs
+    }
+
+    const resultdel = await axioslogin.post("/LeaveRequestApproval/inchargeHod/coffData", postData);
+    const { success, data } = resultdel?.data;
+    if (success === 1) {
+        const resultdel = await axioslogin.get(`/LeaveRequestApproval/employee/coffData/${em_id}`);
+        const { success, data: empdata } = resultdel?.data;
+        if (success === 1) {
+
+            const newArray = [...data, ...empdata]
+            const arr = newArray?.map((val) => {
+                return {
+                    type: "Compensatory Off Request",
+                    reason: val.cf_reason,
+                    slno: val.cmp_off_reqid,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.sect_name,
+                    inchargestatus: val.cf_incapprv_status,
+                    hodstatus: val.cf_hod_apprv_status,
+                    hrstatus: val.cf_hr_apprv_status,
+                    status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'HR Approved' :
+                                                (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                    reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
+                    fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                    toDate: val.leavetodate
+                }
+            })
+            return { status: 1, data: arr }
+
+        } else {
+            return { status: 1, data: [] }
+        }
+    } else {
+        return { status: 1, data: [] }
+    }
+};
+
+export const getDutyPlanBasedSHift = (state) => state?.getDutyPlannedShift?.shiftInformation?.[0]
+
+
+export const inchargeHod = async (em_id, em_dept_section) => {
+
+    const result = await getDepartmentSectionBasedHod(em_id);
+    const section = await result?.map((e) => e.dept_section)
+    const flag = section?.find((e) => e === em_dept_section) === undefined ? true : false
+    return flag
+}
+
+
+export const getEmployeeRequests = async (leaveRequest, misspunch, halfday, hod, incharge, masterGroupStatus, em_id, em_dept_section) => {
+
+    // const leave = state?.getLeaveRequests?.leaveRequest
+    // const misspunch = state?.getMisspunchRequests?.misspunchRequests
+    // const halfday = state?.getHalfdayRequests?.halfdayRequest
+
+    const sectionWiseLeaveRequest = leaveRequest;
+    const sectionWisehalfdayRequest = misspunch;
+    const sectionWiseMisspunchRequest = halfday;
+
+    if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
+
+        const newList = sectionWiseLeaveRequest?.map((val) => {
+            return {
+                leaveid: val.lve_uniq_no,
+                type: "Leave Request",
+                reason: val.leave_reason,
+                slno: val.leave_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.incapprv_status,
+                hodstatus: val.hod_apprv_status,
+                hrstatus: val.hr_apprv_status,
+                status:
+                    (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+                                        (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+                                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 1,
+                reqDate: val.request_date,
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+
+        const newHalfday = sectionWisehalfdayRequest?.map((val) => {
+            return {
+                type: "Halfday Request",
+                reason: val.hf_reason,
+                slno: val.half_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
+                                    (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                inchargestatus: val.hf_incapprv_status,
+                hodstatus: val.hf_hod_apprv_status,
+                hrstatus: val.hf_hr_apprv_status,
+                code: 2,
+                reqDate: val.requestdate,
+                leaveDate: val.leavedate,
+                fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+            }
+        })
+
+        const newNopunch = sectionWiseMisspunchRequest?.map((val) => {
+            return {
+                type: "Miss Punch Request",
+                reason: val.np_reason,
+                slno: val.nopunch_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.np_incapprv_status,
+                hodstatus: val.np_hod_apprv_status,
+                hrstatus: val.np_hr_apprv_status,
+                status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+                                    (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 3,
+                reqDate: val.creteddate,
+                fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+                toDate: val.nopunchdate
+            }
+        })
+
+        return ([...newList, ...newHalfday, ...newNopunch])
+        // return newArray
+
+    } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+        return await getDepartmentSectionBasedHod(em_id).then((hodSection) => {
+            const checkHodSection = hodSection?.find(e => e.dept_section === em_dept_section) === undefined ?? false
+            return {
+                data0: sectionWiseLeaveRequest
+                    ?.filter(val => val.dept_section !== em_dept_section)
+                    ?.concat(sectionWiseLeaveRequest?.filter(e => checkHodSection === true ? e.em_id === em_id : e))
+                    ?.map((val) => {
+                        return {
+                            leaveid: val.lve_uniq_no,
+                            type: "Leave Request",
+                            reason: val.leave_reason,
+                            slno: val.leave_slno,
+                            emno: val.em_no,
+                            name: val.em_name,
+                            section: val.sect_name,
+                            inchargestatus: val.incapprv_status,
+                            hodstatus: val.hod_apprv_status,
+                            hrstatus: val.hr_apprv_status,
+                            status:
+                                (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                                    (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                                        (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                            (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+                                                (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+                                                    (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+                                                        (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                            (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                                (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                            code: 1,
+                            reqDate: val.request_date,
+                            fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                            toDate: val.leavetodate
+                        }
+                    }),
+                data1: sectionWisehalfdayRequest
+                    ?.filter(val => val.dept_section !== em_dept_section)
+                    ?.concat(sectionWisehalfdayRequest?.filter(e => checkHodSection === true ? e.em_id === em_id : e))
+                    ?.map((val) => {
+                        return {
+                            type: "Halfday Request",
+                            reason: val.hf_reason,
+                            slno: val.half_slno,
+                            emno: val.em_no,
+                            name: val.em_name,
+                            section: val.sect_name,
+                            status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                                (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                                    (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                        (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
+                                                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                                    (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                            inchargestatus: val.hf_incapprv_status,
+                            hodstatus: val.hf_hod_apprv_status,
+                            hrstatus: val.hf_hr_apprv_status,
+                            code: 2,
+                            reqDate: val.requestdate,
+                            leaveDate: val.leavedate,
+                            fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+                        }
+                    }),
+                data2: sectionWiseMisspunchRequest
+                    ?.filter(val => val.dept_section !== em_dept_section)
+                    ?.concat(sectionWiseMisspunchRequest?.filter(e => checkHodSection === true ? e.em_id === em_id : e))
+                    ?.map((val) => {
+                        return {
+                            type: "Miss Punch Request",
+                            reason: val.np_reason,
+                            slno: val.nopunch_slno,
+                            emno: val.em_no,
+                            name: val.em_name,
+                            section: val.sect_name,
+                            inchargestatus: val.np_incapprv_status,
+                            hodstatus: val.np_hod_apprv_status,
+                            hrstatus: val.np_hr_apprv_status,
+                            status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                                (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                                    (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                        (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                            (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+                                                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                                    (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                            code: 3,
+                            reqDate: val.creteddate,
+                            fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+                            toDate: val.nopunchdate
+                        }
+                    })
+
+            }
+        })
+
+
+
+
+        // const Halfdayarr = sectionWisehalfdayRequest
+        //     ?.filter(val => val.dept_section !== em_dept_section)
+        //     ?.concat(sectionWisehalfdayRequest?.filter(e => e.emp_id === em_id))
+
+
+        // const Nopuncharr = sectionWiseMisspunchRequest
+        //     ?.filter(val => val.dept_section !== em_dept_section)
+        //     ?.concat(sectionWiseMisspunchRequest?.filter(e => e.em_id === em_id))
+
+        // const newList = Leavearr?.map((val) => {
+        //     return {
+        //         leaveid: val.lve_uniq_no,
+        //         type: "Leave Request",
+        //         reason: val.leave_reason,
+        //         slno: val.leave_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         inchargestatus: val.incapprv_status,
+        //         hodstatus: val.hod_apprv_status,
+        //         hrstatus: val.hr_apprv_status,
+        //         status:
+        //             (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //                 (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+        //                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                             (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+        //                                 (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+        //                                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+        //                                         (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+        //                                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+        //                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+        //                                                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+        //         code: 1,
+        //         reqDate: val.request_date,
+        //         fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+        //         toDate: val.leavetodate
+        //     }
+        // })
+
+        // const newHalfday = Halfdayarr?.map((val) => {
+        //     return {
+        //         type: "Halfday Request",
+        //         reason: val.hf_reason,
+        //         slno: val.half_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //             (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+        //                 (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                     (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
+        //                             (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
+        //                                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+        //                                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+        //         inchargestatus: val.hf_incapprv_status,
+        //         hodstatus: val.hf_hod_apprv_status,
+        //         hrstatus: val.hf_hr_apprv_status,
+        //         code: 2,
+        //         reqDate: val.requestdate,
+        //         leaveDate: val.leavedate,
+        //         fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+        //     }
+        // })
+
+        // const newNopunch = Nopuncharr?.map((val) => {
+        //     return {
+        //         type: "Miss Punch Request",
+        //         reason: val.np_reason,
+        //         slno: val.nopunch_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         inchargestatus: val.np_incapprv_status,
+        //         hodstatus: val.np_hod_apprv_status,
+        //         hrstatus: val.np_hr_apprv_status,
+        //         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //             (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+        //                 (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+        //                             (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+        //                                 (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+        //                                     (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+        //         code: 3,
+        //         reqDate: val.creteddate,
+        //         fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+        //         toDate: val.nopunchdate
+        //     }
+        // })
+
+
+        // const newArray = [...newList, ...newHalfday, ...newNopunch]
+
+        // return ([...newList, ...newHalfday, ...newNopunch])
+        // } else {
+
+        // }
+        // }).catch(error => {
+
+        //     return []
+        // })
+
+
+    } else {
+
+
+        // const newList = leave?.map((val) => {
+        //     return {
+        //         leaveid: val.lve_uniq_no,
+        //         type: "Leave Request",
+        //         reason: val.leave_reason,
+        //         slno: val.leave_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         inchargestatus: val.incapprv_status,
+        //         hodstatus: val.hod_apprv_status,
+        //         hrstatus: val.hr_apprv_status,
+        //         status:
+        //             (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //                 (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+        //                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                             (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+        //                                 (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+        //                                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+        //                                         (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+        //                                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+        //                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+        //                                                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+        //         code: 1,
+        //         reqDate: val.request_date,
+        //         fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+        //         toDate: val.leavetodate
+        //     }
+        // })
+
+        // const newHalfday = halfday?.map((val) => {
+        //     return {
+        //         type: "Halfday Request",
+        //         reason: val.hf_reason,
+        //         slno: val.half_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //             (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+        //                 (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1) ? 'HOD Approved' :
+        //                             (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1) ? 'HOD Approved' :
+        //                                 (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected' :
+        //                                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Approved' :
+        //                                         (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
+        //                                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
+        //                                                 (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Pending',
+        //         inchargestatus: val.hf_incapprv_status,
+        //         hodstatus: val.hf_hod_apprv_status,
+        //         hrstatus: val.hf_hr_apprv_status,
+        //         code: 2,
+        //         reqDate: val.requestdate,
+        //         leaveDate: val.leavedate,
+        //         fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+        //     }
+        // })
+
+        // const newNopunch = misspunch?.map((val) => {
+        //     return {
+        //         type: "Miss Punch Request",
+        //         reason: val.np_reason,
+        //         slno: val.nopunch_slno,
+        //         emno: val.em_no,
+        //         name: val.em_name,
+        //         section: val.sect_name,
+        //         inchargestatus: val.np_incapprv_status,
+        //         hodstatus: val.np_hod_apprv_status,
+        //         hrstatus: val.np_hr_apprv_status,
+        //         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+        //             (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+        //                 (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+        //                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+        //                             (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+        //                                 (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+        //                                     (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+        //         code: 3,
+        //         reqDate: val.creteddate,
+        //         fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+        //         toDate: val.nopunchdate
+        //     }
+        // })
+
+
+        // const newArray = [...newList, ...newHalfday, ...newNopunch]
+        // return newArray
+
+    }
+}
+
+export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_id, em_dept_section, checkStatus) => {
+
+
+    const leave = state?.getLeaveRequests?.leaveRequest
+    const misspunch = state?.getMisspunchRequests?.misspunchRequests
+    const halfday = state?.getHalfdayRequests?.halfdayRequest
+
+    const sectionWiseLeaveRequest = state?.getSectLeaveRequests?.sectLeaves
+    const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
+    const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
+
+    if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
+        const newList = sectionWiseLeaveRequest?.map((val) => {
+            return {
+                leaveid: val.lve_uniq_no,
+                type: "Leave Request",
+                reason: val.leave_reason,
+                slno: val.leave_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.incapprv_status,
+                hodstatus: val.hod_apprv_status,
+                hrstatus: val.hr_apprv_status,
+                status:
+                    (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+                                        (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+                                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 1,
+                reqDate: val.request_date,
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+
+        const newHalfday = sectionWisehalfdayRequest?.map((val) => {
+            return {
+                type: "Halfday Request",
+                reason: val.hf_reason,
+                slno: val.half_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
+                                    (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                        (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                inchargestatus: val.hf_incapprv_status,
+                hodstatus: val.hf_hod_apprv_status,
+                hrstatus: val.hf_hr_apprv_status,
+                code: 2,
+                reqDate: val.requestdate,
+                leaveDate: val.leavedate,
+                fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+            }
+        })
+
+        const newNopunch = sectionWiseMisspunchRequest?.map((val) => {
+            return {
+                type: "Miss Punch Request",
+                reason: val.np_reason,
+                slno: val.nopunch_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.np_incapprv_status,
+                hodstatus: val.np_hod_apprv_status,
+                hrstatus: val.np_hr_apprv_status,
+                status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+                                    (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 3,
+                reqDate: val.creteddate,
+                fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+                toDate: val.nopunchdate
+            }
+        })
+
+        return ([...newList, ...newHalfday, ...newNopunch])
+
+    } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+        const newList = sectionWiseLeaveRequest
+            ?.filter(val => val.dept_section !== em_dept_section)
+            ?.concat(sectionWiseLeaveRequest?.filter(e => checkStatus === true ? e.em_id === em_id : e))
+            ?.map((val) => {
+                return {
+                    leaveid: val.lve_uniq_no,
+                    type: "Leave Request",
+                    reason: val.leave_reason,
+                    slno: val.leave_slno,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.sect_name,
+                    inchargestatus: val.incapprv_status,
+                    hodstatus: val.hod_apprv_status,
+                    hrstatus: val.hr_apprv_status,
+                    status:
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                            (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                                (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+                                        (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+                                            (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+                                                (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                    (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                                (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                    code: 1,
+                    reqDate: val.request_date,
+                    fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                    toDate: val.leavetodate
+                }
+            })
+
+        const newHalfday = sectionWisehalfdayRequest
+            ?.filter(val => val.dept_section !== em_dept_section)
+            ?.concat(sectionWisehalfdayRequest?.filter(e => checkStatus === true ? e.em_id === em_id : e))
+            ?.map((val) => {
+                return {
+                    type: "Halfday Request",
+                    reason: val.hf_reason,
+                    slno: val.half_slno,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.sect_name,
+                    status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
+                                        (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                            (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
+                                                (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                    inchargestatus: val.hf_incapprv_status,
+                    hodstatus: val.hf_hod_apprv_status,
+                    hrstatus: val.hf_hr_apprv_status,
+                    code: 2,
+                    reqDate: val.requestdate,
+                    leaveDate: val.leavedate,
+                    fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+                }
+            })
+        const newNopunch = sectionWiseMisspunchRequest
+            ?.filter(val => val.dept_section !== em_dept_section)
+            ?.concat(sectionWiseMisspunchRequest?.filter(e => checkStatus === true ? e.em_id === em_id : e))
+            ?.map((val) => {
+                return {
+                    type: "Miss Punch Request",
+                    reason: val.np_reason,
+                    slno: val.nopunch_slno,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.sect_name,
+                    inchargestatus: val.np_incapprv_status,
+                    hodstatus: val.np_hod_apprv_status,
+                    hrstatus: val.np_hr_apprv_status,
+                    status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+                                        (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                                (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                    code: 3,
+                    reqDate: val.creteddate,
+                    fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+                    toDate: val.nopunchdate
+                }
+            })
+
+
+        return ([...newList, ...newHalfday, ...newNopunch])
+
+    } else {
+        const newList = leave?.map((val) => {
+            return {
+                leaveid: val.lve_uniq_no,
+                type: "Leave Request",
+                reason: val.leave_reason,
+                slno: val.leave_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.incapprv_status,
+                hodstatus: val.hod_apprv_status,
+                hrstatus: val.hr_apprv_status,
+                status:
+                    (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
+                        (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
+                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
+                                    (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
+                                        (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
+                                            (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
+                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
+                                                            (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 1,
+                reqDate: val.request_date,
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+
+        const newHalfday = halfday?.map((val) => {
+            return {
+                type: "Halfday Request",
+                reason: val.hf_reason,
+                slno: val.half_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1) ? 'HOD Approved' :
+                                    (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1) ? 'HOD Approved' :
+                                        (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                            (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Approved' :
+                                                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
+                                                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Pending',
+                inchargestatus: val.hf_incapprv_status,
+                hodstatus: val.hf_hod_apprv_status,
+                hrstatus: val.hf_hr_apprv_status,
+                code: 2,
+                reqDate: val.requestdate,
+                leaveDate: val.leavedate,
+                fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
+
+            }
+        })
+
+        const newNopunch = misspunch?.map((val) => {
+            return {
+                type: "Miss Punch Request",
+                reason: val.np_reason,
+                slno: val.nopunch_slno,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.np_incapprv_status,
+                hodstatus: val.np_hod_apprv_status,
+                hrstatus: val.np_hr_apprv_status,
+                status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
+                    (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
+                        (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                            (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
+                                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
+                                    (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
+                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
+                                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
+                code: 3,
+                reqDate: val.creteddate,
+                fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
+                toDate: val.nopunchdate
+            }
+        })
+        const newArray = [...newList, ...newHalfday, ...newNopunch]
+        return newArray
+    }
+}
+

@@ -9,15 +9,13 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import {
     getEmployeeApprovalLevel, getEmployeeInformation,
-    getEmpNameHodSectionBased, getHodBasedDeptSectionName
+    getHodBasedDeptSectionName
 } from 'src/redux/actions/LeaveReqst.action'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
-import _ from 'underscore'
-
+// import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
 import LeaveTableContainer from './LeaveTableContainer'
-import { Actiontypes } from 'src/redux/constants/action.type'
+// import { Actiontypes } from 'src/redux/constants/action.type'
 // import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
 // import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
@@ -31,9 +29,9 @@ const LeaveRequestFormNew = lazy(() => import('./LeaveRequestFormNew'))
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HalfDayLeaveRequest'))
 
 
-const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
+// const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const MissPunchRequest = lazy(() => import('./MissPunchRequest/MissPunchRequest'))
-const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
+//const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
 
 
 const LeaveRequestMainCard = () => {
@@ -41,12 +39,13 @@ const LeaveRequestMainCard = () => {
     const dispatch = useDispatch();
 
     const [requestType, setRequestType] = useState(0)
+    const [count, setCount] = useState(0)
     // const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
     const employeeInform = useMemo(() => empInform, [empInform])
-    const { hod, incharge, groupmenu, em_no, em_id, em_department, em_dept_section } = employeeInform;
+    const { hod, incharge, em_id, } = employeeInform;
 
     // console.log(empInform)
 
@@ -63,6 +62,7 @@ const LeaveRequestMainCard = () => {
         //     dispatch(getannualleave(em_id))
         //     dispatch(getEmployeeInformation(em_id))
         // }
+        dispatch(getHodBasedDeptSectionName(em_id));
         dispatch(getEmployeeApprovalLevel(em_id))
         dispatch(setCommonSetting());
         dispatch(setDept())
@@ -103,12 +103,12 @@ const LeaveRequestMainCard = () => {
                     {
                         requestType === 1 ? <LeaveRequestFormNew setRequestType={setRequestType} /> :
                             // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
-                            requestType === 2 ? <HalfDayLeaveRequest setRequestType={setRequestType} /> :
-                                requestType === 3 ? <MissPunchRequest setRequestType={setRequestType} /> :
-                                    requestType === 4 ? <CompansatoryOffMast setRequestType={setRequestType} /> : null
+                            requestType === 2 ? <HalfDayLeaveRequest setRequestType={setRequestType} setCount={setCount} /> :
+                                requestType === 3 ? <MissPunchRequest setRequestType={setRequestType} setCount={setCount} /> : null
+                        // requestType === 4 ? <CompansatoryOffMast setRequestType={setRequestType} /> 
                     }
                 </Suspense>
-                <LeaveTableContainer />
+                <LeaveTableContainer count={count} setCount={setCount} />
             </Box>
         </CustomLayout>
     )

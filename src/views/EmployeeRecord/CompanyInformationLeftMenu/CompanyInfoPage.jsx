@@ -165,7 +165,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
         }
     }, [category, oldCate])
 
-    const today = moment(new Date()).format('YYYY-MM-DD');
+    //const today = moment(new Date()).format('YYYY-MM-DD');
 
     const updateData = useMemo(() => {
         return {
@@ -191,7 +191,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
         }
     }, [branch, dept, institute, category, oldCate,
         probationperiod, empstatus, probsataus, empNo, empId, designation, oldDesg,
-        ineffectdate, deptSection, cateineffectdate, today])
+        ineffectdate, deptSection, cateineffectdate])
 
 
 
