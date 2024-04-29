@@ -472,7 +472,8 @@ export const processShiftPunchMarkingHrFunc = async (
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID,
+        max_late_day_count
     } = commonSettings; //COMMON SETTING
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
@@ -567,21 +568,27 @@ export const processShiftPunchMarkingHrFunc = async (
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
                     const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
                     // PUNCH MASTER UPDATION
-                    const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
-                    const { success, message } = updatePunchMaster.data;
+                    const postDataForUpdatePunchMaster = {
+                        postData_getPunchData: postData_getPunchData,
+                        processedData: processedData,
+                        max_late_day_count: max_late_day_count
+                    }
+                    const updatePunchMaster = await axioslogin.post("/attendCal/monthlyUpdatePunchMaster/", postDataForUpdatePunchMaster);
+                    const { success, message, data } = updatePunchMaster.data;
                     if (success === 1) {
-                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '' }
+                        // console.log(updatePunchMaster.data)
+                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: data }
                     } else {
-                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
                     }
                 })
                 // return { status: 1, message: "result", data: e }
             })
         } else {
-            return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '' }
+            return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '', punchMastData: [] }
         }
     } else {
-        return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '' }
+        return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '', punchMastData: [] }
     }
 }
 
