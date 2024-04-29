@@ -79,6 +79,9 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray })
                     {data.early_out !== null ? data.early_out : 0}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
+                    <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.duty_desc}</Chip>
+                </TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
                     <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.lvereq_desc}</Chip>
                 </TableCell>
             </TableRow>
