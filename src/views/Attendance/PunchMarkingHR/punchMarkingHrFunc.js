@@ -83,6 +83,7 @@ export const processPunchMarkingHrFunc = async (
                         const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+
                         const getAttendanceStatus = await getAttendanceCalculation(
                             punch_In,
                             shift_in,
@@ -373,10 +374,12 @@ export const getAttendanceCalculation = async (
 
 //GET THE LATEIN 
 export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
+    // console.log(punch_In, shift_in, punch_out, shift_out)
 
-    if (isValid(punch_In) === true && isValid(punch_out) === true) {
+    if ((punch_In !== null && punch_In !== undefined && isValid(punch_In) === true) && (punch_out !== null && punch_out !== undefined && isValid(punch_out) === true)) {
         //HOURS WORKED
         const hoursWorked = differenceInMinutes(punch_out, punch_In)
+        // console.log(hoursWorked)
         if (isAfter(punch_In, shift_in) === true) {
             //GET LATE IN TIME
             const getLateInMinits = differenceInMinutes(punch_In, shift_in)
@@ -403,6 +406,7 @@ export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift
 
 //PUNCH IN OUT MARKING SETTINGS
 const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
+
     const crossDay = shiftMergedPunchMaster?.shft_cross_day;
     const shiftInTime = `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_in), 'HH:mm')}`;
     const shiftOutTime = crossDay === 0 ? `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_out), 'HH:mm')}` :
