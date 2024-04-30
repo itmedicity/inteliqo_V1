@@ -78,7 +78,6 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
         const { success, data } = result.data;
         if (success === 1) {
-            console.log(data);
             const { plan_slno, shift_id, shft_desc, shft_chkin_time, shft_chkout_time, } = data[0];
             setShiftDesc(shft_desc)
             setCheckin(format(new Date(shft_chkin_time), 'hh:mm'))
@@ -92,7 +91,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             setPlanSlno(0)
             setShiftId(0)
         }
-    }, [em_id, fromDate])
+    }, [em_id])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         if (e.target.checked === true) {

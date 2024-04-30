@@ -111,16 +111,16 @@ const RequestedLeaveTable = ({ setCount }) => {
 
     const [columnDef] = useState([
         { headerName: 'Emp. ID', field: 'emno', filter: true, minWidth: 150, },
-        { headerName: 'Emp. Name', field: 'name', filter: true, minWidth: 150, },
+        { headerName: 'Emp. Name', field: 'name', filter: true, minWidth: 200, },
         { headerName: 'Dept. Section', field: 'section', filter: true, minWidth: 250, },
-        { headerName: 'Request Type', field: 'type', minWidth: 200, },
-        { headerName: 'Leave Date', field: 'fromDate', filter: true },
-        { headerName: 'Leave Reason', field: 'reason', },
-        { headerName: 'Status', field: 'status', filter: true },
+        { headerName: 'Request Type', field: 'type', minWidth: 200, filter: true },
+        { headerName: 'Leave Date', field: 'fromDate', filter: true, minWidth: 150, },
+        { headerName: 'Leave Reason', field: 'reason', minWidth: 150, },
+        { headerName: 'Status', field: 'status', filter: true, minWidth: 150, },
         {
-            headerName: 'Delete',
+            headerName: 'Delete', minWidth: 150,
             cellRenderer: params => {
-                if (params.data.hrstatus === 1 | params.data.inchargestatus === 1 || params.data.hodstatus === 1) {
+                if (params.data.hrstatus === 1 || params.data.inchargestatus === 1 || params.data.hodstatus === 1 || params.data.inchargestatus === 2) {
                     return <IconButton
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <BeenhereIcon />
