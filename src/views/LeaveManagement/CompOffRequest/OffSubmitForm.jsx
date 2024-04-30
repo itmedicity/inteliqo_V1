@@ -141,7 +141,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             warningNofity('Select The Off Type and Shift Feild')
         }
     }, [fromDate, selectedShift, empData, shiftTiming, salary_above,
-        week_off_day, comp_hour_count, setShowForm])
+        week_off_day, comp_hour_count])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         const checkin = e.target.checked;
@@ -219,7 +219,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             }
         }
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
-        setCount, empData, coff_min_working_hour])
+        setCount, empData, coff_min_working_hour, setShowForm])
 
 
     return (
