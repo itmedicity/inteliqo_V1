@@ -272,28 +272,28 @@ export const getAttendanceCalculation = async (
                     {
                         duty_status: salaryLimit === false ? 2 : 1,
                         duty_desc: 'HP',
-                        lvereq_desc: 'HP',
+                        lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                         duty_remark: 'holiday Present'
                     }// new Entry by Ajith on  April 24th 2024, 6:31:15 pm
                     : earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                         {
                             duty_status: salaryLimit === false ? 2 : 1,
                             duty_desc: 'HP',
-                            lvereq_desc: 'HP',
+                            lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                             duty_remark: 'holiday Present'
                         } :
                         earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
                             {
                                 duty_status: salaryLimit === false ? 2 : 1,
                                 duty_desc: 'HP',
-                                lvereq_desc: 'HP',
+                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                 duty_remark: 'Late Coming'
                             } :
                             earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === true ?
                                 {
                                     duty_status: salaryLimit === false ? 2 : 1,
                                     duty_desc: 'HP',
-                                    lvereq_desc: 'HP',
+                                    lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                     duty_remark: 'working hours more than six hours so holiday present'
                                 } :
                                 earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === false ?
@@ -315,7 +315,7 @@ export const getAttendanceCalculation = async (
                                             {
                                                 duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
                                                 duty_desc: 'HP',
-                                                lvereq_desc: 'HP',
+                                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                                 duty_remark: 'Late in half day after 30 minits and working hours greater than 6 hours'
                                             } :
                                             // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM end

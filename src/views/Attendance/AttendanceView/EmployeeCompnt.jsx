@@ -1,11 +1,11 @@
-import React, { memo, useMemo, useState } from 'react'
+import React, { Fragment, memo, useMemo, useState } from 'react'
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
+import { addMonths, eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -13,12 +13,17 @@ import { AttendanceViewFun } from './Functions';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import LeaveDescription from './LeaveDescription';
 
 const EmployeeCompnt = ({ em_no }) => {
 
     const empNo = useMemo(() => em_no, [em_no]);
     const [value, setValue] = useState(moment(new Date()));
     const [mainArray, setMainArray] = useState([])
+
+    const [tableArray, settableArray] = useState([])
+    const [daysNum, setdaysNum] = useState([])
+    const [daysStr, setdaysStr] = useState([])
 
     // get holiday 
     const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
@@ -32,19 +37,81 @@ const EmployeeCompnt = ({ em_no }) => {
             to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
         }
         const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-        const { success, data } = result.data
+        // const { success, data } = result.data
+        // if (success === 1) {
+        //     let punchData = data;
+        //     AttendanceViewFun(value, punchData, holidayList).then((values) => {
+        //         const array = values.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+        //         setMainArray(array)
+        //     })
+        // } else {
+        //     setMainArray([])
+        //     infoNofity("No Punch Details")
+        // }
+        const { success, data: punchMasteData } = result.data
         if (success === 1) {
-            let punchData = data;
-            AttendanceViewFun(value, punchData, holidayList).then((values) => {
-                const array = values.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                setMainArray(array)
+
+            const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+
+            // console.log(dateRange)
+            // console.log(punchMasteData)
+
+            const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                const empArray = punchMasteData?.filter(e => e.em_no === el)
+                let emName = empArray?.find(e => e.em_no === el).em_name;
+                let emNo = empArray?.find(e => e.em_no === el).em_no;
+                let emId = empArray?.find(e => e.em_no === el).emp_id;
+
+                // console.log(dateRange)
+                // console.log(empArray)
+                return {
+                    em_no: el,
+                    emName: emName,
+                    dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                    daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                    punchMaster: dateRange?.map((e) => {
+                        // console.log(e)
+                        return {
+                            attDate: e,
+                            duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                            duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                            em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                            em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                            emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                            hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                            holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                            holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                            leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                            duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                            lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                        }
+                    }),
+                    totalDays: dateRange?.length,
+                    totalP: empArray?.filter(el => el.lvereq_desc === "P").length ?? 0,
+                    totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
+                    totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
+                    totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
+                    totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
+                    totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
+                    totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
+                    totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
+                    totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
+                    totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
+                    totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
+                    totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
+                }
             })
+            settableArray(resultss[0].punchMaster)
+            setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+            setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
         } else {
-            setMainArray([])
             infoNofity("No Punch Details")
         }
     }
 
+
+    console.log(tableArray)
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
@@ -98,147 +165,17 @@ const EmployeeCompnt = ({ em_no }) => {
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} ></Box>
                 </Paper>
-                <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                P
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: "center" }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Present
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                OFF
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Work OFF
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                HD
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Halfday
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                LC
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Late Coming
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    {/* <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                HFD
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Half Day
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box> */}
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                A
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Absent
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                H
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Holiday
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                HDL
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Halfday Leave
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                LV
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Leave
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                HP
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                            <CssVarsProvider>
-                                <Typography sx={{ display: 'flex', }} >
-                                    Holiday Present
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
+
+                <Paper square variant='elevation' sx={{ display: "flex", alignItems: "center", justifyContent: 'flex-start', flexWrap: 'wrap', m: 0.5, p: 0.5, }}   >
+                    <LeaveDescription lvename='P' desc="Present" />
+                    <LeaveDescription lvename='WOFF' desc="Work OFF" />
+                    <LeaveDescription lvename='LC' desc="Late Coming" />
+                    <LeaveDescription lvename='HD' desc="Half Day" />
+                    <LeaveDescription lvename='A' desc="Absent" />
+                    <LeaveDescription lvename='H' desc="Holiday" />
+                    <LeaveDescription lvename='HDL' desc="Halfday Leave" />
+                    <LeaveDescription lvename='LV' desc="Leave" />
+                    <LeaveDescription lvename='HP' desc="Holiday Present" />
                 </Paper>
                 <Box sx={{ width: "100%" }} >
                     <Paper square elevation={0} sx={{
@@ -289,7 +226,7 @@ const EmployeeCompnt = ({ em_no }) => {
                             <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
                                 <TableHead>
                                     <TableRow>
-                                        {mainArray && mainArray.map((val, index) => (
+                                        {daysNum && daysNum.map((val, index) => (
                                             <TableCell key={index} sx={{
                                                 width: 100,
                                                 p: 0,
@@ -302,17 +239,54 @@ const EmployeeCompnt = ({ em_no }) => {
                                                     item
                                                     sx={{ minHeight: 25, maxHeight: 25, textAlign: 'center' }}
                                                 >
-                                                    {val.date}
+                                                    {val}
                                                 </Box>
                                             </TableCell>
                                         ))}
+                                        <TableCell sx={{
+                                            p: 0,
+                                            width: 100,
+                                            border: 0.1,
+                                            borderColor: '#E1E6E1',
+                                            position: 'sticky'
+                                        }}
+                                        >
+                                            <Box
+                                                component={Grid}
+                                                item
+                                                sx={{
+                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
+                                                    textTransform: 'capitalize',
+                                                }}
+                                            >
+                                                rtrt
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{
+                                            p: 0,
+                                            width: 100,
+                                            border: 0.1,
+                                            borderColor: '#E1E6E1',
+                                            position: 'sticky'
+                                        }}
+                                        >
+                                            <Box
+                                                component={Grid}
+                                                item
+                                                sx={{
+                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
+                                                    textTransform: 'capitalize',
+                                                }}
+                                            >
+                                                rtrt
+                                            </Box>
+                                        </TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        {mainArray && mainArray.map((val, index) => (
+                                        {daysStr && daysStr.map((val, index) => (
                                             <TableCell key={index} sx={{
                                                 p: 0,
                                                 width: 100,
-                                                backgroundColor: val.sunday === '0' ? '#ffebee' : '#f1faee',
                                                 border: 0.1,
                                                 borderColor: '#E1E6E1',
                                             }}
@@ -323,23 +297,59 @@ const EmployeeCompnt = ({ em_no }) => {
                                                     sx={{
                                                         minHeight: 25, maxHeight: 25, textAlign: 'center',
                                                         textTransform: 'capitalize',
-                                                        color: val.holiday === 1 || val.sunday === '0' ? '#880e4f' : '#212121'
                                                     }}
                                                 >
-                                                    {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
+                                                    {val}
                                                 </Box>
                                             </TableCell>
                                         ))}
+                                        <TableCell sx={{
+                                            p: 0,
+                                            width: 100,
+                                            border: 0.1,
+                                            borderColor: '#E1E6E1',
+                                            position: 'sticky'
+                                        }}
+                                        >
+                                            <Box
+                                                component={Grid}
+                                                item
+                                                sx={{
+                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
+                                                    textTransform: 'capitalize',
+                                                }}
+                                            >
+                                                rtrt
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell sx={{
+                                            p: 0,
+                                            width: 100,
+                                            border: 0.1,
+                                            borderColor: '#E1E6E1',
+                                            position: 'sticky'
+                                        }}
+                                        >
+                                            <Box
+                                                component={Grid}
+                                                item
+                                                sx={{
+                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
+                                                    textTransform: 'capitalize',
+                                                }}
+                                            >
+                                                rtrt
+                                            </Box>
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-
                                     <TableRow
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         selected={true}
                                         hover={true}
                                     >
-                                        {mainArray && mainArray.map((row, index) => (
+                                        {tableArray?.map((row, index) => (
                                             <TableCell key={index} sx={{ p: 0, width: 100, }}>
                                                 <Box
                                                     component={Grid}
@@ -353,6 +363,30 @@ const EmployeeCompnt = ({ em_no }) => {
                                                 </Box>
                                             </TableCell>
                                         ))}
+                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
+                                        <TableCell sx={{ position: 'sticky' }}></TableCell>
+                                    </TableRow>
+                                    <TableRow
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        selected={true}
+                                        hover={true}
+                                    >
+                                        {tableArray?.map((row, index) => (
+                                            <TableCell key={index} sx={{ p: 0, width: 100, }}>
+                                                <Box
+                                                    component={Grid}
+                                                    item
+                                                    sx={{
+                                                        minHeight: 25, maxHeight: 25,
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    {row.lvereq_desc}
+                                                </Box>
+                                            </TableCell>
+                                        ))}
+                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
+                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
