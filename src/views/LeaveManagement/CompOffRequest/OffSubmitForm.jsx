@@ -13,7 +13,7 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours, isValid } from 'date-fns'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
-const OffSubmitForm = ({ employeeData, setCount }) => {
+const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
     const empData = useMemo(() => employeeData, [employeeData])
 
@@ -191,6 +191,10 @@ const OffSubmitForm = ({ employeeData, setCount }) => {
                 hod_apprv_cmnt: "DIRECT",
                 hod_apprv_time: moment().format('YYYY-MM-DD HH:mm:ss'),
                 hr_aprrv_requ: 1,
+                hr_apprv_status: 1,
+                hr_apprv_cmnt: "DIRECT",
+                hr_user: empData?.emNo,
+                hr_apprv_time: moment().format('YYYY-MM-DD HH:mm:ss'),
                 ceo_req_status: 1,
                 resonforleave: reason,
                 shift_id: selectedShift,
@@ -207,13 +211,15 @@ const OffSubmitForm = ({ employeeData, setCount }) => {
                 succesNofity('C-OFF Credited SuccessFully')
                 setCount(Math.random())
                 setOpenBkDrop(false)
+                setShowForm(0)
             } else {
                 errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
                 setOpenBkDrop(false)
+                setShowForm(0)
             }
         }
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
-        setCount, empData, coff_min_working_hour])
+        setCount, empData, coff_min_working_hour, setShowForm])
 
 
     return (

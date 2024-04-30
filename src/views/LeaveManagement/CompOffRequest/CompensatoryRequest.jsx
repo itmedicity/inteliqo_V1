@@ -52,7 +52,7 @@ const CompensatoryRequest = () => {
                 }>
                     <EmployeeSelection setShowForm={setShowForm} steEmployeeData={steEmployeeData} />
                     {
-                        showForm === 1 ? <OffSubmitForm employeeData={employeeData} setCount={setCount} /> : null
+                        showForm === 1 ? <OffSubmitForm employeeData={employeeData} setCount={setCount} setShowForm={setShowForm} /> : null
                     }
                 </Suspense>
                 <CoffRequesttable />

@@ -60,6 +60,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
             setHodBasedSection([])
 
         } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+
             setDisables(true)
             setDeptID(0)
             const fetchData = async (em_id) => {
@@ -82,8 +83,8 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
 
     // FILTERING AND SORTING DEPARTMENT SECTION AND EMPLOYEE
     useEffect(() => {
-
-        if (departmentSectionListFilterd?.length > 0 && hodBasedSection?.length === 0) {
+        // if (departmentSectionListFilterd?.length > 0 && hodBasedSection?.length === 0) {
+        if (departmentSectionListFilterd?.length > 0 && masterGroupStatus === true) {
             // NO FILTER FOR DEPARTMENT AND DEPARTMENT SECTION
             const departmentSection = departmentSectionListFilterd?.filter((e) => e.dept_id === deptID)
             setDeptSectionList(departmentSection)
@@ -106,7 +107,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
             setEmpList([])
         }
 
-    }, [departmentSectionListFilterd, deptID, hodBasedSection])
+    }, [departmentSectionListFilterd, deptID, hodBasedSection, masterGroupStatus])
 
 
     //HANDELE CHANGE DEPARTMENT

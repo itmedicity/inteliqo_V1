@@ -72,7 +72,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         setCheckInCheck(false)
         setCheckOutCheck(false)
         const postData = {
-            startDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+            startDate: format(new Date(date), 'yyyy-MM-dd'),
             em_id: em_id
         }
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
@@ -91,7 +91,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             setPlanSlno(0)
             setShiftId(0)
         }
-    }, [em_id, fromDate])
+    }, [em_id])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         if (e.target.checked === true) {
@@ -120,7 +120,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             warningNofity("Check In || Check Out Needs To Check")
         } else if (reason === '') {
             warningNofity("Reason Is Mandatory")
-        } else {
+        } else if (shiftDesc === 'WOFF') {
+            warningNofity("Cannot Apply Miss Punch Request on Week Off")
+        }
+        else {
             setDropOpen(true)
 
             const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
@@ -209,7 +212,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         }
     }, [reason, checkInCheck, checkOutCheck, em_department, em_dept_section, em_id, em_no, fromDate,
         planSlno, shiftId, loginEmno, loginHod, loginIncharge, masterGroupStatus, setRequestType,
-        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel
+        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc
     ])
 
     return (
