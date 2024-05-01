@@ -336,7 +336,7 @@ const ShiftUpdation = () => {
                 month: monthStartDate,
                 section: section
             }
-            // console.log(postData)
+            //console.log(postData)
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
