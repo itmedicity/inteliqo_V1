@@ -291,15 +291,7 @@ const AllView = ({ em_id }) => {
                                                         </Box>
                                                     </td>
                                                 ))}
-                                                {/* <td colSpan={8} ></td> */}
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td colSpan={8} ></td>
                                             </tr>
                                             <tr  >
                                                 {row.punchMaster.map((val, index) => (

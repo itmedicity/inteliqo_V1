@@ -1,6 +1,7 @@
 import React, { Fragment, memo, useMemo, useState } from 'react'
-import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import { Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy';
+import { Box, Grid, Paper, } from '@mui/material'
+import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import Table from '@mui/joy/Table'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -102,7 +103,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
                 }
             })
-            settableArray(resultss[0].punchMaster)
+            settableArray(resultss)
             setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
             setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
         } else {
@@ -178,13 +179,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     <LeaveDescription lvename='HP' desc="Holiday Present" />
                 </Paper>
                 <Box sx={{ width: "100%" }} >
-                    <Paper square elevation={0} sx={{
-                        display: "flex",
-                        p: 1,
-                        alignItems: "center",
-                    }}  >
-                    </Paper>
-                    <Box component={Grid}
+                    {/* <Box component={Grid}
                         container
                         item
                         xs={12}
@@ -391,7 +386,135 @@ const EmployeeCompnt = ({ em_no }) => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                    </Box> */}
+                    <Box sx={{
+                        display: 'flex', width: '100%', flexDirection: 'column', p: 0.5,
+                        // height: screenInnerHeight * 75 / 100,
+                        overflow: 'auto',
+                        '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                    }}>
+                        <Sheet
+                            variant="outlined"
+                            sx={{
+                                '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                                '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                                overflow: 'auto',
+                                borderRadius: 5,
+                                width: '100%'
+                            }}
+                        >
+                            <Table
+                                borderAxis="bothBetween"
+                                // stripe="odd"
+                                // hoverRow
+                                stickyHeader
+                                size='sm'
+                                sx={{
+                                    '& tr > *:first-of-type': {
+                                        position: 'sticky',
+                                        left: 0,
+                                        boxShadow: '1px 0 var(--TableCell-borderColor)',
+                                        bgcolor: 'background.surface',
+                                        zIndex: 4,
+                                        width: '100%'
+                                    },
+                                }}
+                            >
+                                <Box >
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 400, zIndex: 5 }}>Name</th>
+                                            <th style={{ width: 100, zIndex: 1 }} >ID#</th>
+                                            {
+                                                daysNum?.map((e, idx) => (
+                                                    <th key={idx} style={{ zIndex: 1, width: 60, textAlign: 'center' }} >
+                                                        {e}
+                                                    </th>
+                                                ))
+                                            }
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                            <th><Box sx={{ width: 50 }} ></Box></th>
+                                        </tr>
+                                        <tr>
+                                            <th style={{ zIndex: 5 }}> Days </th>
+                                            <th style={{ textAlign: "center", zIndex: 0 }}>  </th>
+                                            {
+                                                daysStr?.map((e, idx) => (
+                                                    <th key={idx} style={{ zIndex: 1, textAlign: 'center', width: 60, }}>
+                                                        {e}
+                                                    </th>
+                                                ))
+                                            }
+                                            <th style={{ textAlign: 'center' }} >Total Days</th>
+                                            <th style={{ textAlign: 'center' }} >Present</th>
+                                            <th style={{ textAlign: 'center' }} >Half Day</th>
+                                            <th style={{ textAlign: 'center' }} >Off</th>
+                                            <th style={{ textAlign: 'center' }} >Holiday</th>
+                                            <th style={{ textAlign: 'center' }} >Holiday-P</th>
+                                            <th style={{ textAlign: 'center' }} >Leaves</th>
+                                            <th style={{ textAlign: 'center' }} >Absent</th>
+                                            <th style={{ textAlign: 'center' }} >ESI</th>
+                                            <th style={{ textAlign: 'center' }} >Pay Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {tableArray && tableArray.map((row, index) => (
+                                            <Fragment key={index}>
+                                                <tr>
+                                                    <td rowSpan={2} style={{ zIndex: 4 }} >
+                                                        <Box sx={{ width: 200 }}> {row.emName}</Box>
+                                                    </td>
+                                                    <td rowSpan={2} style={{ textAlign: 'center' }} >
+                                                        <Box sx={{ width: 60 }}> {row.em_no}</Box>
+                                                    </td>
+                                                    {row.punchMaster.map((val, index) => (
+                                                        <td key={index} style={{ zIndex: 0, textAlign: 'center', width: 60, height: 15 }}>
+                                                            <Box sx={{ width: 40 }} >
+                                                                {val.duty_desc}
+                                                            </Box>
+                                                        </td>
+                                                    ))}
+                                                    <td colSpan={8} ></td>
+                                                </tr>
+                                                <tr  >
+                                                    {row.punchMaster.map((val, index) => (
+                                                        <td key={index}
+                                                            style={{ zIndex: 0, textAlign: 'center', width: 60, borderLeft: '0.1px solid #dddfe2', height: 15, backgroundColor: 'lightgreen' }}
+                                                        >
+                                                            <Box >
+                                                                {val.lvereq_desc}
+                                                            </Box>
+                                                        </td>
+                                                    ))}
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#5494F3', }}>{row.totalDays}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalP}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalHD}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalWOFF + row.totalNOFF}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totaH}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totaHP}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalLV + row.totalHDL}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#F68685', }}>{row.totaLWP + row.totalA}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#F68685', }}>{row.totaESI}</td>
+                                                    <td style={{ textAlign: 'center', backgroundColor: '#157A22', color: 'white' }}>
+                                                        {row.totalP + (row.totalHD * 0.5) + (row.totalWOFF + row.totalNOFF) + row.totaH + row.totaHP + row.totalLV + row.totalHDL}
+                                                    </td>
+                                                </tr>
+                                            </Fragment>
+                                        ))}
+                                    </tbody>
+                                </Box>
+                            </Table>
+                        </Sheet>
                     </Box>
+
                 </Box>
             </Box >
         </CustomLayout >
