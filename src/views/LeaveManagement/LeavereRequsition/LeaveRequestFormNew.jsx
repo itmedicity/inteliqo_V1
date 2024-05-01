@@ -376,7 +376,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
-                                minDate={startOfMonth(new Date())}
+                                //minDate={startOfMonth(new Date())}
                                 value={fromDate}
                                 size="small"
                                 onChange={(newValue) => setFromDate(newValue)}
