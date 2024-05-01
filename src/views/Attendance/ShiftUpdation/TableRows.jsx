@@ -13,12 +13,11 @@ import { useMemo } from 'react';
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray }) => {
-
+    // console.log(disable)
     const state = useSelector((state) => state?.getCommonSettings)
     const commonSetting = useMemo(() => state, [state])
 
-    const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
-        week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+    const { cmmn_grace_period } = commonSetting;
 
     // console.log(data)
     const { isNOff, isWeekOff } = data;

@@ -234,7 +234,7 @@ const PunchMarkingHR = () => {
                         empSalary
                     )
                     const { status, message, errorMessage, dta } = result;
-                    console.log(result)
+                    // console.log(result)
                     if (status === 1) {
                         // console.log(dta.section)
                         // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
@@ -275,7 +275,7 @@ const PunchMarkingHR = () => {
                                 ?.filter((e) => e.lvereq_desc === 'HD')
                                 ?.map((e) => e.punch_slno)
 
-                            console.log(filterLcData)
+                            // console.log(filterLcData)
                             //UPDATE IN TO PUNCH MASTER TABLE 
                             if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
                                 await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
@@ -353,7 +353,7 @@ const PunchMarkingHR = () => {
                 const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
                 const { susc, message } = updateDutyPlanTable.data;
-                console.log(susc, message)
+                // console.log(susc, message)
                 if (susc === 1) {
                     // UPDATE PUNCH_MARKING_HR TABLE
                     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postDataUpdatePunchMarkHR);
