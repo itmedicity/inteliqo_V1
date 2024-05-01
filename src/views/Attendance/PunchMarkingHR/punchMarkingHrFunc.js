@@ -159,7 +159,8 @@ export const processPunchMarkingHrFunc = async (
 
                                 return {
                                     ...e,
-                                    lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+                                    lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
+                                    duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
                                 }
                             })
                         })
@@ -456,7 +457,6 @@ const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData)
     }
 }
 
-
 // F
 
 export const processShiftPunchMarkingHrFunc = async (
@@ -571,6 +571,7 @@ export const processShiftPunchMarkingHrFunc = async (
                     // console.log(element)
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
                     const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    // console.log(processedData)
                     // PUNCH MASTER UPDATION
                     const postDataForUpdatePunchMaster = {
                         postData_getPunchData: postData_getPunchData,

@@ -490,60 +490,6 @@ const ShiftUpdation = () => {
                             setTableArray(array)
                             setOpenBkDrop(false)
                             succesNofity('Punch Master Updated Successfully')
-
-
-
-
-                            // const getPunchMast_PostData = {
-                            //     fromDate_punchMaster: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            //     toDate_punchMaster: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            //     empList: empList
-                            // }
-
-                            // console.log(getPunchMast_PostData)
-                            // const punch_master_data = await axioslogin.post("/attendCal/getPData/", getPunchMast_PostData); //GET PUNCH MASTER DATA
-                            // const { success, planData } = punch_master_data.data;
-                            // console.log(success, planData)
-                            // if (success === 1) {
-
-                            /*
-                             * CALCULATE THE CALCULATED LOP BASED ON LEAVE DESC AND DUTY_DESC  
-                             */
-                            // let lcCount = 0;
-                            // const data = planData
-                            //     ?.map((e) => {
-                            //         return {
-                            //             punch_slno: e.punch_slno,
-                            //             duty_desc: e.duty_desc,
-                            //             lvereq_desc: e.lvereq_desc
-                            //         }
-                            //     })
-                            //     ?.sort((a, b) => a.punch_slno - b.punch_slno)
-                            //     ?.map(item => {
-                            //         if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
-                            //             lcCount++;
-                            //             return item;
-                            //         } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
-                            //             return { ...item, lvereq_desc: "HD" };
-                            //         } else {
-                            //             return item;
-                            //         }
-                            //     })
-
-                            // if (data !== null && data !== undefined && data?.length > 0) {
-                            // const updatePunchMasterCalculated = await axioslogin.post("/attendCal/updatePunchMasterCalculated/", data);
-                            // const { success } = updatePunchMasterCalculated.data;
-                            // if (success === 1) {
-
-
-                            // }
-                            // }
-
-                            // console.log(success, message)
-                            // } else {
-                            //     warningNofity("Punch Master Data Not Found !!! Contact IT")
-                            // }
-                            // setOpenBkDrop(false)
                         } else {
                             setOpenBkDrop(false)
                             warningNofity(message, errorMessage)
