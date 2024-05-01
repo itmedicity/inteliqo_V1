@@ -336,15 +336,16 @@ const ShiftUpdation = () => {
                 month: monthStartDate,
                 section: section
             }
-            // console.log(postData)
+            //console.log(postData)
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
                 // console.log(data)
                 const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
                 const lastDay_month = format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
-
-                if (lastUpdateDate === lastDay_month) {
+                // console.log(lastUpdateDate);
+                // console.log(lastDay_month);
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! can't do the Process !! ")
                     setDisable(true)
 

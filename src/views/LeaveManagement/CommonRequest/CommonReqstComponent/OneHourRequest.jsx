@@ -222,7 +222,7 @@ const OneHourRequest = ({ count, setCount }) => {
             warningNofity("Please Select Punch Data Button!!")
         }
         else {
-            const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
             const dateCheck = {
                 month: monthStartDate,
                 section: em_dept_section
@@ -230,10 +230,10 @@ const OneHourRequest = ({ count, setCount }) => {
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
-                const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
 
-                if (lastUpdateDate === lastDay_month) {
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
                     //check in time correct
