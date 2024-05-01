@@ -38,25 +38,11 @@ const EmployeeCompnt = ({ em_no }) => {
             to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
         }
         const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-        // const { success, data } = result.data
-        // if (success === 1) {
-        //     let punchData = data;
-        //     AttendanceViewFun(value, punchData, holidayList).then((values) => {
-        //         const array = values.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-        //         setMainArray(array)
-        //     })
-        // } else {
-        //     setMainArray([])
-        //     infoNofity("No Punch Details")
-        // }
         const { success, data: punchMasteData } = result.data
         if (success === 1) {
 
             const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
                 ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
-
-            // console.log(dateRange)
-            // console.log(punchMasteData)
 
             const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
                 const empArray = punchMasteData?.filter(e => e.em_no === el)
@@ -111,8 +97,7 @@ const EmployeeCompnt = ({ em_no }) => {
         }
     }
 
-
-    console.log(tableArray)
+    // console.log(tableArray)
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
@@ -179,214 +164,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     <LeaveDescription lvename='HP' desc="Holiday Present" />
                 </Paper>
                 <Box sx={{ width: "100%" }} >
-                    {/* <Box component={Grid}
-                        container
-                        item
-                        xs={12}
-                        sm={12}
-                        md={12}
-                        lg={12}
-                        xl={12}
-                        sx={{
-                            display: 'flex',
-                            overflow: 'auto',
-                            '::-webkit-scrollbar': {
-                                height: 8,
-                            },
-                            '::-webkit-scrollbar-track': {
-                                boxShadow: 'inset 0 0 5px rgb(255, 251, 251)',
-                                borderRadius: '0px',
-                            },
 
-                            '::-webkit-scrollbar-thumb': {
-                                // background: '#077DFA',
-                                borderRadius: '0px',
-                            },
-
-                            '::-webkit-scrollbar-thumb:hover': {
-                                //   background: 'rgb(255, 251, 251)',
-                            },
-                            p: 1
-                        }} >
-                        <TableContainer component={Grid}
-                            item
-                            xs={'auto'}
-                            sm={'auto'}
-                            md={'auto'}
-                            lg={'auto'}
-                            xl={'auto'}
-                            sx={{
-                                display: 'flex',
-                            }}>
-                            <Table sx={{ backgroundColor: '#F3F6F9' }} size="small" >
-                                <TableHead>
-                                    <TableRow>
-                                        {daysNum && daysNum.map((val, index) => (
-                                            <TableCell key={index} sx={{
-                                                width: 100,
-                                                p: 0,
-                                                border: 0.1, borderColor: '#E1E6E1',
-                                                backgroundColor: val.holiday === 1 ? '#e3f2fd' : '#f1faee',
-                                            }}
-                                            >
-                                                <Box
-                                                    component={Grid}
-                                                    item
-                                                    sx={{ minHeight: 25, maxHeight: 25, textAlign: 'center' }}
-                                                >
-                                                    {val}
-                                                </Box>
-                                            </TableCell>
-                                        ))}
-                                        <TableCell sx={{
-                                            p: 0,
-                                            width: 100,
-                                            border: 0.1,
-                                            borderColor: '#E1E6E1',
-                                            position: 'sticky'
-                                        }}
-                                        >
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{
-                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
-                                                    textTransform: 'capitalize',
-                                                }}
-                                            >
-                                                rtrt
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell sx={{
-                                            p: 0,
-                                            width: 100,
-                                            border: 0.1,
-                                            borderColor: '#E1E6E1',
-                                            position: 'sticky'
-                                        }}
-                                        >
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{
-                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
-                                                    textTransform: 'capitalize',
-                                                }}
-                                            >
-                                                rtrt
-                                            </Box>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        {daysStr && daysStr.map((val, index) => (
-                                            <TableCell key={index} sx={{
-                                                p: 0,
-                                                width: 100,
-                                                border: 0.1,
-                                                borderColor: '#E1E6E1',
-                                            }}
-                                            >
-                                                <Box
-                                                    component={Grid}
-                                                    item
-                                                    sx={{
-                                                        minHeight: 25, maxHeight: 25, textAlign: 'center',
-                                                        textTransform: 'capitalize',
-                                                    }}
-                                                >
-                                                    {val}
-                                                </Box>
-                                            </TableCell>
-                                        ))}
-                                        <TableCell sx={{
-                                            p: 0,
-                                            width: 100,
-                                            border: 0.1,
-                                            borderColor: '#E1E6E1',
-                                            position: 'sticky'
-                                        }}
-                                        >
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{
-                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
-                                                    textTransform: 'capitalize',
-                                                }}
-                                            >
-                                                rtrt
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell sx={{
-                                            p: 0,
-                                            width: 100,
-                                            border: 0.1,
-                                            borderColor: '#E1E6E1',
-                                            position: 'sticky'
-                                        }}
-                                        >
-                                            <Box
-                                                component={Grid}
-                                                item
-                                                sx={{
-                                                    minHeight: 25, maxHeight: 25, textAlign: 'center',
-                                                    textTransform: 'capitalize',
-                                                }}
-                                            >
-                                                rtrt
-                                            </Box>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        selected={true}
-                                        hover={true}
-                                    >
-                                        {tableArray?.map((row, index) => (
-                                            <TableCell key={index} sx={{ p: 0, width: 100, }}>
-                                                <Box
-                                                    component={Grid}
-                                                    item
-                                                    sx={{
-                                                        minHeight: 25, maxHeight: 25,
-                                                        textAlign: 'center',
-                                                    }}
-                                                >
-                                                    {row.duty_desc}
-                                                </Box>
-                                            </TableCell>
-                                        ))}
-                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
-                                        <TableCell sx={{ position: 'sticky' }}></TableCell>
-                                    </TableRow>
-                                    <TableRow
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        selected={true}
-                                        hover={true}
-                                    >
-                                        {tableArray?.map((row, index) => (
-                                            <TableCell key={index} sx={{ p: 0, width: 100, }}>
-                                                <Box
-                                                    component={Grid}
-                                                    item
-                                                    sx={{
-                                                        minHeight: 25, maxHeight: 25,
-                                                        textAlign: 'center',
-                                                    }}
-                                                >
-                                                    {row.lvereq_desc}
-                                                </Box>
-                                            </TableCell>
-                                        ))}
-                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
-                                        <TableCell sx={{ position: 'sticky' }} ></TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Box> */}
                     <Box sx={{
                         display: 'flex', width: '100%', flexDirection: 'column', p: 0.5,
                         // height: screenInnerHeight * 75 / 100,

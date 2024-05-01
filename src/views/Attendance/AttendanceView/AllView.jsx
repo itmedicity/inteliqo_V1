@@ -89,7 +89,7 @@ const AllView = ({ em_id }) => {
                         let emId = empArray?.find(e => e.em_no === el).emp_id;
 
                         // console.log(dateRange)
-                        console.log(empArray)
+                        // console.log(empArray)
                         return {
                             em_no: el,
                             emName: emName,
