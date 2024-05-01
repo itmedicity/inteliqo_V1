@@ -344,7 +344,7 @@ const ShiftUpdation = () => {
                 const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
                 const lastDay_month = format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
 
-                if (lastUpdateDate === lastDay_month) {
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! can't do the Process !! ")
                     setDisable(true)
 
@@ -530,6 +530,7 @@ const ShiftUpdation = () => {
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
+                                                setDisable(false)
                                                 setValue(newValue);
                                             }}
                                             renderInput={({ inputRef, inputProps, InputProps }) => (

@@ -25,8 +25,6 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
-
-
     //USESTATES
     const [inTime, setInTime] = useState(null)
     const [outTime, setOutTime] = useState(null)
@@ -42,7 +40,6 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
     const commonSettings = useSelector((state) => state?.getCommonSettings)
 
-
     const {
         cmmn_early_out, // Early going time interval
         cmmn_grace_period, // common grace period for late in time
@@ -53,8 +50,6 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         default_shift, //default SHIFT ID
         noff // night off SHIFT ID
     } = commonSettings; //COMMON SETTING
-
-
 
     //FIND THE CROSS DAY
     const crossDay = shiftData?.find(shft => shft.shft_slno === data.shift_id);
@@ -68,8 +63,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
 
     // console.log(shiftIn, shiftOut)
 
-    const startPunchInTime = subHours(new Date(shiftIn), 24); //last 24 hours from shift in time
-    const endPunchOutTime = addHours(new Date(shiftOut), 24); //last 24 hours from shift in time
+    const startPunchInTime = subHours(new Date(shiftIn), 16); //last 24 hours from shift in time
+    const endPunchOutTime = addHours(new Date(shiftOut), 16); //last 24 hours from shift out time
 
     // console.log(startPunchInTime, endPunchOutTime)
 
@@ -77,56 +72,46 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const filterdPunchData = punchData
         ?.map((e) => new Date(e.punch_time))
         ?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
-        ?.map((e) => new Date(format(new Date(e), 'yyyy-MM-dd HH:mm')))
-    const filterdPunchMasterData = punchMast
-        ?.map((e) => [isValid(new Date(e.punch_in)) && new Date(e.punch_in), isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
+        ?.map((e) => format(new Date(e), 'yyyy-MM-dd HH:mm'))
+
+    //FILTERD PUNCH MASTER DATA BETWEEN 24 HOURS
+    const filterdPunchMasterDataAll = punchMast
+        ?.map((e) => [
+            (e.punch_in !== null && isValid(new Date(e.punch_in))) && new Date(e.punch_in),
+            (e.punch_in !== null && isValid(new Date(e.punch_out))) && new Date(e.punch_out)
+        ])
         ?.flat()
         ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
-        ?.map((e) => new Date(format(new Date(e), 'yyyy-MM-dd HH:mm')))
-    //GET DUTY DAY ALREADY UPDATED PUNCH IN AND OUT FROM PUNCH MASTER TABLE
-    const updatedPunchMasterDta = punchMast?.filter((e) => e.duty_day === selectedDate)
-        ?.map((e) => [e.punch_in !== null && isValid(new Date(e.punch_in)) && new Date(e.punch_in), e.punch_out !== null && isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
+        ?.map((e) => format(new Date(e), 'yyyy-MM-dd HH:mm'))
 
-
-    const filterData = filterdPunchData
-        // ?.filter((val) => filterdPunchMasterData?.find((e) => format(new Date(e), 'yyyy-MM-dd HH:mm') === format(new Date(val), 'yyyy-MM-dd HH:mm')) === undefined)
-        ?.concat(updatedPunchMasterDta)
+    //FILTERD PUNCH MASTER SEELCTED dATE
+    const filterdPunchMasterDataSelectedDate = punchMast
+        ?.filter((e) => e.duty_day === selectedDate)
+        ?.map((e) => [
+            (e.punch_in !== null && isValid(new Date(e.punch_in))) && new Date(e.punch_in),
+            (e.punch_in !== null && isValid(new Date(e.punch_out))) && new Date(e.punch_out)
+        ])
         ?.flat()
-        ?.filter((e) => e !== false)
+        ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
+        ?.map((e) => format(new Date(e), 'yyyy-MM-dd HH:mm'))
+
+    // console.log(filterdPunchMasterDataSelectedDate)
+    // FILTER AND REMOVE FROM filterdPunchData ARRAY USING THIS ARRAY filterdPunchMasterDataAll punch master in and out punch 
+    const filterData = filterdPunchData?.filter((el) => !filterdPunchMasterDataAll?.includes(el))?.concat(filterdPunchMasterDataSelectedDate)
+    // console.log(removedPTime)
+
+    //GET DUTY DAY ALREADY UPDATED PUNCH IN AND OUT FROM PUNCH MASTER TABLE
+    // const updatedPunchMasterDta = punchMast?.filter((e) => e.duty_day === selectedDate)
+    //     ?.map((e) => [e.punch_in !== null && isValid(new Date(e.punch_in)) && new Date(e.punch_in), e.punch_out !== null && isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
+
+
+    // const filterData = filterdPunchData
+    //     // ?.filter((val) => filterdPunchMasterData?.find((e) => format(new Date(e), 'yyyy-MM-dd HH:mm') === format(new Date(val), 'yyyy-MM-dd HH:mm')) === undefined)
+    //     ?.concat(updatedPunchMasterDta)
+    //     ?.flat()
+    //     ?.filter((e) => e !== false)
 
     // console.log(filterData)
-
-    // let checkinStart = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_start), 'HH:mm')}`;
-    // let checkinEnd = `${format(new Date(shiftIn), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkin_end), 'HH:mm')}`;
-
-    // let checkOutStart = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_start), 'HH:mm')}`;
-    // let checkOutEnd = `${format(new Date(shiftOut), 'yyyy-MM-dd')} ${format(new Date(crossDay?.shft_chkout_end), 'HH:mm')}`;
-
-    // const checkInTimeVale = format(new Date(checkinStart), 'HH')
-    // const incheckStart = checkInTimeVale > 20
-    // const checkinStartTime = `${format(subDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinStart), 'HH:mm')}`
-
-    // const checkoutTimeVale = format(new Date(checkOutStart), 'HH')
-    // const outcheckStart = checkoutTimeVale > 20
-    // const checkoutStartTime = `${format(subDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutStart), 'HH:mm')}`
-
-    // const inTimeVale = format(new Date(checkinEnd), 'HH')
-    // const incheck = inTimeVale < 8
-    // const checkinEndTime = `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkinEnd), 'HH:mm')}`
-
-
-    // //punch out check out time max count 
-    // const endTimeVale = format(new Date(checkOutEnd), 'HH')
-    // const check = endTimeVale < 8
-    // const checkOutEndTime = `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(checkOutEnd), 'HH:mm')}`
-
-    // const punchInData = incheck === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEndTime)) :
-    //     incheckStart === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStartTime) && new Date(val.punch_time) <= new Date(checkinEnd)) :
-    //         punchData?.filter(val => new Date(val.punch_time) >= new Date(checkinStart) && new Date(val.punch_time) <= new Date(checkinEnd))
-
-    // const punchOutData = check === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEndTime))
-    //     : outcheckStart === true ? punchData?.filter(val => new Date(val.punch_time) >= new Date(checkoutStartTime) && new Date(val.punch_time) <= new Date(checkOutEnd))
-    //         : punchData?.filter(val => new Date(val.punch_time) >= new Date(checkOutStart) && new Date(val.punch_time) <= new Date(checkOutEnd))
 
     //UPDATE DATA TO PUNCH MASTER
 
@@ -176,73 +161,13 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     setOpen(false)
                 }
                 // console.log(result)
-
-
-
             } else {
                 //one of the date or both dates are not a valid dates
+                setMessage(true)
             }
         }
 
-        // console.log(shiftIn, shiftOut)
-        // console.log(selectedDate)
     }, [inTime, outTime, selectedDate, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff, week_off_day, salary_above, cmmn_late_in])
-
-
-
-
-    // const updatePunchInOut = useCallback(async () => {
-    //     if (inTime !== null && outTime !== null) {
-
-    //         // GET THE HOURS WORKED IN MINITS
-    //         let interVal = intervalToDuration({
-    //             start: isValid(new Date(inTime)) ? new Date(inTime) : 0,
-    //             end: isValid(new Date(outTime)) ? new Date(outTime) : 0
-    //         })
-
-    //         //CALCULATE HOURS WORKED IN MINUTS
-    //         const hoursWrkdInMinits = (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
-    //             differenceInMinutes(new Date(data.punch_out), new Date(data.punch_in)) : 0
-
-    //         //CALCULATE EARLY AND LATE IN
-    //         const CaluculateLateInOut = (isValid(new Date(shiftIn)) && isValid(new Date(shiftOut))) && (isValid(new Date(inTime)) && isValid(new Date(outTime))) ?
-    //             { lateIn: differenceInMinutes(new Date(inTime), new Date(shiftIn)), earlyOut: differenceInMinutes(new Date(shiftOut), new Date(outTime)) }
-    //             : { lateIn: 0, earlyOut: 0 };
-
-    //         //CALCULATE WORKING HOURS IN WORDS FFOR DISPLAY
-    //         const wrkInHrsInWord = (isValid(new Date(data.punch_in)) && data.punch_in !== null) && (isValid(new Date(data.punch_out)) && data.punch_out !== null) ?
-    //             formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0;
-
-    //         //POST DATA  FOR UPDATE
-    //         let postData = {
-    //             in: inTime,
-    //             out: outTime,
-    //             slno: data.punch_slno,
-    //             hrsInMinuts: hoursWrkdInMinits,
-    //             wrkMinitusInWord: wrkInHrsInWord,
-    //             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
-    //             earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0
-    //         }
-
-    //         //DISPATCH THIS DATA TO A TABLE LIST
-    //         dispatch({ type: UPDATE_PUNCHMASTER_TABLE, payload: postData })
-
-    //         //UPDATE THIS DATA TO THE DATA BASE
-    //         let result = await axioslogin.post("/attendCal/inOutUpdate", postData);
-    //         const { success } = result.data;
-    //         if (success === 2) {
-    //             succesNofity('Punch Data Updated')
-    //             setOpen(false)
-    //         } else {
-    //             errorNofity('Punch Data Not Updated ! Contact HR/IT')
-    //             setOpen(false)
-    //         }
-
-    //     } else {
-    //         infoNofity("Select Both In & Out Time")
-    //     }
-    // }, [inTime, outTime, UPDATE_PUNCHMASTER_TABLE, data, shiftIn, shiftOut, dispatch, setOpen])
-
 
     return (
         <Modal
