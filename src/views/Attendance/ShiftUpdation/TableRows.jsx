@@ -13,12 +13,11 @@ import { useMemo } from 'react';
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray }) => {
-
+    // console.log(disable)
     const state = useSelector((state) => state?.getCommonSettings)
     const commonSetting = useMemo(() => state, [state])
 
-    const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
-        week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+    const { cmmn_grace_period } = commonSetting;
 
     // console.log(data)
     const { isNOff, isWeekOff } = data;
@@ -81,9 +80,9 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray })
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
                     <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.duty_desc}</Chip>
                 </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
+                {/* <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
                     <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.lvereq_desc}</Chip>
-                </TableCell>
+                </TableCell> */}
             </TableRow>
         </>
     )

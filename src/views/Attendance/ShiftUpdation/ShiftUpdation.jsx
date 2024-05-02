@@ -336,7 +336,7 @@ const ShiftUpdation = () => {
                 month: monthStartDate,
                 section: section
             }
-            // console.log(postData)
+            //console.log(postData)
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
@@ -344,7 +344,7 @@ const ShiftUpdation = () => {
                 const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
                 const lastDay_month = format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
 
-                if (lastUpdateDate === lastDay_month) {
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! can't do the Process !! ")
                     setDisable(true)
 
@@ -490,60 +490,6 @@ const ShiftUpdation = () => {
                             setTableArray(array)
                             setOpenBkDrop(false)
                             succesNofity('Punch Master Updated Successfully')
-
-
-
-
-                            // const getPunchMast_PostData = {
-                            //     fromDate_punchMaster: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            //     toDate_punchMaster: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                            //     empList: empList
-                            // }
-
-                            // console.log(getPunchMast_PostData)
-                            // const punch_master_data = await axioslogin.post("/attendCal/getPData/", getPunchMast_PostData); //GET PUNCH MASTER DATA
-                            // const { success, planData } = punch_master_data.data;
-                            // console.log(success, planData)
-                            // if (success === 1) {
-
-                            /*
-                             * CALCULATE THE CALCULATED LOP BASED ON LEAVE DESC AND DUTY_DESC  
-                             */
-                            // let lcCount = 0;
-                            // const data = planData
-                            //     ?.map((e) => {
-                            //         return {
-                            //             punch_slno: e.punch_slno,
-                            //             duty_desc: e.duty_desc,
-                            //             lvereq_desc: e.lvereq_desc
-                            //         }
-                            //     })
-                            //     ?.sort((a, b) => a.punch_slno - b.punch_slno)
-                            //     ?.map(item => {
-                            //         if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
-                            //             lcCount++;
-                            //             return item;
-                            //         } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
-                            //             return { ...item, lvereq_desc: "HD" };
-                            //         } else {
-                            //             return item;
-                            //         }
-                            //     })
-
-                            // if (data !== null && data !== undefined && data?.length > 0) {
-                            // const updatePunchMasterCalculated = await axioslogin.post("/attendCal/updatePunchMasterCalculated/", data);
-                            // const { success } = updatePunchMasterCalculated.data;
-                            // if (success === 1) {
-
-
-                            // }
-                            // }
-
-                            // console.log(success, message)
-                            // } else {
-                            //     warningNofity("Punch Master Data Not Found !!! Contact IT")
-                            // }
-                            // setOpenBkDrop(false)
                         } else {
                             setOpenBkDrop(false)
                             warningNofity(message, errorMessage)
@@ -584,6 +530,7 @@ const ShiftUpdation = () => {
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
+                                                setDisable(false)
                                                 setValue(newValue);
                                             }}
                                             renderInput={({ inputRef, inputProps, InputProps }) => (
@@ -868,7 +815,7 @@ const ShiftUpdation = () => {
                                         <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}>EGO</TableCell>
                                         <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
                                         <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
-                                        <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell>
+                                        {/* <TableCell size='small' padding='none' align="center" rowSpan={2} sx={{ color: '#003A75', fontWeight: 550 }}></TableCell> */}
 
                                     </TableRow>
                                     <TableRow hover >
