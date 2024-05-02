@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, Button, CssVarsProvider, Input, Table, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns';
+import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, isValid, lastDayOfMonth, startOfMonth } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useSelector } from 'react-redux';
 import { allLeavesConvertAnArray, findBalanceCommonLeveCount, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
@@ -94,66 +94,61 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                 section: em_dept_section
             }
 
-            const checkAttendanceMarking = await axioslogin.post('/attendCal/checkPunchMarkingHR', postDataForAttendaceMark);
-
-
-            const { data: attMarkCheckData, success: attMarkCheckSuccess } = checkAttendanceMarking.data;
-            const lastUpdateDate = attMarkCheckData[0]?.last_update_date;
-            // console.log(lastUpdateDate)
-            // console.log(isValid(new Date(lastUpdateDate)))
-
-
-            if (attMarkCheckSuccess === 2) {
-                errorNofity("Error Checking Attendance Already Marked or Not ,Try Again !!")
-            } else if ((attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) && (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) && new Date(lastUpdateDate) < new Date(fromDate))) {
-
-
-                /** CHECKING DUTY PLAN AND PUNCH MASTER START HERE **/
-
-                //dataes difference count for checking the the duyt plan is done or not
-                const differenceCountFromToDate = differenceInCalendarDays(
-                    new Date(toDate),
-                    new Date(fromDate)
-                ) + 1
-
-                const postData = {
-                    fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
-                    toDate: format(new Date(toDate), 'yyyy-MM-dd'),
-                    emno: em_no
-                }
-                //CHECKING FOR PUNCH MARKING HR -> YES/NO
-                const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
-                const { success, dta } = checkDutyPlan.data;
-
-                if (success === 1 && dta.plan === differenceCountFromToDate) {
-                    //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
-
-                    //FOR LISTING THE SELECTED DATE IN THE SCREEN
-                    const modifiedTable = dateDiffrence?.map((e) => {
-                        return {
-                            date: e,
-                            leavetype: 0,
-                            leaveTypeName: '',
-                            selectedLveSlno: 0,
-                            selectedLveName: '',
-                            selectedLvType: '',
-                            count: 0,
-                            commonLeave: 0,
-                            commonLeaveSlno: 0
-                        }
-                    })
-                    setTable(modifiedTable)
-                    const { status, data } = filterdArray;
-                    (status === true && data?.length > 0) && setLeaveArray(data)
-                    setAddDateDisable(true)
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't Apply Leave Request!!  ")
                 } else {
-                    warningNofity('Duty Plan Not planned ')
-                    return
+                    /** CHECKING DUTY PLAN AND PUNCH MASTER START HERE **/
+
+                    //dataes difference count for checking the the duyt plan is done or not
+                    const differenceCountFromToDate = differenceInCalendarDays(
+                        new Date(toDate),
+                        new Date(fromDate)
+                    ) + 1
+
+                    const postData = {
+                        fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+                        toDate: format(new Date(toDate), 'yyyy-MM-dd'),
+                        emno: em_no
+                    }
+                    //CHECKING FOR PUNCH MARKING HR -> YES/NO
+                    const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
+                    const { success, dta } = checkDutyPlan.data;
+
+                    if (success === 1 && dta.plan === differenceCountFromToDate) {
+                        //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
+
+                        //FOR LISTING THE SELECTED DATE IN THE SCREEN
+                        const modifiedTable = dateDiffrence?.map((e) => {
+                            return {
+                                date: e,
+                                leavetype: 0,
+                                leaveTypeName: '',
+                                selectedLveSlno: 0,
+                                selectedLveName: '',
+                                selectedLvType: '',
+                                count: 0,
+                                commonLeave: 0,
+                                commonLeaveSlno: 0
+                            }
+                        })
+                        setTable(modifiedTable)
+                        const { status, data } = filterdArray;
+                        (status === true && data?.length > 0) && setLeaveArray(data)
+                        setAddDateDisable(true)
+                    } else {
+                        warningNofity('Duty Plan Not planned ')
+                        return
+                    }
+                    /** CHECKING DUTY PLAN AND PUNCH MASTER END HERE **/
                 }
-                /** CHECKING DUTY PLAN AND PUNCH MASTER END HERE **/
 
             } else {
-                warningNofity('Attendance Marking For the Selected Date Was Completed , Try Another Dates')
+                errorNofity("Error getting PunchMarkingHR ")
             }
 
             /** PUNCH MARKING HR END **/
@@ -376,7 +371,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
-                                minDate={startOfMonth(new Date())}
+                                //minDate={startOfMonth(new Date())}
                                 value={fromDate}
                                 size="small"
                                 onChange={(newValue) => setFromDate(newValue)}

@@ -102,56 +102,59 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                 {
-                    self === true ? <><Paper
-                        square
-                        variant="outlined"
-                        sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
-                    >
-                        <ToastContainer />
-                        {/* <CustomBackDrop open={open} text="Please Wait" /> */}
-                        <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        views={['year', 'month']}
-                                        // minDate={subMonths(new Date(), 1)}
-                                        maxDate={addMonths(new Date(), 1)}
-                                        value={value}
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                        }}
-                                        renderInput={({ inputRef, inputProps, InputProps }) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                                <CssVarsProvider>
-                                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                                </CssVarsProvider>
-                                                {InputProps?.endAdornment}
-                                            </Box>
-                                        )}
-                                    />
-                                </LocalizationProvider>
+                    self === true ? <>
+                        <Paper
+                            square
+                            variant="outlined"
+                            sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
+                        >
+                            <ToastContainer />
+                            {/* <CustomBackDrop open={open} text="Please Wait" /> */}
+                            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                                <Box sx={{ flex: 1, px: 0.5 }} >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            views={['year', 'month']}
+                                            // minDate={subMonths(new Date(), 1)}
+                                            maxDate={addMonths(new Date(), 1)}
+                                            value={value}
+                                            onChange={(newValue) => {
+                                                setValue(newValue);
+                                            }}
+                                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                    <CssVarsProvider>
+                                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                    </CssVarsProvider>
+                                                    {InputProps?.endAdornment}
+                                                </Box>
+                                            )}
+                                        />
+                                    </LocalizationProvider>
+                                </Box>
                             </Box>
-                        </Box>
-                        <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
-                            <CssVarsProvider>
-                                <Tooltip title="Process" followCursor placement='top' arrow >
-                                    <Box sx={{ p: 0.2 }} >
-                                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={selfdata} sx={{
-                                            color: '#90caf9'
-                                        }} >
-                                            <PublishedWithChangesIcon />
-                                        </Button>
-                                    </Box>
-                                </Tooltip>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ flex: 1, px: 0.5 }} >
-                        </Box>
-                        <Box sx={{ flex: 1, px: 0.5 }} ></Box>
-                        <Box sx={{ flex: 1, px: 0.5 }} >
-                        </Box>
-                        <Box sx={{ flex: 1, px: 0.5 }} ></Box>
-                    </Paper>
+                            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
+                                <CssVarsProvider>
+                                    <Tooltip title="Process" followCursor placement='top' arrow >
+                                        <Box sx={{ p: 0.2 }} >
+                                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={selfdata} sx={{
+                                                color: '#90caf9'
+                                            }} >
+                                                <PublishedWithChangesIcon />
+                                            </Button>
+                                        </Box>
+                                    </Tooltip>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }} >
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }} ></Box>
+                            <Box sx={{ flex: 1, px: 0.5 }} >
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }} ></Box>
+                        </Paper>
+
+
                         <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
@@ -481,224 +484,228 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                     </Table>
                                 </TableContainer>
                             </Box> */}
-                        </Box></> : <>
-                        <Paper
-                            square
-                            variant="outlined"
-                            sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
-                        >
-                            <ToastContainer />
+                        </Box></>
 
-                            {/* <CustomBackDrop open={open} text="Please Wait" /> */}
-                            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
-                                <Box sx={{ flex: 1, px: 0.5 }} >
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DatePicker
-                                            views={['year', 'month']}
-                                            // minDate={subMonths(new Date(), 1)}
-                                            maxDate={addMonths(new Date(), 1)}
-                                            value={value}
-                                            onChange={(newValue) => {
-                                                setValue(newValue);
-                                            }}
-                                            renderInput={({ inputRef, inputProps, InputProps }) => (
-                                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                                    <CssVarsProvider>
-                                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
-                                                    </CssVarsProvider>
-                                                    {InputProps?.endAdornment}
-                                                </Box>
-                                            )}
-                                        />
-                                    </LocalizationProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row' }} >
-                                <DeptSectionSelect em_id={empid} value={deptSection} setValue={setDeptSection} />
-                            </Box>
-                            <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
-                                <CssVarsProvider>
-                                    <Tooltip title="Process" followCursor placement='top' arrow >
-                                        <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
-                                            color: '#90caf9'
-                                        }} >
-                                            <PublishedWithChangesIcon />
-                                        </Button>
-                                    </Tooltip>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} >
-                                <JoyCheckbox
-                                    label='Self'
-                                    name="self"
-                                    checked={self}
-                                    onchange={(e) => setSelf(e.target.checked)}
-                                />
-                            </Box>
-                            <Box sx={{ flex: 1, px: 0.5 }} ></Box>
-                        </Paper>
-                        <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        P
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: "center" }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Present
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        OFF
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Work OFF
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        EHFD
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Early Going
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        LC
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Late Coming
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        HFD
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Half Day
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        A
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Absent
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        H
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Holiday
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        HDL
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Halfday Leave
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        LV
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Leave
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
-                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
-                                        HP
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
-                                    <CssVarsProvider>
-                                        <Typography sx={{ display: 'flex', }} >
-                                            Holiday Present
-                                        </Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Box>
-                        </Paper>
-                        <Box sx={{
-                            display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
-                            height: 500,
-                            overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
-                        }}>
-                            <Sheet
+                        :
+
+                        <>
+                            <Paper
+                                square
                                 variant="outlined"
-                                sx={{
-                                    '--TableCell-height': '40px',
-                                    // the number is the amount of the header rows.
-                                    '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
-                                    '--Table-firstColumnWidth': '100px',
-                                    '--Table-lastColumnWidth': '144px',
-                                    // background needs to have transparency to show the scrolling shadows
-                                    '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
-                                    '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
-                                    overflow: 'auto',
-                                    background: (
-                                        theme,
-                                    ) => `linear-gradient(to right, ${theme.vars.palette.background.surface} 30%, rgba(255, 255, 255, 0)),
+                                sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
+                            >
+                                <ToastContainer />
+
+                                {/* <CustomBackDrop open={open} text="Please Wait" /> */}
+                                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DatePicker
+                                                views={['year', 'month']}
+                                                // minDate={subMonths(new Date(), 1)}
+                                                maxDate={addMonths(new Date(), 1)}
+                                                value={value}
+                                                onChange={(newValue) => {
+                                                    setValue(newValue);
+                                                }}
+                                                renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                        <CssVarsProvider>
+                                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                                        </CssVarsProvider>
+                                                        {InputProps?.endAdornment}
+                                                    </Box>
+                                                )}
+                                            />
+                                        </LocalizationProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row' }} >
+                                    <DeptSectionSelect em_id={empid} value={deptSection} setValue={setDeptSection} />
+                                </Box>
+                                <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
+                                    <CssVarsProvider>
+                                        <Tooltip title="Process" followCursor placement='top' arrow >
+                                            <Button aria-label="Like" variant="outlined" color="neutral" onClick={getData} sx={{
+                                                color: '#90caf9'
+                                            }} >
+                                                <PublishedWithChangesIcon />
+                                            </Button>
+                                        </Tooltip>
+                                    </CssVarsProvider>
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5 }} >
+                                    <JoyCheckbox
+                                        label='Self'
+                                        name="self"
+                                        checked={self}
+                                        onchange={(e) => setSelf(e.target.checked)}
+                                    />
+                                </Box>
+                                <Box sx={{ flex: 1, px: 0.5 }} ></Box>
+                            </Paper>
+                            <Paper square sx={{ display: "flex", p: 1, alignItems: "center", justifyContent: 'space-between' }}  >
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            P
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: "center" }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Present
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            OFF
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Work OFF
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            EHFD
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Early Going
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            LC
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Late Coming
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            HFD
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Half Day
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            A
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Absent
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            H
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Holiday
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            HDL
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Halfday Leave
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            LV
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Leave
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px solid #E2F6CA', padding: 1, }}  >
+                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, }}>
+                                            HP
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", pl: 1, alignItems: 'center' }}>
+                                        <CssVarsProvider>
+                                            <Typography sx={{ display: 'flex', }} >
+                                                Holiday Present
+                                            </Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                            <Box sx={{
+                                display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
+                                height: 500,
+                                overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                            }}>
+                                <Sheet
+                                    variant="outlined"
+                                    sx={{
+                                        '--TableCell-height': '40px',
+                                        // the number is the amount of the header rows.
+                                        '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
+                                        '--Table-firstColumnWidth': '100px',
+                                        '--Table-lastColumnWidth': '144px',
+                                        // background needs to have transparency to show the scrolling shadows
+                                        '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                                        '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                                        overflow: 'auto',
+                                        background: (
+                                            theme,
+                                        ) => `linear-gradient(to right, ${theme.vars.palette.background.surface} 30%, rgba(255, 255, 255, 0)),
                                     linear-gradient(to right, rgba(255, 255, 255, 0), ${theme.vars.palette.background.surface} 70%) 0 100%,
                                     radial-gradient(
                                       farthest-side at 0 50%,
@@ -711,79 +718,79 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                         rgba(0, 0, 0, 0)
                                       )
                                       0 100%`,
-                                    backgroundSize:
-                                        '40px calc(100% - var(--TableCell-height)), 40px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height))',
-                                    backgroundRepeat: 'no-repeat',
-                                    backgroundAttachment: 'local, local, scroll, scroll',
-                                    backgroundPosition:
-                                        'var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height), var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height)',
-                                    backgroundColor: 'background.surface',
-                                }}
-                            >
-                                <Table
-                                    borderAxis="bothBetween"
-                                    stripe="odd"
-                                    hoverRow
-                                    stickyHeader
-                                    sx={{
-                                        '& tr > *:first-child': {
-                                            position: 'sticky',
-                                            left: 0,
-                                            boxShadow: '1px 0 var(--TableCell-borderColor)',
-                                            bgcolor: 'background.surface',
-                                        },
+                                        backgroundSize:
+                                            '40px calc(100% - var(--TableCell-height)), 40px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height))',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundAttachment: 'local, local, scroll, scroll',
+                                        backgroundPosition:
+                                            'var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height), var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height)',
+                                        backgroundColor: 'background.surface',
                                     }}
                                 >
-                                    <Box >
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: 400 }}>Name</th>
-                                                <th >ID#</th>
-                                                {dateArray && dateArray.map((val, index) => (
-                                                    <th key={index} >
-                                                        {val.date}
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                            <tr>
-                                                <th style={{ textAlign: "center" }}> Days </th>
-                                                <th style={{ textAlign: "center" }}>  </th>
-                                                {dateArray && dateArray.map((val, index) => (
-                                                    <th key={index}>
-                                                        {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
-
-                                                    </th>
-                                                ))}
-                                                <th aria-label="last"
-                                                    style={{ width: 'var(--Table-lastColumnWidth)' }}>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {empArray && empArray.map((row, index) => (
-                                                <tr key={index} >
-                                                    <td>
-                                                        <Box> {row.em_name}</Box>
-                                                    </td>
-                                                    <td >
-                                                        <Box> {row.em_no}</Box>
-                                                    </td>
-                                                    {row.arr.map((val, index) => (
-                                                        <td key={index}>
-                                                            <Box >
-                                                                {val.duty_desc}
-                                                            </Box>
-                                                        </td>
+                                    <Table
+                                        borderAxis="bothBetween"
+                                        stripe="odd"
+                                        hoverRow
+                                        stickyHeader
+                                        sx={{
+                                            '& tr > *:first-child': {
+                                                position: 'sticky',
+                                                left: 0,
+                                                boxShadow: '1px 0 var(--TableCell-borderColor)',
+                                                bgcolor: 'background.surface',
+                                            },
+                                        }}
+                                    >
+                                        <Box >
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: 400 }}>Name</th>
+                                                    <th >ID#</th>
+                                                    {dateArray && dateArray.map((val, index) => (
+                                                        <th key={index} >
+                                                            {val.date}
+                                                        </th>
                                                     ))}
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </Box>
-                                </Table>
-                            </Sheet>
-                        </Box>
+                                                <tr>
+                                                    <th style={{ textAlign: "center" }}> Days </th>
+                                                    <th style={{ textAlign: "center" }}>  </th>
+                                                    {dateArray && dateArray.map((val, index) => (
+                                                        <th key={index}>
+                                                            {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
 
-                        {/* <Box sx={{ width: "100%" }} >
+                                                        </th>
+                                                    ))}
+                                                    <th aria-label="last"
+                                                        style={{ width: 'var(--Table-lastColumnWidth)' }}>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {empArray && empArray.map((row, index) => (
+                                                    <tr key={index} >
+                                                        <td>
+                                                            <Box> {row.em_name}</Box>
+                                                        </td>
+                                                        <td >
+                                                            <Box> {row.em_no}</Box>
+                                                        </td>
+                                                        {row.arr.map((val, index) => (
+                                                            <td key={index}>
+                                                                <Box >
+                                                                    {val.duty_desc}
+                                                                </Box>
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Box>
+                                    </Table>
+                                </Sheet>
+                            </Box>
+
+                            {/* <Box sx={{ width: "100%" }} >
                             <Paper square elevation={0} sx={{
                                 display: "flex",
                                 p: 1,
@@ -896,7 +903,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                 </TableContainer>
                             </Box>
                         </Box> */}
-                    </>
+                        </>
                 }
 
 

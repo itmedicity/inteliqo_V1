@@ -33,17 +33,19 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
             ceoComment: '',
             emid: '',
             checkInFlag: 0,
-            checkOutFlag: 0
+            checkOutFlag: 0,
+            increq: 0,
+            incaprv: 0
         }
     )
     const { slno, emno, name, section, status, reqDate, dutyDate, reason, shft_desc, checkIn, checkOut,
-        inchargeComment, hodComment, ceoComment, checkInFlag, checkOutFlag } = details;
+        inchargeComment, hodComment, ceoComment, checkInFlag, checkOutFlag, increq, incaprv } = details;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { slno, emno, name, section, status, reqDate, dutyDate, shft_desc,
                 check_in, check_out, inchargeComment, hodComment, reason, ceoComment,
-                emid, checkInFlag, checkOutFlag } = data[0];
+                emid, checkInFlag, checkOutFlag, increq, incaprv } = data[0];
             const details = {
                 slno: slno,
                 emno: emno,
@@ -61,7 +63,9 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
                 ceoComment: ceoComment,
                 emid: emid,
                 checkInFlag: checkInFlag,
-                checkOutFlag: checkOutFlag
+                checkOutFlag: checkOutFlag,
+                increq: increq,
+                incaprv: incaprv
             }
             setDetails(details)
         } else {
@@ -259,19 +263,45 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
             if (remark === "") {
                 infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(true)
-                const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
-                const { message, success } = result.data;
-                if (success === 1) {
-                    setOpenBkDrop(false)
-                    setOpen(false)
-                    setCount(count + 1)
-                    succesNofity(message)
+                if (increq === 1 && incaprv === 0) {
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            errorNofity(message)
+                        }
+                    } else {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        errorNofity(message)
+                    }
                 } else {
-                    setOpenBkDrop(false)
-                    setOpen(false)
-                    setCount(count + 1)
-                    errorNofity(message)
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        succesNofity(message)
+                    } else {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        errorNofity(message)
+                    }
                 }
             }
         } else if (authority === 3) {

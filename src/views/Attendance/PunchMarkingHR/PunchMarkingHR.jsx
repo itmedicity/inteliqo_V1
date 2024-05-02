@@ -9,26 +9,17 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Chip, CssVarsProvider, Sheet, Typography } from '@mui/joy';
 import Input from '@mui/joy/Input';
-// import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
-// import { setDepartment } from 'src/redux/actions/Department.action';
-// import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { addDays, addMonths, endOfMonth, format, getMonth, getYear, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
-// import { getAndUpdatePunchingData } from '../ShiftUpdation/Function';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
-// import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-// import { Actiontypes } from 'src/redux/constants/action.type';
-// import PunchSavedHrView from './PunchSavedHrView';
 import { useHistory } from 'react-router-dom'
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import Table from '@mui/joy/Table';
-// import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { processPunchMarkingHrFunc } from './punchMarkingHrFunc';
-// import Sun from '@mui/icons-material/LightMode';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const PunchMarkingHR = () => {
@@ -48,7 +39,8 @@ const PunchMarkingHR = () => {
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const {
         holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
-        weekoff_policy_max_count // WEEK OFF ELIGIBLE MAX DAY COUNT
+        weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT,
+        max_late_day_count
     } = commonSettings;
 
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -242,8 +234,56 @@ const PunchMarkingHR = () => {
                         empSalary
                     )
                     const { status, message, errorMessage, dta } = result;
+                    // console.log(result)
                     if (status === 1) {
                         // console.log(dta.section)
+                        // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
+                        const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
+                        const { success: lcSuccess, message: lcMessage, data: lcData } = punch_data.data;
+                        if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
+                            // console.log(lcData)
+                            const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
+                            // calculate and update the calculated LOP count 
+                            let lcCount = 0;
+                            const filterLcData = filterEMNO
+                                ?.map((el) => {
+                                    return {
+                                        emNo: el,
+                                        lcArray: lcData?.filter((e) => e.em_no === el)
+                                    }
+                                })
+                                ?.filter((e) => e.lcArray?.length > 3)
+                                ?.map((val) => {
+                                    const newArray = {
+                                        emno: val.emNo,
+                                        punMasterArray: val.lcArray?.map(item => {
+                                            if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
+                                                lcCount++;
+                                                return item;
+                                            } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
+                                                return { ...item, lvereq_desc: "HD" };
+                                            } else {
+                                                return item;
+                                            }
+                                        })
+                                    }
+                                    lcCount = 0
+                                    return newArray
+                                })
+                                ?.map((e) => e.punMasterArray)
+                                ?.flat()
+                                ?.filter((e) => e.lvereq_desc === 'HD')
+                                ?.map((e) => e.punch_slno)
+
+                            // console.log(filterLcData)
+                            //UPDATE IN TO PUNCH MASTER TABLE 
+                            if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
+                                await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
+                                // console.log(updateLcInPunchMaster)
+                            }
+                        }
+                        // CALCULATE THE LATE COMMING BASED ON LATES  END HERE
+
                         const filterDeptAndSection = deptList?.map((e) => {
                             return {
                                 "dept_id": e.dept_id,
@@ -313,6 +353,7 @@ const PunchMarkingHR = () => {
                 const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
                 const { susc, message } = updateDutyPlanTable.data;
+                // console.log(susc, message)
                 if (susc === 1) {
                     // UPDATE PUNCH_MARKING_HR TABLE
                     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postDataUpdatePunchMarkHR);

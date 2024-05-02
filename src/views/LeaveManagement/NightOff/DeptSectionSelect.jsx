@@ -14,7 +14,7 @@ const DeptSectionSelect = ({ em_id, value, setValue }) => {
     const DeptSect = useMemo(() => departmentSec, [departmentSec]);
     useEffect(() => {
 
-        if (Object.keys(DeptSect).length > 0) {
+        if (DeptSect !== undefined && DeptSect !== null && Object.keys(DeptSect).length > 0) {
             setDeptSectValues(DeptSect)
         } else {
             setDeptSectValues([])

@@ -79,7 +79,7 @@ export const DeptWiseAttendanceViewFun = async (value, holidayList) => {
 
     //date format for top Head
     const dateAndDayFormat = dateRange.map((val) => {
-        return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd'), date_format: moment(val).format('YYYY-MM-DD') }
+        return { date: moment(val).format('D'), sunday: moment(val).format('d'), days: moment(val).format('ddd'), date_format: moment(val).format('YYYY-MM-DD') }
     });
 
     const addHolidayToDateRange = (values) => {

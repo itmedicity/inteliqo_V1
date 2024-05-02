@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { format, isValid, startOfMonth } from 'date-fns';
+import { format, isValid, lastDayOfMonth, startOfMonth } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useSelector } from 'react-redux';
 import { getCaualLeaveDetl, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
@@ -97,74 +97,80 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
             month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
             section: em_dept_section
         }
-
-        const checkAttendanceMarking = await axioslogin.post('/attendCal/checkPunchMarkingHR', postDataForAttendaceMark);
-        const { data: attMarkCheckData, success: attMarkCheckSuccess } = checkAttendanceMarking.data;
-        const lastUpdateDate = attMarkCheckData[0]?.last_update_date;
-
-        if (attMarkCheckSuccess === 2) {
-            errorNofity("Error Checking Attendance Already Marked or Not ,Try Again !!")
-        } else if ((attMarkCheckSuccess === 0 || attMarkCheckSuccess === 1) && (attMarkCheckSuccess === 1 && isValid(new Date(lastUpdateDate)) && new Date(lastUpdateDate) < new Date(fromDate))) {
-
-            // [1,2]
-            if (Object.keys(empShiftInform).length === 0) {
-                warningNofity("Duty Plan Not Planned")
+        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
+        const { success, data } = checkPunchMarkingHr.data
+        if (success === 0 || success === 1) {
+            const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+            const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+            if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                warningNofity("Punch Marking Monthly Process Done !! Can't Apply Halfday Request!!  ")
             } else {
-
-                if (selectedCL === 0 || reson === '') {
-                    warningNofity("Select the leave name and reason.")
+                // [1,2]
+                if (Object.keys(empShiftInform).length === 0) {
+                    warningNofity("Duty Plan Not Planned")
                 } else {
-                    const { plan_slno, shift_id, first_half_in, first_half_out, second_half_in, second_half_out } = empShiftInform
 
-                    const first_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_in), 'HH:mm')}`;
-                    const first_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_out), 'HH:mm')}`;
-                    const second_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_in), 'HH:mm')}`;
-                    const second_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_out), 'HH:mm')}`;
-
-                    const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
-
-                    const halfdaysavedata = {
-                        checkIn: halfDayStat === 1 ? first_half_inTime : second_half_inTime,
-                        checkOut: halfDayStat === 1 ? first_half_outTime : second_half_outTime,
-                        leavedate: format(new Date(fromDate), 'yyyy-MM-dd H:m:s'),
-                        planslno: selectedCL, // selected leave name slno 
-                        shiftid: shift_id,
-                        month: selectedClName, // Selected leave Name
-                        em_id: em_id,
-                        em_no: em_no,
-                        em_department: em_department,
-                        em_dept_section: em_dept_section,
-                        attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
-                        inc_apprv_req: approveStatus.inc_apr,
-                        incapprv_status: approveStatus.inc_stat,
-                        inc_apprv_cmnt: approveStatus.inc_cmnt,
-                        inc_apprv_time: approveStatus.inc_apr_time,
-                        inc_usCode: approveStatus.usCode_inch,
-                        hod_apprv_req: approveStatus.hod_apr,
-                        hod_apprv_status: approveStatus.hod_stat,
-                        hod_apprv_cmnt: approveStatus.hod_cmnt,
-                        hod_apprv_time: approveStatus.hod_apr_time,
-                        hod_usCOde: approveStatus.usCode_hod,
-                        hr_aprrv_requ: 1,
-                        ceo_req_status: 0,
-                        resonforleave: reson,
-                        dutyPlanSlno: plan_slno // duty plan table slno 
-                    }
-
-                    const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
-                    const { success, message } = result.data;
-                    if (success === 1) {
-                        succesNofity(message)
-                        setRequestType(0)
-                        setCount(Math.random())
-
+                    if (selectedCL === 0 || reson === '') {
+                        warningNofity("Select the leave name and reason.")
                     } else {
-                        errorNofity(message)
-                        setRequestType(0)
+                        const { plan_slno, shift_id, first_half_in, first_half_out, second_half_in, second_half_out } = empShiftInform
+
+                        const first_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_in), 'HH:mm')}`;
+                        const first_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(first_half_out), 'HH:mm')}`;
+                        const second_half_inTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_in), 'HH:mm')}`;
+                        const second_half_outTime = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(second_half_out), 'HH:mm')}`;
+
+                        const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
+
+                        const halfdaysavedata = {
+                            checkIn: halfDayStat === 1 ? first_half_inTime : second_half_inTime,
+                            checkOut: halfDayStat === 1 ? first_half_outTime : second_half_outTime,
+                            leavedate: format(new Date(fromDate), 'yyyy-MM-dd H:m:s'),
+                            planslno: selectedCL, // selected leave name slno 
+                            shiftid: shift_id,
+                            month: selectedClName, // Selected leave Name
+                            em_id: em_id,
+                            em_no: em_no,
+                            em_department: em_department,
+                            em_dept_section: em_dept_section,
+                            attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+                            inc_apprv_req: approveStatus.inc_apr,
+                            incapprv_status: approveStatus.inc_stat,
+                            inc_apprv_cmnt: approveStatus.inc_cmnt,
+                            inc_apprv_time: approveStatus.inc_apr_time,
+                            inc_usCode: approveStatus.usCode_inch,
+                            hod_apprv_req: approveStatus.hod_apr,
+                            hod_apprv_status: approveStatus.hod_stat,
+                            hod_apprv_cmnt: approveStatus.hod_cmnt,
+                            hod_apprv_time: approveStatus.hod_apr_time,
+                            hod_usCOde: approveStatus.usCode_hod,
+                            hr_aprrv_requ: 1,
+                            ceo_req_status: 0,
+                            resonforleave: reson,
+                            dutyPlanSlno: plan_slno // duty plan table slno 
+                        }
+
+                        const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            succesNofity(message)
+                            setRequestType(0)
+                            setCount(Math.random())
+
+                        } else {
+                            errorNofity(message)
+                            setRequestType(0)
+                        }
                     }
                 }
+
+
             }
+
+        } else {
+            errorNofity("Error getting PunchMarkingHR ")
         }
+
 
     }, [selectedCL, reson, fromDate, em_dept_section, em_department, empShiftInform, loginHod,
         loginIncharge, loginEmno, masterGroupStatus, halfDayStat, selectedClName, em_id, em_no,
@@ -180,7 +186,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['day']}
-                                    minDate={startOfMonth(new Date())}
+                                    //minDate={startOfMonth(new Date())}
                                     value={fromDate}
                                     size="small"
                                     onChange={(newValue) => setFromDate(newValue)}

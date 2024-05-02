@@ -40,7 +40,7 @@ const HrApproval = () => {
     }, [dispatch, count])
 
     const [columnDef] = useState([
-        { headerName: 'Slno', field: 'slno', filter: true, minWidth: 100 },
+        // { headerName: 'Slno', field: 'slno', filter: true, minWidth: 100 },
         { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },

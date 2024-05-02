@@ -72,7 +72,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         setCheckInCheck(false)
         setCheckOutCheck(false)
         const postData = {
-            startDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+            startDate: format(new Date(date), 'yyyy-MM-dd'),
             em_id: em_id
         }
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
@@ -91,7 +91,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             setPlanSlno(0)
             setShiftId(0)
         }
-    }, [em_id, fromDate])
+    }, [em_id])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         if (e.target.checked === true) {
@@ -120,7 +120,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             warningNofity("Check In || Check Out Needs To Check")
         } else if (reason === '') {
             warningNofity("Reason Is Mandatory")
-        } else {
+        } else if (shiftDesc === 'WOFF') {
+            warningNofity("Cannot Apply Miss Punch Request on Week Off")
+        }
+        else {
             setDropOpen(true)
 
             const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
@@ -130,7 +133,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                 checkintime: `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkin_time), 'HH:mm')}`,
                 checkoutflag: checkOutCheck === true ? 1 : 0,
                 checkouttime: `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`,
-                nopunchdate: moment(fromDate).format('YYYY-MM-DD'),  // mispunch date
+                nopunchdate: format(new Date(fromDate), 'yyyy-MM-dd'),  // mispunch date
                 attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
                 plan_slno: planSlno,
                 shift_id: shiftId,
@@ -154,7 +157,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
 
             const holidayData = {
                 em_id: em_id,
-                date: moment(fromDate).format('YYYY-MM-DD')
+                date: format(new Date(fromDate), 'yyyy-MM-dd')
             }
 
             const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
@@ -165,7 +168,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                     warningNofity("Cannot Apply for No punch request on Holiday")
                     setDropOpen(false)
                 } else {
-                    const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                    const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
                     const postData = {
                         month: monthStartDate,
                         section: em_dept_section
@@ -173,10 +176,11 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                     const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
                     const { success, data } = checkPunchMarkingHr.data
                     if (success === 0 || success === 1) {
-                        const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
-                        const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
-                        if (lastUpdateDate === lastDay_month) {
+                        const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                        const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                        if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                             warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                            setDropOpen(false)
                         } else {
                             const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                             const { success, message } = result.data;
@@ -209,7 +213,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         }
     }, [reason, checkInCheck, checkOutCheck, em_department, em_dept_section, em_id, em_no, fromDate,
         planSlno, shiftId, loginEmno, loginHod, loginIncharge, masterGroupStatus, setRequestType,
-        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel
+        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc
     ])
 
     return (
