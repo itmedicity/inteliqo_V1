@@ -21,7 +21,8 @@ const {
     FETCH_EACH_EMP_COFF_REQUEST,
     FETCH_SECTION_BASED_LEAVE_REQUEST,
     FETCH_SECTION_BASED_HALFDAY_REQUEST,
-    FETCH_SECTION_BASED_MISSPUNCH_REQUEST
+    FETCH_SECTION_BASED_MISSPUNCH_REQUEST,
+    FETCH_SECTION_BASED_COFF_REQUEST
 } = Actiontypes;
 
 export const getlevedata = (id) => async (dispatch) => {
@@ -227,7 +228,7 @@ export const getEmployeeMisspunchRequest = (id) => async (dispatch) => {
 
 //getting each employee 
 export const getEmployeeCoffRequest = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/LeaveRequestApproval/employee/misspunchData/${id}`);
+    const result = await axioslogin.get(`/LeaveRequestApproval/employee/coffData/${id}`);
     const { success, data } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_EACH_EMP_COFF_REQUEST, payload: data })
@@ -263,5 +264,15 @@ export const getSectionMisspunchRequest = (postData) => async (dispatch) => {
         dispatch({ type: FETCH_SECTION_BASED_MISSPUNCH_REQUEST, payload: data })
     } else {
         dispatch({ type: FETCH_SECTION_BASED_MISSPUNCH_REQUEST, payload: [] })
+    }
+}
+
+export const getSectionCoffRequest = (postData) => async (dispatch) => {
+    const result = await axioslogin.post('/LeaveRequestApproval/inchargeHod/coffData/', postData);
+    const { success, data } = result.data;
+    if (success === 1) {
+        dispatch({ type: FETCH_SECTION_BASED_COFF_REQUEST, payload: data })
+    } else {
+        dispatch({ type: FETCH_SECTION_BASED_COFF_REQUEST, payload: [] })
     }
 }
