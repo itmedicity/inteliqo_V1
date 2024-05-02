@@ -23,8 +23,8 @@ const EmployeeView = () => {
     const postData = useMemo(() => {
         return {
             empno: em_no,
-            fromdate: moment(startOfMonth(new Date(selectDate))).format('YYYY-MM-DD'),
-            todate: moment(endOfMonth(new Date(selectDate))).format('YYYY-MM-DD')
+            fromdate: format(startOfMonth(new Date(selectDate)), 'yyyy-MM-dd'),
+            todate: format(addDays(endOfMonth(new Date(selectDate)), 1), 'yyyy-MM-dd')
         }
     }, [em_no, selectDate])
 
@@ -66,8 +66,8 @@ const EmployeeView = () => {
                         new_field: correspondingFirstData.map(data => data.punch_time)
                     };
                 });
-
-                setTableData(updatedSecondApiData)
+                setTableData(updatedSecondApiData.slice(0, -1))
+                // setTableData(updatedSecondApiData)
             }
 
         }
