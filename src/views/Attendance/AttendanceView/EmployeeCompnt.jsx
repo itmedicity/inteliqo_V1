@@ -16,6 +16,8 @@ import _ from 'underscore';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveDescription from './LeaveDescription';
 
+const isOdd = (number) => number % 2 !== 0
+
 const EmployeeCompnt = ({ em_no }) => {
 
     const empNo = useMemo(() => em_no, [em_no]);
@@ -97,7 +99,35 @@ const EmployeeCompnt = ({ em_no }) => {
         }
     }
 
-    // console.log(tableArray)
+
+    const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'
+    const getFontWeight = (val) => val === 'A' ? 900 : val === 'ESI' ? 900 : val === 'LWP' ? 900 : val === 'EG' ? 800 : val === 'LC' ? 800 : val === 'HD' ? 800 : 700
+
+    const levaeDescription = [
+        { lvename: 'A', color: 'danger', desc: "Absent without Permission" },
+        { lvename: 'P', color: 'success', desc: "Present" },
+        { lvename: 'LWP', color: 'danger', desc: "Approved Leave Without pay" },
+        { lvename: 'NJ', color: 'warning', desc: "Not Joined" },
+        { lvename: 'RD', color: 'neutral', desc: "Resigned" },
+        { lvename: 'ESI', color: 'danger', desc: "ESI Leave" },
+        { lvename: 'HD', color: 'danger', desc: "Half day lop" },
+        { lvename: 'CHD', color: 'danger', desc: "Calculated Half Day" },
+        { lvename: 'EGHD', color: 'danger', desc: "Early Going Half Day" },
+        { lvename: 'WOFF', color: 'primary', desc: "Weekly off" },
+        { lvename: 'COFF', color: 'primary', desc: "Componsatory off" },
+        { lvename: 'NOFF', color: 'primary', desc: "Night Off" },
+        { lvename: 'SL', color: 'warning', desc: "Sick Leave" },
+        { lvename: 'HSL', color: 'warning', desc: "Half Day Sick Leave" },
+        { lvename: 'CL', color: 'warning', desc: "Casual Leave" },
+        { lvename: 'HCL', color: 'warning', desc: "Half Day Casual Leave" },
+        { lvename: 'EL', color: 'warning', desc: "Earn Leave" },
+        { lvename: 'H', color: 'primary', desc: "Holiday" },
+        { lvename: 'OHP', color: 'success', desc: "One Hour Request Present" },
+        { lvename: 'ODP', color: 'success', desc: "On Duty Present" },
+        { lvename: 'MPP', color: 'success', desc: "Miss Punch Request Present" },
+        { lvename: 'HP', color: 'success', desc: "Holiday Present" },
+    ]
+
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
@@ -152,16 +182,10 @@ const EmployeeCompnt = ({ em_no }) => {
                     <Box sx={{ flex: 1, px: 0.5 }} ></Box>
                 </Paper>
 
-                <Paper square variant='elevation' sx={{ display: "flex", alignItems: "center", justifyContent: 'flex-start', flexWrap: 'wrap', m: 0.5, p: 0.5, }}   >
-                    <LeaveDescription lvename='P' desc="Present" />
-                    <LeaveDescription lvename='WOFF' desc="Work OFF" />
-                    <LeaveDescription lvename='LC' desc="Late Coming" />
-                    <LeaveDescription lvename='HD' desc="Half Day" />
-                    <LeaveDescription lvename='A' desc="Absent" />
-                    <LeaveDescription lvename='H' desc="Holiday" />
-                    <LeaveDescription lvename='HDL' desc="Halfday Leave" />
-                    <LeaveDescription lvename='LV' desc="Leave" />
-                    <LeaveDescription lvename='HP' desc="Holiday Present" />
+                <Paper square variant='elevation' sx={{ display: "flex", alignItems: "center", justifyContent: 'flex-start', flexWrap: 'wrap', m: 0.5, p: 0.5, }}  >
+                    {
+                        levaeDescription?.map((e, idx) => <LeaveDescription lvename={e.lvename} desc={e.desc} key={idx} color={e.color} />)
+                    }
                 </Paper>
                 <Box sx={{ width: "100%" }} >
 
@@ -173,6 +197,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     }}>
                         <Sheet
                             variant="outlined"
+                            invertedColors
                             sx={{
                                 '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
                                 '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
@@ -183,8 +208,8 @@ const EmployeeCompnt = ({ em_no }) => {
                         >
                             <Table
                                 borderAxis="bothBetween"
-                                // stripe="odd"
-                                // hoverRow
+                                stripe="odd"
+                                hoverRow
                                 stickyHeader
                                 size='sm'
                                 sx={{
@@ -196,99 +221,131 @@ const EmployeeCompnt = ({ em_no }) => {
                                         zIndex: 4,
                                         width: '100%'
                                     },
+                                    '& tr > *:last-child': {
+                                        position: 'sticky',
+                                        right: 0,
+                                        bgcolor: 'var(--TableCell-headBackground)',
+                                    },
                                 }}
                             >
-                                <Box >
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: 400, zIndex: 5 }}>Name</th>
-                                            <th style={{ width: 100, zIndex: 1 }} >ID#</th>
-                                            {
-                                                daysNum?.map((e, idx) => (
-                                                    <th key={idx} style={{ zIndex: 1, width: 60, textAlign: 'center' }} >
-                                                        {e}
-                                                    </th>
-                                                ))
-                                            }
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                            <th><Box sx={{ width: 50 }} ></Box></th>
-                                        </tr>
-                                        <tr>
-                                            <th style={{ zIndex: 5 }}> Days </th>
-                                            <th style={{ textAlign: "center", zIndex: 0 }}>  </th>
-                                            {
-                                                daysStr?.map((e, idx) => (
-                                                    <th key={idx} style={{ zIndex: 1, textAlign: 'center', width: 60, }}>
-                                                        {e}
-                                                    </th>
-                                                ))
-                                            }
-                                            <th style={{ textAlign: 'center' }} >Total Days</th>
-                                            <th style={{ textAlign: 'center' }} >Present</th>
-                                            <th style={{ textAlign: 'center' }} >Half Day</th>
-                                            <th style={{ textAlign: 'center' }} >Off</th>
-                                            <th style={{ textAlign: 'center' }} >Holiday</th>
-                                            <th style={{ textAlign: 'center' }} >Holiday-P</th>
-                                            <th style={{ textAlign: 'center' }} >Leaves</th>
-                                            <th style={{ textAlign: 'center' }} >Absent</th>
-                                            <th style={{ textAlign: 'center' }} >ESI</th>
-                                            <th style={{ textAlign: 'center' }} >Pay Days</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tableArray && tableArray.map((row, index) => (
-                                            <Fragment key={index}>
-                                                <tr>
-                                                    <td rowSpan={2} style={{ zIndex: 4 }} >
-                                                        <Box sx={{ width: 200 }}> {row.emName}</Box>
+                                {/* <Box > */}
+                                <thead>
+                                    <tr style={{ backgroundColor: '#f9fafb' }} >
+                                        <th style={{ width: 200, zIndex: 5, backgroundColor: '#f9fafb' }}>Name</th>
+                                        <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }} >ID#</th>
+                                        {
+                                            daysNum?.map((e, idx) => (
+                                                <th key={idx} style={{ zIndex: 1, width: 60, textAlign: 'center', backgroundColor: '#f9fafb', color: '#344767', fontWeight: 800 }} >
+                                                    {e}
+                                                </th>
+                                            ))
+                                        }
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ zIndex: 5, backgroundColor: '#b1b9c0' }}> Days </th>
+                                        <th style={{ textAlign: "center", zIndex: 1, backgroundColor: '#b1b9c0' }}>  </th>
+                                        {
+                                            daysStr?.map((e, idx) => (
+                                                <th key={idx} style={{ zIndex: 1, textAlign: 'center', width: 60, backgroundColor: '#b1b9c0' }}>
+                                                    {e}
+                                                </th>
+                                            ))
+                                        }
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > P</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > HD</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > OFF</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > H</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > HP</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > LV</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > A</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > ESI</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableArray && tableArray.map((row, index) => (
+                                        <Fragment key={index}>
+                                            <tr >
+                                                <td rowSpan={3} style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                                    <Box sx={{ width: 200 }}> {row.emName}</Box>
+                                                </td>
+                                                <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                    <Box sx={{ width: 60 }}> {row.em_no}</Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                {row.punchMaster.map((val, ind) => (
+                                                    <td key={ind}
+                                                        style={{
+                                                            zIndex: 0,
+                                                            textAlign: 'center',
+                                                            width: 60,
+                                                            borderLeft: '0.1px solid #dddfe2',
+                                                            height: 10,
+                                                            backgroundColor: '#f4f6f8'
+                                                        }}
+                                                    >
+                                                        <Box sx={{
+                                                            color: getColor(val.duty_desc),
+                                                            fontWeight: getFontWeight(val.duty_desc)
+                                                        }}>
+                                                            {val.duty_desc}
+                                                        </Box>
                                                     </td>
-                                                    <td rowSpan={2} style={{ textAlign: 'center' }} >
-                                                        <Box sx={{ width: 60 }}> {row.em_no}</Box>
+                                                ))}
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            </tr>
+                                            <tr>
+                                                {row.punchMaster.map((val, ind) => (
+                                                    <td key={ind}
+                                                        style={{
+                                                            zIndex: 0,
+                                                            textAlign: 'center',
+                                                            width: 60,
+                                                            borderLeft: '0.1px solid #dddfe2',
+                                                            height: 10,
+                                                            backgroundColor: '#CDF8DF'
+                                                        }}
+                                                    >
+                                                        <Box sx={{
+                                                            color: getColor(val.duty_desc),
+                                                            fontWeight: getFontWeight(val.duty_desc)
+                                                        }}>
+                                                            {val.lvereq_desc}
+                                                        </Box>
                                                     </td>
-                                                    {row.punchMaster.map((val, index) => (
-                                                        <td key={index} style={{ zIndex: 0, textAlign: 'center', width: 60, height: 15 }}>
-                                                            <Box sx={{ width: 40 }} >
-                                                                {val.duty_desc}
-                                                            </Box>
-                                                        </td>
-                                                    ))}
-                                                    <td colSpan={8} ></td>
-                                                </tr>
-                                                <tr  >
-                                                    {row.punchMaster.map((val, index) => (
-                                                        <td key={index}
-                                                            style={{ zIndex: 0, textAlign: 'center', width: 60, borderLeft: '0.1px solid #dddfe2', height: 15, backgroundColor: 'lightgreen' }}
-                                                        >
-                                                            <Box >
-                                                                {val.lvereq_desc}
-                                                            </Box>
-                                                        </td>
-                                                    ))}
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#5494F3', }}>{row.totalDays}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalP}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalHD}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalWOFF + row.totalNOFF}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totaH}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totaHP}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#93B597', }}>{row.totalLV + row.totalHDL}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#F68685', }}>{row.totaLWP + row.totalA}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#F68685', }}>{row.totaESI}</td>
-                                                    <td style={{ textAlign: 'center', backgroundColor: '#157A22', color: 'white' }}>
-                                                        {row.totalP + (row.totalHD * 0.5) + (row.totalWOFF + row.totalNOFF) + row.totaH + row.totaHP + row.totalLV + row.totalHDL}
-                                                    </td>
-                                                </tr>
-                                            </Fragment>
-                                        ))}
-                                    </tbody>
-                                </Box>
+                                                ))}
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalHD}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalWOFF + row.totalNOFF}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaH}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaHP}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV + row.totalHDL}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaLWP + row.totalA}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaESI}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalDays}</td>
+                                            </tr>
+                                        </Fragment>
+                                    ))}
+                                </tbody>
+                                {/* </Box> */}
                             </Table>
                         </Sheet>
                     </Box>
