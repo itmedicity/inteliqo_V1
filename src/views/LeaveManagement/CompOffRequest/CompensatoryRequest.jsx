@@ -21,6 +21,7 @@ const CompensatoryRequest = () => {
     const [showForm, setShowForm] = useState(0)
     const [employeeData, steEmployeeData] = useState({})
     const [count, setCount] = useState(0)
+    const [showTable, setShowtable] = useState([])
 
     //get the employee details for taking the HOd and Incharge Details
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
@@ -50,12 +51,15 @@ const CompensatoryRequest = () => {
                         />
                     </Box>
                 }>
-                    <EmployeeSelection setShowForm={setShowForm} steEmployeeData={steEmployeeData} />
+                    <EmployeeSelection setShowForm={setShowForm} steEmployeeData={steEmployeeData} setShowtable={setShowtable} count={count} />
                     {
                         showForm === 1 ? <OffSubmitForm employeeData={employeeData} setCount={setCount} setShowForm={setShowForm} /> : null
                     }
                 </Suspense>
-                <CoffRequesttable />
+                {
+                    showTable === 1 ? <CoffRequesttable /> : null
+                }
+
             </Box>
         </CustomLayout >
     )

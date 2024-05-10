@@ -135,7 +135,7 @@ export const processPunchMarkingHrFunc = async (
                             lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
                         }
                     })
-                    // console.log(filterAndAdditionPlanData?.filter(e => e.em_no === 4516))
+                    // console.log(filterAndAdditionPlanData?.filter(e => e.em_no === 6261))
 
                     /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
 
@@ -155,7 +155,7 @@ export const processPunchMarkingHrFunc = async (
                             return ele?.data?.map(async (e, idx, array) => {
 
                                 let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
-                                let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) : e.duty_desc;
+                                let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) : e.duty_desc;
 
                                 return {
                                     ...e,
@@ -273,28 +273,28 @@ export const getAttendanceCalculation = async (
                     {
                         duty_status: salaryLimit === false ? 2 : 1,
                         duty_desc: 'HP',
-                        lvereq_desc: 'HP',
+                        lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                         duty_remark: 'holiday Present'
                     }// new Entry by Ajith on  April 24th 2024, 6:31:15 pm
                     : earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                         {
                             duty_status: salaryLimit === false ? 2 : 1,
                             duty_desc: 'HP',
-                            lvereq_desc: 'HP',
+                            lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                             duty_remark: 'holiday Present'
                         } :
                         earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
                             {
                                 duty_status: salaryLimit === false ? 2 : 1,
                                 duty_desc: 'HP',
-                                lvereq_desc: 'HP',
+                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                 duty_remark: 'Late Coming'
                             } :
                             earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === true ?
                                 {
                                     duty_status: salaryLimit === false ? 2 : 1,
                                     duty_desc: 'HP',
-                                    lvereq_desc: 'HP',
+                                    lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                     duty_remark: 'working hours more than six hours so holiday present'
                                 } :
                                 earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && workingHours === false ?
@@ -316,7 +316,7 @@ export const getAttendanceCalculation = async (
                                             {
                                                 duty_status: salaryLimit === false && workingHours === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
                                                 duty_desc: 'HP',
-                                                lvereq_desc: 'HP',
+                                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',
                                                 duty_remark: 'Late in half day after 30 minits and working hours greater than 6 hours'
                                             } :
                                             // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM end
@@ -599,8 +599,9 @@ export const processShiftPunchMarkingHrFunc = async (
 
 //FIND AND CHECK THE HOLIDAY STATUS 
 const holidayStatus = async (e, array, holiday_policy_count) => {
+    const sortedArray = array.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day))
     if (e.duty_desc === 'H') {
-        const holidayFIlterArray = array.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
+        const holidayFIlterArray = sortedArray.filter((val) => subDays(new Date(val.duty_day), holiday_policy_count) <= new Date(e.duty_day) && addDays(new Date(val.duty_day), holiday_policy_count) >= new Date(e.duty_day))?.map((r) => r.duty_desc)
         //for checking absent -> A H A
         const Absent = holidayFIlterArray?.filter((m) => m === 'A').length
         // for checking LWP -> LWP H LWP
@@ -616,13 +617,14 @@ const holidayStatus = async (e, array, holiday_policy_count) => {
 }
 
 
-const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count) => {
-    if (e.duty_desc === 'WOFF') {
+const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) => {
+    const sortedArray = array.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day))
+    if (fromDate <= e.duty_day && e.duty_desc === 'WOFF') {
         const policyLimit = weekoff_policy_max_count - weekoff_policy_min_count;
-        const toIndex = idx;
+        const toIndex = idx - 1;
         const fromIndex = idx - weekoff_policy_max_count;
-        const FilterArray = array.filter((val, index) => fromIndex <= index && index <= toIndex)?.map((e) => e.duty_desc)
-        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP').length
+        const FilterArray = sortedArray.filter((val, index) => fromIndex <= index && index <= toIndex)?.map((e) => e.duty_desc)
+        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP' || dutydesc === 'WOFF').length
         return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
     } else {
         return e.duty_desc

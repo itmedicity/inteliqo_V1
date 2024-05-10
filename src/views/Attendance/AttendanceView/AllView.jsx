@@ -1,9 +1,9 @@
-import { Button, CssVarsProvider, IconButton, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import { Button, CssVarsProvider, Input, Sheet } from '@mui/joy';
 import Table from '@mui/joy/Table';
 import { Box, Paper, } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
+import { addMonths, eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
@@ -11,17 +11,18 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { DeptWiseAttendanceViewFun } from './Functions';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import { useHistory } from 'react-router-dom';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import LeaveDescription from './LeaveDescription';
+import { Fragment } from 'react';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
+
+const isOdd = (number) => number % 2 !== 0
 
 const AllView = ({ em_id }) => {
 
@@ -42,9 +43,12 @@ const AllView = ({ em_id }) => {
     const [dateArray, setDateArray] = useState([])
     const [empArray, setEmpArray] = useState([])
 
+    const [tableArray, settableArray] = useState([])
+    const [daysNum, setdaysNum] = useState([])
+    const [daysStr, setdaysStr] = useState([])
+
     // get holiday 
     const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
-
     const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
@@ -57,10 +61,9 @@ const AllView = ({ em_id }) => {
             }
             const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
             const { success, data, } = result.data
-            if (success === 1) {
-                const arr = data && data.map((val, index) => {
-                    return val.em_no
-                })
+            // console.log(result.data)
+            if (success === 1 && data?.length > 0) {
+                const arr = data && data?.map(val => val.em_no)
                 const postdata = {
                     em_no: arr,
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
@@ -68,23 +71,64 @@ const AllView = ({ em_id }) => {
                 }
                 let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-                const { success } = result.data
+                // console.log(result.data)
+                const { success, data: punchMasteData } = result.data
                 if (success === 1) {
-                    let punchData = result.data.data;
-                    DeptWiseAttendanceViewFun(value, holidayList).then((values) => {
-                        console.log(values)
-                        setDateArray(values);
-                        const newFun = (val) => {
-                            const arr = punchData?.filter(item => val.em_no === item.em_no)
-                            const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                            return {
-                                ...val,
-                                "arr": array
-                            }
+
+                    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                        ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+
+                    // console.log(dateRange)
+                    // console.log(punchMasteData)
+
+                    const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                        const empArray = punchMasteData?.filter(e => e.em_no === el)
+                        let emName = empArray?.find(e => e.em_no === el).em_name;
+                        let emNo = empArray?.find(e => e.em_no === el).em_no;
+                        let emId = empArray?.find(e => e.em_no === el).emp_id;
+
+                        // console.log(dateRange)
+                        // console.log(empArray)
+                        return {
+                            em_no: el,
+                            emName: emName,
+                            dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                            daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                            punchMaster: dateRange?.map((e) => {
+                                // console.log(e)
+                                return {
+                                    attDate: e,
+                                    duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                                    duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                                    em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                                    em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                                    emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                                    hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                                    holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                                    holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                                    leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                                    duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                    lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                }
+                            }),
+                            totalDays: dateRange?.length,
+                            totalP: empArray?.filter(el => el.lvereq_desc === "P").length ?? 0,
+                            totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
+                            totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
+                            totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
+                            totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
+                            totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
+                            totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
+                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
+                            totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
+                            totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
+                            totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
+                            totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
                         }
-                        const newEmp = empData?.map(newFun)
-                        setEmpArray(newEmp);
                     })
+                    settableArray(resultss)
+                    setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                    setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
                 } else {
                     infoNofity("No Punch Details")
                 }
@@ -93,10 +137,41 @@ const AllView = ({ em_id }) => {
             }
         }
     }
+
+
+
+    const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'
+    const getFontWeight = (val) => val === 'A' ? 900 : val === 'ESI' ? 900 : val === 'LWP' ? 900 : val === 'EG' ? 800 : val === 'LC' ? 800 : val === 'HD' ? 800 : 700
+
+    const levaeDescription = [
+        { lvename: 'A', color: 'danger', desc: "Absent without Permission" },
+        { lvename: 'P', color: 'success', desc: "Present" },
+        { lvename: 'LWP', color: 'danger', desc: "Approved Leave Without pay" },
+        { lvename: 'NJ', color: 'warning', desc: "Not Joined" },
+        { lvename: 'RD', color: 'neutral', desc: "Resigned" },
+        { lvename: 'ESI', color: 'danger', desc: "ESI Leave" },
+        { lvename: 'HD', color: 'danger', desc: "Half day lop" },
+        { lvename: 'CHD', color: 'danger', desc: "Calculated Half Day" },
+        { lvename: 'EGHD', color: 'danger', desc: "Early Going Half Day" },
+        { lvename: 'WOFF', color: 'primary', desc: "Weekly off" },
+        { lvename: 'COFF', color: 'primary', desc: "Componsatory off" },
+        { lvename: 'NOFF', color: 'primary', desc: "Night Off" },
+        { lvename: 'SL', color: 'warning', desc: "Sick Leave" },
+        { lvename: 'HSL', color: 'warning', desc: "Half Day Sick Leave" },
+        { lvename: 'CL', color: 'warning', desc: "Casual Leave" },
+        { lvename: 'HCL', color: 'warning', desc: "Half Day Casual Leave" },
+        { lvename: 'EL', color: 'warning', desc: "Earn Leave" },
+        { lvename: 'H', color: 'primary', desc: "Holiday" },
+        { lvename: 'OHP', color: 'success', desc: "One Hour Request Present" },
+        { lvename: 'ODP', color: 'success', desc: "On Duty Present" },
+        { lvename: 'MPP', color: 'success', desc: "Miss Punch Request Present" },
+        { lvename: 'HP', color: 'success', desc: "Holiday Present" },
+    ]
+
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
             <ToastContainer />
-            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight, flexDirection: 'column' }}>
+            <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>
                 <Paper variant='outlined' sx={{ display: "flex", alignItems: "center", border: 0, py: 0.5 }}  >
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                         <Box sx={{ flex: 1, px: 0.5 }} >
@@ -128,67 +203,37 @@ const AllView = ({ em_id }) => {
                         <DepartmentSectionRedx getSection={setDeptSection} />
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
-                        <CssVarsProvider>
-                            <Tooltip title="Process" followCursor placement='top' arrow >
-                                <Button aria-label="Like" variant="outlined" color='success' onClick={getData} >
-                                    <PublishedWithChangesIcon />
-                                </Button>
-                            </Tooltip>
-                        </CssVarsProvider>
+                        {/* <CssVarsProvider> */}
+                        {/* <Tooltip title="Process" followCursor placement='top' arrow > */}
+                        <Button aria-label="Like" variant="outlined" color='success' onClick={getData} >
+                            <PublishedWithChangesIcon />
+                        </Button>
+                        {/* </Tooltip> */}
+                        {/* </CssVarsProvider> */}
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} >
                     </Box>
                 </Paper>
                 <Paper square variant='elevation' sx={{ display: "flex", alignItems: "center", justifyContent: 'flex-start', flexWrap: 'wrap', m: 0.5, p: 0.5, }}  >
-                    <LeaveDescription lvename='P' desc="Present" />
-                    <LeaveDescription lvename='WOFF' desc="Work OFF" />
-                    <LeaveDescription lvename='LC' desc="Late Coming" />
-                    <LeaveDescription lvename='HD' desc="Half Day" />
-                    <LeaveDescription lvename='A' desc="Absent" />
-                    <LeaveDescription lvename='H' desc="Holiday" />
-                    <LeaveDescription lvename='HDL' desc="Halfday Leave" />
-                    <LeaveDescription lvename='LV' desc="Leave" />
-                    <LeaveDescription lvename='HP' desc="Holiday Present" />
+                    {
+                        levaeDescription?.map((e, idx) => <LeaveDescription lvename={e.lvename} desc={e.desc} key={idx} color={e.color} />)
+                    }
                 </Paper>
                 <Box sx={{
-                    display: 'flex', width: '100%', flexDirection: 'column', mt: 1,
-                    height: 500,
-                    overflow: 'auto', '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                    display: 'flex', width: '100%', flexDirection: 'column', p: 0.5,
+                    // height: screenInnerHeight * 75 / 100,
+                    overflow: 'auto',
+                    '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
                 }}>
                     <Sheet
                         variant="outlined"
+                        invertedColors
                         sx={{
-                            // '--TableCell-height': '40px',
-                            // // the number is the amount of the header rows.
-                            // '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
-                            // '--Table-firstColumnWidth': '150px',
-                            // '--Table-lastColumnWidth': '144px',
-                            // // background needs to have transparency to show the scrolling shadows
-                            // '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
-                            // '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                            '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                            '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
                             overflow: 'auto',
-                            // background: (
-                            //     theme,
-                            // ) => `linear-gradient(to right, ${theme.vars.palette.background.surface} 30%, rgba(255, 255, 255, 0)),
-                            //         linear-gradient(to right, rgba(255, 255, 255, 0), ${theme.vars.palette.background.surface} 70%) 0 100%,
-                            //         radial-gradient(
-                            //         farthest-side at 0 50%,
-                            //         rgba(0, 0, 0, 0.12),
-                            //         rgba(0, 0, 0, 0)
-                            //         ),
-                            //         radial-gradient(
-                            //             farthest-side at 100% 50%,
-                            //             rgba(0, 0, 0, 0.12),
-                            //             rgba(0, 0, 0, 0)
-                            //         )
-                            //         0 100%`,
-                            // backgroundSize:
-                            //     '40px calc(100% - var(--TableCell-height)), 40px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height)), 14px calc(100% - var(--TableCell-height))',
-                            // backgroundRepeat: 'no-repeat',
-                            // backgroundAttachment: 'local, local, scroll, scroll',
-                            // backgroundPosition:
-                            //     'var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height), var(--Table-firstColumnWidth) var(--TableCell-height), calc(100% - var(--Table-lastColumnWidth)) var(--TableCell-height)',
-                            // backgroundColor: 'background.surface',
+                            borderRadius: 5,
+                            width: '100%'
                         }}
                     >
                         <Table
@@ -196,64 +241,139 @@ const AllView = ({ em_id }) => {
                             stripe="odd"
                             hoverRow
                             stickyHeader
+                            size='sm'
                             sx={{
                                 '& tr > *:first-of-type': {
                                     position: 'sticky',
                                     left: 0,
                                     boxShadow: '1px 0 var(--TableCell-borderColor)',
                                     bgcolor: 'background.surface',
-                                }
+                                    zIndex: 4,
+                                    width: '100%'
+                                },
+                                '& tr > *:last-child': {
+                                    position: 'sticky',
+                                    right: 0,
+                                    bgcolor: 'var(--TableCell-headBackground)',
+                                },
                             }}
                         >
-                            <Box >
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: 400, zIndex: 1 }}>Name</th>
-                                        <th style={{ zIndex: 0 }} >ID#</th>
-                                        {dateArray && dateArray.map((val, index) => (
-                                            <th key={index} style={{ zIndex: 0 }} >
-                                                {val.date}
+                            <thead>
+                                <tr style={{ backgroundColor: '#f9fafb' }} >
+                                    <th style={{ width: 200, zIndex: 5, backgroundColor: '#f9fafb' }}>Name</th>
+                                    <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }} >ID#</th>
+                                    {
+                                        daysNum?.map((e, idx) => (
+                                            <th key={idx} style={{ zIndex: 1, width: 60, textAlign: 'center', backgroundColor: '#f9fafb', color: '#344767', fontWeight: 800 }} >
+                                                {e}
                                             </th>
-                                        ))}
-                                    </tr>
-                                    <tr>
-                                        <th style={{ zIndex: 1 }}> Days </th>
-                                        <th style={{ textAlign: "center", zIndex: 0 }}>  </th>
-                                        {dateArray && dateArray.map((val, index) => (
-                                            <th key={index} style={{ zIndex: 0 }}>
-                                                {/* <Box sx={{
-                                                textTransform: 'capitalize',
-                                                color: val.holiday === 1 || val.sunday === '0' ? '#880e4f' : '#212121'
-                                            }} > */}
-                                                {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
-                                                {/* </Box> */}
+                                        ))
+                                    }
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                </tr>
+                                <tr>
+                                    <th style={{ zIndex: 5, backgroundColor: '#b1b9c0' }}> Days </th>
+                                    <th style={{ textAlign: "center", zIndex: 1, backgroundColor: '#b1b9c0' }}>  </th>
+                                    {
+                                        daysStr?.map((e, idx) => (
+                                            <th key={idx} style={{ zIndex: 1, textAlign: 'center', width: 60, backgroundColor: '#b1b9c0' }}>
+                                                {e}
                                             </th>
-                                        ))}
-                                        <th aria-label="last"
-                                            style={{ width: 'var(--Table-lastColumnWidth)' }}>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {empArray && empArray.map((row, index) => (
-                                        <tr key={index} >
-                                            <td>
-                                                <Box> {row.emp_name}</Box>
+                                        ))
+                                    }
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > P</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > HD</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > OFF</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > H</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > HP</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > LV</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > A</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > ESI</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Days</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tableArray && tableArray.map((row, index) => (
+                                    <Fragment key={index}>
+                                        <tr >
+                                            <td rowSpan={3} style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ width: 200 }}> {row.emName}</Box>
                                             </td>
-                                            <td >
-                                                <Box> {row.em_no}</Box>
+                                            <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ width: 60 }}> {row.em_no}</Box>
                                             </td>
-                                            {row.arr.map((val, index) => (
-                                                <td key={index}>
-                                                    <Box >
+                                        </tr>
+                                        <tr>
+                                            {row.punchMaster.map((val, ind) => (
+                                                <td key={ind}
+                                                    style={{
+                                                        zIndex: 0,
+                                                        textAlign: 'center',
+                                                        width: 60,
+                                                        borderLeft: '0.1px solid #dddfe2',
+                                                        height: 10,
+                                                        backgroundColor: '#f4f6f8'
+                                                    }}
+                                                >
+                                                    <Box sx={{
+                                                        color: getColor(val.duty_desc),
+                                                        fontWeight: getFontWeight(val.duty_desc)
+                                                    }}>
                                                         {val.duty_desc}
                                                     </Box>
                                                 </td>
                                             ))}
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </Box>
+                                        <tr>
+                                            {row.punchMaster.map((val, ind) => (
+                                                <td key={ind}
+                                                    style={{
+                                                        zIndex: 0,
+                                                        textAlign: 'center',
+                                                        width: 60,
+                                                        borderLeft: '0.1px solid #dddfe2',
+                                                        height: 10,
+                                                        backgroundColor: '#CDF8DF'
+                                                    }}
+                                                >
+                                                    <Box sx={{
+                                                        color: getColor(val.duty_desc),
+                                                        fontWeight: getFontWeight(val.duty_desc)
+                                                    }}>
+                                                        {val.lvereq_desc}
+                                                    </Box>
+                                                </td>
+                                            ))}
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalHD}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalWOFF + row.totalNOFF}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaH}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaHP}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV + row.totalHDL}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaLWP + row.totalA}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaESI}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalDays}</td>
+                                        </tr>
+                                    </Fragment>
+                                ))}
+                            </tbody>
                         </Table>
                     </Sheet>
                 </Box>

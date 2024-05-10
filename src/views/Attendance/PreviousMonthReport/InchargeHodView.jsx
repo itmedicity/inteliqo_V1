@@ -41,8 +41,8 @@ const InchargeHodView = () => {
     const postDataDep = useMemo(() => {
         return {
             deptsec: section,
-            fromdate: moment(startOfMonth(new Date(selectDate))).format('YYYY-MM-DD'),
-            todate: moment(endOfMonth(new Date(selectDate))).format('YYYY-MM-DD')
+            fromdate: format(startOfMonth(new Date(selectDate)), 'yyyy-MM-dd'),
+            todate: format(addDays(endOfMonth(new Date(selectDate)), 1), 'yyyy-MM-dd')
         }
     }, [selectDate, section])
 
@@ -88,8 +88,8 @@ const InchargeHodView = () => {
                     });
 
                     const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
-
-                    setTableData(array)
+                    setTableData(array.slice(0, -1))
+                    // setTableData(array)
 
                 } else {
                     warningNofity("Dutypaln Not Done")

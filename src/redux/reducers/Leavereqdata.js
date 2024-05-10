@@ -25,7 +25,8 @@ const {
     FETCH_EACH_EMP_COFF_REQUEST,
     FETCH_SECTION_BASED_LEAVE_REQUEST,
     FETCH_SECTION_BASED_HALFDAY_REQUEST,
-    FETCH_SECTION_BASED_MISSPUNCH_REQUEST
+    FETCH_SECTION_BASED_MISSPUNCH_REQUEST,
+    FETCH_SECTION_BASED_COFF_REQUEST
 } = Actiontypes;
 
 const Leavestate = [];
@@ -384,6 +385,33 @@ export const getSectMisspunchRequests = (state = sectionMisspunchRequests, { typ
     switch (type) {
         case FETCH_SECTION_BASED_MISSPUNCH_REQUEST:
             return { ...state, sectMisspunch: payload, sectMisspunchStatus: true }
+        default:
+            return state
+    }
+}
+
+const sectionCoffRequests = {
+    sectCoff: [],
+    sectCoffStatus: false
+}
+export const getSectCoffRequests = (state = sectionCoffRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_SECTION_BASED_COFF_REQUEST:
+            return { ...state, sectCoff: payload, sectCoffStatus: true }
+        default:
+            return state
+    }
+}
+
+const empCoffRequests = {
+    empCoff: [],
+    empCoffstatus: false
+}
+
+export const getEmpCoffRequests = (state = empCoffRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_EACH_EMP_COFF_REQUEST:
+            return { ...state, empCoff: payload, empCoffstatus: true }
         default:
             return state
     }

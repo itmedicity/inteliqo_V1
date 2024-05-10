@@ -1,12 +1,12 @@
 import { Typography } from '@mui/joy'
 import React, { memo } from 'react'
 
-const LeaveDescription = ({ lvename, desc }) => {
+const LeaveDescription = ({ lvename, desc, color }) => {
     return (
         <Typography
             level="body-md"
             fontFamily="monospace"
-            color="success"
+            color={color}
             variant="solid"
             noWrap
             sx={{ borderRadius: 3, m: 0.5 }}

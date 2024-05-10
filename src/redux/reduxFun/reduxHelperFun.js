@@ -360,90 +360,7 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
 
 export const getAllCopensatoryRequest = (state) => state?.setAllLeaveApproval?.compOffrqData?.compOffRqList;
 
-export const getEmployeeCoffData = async (em_id) => {
-    const resultdel = await axioslogin.get(`/LeaveRequestApproval/employee/coffData/${em_id}`);
-    const { success, data } = resultdel?.data;
-    if (success === 1) {
-        const arr = data?.map((val) => {
-            return {
-                type: "Compensatory Off Request",
-                reason: val.cf_reason,
-                slno: val.cmp_off_reqid,
-                emno: val.em_no,
-                name: val.em_name,
-                section: val.sect_name,
-                inchargestatus: val.cf_incapprv_status,
-                hodstatus: val.cf_hod_apprv_status,
-                hrstatus: val.cf_hr_apprv_status,
-                status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                    (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
-                        (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                            (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                    (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                        (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'HR Approved' :
-                                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
-                reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
-                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
-                toDate: val.leavetodate
-            }
-        })
-        return { success: 1, data: arr };
-    } else {
-        return { success: 1, data: [] }
-    }
-};
 
-export const getInchargeHodData = async (authorizationBasedDeptSection, em_id) => {
-
-
-    const sectioIDs = authorizationBasedDeptSection?.map(val => val.dept_section)
-
-    const postData = {
-        data: sectioIDs
-    }
-
-    const resultdel = await axioslogin.post("/LeaveRequestApproval/inchargeHod/coffData", postData);
-    const { success, data } = resultdel?.data;
-    if (success === 1) {
-        const resultdel = await axioslogin.get(`/LeaveRequestApproval/employee/coffData/${em_id}`);
-        const { success, data: empdata } = resultdel?.data;
-        if (success === 1) {
-
-            const newArray = [...data, ...empdata]
-            const arr = newArray?.map((val) => {
-                return {
-                    type: "Compensatory Off Request",
-                    reason: val.cf_reason,
-                    slno: val.cmp_off_reqid,
-                    emno: val.em_no,
-                    name: val.em_name,
-                    section: val.sect_name,
-                    inchargestatus: val.cf_incapprv_status,
-                    hodstatus: val.cf_hod_apprv_status,
-                    hrstatus: val.cf_hr_apprv_status,
-                    status: (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 2) ? 'Incharge Rejected' :
-                            (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                    (val.cf_inc_apprv_req === 0 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                        (val.cf_inc_apprv_req === 1 && val.cf_incapprv_status === 0 && val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 2) ? 'HOD Rejected' :
-                                            (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 1) ? 'HR Approved' :
-                                                (val.cf_hod_apprv_req === 1 && val.cf_hod_apprv_status === 1 && val.cf_hr_aprrv_requ === 1 && val.cf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
-                    reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
-                    fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
-                    toDate: val.leavetodate
-                }
-            })
-            return { status: 1, data: arr }
-
-        } else {
-            return { status: 1, data: [] }
-        }
-    } else {
-        return { status: 1, data: [] }
-    }
-};
 
 export const getDutyPlanBasedSHift = (state) => state?.getDutyPlannedShift?.shiftInformation?.[0]
 
@@ -1157,3 +1074,67 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
     }
 }
 
+export const getCoffTableData = (state, hod, incharge, masterGroupStatus, em_id, em_dept_section, checkStatus) => {
+    const employeeCoff = state?.getEmpCoffRequests?.empCoff
+    const sectionCoff = state?.getSectCoffRequests?.sectCoff
+
+    if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
+        const newList = sectionCoff?.map((val) => {
+            return {
+                type: "Compensatory Off Request",
+                reason: val.cf_reason,
+                slno: val.cmp_off_reqid,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.cf_incapprv_status,
+                hodstatus: val.cf_hod_apprv_status,
+                hrstatus: val.cf_hr_apprv_status,
+                reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+        return newList
+    } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+        const newList = sectionCoff
+            ?.filter(val => val.em_dept_section !== em_dept_section)
+            ?.concat(sectionCoff?.filter(e => checkStatus === true ? e.em_id === em_id : e))
+            ?.map((val) => {
+                return {
+                    type: "Compensatory Off Request",
+                    reason: val.cf_reason,
+                    slno: val.cmp_off_reqid,
+                    emno: val.em_no,
+                    name: val.em_name,
+                    section: val.sect_name,
+                    inchargestatus: val.cf_incapprv_status,
+                    hodstatus: val.cf_hod_apprv_status,
+                    hrstatus: val.cf_hr_apprv_status,
+                    reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
+                    fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                    toDate: val.leavetodate
+                }
+            })
+        return newList
+    }
+    else {
+        const arr = employeeCoff?.map((val) => {
+            return {
+                type: "Compensatory Off Request",
+                reason: val.cf_reason,
+                slno: val.cmp_off_reqid,
+                emno: val.em_no,
+                name: val.em_name,
+                section: val.sect_name,
+                inchargestatus: val.cf_incapprv_status,
+                hodstatus: val.cf_hod_apprv_status,
+                hrstatus: val.cf_hr_apprv_status,
+                reqDate: moment(new Date(val.reqestdate)).format('DD-MM-YYYY'),
+                fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
+                toDate: val.leavetodate
+            }
+        })
+        return arr
+    }
+}

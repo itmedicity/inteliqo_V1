@@ -101,7 +101,7 @@ import { getLeaveRequests } from './Leavereqdata'
 import { getMisspunchRequests } from './Leavereqdata'
 import {
     getHalfdayRequests, getSectLeaveRequests, getSectHalfdayRequests,
-    getSectMisspunchRequests
+    getSectMisspunchRequests, getEmpCoffRequests, getSectCoffRequests
 } from './Leavereqdata'
 
 const reducer = combineReducers({
@@ -215,7 +215,9 @@ const reducer = combineReducers({
     getHalfdayRequests,
     getSectLeaveRequests,
     getSectHalfdayRequests,
-    getSectMisspunchRequests
+    getSectMisspunchRequests,
+    getEmpCoffRequests,
+    getSectCoffRequests
 })
 
 export default reducer;
