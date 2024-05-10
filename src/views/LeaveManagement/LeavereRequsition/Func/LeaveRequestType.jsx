@@ -47,7 +47,7 @@ const LeaveRequestType = ({ onChange, onChangeVal }) => {
             variant='outlined'
             color='primary'
         >
-            <Option value={0} >Leave Request Type ...</Option>
+            <Option value={0} disabled >Leave Request Type ...</Option>
             {
                 leaveRequestType && leaveRequestType.map((val, index) => {
                     return <Option key={index} value={val.lrequest_slno}>{val.lrequest_type}</Option>

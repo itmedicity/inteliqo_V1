@@ -4,21 +4,18 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useSelector } from 'react-redux';
 import { Halfdaymapping, MappingData, nopunchmapping } from '../LeaveCommonComponent/LeaveApprovalFunc';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import LeavRqModel from '../LeaveCommonComponent/LeavRqModel';
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel';
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel';
 
-const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
+const HodleaveTable = ({ levtpevalue, deptSect, setcount }) => {
 
-    //state for open model
     const [openleave, setOpenleave] = useState(false);
     const [opennopunch, setOpennopunch] = useState(false);
     const [openhalf, setOpenhalf] = useState(false);
-    //  const [count, setcount] = useState(0)//to render dispatch useeffect
-
     const [tableData, setTableData] = useState([])
     const [empData, setEmpData] = useState({})
+
 
     const sectionWiseLeaveRequest = useSelector((state) => state?.getSectLeaveRequests?.sectLeaves)
     const sectionWisehalfdayRequest = useSelector((state) => state?.getSectHalfdayRequests?.sectHalfday)
@@ -27,111 +24,122 @@ const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
     useEffect(() => {
         if (levtpevalue === 1 && deptSect === 0) {
             const filterleavereq = sectionWiseLeaveRequest?.filter((val) => {
-                return (val.inc_apprv_req === 1 && val.incapprv_status === 0)
+                return (val.hod_apprv_req === 1 && val.hod_apprv_status === 0)
             })
             MappingData(filterleavereq).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
                     setTableData([])
                 }
             })
         } else if (levtpevalue === 1 && deptSect !== 0) {
             const filterleavereq = sectionWiseLeaveRequest?.filter((val) => {
-                return (val.dept_section === deptSect && val.inc_apprv_req === 1 && val.incapprv_status === 0)
+                return (val.dept_section === deptSect && val.hod_apprv_req === 1 && val.hod_apprv_status === 0)
             })
             MappingData(filterleavereq).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
-                    infoNofity("No Leave request pending for this department!!")
                     setTableData([])
                 }
             })
-        }
-        else if (levtpevalue === 2 && deptSect === 0) {
+        } else if (levtpevalue === 2 && deptSect === 0) {
             const filterleavereq = sectionWisehalfdayRequest?.filter((val) => {
-                return (val.hf_inc_apprv_req === 1)
+                return (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0)
             })
             Halfdaymapping(filterleavereq).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
-                    infoNofity("No Leave request pending for this department!!")
                     setTableData([])
                 }
             })
         } else if (levtpevalue === 2 && deptSect !== 0) {
             const filterdata = sectionWisehalfdayRequest?.filter((val) => {
-                return (val.dept_section === deptSect && val.hf_inc_apprv_req === 1)
+                return (val.dept_section === deptSect && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0)
             })
             Halfdaymapping(filterdata).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
-                    infoNofity("No Leave request pending for this department!!")
                     setTableData([])
                 }
             })
         } else if (levtpevalue === 3 && deptSect === 0) {
-            const filterleavereq = sectionWiseMisspunchRequest?.filter((val) => {
-                return (val.np_inc_apprv_req === 1)
+            const filterleavereq = sectionWiseMisspunchRequest && sectionWiseMisspunchRequest.filter((val) => {
+                return (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0)
             })
             nopunchmapping(filterleavereq).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
-                    infoNofity("No Leave request pending for this department!!")
                     setTableData([])
                 }
             })
         } else if (levtpevalue === 3 && deptSect !== 0) {
-            const filterdata = sectionWiseMisspunchRequest?.filter((val) => {
-                return (val.em_dept_section === deptSect && val.np_inc_apprv_req === 1)
+            const filterdata = sectionWiseMisspunchRequest && sectionWiseMisspunchRequest.filter((val) => {
+                return (val.em_dept_section === deptSect && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0)
             })
             nopunchmapping(filterdata).then((val) => {
                 if (Object.keys(val).length > 0) {
                     const arr = val && val.filter((k) => {
                         return (k.hr_apprv !== 1)
                     })
-                    setTableData(arr)
+                    const arr1 = arr && arr.filter((k) => {
+                        return (k.incaprv !== 2)
+                    })
+                    setTableData(arr1)
                 } else {
-                    infoNofity("No Leave request pending for this department!!")
                     setTableData([])
                 }
             })
         }
 
-    }, [levtpevalue, deptSect, sectionWiseLeaveRequest, sectionWisehalfdayRequest, sectionWiseMisspunchRequest])
-
+    }, [sectionWiseLeaveRequest, sectionWisehalfdayRequest, sectionWiseMisspunchRequest,
+        levtpevalue, deptSect]);
 
     const [columnDef] = useState([
-        //   { headerName: 'Slno', field: 'row_slno', filter: true, minWidth: 100 },
         { headerName: 'ID#', field: 'Emp_no', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'Employee_name', filter: true, minWidth: 200 },
-        { headerName: 'Department Section', field: 'Department_section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'inStatus', minWidth: 200 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 200 },
+        { headerName: 'Status ', field: 'inStatus', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.incaprv === 1 || params.data.incaprv === 2) {
+                if (params.data.hodaprv === 1 || params.data.hodaprv === 2 || params.data.incaprv === 2 || params.data.hr_apprv === 1) {
                     return <IconButton
-                        sx={{ paddingY: 0.5 }} >
+                        sx={{ paddingY: 0.5 }}  >
                         <CheckCircleOutlineIcon />
                     </IconButton>
                 } else {
@@ -149,12 +157,12 @@ const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
 
     const rowStyle = { background: '#CE7D78' };
     const getRowStyle = params => {
-        if (params.data.incaprv === 2) {
+        if (params.data.hodaprv === 2 || params.data.incaprv === 2) {
             return { background: '#CE7D78' };
         }
     };
 
-    const handleClick = useCallback((params) => {
+    const handleClick = async (params) => {
         const data = params.data
         setEmpData(data)
         const { req_type } = data;
@@ -165,20 +173,20 @@ const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
         } else if (req_type === 3) {
             setOpennopunch(true)
         }
-    }, [])
+    }
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setOpenleave(false);
         setOpennopunch(false);
-        // setOpencompen(false);
         setOpenhalf(false);
-    };
+    }, []);
+
 
     return (
         <>
-            <LeavRqModel open={openleave} setOpen={setOpenleave} empData={empData} authority={1} setcount={setcount} />
-            <HaldayRqModel open={openhalf} setOpen={setOpenhalf} handleClose={handleClose} empData={empData} authority={1} setcount={setcount} />
-            <NopunchRqModel open={opennopunch} setOpen={setOpennopunch} handleClose={handleClose} empData={empData} authority={1} setcount={setcount} />
+            <LeavRqModel open={openleave} setOpen={setOpenleave} empData={empData} authority={2} setcount={setcount} />
+            <HaldayRqModel open={openhalf} setOpen={setOpenhalf} handleClose={handleClose} empData={empData} authority={2} setcount={setcount} />
+            <NopunchRqModel open={opennopunch} setOpen={setOpennopunch} handleClose={handleClose} empData={empData} authority={2} setcount={setcount} />
             <Paper square elevation={0} sx={{ p: 1, display: 'flex', flexDirection: "column" }} >
                 <CommonAgGrid
                     columnDefs={columnDef}
@@ -197,4 +205,4 @@ const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
     )
 }
 
-export default memo(LeaveTable) 
+export default memo(HodleaveTable) 

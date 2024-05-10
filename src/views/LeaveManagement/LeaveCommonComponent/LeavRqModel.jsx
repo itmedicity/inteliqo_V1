@@ -1,11 +1,10 @@
-import { CssVarsProvider, Typography } from '@mui/joy';
+import { Typography } from '@mui/joy';
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import Button from '@mui/joy/Button';
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
-import _ from 'underscore';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -15,84 +14,59 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Paper } from '@mui/material';
 import { useMemo } from 'react';
 
-const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno }) => {
+const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
+
+    const employeeLeaveData = useMemo(() => empData, [empData])
+
+    const { SlNo, Employee_name, Emp_no, requestDate, no_of_leave, leave_reason,
+        leave_date, leavetodate, sect_name, lve_uniq_no } = employeeLeaveData
+
 
     const [reason, setreason] = useState('')
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    //redux data all leave request
-    const leaveRqData = useSelector((state) => state?.setAllLeaveApproval?.leaveRqData?.leaveRqList, _.isEqual)
-    const [details, setDetails] = useState([])
-    const [formdata, setformData] = useState({
-        emp_name: '',
-        emp_id: '',
-        leave_reason: '',
-        leave_date: '',
-        requestdate: '',
-        leavetodate: '',
-        no_of_leave: '',
-        lve_uniq_no: '',
-        sect_name: ''
 
-    })
-    const { emp_name, emp_id, leavetodate, leave_reason, requestdate, leave_date, no_of_leave,
-        lve_uniq_no, sect_name } = formdata;
+    //login incharge id
+    const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
+    const [details, setDetails] = useState([])
+
 
     useEffect(() => {
-        if (Object.keys(leaveRqData).length > 0) {
-            //filtering selected row from all data array
-            const array = leaveRqData && leaveRqData.filter((val) => val.leave_slno === slno)
-            const { em_name, em_no, leave_reason, request_date, leave_date, leavetodate,
-                no_of_leave, lve_uniq_no,
-                sect_name } = array[0]
-            const formdata = {
-                emp_id: em_no,
-                emp_name: em_name,
-                leave_date: moment(new Date(leave_date)).format('DD-MM-YYYY'),
-                requestdate: moment(new Date(request_date)).format('DD-MM-YYYY'),
-                leave_reason: leave_reason,
-                leavetodate: moment(new Date(leavetodate)).format('DD-MM-YYYY'),
-                no_of_leave: no_of_leave,
-                lve_uniq_no: lve_uniq_no,
-                sect_name: sect_name
-            }
-            setformData(formdata)
 
-            const getLeaveDetails = async (lve_uniq_no) => {
-                //to get leave request details
-                const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${lve_uniq_no}`)
-                if (resultdel.data.success === 1) {
-                    setDetails(resultdel.data.data)
-                } else {
-                    setDetails([])
-                }
+
+        const getLeaveDetails = async (lve_uniq_no) => {
+            //to get leave request details
+            const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${lve_uniq_no}`)
+            if (resultdel.data.success === 1) {
+                setDetails(resultdel.data.data)
+            } else {
+                setDetails([])
             }
-            getLeaveDetails(lve_uniq_no)
         }
-    }, [leaveRqData, slno])
-
-
+        getLeaveDetails(lve_uniq_no)
+        //  }
+    }, [lve_uniq_no])
 
     const inchpostData = useMemo(() => {
         return {
             status: 1,
             comment: reason,
-            slno: slno,
+            slno: SlNo,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id,
             lve_uniq_no: lve_uniq_no
         }
-    }, [reason, slno, em_id, lve_uniq_no])
+    }, [reason, SlNo, em_id, lve_uniq_no])
 
     const LeaveRejectdata = useMemo(() => {
         return {
             status: 2,
             comment: reason,
-            slno: slno,
+            slno: SlNo,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id,
             lve_uniq_no: lve_uniq_no
         }
-    }, [reason, slno, em_id, lve_uniq_no])
+    }, [reason, SlNo, em_id, lve_uniq_no])
 
 
     const handleApproverequest = useCallback(async () => {
@@ -103,7 +77,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                 const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', inchpostData)
                 const { success, message } = result.data;
                 if (success === 1) {
-                    setcount(count + 1)
+                    setcount(Math.random())
                     succesNofity(message)
                     setreason('')
                     setOpen(false)
@@ -118,7 +92,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/${slno}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/${SlNo}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { inc_apprv_req, incapprv_status } = data[0]
@@ -131,7 +105,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                         if (success === 1) {
                             succesNofity(message)
                             setreason('')
-                            setcount(count + 1)
+                            setcount(Math.random())
                             setOpen(false)
                         } else if (success === 2) {
                             warningNofity(message)
@@ -148,7 +122,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                     if (success === 1) {
                         succesNofity(message)
                         setreason('')
-                        setcount(count + 1)
+                        setcount(Math.random())
                         setOpen(false)
                     } else if (success === 2) {
                         warningNofity(message)
@@ -161,20 +135,20 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                 }
             }
         }
-    }, [authority, inchpostData, count, setcount, reason, setOpen, slno])
+    }, [authority, inchpostData, setcount, reason, setOpen, SlNo])
 
     const handleRegectRequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = details?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: emp_id }
+            return { ...val, emno: Emp_no }
         });
         //EARN LEAVE
         const earnLeave = details?.filter(val => val.leave_typeid === 8)?.map(val => {
-            return { ...val, emno: emp_id }
+            return { ...val, emno: Emp_no }
         });
         //COMPENSATORY OFF
         const compansatoryOff = details?.filter(val => val.leave_typeid === 11)?.map(val => {
-            return { ...val, emno: emp_id }
+            return { ...val, emno: Emp_no }
         });
 
         //COMMON LEAVES 
@@ -184,7 +158,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
             val.leave_typeid !== 8 &&
             val.leave_typeid !== 11
         ).map(val => {
-            return { ...val, emno: emp_id }
+            return { ...val, emno: Emp_no }
         });
 
         //UPDATE CASUAL LEAVE TABLE
@@ -275,7 +249,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                         const errorLog = {
                             error_log_table: 'punch_master,leave_request,leave_reqdetl',
                             error_log: error,
-                            em_no: emp_id,
+                            em_no: Emp_no,
                             formName: 'Leave Approval Modal Approval HR Page'
                         }
                         axioslogin.post(`/common/errorLog`, errorLog);
@@ -291,7 +265,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/${slno}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/${SlNo}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { inc_apprv_req, incapprv_status } = data[0]
@@ -322,7 +296,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                                 const errorLog = {
                                     error_log_table: 'punch_master,leave_request,leave_reqdetl',
                                     error_log: error,
-                                    em_no: emp_id,
+                                    em_no: Emp_no,
                                     formName: 'Leave Approval Modal Approval HR Page'
                                 }
                                 axioslogin.post(`/common/errorLog`, errorLog);
@@ -360,7 +334,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                             const errorLog = {
                                 error_log_table: 'punch_master,leave_request,leave_reqdetl',
                                 error_log: error,
-                                em_no: emp_id,
+                                em_no: Emp_no,
                                 formName: 'Leave Approval Modal Approval HR Page'
                             }
                             axioslogin.post(`/common/errorLog`, errorLog);
@@ -377,7 +351,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
             }
         }
 
-    }, [authority, LeaveRejectdata, details, emp_id, setOpen, setcount, slno, reason])
+    }, [authority, LeaveRejectdata, details, Emp_no, setOpen, setcount, reason, SlNo])
 
     return (
         <>
@@ -410,7 +384,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                             }
                             sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {emp_name}
+                            {Employee_name}
                         </Typography>
                         <Typography
                             lineHeight={1}
@@ -427,7 +401,7 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                                 alignContent='center'
                                 lineHeight={1}
                             >
-                                {emp_id}
+                                {Emp_no}
                             </Typography>}
                             sx={{ color: 'neutral.400', display: 'flex', }}
                         >
@@ -435,66 +409,41 @@ const LeavRqModel = ({ setOpen, open, authority, em_id, setcount, count, slno })
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
                     </Box>
-                    {/* <Box sx={{ mt: 0.5, pt: 1 }} >
-                        <Typography variant="outlined" color="success">
-                            {status}
-                        </Typography>
-                    </Box> */}
                     <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }}>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1"> Request Date</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> Request Date</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> : {requestdate}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> : {requestDate}</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1"> No of Days</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> No of Days</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> : {no_of_leave}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> : {no_of_leave}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> Leave Reason</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> Leave Reason</Typography>
                             </Box>
                             <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> : {leave_reason}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> : {leave_reason}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> Leave From Date</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> Leave From Date</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">: {leave_date}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1">: {leave_date}</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1">Leave To date</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1">Leave To date</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> : {leavetodate}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1"> : {leavetodate}</Typography>
                             </Box>
                         </Box>
                     </Paper>
