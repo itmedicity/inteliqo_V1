@@ -1,5 +1,6 @@
 import { CNavItem } from "@coreui/react";
 const PayrollMenu = [
+
     {
         men_slno: 36,
         component: CNavItem,

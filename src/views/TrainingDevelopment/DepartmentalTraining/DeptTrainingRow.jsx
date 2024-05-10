@@ -60,6 +60,7 @@ const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr, start, monthdata,
 
                                             }}
                                             >
+
                                                 <Tooltip title="Add Employees">
                                                     <Chip sx={{
                                                         width: "30%",
@@ -70,9 +71,14 @@ const DeptTrainingRow = ({ checkdata, count, Setcount, id, yr, start, monthdata,
                                                         {val?.training_topic_name?.toLowerCase()}
                                                     </Chip>
                                                 </Tooltip>
+
                                             </td>
-                                            <td >{val?.traineer_name?.toLowerCase()}</td>
-                                            <td >{val?.date}</td>
+                                            <td style={{ textAlign: "center" }}>{val?.traineer_name?.toLowerCase()}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                {val?.date}
+
+                                            </td>
+
                                         </tr>
                                     ))
                                 }

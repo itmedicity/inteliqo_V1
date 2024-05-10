@@ -97,6 +97,12 @@ import { setStatutoryInfo } from './LeaveProcess.Reducer'
 import { gettrainingData } from './Training.Reducer'
 import { setVaccinationemp } from './VaccinationReducers'
 import { getLeaveReport } from './LeaveReportReducers'
+import { getLeaveRequests } from './Leavereqdata'
+import { getMisspunchRequests } from './Leavereqdata'
+import {
+    getHalfdayRequests, getSectLeaveRequests, getSectHalfdayRequests,
+    getSectMisspunchRequests, getEmpCoffRequests, getSectCoffRequests
+} from './Leavereqdata'
 
 const reducer = combineReducers({
     changeState,
@@ -203,7 +209,15 @@ const reducer = combineReducers({
     setVaccinationemp,
     setEmployeeType,
     getEmpCoffData,
-    getLeaveReport
+    getLeaveReport,
+    getLeaveRequests,
+    getMisspunchRequests,
+    getHalfdayRequests,
+    getSectLeaveRequests,
+    getSectHalfdayRequests,
+    getSectMisspunchRequests,
+    getEmpCoffRequests,
+    getSectCoffRequests
 })
 
 export default reducer;

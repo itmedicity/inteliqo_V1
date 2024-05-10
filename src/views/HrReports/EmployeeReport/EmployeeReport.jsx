@@ -223,7 +223,7 @@ const EmployeeReport = () => {
         { headerName: 'Adhaar Number', field: 'em_adhar_no' },
         { headerName: 'Account Number', field: 'em_account_no' },
         { headerName: 'Passport Number', field: 'em_passport_no' },
-        // { headerName: 'PF Number', field: 'em_uan_no' },
+        { headerName: 'PAN Number', field: 'em_pan_no' },
         //{ headerName: 'ESI Number', field: 'em_esi_no' },
         { headerName: 'Retirement Date ', field: 'em_retirement_date' },
         { headerName: 'Address1 ', field: 'addressPresent1' },
@@ -275,6 +275,7 @@ const EmployeeReport = () => {
         const getBranchActiveEmp = async (slno) => {
             const result = await axioslogin.post('/ActiveEmpReport/branchactiveemp', slno)
             const { success, data } = result.data;
+
             if (success === 1) {
                 setTableData(data)
             }

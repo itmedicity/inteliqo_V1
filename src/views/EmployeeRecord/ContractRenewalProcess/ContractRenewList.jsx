@@ -1,5 +1,5 @@
-import { Box, CssVarsProvider, IconButton, Typography } from '@mui/joy'
-import { Paper, Tooltip } from '@mui/material'
+import { Box, Button, CssVarsProvider, IconButton, Typography } from '@mui/joy'
+import { Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,37 +7,32 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { ContractExcel } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
 import { useHistory } from 'react-router-dom';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
-import { IconButton as OpenIcon } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { CheckIdExists, InsertAppraisal } from 'src/views/PerformanceAppraisal/AppraisalFunctions';
 import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { setPersonalData } from 'src/redux/actions/Profile.action';
-import { useDispatch } from 'react-redux';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import SearchIcon from '@mui/icons-material/Search';
+import { ToastContainer } from 'react-toastify';
+import Tooltip from '@mui/joy/Tooltip';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ContractRenewList = () => {
 
     const history = useHistory()
-    const dispatch = useDispatch();
-    const toSettings = useCallback(() => {
-        history.push(`/Home`)
-    }, [history])
+    //const dispatch = useDispatch();
+    const [Empno, setEmpNo] = useState(0)
     const [tableData, setTableData] = useState([]);
     const [count, setCount] = useState(0)
 
-    const today = moment(new Date).format('YYYY-MM-DD')
-
-    //Direct Contract close
-    const DirectContractClose = useCallback((params) => {
-        const { em_no, em_id } = params.data
-        history.push(`/Home/Direct_Contract_Close/${em_no}/${em_id}`)
+    const toSettings = useCallback(() => {
+        history.push(`/Home`)
     }, [history])
 
     //contreact Renew Process
-    const ContractRenew = async (params) => {
+    const toAppraisalProcess = async (params) => {
 
         const data = params.api.getSelectedRows()
         const { sect_id, hod, incharge, em_no, em_id, dept_id, } = data[0]
@@ -60,7 +55,7 @@ const ContractRenewList = () => {
                     hod_status: object1.length === 0 ? 1 : 0,
                     ceo_flag: 1,
                     ceo_status: 0,
-                    last_appraisal_date: today
+                    last_appraisal_date: moment(new Date).format('YYYY-MM-DD')
                 }
                 const checkid = {
                     em_id: em_id
@@ -107,7 +102,7 @@ const ContractRenewList = () => {
                     hod_status: object1.length === 0 ? 1 : 0,
                     ceo_flag: 1,
                     ceo_status: 0,
-                    last_appraisal_date: today
+                    last_appraisal_date: moment(new Date).format('YYYY-MM-DD')
                 }
                 CheckIdExists(checkid).then((values) => {
                     const { status } = values
@@ -166,7 +161,7 @@ const ContractRenewList = () => {
                         ceo_flag: 1,
                         ceo_status: 0,
                         appraisal_status: 1,
-                        last_appraisal_date: today
+                        last_appraisal_date: moment(new Date).format('YYYY-MM-DD')
                     }
                     InsertAppraisal(submitData).then((values) => {
                         const { status, message } = values
@@ -183,62 +178,67 @@ const ContractRenewList = () => {
             })
 
         }
-
-        // const { em_no } = data.data
-        // const conractrenew = {
-        //     contract_renew_appr: 1,
-        //     em_no: em_no
-        // }
-        // const result = await axioslogin.patch('/empcontract/contractrenewapprove', conractrenew)
-        // const { success, message } = result.data
-        // if (success === 2) {
-        //     succesNofity(message)
-        //     setCount(count + 1)
-        // }
-        // else {
-        //     errorNofity("Error Occured!!Please Contact EDP")
-        // }
     }
 
-    //Contract Renewal Process
-    const DirectContractRenewProcess = useCallback((params) => {
-        const { em_no, em_id } = params.data
-        dispatch(setPersonalData(em_id))
-        history.push(`/Home/ContractRenewalProcess/${em_no}/${em_id}`)
-    }, [history, dispatch])
+
 
     //column fot ag grid table
     const [columnDef] = useState([
         {
-            headerName: 'Action', minWidth: 200,
-            cellRenderer: params => <Fragment>
-                <Tooltip title="Direct contract Close" followCursor placement='top' arrow >
-                    <OpenIcon onClick={() => DirectContractClose(params)}>
-                        <CancelIcon color='primary' />
-                    </OpenIcon>
-                </Tooltip>
-                <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
-                    <OpenIcon onClick={() => ContractRenew(params)}>
-                        <LibraryAddCheckIcon color='primary' />
-                    </OpenIcon>
-                </Tooltip>
-                <Tooltip title="Direct Contract Renew" followCursor placement='top' arrow >
-                    <OpenIcon onClick={() => DirectContractRenewProcess(params)}>
-                        <TaskAltIcon color='primary' />
-                    </OpenIcon>
-                </Tooltip>
-            </Fragment>
+            headerName: 'Action', minWidth: 100,
+            cellRenderer: params =>
+                // <Fragment>
+                //     <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                //         <OpenIcon onClick={() => toAppraisalProcess(params)}>
+                //             <LibraryAddCheckIcon color='primary' />
+                //         </OpenIcon>
+                //     </Tooltip>
+                //     <Tooltip title="Contract Close" followCursor placement='top' arrow >
+                //         <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => DirectContractClose(params)}>
+                //             <CancelIcon />
+                //         </OpenIcon>
+                //     </Tooltip>
+                // </Fragment>
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', }} >
+                    <Box sx={{ display: 'flex', }} >
+                        <Tooltip title="Appraisal Process" followCursor placement='top' arrow variant='outlined' color='danger'   >
+                            <IconButton size='sm' color='danger' onClick={() => toAppraisalProcess(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <LibraryAddCheckIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Box sx={{ display: 'flex', }}>
+                        <Tooltip title="Contract Close" followCursor placement='top' arrow variant='outlined' color='primary' >
+                            <IconButton size='sm' onClick={() => DirectContractClose(params)}
+                                sx={{
+                                    "--IconButton-size": "28px"
+                                }}
+                            >
+                                <CancelIcon color='primary' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
         },
-        // { headerName: 'Slno', field: 'slno', width: 100 },
         { headerName: 'Emp No ', field: 'em_no', minWidth: 150, filter: true },
         { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 150 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 200 },
         { headerName: 'Designation', field: 'desg_name', minWidth: 150 },
-        { headerName: 'DOJ', field: 'em_doj' , minWidth: 150},
-        { headerName: 'Contract Start', field: 'em_cont_start' , minWidth: 150},
-        { headerName: 'Contract End', field: 'em_cont_end' , minWidth: 150},
+        { headerName: 'DOJ', field: 'em_doj', minWidth: 150 },
+        { headerName: 'Contract Start', field: 'em_cont_start', minWidth: 150 },
+        { headerName: 'Contract End', field: 'em_cont_end', minWidth: 150 },
     ])
+
+    //Direct Contract close
+    const DirectContractClose = useCallback((params) => {
+        const { em_no, em_id } = params.data
+        history.push(`/Home/Direct_Contract_Close/${em_no}/${em_id}`)
+    }, [history])
 
     //get contract end employee details
     useEffect(() => {
@@ -280,47 +280,101 @@ const ContractRenewList = () => {
         ContractExcel(array, fileName)
     }, [tableData])
 
+    const getEmployeeList = useCallback(async () => {
+        const result = await axioslogin.get(`/empcontract/contractByno/${Empno}`)
+        const { data, success } = result.data;
+        if (success === 1) {
+            const { contract_status } = data[0]
+            if (contract_status === 1) {
+                setTableData(data);
+            } else {
+                infoNofity("Employee is not under Contract")
+            }
+
+        } else {
+            infoNofity("No employee exist with this employee number!!")
+            setTableData([]);
+        }
+    }, [Empno])
+
     return (
-        <Box sx={{ display: "flex", flexGrow: 1, bgcolor: 'pink', width: "100%" }} >
-            <Paper sx={{ display: 'flex', flex: 1, height: window.innerHeight - 85, flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
-                <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
-                    <Box sx={{ flex: 1 }} >
-                        <CssVarsProvider>
-                            <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
-                                Employee Contract End List
-                            </Typography>
-                        </CssVarsProvider>
+        <Fragment>
+            <ToastContainer />
+            <Box sx={{ width: "100%" }} >
+                <Paper square elevation={2} sx={{ px: 0.5, height: screenInnerHeight * 89 / 100 }}>
+                    <Paper square elevation={1} sx={{ display: "flex", alignItems: "center", }}  >
+                        <Box sx={{ flex: 1 }} >
+                            <CssVarsProvider>
+                                <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
+                                    Contract Renewal List
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='xs' sx={{ color: 'green' }} onClick={toDownload}>
+                                    <DownloadIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ pl: 0.5, mt: 0.5 }}>
+                            <CssVarsProvider>
+                                <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </CssVarsProvider>
+                        </Box>
+                    </Paper>
+                    <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
+                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                            <Box sx={{ flex: 1, px: 0.3, }}>
+                                <InputComponent
+                                    type="text"
+                                    size="sm"
+                                    placeholder="Employee Number"
+                                    name="Empno"
+                                    value={Empno}
+                                    onchange={(e) => setEmpNo(e.target.value)}
+                                />
+                            </Box>
+                        </Tooltip>
+                        <Box sx={{}}>
+                            <CssVarsProvider>
+                                <Button
+                                    aria-label="Like"
+                                    variant="outlined"
+                                    color="neutral"
+                                    onClick={getEmployeeList}
+                                    fullWidth
+                                    startDecorator={<SearchIcon />}
+                                    sx={{ mx: 0.5 }}
+                                >
+                                    Search
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.3, }}>
+                        </Box>
                     </Box>
-                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='xs' sx={{ color: 'green' }} onClick={toDownload}>
-                                <DownloadIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ pl: 0.5, mt: 0.5 }}>
-                        <CssVarsProvider>
-                            <IconButton variant="outlined" size='xs' color="danger" onClick={toSettings}>
-                                <CloseIcon />
-                            </IconButton>
-                        </CssVarsProvider>
-                    </Box>
+                    <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: screenInnerHeight * 73 / 100,
+                                width: "100%"
+                            }}
+                            rowHeight={32}
+                            headerHeight={32}
+                            rowStyle={rowStyle}
+                            getRowStyle={getRowStyle}
+                        />
+                    </Paper>
                 </Paper>
-                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={tableData}
-                        sx={{
-                            height: 600,
-                            width: "100%"
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                        rowStyle={rowStyle} getRowStyle={getRowStyle}
-                    />
-                </Paper>
-            </Paper>
-        </Box>
+            </Box >
+        </Fragment >
     )
 }
 

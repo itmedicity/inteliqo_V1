@@ -207,7 +207,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(empId).then((values) => {
+                            updateEmpmaster(Empno).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -270,7 +270,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(empId).then((values) => {
+                            updateEmpmaster(Empno).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -299,7 +299,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
             submitData(postData)
         }
 
-    }, [postData, updateData, resetForm, Empno, empId, count, flag])
+    }, [postData, updateData, resetForm, Empno, count, flag])
 
     const getDelete = useCallback(async (params) => {
         const data1 = params.api.getSelectedRows()
@@ -325,7 +325,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
                 insertWage(arr).then((values) => {
                     const { status, message } = values
                     if (status === 1) {
-                        updateEmpmaster(empId).then((values) => {
+                        updateEmpmaster(Empno).then((values) => {
                             const { status, message } = values
                             if (status === 1) {
                                 succesNofity(message);
@@ -348,7 +348,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
         } else {
 
         }
-    }, [count, resetForm, empId, Empno])
+    }, [count, resetForm, Empno])
 
 
 

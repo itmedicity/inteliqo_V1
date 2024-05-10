@@ -68,24 +68,24 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
         const HoliDay = holidaydata.find((holi) => holi.hld_date === val.duty_day)
 
 
-    //Grace period calculation
-    const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
-    const lateCommon = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')
+        //Grace period calculation
+        const relaxTime = format(addMinutes(new Date(shiftIn), cmmn_grace_period), 'yyyy-MM-dd H:mm:ss')
+        const lateCommon = format(addMinutes(new Date(shiftIn), cmmn_late_in), 'yyyy-MM-dd H:mm:ss')
 
-    //checking punch in before 30 minute and grace period
-    const CheckGraceIn = isEqual(new Date(relaxTime), new Date(punchIn)) ||
-        isBefore(new Date(punchIn), new Date(relaxTime)) ? 1 :
-        isAfter(new Date(punchIn), new Date(relaxTime)) &&
-            isBefore(new Date(punchIn), new Date(lateCommon)) ? 2 :
-            isAfter(new Date(punchIn), new Date(lateCommon)) ? 3 : 0
+        //checking punch in before 30 minute and grace period
+        const CheckGraceIn = isEqual(new Date(relaxTime), new Date(punchIn)) ||
+            isBefore(new Date(punchIn), new Date(relaxTime)) ? 1 :
+            isAfter(new Date(punchIn), new Date(relaxTime)) &&
+                isBefore(new Date(punchIn), new Date(lateCommon)) ? 2 :
+                isAfter(new Date(punchIn), new Date(lateCommon)) ? 3 : 0
 
-    //for early punch out before shift out
-    const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out), 'yyyy-MM-dd H:mm')
-    const PunchOutOnlyMM = format(new Date(val.punch_out), 'yyyy-MM-dd H:mm')
+        //for early punch out before shift out
+        const earlyGo = format(subMinutes(new Date(shiftOut), cmmn_early_out), 'yyyy-MM-dd H:mm')
+        const PunchOutOnlyMM = format(new Date(val.punch_out), 'yyyy-MM-dd H:mm')
 
-    const early = isEqual(new Date(earlyGo), new Date(PunchOutOnlyMM)) ||
-        isAfter(new Date(punchOut), new Date(earlyGo)) ? 1
-        : isValid(new Date(punchOut)) && isBefore(new Date(punchOut), new Date(earlyGo)) ? 2 : 0
+        const early = isEqual(new Date(earlyGo), new Date(PunchOutOnlyMM)) ||
+            isAfter(new Date(punchOut), new Date(earlyGo)) ? 1
+            : isValid(new Date(punchOut)) && isBefore(new Date(punchOut), new Date(earlyGo)) ? 2 : 0
 
         // if (val.shift_id === week_off_day) {
         //     const calculateNoWorkday = async (duty_day, wDay, emno, punch_slno) => {
@@ -132,19 +132,19 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
             lateIn: CaluculateLateInOut.lateIn > 0 ? CaluculateLateInOut.lateIn : 0,
             earlyOut: CaluculateLateInOut.earlyOut > 0 ? CaluculateLateInOut.earlyOut : 0,
             duty_status: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary <= salary_above ? 2 :
-            CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary > salary_above ? 1 :
-                CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? 1 :
-                    CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? 1 :
-                        CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0 :
-                            CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? 0 :
-                                CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? 0 :
-                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5:
-                                    CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
-                                        early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
-                                            early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
-                                                HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
-                                                    val.shift_id === noff ? 1 :
-                                                        0,
+                CheckGraceIn === 1 && early === 1 && HoliDay !== undefined && gross_salary > salary_above ? 1 :
+                    CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? 1 :
+                        CheckGraceIn === 1 && early === 1 && HoliDay === undefined ? 1 :
+                            CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0 :
+                                CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? 0 :
+                                    CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? 0 :
+                                        CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5 :
+                                            CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
+                                                early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
+                                                    early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
+                                                        HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
+                                                            val.shift_id === noff ? 1 :
+                                                                0,
             // duty_status: CaluculateLateInOut.lateIn >= cmmn_grace_period || CaluculateLateInOut.earlyOut > cmmn_early_out ? 0.5 :
             //     HoliDay !== undefined || val.shift_id === week_off_day ? 1 :
             //         CaluculateLateInOut.lateIn <= cmmn_late_in &&
@@ -157,13 +157,13 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "A" :
                             CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? "A" :
                                 CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? "A" :
-                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
-                                    CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
-                                        CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
-                                            early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
-                                                HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
-                                                    val.shift_id === noff ? "NOFF" :
-                                                        "A",
+                                    CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
+                                        CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
+                                            CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
+                                                early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
+                                                    HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
+                                                        val.shift_id === noff ? "NOFF" :
+                                                            "A",
             // duty_desc: HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
             //     CaluculateLateInOut.lateIn > cmmn_late_in ? "LC" :
             //         CaluculateLateInOut.earlyOut > cmmn_early_out ? "EG" :
@@ -253,13 +253,13 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                             CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? 0 :
                                 CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? 0 :
                                     CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? 0 :
-                                    CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5 :
-                                        CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
-                                            early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
-                                                early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
-                                                    HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
-                                                        val.shift_id === noff ? 1 :
-                                                            0,
+                                        CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? 0.5 :
+                                            CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? 0.5 :
+                                                early === 1 && CheckGraceIn === 2 && HoliDay === undefined ? 0.5 :
+                                                    early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? 0.5 :
+                                                        HoliDay !== undefined ? 1 : val.shift_id === week_off_day ? 1 :
+                                                            val.shift_id === noff ? 1 :
+                                                                0,
 
             duty_desc: CheckGraceIn === 1 && early === 1 && HoliDay !== undefined ? "HP" :
                 CheckGraceIn === 3 && early === 1 && HoliDay !== undefined ? "P" :
@@ -267,13 +267,13 @@ const CaluculatePunchinandOut = async (punchData, shiftdetail, holidaydata, cmmn
                         CheckGraceIn === 1 && early === 0 && HoliDay === undefined ? "A" :
                             CheckGraceIn === 2 && early === 0 && HoliDay === undefined ? "A" :
                                 CheckGraceIn === 3 && early === 0 && HoliDay === undefined ? "A" :
-                                CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
-                                    CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
-                                        CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
-                                            early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
-                                                HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
-                                                    val.shift_id === noff ? "NOFF" :
-                                                        "A",
+                                    CheckGraceIn === 0 && early === 1 && HoliDay === undefined ? "HFD" :
+                                        CheckGraceIn === 1 && early === 2 && HoliDay === undefined ? "EHFD" :
+                                            CheckGraceIn === 2 && early === 1 && HoliDay === undefined ? "LC" :
+                                                early === 1 && CheckGraceIn === 3 && HoliDay === undefined ? "HFD" :
+                                                    HoliDay !== undefined ? "H" : val.shift_id === week_off_day ? "OFF" :
+                                                        val.shift_id === noff ? "NOFF" :
+                                                            "A",
             holiday_slno: HoliDay !== undefined ? HoliDay.hld_slno : 0,
             holiday_status: HoliDay !== undefined ? 1 : 0,
         }

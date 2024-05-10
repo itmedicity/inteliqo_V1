@@ -1,4 +1,4 @@
-import { eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, endOfMonth, startOfMonth } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
 
@@ -111,8 +111,15 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
 
             //finding the dates between start date and end date
             const dateRange = eachDayOfInterval({ start: new Date(fromDate), end: new Date(toDate) });
+
+            const fullMonthDateRange = eachDayOfInterval({ start: startOfMonth(new Date(fromDate)), end: endOfMonth(new Date(fromDate)) });
+
             //date format for top Head
             const dateAndDayFormat = dateRange.map((val) => {
+                return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
+            });
+
+            const fullDateandDayFormat = fullMonthDateRange.map((val) => {
                 return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
             });
 
@@ -139,8 +146,12 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
 
             const newDateRange = dateAndDayFormat.map(addHolidayToDateRange)
 
+            const fullDayRange = fullDateandDayFormat.map(addHolidayToDateRange)
+
             //duty plan date range
             const dutyPlanDateRange = dateRange?.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
+
+            const fullDutyplanDateRange = fullMonthDateRange?.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
 
             //getting employee id from employee details - date fomat --> {date: '2022-10-01'} 
             const employeeId = (await employeeDetails) && employeeDetails.map((val) => val.em_id);
@@ -148,6 +159,13 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //hrm_duty_plan insert initial array data making
             const shiftDutyDay = await employeeDetails.map((val) => {
                 return dutyPlanDateRange.map((value) => {
+                    return { date: value.date, emp_id: val.em_id, doj: val.em_doj, em_no: val.em_no }
+                })
+            }).flat(Infinity)
+
+
+            const fullShiftDutyDay = await employeeDetails.map((val) => {
+                return fullDutyplanDateRange.map((value) => {
                     return { date: value.date, emp_id: val.em_id, doj: val.em_doj, em_no: val.em_no }
                 })
             }).flat(Infinity)
@@ -242,16 +260,17 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                 if (default_shift === null || notapplicable_shift === null) {
                     return { ...message, status: 0, message: 'Default and Not Applicable Shift Not Mapped', data: [] }
                 } else {
-                    // after the holiday inserted duty day array
-                    const insertDutyPlanArray = await shiftDutyDay.map(holidayFilterFun);
 
-                    //duty plan inserting function
+                    // after the holiday inserted duty day array
+                    const insertDutyPlanArray = await fullShiftDutyDay.map(holidayFilterFun);
+
+                    // duty plan inserting function
                     const insertDutyPlainIntDB = await axioslogin.post("/plan/insert", insertDutyPlanArray)
                     const { success1 } = insertDutyPlainIntDB.data;
                     if (success1 === 1) {
                         //duty plan inserted 
                         return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
-                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: newDateRange }
+                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: fullDayRange }
                         })
 
                     } else {

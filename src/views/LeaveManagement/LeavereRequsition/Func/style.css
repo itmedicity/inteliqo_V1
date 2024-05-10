@@ -1,0 +1,28 @@
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .refreshButton:hover .rotating-icon{
+        animation: rotate 2s linear infinite; 
+        color:  #424141; 
+  }
+
+  .loading-spinner {
+    border: 2px solid rgba(233, 8, 8, 0.1);
+    border-left-color: #aa1515; /* Change the color of the spinner */
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    animation: spin 1s linear infinite; /* Adjust animation duration and timing function as needed */
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }

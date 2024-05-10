@@ -33,6 +33,7 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import { startOfMonth } from 'date-fns'
 
 const MasterPage = () => {
     const [open, setOpen] = useState(false)
@@ -50,8 +51,6 @@ const MasterPage = () => {
             dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
         }
     }, [FETCH_EMP_DETAILS, reduxDispatch])
-
-
 
     const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
 
@@ -112,31 +111,51 @@ const MasterPage = () => {
                 sect_id: deptSecName
             }
 
-            getEmployeeDetlDutyPlanBased(postData).then((emplyDataArray) => {
-                const { status, data } = emplyDataArray;
-                if (status === 1) {
-                    dispatch({ type: FETCH_EMP_DETAILS, payload: data });
-                    reduxDispatch(getSectionShift(departmentDetlFrShiftGet));
-                    //process function
-                    dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
-                        // employee details based on selected dept and dept sec
-                        const { data, status, message, dateFormat } = values;
+            const dateCheck = {
+                month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
+                section: deptSecName
+            }
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+
+                if (lastUpdateDate === lastDay_month) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't do Dutyplan!!  ")
+                    setOpen(false)
+                } else {
+                    getEmployeeDetlDutyPlanBased(postData).then((emplyDataArray) => {
+                        const { status, data } = emplyDataArray;
                         if (status === 1) {
-                            reduxDispatch({ type: GET_SHIFT_PLAN_DETL, payload: data, status: false })
-                            reduxDispatch({ type: GET_SHIFT_DATE_FORMAT, payload: dateFormat, status: false })
-                            setOpen(false)
+                            dispatch({ type: FETCH_EMP_DETAILS, payload: data });
+                            reduxDispatch(getSectionShift(departmentDetlFrShiftGet));
+                            //process function
+                            dutyPlanInsertFun(planState, commonSettings, holidayList, data, deptShift).then((values) => {
+                                // employee details based on selected dept and dept sec
+
+                                const { data, status, message, dateFormat } = values;
+                                if (status === 1) {
+                                    reduxDispatch({ type: GET_SHIFT_PLAN_DETL, payload: data, status: false })
+                                    reduxDispatch({ type: GET_SHIFT_DATE_FORMAT, payload: dateFormat, status: false })
+                                    setOpen(false)
+                                } else {
+                                    warningNofity(message)
+                                    setOpen(false)
+                                }
+                            })
                         } else {
-                            warningNofity(message)
-                            setOpen(false)
+                            dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
                         }
                     })
-                } else {
-                    dispatch({ type: FETCH_EMP_DETAILS, payload: [] })
                 }
-            })
+            } else {
+                errorNofity("Error getting PunchMarkingHR ")
+            }
         }
     }, [deptName, deptSecName, GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS,
-        calanderMaxDate, commonSettings, deptShift, holidayList, planState, reduxDispatch, toDate])
+        calanderMaxDate, commonSettings, deptShift, holidayList, planState, reduxDispatch, toDate,
+        fromDate])
 
 
     return (

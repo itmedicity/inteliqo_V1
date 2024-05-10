@@ -279,6 +279,14 @@ const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/Previ
 const EmpSaleryReport = React.lazy(() => import('./views/HrReports/EmpSaleryReport/EmpSaleryReport'))
 const EmpRightBasedLogin = React.lazy(() => import('./views/TrainingDevelopment/EmployeeRights/EmployeeRights'))
 const TNDdashboardViewPage = React.lazy(() => import('./views/TrainingDevelopment/TrainingDashboard/TnDViewComponents/TndDashboardView'))
+const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryProcess/SalaryProcessed'))
+const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
+const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
+const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+
+
+
+
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -550,8 +558,10 @@ const routes = [
   { path: '/Home/EmpSaleryReport', exact: true, name: 'EmpSaleryReport', component: EmpSaleryReport },
   { path: '/Home/EmpRightBasedLogin', exact: true, name: 'EmpRightBasedLogin', component: EmpRightBasedLogin },
   { path: '/Home/TNDdashboardViewPage', exact: true, name: 'TNDdashboardViewPage', component: TNDdashboardViewPage },
-
-
+  { path: '/Home/SalaryProcess', exact: true, name: 'Salary Process', component: SalaryProcessReports },
+  { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
+  { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
+  { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
 ]
 
 export default routes
