@@ -168,7 +168,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                         },
                     }}
                 >
-                    <Option value={0}>Select Department</Option>
+                    <Option disabled value={0}>Select Department</Option>
                     {
                         departmentNameList && departmentNameList?.map((val, index) => {
                             return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
@@ -189,7 +189,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
                 >
-                    <Option value={0}>Select Department Section</Option>
+                    <Option disabled value={0}>Select Department Section</Option>
                     {
                         deptSectionList && deptSectionList?.map((val, index) => {
                             return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
@@ -209,7 +209,7 @@ const DepartmentBasedSection = ({ state, setState, formChange }) => {
                     placeholder="Employee Name"
                     endDecorator={mapEmpList?.length === 0 && <div className='loading-spinner' ></div>}
                 >
-                    <Option value={0}  >Employee Name</Option>
+                    <Option disabled value={0}  >Employee Name</Option>
                     {
                         mapEmpList && mapEmpList?.map((val, index) => {
                             return <Option key={index} value={val.em_no} label={val.em_name} onClick={() => setState({ ...state, emID: val.em_id })} >

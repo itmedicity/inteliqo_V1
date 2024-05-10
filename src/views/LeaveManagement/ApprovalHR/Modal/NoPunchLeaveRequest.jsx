@@ -240,7 +240,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
         }
     }, [reason, count, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,
         cmmn_grace_period, cmmn_late_in, crossDayStat, default_shift, emno, noff, notapplicable_shift,
-        salary_above, shiftData, shift_id, week_off_day, checkinflag, checkoutflag])
+        salary_above, week_off_day, checkinflag, checkoutflag])
 
     const NoPunchRejectdata = useMemo(() => {
         return {

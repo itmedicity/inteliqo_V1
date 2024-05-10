@@ -1,8 +1,8 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React, { Fragment, useEffect } from 'react'
 import Paper from '@mui/material/Paper';
 import { useState } from 'react';
-import { addDays, addMonths, differenceInMinutes, format, formatDuration, getMonth, getYear, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
+import { addDays, addMonths, differenceInMinutes, format, formatDuration, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import moment from 'moment';
 import { errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -20,11 +20,10 @@ import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmp
 import { useCallback } from 'react';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import CleaningServicesOutlinedIcon from '@mui/icons-material/CleaningServicesOutlined';
-import { getAndUpdatePunchingData } from './Function';
 import { memo } from 'react';
 import { Suspense } from 'react';
 import { lazy } from 'react';
-import { Actiontypes } from 'src/redux/constants/action.type';
+//import { Actiontypes } from 'src/redux/constants/action.type';
 import { useMemo } from 'react';
 import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
@@ -33,7 +32,7 @@ import { getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux
 import HodWiseDeptSection from 'src/views/MuiComponents/JoyComponent/HodWiseDeptSection';
 import HodWiseEmpList from 'src/views/MuiComponents/JoyComponent/HodWiseEmpList';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
-import { processPunchMarkingHrFunc, processShiftPunchMarkingHrFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
+import { processShiftPunchMarkingHrFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 // const ShiftTableDataRow = lazy(() => import('./ShiftUpdationTblRow'))
 const TableRows = lazy(() => import('./TableRows'))
@@ -42,7 +41,10 @@ const ShiftUpdation = () => {
 
     const dispatch = useDispatch();
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    const { FETCH_PUNCH_DATA, FETCH_SHIFT_DATA, UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
+    //const {
+    //FETCH_PUNCH_DATA, 
+    //FETCH_SHIFT_DATA, 
+    // UPDATE_PUNCHMASTER_TABLE } = Actiontypes;
     // dispatch the department data
     useEffect(() => {
         // dispatch(setDepartment());
@@ -74,14 +76,13 @@ const ShiftUpdation = () => {
     const { hod, incharge, em_id, em_name, sect_name, dept_name, em_department, em_dept_section } = employeeProfileDetl;
 
     //DATA SELECTETOR
-    const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
-    const punchMasterDataUpdateData = useSelector((state) => state.fetchupdatedPunchInOutData.puMaData);
-    const updatedDataPunchInOut = useMemo(() => punchMasterDataUpdateData, [punchMasterDataUpdateData])
+    // const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
+    //const punchMasterDataUpdateData = useSelector((state) => state.fetchupdatedPunchInOutData.puMaData);
+    // const updatedDataPunchInOut = useMemo(() => punchMasterDataUpdateData, [punchMasterDataUpdateData])
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
     const commonSetting = useMemo(() => state, [state])
     // console.log(commonSetting)
-    const { group_slno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, salary_above,
-        week_off_day, notapplicable_shift, default_shift, noff, max_late_day_count } = commonSetting;
+    const { group_slno, week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
 
     useEffect(() => {
         if ((hod === 1 || incharge === 1) && self === false) {
@@ -294,23 +295,23 @@ const ShiftUpdation = () => {
     //     week_off_day, notapplicable_shift, default_shift, noff])
 
     //ATTENDANCE TABLE UPDATION FUNCTION
-    useEffect(() => {
-        if (Object.keys(updatedDataPunchInOut).length > 0) {
-            const getUpdatedTable = async () => {
-                const tableDataArray = await tableArray?.map((val) => {
-                    return val.punch_slno === updatedDataPunchInOut.slno ?
-                        {
-                            ...val, punch_in: updatedDataPunchInOut.in, punch_out: updatedDataPunchInOut.out, hrs_worked: updatedDataPunchInOut.wrkMinitusInWord,
-                            late_in: updatedDataPunchInOut.lateIn, early_out: updatedDataPunchInOut.earlyOut
-                        } : val
-                })
-                // await setTableArray(tableDataArray)
-                // return tableDataArray;
-            }
-            getUpdatedTable()
-            dispatch({ type: UPDATE_PUNCHMASTER_TABLE, payload: {} })
-        }
-    }, [updatedDataPunchInOut, UPDATE_PUNCHMASTER_TABLE, dispatch, tableArray])
+    // useEffect(() => {
+    //     if (Object.keys(updatedDataPunchInOut).length > 0) {
+    //         const getUpdatedTable = async () => {
+    //             const tableDataArray = await tableArray?.map((val) => {
+    //                 return val.punch_slno === updatedDataPunchInOut.slno ?
+    //                     {
+    //                         ...val, punch_in: updatedDataPunchInOut.in, punch_out: updatedDataPunchInOut.out, hrs_worked: updatedDataPunchInOut.wrkMinitusInWord,
+    //                         late_in: updatedDataPunchInOut.lateIn, early_out: updatedDataPunchInOut.earlyOut
+    //                     } : val
+    //             })
+    //             // await setTableArray(tableDataArray)
+    //             // return tableDataArray;
+    //         }
+    //         getUpdatedTable()
+    //         dispatch({ type: UPDATE_PUNCHMASTER_TABLE, payload: {} })
+    //     }
+    // }, [updatedDataPunchInOut, UPDATE_PUNCHMASTER_TABLE, dispatch, tableArray])
 
 
     /*******
@@ -508,7 +509,8 @@ const ShiftUpdation = () => {
         }
 
 
-    }, [emply, dept, section, value, shiftInformation, commonSetting, empSalary])
+    }, [emply, dept, section, value, shiftInformation, commonSetting, empSalary, default_shift, em_no,
+        noff, notapplicable_shift, week_off_day])
     // console.log(tableArray)
     return (
         <Fragment>

@@ -210,7 +210,10 @@ export const processPunchMarkingHrFunc = async (
 export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
 ) => {
-    const { hrsWorked, lateIn, earlyOut } = getLateInTime;
+    const {
+        // hrsWorked, 
+        lateIn,
+        earlyOut } = getLateInTime;
 
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 

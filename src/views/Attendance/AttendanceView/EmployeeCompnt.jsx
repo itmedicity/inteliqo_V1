@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useMemo, useState } from 'react'
-import { Box, Grid, Paper, } from '@mui/material'
-import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import { Box, Paper, } from '@mui/material'
+import { Button, CssVarsProvider, Input, Sheet, Tooltip, } from '@mui/joy';
 import Table from '@mui/joy/Table'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
@@ -10,9 +10,9 @@ import { addMonths, eachDayOfInterval, endOfMonth, format, startOfMonth } from '
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { AttendanceViewFun } from './Functions';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
+// import { AttendanceViewFun } from './Functions';
+//import { useSelector } from 'react-redux';
+// import _ from 'underscore';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveDescription from './LeaveDescription';
 
@@ -22,15 +22,15 @@ const EmployeeCompnt = ({ em_no }) => {
 
     const empNo = useMemo(() => em_no, [em_no]);
     const [value, setValue] = useState(moment(new Date()));
-    const [mainArray, setMainArray] = useState([])
+    // const [mainArray, setMainArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
 
     // get holiday 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
-    const holidayList = useMemo(() => holiday, [holiday]);
+    //const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+    // const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
 

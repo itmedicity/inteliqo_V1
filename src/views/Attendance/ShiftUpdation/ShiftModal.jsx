@@ -5,23 +5,23 @@ import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { Chip, Option, Select } from '@mui/joy';
-import { addDays, addHours, differenceInMinutes, format, formatDuration, intervalToDuration, isValid, subDays, subHours } from 'date-fns';
+import { addDays, addHours, format, isValid, subHours } from 'date-fns';
 import moment from 'moment';
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { Actiontypes } from 'src/redux/constants/action.type';
+// import { Actiontypes } from 'src/redux/constants/action.type';
 import { memo } from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarkingHR/punchMarkingHrFunc';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }) => {
 
-    const dispatch = useDispatch()
-    const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
+    // const dispatch = useDispatch()
+    //const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -41,7 +41,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const commonSettings = useSelector((state) => state?.getCommonSettings)
 
     const {
-        cmmn_early_out, // Early going time interval
+        // cmmn_early_out, // Early going time interval
         cmmn_grace_period, // common grace period for late in time
         cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
         salary_above, //Salary limit for calculating the holiday double wages
@@ -167,7 +167,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
             }
         }
 
-    }, [inTime, outTime, selectedDate, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff, week_off_day, salary_above, cmmn_late_in])
+    }, [inTime, outTime, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff,
+        week_off_day, salary_above, cmmn_late_in, cmmn_grace_period, setOpen, setTableArray])
 
     return (
         <Modal

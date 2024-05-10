@@ -1,4 +1,4 @@
-import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import { Button, CssVarsProvider, Input, Sheet, Tooltip } from '@mui/joy';
 import { Box, Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -12,9 +12,9 @@ import DeptSectionSelect from 'src/views/LeaveManagement/NightOff/DeptSectionSel
 import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { AttendanceViewFun, DeptWiseAttendanceViewFun } from './Functions';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
+// import { AttendanceViewFun, DeptWiseAttendanceViewFun } from './Functions';
+// import { useSelector } from 'react-redux';
+// import _ from 'underscore';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { useCallback } from 'react';
 import Table from '@mui/joy/Table';
@@ -27,19 +27,19 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
     const empid = useMemo(() => em_id, [em_id])
     const [value, setValue] = useState(moment(new Date()));
     const [deptSection, setDeptSection] = useState(0)
-    const [dateArray, setDateArray] = useState([])
-    const [empArray, setEmpArray] = useState([])
+    // const [dateArray, setDateArray] = useState([])
+    //const [empArray, setEmpArray] = useState([])
     const [self, setSelf] = useState(false)
-    const [mainArray, setMainArray] = useState([])
+    // const [mainArray, setMainArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
 
     // get holiday 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+    //const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
 
-    const holidayList = useMemo(() => holiday, [holiday]);
+    // const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
         if (deptSection === 0) {
@@ -59,7 +59,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
                     to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
-                let empData = data;
+                //let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
 
                 const { success, data: punchMasteData } = result.data
@@ -196,7 +196,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
         } else {
             infoNofity("No Punch Details")
         }
-    }, [em_no, value, holidayList])
+    }, [em_no, value])
 
 
     const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'
