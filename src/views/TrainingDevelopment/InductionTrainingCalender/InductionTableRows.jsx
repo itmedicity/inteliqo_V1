@@ -1,6 +1,7 @@
 import React, { memo, useState, useEffect, Fragment, useCallback } from 'react'
-import { CssVarsProvider, Table } from '@mui/joy';
+import { Box, Chip, CssVarsProvider, Table, Tooltip } from '@mui/joy';
 import ViewDetailedModal from './ViewDetailedModal';
+import { isBefore } from 'date-fns';
 
 const InductionTableRows = ({ datas, id, yr }) => {
 
@@ -17,13 +18,11 @@ const InductionTableRows = ({ datas, id, yr }) => {
         setdata(mapdata);
     }, [datas, id, yr])
 
-
     const handleClick = useCallback((val) => {
         setrowdata(val);
         setOpen(true);
         setFlag(1);
     }, [setOpen, setFlag, setrowdata])
-
 
     return (
         <Fragment>
@@ -31,43 +30,57 @@ const InductionTableRows = ({ datas, id, yr }) => {
                 data?.length !== 0 ?
                     <CssVarsProvider>
                         <Table
+                            color="success"
                             borderAxis="both"
                             size="lg"  >
                             <tbody>
                                 <tr>
-                                    <td style={{ textTransform: "capitalize" }}
+                                    <td style={{ textTransform: "capitalize", width: "50%", color: "#344CB7" }}
                                     >
                                         {typearr.type_name.toLowerCase()}
                                     </td>
-                                    {
-                                        data?.map((val, index) => (
-                                            <td
-                                                key={index}
-                                                onClick={() => handleClick(val)}
-                                                style={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
+                                    <td>
+                                        <Box sx={{
+                                            p: 1,
+                                            display: "flex",
+                                            overflow: "auto", '&::-webkit-scrollbar': {
+                                                height: 5
+                                            }, gap: 2,
 
-                                                    textAlign: "center",
-                                                    textDecoration: "underline",
-                                                    cursor: "pointer"
-                                                }}>
-                                                {val.date}
-                                            </td>
-                                        ))
-                                    }
+                                        }}>
+                                            {
+                                                data?.map((val, index) => (
+                                                    <Box key={index}
+                                                        onClick={() => handleClick(val)}>
+                                                        <Tooltip title="View Details">
+
+                                                            <Chip sx={{
+                                                                cursor: "pointer",
+                                                                color: "black",
+                                                                backgroundColor:
+                                                                    isBefore(new Date(), new Date(val.induction_date)) === false ? '#F7A4A4' : '#B1D0E0'
+                                                            }}  >
+                                                                {val.date}
+                                                            </Chip>
+                                                        </Tooltip>
+                                                    </Box>
+                                                ))
+                                            }
+                                        </Box>
+                                    </td>
                                 </tr>
                             </tbody >
                         </Table >
-                    </CssVarsProvider> :
+                    </CssVarsProvider > :
                     <CssVarsProvider>
                         <Table
                             borderAxis="both"
+                            color="success"
                             size="lg" >
                             <tbody>
                                 <tr>
-                                    <td style={{ textAlign: "center" }}>Not Updated</td>
-                                    <td style={{ textAlign: "center" }}>Not Updated</td>
+                                    <td style={{ p: 1, width: "50%", textAlign: "center" }}>Not Updated</td>
+                                    <td style={{ p: 1, width: "50%", textAlign: "center" }}>Not Updated</td>
                                 </tr>
 
                             </tbody>
@@ -83,3 +96,5 @@ const InductionTableRows = ({ datas, id, yr }) => {
 }
 
 export default memo(InductionTableRows);
+
+

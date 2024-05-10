@@ -2,14 +2,12 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useCallback } from 'react';
 import { CssVarsProvider, Typography, Box, Button, Modal, ModalDialog, Table, Sheet } from '@mui/joy';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useMemo } from 'react';
 import _ from 'underscore';
 import { useDispatch, useSelector } from 'react-redux';
-import SaveIcon from '@mui/icons-material/Save';
 import ModalClose from '@mui/joy/ModalClose';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
-import { Paper } from '@material-ui/core';
 import JoyTrainingTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainingTypeSelect'
 import { Tooltip } from '@mui/material';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
@@ -49,7 +47,7 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     }, [setOpen, setType, SetScheduleDate])
 
     useEffect(() => {
-        if (empselect.length !== 0 && topicData.length !== 0) {
+        if (empselect?.length !== 0 && topicData?.length !== 0) {
             const mapArry = topicData?.map((item) => {
                 const obj = {
                     "topic": item.training_topic_name,
@@ -73,6 +71,7 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
         }
     }, [empselect, em_id, setselected, topicData])
 
+
     const handleChange = useCallback(async (obj) => {
         let ar = selected?.map((e) => e.topic_slno === obj.topic_slno ? { ...e, topic_slno: obj.topic_slno, trainers: obj.trainers, date: obj.newDate, status: 1, create_user: e.create_user } : { ...e })
         setselected([...ar])
@@ -86,38 +85,48 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     }, [setMaparr, selected])
 
     const DataSubmit = useCallback(async () => {
-        maparr && maparr.map(async (item) => {
-            const result = await axioslogin.post('/InductionTraining/ScheduleInduction', item)
-            const { success, insertId } = result.data
-            if (success === 1 && type !== 0) {
-                const arr = empselect?.map((val) => {
-                    const obj = {
-                        insertId: insertId,
-                        emp_id: val.em_id,
-                        date: item.date,
-                        dept_id: val.dept_id,
-                        sect_id: val.sect_id,
-                        create_user: em_id
-                    }
-                    return obj
-                })
-                const result = await axioslogin.post('/InductionTraining/addInductnEmps', arr)
-                const { succes } = result.data
-                if (succes === 1) {
-                    setmsg(1)
-                    setcount(count + 1)
-                    reset();
-                    setOpen(false)
+        if (maparr.length !== 0) {
+            maparr && maparr.map(async (item) => {
+                const result = await axioslogin.post('/InductionTraining/ScheduleInduction', item)
+                const { success, insertId } = result.data
+                if (success === 1 && type !== 0) {
+                    const arr = empselect?.map((val) => {
+                        const obj = {
+                            insertId: insertId,
+                            emp_id: val.em_id,
+                            date: item.date,
+                            dept_id: val.dept_id,
+                            sect_id: val.sect_id,
+                            assign_status: 1,
+                            create_user: em_id,
+                            edit_user: em_id,
+                            slno: val.master_slno,
+                        }
+                        return obj
 
+                    })
+                    const result = await axioslogin.post('/InductionTraining/addInductnEmps', arr)
+                    const { success } = result.data
+                    if (success === 1) {
+                        setmsg(1)
+                        setcount(count + 1)
+                        reset();
+                        setOpen(false)
+
+                    }
+                    else {
+                        alert("Can't schedule Training")
+                    }
                 }
                 else {
-                    warningNofity("Can't schedule Training")
+                    alert("Please Enter all the fields")
                 }
-            }
-            else {
-                alert("Please Enter all the fields")
-            }
-        })
+            })
+        }
+        else {
+            infoNofity("Select topics and dates")
+        }
+
     }, [maparr, empselect, em_id, setcount, type, count, reset, setOpen, setmsg])
 
     useEffect(() => {
@@ -157,8 +166,8 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                         Training Schedule
                     </Typography>
                     {/* body starts */}
-                    <Paper>
-                        <Box sx={{ p: 1 }}>
+                    <Box >
+                        <Box >
                             <Box sx={{ display: 'flex', flexDirection: "row", width: 500, gap: 2 }}>
                                 <Box sx={{ p: 0.2, flex: 1 }} >
                                     <JoyTrainingTypeSelect type={type} setType={setType} />
@@ -175,9 +184,9 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                             {
                                 showtable === 1 ?
                                     <Box>
-                                        <Sheet variant="outlined" sx={{ mt: 2 }}>
-                                            <Table variant="soft" borderAxis="bothBetween">
-                                                <thead>
+                                        <Sheet variant="outlined" sx={{ mt: 2, height: 400, overflowY: "scroll" }}>
+                                            <Table variant="soft" borderAxis="bothBetween" stickyHeader>
+                                                <thead >
                                                     <tr>
                                                         <th>Training Topics</th>
                                                         <th>Trainers</th>
@@ -186,6 +195,7 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                                                     </tr>
                                                 </thead>
                                                 <tbody style={{ textTransform: "capitalize" }}>
+
                                                     {
                                                         selected?.map((val, index) => {
                                                             return <InductionTopicTable
@@ -199,27 +209,27 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
                                                 </tbody>
                                             </Table>
                                         </Sheet>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            justifyContent: "flex-end",
+                                        }} >
+                                            <CssVarsProvider>
+                                                <Box sx={{ mt: 1 }} >
 
-                                        <Tooltip title="Save">
-                                            <Box sx={{
-                                                display: 'flex',
-                                                justifyContent: "flex-end",
-                                            }} >
-                                                <CssVarsProvider>
-                                                    <Box sx={{ mt: 1 }} >
-                                                        <Button aria-label="submit" variant="outlined"
-                                                            onClick={DataSubmit}
-                                                        >
-                                                            <SaveIcon sx={{ width: 100 }} />
-                                                        </Button>
-                                                    </Box>
-                                                </CssVarsProvider>
-                                            </Box>
-                                        </Tooltip>
+                                                    <Button aria-label="submit" variant="outlined"
+                                                        onClick={DataSubmit}
+                                                    >
+                                                        SAVE
+                                                    </Button>
+
+                                                </Box>
+                                            </CssVarsProvider>
+                                        </Box>
+
                                     </Box>
                                     : null}
                         </Box>
-                    </Paper>
+                    </Box>
                 </ModalDialog>
             </Modal>
         </Fragment >

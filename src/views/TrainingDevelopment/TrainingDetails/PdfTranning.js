@@ -85,7 +85,7 @@ export const PdfTranning = (selected, ShowData, HODSign) => {
                                 { text: val.dept_post_mark, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.trainer_name, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 {
-                                    image: val.training_hod_apprvls_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
+                                    image: val.dept_post_mark >= 2 && val.training_hod_apprvls_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
                                 },
                                 { text: val.Remark, fontSize: 10, font: 'Roboto', alignment: 'center' },
 

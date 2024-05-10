@@ -156,6 +156,7 @@ const DetailsHomepage = () => {
             const result = await axioslogin.get(`/TrainingDetails/getDeptEmp/${Emp_ID}`)
             const { success, data } = result.data;
             if (success === 2) {
+                const filterArr = data?.find((val) => val.em_no !== 0)
                 SetDeptData(data)
                 Setcount(count + 1)
                 SetEmp_ID(0)
@@ -169,7 +170,6 @@ const DetailsHomepage = () => {
 
             }
         }
-
 
         const GetDatawithAll = async (postdata) => {
             const result = await axioslogin.post(`/TrainingDetails/getEMPDepartmentalDetails`, postdata)
@@ -328,25 +328,24 @@ const DetailsHomepage = () => {
             warningNofity("Please select any Training Type")
         }
 
-        if (type === "1" && dept === 0 || deptSec === 0) {
-            warningNofity("Choose any searching Condition")
-        }
-        else if (type === "2" && dept === 0 || deptSec === 0) {
-            warningNofity("Choose any searching Condition")
-        }
+        // if (type === "1" && dept === 0 || deptSec === 0) {
+        //     warningNofity("Choose any searching Condition")
+        // }
+        // else if (type === "2" && dept === 0 || deptSec === 0) {
+        //     warningNofity("Choose any searching Condition")
+        // }
     }, [Emp_ID, dept, deptSec, count, Setcount, postdata, type])
 
 
     return (
         <Fragment>
             <ToastContainer />
-
             {
                 open === true ? <EmpDetailsModal open={open} Setopen={Setopen} selected={selected} />
                     :
                     <CustomLayout title="Training Details" displayClose={true}>
                         <Box sx={{ width: "100%", p: 1, }}>
-                            <Box sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
+                            <Box sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5, flexWrap: "wrap" }}>
                                 <Tooltip title="Select Department">
                                     <Box sx={{ flex: 1, }}>
                                         <DepartmentDropRedx getDept={setdept} />
@@ -395,7 +394,7 @@ const DetailsHomepage = () => {
                             </Box>
                             {Induct === 1 ? <InductionTableview Inductdata={Inductdata} SetInductdata={SetInductdata} /> :
                                 <Box sx={{ width: "100%", overflow: 'auto' }}>
-                                    <Box sx={{ height: 800, display: 'flex', flexDirection: "column", mt: 2 }}>
+                                    <Box sx={{ height: 750, display: 'flex', flexDirection: "column", mt: 2 }}>
                                         <CommonAgGrid
                                             columnDefs={columnDef}
                                             tableData={Deptdata}
@@ -414,8 +413,6 @@ const DetailsHomepage = () => {
                         </Box>
                     </CustomLayout >
             }
-
-
         </Fragment >
     )
 }

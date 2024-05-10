@@ -4,12 +4,8 @@ import React, { Fragment, useState, useCallback, memo, useEffect } from 'react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Paper, Tooltip, Typography } from '@mui/material';
-import { Box, Button, Checkbox, CssVarsProvider, Sheet, Table, } from '@mui/joy';
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import moment from 'moment';
+import { Box, Button, Checkbox, CssVarsProvider, Input, Sheet, Table, } from '@mui/joy';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
-import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import { useDispatch, useSelector } from 'react-redux'
 import { InductionNewJoinees } from 'src/redux/actions/Training.Action'
@@ -21,6 +17,11 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import ViewNEditPage from './ViewNEditPage'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
+
 
 const InductionTrainingMainPage = () => {
 
@@ -38,7 +39,6 @@ const InductionTrainingMainPage = () => {
     const [count, setcount] = useState(0)
     const [viewModal, setviewModal] = useState(false)
     const [msg, setmsg] = useState(0)
-
 
     const reset = useCallback(() => {
         setDept(0)
@@ -157,28 +157,45 @@ const InductionTrainingMainPage = () => {
                         <CustomLayout title="Induction Training" displayClose={true}>
                             <Box varient="outlined" sx={{ p: 1, width: "100%", height: screenInnerHeight - 120 }}>
                                 <Paper varient="outlined" sx={{ backgroundColor: "#EEEEEE", p: 2 }}>
-                                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1, p: 0.3 }}>
+                                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1, p: 0.3, flexWrap: "wrap" }}>
                                         <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
                                             <Typography sx={{ mt: 1 }}>From:</Typography>
-                                            <InputComponent
-                                                type="date"
-                                                size="sm"
-                                                placeholder="From Date"
-                                                name="Fromdate"
-                                                value={fromdate}
-                                                onchange={(e) => Setfromdate(e.target.value)}
-                                            />
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                < DatePicker
+                                                    views={['day']}
+                                                    value={fromdate}
+                                                    size="small"
+                                                    onChange={(e) => {
+                                                        Setfromdate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
+                                                    }}
+                                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                            <CssVarsProvider>
+                                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: 500 }} />
+                                                            </CssVarsProvider>
+                                                            {InputProps?.endAdornment}
+                                                        </Box>
+                                                    )}
+                                                />
+                                            </LocalizationProvider>
                                         </Box>
                                         <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
                                             <Typography sx={{ mt: 1 }}>To:</Typography>
-                                            <LocalizationProvider dateAdapter={AdapterMoment}>
-                                                <InputComponent
-                                                    type="date"
-                                                    size="xs"
-                                                    placeholder="ToDate"
-                                                    name="Todate"
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                < DatePicker
+                                                    views={['day']}
                                                     value={todate}
-                                                    onchange={(e) => Settodate(e.target.value)}
+                                                    size="small"
+                                                    onChange={(e) => {
+                                                        Settodate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
+                                                    }} renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                            <CssVarsProvider>
+                                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: 500 }} />
+                                                            </CssVarsProvider>
+                                                            {InputProps?.endAdornment}
+                                                        </Box>
+                                                    )}
                                                 />
                                             </LocalizationProvider>
                                         </Box>
@@ -220,7 +237,7 @@ const InductionTrainingMainPage = () => {
                                         </Tooltip>
                                     </Box>
                                 </Paper>
-                                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" }}>
                                     <Box sx={{ p: 1, mt: 1 }}>
                                         <JoyCheckbox
                                             label="Select All"

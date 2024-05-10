@@ -18,6 +18,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
     const [question_count, setQuestion_count] = useState(0);
     const [dataArray, setDataArray] = useState([])
     const [topicArray, setTopicArray] = useState([])
+    // const [markData, setMarkData] = useState([]);
 
     const Handleclose = useCallback((e) => {
         Setopen(false)
@@ -51,6 +52,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
             return object;
         })
         setTableData(displayData)
+        // setMarkData(displayData)
     }, [maparr])
 
 
@@ -77,7 +79,6 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
         setDataArray(data)
     }, [])
 
-
     useEffect(() => {
         if (Object.keys(dataArray).length > 0) {
             const { em_id } = dataArray;
@@ -89,7 +90,6 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
             setTableData(result);
         }
     }, [dataArray])
-
 
 
     const [columnDef] = useState([

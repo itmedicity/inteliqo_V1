@@ -104,8 +104,9 @@ const TrainerDetails = () => {
                         sect_name: val.sect_name,
                         trainer_status: val.trainer_status,
                         statusdesc: val.trainer_status === 0 ? "NO" : "YES",
-                        auth_post: val.auth_post,
-                        emp_post: val.auth_post === 1 ? "HOD" : val.auth_post === 2 ? "INCHARGE" : val.auth_post === null ? "STAFF" : null,
+                        hod: val.hod,
+                        incharge: val.incharge,
+                        emp_post: val.hod === 1 ? "HOD" : val.incharge === 1 ? "INCHARGE" : "STAFF",
                     }
                     return obj;
                 })

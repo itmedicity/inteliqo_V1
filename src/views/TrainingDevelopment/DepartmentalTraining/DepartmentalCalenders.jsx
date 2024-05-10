@@ -11,13 +11,13 @@ import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRed
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { useEffect } from 'react';
 import { setDepartment } from 'src/redux/actions/Department.action';
-import { DeptEmployeeNameDesList, TrainerNames, TrainingTopics } from 'src/redux/actions/Training.Action';
+import { DeptEmployeeNameDesList, TrainingTopics } from 'src/redux/actions/Training.Action';
 import { getMonth, getYear, subYears } from 'date-fns';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import ScheduleCalenders from './ScheduleCalenders';
 import _ from 'underscore';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
+import ScheduleCalenders from './ScheduleCalenders';
 
 const DepartmentalCalenders = () => {
 
@@ -33,7 +33,6 @@ const DepartmentalCalenders = () => {
     useEffect(() => {
         dispatch(setDepartment());
         dispatch(TrainingTopics());
-        dispatch(TrainerNames());
         dispatch(DeptEmployeeNameDesList(dept))
     }, [dispatch, count, dept])
 
@@ -101,17 +100,13 @@ const DepartmentalCalenders = () => {
             <CustomLayout title="Department Wise Training" displayClose={true}>
                 <Box sx={{ width: "100%", p: 1, height: 800 }}>
                     <Paper variant='outlined' sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
-                        <Tooltip title="Select Department">
-                            <Box sx={{ flex: 1, }}>
-                                <DepartmentDropRedx getDept={setdept} />
-                            </Box>
-                        </Tooltip>
-                        <Tooltip title="Select Department Section">
-                            <Box sx={{ flex: 1, }}>
-                                <DepartmentSectionRedx getSection={setdeptSec}
-                                />
-                            </Box>
-                        </Tooltip>
+                        <Box sx={{ flex: 1, }}>
+                            <DepartmentDropRedx getDept={setdept} />
+                        </Box>
+                        <Box sx={{ flex: 1, }}>
+                            <DepartmentSectionRedx getSection={setdeptSec}
+                            />
+                        </Box>
                         <Tooltip title="Select Year">
                             <Box sx={{ flex: 1, }}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>

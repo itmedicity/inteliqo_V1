@@ -41,7 +41,7 @@ const InductionTestMain = () => {
 
 
     const ClickToScanQR = useCallback((params) => {
-        const data = params.api.getSelectedRows()
+        const data = params.data
         setQRdata(data);
         setQRmodal(true)
     }, [setQRdata, setQRmodal])

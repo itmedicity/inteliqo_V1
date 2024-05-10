@@ -1,5 +1,5 @@
 
-import React, { Fragment, memo, useCallback } from 'react'
+import React, { Fragment, memo, useCallback, useMemo } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
@@ -7,7 +7,9 @@ import { QR_URL } from '../../../../Constant/Static'
 
 const InductionRetestQRscanPage = ({ Selecteddata, opeQRCodeModal, setopeQRCodeModal }) => {
 
-    const { re_topic, retest_em_no } = Selecteddata[0]
+    const retestdata = useMemo(() => Selecteddata, [Selecteddata])
+
+    const { re_topic, retest_em_no } = retestdata
 
     const handleClose = useCallback(() => {
         setopeQRCodeModal(false);

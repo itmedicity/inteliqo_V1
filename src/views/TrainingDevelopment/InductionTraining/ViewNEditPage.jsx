@@ -13,7 +13,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import EditTable from './EditTable';
 
-const ViewNEditPage = ({ setviewModal, viewModal }) => {
+const ViewNEditPage = ({ setviewModal, viewModal, setopenmodal, Setpendingmodal }) => {
 
     const [type, setType] = useState(0)
     const [viewData, SetviewData] = useState([])
@@ -49,8 +49,10 @@ const ViewNEditPage = ({ setviewModal, viewModal }) => {
                 })
                 SetviewData(viewData);
                 setcount(count + 1)
+
             } else {
                 SetviewData([]);
+
             }
         }
         else {
@@ -82,7 +84,7 @@ const ViewNEditPage = ({ setviewModal, viewModal }) => {
     return (
         <Fragment>
             {
-                editbtn === true ? <EditTable setviewModal={setviewModal} count={count} setcount={setcount} editbtn={editbtn} seteditbtn={seteditbtn} getdata={getdata} />
+                editbtn === true ? <EditTable Setpendingmodal={Setpendingmodal} setopenmodal={setopenmodal} setviewModal={setviewModal} count={count} setcount={setcount} editbtn={editbtn} seteditbtn={seteditbtn} getdata={getdata} />
                     :
                     <Modal
                         aria-labelledby="modal-title"
@@ -113,7 +115,7 @@ const ViewNEditPage = ({ setviewModal, viewModal }) => {
                                 View & Reschedule
                             </Typography>
                             {/* body starts */}
-                            <Paper variant='outlined'>
+                            <Paper variant='outlined' elevation={0}>
                                 <Box sx={{ p: 1, width: 1000, }}>
                                     <Box sx={{ display: 'flex', flexDirection: "row", width: "100%", gap: 2 }}>
                                         <Box sx={{ p: 0.2, flex: 1 }} >

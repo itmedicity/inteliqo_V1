@@ -1,35 +1,32 @@
 import React, { Fragment, memo, useState } from 'react'
 import Box from '@mui/material/Box';
-import { Checkbox, FormControlLabel, Paper } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import { CssVarsProvider, Typography, Button, Input, IconButton, Textarea } from '@mui/joy';
+import { Checkbox, FormControlLabel, Tooltip, } from '@mui/material';
+import { CssVarsProvider, Typography, Button, Input, IconButton, Textarea, Modal, ModalDialog, ModalClose } from '@mui/joy';
 import { useCallback } from 'react';
-import moment from 'moment';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import { useMemo } from 'react';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import SelectTopics from 'src/views/MuiComponents/SelectTopics';
-import SaveIcon from '@mui/icons-material/Save';
-import ClearIcon from '@mui/icons-material/Clear';
 import DepartmentalTrainingTopics from 'src/views/MuiComponents/DepartmentalTrainingTopics';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
 
 const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setcount, start, end }) => {
 
     const [selectdate, setSelectdate] = useState(moment(new Date(start)).format('YYYY-MM-DD'));
-    const [viewTable, setViewTable] = useState(0)
     const [remark, setRemark] = useState('');
     const [topic, setTopic] = useState(0);
     const [trainer, setTrainer] = useState([]);
     const [trainerName, setTrainerName] = useState([]);
     const [dept_all, setDept_all] = useState(false);
     const [showTrainers, setshowTrainers] = useState(0);
+    const [view, setview] = useState(0);
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -37,9 +34,14 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
 
     const handleClose = useCallback(() => {
         setOpen(false);
-        setViewTable(0);
         setDept_all(false)
-    }, [setOpen, setViewTable])
+        setSelectdate('')
+        setTopic(0);
+        setRemark('');
+        setTrainer([]);
+        setshowTrainers(0)
+        setview(0)
+    }, [setOpen, setTopic])
 
     //reset 
     const reset = useCallback(() => {
@@ -49,19 +51,12 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         setTopic(0);
         setTrainer([]);
         setshowTrainers(0)
-    }, [])
+        setview(0)
+    }, [setTopic])
 
     const handleText = useCallback((event) => {
         setRemark(event.target.value);
     }, []);
-
-    const UpdateDate = useCallback((e) => {
-        const d = moment(new Date(e.target.value)).format("YYYY-MM-DD")
-        setSelectdate(d)
-        setViewTable(1);
-    }, [setSelectdate, setViewTable])
-
-
 
     //postData
     const postData = useMemo(() => {
@@ -85,9 +80,10 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
                 const { message, success } = result.data;
                 if (success === 1) {
                     succesNofity(message);
-                    reset();
                     Setcount(count + 1);
                     setOpen(false);
+                    reset();
+
                 }
                 else {
                     warningNofity(message);
@@ -113,8 +109,8 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
         }
     }, [setDept_all])
 
-
     const GetTrainers = useCallback(() => {
+        setview(1)
         setshowTrainers(1)
         if (topic !== 0) {
             const GetTrainerNames = async (topic) => {
@@ -141,126 +137,141 @@ const TrainingonMonthModal = ({ open, setOpen, dept, deptSec, year, count, Setco
 
     return (
         <Fragment>
-            <Dialog
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
                 open={open}
-                maxWidth="xl"
+                onClose={handleClose}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: "100%" }}
             >
-                <Paper sx={{ m: 1 }} variant="outlined" >
-                    <Box sx={{ flex: 1, p: 0.5 }} >
-                        <CssVarsProvider>
-                            <Typography fontWeight="lg"  >
-                                Topic Schedule
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <DialogContent sx={{ px: 5, display: 'flex', width: 600, flexDirection: 'column' }} >
-                        <Box sx={{ display: "flex", flexDirection: "row" }}>
-                            <Box sx={{ px: 2 }}>
-                                <CssVarsProvider>
-                                    <Typography  >
-                                        Date
-                                    </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ pl: 7.8, width: "87%" }}>
-                                <Input
-                                    type="date"
-                                    fullWidth
-                                    slotProps={{
-                                        input: {
-                                            max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                        },
-                                    }}
-                                    value={selectdate}
-                                    name="selectdate"
-                                    onChange={(e) => UpdateDate(e)}
-                                />
-                            </Box>
+                <ModalDialog size="lg"  >
+                    <ModalClose
+                        variant="outlined"
+                        sx={{
+                            top: 'calc(-1/4 * var(--IconButton-size))',
+                            right: 'calc(-1/4 * var(--IconButton-size))',
+                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                            borderRadius: '50%',
+                            bgcolor: 'background.body',
+                        }}
+                    />
+                    <Typography
+                        fontSize="xl2"
+                        lineHeight={1}
+                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                    >
+                        Topic Schedule
+                    </Typography>
+
+
+                    <Box sx={{ display: "flex", flexDirection: "row", width: '100%' }}>
+                        <Box sx={{ px: 2 }}>
+                            <CssVarsProvider>
+                                <Typography  >
+                                    Date
+                                </Typography>
+                            </CssVarsProvider>
                         </Box>
-                        {
-                            viewTable === 1 ?
-                                <Box sx={{ mt: 0.3 }}>
-                                    <Box sx={{ px: 2, mt: 1 }}>
-                                        <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                            <Box><Typography>Topic</Typography></Box>
-                                            {
-                                                dept_all === true ?
-                                                    <Box sx={{ minWidth: "66%", pl: 9.5 }}>
-                                                        <SelectTopics setTopic={setTopic} />
-                                                    </Box>
-                                                    : <Box sx={{ minWidth: "66%", pl: 9.5 }}><DepartmentalTrainingTopics setTopic={setTopic} dept={dept} /></Box>
-                                            }
-                                            <Box sx={{ pl: 4 }}>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            name="dept_status"
-                                                            color="primary"
-                                                            value={dept_all}
-                                                            checked={dept_all}
-                                                            className="ml-1"
-                                                            onChange={(e) => ShowallDept(e)}
-                                                        />
-                                                    }
-                                                    label="All "
-                                                />
-                                            </Box>
-                                            <Box sx={{ mt: 0.5, pl: 2 }}>
-                                                <IconButton variant="outlined" size='sm' color="primary" onClick={GetTrainers}>
-                                                    <PublishedWithChangesIcon />
-                                                </IconButton>
-                                            </Box>
+                        <Box>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                < DatePicker
+                                    views={['day']}
+                                    minDate={moment(new Date(start)).format('YYYY-MM-DD')}
+                                    maxDate={moment(new Date(end)).format('YYYY-MM-DD')}
+                                    value={selectdate}
+                                    size="small"
+                                    onChange={(e) => {
+                                        setSelectdate(moment(e).format("YYYY-MM-DD"));
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: 500 }} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
                                         </Box>
-                                        {showTrainers === 1 ?
-                                            <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, width: "100%" }}>
-                                                <Box><Typography>Trainers</Typography></Box>
-                                                <Box sx={{ minWidth: "92%", pl: 7.3 }}>
-                                                    <JoyInput
-                                                        size="sm"
-                                                        value={trainerName}
-                                                        name="trainers"
-                                                        placeholder="Trainers"
-                                                        disabled={true}
-                                                    />
-
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ mt: 0.3 }}>
+                        <Box sx={{ mt: 1 }}>
+                            <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                <Box sx={{ px: 2 }}><Typography>Topic</Typography></Box>
+                                <Box sx={{ display: "flex", flexDirection: "row", width: "80%" }}>
+                                    <Box>
+                                        {
+                                            dept_all === true ?
+                                                <Box style={{ width: 500 }} >
+                                                    <SelectTopics topic={topic} setTopic={setTopic} />
                                                 </Box>
-                                            </Box> : null}
-                                    </Box>
-                                    {showTrainers === 1 ?
-                                        <Textarea name="Solid" placeholder="Drop Remarks here.."
-                                            rows={2} value={remark} onChange={handleText} style={{ width: '100%', marginTop: 5, height: 100 }} /> : null}
-                                </Box>
+                                                : <Box style={{ width: 500 }}><DepartmentalTrainingTopics topic={topic} setTopic={setTopic} dept={dept} /></Box>
+                                        }
 
-                                : null
-                        }
-                    </DialogContent>
-                    {showTrainers === 1 ?
-                        <DialogActions sx={{ px: 5 }}>
+                                    </Box>
+
+                                </Box>
+                                <Box sx={{ pl: 4 }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="dept_status"
+                                                color="primary"
+                                                value={dept_all}
+                                                checked={dept_all}
+                                                className="ml-1"
+                                                onChange={(e) => ShowallDept(e)}
+                                            />
+                                        }
+                                        label="All "
+                                    />
+                                </Box>
+                                <Tooltip title="View to more">
+                                    <Box sx={{ mt: 0.5, pl: 2 }}>
+                                        <IconButton variant="outlined" size='sm' color="primary" onClick={GetTrainers}>
+                                            <PublishedWithChangesIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Tooltip>
+
+                            </Box>
+                            {showTrainers === 1 ?
+                                <Box sx={{ display: "flex", flexDirection: "row", mt: 0.5, width: "100%" }}>
+                                    <Box sx={{ px: 1 }}><Typography>Trainers</Typography></Box>
+                                    <Box sx={{ width: "100%" }}>
+                                        <JoyInput
+                                            size="sm"
+                                            value={trainerName}
+                                            name="trainers"
+                                            placeholder="Trainers"
+                                            disabled={true}
+                                        />
+
+                                    </Box>
+                                </Box> : null}
+                        </Box>
+                        {showTrainers === 1 ?
+                            <Textarea name="Solid" placeholder="Drop Remarks here.."
+                                rows={2} value={remark} onChange={handleText} style={{ width: '100%', marginTop: 5, height: 100 }} /> : null}
+                    </Box>
+                    {
+                        view === 1 ?
+
                             <CssVarsProvider>
                                 <Button
-                                    variant="outlined"
                                     color="success"
                                     onClick={HandleSubmit}
                                     size="sm"
-                                    sx={{ py: 0, color: '#81c784' }}
+                                    sx={{ py: 0, color: 'white' }}
                                 >
-                                    <SaveIcon sx={{ fontSize: 25 }} />
+                                    SAVE
                                 </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="danger"
-                                    onClick={handleClose}
-                                    size="sm"
-                                    sx={{ py: 0, color: '#d50000' }}
-                                >
-                                    <ClearIcon sx={{ fontSize: 25 }} />
-                                </Button>
+
                             </CssVarsProvider>
-                        </DialogActions>
-                        : null
-                    }
-                </Paper>
-            </Dialog >
+                            : null}
+                </ModalDialog>
+            </Modal >
         </Fragment >
     )
 }

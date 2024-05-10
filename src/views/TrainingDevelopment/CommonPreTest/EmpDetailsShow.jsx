@@ -197,7 +197,7 @@ const EmpDetailsShow = ({ data }) => {
                                         <th style={{ textTransform: "capitalize", }}> {pretest}</th>
                                     </tr>
                                     <tr>
-                                        <th>Pre-Test Mark</th>
+                                        <th>Pre-Test Mark (out of {question_count})</th>
                                         <th style={{ textTransform: "capitalize" }}> {mark}</th>
                                     </tr>
                                     <tr>
@@ -243,7 +243,7 @@ const EmpDetailsShow = ({ data }) => {
                                             <th style={{ textTransform: "capitalize", }}> {pretest}</th>
                                         </tr>
                                         <tr>
-                                            <th>Pre-Test Mark</th>
+                                            <th>Pre-Test Mark (out of {question_count})</th>
                                             <th style={{ textTransform: "capitalize" }}> {mark}</th>
                                         </tr>
                                         <tr>
@@ -251,7 +251,7 @@ const EmpDetailsShow = ({ data }) => {
                                             <th style={{ textTransform: "capitalize", }}> {posttest}</th>
                                         </tr>
                                         <tr>
-                                            <th>Post-Test Mark</th>
+                                            <th>Post-Test Mark (out of {question_count})</th>
                                             <th style={{ textTransform: "capitalize", }}> {postmark}</th>
                                         </tr>
                                         <tr>

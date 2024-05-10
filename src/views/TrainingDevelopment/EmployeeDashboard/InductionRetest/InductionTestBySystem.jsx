@@ -1,6 +1,6 @@
 
 import { Paper } from '@mui/material'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ToastContainer } from 'react-toastify';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -11,6 +11,8 @@ import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
 
 const InductionTestBySystem = ({ Selecteddata }) => {
+
+    const selectdata = useMemo(() => Selecteddata, [Selecteddata])
 
     const history = useHistory()
 
@@ -38,9 +40,9 @@ const InductionTestBySystem = ({ Selecteddata }) => {
 
 
     useEffect(() => {
-        if (Object.keys(Selecteddata).length !== 0) {
+        if (Object.keys(selectdata).length !== 0) {
             const { sn, retest_slno, retest_em_no, re_emp_dept, re_dept_sec, em_name, date, re_topic, re_attendance, re_questn_count, em_id,
-                sect_id, sect_name, topic_slno, training_topic_name, dept_id, dept_name, em_no, desg_name, desg_slno, premark, postmark, pretest_status, posttest_status, online_mode, training_status, retest_status, retest_mark } = Selecteddata[0];
+                sect_id, sect_name, topic_slno, training_topic_name, dept_id, dept_name, em_no, desg_name, desg_slno, premark, postmark, pretest_status, posttest_status, online_mode, training_status, retest_status, retest_mark } = selectdata;
             const obj = {
                 sn: sn,
                 retest_slno: retest_slno,
@@ -77,7 +79,7 @@ const InductionTestBySystem = ({ Selecteddata }) => {
             }
             setViewData(obj);
         }
-    }, [Selecteddata, setViewData])
+    }, [selectdata])
 
     const ClickToTest = useCallback(() => {
         if (training_status === 1 && retest_status === 0) {
@@ -199,7 +201,7 @@ const InductionTestBySystem = ({ Selecteddata }) => {
 
                                 <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
                                     <Button sx={{ backgroundColor: "blue", color: "white", width: "50%" }} onClick={ClickToTest}>
-                                        START
+                                        START RE-TEST
                                     </Button>
                                 </Box>
                             </Box>

@@ -57,13 +57,13 @@ const InductionTopicList = ({ count, setShow, Setcount, InductionResetTopics }) 
 
     //QR Code
     const ClickToScanQR = useCallback((params) => {
-        const data = params.api.getSelectedRows()
+        const data = params.data
         SetSelectedData(data);
         setopeQRCodeModal(true)
     }, [SetSelectedData, setopeQRCodeModal])
 
     const ClickToTest = useCallback((params) => {
-        const data = params.api.getSelectedRows()
+        const data = params.data
         setopenTest(true)
         SetSelectedData(data);
     }, [setopenTest, SetSelectedData])

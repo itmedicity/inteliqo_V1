@@ -233,7 +233,7 @@ const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/D
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 //QR CODE
-const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
+//const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
 const OnlinePreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/OnlinePreWithQRcode'))
 const OnlinePostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/OnlinePostWithQR'))
 //const PostTest = React.lazy(() => import('./views/TrainingDevelopment/PostTest/PostTestEmpListWithQR'))
@@ -277,8 +277,8 @@ const HODApprovals = React.lazy(() => import('./views/TrainingDevelopment/Traini
 const EmpPunchReport = React.lazy(() => import('./views/HrReports/Employee Punch Report/EmpPunchReport'))
 const EmpPreviouspunchreport = React.lazy(() => import('./views/Attendance/PreviousMonthReport/EmployeePunchReport'))
 const EmpSaleryReport = React.lazy(() => import('./views/HrReports/EmpSaleryReport/EmpSaleryReport'))
-
-
+const EmpRightBasedLogin = React.lazy(() => import('./views/TrainingDevelopment/EmployeeRights/EmployeeRights'))
+const TNDdashboardViewPage = React.lazy(() => import('./views/TrainingDevelopment/TrainingDashboard/TnDViewComponents/TndDashboardView'))
 const routes = [
 
   { path: '/', exact: true, name: 'Home' },
@@ -499,7 +499,7 @@ const routes = [
 
 
   //QR CODE
-  { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
+  // { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
   { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
   { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
@@ -548,6 +548,9 @@ const routes = [
   { path: '/Home/EmpPunchReport', exact: true, name: 'Employee Wise Punch Report', component: EmpPunchReport },
   { path: '/Home/EmpPreviouspunchreport', exact: true, name: 'Previous Month Punch Data', component: EmpPreviouspunchreport },
   { path: '/Home/EmpSaleryReport', exact: true, name: 'EmpSaleryReport', component: EmpSaleryReport },
+  { path: '/Home/EmpRightBasedLogin', exact: true, name: 'EmpRightBasedLogin', component: EmpRightBasedLogin },
+  { path: '/Home/TNDdashboardViewPage', exact: true, name: 'TNDdashboardViewPage', component: TNDdashboardViewPage },
+
 
 ]
 

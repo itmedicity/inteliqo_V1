@@ -85,7 +85,7 @@ export const PdfInductionTrannings = (selected, ShowData, HODSign) => {
                                 { text: val.induct_post_mark, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.trainer_name, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 {
-                                    image: val.training_induct_hod_aprvl_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
+                                    image: val.induct_post_mark >= 2 && val.training_induct_hod_aprvl_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
                                 },
                                 { text: val.Remark, fontSize: 10, font: 'Roboto', alignment: 'center' },
 

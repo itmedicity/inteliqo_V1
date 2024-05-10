@@ -1,31 +1,32 @@
 import { CNavItem } from "@coreui/react";
 
 const TrainingAndDevelopment = [
-
+    //T&D Dashbpard
+    {
+        men_slno: 287,
+        component: CNavItem,
+        name: 'Dashboard',
+        to: '/Home/TNDdashboardViewPage',
+    },
+    {
+        men_slno: 252,
+        component: CNavItem,
+        name: 'Dashboard',
+        to: '/Home/EmpRightBasedLogin',
+    },
     {
         men_slno: 55,
         component: CNavItem,
-        name: 'Department Wise Training',
+        name: 'Departmental Training Calender',
         to: '/Home/DepartmentalCalenders',
     },
     {
         men_slno: 251,
         component: CNavItem,
-        name: 'Training Process',
+        name: 'Departmental Process',
         to: '/Home/TrainingProcess',
     },
-    // {
-    //     men_slno: 252,
-    //     component: CNavItem,
-    //     name: 'Employee Training Schedule',
-    //     to: '/Home/TrainingEmployeeSchedule',
-    // },
-    {
-        men_slno: 56,
-        component: CNavItem,
-        name: 'Training Schedule',
-        to: '/Home/AfterJoiningTraining',
-    },
+
     {
         men_slno: 57,
         component: CNavItem,
@@ -47,16 +48,9 @@ const TrainingAndDevelopment = [
     },
 
     {
-        men_slno: 263,
-        component: CNavItem,
-        name: 'Employee Dashboard',
-        to: '/Home/EmpDashboardPage',
-    },
-
-    {
         men_slno: 59,
         component: CNavItem,
-        name: 'Online-Test',
+        name: 'Departmental Online Test',
         to: '/Home/CommonPreTestPage',
     },
     {
@@ -74,7 +68,7 @@ const TrainingAndDevelopment = [
     {
         men_slno: 274,
         component: CNavItem,
-        name: 'Induction Test',
+        name: 'Induction Online Test',
         to: '/Home/InductionTest',
     },
     {
@@ -84,23 +78,24 @@ const TrainingAndDevelopment = [
         to: '/Home/InductionProcess',
     },
     {
-        men_slno: 278,
+        men_slno: 279,
         component: CNavItem,
         name: 'Training Details',
         to: '/Home/TrainingDetails',
     },
     {
-        men_slno: 279,
+        men_slno: 280,
         component: CNavItem,
         name: 'Trainer Approvals',
         to: '/Home/TrainerApprovals',
     },
     {
-        men_slno: 280,
+        men_slno: 281,
         component: CNavItem,
         name: 'HOD Approvals',
         to: '/Home/HODApprovals',
     },
+
 
 ]
 

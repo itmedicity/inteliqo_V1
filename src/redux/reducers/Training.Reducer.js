@@ -55,7 +55,8 @@ const {
     FETCH_DEPARTMENTAL_TRAININGS,
     FETCH_INDUCTION_TRAININGS,
     FETCH_TRAINER_APPRVL_DATA,
-    FETCH_TRAINER_APPRVL_INDUCT_DATA
+    FETCH_TRAINER_APPRVL_INDUCT_DATA,
+    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA
 } = Actiontypes;
 
 const TrainingData = {
@@ -279,6 +280,10 @@ const TrainingData = {
     GetTrainerInductApprvls: {
         GetTrainerInductApprvlsList: [],
         GetTrainerInductApprvlsStatus: false
+    },
+    DashboardPreTopics: {
+        DashboardPreTopicsList: [],
+        DashboardPreTopicsStatus: false
     },
 }
 
@@ -780,7 +785,18 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     GetTrainerInductApprvlsStatus: true
                 }
             }
+        case FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA:
+            return {
+                ...state,
+                DashboardPreTopics: {
+                    ...state.DashboardPreTopics,
+                    DashboardPreTopicsList: payload,
+                    DashboardPreTopicsStatus: true
+                }
+            }
         default:
             return state;
     }
 }
+
+

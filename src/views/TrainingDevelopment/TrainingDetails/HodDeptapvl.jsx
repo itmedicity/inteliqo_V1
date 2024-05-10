@@ -88,7 +88,7 @@ const HodDeptapvl = ({ em_id, Deprtmtl_flag, Setcount, count }) => {
         {
             headerName: 'Verification',
             cellRenderer: params => {
-                if (params.data.training_apprvl_status === 1) {
+                if (params.data.training_hod_apprvls_status === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <Tooltip title="Verified">

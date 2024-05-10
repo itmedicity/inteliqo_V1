@@ -1,21 +1,22 @@
 import { TableCell, TableRow } from '@mui/material'
-import React, { memo, useState } from 'react'
-import { IconButton } from '@mui/joy';
+import React, { memo, useEffect, useState } from 'react'
+import { Box, CssVarsProvider, IconButton, Input } from '@mui/joy';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
 
 const InductionTopicTable = ({ value, ScheduleDate, handleChange }) => {
 
     const [newDate, setNewDate] = useState(moment(new Date(ScheduleDate)).format('YYYY-MM-DD'))
-    const [start_date, setstart_date] = useState('')
-    const { topic, trainers_name, trainers, topic_slno, status } = value;
+    const [start_date, setstart_date] = useState(moment(new Date()));
 
+    const { topic, trainers_name, trainers, topic_slno, status } = value
 
-    const getAlloDate = (e) => {
-        setNewDate(e)
-        setstart_date(e)
-    }
+    useEffect(() => {
+        setNewDate(start_date)
+    }, [start_date])
 
     const newObj = {
         trainers: trainers,
@@ -31,13 +32,25 @@ const InductionTopicTable = ({ value, ScheduleDate, handleChange }) => {
                 <TableCell size='small' padding='none' sx={{ p: 1, minHeight: 25 }} > {topic}</TableCell>
                 <TableCell size='small' padding='none' sx={{ p: 1, minHeight: 25 }} >{trainers_name} </TableCell>
                 <TableCell size='small' padding='none' sx={{ p: 1, minHeight: 25, pt: 0.5 }} >
-                    <JoyInput
-                        type="date"
-                        size="sm"
-                        name="start_date"
-                        value={start_date}
-                        onchange={(e) => getAlloDate(e)}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        < DatePicker
+                            views={['day']}
+                            value={start_date}
+                            size="small"
+                            onChange={(newValue) => {
+                                setstart_date(newValue);
+                            }}
+
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <CssVarsProvider>
+                                        <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: 500 }} />
+                                    </CssVarsProvider>
+                                    {InputProps?.endAdornment}
+                                </Box>
+                            )}
+                        />
+                    </LocalizationProvider>
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
                     {

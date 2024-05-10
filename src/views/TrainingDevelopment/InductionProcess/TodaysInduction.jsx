@@ -28,23 +28,15 @@ const TodaysInduction = ({ setShow, count, Setcount, todays }) => {
     useEffect(() => {
         const displayData = todays?.map((val) => {
             const object = {
-                induction_date: val.induction_date,
-                date: moment(val.induction_date).format("YYYY-MM-DD"),
+                induct_detail_date: val.induct_detail_date,
+                date: moment(val.induct_detail_date).format("YYYY-MM-DD"),
                 schedule_slno: val.schedule_slno,
-                schedule_topic: val.schedule_topic,
-                schedule_type: val.schedule_type,
                 topic_slno: val.topic_slno,
-                training_topic_name: val.training_topic_name,
-                trainers: val.trainers,
-                training: val.training,
-                pretest_status: val.pretest_status,
-                post_test_status: val.post_test_status,
-                online_status: val.online_status,
-                offline_status: val.offline_status,
-                both_status: val.both_status
+                training_topic_name: val.training_topic_name
             }
             return object;
         })
+        //const filarray = displayData?.find((val) => val.topic_slno !== 0)
         SetTodayData(displayData)
     }, [todays, SetTodayData])
 

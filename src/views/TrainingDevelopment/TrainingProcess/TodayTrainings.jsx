@@ -24,6 +24,8 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
         }
     }, [dispatch, topic, count])
 
+
+
     const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList, _.isEqual);
 
     useEffect(() => {

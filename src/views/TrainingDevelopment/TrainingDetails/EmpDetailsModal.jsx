@@ -28,7 +28,7 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
     }, [Setopen])
 
     useEffect(() => {
-        if (selected.length !== 0) {
+        if (selected?.length !== 0) {
             const viewData = selected?.find((val) => val.em_id !== 0)
             const { em_name, em_no, em_id, dept_name, sect_name, desg_name } = viewData;
             const obj = {
@@ -60,6 +60,7 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         })
         GetData()
     }, [em_id, SetInductionData])
+
 
     //get Departmental details
     useEffect(() => {
@@ -150,7 +151,6 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         })
         SetShowDepartData(deptdata)
     }, [DepartData, SetShowDepartData])
-
     return (
         <div>
             <Modal
@@ -211,7 +211,7 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
                     {/* Induction */}
                     <CustmTypog title={"Induction Training Details"} />
                     {
-                        InductionData.length !== 0 ?
+                        InductionData?.length !== 0 ?
                             <Table>
                                 <thead>
                                     <tr>
@@ -254,7 +254,7 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
                     {/* departmental */}
                     <CustmTypog title={"Departmental Training Details"} />
                     {
-                        ShowDepartData.length !== 0 ?
+                        ShowDepartData?.length !== 0 ?
 
                             <Table>
                                 <thead>

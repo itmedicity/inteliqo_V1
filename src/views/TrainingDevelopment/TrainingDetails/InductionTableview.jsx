@@ -10,12 +10,12 @@ import moment from 'moment';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import { urlExist } from 'src/views/Constant/Constant';
 import { PdfInductionTrannings } from './PdfInductionTranning';
+import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 
 const InductionTableview = ({ Inductdata }) => {
     const [tabledata, SetTabledata] = useState([])
     const [selected, Setselected] = useState([]);
     const [open, Setopen] = useState(false);
-
     useEffect(() => {
         const Induct = Inductdata?.map((val) => {
             const object = {
@@ -124,8 +124,28 @@ const InductionTableview = ({ Inductdata }) => {
                                         PdfInductionTrannings(getdata[0], ShowData, HODSign)
                                     })
 
+
                                 } else {
 
+                                    getTrainneerName(emid).then((values) => {
+                                        const { datas } = values
+                                        const ShowData = datas?.map((val) => {
+                                            const mapdata = data.find((item) => item.indct_emp_no === val.indct_emp_no && item.schedule_topic === val.schedule_topic)
+                                            return {
+                                                trainer_name: val.trainer_name.toLowerCase(),
+                                                Induct_slno: mapdata.Induct_slno,
+                                                induct_pre_mark: mapdata.training_status === 1 && mapdata.pretest_status === 1 ? mapdata.induct_pre_mark : "NA",
+                                                induct_post_mark: mapdata.training_status === 1 && mapdata.posttest_status === 1 ? mapdata.induct_post_mark : "NA",
+                                                hours: mapdata.hours,
+                                                date: moment(mapdata.induction_date).format("DD/MM/YY"),
+                                                training_topic_name: mapdata.training_topic_name.toLowerCase(),
+                                                Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
+                                                training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
+                                                training_status: mapdata.training_status
+                                            }
+                                        })
+                                        PdfInductionTrannings(getdata[0], ShowData, ProfilePicDefault)
+                                    })
                                 }
                             })
 

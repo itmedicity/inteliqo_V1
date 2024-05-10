@@ -1,6 +1,5 @@
 import React, { Fragment, memo } from 'react'
-import { Box, Paper, Typography } from '@mui/material'
-import { ToastContainer } from 'react-toastify'
+import { Box, Paper } from '@mui/material'
 import { useState } from 'react';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,12 +7,11 @@ import { useEffect } from 'react';
 import { InductionCalenderDetails } from 'src/redux/actions/Training.Action';
 import { getMonth, getYear } from 'date-fns';
 import _ from 'underscore';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import InductionTableRows from './InductionTableRows';
-import { screenInnerHeight } from 'src/views/Constant/Constant';
+import { Chip } from '@mui/joy';
+
 
 const InductionCalender = () => {
-
     const dispatch = useDispatch();
 
     const [year, setYear] = useState(moment(new Date()).format("YYYY"));
@@ -56,55 +54,56 @@ const InductionCalender = () => {
 
     return (
         < Fragment >
-            <ToastContainer />
-            <CustomLayout title="Induction Training Calender" displayClose={true}>
-                <Box sx={{ width: "100%", p: 1, height: screenInnerHeight - 115 }}>
-                    <Paper variant='outlined' sx={{ p: 1, width: "100%", display: "flex", flexDirection: "row", gap: 0.5 }}>
-                        <Box sx={{ mt: 2, width: "100%", height: 750 }}>
-                            <Box sx={{ width: "100%", textAlign: "center", px: 10 }}>
-                                <Typography sx={{ fontSize: "large", fontWeight: "bold", p: 1 }}>
-                                    TRAINING CALENDAR {yr}
-                                </Typography>
-                                <Box sx={{ border: 1, borderColor: "#D8D9DA", textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "space-between", }}>
-                                    <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA" }}><Typography>Month</Typography></Box>
-                                    <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA", pr: 20 }}> <Typography>Training</Typography></Box>
-                                    <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA", pr: 20 }}><Typography>Date</Typography></Box>
-                                </Box>
-                                <Box sx={{
-                                    overflow: 'auto',
-                                    '::-webkit-scrollbar': { display: "none" }, height: 650
-                                }}>
-                                    {
-                                        months?.map((month, index) => (
-                                            <Box key={index}>
-                                                <Box sx={{ display: "flex", flexDirection: "row" }}>
-                                                    <Box sx={{
-                                                        width: "20%", borderBottom: 1, borderLeft: 1, textAlign: "center",
-                                                        borderColor: "#D8D9DA", display: "flex", flexDirection: "row", justifyContent: "center", gap: 4
-                                                    }}>
-                                                        <Typography
-                                                            sx={{ color: "#3468C0" }}>
-                                                            {month.name}     {yr}
-                                                        </Typography>
-                                                    </Box>
-                                                    <Box sx={{ width: "80%" }}>
-                                                        <InductionTableRows
-                                                            id={month.id} year={year}
-                                                            months={months} count={count} Setcount={Setcount}
-                                                            datas={datas} yr={yr} setYear={setYear}
-                                                        />
-                                                    </Box>
+            <Paper sx={{ width: "100%", p: 1, height: 750, }}>
+
+                <Box sx={{ mt: 2, width: "100%", height: 700, display: "flex", justifyContent: "center" }}>
+
+                    <Box sx={{ width: "100%", textAlign: "center", px: 10 }}>
+
+                        <h4><u>INDUCTION TRAINING CALENDAR </u></h4>
+                        <Box sx={{ mt: 2, border: 1, backgroundColor: "#176B87", borderColor: "#D8D9DA", textAlign: "center", display: "flex", flexDirection: "row", }}>
+                            <Box sx={{ color: "white", width: "20%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}><h6>MONTH</h6></Box>
+                            <Box sx={{ color: "white", width: "40%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}> <h6>TRAINING</h6></Box>
+                            <Box sx={{ color: "white", width: "40%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}><h6>SCHEDULE DATE</h6></Box>
+                        </Box>
+                        <Box sx={{
+                            overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }, height: 600
+                        }}>
+                            {
+                                months?.map((month, index) => (
+                                    <Box key={index}>
+                                        <Box sx={{ display: "flex", flexDirection: "row" }}>
+                                            <Box sx={{
+                                                width: "20%", borderBottom: 1, borderLeft: 1,
+                                                borderColor: "#D8D9DA", display: "flex", flexDirection: "row", justifyContent: "center",
+                                                bgcolor: "#EEF5FF"
+                                            }}>
+                                                <Box sx={{ margin: "auto", }}>
+                                                    <Chip
+                                                        sx={{ color: "#265073", bgcolor: '#C2D9FF', my: 1, }}>
+                                                        {month.name}     {yr}
+                                                    </Chip>
                                                 </Box>
                                             </Box>
-                                        ))
-                                    }
-                                </Box>
-                            </Box>
+                                            <Box sx={{ width: "80%", backgroundColor: "#EEF5FF" }}>
+                                                <InductionTableRows
+                                                    id={month.id} year={year}
+                                                    months={months} count={count} Setcount={Setcount}
+                                                    datas={datas} yr={yr} setYear={setYear}
+                                                />
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                ))
+                            }
                         </Box>
-                    </Paper>
+                    </Box>
                 </Box>
-            </CustomLayout>
+
+            </Paper>
         </Fragment >
     )
 }
+
 export default memo(InductionCalender)

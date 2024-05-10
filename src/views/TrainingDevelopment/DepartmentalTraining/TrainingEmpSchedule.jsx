@@ -3,23 +3,26 @@ import { useCallback } from 'react';
 import { CssVarsProvider, Typography, Button, Box, Input, Sheet, IconButton, Table, Checkbox, Modal, ModalDialog } from '@mui/joy';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useMemo } from 'react';
 import _ from 'underscore';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SaveIcon from '@mui/icons-material/Save';
-import { endOfMonth } from 'date-fns';
+import { startOfMonth } from 'date-fns';
 import ModalClose from '@mui/joy/ModalClose';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
-import CheckIcon from '@mui/icons-material/Check';
 import { Tooltip } from '@mui/material';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
+import { TrainerNames } from 'src/redux/actions/Training.Action';
+const TrainingEmpSchedule = ({ Scheduledata, open, setOpen, setFlag, count, Setcount, rowdata, EmpDetails }) => {
 
-const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata, EmpDetails }) => {
+    const dispatch = useDispatch();
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -27,11 +30,11 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
 
     const [scheduleDate, setScheduleDate] = useState(moment(new Date(rowdata.schedule_date)).format('YYYY-MM-DD'));
     const [slno, setSlno] = useState(0);
-    const [viewTable, setViewtable] = useState(0)
     const [datas, setdatas] = useState([])
     const [newdata, setNewdata] = useState([])
     const [editTrainer, seteditTrainer] = useState(0)
     const [trainer, setTrainer] = useState([])
+    const [updateFlag, setUpdateFlag] = useState(0)
 
     const [data, setdata] = useState({
         slno: 0,
@@ -45,10 +48,12 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         dept_id: 0,
         sect_id: 0
     })
+    useEffect(() => {
+        dispatch(TrainerNames())
+    }, [dispatch, count])
 
     const reset = useCallback(() => {
         setScheduleDate('')
-        setViewtable(0)
         setFlag(0);
     }, [setFlag])
 
@@ -71,25 +76,34 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
             setSlno(slno);
         }
     }, [rowdata])
+
     useEffect(() => {
-        if (EmpDetails.length !== 0) {
-            const mapArry = EmpDetails?.map((item) => {
+        if (EmpDetails?.length !== 0 && Scheduledata?.length !== 0) {
+            const filterArr = EmpDetails?.map((val) => {
+                const fountArr = Scheduledata?.find((item) => val.em_id === item.em_id);
+                return {
+                    ...val, inValue: false, schedule: fountArr?.schedule_date ?? 0
+                }
+            })
+            setdatas(filterArr);
+        } else if (EmpDetails?.length !== 0 && Scheduledata?.length === 0) {
+            const filterArr = EmpDetails?.map((val) => {
                 const obj = {
-                    em_no: item.em_no,
-                    em_name: item.em_name,
-                    desg_name: item.desg_name,
-                    "inValue": false
+                    em_no: val.em_no,
+                    em_name: val.em_name,
+                    desg_name: val.desg_name,
+                    inValue: false,
+                    schedule: 0
+
                 }
                 return {
-                    ...item,
+                    ...val,
                     ...obj
                 }
             })
-            setdatas(mapArry)
-        } else {
-            setdatas([])
+            setdatas(filterArr);
         }
-    }, [EmpDetails])
+    }, [EmpDetails, Scheduledata]);
 
     const HandleCheckbox = useCallback((e, row) => {
         let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_no": item.em_no, "em_name": item.em_name, "desg_name": item.desg_name, inValue: e } : item)
@@ -102,6 +116,13 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         })
         setNewdata(filterarray);
     }, [datas])
+
+    const start = startOfMonth(new Date(scheduleDate))
+
+    const Handleclose = useCallback((e) => {
+        setOpen(false)
+    }, [setOpen])
+
 
     const postdata = newdata?.map((val) => {
         const obj = {
@@ -125,51 +146,10 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         }
     }, [scheduleDate, slno, em_id])
 
-    const SubmitSchedule = useCallback(async () => {
-        const results = await axioslogin.post('/TrainingAfterJoining/insertEmployees', postdata)
-        const { success, message } = results.data
-        if (success === 1) {
-            succesNofity(message);
-            Setcount(count + 1);
-            reset();
-        }
-        else {
-            warningNofity(message)
-        }
-    }, [reset, postdata, count, Setcount])
-
-    const end = endOfMonth(new Date(scheduleDate))
-
-    const UpdateDate = useCallback((e) => {
-        const d = moment(new Date(e.target.value)).format("YYYY-MM-DD")
-        setScheduleDate(d)
-    }, [setScheduleDate])
-
-    const HandleEmpSelect = useCallback((e) => {
-        setViewtable(1);
-    }, [setViewtable])
-
-    const Handleclose = useCallback((e) => {
-        setOpen(false)
-        setViewtable(0);
-    }, [setOpen, setViewtable])
-
-
-    const editDate = useCallback(async () => {
-        const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
-        const { success, message } = result.data
-        if (success === 1) {
-            succesNofity(message)
-            Setcount(count + 1);
-        }
-        else {
-            warningNofity("Date Not Changed")
-        }
-
-    }, [patchdata, Setcount, count])
 
     const EditTrainers = useCallback(() => {
         seteditTrainer(1)
+        setUpdateFlag(2)
     }, [seteditTrainer])
 
     const updateTrainers = useMemo(() => {
@@ -180,21 +160,60 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
         }
     }, [trainer, slno, em_id])
 
-    const submitTrainers = useCallback(async () => {
-        if (editTrainer === 1) {
-            const result = await axioslogin.patch('/TrainingAfterJoining/UpdateTrainers', updateTrainers)
-            const { success, message } = result.data
-            if (success === 1) {
-                succesNofity(message)
-                Setcount(count + 1);
-                setTrainer([])
-                seteditTrainer(0)
+
+    const SubmitSchedule = useCallback(() => {
+        //Insert
+        if (updateFlag === 0) {
+            const InsertData = async (postdata) => {
+                const results = await axioslogin.post('/TrainingAfterJoining/insertEmployees', postdata)
+                const { success, message } = results.data
+                if (success === 1) {
+                    succesNofity(message);
+                    Setcount(count + 1);
+                    reset();
+                }
+                else {
+                    warningNofity(message)
+                }
             }
-            else {
-                warningNofity("Not Changed")
-            }
+            InsertData(postdata)
         }
-    }, [editTrainer, seteditTrainer, setTrainer, Setcount, count, updateTrainers])
+        else if (updateFlag === 1) {
+
+            //Edit
+            const editDate = async (patchdata) => {
+                const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    Setcount(count + 1);
+                }
+                else {
+                    warningNofity("Date Not Changed")
+                }
+            }
+            editDate(patchdata)
+        }
+        else {
+            const editTrainers = async (updateTrainers) => {
+                if (editTrainer === 1) {
+                    const result = await axioslogin.patch('/TrainingAfterJoining/UpdateTrainers', updateTrainers)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        succesNofity(message)
+                        Setcount(count + 1);
+                        setTrainer([])
+                        seteditTrainer(0)
+                    }
+                    else {
+                        warningNofity("Not Changed")
+                    }
+                }
+            }
+            editTrainers(updateTrainers)
+        }
+    }, [patchdata, updateFlag, reset, postdata, editTrainer, seteditTrainer, setTrainer, Setcount, count, updateTrainers])
+
     return (
         <Fragment>
             <Modal
@@ -235,7 +254,7 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                         </Box>
                         <Box >
                             <Box sx={{ mt: 2 }}>{data?.schedule_date}</Box>
-                            <Box sx={{ mt: 2, textTransform: "capitalize" }}>{data?.training_topic_name.toLowerCase()}</Box>
+                            <Box sx={{ mt: 2, textTransform: "capitalize" }}>{data?.training_topic_name?.toLowerCase()}</Box>
                             <Box sx={{ mt: 2 }}>
                                 {
                                     editTrainer === 1 ?
@@ -243,16 +262,9 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                             <Box sx={{ width: "100%" }}>
                                                 <JoyTrainerMultipleSelect value={trainer} setValue={setTrainer} />
                                             </Box>
-                                            <Tooltip title="Change Trainer">
-                                                <Box>
-                                                    <IconButton onClick={(e) => { submitTrainers(e) }}>
-                                                        <CheckIcon />
-                                                    </IconButton>
-                                                </Box>
-                                            </Tooltip>
                                         </Box>
                                         : <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                            <Box sx={{ textTransform: "capitalize" }}>{data?.traineer_name.toLowerCase()}</Box>
+                                            <Box sx={{ textTransform: "capitalize" }}>{data?.traineer_name?.toLowerCase()}</Box>
                                             <Tooltip title="Change Trainer">
                                                 <Box>
                                                     <IconButton onClick={(e) => { EditTrainers(e) }}>
@@ -264,39 +276,33 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                                 }
                             </Box>
                             <Box sx={{ mt: 2, display: "flex", flexDirection: "row" }}>
-                                <Box sx={{ flex: 1 }}>
-                                    <Input
-                                        type="date"
-                                        fullWidth
-                                        slotProps={{
-                                            input: {
-                                                max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                            },
-                                        }}
-                                        value={scheduleDate}
-                                        name="scheduleDate"
-                                        onChange={(e) => UpdateDate(e)}
-                                    />
+                                <Box>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        < DatePicker
+                                            views={['day']}
+                                            minDate={moment(new Date(start)).format('YYYY-MM-DD')}
+                                            value={scheduleDate}
+                                            size="small"
+                                            onChange={(e) => {
+                                                setScheduleDate(moment(e).format("YYYY-MM-DD"));
+                                            }}
+                                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                    <CssVarsProvider>
+                                                        <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
+                                                    </CssVarsProvider>
+                                                    {InputProps?.endAdornment}
+                                                </Box>
+                                            )}
+                                        />
+                                    </LocalizationProvider>
                                 </Box>
-                                <Tooltip title="Save New Date">
-                                    <Box>
-                                        <IconButton onClick={(e) => { editDate(e) }}>
-                                            <CheckIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Tooltip>
                             </Box>
                         </Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <Box sx={{ display: "flex", flexDirection: "row", }}>
-                            <IconButton onClick={(e) => { HandleEmpSelect(e) }}>
-                                <AddCircleOutlineIcon />
-                            </IconButton>
-                            <Box sx={{ mt: 1 }}>Add Employees</Box>
-                        </Box>
                         <Tooltip title="Save employees">
-                            <Box sx={{ display: "flex", justifyContent: "flex-end", }}>
+                            <Box sx={{ display: "flex", justifyContent: "flex-start", }}>
                                 <CssVarsProvider>
                                     <Button
                                         variant="outlined"
@@ -312,53 +318,48 @@ const TrainingEmpSchedule = ({ open, setOpen, setFlag, count, Setcount, rowdata,
                         </Tooltip>
                     </Box>
 
-                    {
-                        viewTable === 1 ?
-                            <Sheet sx={{
-                                mt: 3,
-                                overflow: 'auto',
-                                '::-webkit-scrollbar': { display: "none" }, height: 400,
-                                width: "100%"
-                            }}>
-                                <CssVarsProvider>
-                                    <Table borderAxis="both" stickyHeader >
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "8%", textAlign: "center" }}>
-                                                    check
-                                                </th>
-                                                <th style={{ width: "15%" }}>Emp ID</th>
-                                                <th>Name</th>
-                                                <th>Designation</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {datas?.map((row, index) => (
-                                                <tr key={index} style={{
-                                                    border: "2px solid black",
-                                                    overflow: "hidden",
-                                                    overflowY: "scroll"
-                                                }}>
-                                                    <th style={{ textAlign: "center" }}>
-                                                        <Checkbox
-                                                            checked={row?.inValue || false}
-                                                            onChange={(e) => {
-                                                                HandleCheckbox(e.target.checked, row)
-                                                            }}
-                                                        />
-                                                    </th>
-                                                    <td>{row?.em_no}</td>
-                                                    <td>{row?.em_name}</td>
-                                                    <td>{row?.desg_name}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                </CssVarsProvider>
-                            </Sheet>
-
-                            : null
-                    }
+                    <Sheet sx={{
+                        mt: 3,
+                        overflow: 'auto',
+                        '::-webkit-scrollbar': { display: "none" }, height: 400,
+                        width: "100%"
+                    }}>
+                        <CssVarsProvider>
+                            <Table borderAxis="both" stickyHeader >
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "8%", textAlign: "center" }}>
+                                            check
+                                        </th>
+                                        <th style={{ width: "15%" }}>Emp ID</th>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {datas?.map((row, index) => (
+                                        <tr key={index} style={{
+                                            border: "2px solid black",
+                                            overflow: "hidden",
+                                            overflowY: "scroll"
+                                        }}>
+                                            <th style={{ textAlign: "center" }}>
+                                                <Checkbox
+                                                    checked={row?.schedule === 0 ? row?.inValue : true}
+                                                    onChange={(e) => {
+                                                        HandleCheckbox(e.target.checked, row)
+                                                    }}
+                                                />
+                                            </th>
+                                            <td>{row?.em_no}</td>
+                                            <td>{row?.em_name}</td>
+                                            <td>{row?.desg_name}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </CssVarsProvider>
+                    </Sheet>
                 </ModalDialog>
             </Modal>
         </Fragment >

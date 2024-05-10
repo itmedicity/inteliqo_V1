@@ -30,6 +30,7 @@ const CommonSettingNew = () => {
     const [workoff, setworkoff] = useState(0)
     const [noff, setNoff] = useState(0)
     const [group_slno, setGroup_Slno] = useState([])
+    const [training_group_slno, setTraining_Group_Slno] = useState([])
     const [eoff, setEoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
@@ -60,7 +61,7 @@ const CommonSettingNew = () => {
         leave_count: 0,
         noff_selct_day_count: 0,
         comp_day_count: 0,
-        comp_hour_count:0
+        comp_hour_count: 0
     })
 
     const {
@@ -68,7 +69,7 @@ const CommonSettingNew = () => {
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer, min_salary,
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
-        noff_selct_day_count, comp_day_count,comp_hour_count
+        noff_selct_day_count, comp_day_count, comp_hour_count
     } = FormData
 
     const [levaetype, setLeaveType] = useState([])
@@ -105,7 +106,7 @@ const CommonSettingNew = () => {
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
                     areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, eoff, comp_day_count,
-                    comp_hour_count } = data[0]
+                    comp_hour_count, training_mastergroup } = data[0]
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -136,7 +137,8 @@ const CommonSettingNew = () => {
                     leave_count: leave_count,
                     noff_selct_day_count: noff_selct_day_count,
                     comp_day_count: comp_day_count,
-                    comp_hour_count:comp_hour_count
+                    comp_hour_count: comp_hour_count,
+                    training_mastergroup: training_mastergroup
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -149,6 +151,8 @@ const CommonSettingNew = () => {
                 setAreartype(areartype === null ? 0 : areartype)
                 const arr = JSON.parse(group_slno)
                 setGroup_Slno(obj === null ? [] : arr)
+                const training = JSON.parse(training_mastergroup)
+                setTraining_Group_Slno(training === null ? [] : training)
                 setNoff(noff)
                 setEoff(eoff)
             }
@@ -200,9 +204,9 @@ const CommonSettingNew = () => {
         group_slno: group_slno,
         eoff: eoff,
         comp_day_count: comp_day_count,
-        comp_hour_count:comp_hour_count
+        comp_hour_count: comp_hour_count,
+        training_mastergroup: training_group_slno
     }
-
 
     //data to edit
     const postDataEdit = {
@@ -243,7 +247,8 @@ const CommonSettingNew = () => {
         group_slno: group_slno,
         eoff: eoff,
         comp_day_count: comp_day_count,
-        comp_hour_count:comp_hour_count
+        comp_hour_count: comp_hour_count,
+        training_mastergroup: training_group_slno
     }
 
     //save
@@ -265,7 +270,6 @@ const CommonSettingNew = () => {
             }
         }
         else {
-
             const result = await axioslogin.patch('/commonsettings', postDataEdit)
             const { success, message } = result.data
             if (success === 2) {
@@ -983,6 +987,19 @@ const CommonSettingNew = () => {
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <GroupMultiSelect value={group_slno} setValue={setGroup_Slno} />
                                     </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Training Master Group</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <GroupMultiSelect value={training_group_slno} setValue={setTraining_Group_Slno} />
+                                    </Box>
+
+
                                 </Box>
                             </Paper>
                         </Box>

@@ -28,7 +28,6 @@ const TopicAndQRScanList = () => {
 
     //login employee topics
     const PreTopics = useSelector((state) => state?.gettrainingData?.CommonPreTopics?.CommonPreTopicsList, _.isEqual)
-
     useEffect(() => {
         const displayData = PreTopics?.map((val) => {
             const object = {
@@ -45,7 +44,7 @@ const TopicAndQRScanList = () => {
 
 
     const ClickToScanQR = useCallback((params) => {
-        const data = params.api.getSelectedRows()
+        const data = params.data
         setQRdata(data);
         setQRmodal(true)
     }, [setQRdata, setQRmodal])

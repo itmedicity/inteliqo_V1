@@ -56,7 +56,8 @@ const {
     FETCH_DEPARTMENTAL_TRAININGS,
     FETCH_INDUCTION_TRAININGS,
     FETCH_TRAINER_APPRVL_DATA,
-    FETCH_TRAINER_APPRVL_INDUCT_DATA
+    FETCH_TRAINER_APPRVL_INDUCT_DATA,
+    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -634,3 +635,16 @@ export const TrainerApprovalsInduct = (em_id) => async (dispatch) => {
         dispatch({ type: FETCH_TRAINER_APPRVL_INDUCT_DATA, payload: [], status: false })
     }
 }
+
+export const DashboardTrainingPreTopics = (id) => async (dispatch) => {
+    const result = await axioslogin.get(`/CommonPreTestPage/DashboardPreTestTopics`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA, payload: [], status: false })
+    }
+}
+
+

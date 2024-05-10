@@ -49,7 +49,6 @@ const TrainingProcess = () => {
         dispatch(AllotedToPostTest(em_department))
         dispatch(BelowAverageEmployeeList(em_department))
     }, [dispatch, em_department, count])
-
     //new
     const trainingcompleted = useSelector((state) => state?.gettrainingData?.TrainingCompleted?.TrainingCompletedList, _.isEqual);
     const todays = useSelector((state) => state?.gettrainingData?.TodaysTrainings?.TodaysTrainingsList, _.isEqual);

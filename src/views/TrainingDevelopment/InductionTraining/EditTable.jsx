@@ -1,10 +1,9 @@
-import { Input, Modal, ModalClose, ModalDialog, Typography, IconButton, CssVarsProvider, Button } from '@mui/joy'
+import { Input, Modal, ModalClose, ModalDialog, Typography, IconButton, CssVarsProvider } from '@mui/joy'
 import { Box } from '@mui/material'
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
-import { endOfMonth } from 'date-fns';
+import { startOfMonth } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
@@ -13,9 +12,12 @@ import CachedIcon from '@mui/icons-material/Cached';
 import CheckIcon from '@mui/icons-material/Check';
 import { TrainerNames } from 'src/redux/actions/Training.Action';
 import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
 
-const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata }) => {
+const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata, setopenmodal, Setpendingmodal }) => {
 
     const dispatch = useDispatch()
 
@@ -50,7 +52,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id } = employeeProfileDetl;
 
-    const { schedule_slno, topic_slno, trainingtype_slno } = data
+    const { schedule_slno, topic_slno, date, trainingtype_slno } = data
 
     useEffect(() => {
         if (getdata.length !== 0) {
@@ -76,12 +78,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
         seteditbtn(false)
     }, [seteditbtn])
 
-    const end = endOfMonth(new Date(Reschedule))
-
-    const UpdateDate = useCallback((e) => {
-        const d = moment(new Date(e.target.value)).format("YYYY-MM-DD")
-        setReschedule(d)
-    }, [setReschedule])
+    const start = startOfMonth(new Date(date))
 
     useEffect(() => {
         if (schedule_slno !== 0 && trainingtype_slno !== 0 && topic_slno !== 0) {
@@ -107,6 +104,7 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
         }
 
     }, [schedule_slno, topic_slno, trainingtype_slno, setgetTrainers])
+
 
     useEffect(() => {
         if (getTrainers.length !== 0) {
@@ -138,12 +136,19 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
             seteditbtn(false)
             succesNofity(message)
             setcount(count + 1);
+            setReschedule('')
+            setopenmodal(false)
+            Setpendingmodal(false)
         }
         else {
             warningNofity("Date Not Changed")
+            setReschedule('')
+            setopenmodal(false)
+            Setpendingmodal(false)
+
         }
 
-    }, [patchdata, setviewModal, seteditbtn, setcount, count])
+    }, [patchdata, setopenmodal, Setpendingmodal, setviewModal, seteditbtn, setcount, count])
 
     const EditTrainers = useCallback(() => {
         seteditTrainer(1)
@@ -165,13 +170,21 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
                 setviewModal(false)
                 seteditbtn(false)
                 succesNofity(message)
+                seteditTrainer([])
                 setcount(count + 1);
+                setNewTrainers([])
+                setopenmodal(false)
+                Setpendingmodal(false)
+
             }
             else {
                 warningNofity("Not Changed")
+                setopenmodal(false)
+                Setpendingmodal(false)
+
             }
         }
-    }, [editTrainer, setviewModal, seteditbtn, setcount, count, patchdatas])
+    }, [editTrainer, setopenmodal, Setpendingmodal, setviewModal, seteditbtn, setcount, count, patchdatas])
 
     return (
         <Modal
@@ -242,18 +255,26 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
                         </Box>
                         <Box sx={{ mt: 2, display: "flex", flexDirection: "row" }}>
                             <Box sx={{ flex: 1 }}>
-                                <Input
-                                    type="date"
-                                    fullWidth
-                                    slotProps={{
-                                        input: {
-                                            max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                        },
-                                    }}
-                                    value={Reschedule}
-                                    name="RescheduleDate"
-                                    onChange={(e) => UpdateDate(e)}
-                                />
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    < DatePicker
+                                        views={['day']}
+                                        minDate={moment(new Date(start)).format('YYYY-MM-DD')}
+                                        value={Reschedule}
+                                        size="small"
+                                        onChange={(newValue) => {
+                                            setReschedule(newValue);
+                                        }}
+
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
                             </Box>
                             <Tooltip title="Save New Date">
                                 <Box>
@@ -265,21 +286,6 @@ const EditTable = ({ count, setcount, editbtn, seteditbtn, setviewModal, getdata
                         </Box>
                     </Box>
                 </Box>
-                <Tooltip title="Save">
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: "flex-end",
-                    }} >
-                        <CssVarsProvider>
-                            <Box  >
-                                <Button aria-label="submit" variant="outlined"
-                                >
-                                    <SaveIcon sx={{ width: 100 }} />
-                                </Button>
-                            </Box>
-                        </CssVarsProvider>
-                    </Box>
-                </Tooltip>
             </ModalDialog>
         </Modal >
     )
