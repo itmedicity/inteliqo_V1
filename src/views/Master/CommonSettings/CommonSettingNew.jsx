@@ -229,7 +229,7 @@ const CommonSettingNew = () => {
         salary_above, leave_count, pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no,
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, eoff, group_slno,
-        levaetype, noff, notappshift, workoff])
+        levaetype, noff, notappshift, workoff, training_group_slno])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -284,7 +284,7 @@ const CommonSettingNew = () => {
         salary_above, leave_count, pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no,
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, eoff, group_slno,
-        levaetype, noff, notappshift, workoff])
+        levaetype, noff, notappshift, workoff, training_group_slno])
 
 
 

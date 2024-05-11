@@ -99,15 +99,15 @@ const TrainingList = () => {
 
         <Paper elevation={0} sx={{ flex: 1, boxShadow: 4, backgroundColor: "#FFFFFF", }}>
             <Box sx={{ display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", }}>
-                <Box>
+                <Box sx={{ p: 1 }}>
                     <h5>Training List</h5>
                 </Box>
                 <Box>
                     <DashboardMonthField month={month} setMonth={setMonth} />
                 </Box>
             </Box>
-            <Box sx={{ width: "100%", }}>
-                <Box sx={{ height: 220, overflowX: "auto", mt: 1 }}>
+            <Box sx={{ width: "100%" }}>
+                <Box sx={{ height: 240, overflowX: "auto", mt: 1 }}>
 
                     {mapdata?.length !== 0 ?
                         <List marker="disc" size="md" >
