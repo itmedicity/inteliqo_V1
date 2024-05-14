@@ -1,11 +1,9 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { format } from 'date-fns';
+import React, { memo, useCallback, useMemo, useState } from 'react'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
-import _ from 'underscore';
-import { CssVarsProvider, Typography } from '@mui/joy';
+import { Typography } from '@mui/joy';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -14,67 +12,36 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 import { Box, Paper } from '@mui/material';
 import Button from '@mui/joy/Button';
 
-const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno }) => {
+const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
 
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [reason, setreason] = useState('')
-    //redux for all no punch data
-    const nopunchRqData = useSelector((state) => state?.setAllLeaveApproval?.nopunchRqData?.nopunchRqList, _.isEqual)
-    const [formdata, setFormData] = useState({
-        emp_name: '',
-        emp_id: '',
-        nopreason: '',
-        checktintime: '',
-        checkouttime: '',
-        nopunchdate: '',
-        requestdate: '',
-        sect_name: '',
-        shft_desc: ''
-    })
-    const { emp_name, emp_id, nopreason, checktintime, checkouttime, nopunchdate, requestdate,
-        sect_name, shft_desc } = formdata;
 
-    useEffect(() => {
-        if (Object.keys(nopunchRqData).length > 0) {
-            //filtering selected row from all no punch data array
-            const array = nopunchRqData && nopunchRqData.filter((val) => val.nopunch_slno === slno)
+    const { Employee_name, Emp_no, sect_name, requestDate, nopunchdate, np_reason, checkintime,
+        checkouttime, shft_desc, SlNo } = empData;
 
-            const { em_name, em_no, nopunchdate, checkintime, checkouttime, creteddate, checkinflag,
-                checkoutflag, np_reason, sect_name, shft_desc } = array[0]
-            const formdata = {
-                emp_name: em_name,
-                emp_id: em_no,
-                nopreason: np_reason,
-                checktintime: checkinflag === 1 ? format(new Date(checkintime), 'HH:mm:ss') : '00:00:00',
-                checkouttime: checkoutflag === 1 ? format(new Date(checkouttime), 'HH:mm:ss') : '00:00:00',
-                nopunchdate: moment(new Date(nopunchdate)).format('DD-MM-YYYY'),
-                requestdate: moment(new Date(creteddate)).format('DD-MM-YYYY'),
-                sect_name: sect_name,
-                shft_desc: shft_desc
-            }
-            setFormData(formdata)
-        }
-    }, [nopunchRqData, slno])
+    //login incharge id
+    const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     const approve = useMemo(() => {
         return {
             status: 1,
             comment: reason,
-            slno: slno,
+            slno: SlNo,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id
         }
-    }, [reason, slno, em_id])
+    }, [reason, SlNo, em_id])
 
     const rejectd = useMemo(() => {
         return {
             status: 2,
             comment: reason,
-            slno: slno,
+            slno: SlNo,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id
         }
-    }, [reason, slno, em_id])
+    }, [reason, SlNo, em_id])
 
 
 
@@ -89,7 +56,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                 if (success === 1) {
                     succesNofity(message)
                     setreason('')
-                    setcount(count + 1)
+                    setcount(Math.random())
                     setOpen(false)
                     setOpenBkDrop(false)
                 }
@@ -103,7 +70,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
             if (reason === '') {
                 infoNofity("Please Add Remark")
             } else {
-                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`)
+                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
                 const { success, data } = result.data;
                 if (success === 1) {
                     const { np_inc_apprv_req, np_incapprv_status } = data[0]
@@ -116,7 +83,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                             if (success === 1) {
                                 succesNofity(message)
                                 setreason('')
-                                setcount(count + 1)
+                                setcount(Math.random())
                                 setOpen(false)
                                 setOpenBkDrop(false)
                             }
@@ -132,7 +99,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                         if (success === 1) {
                             succesNofity(message)
                             setreason('')
-                            setcount(count + 1)
+                            setcount(Math.random())
                             setOpen(false)
                             setOpenBkDrop(false)
                         }
@@ -145,7 +112,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                 }
             }
         }
-    }, [authority, approve, setOpen, count, setcount, slno, reason])
+    }, [authority, approve, setOpen, setcount, SlNo, reason])
 
     const handleRegectRequest = useCallback(async () => {
         setOpenBkDrop(true)
@@ -158,7 +125,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                 if (success === 1) {
                     succesNofity(message)
                     setreason('')
-                    setcount(count + 1)
+                    setcount(Math.random())
                     setOpen(false)
                     setOpenBkDrop(false)
                 }
@@ -174,7 +141,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
             if (reason === '') {
                 infoNofity("Please Add Remark")
             } else {
-                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`)
+                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
                 const { success, data } = result.data;
                 if (success === 1) {
                     const { np_inc_apprv_req, np_incapprv_status } = data[0]
@@ -187,7 +154,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                             if (success === 1) {
                                 succesNofity(message)
                                 setreason('')
-                                setcount(count + 1)
+                                setcount(Math.random())
                                 setOpen(false)
                                 setOpenBkDrop(false)
                             }
@@ -203,7 +170,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                         if (success === 1) {
                             succesNofity(message)
                             setreason('')
-                            setcount(count + 1)
+                            setcount(Math.random())
                             setOpen(false)
                             setOpenBkDrop(false)
                         }
@@ -216,7 +183,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                 }
             }
         }
-    }, [rejectd, authority, count, setcount, slno, setOpen, reason])
+    }, [rejectd, authority, setcount, SlNo, setOpen, reason])
 
     return (
         <>
@@ -249,7 +216,7 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                             }
                             sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {emp_name}
+                            {Employee_name}
                         </Typography>
                         <Typography
                             lineHeight={1}
@@ -266,102 +233,68 @@ const NopunchRqModel = ({ setOpen, open, authority, em_id, count, setcount, slno
                                 alignContent='center'
                                 lineHeight={1}
                             >
-                                {emp_id}
+                                {Emp_no}
                             </Typography>}
                             sx={{ color: 'neutral.400', display: 'flex', }}
                         >
-                            {`employee #`}
+                            {`employee ID#`}
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
                     </Box>
-                    {/* <Box sx={{ mt: 0.5, pt: 1 }} >
-                    <Typography variant="outlined" color="success">
-                        {status}
-                    </Typography>
-                </Box> */}
                     <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }}>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Request Date</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Request Date</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> : {requestdate}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {requestDate}</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Miss Punch Date</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Miss Punch Date</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md">: {nopunchdate}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {nopunchdate}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Reason</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Reason</Typography>
                             </Box>
                             <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> : {nopreason}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {np_reason}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Shift time</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Shift time</Typography>
                             </Box>
                             <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> : {shft_desc}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {shft_desc}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ display: "flex", width: "100%" }} >
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Check In</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Check In</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md">: {checktintime}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {checkintime}</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> Check Out</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Check Out</Typography>
                             </Box>
                             <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1" fontSize="md"> : {checkouttime}</Typography>
-                                </CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {checkouttime}</Typography>
                             </Box>
                         </Box>
                     </Paper>
-                    {/* <Divider>
-                        <Chip variant="outlined" color="info" size="sm">
-                            Incharge Use Only
-                        </Chip>
-                    </Divider> */}
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setreason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
-                                Leave Request Approve
+                                Miss punch Approve
                             </Button>
                             <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                                Leave Request Reject
+                                Miss punch Reject
                             </Button>
                         </Box>
                     </Box>

@@ -372,6 +372,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                             <DatePicker
                                 views={['day']}
                                 //minDate={startOfMonth(new Date())}
+                                inputFormat="dd-MM-yyyy"
                                 value={fromDate}
                                 size="small"
                                 onChange={(newValue) => setFromDate(newValue)}
@@ -392,6 +393,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
+                                inputFormat="dd-MM-yyyy"
                                 maxDate={endOfMonth(new Date(fromDate))}
                                 value={toDate}
                                 size="small"

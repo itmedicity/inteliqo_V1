@@ -210,7 +210,10 @@ export const processPunchMarkingHrFunc = async (
 export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
 ) => {
-    const { hrsWorked, lateIn, earlyOut } = getLateInTime;
+    const {
+        // hrsWorked, 
+        lateIn,
+        earlyOut } = getLateInTime;
 
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
@@ -375,7 +378,7 @@ export const getAttendanceCalculation = async (
 
 //GET THE LATEIN 
 export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
-    // console.log(punch_In, shift_in, punch_out, shift_out)
+    //console.log(punch_In, shift_in, punch_out, shift_out)
 
     if ((punch_In !== null && punch_In !== undefined && isValid(punch_In) === true) && (punch_out !== null && punch_out !== undefined && isValid(punch_out) === true)) {
         //HOURS WORKED
@@ -628,5 +631,57 @@ const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_po
         return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
     } else {
         return e.duty_desc
+    }
+}
+
+export const punchInOutChecking = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
+
+    const crossDay = shiftMergedPunchMaster?.shft_cross_day;
+    const shiftInTime = `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_in), 'HH:mm')}`;
+    const shiftOutTime = crossDay === 0 ? `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_out), 'HH:mm')}` :
+        `${format(addDays(new Date(shiftMergedPunchMaster?.duty_day), crossDay), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_out), 'HH:mm')}`;
+
+    //SHIFT MASTER DATA    
+    const shiftIn = new Date(shiftMergedPunchMaster?.shift_in);
+    const shiftOut = new Date(shiftMergedPunchMaster?.shift_out);
+    const shiftInStart = new Date(shiftMergedPunchMaster?.shft_chkin_start);
+    const shiftInEnd = new Date(shiftMergedPunchMaster?.shft_chkin_end);
+    const shiftOutStart = new Date(shiftMergedPunchMaster?.shft_chkout_start);
+    const shiftOutEnd = new Date(shiftMergedPunchMaster?.shft_chkout_end);
+
+    //Diffrence in Check IN time Intervel in Hours
+    const shiftInStartDiffer = differenceInHours(shiftIn, shiftInStart);
+    const shiftInEndDiffer = differenceInHours(shiftInEnd, shiftIn);
+
+    //Diffrence in Check OUT time Intervel in Hours
+    const shiftOutStartDiffer = differenceInHours(shiftOut, shiftOutStart);
+    const shiftOutEndDiffer = differenceInHours(shiftOutEnd, shiftOut);
+
+    const checkInTIme = new Date(shiftInTime);
+    const checkOutTime = new Date(shiftOutTime);
+
+    const checkInStartTime = subHours(checkInTIme, shiftInStartDiffer);
+    const checkInEndTime = addHours(checkInTIme, shiftInEndDiffer);
+
+    const checkOutStartTime = subHours(checkOutTime, shiftOutStartDiffer)
+    const checkOutEndTime = addHours(checkOutTime, shiftOutEndDiffer);
+
+    const empPunchData = employeeBasedPunchData?.map((e) => new Date(e.punch_time));
+
+    const inTimesArray = empPunchData?.filter((e) => (e >= checkInStartTime && e <= checkInEndTime))
+    const outTimeArray = empPunchData?.filter((e) => (e >= checkOutStartTime && e <= checkOutEndTime))
+    const inPunch = min(inTimesArray)
+    const outPunch = max(outTimeArray)
+
+    return {
+        ...shiftMergedPunchMaster,
+        punch_in: isValid(inPunch) === true ? format(inPunch, 'yyyy-MM-dd HH:mm') : null,
+        punch_out: isValid(outPunch) === true ? format(outPunch, 'yyyy-MM-dd HH:mm') : null,
+        shift_in: checkInTIme,
+        shift_out: checkOutTime,
+        shiftInStart: checkInStartTime,
+        shiftInEnd: checkInEndTime,
+        shiftOutStart: checkOutStartTime,
+        shiftOutEnd: checkOutEndTime
     }
 }

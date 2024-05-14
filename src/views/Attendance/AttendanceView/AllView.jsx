@@ -8,12 +8,12 @@ import moment from 'moment';
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { useMemo } from 'react';
+// import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { useDispatch, useSelector } from 'react-redux';
-import _ from 'underscore';
-import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+// import _ from 'underscore';
+// import { useHistory } from 'react-router-dom';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
@@ -26,7 +26,7 @@ const isOdd = (number) => number % 2 !== 0
 
 const AllView = ({ em_id }) => {
 
-    const history = useHistory();
+    // const history = useHistory();
     const dispatch = useDispatch();
 
     // dispatch the department data
@@ -34,22 +34,22 @@ const AllView = ({ em_id }) => {
         dispatch(setDepartment());
     }, [dispatch])
 
-    const toRedirectToHome = () => {
-        history.push(`/Home`)
-    }
+    // const toRedirectToHome = () => {
+    //     history.push(`/Home`)
+    // }
     const [value, setValue] = useState(moment(new Date()));
     const [dept, setDept] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
-    const [dateArray, setDateArray] = useState([])
-    const [empArray, setEmpArray] = useState([])
+    //  const [dateArray, setDateArray] = useState([])
+    // const [empArray, setEmpArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
 
     // get holiday 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
-    const holidayList = useMemo(() => holiday, [holiday]);
+    // const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+    // const holidayList = useMemo(() => holiday, [holiday]);
 
     const getData = async () => {
         if (deptSection === 0) {
@@ -69,7 +69,7 @@ const AllView = ({ em_id }) => {
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
                     to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
-                let empData = data;
+                // let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
                 // console.log(result.data)
                 const { success, data: punchMasteData } = result.data
