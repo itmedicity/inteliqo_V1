@@ -91,7 +91,7 @@ export const allLeavesConvertAnArray = (state) => {
     if (compansatoryOff?.length > 0) {
         const newCompanSatoryLeaves = compansatoryOff?.map((e) => {
             return {
-                type: 'CO',
+                type: 'COFF',
                 name: 'Compansatory Off',
                 leavetype: 11,
                 slno: e.hrm_calc_holiday,
@@ -245,6 +245,8 @@ export const getLeaveReqApprovalLevel = (state) => {
 
 export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno) => {
 
+    // console.log(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno);
+
     const deptLevelApprove = (deptApprovalLevel === 3) ? // 3 -> hod and incharge
         {
             inc_apr: 1,
@@ -301,8 +303,8 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
 
     return (masterGroupStatus === true) ?
         {
-            inc_apr: 0,
-            hod_apr: 0,
+            inc_apr: 1,
+            hod_apr: 1,
             inc_stat: 1,
             hod_stat: 1,
             inc_cmnt: 'DIRECT',

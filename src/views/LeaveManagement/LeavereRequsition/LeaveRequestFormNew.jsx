@@ -17,8 +17,11 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import CachedIcon from '@mui/icons-material/Cached';
 import Textarea from '@mui/joy/Textarea';
 import { useEffect } from 'react';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const LeaveRequestFormNew = ({ setRequestType }) => {
+
+    const [drop, setDropOpen] = useState(false)
 
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
@@ -186,6 +189,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                     warningNofity("Requested Leave Data Not Enterd Correctly ,Please Check")
                 } else {
 
+
                     //LEAVE TYPES
                     /***
                      * ESI -> 6
@@ -319,22 +323,25 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         if (reson === '') {
                             warningNofity("The explanation must consist of more than 10 characters.")
                         } else {
-
+                            setDropOpen(true)
                             if (findNotMoreThanBalaLve === 0) {
 
                                 const modifiedLveReq = {
                                     masterPostData: postDataMasterTable,
                                     detlPostSata: postDataForDetlTable
                                 }
+                                // console.log(modifiedLveReq);
                                 const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', modifiedLveReq);
                                 const { success } = submitLeaveRequet.data;
                                 if (success === 1) {
+                                    setDropOpen(false)
                                     setTable([])
                                     setReason('')
                                     setRequestType(0)
                                     succesNofity("Leave request submited Successfully")
                                     // console.log(submitLeaveRequet)
                                 } else {
+                                    setDropOpen(false)
                                     setTable([])
                                     setReason('')
                                     setRequestType(0)
@@ -342,6 +349,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 }
                             } else {
                                 warningNofity("One of the selected common leave counts is greater than the credited count.")
+                                setDropOpen(false)
                             }
 
                         }
@@ -364,6 +372,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
     return (
         <Box sx={{ mb: 0.5 }}>
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <Paper variant="outlined" sx={{ mt: 0.5 }} >
                 <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }} >
                     <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >

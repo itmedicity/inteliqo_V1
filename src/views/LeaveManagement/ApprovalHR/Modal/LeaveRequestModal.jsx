@@ -191,8 +191,9 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                     const arr = withOutesilwf?.map((val) => {
                         return {
                             ...val,
-                            lvereq_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 ? 'CL' : 'ML',
-                            duty_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 ? 'CL' : 'ML',
+                            duty_status: val.leave_typeid === 1 && val.leaveCount === 0.5 ? 0.5 : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 0.5 : 1,
+                            lvereq_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HSL' : 'ML',
+                            duty_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HSL' : 'ML',
                             leave_dates: format(new Date(val.leave_dates), 'yyyy-MM-dd ')
                         }
                     })
