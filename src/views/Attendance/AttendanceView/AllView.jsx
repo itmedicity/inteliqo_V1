@@ -11,7 +11,7 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 // import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // import _ from 'underscore';
 // import { useHistory } from 'react-router-dom';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -50,6 +50,8 @@ const AllView = ({ em_id }) => {
     // get holiday 
     // const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
     // const holidayList = useMemo(() => holiday, [holiday]);
+    const state = useSelector((state) => state?.getCommonSettings)
+    const { salary_above } = state;
 
     const getData = async () => {
         if (deptSection === 0) {
@@ -61,7 +63,7 @@ const AllView = ({ em_id }) => {
             }
             const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
             const { success, data, } = result.data
-            // console.log(result.data)
+            //console.log(result.data)
             if (success === 1 && data?.length > 0) {
                 const arr = data && data?.map(val => val.em_no)
                 const postdata = {
@@ -82,13 +84,15 @@ const AllView = ({ em_id }) => {
                     // console.log(punchMasteData)
 
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                        // console.log(el);
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
                         let emId = empArray?.find(e => e.em_no === el).emp_id;
+                        let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
 
                         // console.log(dateRange)
-                        // console.log(empArray)
+                        // console.log(grossSalary)
                         return {
                             em_no: el,
                             emName: emName,
@@ -118,12 +122,12 @@ const AllView = ({ em_id }) => {
                             totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
                             totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
                             totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
-                            totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
-                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
+                            totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
+                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,
                             totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                             totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                             totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                            totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
+                            totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.lvereq_desc === "H").length ?? 0),
                         }
                     })
                     settableArray(resultss)

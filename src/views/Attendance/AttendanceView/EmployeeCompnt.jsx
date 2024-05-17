@@ -15,6 +15,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 // import _ from 'underscore';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveDescription from './LeaveDescription';
+import { useSelector } from 'react-redux';
 
 const isOdd = (number) => number % 2 !== 0
 
@@ -31,6 +32,9 @@ const EmployeeCompnt = ({ em_no }) => {
     // get holiday 
     //const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
     // const holidayList = useMemo(() => holiday, [holiday]);
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const { salary_above } = state;
 
     const getData = async () => {
 
@@ -51,6 +55,7 @@ const EmployeeCompnt = ({ em_no }) => {
                 let emName = empArray?.find(e => e.em_no === el).em_name;
                 let emNo = empArray?.find(e => e.em_no === el).em_no;
                 let emId = empArray?.find(e => e.em_no === el).emp_id;
+                let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
 
                 // console.log(dateRange)
                 // console.log(empArray)
@@ -83,12 +88,12 @@ const EmployeeCompnt = ({ em_no }) => {
                     totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
                     totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
                     totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
-                    totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
+                    totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
                     totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
                     totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                     totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                     totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                    totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
+                    totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.lvereq_desc === "H").length ?? 0),
                 }
             })
             settableArray(resultss)
