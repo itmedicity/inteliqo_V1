@@ -1,15 +1,15 @@
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton as OpenIcon, Paper, Tooltip } from '@mui/material';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import moment from 'moment';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import RetestQRscanPage from './RetestQRscanPage';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import TestBySystem from './TestBySystem';
+import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard';
 
-const RetestTopicList = ({ count, Setcount, ResetTopics }) => {
+const RetestTopicList = ({ count, Setcount, setShow, ResetTopics }) => {
 
     const [data, setData] = useState([]);
     const [Selecteddata, SetSelectedData] = useState([]);
@@ -96,11 +96,16 @@ const RetestTopicList = ({ count, Setcount, ResetTopics }) => {
             }
         },
     ])
+
+    const toClose = useCallback(() => {
+        setShow(0)
+    }, [setShow])
+
     return (
         <Fragment>
             {openTest === true ? <TestBySystem Selecteddata={Selecteddata} />
                 :
-                <CustomLayout title="Employee training Topic View List" displayClose={true} >
+                <CustomInnerHeightDashBoard title="Employee Departmental Training Retest Topics " toClose={toClose} >
                     <Box sx={{ width: "100%", p: 1, height: screenInnerHeight - 120 }}>
                         <Paper variant='outlined' sx={{ mt: 1, display: 'flex', flexDirection: "column" }} >
                             <CommonAgGrid
@@ -118,7 +123,7 @@ const RetestTopicList = ({ count, Setcount, ResetTopics }) => {
                         {opeQRCodeModal === true ? <RetestQRscanPage count={count} Setcount={Setcount} Selecteddata={Selecteddata} opeQRCodeModal={opeQRCodeModal} setopeQRCodeModal={setopeQRCodeModal} /> : null}
 
                     </Box>
-                </CustomLayout >
+                </CustomInnerHeightDashBoard >
             }
         </Fragment>
     )

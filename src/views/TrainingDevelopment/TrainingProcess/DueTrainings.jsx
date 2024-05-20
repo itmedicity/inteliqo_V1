@@ -32,7 +32,8 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                 training_topic_name: val.training_topic_name,
                 em_name: val.em_name,
                 sect_name: val.sect_name,
-                sn: val.sn
+                sn: val.sn,
+                em_no: val.em_no
             }
             return object;
         })
@@ -54,6 +55,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
 
     const [columnDef] = useState([
         { headerName: 'SlNo', field: 'sn', filter: true, width: 100 },
+        { headerName: 'Emp ID', field: 'em_no', filter: true, width: 100 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
         { headerName: 'Department_sec', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },

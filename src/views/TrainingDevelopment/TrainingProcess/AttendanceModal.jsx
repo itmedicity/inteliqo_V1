@@ -40,7 +40,8 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
                 topic_slno: val.topic_slno,
                 training_status: val.training_status,
                 training_topic_name: val.training_topic_name,
-                attandance_status: 0
+                attandance_status: 0,
+                em_no: val.em_no
             }
             return object;
         })
@@ -68,6 +69,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
 
 
     const [columnDef] = useState([
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         {
             headerName: 'Mark Attendance',

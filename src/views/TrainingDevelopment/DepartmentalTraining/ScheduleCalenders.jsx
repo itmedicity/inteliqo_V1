@@ -1,10 +1,10 @@
 
-import { Tooltip, Typography } from '@mui/material'
 import React, { Fragment, memo, useCallback, useState } from 'react'
-import { Box } from '@mui/joy';
+import { Box, Chip, Tooltip } from '@mui/joy';
 import { endOfMonth, getYear, startOfMonth } from 'date-fns';
-import DeptTrainingRow from './DeptTrainingRow';
 import TrainingonMonthModal from './TrainingonMonthModal';
+import DeptTrainingRow from './DeptTrainingRow';
+
 
 const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, setdept, deptSec,
     setTable, setdeptSec, EmpDetails }) => {
@@ -36,14 +36,12 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
             <Box sx={{ mt: 2, height: 600, width: "100%" }}>
 
                 <Box sx={{ width: "100%", textAlign: "center", px: 10 }}>
-                    <Typography sx={{ fontSize: "large", fontWeight: "bold", p: 1 }}>
-                        TRAINING CALENDAR {yr}
-                    </Typography>
-                    <Box sx={{ border: 1, borderColor: "#D8D9DA", textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "space-between", }}>
-                        <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA" }}><Typography>Month</Typography></Box>
-                        <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA" }}> <Typography>Topics</Typography></Box>
-                        <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA" }}><Typography>Trainers</Typography></Box>
-                        <Box sx={{ width: "20%", p: 2, borderRight: 1, borderColor: "#D8D9DA" }}><Typography>Scheduled Date</Typography></Box>
+                    <h4><u> TRAINING CALENDAR {yr}</u></h4>
+                    <Box sx={{ mt: 2, border: 1, backgroundColor: "#176B87", borderColor: "#D8D9DA", textAlign: "center", display: "flex", flexDirection: "row", }}>
+                        <Box sx={{ color: "white", width: "20%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}><h6>MONTH</h6></Box>
+                        <Box sx={{ color: "white", width: "40%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}> <h6>TOPIC</h6></Box>
+                        <Box sx={{ color: "white", width: "30%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}> <h6>TRAINERS</h6></Box>
+                        <Box sx={{ color: "white", width: "30%", p: 1.5, borderRight: 1, borderColor: "#D8D9DA" }}><h6>SCHEDULE DATE</h6></Box>
                     </Box>
 
                     <Box sx={{
@@ -55,29 +53,29 @@ const ScheduleCalenders = ({ checkdata, year, setYear, count, Setcount, dept, se
                                 <Box key={index}>
                                     <Box sx={{ display: "flex", flexDirection: "row" }}>
                                         <Box sx={{
-                                            width: "20%", borderBottom: 1, borderLeft: 1, textAlign: "center",
-                                            borderColor: "#D8D9DA", display: "flex", flexDirection: "row", justifyContent: "center", gap: 4
-                                        }}>
-                                            <Tooltip title="Add Trainings">
-                                                <Typography
-                                                    onClick={(e) => OpenInsertModal(e, month)}
-                                                    sx={{
-                                                        cursor: "pointer",
-                                                        textDecoration: "underline",
-                                                        color: "#3468C0"
-                                                    }}
-                                                >
-                                                    {month.name}     {yr}
+                                            width: "16.8%", borderBottom: 1, borderLeft: 1,
+                                            borderColor: "#D8D9DA", display: "flex", flexDirection: "row", justifyContent: "center",
+                                            bgcolor: "#EEF5FF",
+                                            '&:hover': {
+                                                bgcolor: '#DFF5FF',
+                                            },
 
-                                                </Typography>
-                                            </Tooltip>
+                                        }}>
+
+                                            <Box onClick={(e) => OpenInsertModal(e, month)} sx={{ margin: "auto", cursor: "pointer", }}>
+                                                <Tooltip title="Schedule Trainings">
+                                                    <Chip
+                                                        sx={{ color: "#265073", bgcolor: '#C2D9FF', my: 1, }}>
+                                                        {month.name}     {yr}
+                                                    </Chip>
+                                                </Tooltip>
+                                            </Box>
+
                                         </Box>
-                                        <Box sx={{ width: "80%" }}>
-                                            <DeptTrainingRow
-                                                id={month.id} yr={yr}
+                                        <Box sx={{ width: "83.2%", backgroundColor: "#EEF5FF", }}>
+                                            <DeptTrainingRow id={month.id} yr={yr} start={start}
                                                 months={months} count={count} Setcount={Setcount}
-                                                checkdata={checkdata} end={end} EmpDetails={EmpDetails}
-                                            />
+                                                checkdata={checkdata} end={end} EmpDetails={EmpDetails} monthdata={monthdata} />
                                         </Box>
                                     </Box>
                                 </Box>

@@ -1,37 +1,20 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { Box, IconButton as OpenIcon, Paper } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { useDispatch, useSelector } from 'react-redux';
-import _ from 'underscore';
-import { OnlineTrainingTopicListOfEmp } from 'src/redux/actions/Training.Action';
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import VideoPlayerPage from './VideoPlayerPage';
 import PdfViewer from './PdfViewer';
 import { addHours, addMinutes, format } from 'date-fns';
+import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard';
 
-const OnlineTraining = () => {
-    const dispatch = useDispatch()
+const OnlineTraining = ({ DeptEmpOnlineTopics, count, Setcount, setShow }) => {
     const [tabledata, setTabledata] = useState([]);
-    const [count, Setcount] = useState(0);
     const [open, setOpen] = useState(false);
     const [Userdata, setUserdata] = useState([]);
     const [Pdfopen, setPdfopen] = useState(false);
 
-    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id } = employeeProfileDetl;
-
     useEffect(() => {
-        dispatch(OnlineTrainingTopicListOfEmp(em_id))
-        Setcount(0);
-    }, [dispatch, em_id, count])
-
-    //login employee topics
-    const EmpOnlineTopics = useSelector((state) => state?.gettrainingData?.OnlineTraining?.OnlineTrainingList, _.isEqual)
-
-    useEffect(() => {
-        const displayData = EmpOnlineTopics?.map((val) => {
+        const displayData = DeptEmpOnlineTopics?.map((val) => {
             const check_date = addMinutes(new Date(val.exact_date), val.video_time)
             const vdotimeformat = format(new Date(addMinutes(new Date(check_date), 5)), "yyyy-MM-dd hh:mm:ss")
             const getpdf = addHours(new Date(val.exact_date), val.pdf_time)
@@ -64,7 +47,7 @@ const OnlineTraining = () => {
             return object;
         })
         setTabledata(displayData)
-    }, [EmpOnlineTopics, setTabledata])
+    }, [DeptEmpOnlineTopics, setTabledata])
 
     const handleClickOpen = useCallback((params) => {
         const { upload_status } = params.data
@@ -98,8 +81,12 @@ const OnlineTraining = () => {
         },
     ])
 
+    const toClose = useCallback(() => {
+        setShow(0)
+    }, [setShow])
+
     return (
-        <CustomLayout title="Online Training" displayClose={true} >
+        <CustomInnerHeightDashBoard title="Departmental Online Training" toClose={toClose} >
             {open === true ?
                 <VideoPlayerPage count={count} Setcount={Setcount} open={open} setOpen={setOpen} Userdata={Userdata} reset={reset} />
                 :
@@ -119,7 +106,7 @@ const OnlineTraining = () => {
                 </Box>
             }
             {Pdfopen === true ? <PdfViewer Userdata={Userdata} setOpen={setOpen} open={open} reset={reset} /> : null}
-        </CustomLayout >
+        </CustomInnerHeightDashBoard >
     )
 }
 
