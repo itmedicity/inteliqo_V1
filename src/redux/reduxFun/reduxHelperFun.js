@@ -789,6 +789,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
     const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
     const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
 
+    console.log(sectionWiseMisspunchRequest);
+
     if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
         const newList = sectionWiseLeaveRequest?.map((val) => {
             return {

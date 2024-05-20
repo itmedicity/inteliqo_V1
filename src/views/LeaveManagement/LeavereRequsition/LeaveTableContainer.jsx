@@ -57,12 +57,14 @@ const LeaveTableContainer = ({ count, setCount }) => {
             fetchData(em_id)
 
         } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
+            console.log("enter");
             const fetchData = async (em_id) => {
                 const result = await getDepartmentSectionBasedHod(em_id);
                 const section = await result?.map((e) => e.dept_section)
                 const flag = section?.find((e) => e === em_dept_section) === undefined ? true : false
 
                 if (flag === true) {
+                    console.log("df");
                     const sectArray = [...section, em_dept_section]
                     const postData = {
                         sectIds: sectArray
@@ -72,6 +74,7 @@ const LeaveTableContainer = ({ count, setCount }) => {
                     dispatch(getSectionMisspunchRequest(postData))
                     setCount(0)
                 } else {
+                    console.log("zxcvzdf");
                     const postData = {
                         sectIds: section
                     }
