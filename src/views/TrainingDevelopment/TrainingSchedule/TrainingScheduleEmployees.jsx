@@ -112,7 +112,7 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
 
     return (
         <CustomDashboardPage title="Training Schedule_New Joinees" displayClose={true} setClose={setShow}  >
-            <Box sx={{ width: "100%", p: 1 }}>
+            <Paper variant='outlined' sx={{ width: "100%", p: 1 }}>
                 <Box sx={{ p: 1, display: "flex", flexDirection: "row", gap: 1 }}>
                     <LocalizationProvider dateAdapter={AdapterMoment} >
                         <DatePicker
@@ -157,7 +157,7 @@ const TrainingScheduleEmployees = ({ setShow, count, Setcount }) => {
                     />
                 </Paper>
                 {modalflag === 1 ? <EditscheduleModal count={count} Setcount={Setcount} scheduledata={scheduledata} open={open} setOpen={setOpen} modalflag={modalflag} setmodalFlag={setmodalFlag} /> : null}
-            </Box>
+            </Paper>
         </CustomDashboardPage>
     )
 }

@@ -4,11 +4,14 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
-import { endOfMonth } from 'date-fns';
+import { startOfMonth } from 'date-fns';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
 
 
 const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
@@ -64,12 +67,7 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
         Setopen(false)
     }, [Setopen])
 
-    const end = endOfMonth(new Date(Reschedule))
-
-    const UpdateDate = useCallback((e) => {
-        const d = moment(new Date(e.target.value)).format("YYYY-MM-DD")
-        setReschedule(d)
-    }, [setReschedule])
+    const start = startOfMonth(new Date(datefmt))
 
     const postData = useMemo(() => {
         return {
@@ -146,18 +144,25 @@ const RetestScheduleModal = ({ count, Setcount, open, Setopen, getData }) => {
                     <Box sx={{ display: "flex", flexDirection: "row", mt: 2, gap: 5 }}>
                         <Box>Reschedule Date</Box>
                         <Box>
-                            <Input
-                                type="date"
-                                fullWidth
-                                slotProps={{
-                                    input: {
-                                        max: moment(new Date(end)).format('YYYY-MM-DD'),
-                                    },
-                                }}
-                                value={Reschedule}
-                                name="scheduleDate"
-                                onChange={(e) => UpdateDate(e)}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                < DatePicker
+                                    views={['day']}
+                                    minDate={moment(new Date(start)).format('YYYY-MM-DD')}
+                                    value={Reschedule}
+                                    size="small"
+                                    onChange={(e) => {
+                                        setReschedule(moment(e).format("YYYY-MM-DD"));
+                                    }}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </Box>
                     </Box>
                 </Box>

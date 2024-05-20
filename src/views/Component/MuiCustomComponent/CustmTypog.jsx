@@ -5,6 +5,7 @@ import { Paper } from '@mui/material';
 
 const CustmTypog = ({ title }) => {
     return (
+
         <Paper square  >
             <CssVarsProvider>
                 <Typography

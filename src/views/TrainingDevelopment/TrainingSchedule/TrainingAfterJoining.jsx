@@ -55,7 +55,7 @@ const TrainingAfterJoining = () => {
 
     return (
 
-        <Paper variant="outlined" sx={{ height: screenInnerHeight - 85 }}>
+        <Box variant="outlined" sx={{ height: screenInnerHeight - 85 }}>
             <Box sx={{ width: "100%", p: 1 }}>
                 {show === 1 ? <ViewJoinersTable show={show} setShow={setShow} count={count} Setcount={Setcount} /> :
                     show === 2 ? <TrainingScheduleEmployees show={show} setShow={setShow} count={count} Setcount={Setcount} /> :
@@ -157,7 +157,7 @@ const TrainingAfterJoining = () => {
                 }
             </Box>
 
-        </Paper >
+        </Box >
 
 
     )

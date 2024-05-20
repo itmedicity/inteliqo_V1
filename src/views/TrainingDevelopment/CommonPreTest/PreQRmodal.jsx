@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback } from 'react'
+import React, { Fragment, memo, useCallback, useMemo } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
@@ -6,14 +6,15 @@ import { QR_URL } from '../../Constant/Static'
 
 const PreQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { topic_slno
-    } = QRdata[0]
+    const data = useMemo(() => QRdata, [QRdata])
+    const { topic_slno } = data
 
     const handleClose = useCallback(() => {
         setQRmodal(false);
     }, [setQRmodal]);
 
     const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}`
+
     return (
         <Fragment>
             <Modal

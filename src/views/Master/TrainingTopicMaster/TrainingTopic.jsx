@@ -158,7 +158,6 @@ const TrainingTopic = () => {
         const getData = async () => {
             const result = await axioslogin.get('TrainingTopic/select')
             const { success, data } = result.data;
-            console.log(data);
             if (success === 2) {
                 const viewData = data?.map((val) => {
                     const obj = {
@@ -232,7 +231,7 @@ const TrainingTopic = () => {
         SetVideos(video_link);
         SetVideo_time(video_time);
         setUploads([])
-        SetTrainerNames([trainers_name])
+        SetTrainerNames(trainers_name)
 
         //View uploads 
         const postData = {
@@ -605,7 +604,7 @@ const TrainingTopic = () => {
                                         onChange={(e) => setPretest_status(e.target.checked)}
                                     />
                                 }
-                                label="Pree-Test"
+                                label="Pre-Test"
                             />
                         </Box>
                         <Box>

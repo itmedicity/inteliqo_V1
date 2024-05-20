@@ -35,7 +35,6 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                 const fileC = fileUrls?.find((val) => val.id === "C" ? val.file : null)
                 const fileD = fileUrls?.find((val) => val.id === "D" ? val.file : null)
 
-
                 const frmdata = {
                     Questn: Questn,
                     optionA: fileA.file,
@@ -104,6 +103,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
 
     }, [SetclrFlagA, SetclrFlagB, SetclrFlagC, SetclrFlagD, setincmentCount, incmentCount, setDisright])
 
+
     //Option C
     const HandleOptionC = useCallback(() => {
         if (incmentCount === 0) {
@@ -169,8 +169,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionA}
                     >
-                        {/* <Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>1</Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>a.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
@@ -183,7 +182,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                     :
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionA}>
 
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>1.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>a.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionA}
@@ -199,8 +198,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionB}
                     >
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>b.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
@@ -210,8 +208,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", flexWrap: "wrap" }} onClick={HandleOptionB}>
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>2</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>2.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>b.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionB}
@@ -226,8 +223,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, cursor: "pointer", backgroundColor: "#F1EAFF", flexWrap: "wrap" }}
                         onClick={HandleOptionC}
                     >
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>c.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
@@ -237,8 +233,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionC}>
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>3</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>3.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>c.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionC}
@@ -253,8 +248,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                     <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer", backgroundColor: "#F1EAFF" }}
                         onClick={HandleOptionD}
                     >
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>d.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}
@@ -264,8 +258,7 @@ const FileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clr
                             /></Box>
                     </Paper>
                     : <Paper sx={{ mt: 1, p: 1.4, display: "flex", flexDirection: "row", gap: 3, flexWrap: "wrap", cursor: "pointer" }} onClick={HandleOptionD}>
-                        {/* <Box sx={{ width: "2%" }}><Box sx={{ mt: 2, borderRadius: 5, textAlign: "center", border: 2, borderColor: "#674188" }}>4</Box></Box> */}
-                        <Box sx={{ fontWeight: "bold", mt: 2 }}>4.</Box>
+                        <Box sx={{ fontWeight: "bold", mt: 2 }}>d.</Box>
                         <Box sx={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                             <img
                                 src={optionD}

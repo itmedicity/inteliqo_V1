@@ -1,6 +1,6 @@
 
 import { Paper } from '@mui/material'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ToastContainer } from 'react-toastify';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -11,6 +11,8 @@ import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
 
 const TestBySystem = ({ Selecteddata }) => {
+
+    const Selectdata = useMemo(() => Selecteddata, [Selecteddata])
 
     const history = useHistory()
 
@@ -39,9 +41,9 @@ const TestBySystem = ({ Selecteddata }) => {
 
 
     useEffect(() => {
-        if (Object.keys(Selecteddata).length !== 0) {
+        if (Object.keys(Selectdata).length !== 0) {
             const { sn, attendance_status, candidate_em_no, candidate_dept, candidate_dept_sec, em_name, retest_date, date, retest_mark, retest_quest_count, retest_sl_no, retest_status, retest_topic, sect_name, topic_slno, training_topic_name, candid_id, dept_id,
-                dept_name, em_no, premark, postmark, pretest_status, posttest_status, online_mode, training_status, desg_name, desg_slno } = Selecteddata[0];
+                dept_name, em_no, premark, postmark, pretest_status, posttest_status, online_mode, training_status, desg_name, desg_slno } = Selectdata;
             const obj = {
                 sn: sn,
                 em_no: em_no,
@@ -75,7 +77,7 @@ const TestBySystem = ({ Selecteddata }) => {
             }
             setViewData(obj);
         }
-    }, [Selecteddata, setViewData])
+    }, [Selectdata, setViewData])
 
     const ClickToTest = useCallback(() => {
         if (training_status === 1 && retest_status === 0) {
@@ -198,7 +200,7 @@ const TestBySystem = ({ Selecteddata }) => {
 
                                 <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
                                     <Button sx={{ backgroundColor: "blue", color: "white", width: "50%" }} onClick={ClickToTest}>
-                                        START
+                                        START RE-TEST
                                     </Button>
                                 </Box>
                             </Box>

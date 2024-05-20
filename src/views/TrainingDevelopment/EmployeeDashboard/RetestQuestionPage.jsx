@@ -212,7 +212,7 @@ const RetestQuestionPage = () => {
 
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
 
-                            <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount} retest
+                            <Box sx={{ color: "#B4B4B3", fontSize: "large" }}>{order}/{questCount}
                                 <Box sx={{ display: "flex", height: 20, flexDirection: "row", fontWeight: "bold" }}>
                                     <Box>{em_name}</Box>
                                 </Box>

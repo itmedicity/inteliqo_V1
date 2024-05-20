@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -17,14 +17,17 @@ const TopicAndQRScanList = () => {
     const [QRdata, setQRdata] = useState([]);
     const [QRmodal, setQRmodal] = useState(false);
 
+    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { em_department } = employeeProfileDetl;
+
     useEffect(() => {
-        dispatch(CommonTrainingPreTopics())
+        dispatch(CommonTrainingPreTopics(em_department))
         Setcount(0);
-    }, [dispatch, count])
+    }, [dispatch, em_department, count])
 
     //login employee topics
     const PreTopics = useSelector((state) => state?.gettrainingData?.CommonPreTopics?.CommonPreTopicsList, _.isEqual)
-
     useEffect(() => {
         const displayData = PreTopics?.map((val) => {
             const object = {
@@ -41,7 +44,7 @@ const TopicAndQRScanList = () => {
 
 
     const ClickToScanQR = useCallback((params) => {
-        const data = params.api.getSelectedRows()
+        const data = params.data
         setQRdata(data);
         setQRmodal(true)
     }, [setQRdata, setQRmodal])

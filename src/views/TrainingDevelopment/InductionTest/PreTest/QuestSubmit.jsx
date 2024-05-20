@@ -1,23 +1,23 @@
-import { Modal, ModalClose, ModalDialog } from '@mui/joy';
+import { Modal, ModalDialog } from '@mui/joy';
 import { Box, Paper, Typography } from '@mui/material';
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { useHistory } from 'react-router'
+import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const ShowModal = ({ data, open, setopen, setOpen }) => {
+const QuestSubmit = ({ data, id, emId, open, tslno, setopen }) => {
 
     const history = useHistory()
-    const handleClose = useCallback(() => {
-        setopen(false);
-    }, [setopen]);
 
+    const [offline, Setoffline] = useState(0);
     const [datas, setDatas] = useState({
         online_status: false,
         offline_status: false,
-        both_status: false
+        both_status: false,
     });
-
+    const topic_slno = tslno;
     const { online_status, offline_status, both_status } = datas;
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
@@ -41,40 +41,53 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
         setDatas({ ...datas, [e.target.name]: value })
     }, [datas])
 
-    const BtnClose = useCallback(() => {
+    const BtnClose = useCallback(async () => {
+        const patchData = {
+            online_mode: online_status === true ? 1 : 0,
+            offline_mode: offline_status === true ? 1 : 0,
+            slno: parseInt(id)
+        }
         if (online_status === true) {
-            history.push('/Home/OnlineTraining')
-            setopen(false);
-            setOpen(false);
+            const result = await axioslogin.patch('/InductionTest/update_online', patchData)
+            const { success } = result.data
+            if (success === 1) {
+                history.push(`/InductOnlineTraining/${id}/${emId}`)
+                setopen(false);
+            }
+            else {
+                warningNofity("Not updated")
+
+            }
         }
         else if (offline_status === true) {
-            setopen(false);
-            setOpen(false);
+            const result = await axioslogin.patch('/InductionTest/update_offline', patchData)
+            const { success } = result.data
+            if (success === 1) {
+                Setoffline(1)
+            }
+            else {
+                warningNofity("Not updated")
+                Setoffline(0)
+            }
+        }
+    }, [online_status, Setoffline, offline_status, history, id, emId, setopen]);
+
+    useEffect(() => {
+        if (offline_status === true && offline === 1) {
+            history.push(`/InductLogInpage/${topic_slno}/${id}`)
         }
 
-    }, [online_status, history, offline_status, setopen, setOpen]);
-
-
+    }, [history, offline_status, offline, id, topic_slno])
     return (
         <Fragment>
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
                 open={open}
-                onClose={handleClose}
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
                 <ModalDialog size="lg">
-                    <ModalClose
-                        variant="outlined"
-                        sx={{
-                            top: 'calc(-1/4 * var(--IconButton-size))',
-                            right: 'calc(-1/4 * var(--IconButton-size))',
-                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                            borderRadius: '50%',
-                            bgcolor: 'background.body',
-                        }}
-                    />
+
                     <Paper elevation={0} sx={{ size: 'lg', fontWeight: "bold", width: "100%", textAlign: "center", p: 1 }}>
                         <Typography sx={{ size: 'lg', color: "#186F65", fontWeight: "bold" }}>Good attempt!</Typography>
                         {online_status === true ?
@@ -108,15 +121,25 @@ const ShowModal = ({ data, open, setopen, setOpen }) => {
                                 </Box>
                             </Box>
                             : null}
-                        <Box sx={{ mt: 1 }}>
-                            <Button onClick={BtnClose}>
-                                OK
-                            </Button>
-                        </Box>
+                        {
+                            offline === 1 ?
+                                <Box sx={{ mt: 1 }}>
+                                    <button style={{ backgroundColor: "blue", color: "white", p: 1 }} >OK</button>
+                                </Box>
+
+                                :
+                                <Box sx={{ mt: 1 }}>
+                                    <Button sx={{ backgroundColor: "blue", color: "white", p: 1 }} onClick={BtnClose}>
+                                        OK
+                                    </Button>
+                                </Box>
+                        }
                     </Paper>
                 </ModalDialog>
             </Modal>
         </Fragment >
     );
 }
-export default memo(ShowModal)
+export default memo(QuestSubmit)
+
+

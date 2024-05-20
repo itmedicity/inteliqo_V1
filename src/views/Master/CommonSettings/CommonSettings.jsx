@@ -172,7 +172,6 @@ const CommonSettings = () => {
     const submitFormData = async (e) => {
         e.preventDefault();
         if (value === 0) {
-            console.log(postData);
             const result = await axioslogin.post('/commonsettings', postData)
             const { success, message } = result.data
             if (success === 2) {
