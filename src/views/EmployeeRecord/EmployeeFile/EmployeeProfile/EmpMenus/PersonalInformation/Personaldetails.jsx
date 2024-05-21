@@ -4,7 +4,6 @@ import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } 
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import ReligionSelectRedux from 'src/views/MuiComponents/ReligionSelectRedux';
-import BankSelectredux from 'src/views/MuiComponents/BankSelectredux';
 import BloodgrpSelectRedux from 'src/views/MuiComponents/BloodgrpSelectRedux';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useParams } from 'react-router-dom';
@@ -20,6 +19,7 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ToastContainer } from 'react-toastify';
 import SaveIcon from '@mui/icons-material/Save';
+import BankSelection from 'src/views/Master/BankMaster/BankSelection';
 
 const Personaldetails = () => {
 
@@ -682,7 +682,8 @@ const Personaldetails = () => {
                                 </FormControl>
                             </Box>
                             <Box sx={{ flex: 1, pl: 0.3 }}>
-                                <BankSelectredux value={bank} setValue={setBank} />
+                                <BankSelection value={bank} setValue={setBank} />
+                                {/* <BankSelectredux value={bank} setValue={setBank} /> */}
                             </Box>
                             <Tooltip title="Account No" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1, pl: 0.3 }}>

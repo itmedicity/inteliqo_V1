@@ -279,7 +279,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         </Box>
                     </Box>
                     <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…"
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
                             variant="outlined" onChange={(e) => setreason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>

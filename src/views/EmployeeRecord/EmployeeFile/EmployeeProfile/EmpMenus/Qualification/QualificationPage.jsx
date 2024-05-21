@@ -435,6 +435,7 @@ const QualificationPage = () => {
     }, [count])
 
 
+
     return (
         <Fragment>
             <Box sx={{
@@ -538,7 +539,7 @@ const QualificationPage = () => {
                                     name="year"
                                     value={year}
                                     minDate={new Date('1960')}
-                                    maxDate={new Date('2022')}
+                                    maxDate={new Date()}
                                     onChange={(e) => { updateYear(e) }}
                                     renderInput={(params) => (
                                         <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />

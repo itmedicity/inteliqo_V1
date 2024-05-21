@@ -548,7 +548,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                         </Chip>
                     </Divider>
                     <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
                                 Leave Request Approve
