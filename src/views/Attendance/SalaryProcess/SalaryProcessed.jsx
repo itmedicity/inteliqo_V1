@@ -22,26 +22,34 @@ import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout'
 import { Paper } from '@mui/material'
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
+import { setDept } from 'src/redux/actions/Dept.Action'
 
 const SalaryProcessed = () => {
 
     const dispatch = useDispatch();
 
     const [value, setValue] = useState(new Date());
-    const [dept, setDept] = useState(0)
+    const [dept, setDeptartment] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
     const [all, setAll] = useState(false)
     const [mainArray, setArray] = useState([])
 
     useEffect(() => {
         dispatch(setDepartment());
+        dispatch(setDeptWiseSection());
         dispatch(setCommonSetting());
+        dispatch(setDept())
     }, [dispatch])
 
 
     //Common settings
     const commonState = useSelector((state) => state.getCommonSettings);
     const commonSettings = useMemo(() => commonState, [commonState]);
+    const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)
+    const departments = useSelector((state) => state?.getdept?.departmentlist)
+    const allDept = useMemo(() => departments, [departments])
+    const allSection = useMemo(() => deptSect, [deptSect])
 
 
     const onClickProcess = useCallback(async () => {
@@ -54,44 +62,114 @@ const SalaryProcessed = () => {
 
         console.log(all)
         if (all === true) {
-            console.log("dgf");
-            const getPunchMasterDta = await axioslogin.post("/payrollprocess/getPunchMasterSalaryAllEmployee", postDate);
-            const { success, data: punchMasteData } = getPunchMasterDta.data
-
-            console.log(punchMasteData);
-
-            const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
-                const empArray = punchMasteData?.filter(e => e.em_no === el)
-                let emName = empArray?.find(e => e.em_no === el).em_name;
-                let emNo = empArray?.find(e => e.em_no === el).em_no;
-                let emId = empArray?.find(e => e.em_no === el).emp_id;
-                let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
-
-                // console.log(dateRange)
-                // console.log(empArray)
-                return {
-                    em_no: el,
-                    emName: emName,
-                    totalDays: getDaysInMonth(new Date(value)),
-                    totalP: empArray?.filter(el => el.duty_desc === "P").length ?? 0,
-                    totalWOFF: empArray?.filter(el => el.duty_desc === "WOFF").length ?? 0,
-                    totalNOFF: empArray?.filter(el => el.duty_desc === "NOFF").length ?? 0,
-                    totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
-                    totalHD: empArray?.filter(el => el.duty_desc === "HD").length ?? 0,
-                    totalA: empArray?.filter(el => el.duty_desc === "A").length ?? 0,
-                    totalLV: empArray?.filter(el => el.duty_desc === "LV").length ?? 0,
-                    totalHDL: (empArray?.filter(el => el.duty_desc === "HDL").length ?? 0) * 1,
-                    totaESI: empArray?.filter(el => el.duty_desc === "ESI").length ?? 0,
-                    totaLWP: empArray?.filter(el => el.duty_desc === "LWP").length ?? 0,
-                    totaH: empArray?.filter(el => el.duty_desc === "H").length ?? 0,
-                    // totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.lvereq_desc === "H").length ?? 0),
+            const deptArray = allDept?.map(val => val.dept_id)
+            const sectArray = allSection?.map(val => val.sect_id)
+            const getEmpData = {
+                em_department: deptArray,
+                em_dept_section: sectArray,
+            }
+            const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1) {
+                const arr = employeeData && employeeData.map((val) => val.em_id)
+                const postdata = {
+                    emp_id: arr,
+                    from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
-            })
+                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+                const { success, data } = result.data
+                if (success === 1) {
+                    const finalDataArry = employeeData?.map((val) => {
+                        const empwise = data.filter((value) => value.emp_id === val.em_id)
 
-            console.log(resultss);
+                        //No. of days in a month
+                        const totalDays = getDaysInMonth(new Date(value))
+                        //No of holidays in a month
+                        const totalHoliday = (empwise?.filter(val => val.holiday_status === 1)).length
+                        //No of LOP days
+                        const totalLop = (empwise?.filter(val => val.duty_desc === 'A' || val.duty_desc === 'ESI' || val.duty_desc === 'LWP')).length
+                        //No of leave count
+                        const totalLeaves = (empwise?.filter(val => val.duty_desc === 'SL' || val.duty_desc === 'CL' || val.duty_desc === 'COFF' || val.duty_desc === 'EL')).length
+                        //no of halfday leave count
+                        const totalHalfdayLeaves = (empwise?.filter(val => val.duty_desc === 'HCL')).length
+                        //no of halfdays
+                        const totalHD = (empwise?.filter(val => val.duty_desc === 'HD')).length
+                        //no of late coming
+                        const totalLC = (empwise?.filter(val => val.duty_desc === 'LC')).length
+
+                        const npsamount = val.nps === 1 ? val.npsamount : 0
+                        const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
+
+                        //one day salary
+                        const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
+
+                        const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLop + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLop + (totalHD * 0.5)
+
+                        const workday =
+                            (empwise?.filter(val => val.duty_desc === 'HD' ||
+                                val.duty_desc === 'P' || val.duty_desc === 'NOFF' ||
+                                val.duty_desc === 'CL' || val.duty_desc === 'HCL' ||
+                                val.duty_desc === 'EL' || val.duty_desc === 'SL' ||
+                                val.duty_desc === 'COFF' || val.duty_desc === 'HSL' ||
+                                val.duty_desc === 'OHP' || val.duty_desc === 'ODP' ||
+                                val.duty_desc === 'MPP' || val.duty_desc === 'LC' ||
+                                val.duty_desc === 'WOFF' || val.duty_desc === 'HP')).length
+
+                        const holidayworked = (empwise?.filter(val => val.duty_desc === 'HP')).length
+
+                        //holiday salary
+                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * holidayworked : 0
+
+                        const holidaypresent = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
+
+
+                        const totalPayday = workday === 0 ? 0 : (totalDays + holidaypresent) - totallopCount
+
+
+
+                        const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+
+                        const totalSalary = paydaySalay + holidaysalary - npsamount - lwfamount
+
+
+
+                        return {
+                            em_no: val.em_no,
+                            em_name: val.em_name,
+                            branch_name: val.branch_name,
+                            dept_name: val.dept_name,
+                            sect_name: val.sect_name,
+                            ecat_name: val.ecat_name,
+                            inst_emp_type: val.inst_emp_type,
+                            empSalary: val.gross_salary,
+                            em_account_no: val.em_account_no,
+                            totalDays: getDaysInMonth(new Date(value)),
+                            totalLeaves: totalLeaves,
+                            totalHoliday: totalHoliday,
+                            totallopCount: totallopCount,
+                            holidayworked: holidayworked,
+                            totalHD: totalHD,
+                            totalLC: totalLC,
+                            paydays: totalPayday,
+                            lopAmount: Math.round((onedaySalary * totallopCount) / 10) * 10,
+                            npsamount: npsamount,
+                            lwfamount: lwfamount,
+                            holidaySalary: Math.round(holidaysalary / 10) * 10,
+                            totalSalary: Math.round(totalSalary / 10) * 10,
+                        }
+                    })
+                    console.log(finalDataArry);
+                    setArray(finalDataArry)
+                }
+                else {
+                    warningNofity("No Punch Details")
+                }
+            } else {
+                warningNofity("Error While Fetching data!")
+            }
 
         } else {
-            console.log("xc");
             const getEmpData = {
                 em_department: dept,
                 em_dept_section: deptSection,
@@ -135,15 +213,27 @@ const SalaryProcessed = () => {
 
                         const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLop + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLop + (totalHD * 0.5)
 
-                        const workday = (empwise?.filter(val => val.duty_desc === 'HD' || val.duty_desc === 'P' || val.duty_desc === 'NOFF' || val.duty_desc === 'LV' || val.duty_desc === 'HDL')).length
+                        const workday =
+                            (empwise?.filter(val => val.duty_desc === 'HD' ||
+                                val.duty_desc === 'P' || val.duty_desc === 'NOFF' ||
+                                val.duty_desc === 'CL' || val.duty_desc === 'HCL' ||
+                                val.duty_desc === 'EL' || val.duty_desc === 'SL' ||
+                                val.duty_desc === 'COFF' || val.duty_desc === 'HSL' ||
+                                val.duty_desc === 'OHP' || val.duty_desc === 'ODP' ||
+                                val.duty_desc === 'MPP' || val.duty_desc === 'LC' ||
+                                val.duty_desc === 'WOFF' || val.duty_desc === 'HP')).length
 
                         const holidayworked = (empwise?.filter(val => val.duty_desc === 'HP')).length
 
                         //holiday salary
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * holidayworked : 0
 
+                        const holidaypresent = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
-                        const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
+
+                        const totalPayday = workday === 0 ? 0 : (totalDays + holidaypresent) - totallopCount
+
+
 
                         const paydaySalay = (val.gross_salary / totalDays) * totalPayday
 
@@ -164,7 +254,16 @@ const SalaryProcessed = () => {
                             totalDays: getDaysInMonth(new Date(value)),
                             totalLeaves: totalLeaves,
                             totalHoliday: totalHoliday,
-                            totallopCount: totallopCount
+                            totallopCount: totallopCount,
+                            holidayworked: holidayworked,
+                            totalHD: totalHD,
+                            totalLC: totalLC,
+                            paydays: totalPayday,
+                            lopAmount: Math.round((onedaySalary * totallopCount) / 10) * 10,
+                            npsamount: npsamount,
+                            lwfamount: lwfamount,
+                            holidaySalary: Math.round(holidaysalary / 10) * 10,
+                            totalSalary: Math.round(totalSalary / 10) * 10,
                         }
                     })
                     console.log(finalDataArry);
@@ -222,13 +321,14 @@ const SalaryProcessed = () => {
         { headerName: 'Total Days ', field: 'totalDays' },
         { headerName: 'Leave Count', field: 'totalLeaves' },
         { headerName: 'Holiday Count ', field: 'totalHoliday' },
-        { headerName: 'LOP Days ', field: 'lopDays' },
-        { headerName: 'No Of Half Day LOP(HD)', field: 'nofhfd', minWidth: 250 },
-        { headerName: 'No Of LC Count', field: 'LCcount' },
+        { headerName: 'Holiday Worked ', field: 'holidayworked' },
+        // { headerName: 'LOP Days ', field: 'lopDays' },
+        { headerName: 'No Of Half Day LOP(HD)', field: 'totalHD', minWidth: 250 },
+        { headerName: 'No Of LC Count', field: 'totalLC' },
         { headerName: 'Total LOP', field: 'totallopCount' },
         { headerName: 'Total Pay Day', field: 'paydays' },
         { headerName: 'LOP Amount ', field: 'lopAmount' },
-        { headerName: 'Holiday Worked ', field: 'holidayworked' },
+
         { headerName: 'Holiday Amount ', field: 'holidaySalary' },
         { headerName: 'NPS Amount', field: 'npsamount' },
         { headerName: 'LWF Amount', field: 'lwfamount' },
@@ -264,7 +364,7 @@ const SalaryProcessed = () => {
                         </LocalizationProvider>
                     </Box>
                     <Box sx={{ flex: 1, px: 0.3, }} >
-                        <DepartmentDropRedx getDept={setDept} />
+                        <DepartmentDropRedx getDept={setDeptartment} />
                     </Box>
                     <Box sx={{ flex: 1, px: 0.3, }} >
                         <DepartmentSectionRedx getSection={setDeptSection} />
