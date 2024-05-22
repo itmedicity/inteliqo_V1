@@ -78,6 +78,7 @@ const LeaveTableContainer = ({ count, setCount }) => {
                 const flag = section?.find((e) => e === em_dept_section) === undefined ? true : false
 
                 if (flag === true) {
+                    console.log("vbjv");
                     const sectArray = [...section, em_dept_section]
                     const postData = {
                         sectIds: sectArray
@@ -94,6 +95,7 @@ const LeaveTableContainer = ({ count, setCount }) => {
                         setCount(0)
                     }
                 } else {
+                    console.log("hb");
                     const postData = {
                         sectIds: section
                     }
