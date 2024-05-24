@@ -7,7 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 
-const AnnualMandatory = ({ selectedRowData, setFiles, setflag }) => {
+const AnnualMandatory = ({ selectedRowData, setFiles, setShowGeneral, Setitem, setid }) => {
   const [open3, setOpen3] = useState(false);
   const main = [
     { id: 25, name: 'Training Record' },
@@ -17,8 +17,10 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setflag }) => {
 
   ];
   const handleToggleExpand = useCallback(async (e, item) => {
-    setflag(3)
-
+    setShowGeneral(2)
+    Setitem(item?.name)
+    setFiles([])
+    setid(item.id)
     if (selectedRowData?.em_id > 0) {
       const postData = {
         checklistid: item?.id,
@@ -43,7 +45,7 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setflag }) => {
     } else {
       warningNofity("no Employee Found")
     }
-  }, [setflag, selectedRowData, setFiles]);
+  }, [setShowGeneral, selectedRowData, setFiles, Setitem, setid]);
   return (
     <ListItem
       nested
@@ -65,6 +67,7 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setflag }) => {
         <Typography
           level="inherit"
           sx={{
+            pl: 2,
             fontWeight: open3 ? 'bold' : undefined,
             color: open3 ? 'text.primary' : 'inherit',
           }}
@@ -76,7 +79,10 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setflag }) => {
         <List sx={{ '--List-item-paddingY': '8px' }}>
           {main.map((item, index) => (
             <ListItem key={item.id}>
-              <ListItemButton onClick={(e) => handleToggleExpand(e, item)}>{`${item.id}.${item.name}`}</ListItemButton>
+              <ListItemButton onClick={(e) => handleToggleExpand(e, item)} sx={{ p: .5, m: 0, border: 'none' }}>
+                <Typography level="body-xs" sx={{}}> {`${item.id}. ${item.name}`}</Typography>
+
+              </ListItemButton>
             </ListItem>
           ))}
         </List>

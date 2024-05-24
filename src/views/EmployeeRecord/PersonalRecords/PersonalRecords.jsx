@@ -15,7 +15,6 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const Document = lazy(() => import('./PersonalDocument/Document'))
 const Viewpage = lazy(() => import('./PersonalDocument/EmployeeFileCheck/Viewpage'))
-const Viewpageall = lazy(() => import('./PersonalDocument/Viewpageall'))
 
 const PersonalRecords = () => {
   const [flag, setflag] = useState(0)
@@ -27,6 +26,12 @@ const PersonalRecords = () => {
   const dispatch = useDispatch();
   const [selectedRowData, setSelectedRowData] = useState({})
   const [tableData, setTableData] = useState([])
+  const [Empdata, setEmpdata] = useState([])
+  const [checklistid, setid] = useState(0)
+  const [itemname, Setitem] = useState("")
+  const [showGeneral, setShowGeneral] = useState(0)
+
+
 
   // dispatch the department data
   useEffect(() => {
@@ -124,67 +129,69 @@ const PersonalRecords = () => {
   return (
     <>
       {
-        flag === 1 ? (<Document selectedRowData={selectedRowData} setflag={setflag} setFiles={setFiles} Files={Files} setSrc={setSrc} src={src} />) :
+        flag === 1 ? (<Document selectedRowData={selectedRowData} setflag={setflag} setFiles={setFiles} Files={Files} checklistid={checklistid} Empdata={Empdata} itemname={itemname}
+          setSrc={setSrc} src={src} setEmpdata={setEmpdata} setid={setid} Setitem={Setitem} showGeneral={showGeneral} setShowGeneral={setShowGeneral}
+        />) :
           flag === 2 ? (<Viewpage src={src} setflag={setflag} />) :
-            flag === 3 ? (<Viewpageall Files={Files} setflag={setflag} />) :
-              <CustomLayout title="Personal Records" displayClose={true}>
+            // flag === 3 ? (<Viewpageall Files={Files} setflag={setflag} checklistid={checklistid} Empdata={Empdata} itemname={itemname} />) :
+            <CustomLayout title="Personal Records" displayClose={true}>
+              <Box
+                sx={{ display: 'flex', flex: 1, px: 0.6, mt: 0.3, flexDirection: 'column', width: '100%', }}
+              >
                 <Box
-                  sx={{ display: 'flex', flex: 1, px: 0.6, mt: 0.3, flexDirection: 'column', width: '100%', }}
+                  sx={{
+                    display: 'flex',
+                    flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3 },
+                    flexDirection: 'row',
+                    width: '100%',
+                  }}
                 >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3 },
-                      flexDirection: 'row',
-                      width: '100%',
-                    }}
-                  >
-                    <Box sx={{ flex: 1, mt: 0.8, px: 0.2 }}>
-                      <DepartmentDropRedx getDept={changeDept} />
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.8, px: 0.3 }}>
-                      <DepartmentSectionRedx getSection={changeSection} />
-
-                    </Box>
-                    <Tooltip title="Employee Number" followCursor placement='top' arrow>
-                      <Box sx={{ flex: 1, px: 0.5, mt: 0.8 }}>
-                        <JoyInput
-                          size="sm"
-                          value={empNo}
-                          onchange={setEmpNo}
-                        />
-
-                      </Box>
-                    </Tooltip>
-
-                    <Box sx={{ flex: 1, px: 0.3, mt: 0.7 }}>
-                      <Button
-                        aria-label="Like"
-                        variant="outlined"
-                        color="neutral"
-                        onClick={handleOnClickFuntion}
-                        sx={{
-                          color: '#81c784',
-                        }}
-                      >
-                        <SearchIcon />
-                      </Button>
-                    </Box>
+                  <Box sx={{ flex: 1, mt: 0.8, px: 0.2 }}>
+                    <DepartmentDropRedx getDept={changeDept} />
                   </Box>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', pt: 1, width: '100%' }}>
-                    <CommonAgGrid
-                      columnDefs={columnDef}
-                      tableData={tableData}
+                  <Box sx={{ flex: 1, mt: 0.8, px: 0.3 }}>
+                    <DepartmentSectionRedx getSection={changeSection} />
+
+                  </Box>
+                  <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                    <Box sx={{ flex: 1, px: 0.5, mt: 0.8 }}>
+                      <JoyInput
+                        size="sm"
+                        value={empNo}
+                        onchange={setEmpNo}
+                      />
+
+                    </Box>
+                  </Tooltip>
+
+                  <Box sx={{ flex: 1, px: 0.3, mt: 0.7 }}>
+                    <Button
+                      aria-label="Like"
+                      variant="outlined"
+                      color="neutral"
+                      onClick={handleOnClickFuntion}
                       sx={{
-                        height: 600,
-                        width: '100%',
+                        color: '#81c784',
                       }}
-                      rowHeight={30}
-                      headerHeight={30}
-                    />
+                    >
+                      <SearchIcon />
+                    </Button>
                   </Box>
                 </Box>
-              </CustomLayout>
+                <Box sx={{ display: 'flex', flexDirection: 'column', pt: 1, width: '100%' }}>
+                  <CommonAgGrid
+                    columnDefs={columnDef}
+                    tableData={tableData}
+                    sx={{
+                      height: 600,
+                      width: '100%',
+                    }}
+                    rowHeight={30}
+                    headerHeight={30}
+                  />
+                </Box>
+              </Box>
+            </CustomLayout>
       }
     </>
 

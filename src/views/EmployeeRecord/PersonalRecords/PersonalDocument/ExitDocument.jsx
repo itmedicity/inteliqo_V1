@@ -5,15 +5,17 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import ListItem from '@mui/joy/ListItem';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-const ExitDocument = ({ selectedRowData, setFiles, setflag }) => {
+const ExitDocument = ({ selectedRowData, setFiles, setShowGeneral, Setitem, setid }) => {
     const [open5, setOpen5] = useState(false);
     const main = [
         { id: 32, name: 'Dues Clearance Certificate' },
         { id: 33, name: 'Exit Questionnaire' },
     ];
     const handleToggleExpand = useCallback(async (e, item) => {
-        setflag(3)
-
+        setShowGeneral(2)
+        Setitem(item?.name)
+        setFiles([])
+        setid(item.id)
         if (selectedRowData?.em_id > 0) {
             const postData = {
                 checklistid: item?.id,
@@ -38,7 +40,7 @@ const ExitDocument = ({ selectedRowData, setFiles, setflag }) => {
         } else {
             warningNofity("no Employee Found")
         }
-    }, [setflag, selectedRowData, setFiles]);
+    }, [setShowGeneral, selectedRowData, setFiles, Setitem, setid]);
     return (
         <ListItem
             nested
@@ -60,6 +62,7 @@ const ExitDocument = ({ selectedRowData, setFiles, setflag }) => {
                 <Typography
                     level="inherit"
                     sx={{
+                        pl: 2,
                         fontWeight: open5 ? 'bold' : undefined,
                         color: open5 ? 'text.primary' : 'inherit',
                     }}
@@ -72,7 +75,9 @@ const ExitDocument = ({ selectedRowData, setFiles, setflag }) => {
                 <List sx={{ '--List-item-paddingY': '8px' }}>
                     {main?.map((item, index) => (
                         <ListItem key={item.id}>
-                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)}>{`${item.id}.${item.name}`}</ListItemButton>
+                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)} sx={{ p: .5, m: 0, border: 'none' }}>
+                                <Typography level="body-xs" sx={{}}> {`${item.id}. ${item.name}`}</Typography>
+                            </ListItemButton>
                         </ListItem>
                     ))}
                 </List>

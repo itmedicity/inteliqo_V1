@@ -6,7 +6,7 @@ import ListItem from '@mui/joy/ListItem';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
+const OtherDocuments = ({ selectedRowData, setFiles, setShowGeneral, Setitem }) => {
     const [open4, setOpen4] = useState(false);
     const main = [
         { id: 29, name: 'Any Disciplinary Record' },
@@ -14,7 +14,9 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
         { id: 31, name: 'Any Other Record' },
     ];
     const handleToggleExpand = useCallback(async (e, item) => {
-        setflag(3)
+        setShowGeneral(2)
+        Setitem(item?.name)
+        setFiles([])
         if (selectedRowData?.em_id > 0) {
             const postData = {
                 checklistid: item?.id,
@@ -39,7 +41,7 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
         } else {
             warningNofity("no Employee Found")
         }
-    }, [setflag, selectedRowData, setFiles]);
+    }, [setShowGeneral, selectedRowData, setFiles, Setitem]);
     return (
         <ListItem
             nested
@@ -61,6 +63,7 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
                 <Typography
                     level="inherit"
                     sx={{
+                        pl: 2,
                         fontWeight: open4 ? 'bold' : undefined,
                         color: open4 ? 'text.primary' : 'inherit',
                     }}
@@ -73,7 +76,9 @@ const OtherDocuments = ({ selectedRowData, setFiles, setflag }) => {
                 <List sx={{ '--List-item-paddingY': '8px' }}>
                     {main?.map((item, index) => (
                         <ListItem key={item.id}>
-                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)}>{`${item.id}.${item.name}`}</ListItemButton>
+                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)} sx={{ p: .5, m: 0, border: 'none' }}>
+                                <Typography level="body-xs" sx={{}}> {`${item.id}. ${item.name}`}</Typography>
+                            </ListItemButton>
                         </ListItem>
                     ))}
                 </List>

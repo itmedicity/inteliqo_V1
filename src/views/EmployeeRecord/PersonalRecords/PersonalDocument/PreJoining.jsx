@@ -6,8 +6,9 @@ import ListItem from '@mui/joy/ListItem';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
+const PreJoining = ({ selectedRowData, setFiles, setEmpdata, setid, Setitem, setShowGeneral, }) => {
   const [open, setOpen] = useState(false);
+
 
   const main = [
     { id: 1, name: 'Application For Employment' },
@@ -17,12 +18,33 @@ const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
     { id: 5, name: 'Pre Employment Health Check Up Form' },
   ];
   const handleToggleExpand = useCallback(async (e, item) => {
-    setflag(3)
+    setFiles([])
+    setShowGeneral(2)
+    Setitem(item?.name)
+    setid(item.id)
     if (selectedRowData?.em_id > 0) {
+      const postdata = {
+        em_no: selectedRowData?.em_no,
+      };
+
+      // Data to the form page
+      if (item.id >= 1) {
+        const result = await axioslogin.post('/PersonalChecklist/empdetails', postdata)
+        const { success, data } = result.data
+        if (success === 1) {
+          setEmpdata(data[0])
+
+        }
+        else {
+          setEmpdata([])
+        }
+      }
+
       const postData = {
         checklistid: item?.id,
         em_id: selectedRowData?.em_id
       }
+
       const response = await axioslogin.post('/upload/files', postData)
       const { success, } = response.data
       if (success === 1) {
@@ -37,12 +59,12 @@ const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
           setFiles(fileUrls)
         });
       } else {
-        warningNofity("no data uploded")
+        // warningNofity("no data uploded")
       }
     } else {
       warningNofity("no Employee Found")
     }
-  }, [setflag, selectedRowData, setFiles]);
+  }, [selectedRowData, setFiles, setShowGeneral, setEmpdata, Setitem, setid,]);
   return (
     <ListItem
       nested
@@ -55,7 +77,7 @@ const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
           onClick={() => setOpen(!open)}
         >
           <KeyboardArrowDown
-            sx={{ transform: open ? 'initial' : 'rotate(-90deg)', fontSize: 20 }}
+            sx={{ transform: open ? 'initial' : 'rotate(-90deg)', fontSize: 20, }}
           />
         </Box>
       }
@@ -64,6 +86,7 @@ const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
         <Typography
           level="inherit"
           sx={{
+            pl: 2,
             fontWeight: open ? 'bold' : undefined,
             color: open ? 'text.primary' : 'inherit',
           }}
@@ -75,8 +98,8 @@ const PreJoining = ({ selectedRowData, setFiles, setflag }) => {
         <List sx={{ '--List-item-paddingY': '8px' }}>
           {main?.map((item, index) => (
             <ListItem key={item.id}>
-              <ListItemButton onClick={(e) => handleToggleExpand(e, item)}>
-                {`${item.id}. ${item.name}`}
+              <ListItemButton onClick={(e) => handleToggleExpand(e, item)} sx={{ p: .5, m: 0, border: 'none' }}>
+                <Typography level="body-xs" sx={{}}> {`${item.id}. ${item.name}`}</Typography>
               </ListItemButton>
             </ListItem>
           ))}

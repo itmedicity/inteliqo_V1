@@ -1,6 +1,6 @@
 import { Box, CssVarsProvider, List, Typography, } from '@mui/joy'
 import { Paper } from '@mui/material'
-import React, { lazy, memo, useEffect, useState } from 'react'
+import React, { lazy, memo, useCallback, useEffect, useState } from 'react'
 import { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import { listItemClasses } from '@mui/joy/ListItem';
 
@@ -14,7 +14,9 @@ const ExitDocument = lazy(() => import('./ExitDocument'))
 const ChecklistDocument = lazy(() => import('./ChecklistDocument'))
 
 
-const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) => {
+const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src, setEmpdata, setid, Setitem,
+    showGeneral, setShowGeneral, checklistid, Empdata, itemname, }) => {
+
     const [empdata, setDetails] = useState({ emp_name: "", sect_name: "", em_no: "", desg_name: "" })
     const { emp_name, sect_name, em_no, desg_name } = empdata
 
@@ -33,14 +35,16 @@ const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) =>
             setDetails()
         }
     }, [selectedRowData])
+    const handleClick = useCallback(() => {
+        setShowGeneral(1)
+    }, [setShowGeneral])
     return (
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-between', height: window.innerHeight - 85, width: "100%" }} >
             <Paper variant='outlined' square sx={{ display: "flex", flexDirection: 'column', width: '15%', p: 0.5, backgroundColor: '#EEEFF0' }} >
                 <Box sx={{ width: "100%", backgroundColor: "background.surface", p: 0.5, borderRadius: 4 }}>
-                    <Box sx={{ display: "flex", justifyContent: "center", }}>
-                        <Typography sx={{ color: "#6B728E", fontSize: 12, fontWeight: "bold" }}>PERSONAL RECORD</Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center", cursor: 'pointer', }} onClick={handleClick}>
+                        <Box sx={{ color: "#6B728E", fontSize: 12, fontWeight: "bold", cursor: 'pointer', }}>PERSONAL RECORD</Box>
                     </Box>
-
                 </Box>
                 <Paper elevation={0} sx={{
                     mt: 1, pl: '10px',
@@ -53,8 +57,6 @@ const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) =>
                     <Typography sx={{ fontSize: 13, }}>{desg_name}</Typography>
 
                 </Paper>
-
-
                 <Box
                     sx={{
                         flex: 1,
@@ -106,34 +108,37 @@ const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src }) =>
                             {/*  ChecklistDocument  Ends */}
 
                             {/*  Pre-joining Documents start */}
-                            <PreJoining selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
+                            <PreJoining selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag}
+                                setEmpdata={setEmpdata} setid={setid} Setitem={Setitem} setShowGeneral={setShowGeneral} />
 
                             {/*  Pre-joining Documents Ends */}
 
                             {/*  Joining Formalities Documents Start */}
-                            <JoiningFormalities selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
+                            <JoiningFormalities selectedRowData={selectedRowData} setEmpdata={setEmpdata} setid={setid} setFiles={setFiles} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                             {/*  Joining Formalities Documents End */}
 
                             {/*  Annual Mandatory Documents Start */}
-                            <AnnualMandatory selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
+                            <AnnualMandatory selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                             {/*  Annual Mandatory Documents End */}
 
                             {/*  Special Documents Start */}
-                            <OtherDocuments selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
+                            <OtherDocuments selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                             {/*  Speical Documents End */}
 
 
                             {/*  Exit Documents Start */}
-                            <ExitDocument selectedRowData={selectedRowData} setFiles={setFiles} setflag={setflag} />
+                            <ExitDocument selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                         </List>
                     </CssVarsProvider>
                 </Box>
 
             </Paper>
             <Box sx={{ display: "flex", flex: 1, width: '85%', }} >
-                <Paper square variant='outlined' sx={{ flex: 1, p: 0.5 }} >
+                <Paper square variant='outlined' sx={{ flex: 1, }} >
 
-                    <DocumentView selectedRowData={selectedRowData} setflag={setflag} setFiles={setFiles} Files={Files} setSrc={setSrc} src={src} />
+                    <DocumentView checklistid={checklistid} Empdata={Empdata} itemname={itemname} setEmpdata={setEmpdata}
+                        setShowGeneral={setShowGeneral} showGeneral={showGeneral} selectedRowData={selectedRowData}
+                        setflag={setflag} setFiles={setFiles} Files={Files} setSrc={setSrc} src={src} />
 
                 </Paper>
             </Box>

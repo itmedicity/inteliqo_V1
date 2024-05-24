@@ -12,7 +12,7 @@ const JoyInput = ({
     onchange,
     value,
     min,
-    defaultValue, name, disabled, variant
+    defaultValue, name, disabled, variant, color
 }) => {
     const textStyle = { width: "100%", height: "100%" }
     return (
@@ -30,6 +30,7 @@ const JoyInput = ({
                 value={value}
                 defaultValue={defaultValue}
                 name={name}
+                color={color}
                 autoComplete="off"
                 disabled={disabled}
             />

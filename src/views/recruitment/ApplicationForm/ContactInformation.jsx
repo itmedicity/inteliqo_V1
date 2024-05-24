@@ -7,12 +7,16 @@ import { setRegionByPin } from 'src/redux/actions/Region.Action';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import RegionJoy from 'src/views/MuiComponents/JoyComponent/RegionJoy';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import JoyGender from 'src/views/MuiComponents/JoyComponent/JoyGender'
+import JoyBloodGroup from 'src/views/MuiComponents/JoyComponent/JoyBloodGroup'
+
 
 const ApplicationQuestion = lazy(() => import('./ApplicationQuestion'))
 
 const ContactInformation = ({ formdata, setformdata, Religion, Region, value, setRegion, setReligion, setValue, seteducation, Regionexp,
     setRegionexp, Regionedu, setRegionedu, handleOnClick, education, expdata, expdataset, experience, setexprience, education_details,
-    seteducation_details, edudata, edudataset, eduname }) => {
+    seteducation_details, edudata, edudataset, eduname, addressPermnt1, setaddressPermnt1, addressPermnt2, setaddressPermnt2, gender, setGender,
+    bloodgrp, setBloodgrp }) => {
 
     const { name, lname, mname, email, reemail, mobile, date, permnt_pin } = formdata;
     const dispatch = useDispatch();
@@ -182,6 +186,43 @@ const ContactInformation = ({ formdata, setformdata, Religion, Region, value, se
                             size="md"
                         />
                     </Box>
+                    <Box sx={{ display: 'flex', }}>
+                        <Typography sx={{ mt: 3, }}>Permanent Address </Typography>
+                        <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                    </Box>
+                    <InputComponent
+                        type="text"
+                        size="sm"
+                        placeholder="House Name"
+                        name="addressPermnt1"
+                        value={addressPermnt1}
+                        onchange={(e) => setaddressPermnt1(e.target.value)}
+                    />
+                    <Box sx={{ display: 'flex', }}>
+                        <Typography sx={{ mt: 3, }}>Permanent Address </Typography>
+                        <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                    </Box>
+                    <InputComponent
+                        type="text"
+                        size="sm"
+                        placeholder="Permanent Address"
+                        name="addressPermnt1"
+                        value={addressPermnt2}
+                        onchange={(e) => setaddressPermnt2(e.target.value)}
+                    />
+                    <Box sx={{ display: 'flex', }}>
+                        <Typography sx={{ mt: 3, }}>Gender </Typography>
+                        <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                    </Box>
+                    <JoyGender
+                        value={gender} setValue={setGender}
+                    />
+                    <Box sx={{ display: 'flex', }}>
+                        <Typography sx={{ mt: 3, }}>Blood Group </Typography>
+                        <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
+                    </Box>
+                    <JoyBloodGroup value={bloodgrp} setValue={setBloodgrp} />
+
 
                     <Typography level="h4" sx={{ mt: 3, color: 'black' }}>APPLICATION QUESTIONS </Typography>
                     <Typography sx={{}}>Please answer the following questions.</Typography>

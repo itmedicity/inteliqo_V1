@@ -17,7 +17,7 @@ const JoyBloodGroup = ({ value, setValue }) => {
     useEffect(() => {
         if ((value !== 0) && (flag === 0)) {
             const array = empBloodgrp?.find((e) => e.group_slno === parseInt(value))
-            setValue(array.group_slno)
+            setValue(array?.group_slno)
         }
     }, [value, setValue, flag, empBloodgrp])
 

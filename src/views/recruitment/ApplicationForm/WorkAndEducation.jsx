@@ -9,8 +9,6 @@ const WorkAndEducation = ({ formdata, setformdata, seteducation, Regionexp, setR
     education, expdata, expdataset, education_details, seteducation_details, edudata, edudataset, eduname }) => {
 
     const { agreestatus, agreestatus_marketing, } = formdata;
-
-
     const updateBoard = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setformdata({ ...formdata, [e.target.name]: value })
@@ -78,6 +76,7 @@ const WorkAndEducation = ({ formdata, setformdata, seteducation, Regionexp, setR
                     {
                         edudata?.map((val, index) => {
                             const correspondingEduName = eduname[index];
+
                             return (
                                 <Box sx={{ ml: 2, mt: 1, display: 'flex' }} key={val.id}>
                                     <Box>
@@ -88,6 +87,8 @@ const WorkAndEducation = ({ formdata, setformdata, seteducation, Regionexp, setR
                                         <Typography>Graduated or Not:</Typography>
                                     </Box>
                                     <Box sx={{ ml: 1 }}>
+
+
                                         <Typography sx={{ color: '#87C4FF' }}>{correspondingEduName?.edu_desc === '' ? 'Not Updated' : correspondingEduName?.edu_desc}</Typography>
                                         <Typography sx={{ color: '#87C4FF' }}>{val?.schoolname === '' ? 'Not Updated' : val?.schoolname}</Typography>
                                         <Typography sx={{ color: '#87C4FF' }}>{val?.edustartdate === 0 ? 'Not Updated' : val?.edustartdate}</Typography>

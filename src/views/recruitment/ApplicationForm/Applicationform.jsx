@@ -27,7 +27,11 @@ const Applicationform = () => {
     const [Religion, setReligion] = useState(0);
     const [Region, setRegion] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [addressPermnt1, setaddressPermnt1] = useState('')
+    const [addressPermnt2, setaddressPermnt2] = useState('')
+    const [gender, setGender] = useState(0)
     const [applicationSlno, setApplicationno] = useState(0)
+    const [bloodgrp, setBloodgrp] = useState(0)
     const [experience, setexprience] = useState({
         Employer: "", expstartdate: moment(new Date()).format('YYYY-MM-DD'), expenddate: moment(new Date()).format('YYYY-MM-DD'),
         Workingstatus: false, Responsibilities: "", jobexp: "", SupervisorName: '', Additionalinf: '', Other: ''
@@ -131,6 +135,7 @@ const Applicationform = () => {
             setcount(0)
         })
     }, [count])
+
     const postdata = useMemo(() => {
         return {
             expdata: expdata,
@@ -152,10 +157,15 @@ const Applicationform = () => {
             agree_status: agreestatus === true ? 1 : 0,
             agree_marketing_status: agreestatus_marketing === true ? 1 : 0,
             applicationSlno: applicationSlno,
-            selectedVacancies: selectedVacancies
+            selectedVacancies: selectedVacancies,
+            addressPermnt1: addressPermnt1,
+            addressPermnt2: addressPermnt2,
+            gender: gender,
+            bloodgrp: bloodgrp
+
         }
-    }, [status_yes, vaccinated_statusyes, Health_statusyes, criminal_statusyes, obligation_status_yes, recruitment_status_yes,
-        relatives_status_yes, agreestatus, agreestatus_marketing, applicationSlno, expdata, edudata, value, Religion, criminal_statusno,
+    }, [status_yes, vaccinated_statusyes, Health_statusyes, criminal_statusyes, obligation_status_yes, recruitment_status_yes, addressPermnt1, addressPermnt2,
+        relatives_status_yes, agreestatus, agreestatus_marketing, applicationSlno, expdata, edudata, value, Religion, criminal_statusno, gender, bloodgrp,
         Region, date, email, mobile, criminal, Health, Health_statusno, vaccinated_statuspar, mname, lname, name, permnt_pin, obligation_status_no,
         relatives_status_no, recruitment_status_no, vaccinated_statusno, status_no, empno, recruitment, job, empemail, empname, obligation, selectedVacancies
     ])
@@ -168,7 +178,7 @@ const Applicationform = () => {
     const education1 = useMemo(() => eduname, [eduname])
 
 
-
+    //to show the education name and show in the workexperience page
     useEffect(() => {
         if (education === null || education === 0) {
             setdata([])
@@ -177,14 +187,17 @@ const Applicationform = () => {
                 const result = await axioslogin.post('/Applicationform/eduname', qualification)
                 const { success, data1 } = result.data
                 if (success === 1) {
-                    seteduname(data1)
+                    const newdata = [...eduname, ...data1]
+                    seteduname(newdata)
                     const result = await axioslogin.post('/Applicationform/list', qualification)
                     const { success, data } = result.data
                     if (success === 1) {
+                        const newdatas = [...vacancydata, ...data]
                         const keys = ['desg_id'];
-                        const filteredData = data?.filter((value, index, self) =>
+                        const filteredData = newdatas.filter((value, index, self) =>
                             self.findIndex(v => keys.every(k => v[k] === value[k])) === index
                         );
+
                         setvacancydata(filteredData)
 
                     } else {
@@ -197,15 +210,16 @@ const Applicationform = () => {
             fetchData()
         }
 
-    }, [qualification, education])
+    }, [setdata, qualification, education, setvacancydata,])
 
+    //to open the main modal
     const handleOnClick = useCallback(async (event) => {
         event.preventDefault()
         setIsModalOpen(true)
-
     }, [setIsModalOpen])
-    const handleOnSave = useCallback(async (event) => {
 
+    //to save the all details in the application form
+    const handleOnSave = useCallback(async (event) => {
         event.preventDefault()
         if (Object.keys(edudata).length === 0) {
             warningNofity("Please Enter All Field in the Education Information")
@@ -228,7 +242,11 @@ const Applicationform = () => {
                 setRegionedu(0)
                 setReligion(0)
                 setRegion(0)
+                setaddressPermnt1('')
+                setaddressPermnt2('')
                 setformdata(resetForm)
+                setGender(0)
+                setBloodgrp(0)
             } else {
                 warningNofity(message)
                 setIsModalOpen(false)
@@ -247,7 +265,9 @@ const Applicationform = () => {
                         seteducation={seteducation} Regionexp={Regionexp} setRegionexp={setRegionexp} Regionedu={Regionedu} handleOnClick={handleOnClick}
                         setRegionedu={setRegionedu} education={education} expdata={expdata} expdataset={expdataset} experience={experience}
                         setexprience={setexprience} education_details={education_details} seteducation_details={seteducation_details}
-                        edudata={edudata} edudataset={edudataset} eduname={education1} />
+                        edudata={edudata} edudataset={edudataset} eduname={education1} addressPermnt1={addressPermnt1} setaddressPermnt1={setaddressPermnt1}
+                        addressPermnt2={addressPermnt2} setaddressPermnt2={setaddressPermnt2} gender={gender} setGender={setGender}
+                        bloodgrp={bloodgrp} setBloodgrp={setBloodgrp} />
 
                 </Box>
 

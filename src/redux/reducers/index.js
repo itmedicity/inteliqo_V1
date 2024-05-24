@@ -95,6 +95,7 @@ import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
 import { setVaccinationemp } from './VaccinationReducers'
 import { getemp } from './EmployeeReducers'
+import { getInterviewquestion } from './Interview.Reducer'
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -198,7 +199,8 @@ const reducer = combineReducers({
     selectedEarnData,
     setVaccinationemp,
     setEmployeeType,
-    getemp
+    getemp,
+    getInterviewquestion
 })
 
 export default reducer;

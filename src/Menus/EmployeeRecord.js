@@ -100,6 +100,12 @@ const Employeerecord = [
         name: 'Company Information',
         to: '/Home/CompanyInfo',
     },
+    {
+        men_slno: 289,
+        component: CNavItem,
+        name: 'Pre Employment Health Checkup Form',
+        to: '/Home/HealthCheckUp',
+    },
 
 
 ]

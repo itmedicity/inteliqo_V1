@@ -7,29 +7,35 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import SaveIcon from '@mui/icons-material/Save';
+import moment from 'moment'
+import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 
 const CallLetterModal = lazy(() => import('./CallLetterModal'))
-
-
 const Callletter = () => {
     const [openRowIndex, setOpenRowIndex] = useState(null);
     const [data, setdata] = useState([]);
     const [maindata, setmaindata] = useState([]);
+
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [formdata, setformdata] = useState([]);
     const history = useHistory();
+    const [date, setdate] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [time, settime] = useState(moment().format('LT'));
+    const [count, setcount] = useState(0)
 
 
     const toRedirectToHome = () => {
         history.push('/Home');
     }
-
+    //to get the vaccany list and application status
     useEffect(() => {
         const fetchData = async () => {
             const result = await axioslogin.get('/Applicationform/vacancylist')
             const { success, data } = result.data
+
             if (success === 1) {
                 setdata(data)
+
                 const result = await axioslogin.get('/Applicationform/application')
                 const { success, data1 } = result.data
                 if (success === 1) {
@@ -40,24 +46,22 @@ const Callletter = () => {
                             const array = data1.filter(e => e.Job_applied.includes(val.desg_id))
                             return {
                                 ...val,
-                                // "apslno": array.filter(key => key.application_slno),
                                 "apslno": array.map(key => ({ ...key, "desg_id": val.desg_id, })),
-                                "appdesg_id": val.desg_id
-                            }
+                                "appdesg_id": val.desg_id,
+                            };
                         }
                         const newEmp = data?.map(newFun)
                         const updatedNewEmp = newEmp.map((item) => {
                             const filteredStatusData = statusdata.filter((status) => status.desg_id === item.appdesg_id);
                             const updatedApslno = item.apslno.map((apslnoItem) => {
                                 const foundStatus = filteredStatusData.find((statusItem) => statusItem.application_no === apslnoItem.application_no);
-                                return foundStatus ? { ...apslnoItem, status: foundStatus.status } : apslnoItem;
+                                return foundStatus ? { ...apslnoItem, status: foundStatus.status, letterstatus: foundStatus.letter_status } : apslnoItem;
                             });
                             return { ...item, apslno: updatedApslno };
                         });
                         setmaindata(updatedNewEmp);
-
+                        setcount(0)
                     }
-
                 } else {
                     setmaindata([])
                 }
@@ -66,19 +70,19 @@ const Callletter = () => {
             }
         }
         fetchData()
-    }, [])
+    }, [count])
+    //expand icon to show the details
     const handleExpand = useCallback((index) => {
         setformdata([])
         setOpenRowIndex((prevIndex) => (prevIndex === index ? null : index));
     }, [setOpenRowIndex]);
-
+    //checkbox to get the details
     const updateBoard = useCallback((e, item) => {
         if (e.target.type === 'checkbox' && e.target.checked) {
             const newdata = {
                 email: item?.email,
                 appslno: item?.application_no,
                 desigid: item?.desg_id,
-                letter_status: 1
             }
             const newdatas = [...formdata, newdata]
             setformdata(newdatas)
@@ -88,24 +92,27 @@ const Callletter = () => {
             ));
             setformdata(newDataFiltered);
         }
-    }, []);
+    }, [formdata]);
+
+
 
     //for call leter save and sending email
-    const submitmanpower = useCallback(async (event) => {
-        event.preventDefault()
-        setIsModalOpen(true)
-
-    }, [setIsModalOpen])
+    const submitmanpower = useCallback((e) => {
+        if (Object.keys(formdata).length === 0) {
+            infoNofity('Please Mark any Person For Call Letter')
+        } else {
+            setIsModalOpen(true)
+        }
+    }, [setIsModalOpen, formdata])
 
     return (
         <>
-            <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: window.innerHeight - 100, }}>
+            <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: window.innerHeight - 100, overflowX: "auto" }}>
                 <DasboardCustomLayout title={"Call Letter Preperation"} displayClose={true} setClose={toRedirectToHome}>
                     <Box sx={{ display: "flex", flexDirection: "column", width: '100%' }}>
                         <Box sx={{ py: 0.5, }}>
                             <TableContainer sx={{}}>
                                 <Table sx={{ p: 0, width: '100%' }}>
-
                                     <TableHead >
                                         <TableRow>
                                             <TableCell ></TableCell>
@@ -118,11 +125,8 @@ const Callletter = () => {
                                     </TableHead>
                                     <TableBody>
                                         {data.map((val, index) => {
-
                                             const matchingMainData = maindata.find(item => item.desg_id === val.desg_id);
                                             const isRowOpen = openRowIndex === index;
-                                            // matchingMainData.matchingDesigId = val.desg_id
-
                                             return (
                                                 <React.Fragment key={val.desg_id}>
                                                     <TableRow>
@@ -146,30 +150,27 @@ const Callletter = () => {
                                                             <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Name</Typography></TableCell>
                                                             <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Email</Typography></TableCell>
                                                             <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Application No</Typography></TableCell>
-                                                            {/* <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>View Application </Typography></TableCell> */}
-                                                            <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}></Typography></TableCell>
-                                                            <TableCell size='small' ></TableCell>
-
+                                                            <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}></Typography>Mobile No</TableCell>
+                                                            <TableCell size='small' >Status</TableCell>
                                                         </TableRow>
                                                     )}
                                                     {isRowOpen && matchingMainData && matchingMainData.apslno.map((item, idx) => {
-
-                                                        if (item.status === 1) {
+                                                        if (item?.status === 1) {
                                                             return (
                                                                 <TableRow key={idx} sx={{ backgroundColor: "#F8F6F4" }}>
                                                                     <TableCell size='small'>
                                                                         <JoyCheckbox
                                                                             name="call Letter"
+                                                                            disabled={item?.letterstatus === 1}
+                                                                            // checked={letter_status}
                                                                             onchange={(e) => updateBoard(e, item)}
                                                                         />
-
                                                                     </TableCell>
-                                                                    <TableCell size='small'>{item.first_name}</TableCell>
-                                                                    <TableCell size='small'>{item.email}</TableCell>
-                                                                    <TableCell size='small'>{item.application_no}</TableCell>
-                                                                    {/* <TableCell size='small'><SlideshowIcon onClick={(e) => handleonclick(e, item)} /></TableCell> */}
-                                                                    <TableCell size='small'></TableCell>
-                                                                    <TableCell size='small' ></TableCell>
+                                                                    <TableCell size='small'>{item?.first_name}</TableCell>
+                                                                    <TableCell size='small'>{item?.email}</TableCell>
+                                                                    <TableCell size='small'>{item?.application_no}</TableCell>
+                                                                    <TableCell size='small' >{item?.mobile_num}</TableCell>
+                                                                    <TableCell size='small'>{item?.letterstatus === 1 ? "Mail Sent" : "Pending"}</TableCell>
                                                                 </TableRow>
                                                             );
                                                         }
@@ -200,8 +201,16 @@ const Callletter = () => {
                 <CallLetterModal
                     isModalOpen={isModalOpen}
                     setIsModalOpen={setIsModalOpen}
-                    formdata={formdata} />
-
+                    formdata={formdata}
+                    time={time}
+                    date={date}
+                    settime={settime}
+                    setdate={setdate}
+                    setformdata={setformdata}
+                    setOpenRowIndex={setOpenRowIndex}
+                    count={count}
+                    setcount={setcount}
+                />
             </Box >
         </>
     )

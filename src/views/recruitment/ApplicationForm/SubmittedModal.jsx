@@ -29,8 +29,6 @@ const SubmittedModal = ({ isModalOpen, setIsModalOpen, personaldata, setpersonal
     })
 
     const { email, first_name, last_name, dob, mobile_num, reg_name, relg_name, application_no, desgid, status } = details;
-
-    // console.log(application_no);
     useEffect(() => {
         if (personaldata && personaldata.length > 0) {
             const { first_name, last_name, dob, mobile_num, reg_name, relg_name, email, application_no, desgid, status } = personaldata[0]
@@ -229,7 +227,6 @@ const SubmittedModal = ({ isModalOpen, setIsModalOpen, personaldata, setpersonal
                                         Add to ShortList
                                     </Button>
                                 </>
-
                         }
 
                     </Box>

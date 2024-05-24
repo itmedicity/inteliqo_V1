@@ -7,7 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 
-const JoiningFormalities = ({ selectedRowData, setFiles, setflag }) => {
+const JoiningFormalities = ({ selectedRowData, setFiles, setflag, setShowGeneral, Setitem, setEmpdata, setid }) => {
     const [open2, setOpen2] = useState(false);
     const main = [
         { id: 6, name: 'Personnel Data Form' },
@@ -31,9 +31,25 @@ const JoiningFormalities = ({ selectedRowData, setFiles, setflag }) => {
         { id: 24, name: 'Confirmation Letter' },
     ];
     const handleToggleExpand = useCallback(async (e, item) => {
-        setflag(3)
-
+        setShowGeneral(2)
+        Setitem(item?.name)
+        setFiles([])
+        setid(item.id)
         if (selectedRowData?.em_id > 0) {
+            const postdata = {
+                em_no: selectedRowData?.em_no,
+            };
+            // Data to the form page
+            if (item.id >= 6) {
+                const result = await axioslogin.post('/PersonalChecklist/empdetails', postdata)
+                const { success, data } = result.data
+                if (success === 1) {
+                    setEmpdata(data[0])
+                }
+                else {
+                    setEmpdata([])
+                }
+            }
             const postData = {
                 checklistid: item?.id,
                 em_id: selectedRowData?.em_id
@@ -57,7 +73,7 @@ const JoiningFormalities = ({ selectedRowData, setFiles, setflag }) => {
         } else {
             warningNofity("no Employee Found")
         }
-    }, [setflag, selectedRowData, setFiles]);
+    }, [setShowGeneral, selectedRowData, setFiles, Setitem, setid, setEmpdata]);
     return (
         <ListItem
             nested
@@ -79,6 +95,7 @@ const JoiningFormalities = ({ selectedRowData, setFiles, setflag }) => {
                 <Typography
                     level="inherit"
                     sx={{
+                        pl: 2,
                         fontWeight: open2 ? 'bold' : undefined,
                         color: open2 ? 'text.primary' : 'inherit',
                     }}
@@ -90,7 +107,9 @@ const JoiningFormalities = ({ selectedRowData, setFiles, setflag }) => {
                 <List sx={{ '--List-item-paddingY': '8px' }}>
                     {main?.map((item, index) => (
                         <ListItem key={item.id}>
-                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)}>{`${item.id}. ${item.name}`}</ListItemButton>
+                            <ListItemButton onClick={(e) => handleToggleExpand(e, item)} sx={{ p: .5, m: 0, border: 'none' }}>
+                                <Typography level="body-xs" sx={{}}> {`${item.id}. ${item.name}`}</Typography>
+                            </ListItemButton>
                         </ListItem>
                     ))}
                 </List>

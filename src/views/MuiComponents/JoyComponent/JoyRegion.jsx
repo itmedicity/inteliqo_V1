@@ -10,7 +10,6 @@ const JoyRegion = ({ regValue, getRegion }) => {
     useEffect(() => dispatch(setRegionList()), [dispatch])
 
     const emRegion = useSelector((state) => state?.getRegionList?.RegionList, _.isEqual)
-    console.log(emRegion);
     const [region, setRegion] = useState([{ reg_slno: 0, reg_name: 'Select Region' }])
     const regionList = useMemo(() => emRegion, [emRegion])
 

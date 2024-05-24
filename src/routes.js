@@ -72,15 +72,6 @@ const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecor
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
 // const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
 //const QualificationMastTableEdit = React.lazy(() => import('./views/Master/Qualification/QualificationMastTableEdit'))
-const RegionMastTableEdit = React.lazy(() => import('./views/Master/Region/RegionMastTableEdit'))
-const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
-const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
-const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
-const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
-// const BankMastTableEdit = React.lazy(() => import('./views/Master/BankMaster/BankMastTableEdit'))
-// const BranchMastTableEdit = React.lazy(() => import('./views/Master/BranchMaster/BranchMastTableEdit'))
-//const EmpIntitutionTypeTableEdit = React.lazy(() => import('./views/Master/EmpDesignationType/EmpIntitutionTypeTableEdit'))
-
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
@@ -249,6 +240,25 @@ const Applicationform = React.lazy(() => import('./views/recruitment/Application
 const SubmittedForm = React.lazy(() => import('./views/recruitment/ApplicationForm/SubmittedForm'))
 const Shortlist = React.lazy(() => import('./views/recruitment/ApplicationForm/Shortlist/Shortlist'))
 const Callletter = React.lazy(() => import('./views/recruitment/CallLetter/Callletter'))
+const Interview = React.lazy(() => import('./views/recruitment/Interview/Interview'))
+const InterviewInitial = React.lazy(() => import('./views/recruitment/Interview Initial Assesment/InterviewAssesment'))
+const InterviewIncharge = React.lazy(() => import('./views/recruitment/Approvals/Incharge'))
+const InterviewHod = React.lazy(() => import('./views/recruitment/Approvals/Hod'))
+const InterviewMs = React.lazy(() => import('./views/recruitment/Approvals/Ms'))
+const InterviewDms = React.lazy(() => import('./views/recruitment/Approvals/Dms'))
+const InterviewOperation = React.lazy(() => import('./views/recruitment/Approvals/Operation'))
+const InterviewCeo = React.lazy(() => import('./views/recruitment/Approvals/Ceo'))
+const InterviewHr = React.lazy(() => import('./views/recruitment/Approvals/Hr'))
+const InterviewMaster = React.lazy(() => import('./views/Master/InterviewQuestionMaster/Interviewmaster'))
+const Question = React.lazy(() => import('./views/recruitment/Interview Initial Assesment/Question'))
+const CandidateRanking = React.lazy(() => import('./views/recruitment/Candidate Ranking/Ranking'))
+const CandidateSelection = React.lazy(() => import('./views/recruitment/Candidate Selection/Selection'))
+const OfferLetter = React.lazy(() => import('./views/recruitment/Offer Letter/Offerletter'))
+const EmpConversion = React.lazy(() => import('./views/recruitment/Employe Convertion/EmpConversion'))
+const Appoinment = React.lazy(() => import('./views/recruitment/AppoinmentLetter/AppoinmentLetter'))
+const Joiningletter = React.lazy(() => import('./views/recruitment/JoiningLetter/JoiningLetter'))
+const Announcementclosing = React.lazy(() => import('./views/recruitment/AnnouncementClosing/Announcementclosing'))
+const HealthCheckUp = React.lazy(() => import('./views/EmployeeRecord/PreEmployementHealthCheckUp/PreEmployementForm'))
 
 const routes = [
 
@@ -326,16 +336,6 @@ const routes = [
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
   // { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
   //{ path: '/Home/QualificationMastTableEdit/:id', exact: true, name: 'Qualification  Table Edit', component: QualificationMastTableEdit },
-
-  { path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
-  { path: '/Home/BankMastTableEdit/:id', exact: true, name: 'Bank master Table Edit', component: BankMastTableEdit },
-  { path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
-  { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
-  //{ path: '/Home/RegionMastTableEdit/:id', exact: true, name: 'Region Master Table Edit', component: RegionMastTableEdit },
-  { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
-  // { path: '/Home/BankMastTableEdit/:id', exact: true, name: 'Bank master Table Edit', component: BankMastTableEdit },
-  //{ path: '/Home/BranchMastTableEdit/:id', exact: true, name: 'Branch Master Table Edit', component: BranchMastTableEdit },
-  // { path: '/Home/EmpInstitutionTypeTableEdit/:id', exact: true, name: 'Emp institution Type Table Edit', component: EmpIntitutionTypeTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
@@ -489,6 +489,26 @@ const routes = [
   { path: '/Home/Shortlist', exact: true, name: 'Short List', component: Shortlist },
   { path: '/Home/Callletter', exact: true, name: 'Call letter Preperation', component: Callletter },
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
+  { path: '/Home/Interview', exact: true, name: 'Interview List', component: Interview },
+  { path: '/Home/InterviewInitial', exact: true, name: 'Interview Initial Assesment', component: InterviewInitial },
+  { path: '/Home/InterviewIncharge', exact: true, name: 'Incharge Approval', component: InterviewIncharge },
+  { path: '/Home/InterviewHod', exact: true, name: 'Hod Approval', component: InterviewHod },
+  { path: '/Home/InterviewMs', exact: true, name: 'Ms Approval', component: InterviewMs },
+  { path: '/Home/InterviewDms', exact: true, name: 'Dms Approval', component: InterviewDms },
+  { path: '/Home/InterviewOperation', exact: true, name: 'Operation Approval', component: InterviewOperation },
+  { path: '/Home/InterviewCeo', exact: true, name: 'Ceo Approval', component: InterviewCeo },
+  { path: '/Home/InterviewHr', exact: true, name: 'Hr Approval', component: InterviewHr },
+  { path: '/Home/InterviewQuestion', exact: true, name: 'Interview Question Master', component: InterviewMaster },
+  { path: '/Question', exact: true, name: 'Question', component: Question },
+  { path: '/Home/Candidate Ranking', exact: true, name: 'Candidate Ranking', component: CandidateRanking },
+  { path: '/Home/Candidate Selection', exact: true, name: 'Candidate Selection', component: CandidateSelection },
+  { path: '/Home/OfferLetter', exact: true, name: 'OfferLetter', component: OfferLetter },
+  { path: '/Home/EmpConversion', exact: true, name: 'Employee Conversion', component: EmpConversion },
+  { path: '/Home/Appoinment', exact: true, name: 'Appointment Letter', component: Appoinment },
+  { path: '/Home/Joiningletter', exact: true, name: 'Joining Letter', component: Joiningletter },
+  { path: '/Home/Announcementclosing', exact: true, name: 'Announcement Closing', component: Announcementclosing },
+  { path: '/Home/HealthCheckUp', exact: true, name: 'Pre Employment Health Checkup Form', component: HealthCheckUp },
+
 
 ]
 

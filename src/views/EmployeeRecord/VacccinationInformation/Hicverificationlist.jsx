@@ -258,7 +258,7 @@ const Hicverificationlist = () => {
 
 
   return (
-    <CustomLayout title="Vacccination entry" displayClose={true}>
+    <CustomLayout title="Hic Verified List" displayClose={true}>
       <ToastContainer />
       <Box
         sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}

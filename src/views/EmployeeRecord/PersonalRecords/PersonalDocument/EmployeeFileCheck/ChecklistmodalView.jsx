@@ -24,7 +24,7 @@ const ChecklistmodalView = ({ selectedFiles, selectedFileIndex, setSelectedFileI
                         border: '1px solid #ccc',
                         padding: '10px',
                         width: '100%',
-                        height: '800px',
+                        height: window.innerHeight - 85,
                         overflow: 'auto',
                         display: 'flex',
                         justifyContent: 'center',

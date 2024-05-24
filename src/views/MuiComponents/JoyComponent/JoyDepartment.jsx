@@ -2,7 +2,7 @@ import { Autocomplete } from '@mui/joy';
 import React, { memo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
-import { setEmployee } from 'src/redux/actions/Employee.Action';
+// import { setEmployee } from 'src/redux/actions/Employee.Action';
 
 import _ from 'underscore';
 

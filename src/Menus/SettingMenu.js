@@ -30,6 +30,7 @@ export const py_setting_two = [
     { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
     { to: '/Home/CarryForwardSetting', name: 'Carry Forward Setting', slno: 126 },
     { to: '/Home/PunchTransfer', name: 'Punch Transfer Manual', slno: 229 },
+    { to: '/Home/InterviewQuestion', name: 'Interview Question Master', slno: 262 },
 
 ]
 
